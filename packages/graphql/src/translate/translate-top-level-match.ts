@@ -57,8 +57,8 @@ export function createMatchClause({
     let matchQuery: Cypher.Match<Cypher.Node> | Cypher.db.FullTextQueryNodes;
     let whereInput = resolveTree.args.where as GraphQLWhereArg | undefined;
 
+    // TODO: removed deprecated fulltext translation
     if (Object.entries(fulltextInput).length) {
-        // This is only for deprecated fulltext searches
         if (Object.entries(fulltextInput).length > 1) {
             throw new Error("Can only call one search at any given time");
         }
@@ -114,10 +114,15 @@ function createFulltextMatchClause(
     node: Node,
     context: Context
 ): Cypher.db.FullTextQueryNodes {
+    // TODO: remove indexName assignment and undefined check once the name argument has been removed.
+    const indexName = context.fulltextIndex.indexName || context.fulltextIndex.name;
+    if (indexName === undefined) {
+        throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+    }
     const phraseParam = new Cypher.Param(context.resolveTree.args.phrase);
     const scoreVar = context.fulltextIndex.scoreVariable;
 
-    const matchQuery = new Cypher.db.FullTextQueryNodes(matchNode, context.fulltextIndex.name, phraseParam, scoreVar);
+    const matchQuery = new Cypher.db.FullTextQueryNodes(matchNode, indexName, phraseParam, scoreVar);
 
     const expectedLabels = node.getLabels(context);
     const labelsChecks = matchNode.hasLabels(...expectedLabels);

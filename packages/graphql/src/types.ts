@@ -78,10 +78,11 @@ export interface Auth {
 }
 
 export type FulltextIndex = {
-    name: string;
+    name: string | undefined;
     fields: string[];
     queryType: string;
     queryName: string | undefined;
+    indexName: string | undefined; // TODO: not undefined once name is removed.
 };
 
 export type FullText = {

@@ -38,16 +38,21 @@ function parseFulltextDirective({
     );
 
     value.forEach((index) => {
-        const names = value.filter((i) => index.name === i.name);
+        // TODO: remove indexName assignment and undefined check once the name argument has been removed.
+        const indexName = index.indexName || index.name;
+        if (indexName === undefined) {
+            throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+        }
+        const names = value.filter((i) => (indexName === i.indexName) || (indexName === i.name));
         if (names.length > 1) {
-            throw new Error(`Node '${definition.name.value}' @fulltext index contains duplicate name '${index.name}'`);
+            throw new Error(`Node '${definition.name.value}' @fulltext index contains duplicate name '${indexName}'`);
         }
 
         index.fields.forEach((field) => {
             const foundField = compatibleFields.find((f) => f.fieldName === field);
             if (!foundField) {
                 throw new Error(
-                    `Node '${definition.name.value}' @fulltext index contains invalid index '${index.name}' cannot use find String or ID field '${field}'`
+                    `Node '${definition.name.value}' @fulltext index contains invalid index '${indexName}' cannot use find String or ID field '${field}'`
                 );
             }
         });

@@ -31,18 +31,21 @@ export function augmentFulltextSchema(
     nodeSortTypeName: string
 ) {
     if (node.fulltextDirective) {
-        const fields = node.fulltextDirective.indexes.reduce(
-            (res, index) => ({
+        const fields = node.fulltextDirective.indexes.reduce((res, index) => {
+            const indexName = index.indexName || index.name;
+            if (indexName === undefined) {
+                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+            }
+            return {
                 ...res,
-                [index.name]: composer.createInputTC({
-                    name: `${node.name}${upperFirst(index.name)}Fulltext`,
+                [indexName]: composer.createInputTC({
+                    name: `${node.name}${upperFirst(indexName)}Fulltext`,
                     fields: {
                         phrase: "String!",
                     },
                 }),
-            }),
-            {}
-        );
+            };
+        }, {});
 
         const fulltextResultDescription = `The result of a fulltext search on an index of ${node.name}`;
         const fulltextWhereDescription = `The input for filtering a fulltext query on an index of ${node.name}`;
@@ -81,7 +84,12 @@ export function augmentFulltextSchema(
         });
 
         node.fulltextDirective.indexes.forEach((index) => {
-            let queryName = `${node.plural}Fulltext${upperFirst(index.name)}`;
+            // TODO: remove indexName assignment and undefined check once the name argument has been removed.
+            const indexName = index.indexName || index.name;
+            if (indexName === undefined) {
+                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+            }
+            let queryName = `${node.plural}Fulltext${upperFirst(indexName)}`;
             if (index.queryName) {
                 queryName = index.queryName;
             }

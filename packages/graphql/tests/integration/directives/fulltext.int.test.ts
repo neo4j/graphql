@@ -33,7 +33,7 @@ import { SCORE_FIELD } from "../../../src/graphql/directives/fulltext";
 
 function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
     return `
-        type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }]) {
+        type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }]) {
             name: String!
             born: Int!
             actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -1229,7 +1229,7 @@ describe("@fulltext directive", () => {
 
         test("Works with @auth 'where' when authenticated", async () => {
             const typeDefs = `
-                type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
+                type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                 @auth(rules: [{ where: { name: "$jwt.name" } }]) {
                     name: String!
                     born: Int!
@@ -1293,7 +1293,7 @@ describe("@fulltext directive", () => {
 
         test("Works with @auth 'where' when unauthenticated", async () => {
             const typeDefs = `
-                type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
+                type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                 @auth(rules: [{ where: { name: "$jwt.name" } }]) {
                     name: String!
                     born: Int!
@@ -1353,7 +1353,7 @@ describe("@fulltext directive", () => {
 
         test("Works with @auth 'roles' when authenticated", async () => {
             const typeDefs = `
-                type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
+                type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                 @auth(rules: [{ roles: ["admin"] }]) {
                     name: String!
                     born: Int!
@@ -1428,7 +1428,7 @@ describe("@fulltext directive", () => {
 
         test("Works with @auth 'roles' when unauthenticated", async () => {
             const typeDefs = `
-                type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
+                type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                 @auth(rules: [{ roles: ["admin"] }]) {
                     name: String!
                     born: Int!
@@ -1487,7 +1487,7 @@ describe("@fulltext directive", () => {
 
         test("Works with @auth 'allow' when all match", async () => {
             const typeDefs = `
-                type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
+                type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                 @auth(rules: [{ allow: { name: "$jwt.name" } }]) {
                     name: String!
                     born: Int!
@@ -1549,7 +1549,7 @@ describe("@fulltext directive", () => {
 
         test("Works with @auth 'allow' when one match", async () => {
             const typeDefs = `
-                type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
+                type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                 @auth(rules: [{ allow: { name: "$jwt.name" } }]) {
                     name: String!
                     born: Int!
@@ -1608,7 +1608,7 @@ describe("@fulltext directive", () => {
 
         test("Works with @auth 'roles' when only READ operation is specified", async () => {
             const typeDefs = `
-                type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
+                type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                 @auth(rules: [{ roles: ["admin"], operations: [READ] }]) {
                     name: String!
                     born: Int!
@@ -1675,7 +1675,7 @@ describe("@fulltext directive", () => {
                     actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type ${movieType.name} @fulltext(indexes: [{ name: "${movieType.name}Index", fields: ["title", "description"] }]) {
+                type ${movieType.name} @fulltext(indexes: [{ indexName: "${movieType.name}Index", fields: ["title", "description"] }]) {
                     title: String!
                     description: String
                     released: Int!
@@ -1752,7 +1752,7 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
-                type ${personType.name} @fulltext(indexes: [{ queryName: "${queryType}", name: "${personType.name}CustomIndex", fields: ["name"] }]) {
+                type ${personType.name} @fulltext(indexes: [{ queryName: "${queryType}", indexName: "${personType.name}CustomIndex", fields: ["name"] }]) {
                     name: String!
                     born: Int!
                 }
@@ -1810,7 +1810,7 @@ describe("@fulltext directive", () => {
             const moveTypeLowerFirst = movieType.singular;
             queryType = "SomeCustomQueryName";
             const typeDefs = `
-                type ${movieType.name} @fulltext(indexes: [{ queryName: "${queryType}", name: "${movieType.name}Index", fields: ["title", "description"] }]) {
+                type ${movieType.name} @fulltext(indexes: [{ queryName: "${queryType}", indexName: "${movieType.name}Index", fields: ["title", "description"] }]) {
                     title: String!
                     description: String
                     released: Int!
@@ -1886,8 +1886,8 @@ describe("@fulltext directive", () => {
 
             const typeDefs = `
                 type ${movieType.name} @fulltext(indexes: [
-                        { queryName: "${queryType1}", name: "${movieType.name}CustomIndex", fields: ["title"] },
-                        { queryName: "${queryType2}", name: "${movieType.name}CustomIndex2", fields: ["description"] }
+                        { queryName: "${queryType1}", indexName: "${movieType.name}CustomIndex", fields: ["title"] },
+                        { queryName: "${queryType2}", indexName: "${movieType.name}CustomIndex2", fields: ["description"] }
                     ]) {
                     title: String!
                     description: String!
@@ -2021,7 +2021,7 @@ describe("@fulltext directive", () => {
 
         test("Creates index if it doesn't exist", async () => {
             const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }]) {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
                     title: String!
                 }
             `;
@@ -2056,7 +2056,7 @@ describe("@fulltext directive", () => {
 
         test("Creates two index's if they dont exist", async () => {
             const typeDefs = gql`
-                type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }, { name: "${indexName2}", fields: ["description"] }]) {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }, { indexName: "${indexName2}", fields: ["description"] }]) {
                     title: String!
                     description: String!
                 }
@@ -2099,7 +2099,7 @@ describe("@fulltext directive", () => {
 
         test("When using the node label, creates index if it doesn't exist", async () => {
             const typeDefs = gql`
-                type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }]) @node(label: "${label}") {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) @node(label: "${label}") {
                     title: String!
                 }
             `;
@@ -2134,7 +2134,7 @@ describe("@fulltext directive", () => {
 
         test("When using the field alias, creates index if it doesn't exist", async () => {
             const typeDefs = gql`
-                type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }]) @node(label: "${label}") {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) @node(label: "${label}") {
                     title: String! @alias(property: "${aliasName}")
                 }
             `;
@@ -2169,7 +2169,7 @@ describe("@fulltext directive", () => {
 
         test("Throws when missing index (create index and constraint option not true)", async () => {
             const typeDefs = gql`
-                type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }]) {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
                     title: String!
                 }
             `;
@@ -2187,7 +2187,7 @@ describe("@fulltext directive", () => {
 
         test("Throws when an index is missing fields", async () => {
             const typeDefs = gql`
-                type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title", "description"] }]) {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title", "description"] }]) {
                     title: String!
                     description: String!
                 }
@@ -2220,7 +2220,7 @@ describe("@fulltext directive", () => {
 
         test("When using the field alias, throws when index is missing fields", async () => {
             const typeDefs = gql`
-                type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title", "description"] }]) {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title", "description"] }]) {
                     title: String!
                     description: String! @alias(property: "${aliasName}")
                 }
@@ -2255,7 +2255,7 @@ describe("@fulltext directive", () => {
 
         test("Doesn't throw if an index exists", async () => {
             const typeDefs = gql`
-                type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }]) {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
                     title: String!
                 }
             `;
@@ -2281,7 +2281,7 @@ describe("@fulltext directive", () => {
 
         test("Throws when index is missing fields when used with create option", async () => {
             const typeDefs = gql`
-                type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title", "description"] }]) {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title", "description"] }]) {
                     title: String!
                     description: String!
                 }
@@ -2317,7 +2317,7 @@ describe("@fulltext directive", () => {
 
         test("Create index for ID field if it doesn't exist", async () => {
             const typeDefs = gql`
-                type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["id"] }]) {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["id"] }]) {
                     id: ID!
                 }
             `;
