@@ -88,7 +88,7 @@
 ** xref:troubleshooting/index.adoc[]
 *** xref:troubleshooting/faqs.adoc[]
 *** xref:troubleshooting/security.adoc[]
-*** xref:troubleshooting/bulk-create.adoc[]
+*** xref:troubleshooting/optimizing-create-operations.adoc[]
 ** xref:appendix/index.adoc[]
 *** xref:appendix/preventing-overfetching.adoc[]
 ** xref:deprecations.adoc[Deprecations]
