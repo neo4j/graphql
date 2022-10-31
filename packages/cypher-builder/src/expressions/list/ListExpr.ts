@@ -20,7 +20,6 @@
 import type { CypherEnvironment } from "../../Environment";
 import type { CypherCompilable, Expr } from "../../types";
 
-import { serializeList } from "../../utils/serialize-list";
 
 /** Represents a List */
 export class ListExpr implements CypherCompilable {
@@ -30,7 +29,16 @@ export class ListExpr implements CypherCompilable {
         this.value = value;
     }
 
+    private serializeList(env: CypherEnvironment, obj: Expr[]): string {
+        const valuesList = obj.map(expr => {
+            return expr.getCypher(env);
+        });
+    
+        const serializedContent = valuesList.join(", ");    
+        return `[ ${serializedContent} ]`;
+    }
+    
     public getCypher(env: CypherEnvironment): string {
-        return serializeList(env, this.value);
+        return this.serializeList(env, this.value);
     }
 }
