@@ -108,8 +108,8 @@ the following query and types would be generated:
 [source, graphql, indent=0]
 ----
 type Query {
-    productsFulltextProductName(phrase: String!, where: productFulltextWhere, sort: [productFulltextSort!],
-    limit: Int, offset: Int): [productFulltextResult!]!
+    productsFulltextProductName(phrase: String!, where: ProductFulltextWhere, sort: [ProductFulltextSort!],
+    limit: Int, offset: Int): [ProductFulltextResult!]!
 }
 
 """The result of a fulltext search on an index of Product"""
