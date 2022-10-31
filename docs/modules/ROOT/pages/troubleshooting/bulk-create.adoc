@@ -14,7 +14,7 @@ No optimizations are available if a Subscription plugin it's being used.
 
 No optimizations are available if a Node affected by the mutation has a field with the directive @populated_by.
 
-== @auth
+== `@auth`
 
 No optimizations are available if a Node or Field affected by the mutation is secured with the directive @auth.
 
