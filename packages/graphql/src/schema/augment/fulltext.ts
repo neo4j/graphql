@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { GraphQLFloat, GraphQLNonNull, GraphQLString } from "graphql";
 import type { SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import { fulltextResolver } from "../resolvers/query/fulltext";
@@ -41,7 +42,7 @@ export function augmentFulltextSchema(
                 [indexName]: composer.createInputTC({
                     name: `${node.name}${upperFirst(indexName)}Fulltext`,
                     fields: {
-                        phrase: "String!",
+                        phrase: new GraphQLNonNull(GraphQLString),
                     },
                 }),
             };
@@ -78,7 +79,7 @@ export function augmentFulltextSchema(
             name: node.fulltextTypeNames.result,
             description: fulltextResultDescription,
             fields: {
-                [SCORE_FIELD]: "Float!",
+                [SCORE_FIELD]: new GraphQLNonNull(GraphQLFloat),
                 [node.singular]: `${node.name}!`,
             },
         });
