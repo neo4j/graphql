@@ -22,6 +22,7 @@ export { Match, OptionalMatch } from "./clauses/Match";
 export { Create } from "./clauses/Create";
 export { Merge } from "./clauses/Merge";
 export { Call } from "./clauses/Call";
+export { CallProcedure } from "./clauses/CallProcedure";
 export { Return } from "./clauses/Return";
 export { RawCypher } from "./clauses/RawCypher";
 export { With } from "./clauses/With";
@@ -49,6 +50,7 @@ export * as apoc from "./expressions/procedures/apoc/apoc";
 // --Lists
 export { ListComprehension } from "./expressions/list/ListComprehension";
 export { PatternComprehension } from "./expressions/list/PatternComprehension";
+export { ListExpr as List } from "./expressions/list/ListExpr";
 
 // --Map
 export { MapExpr as Map } from "./expressions/map/MapExpr";
@@ -79,12 +81,17 @@ export {
     distance,
     pointDistance,
     cypherDatetime as datetime,
+    cypherDate as date,
+    cypherLocalTime as localtime,
+    cypherLocalDatetime as localdatetime,
+    cypherTime as time,
     labels,
     count,
     min,
     max,
     avg,
     sum,
+    randomUUID
 } from "./expressions/functions/CypherFunction";
 export * from "./expressions/functions/ListFunctions";
 export { any, all, exists, single } from "./expressions/functions/PredicateFunctions";
@@ -109,5 +116,5 @@ export type { CompositeClause } from "./clauses/utils/concat";
 import { escapeLabel } from "./utils/escape-label";
 
 export const utils = {
-    escapeLabel,
+    escapeLabel
 };
