@@ -161,18 +161,24 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:\`Film\`)
-            SET this0.id = $this0_id
-            RETURN this0
+            "UNWIND $create_param0 AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Film\`)
+                SET
+                    create_this0.id = create_var1.id
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .id }] AS data"
+            RETURN collect(create_this0 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -200,35 +206,56 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:\`Film\`)
-            SET this0.id = $this0_id
-            WITH this0
-            CREATE (this0_actors0_node:\`Person\`)
-            SET this0_actors0_node.name = $this0_actors0_node_name
-            MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
-            RETURN this0
-            }
+            "UNWIND $create_param0 AS create_var1
             CALL {
-            CREATE (this1:\`Film\`)
-            SET this1.id = $this1_id
-            WITH this1
-            CREATE (this1_actors0_node:\`Person\`)
-            SET this1_actors0_node.name = $this1_actors0_node_name
-            MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
-            RETURN this1
+                WITH create_var1
+                CREATE (create_this0:\`Film\`)
+                SET
+                    create_this0.id = create_var1.id
+                WITH create_this0, create_var1
+                CALL {
+                    WITH create_this0, create_var1
+                    UNWIND create_var1.actors.create AS create_var2
+                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
+                    CREATE (create_this5:\`Person\`)
+                    SET
+                        create_this5.name = create_var3.name
+                    MERGE (create_this5)-[create_this6:ACTED_IN]->(create_this0)
+                    RETURN collect(NULL)
+                }
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .id },
-            this1 { .id }] AS data"
+            RETURN collect(create_this0 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\",
-                \\"this0_actors0_node_name\\": \\"actor 1\\",
-                \\"this1_id\\": \\"2\\",
-                \\"this1_actors0_node_name\\": \\"actor 2\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 1\\"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        \\"id\\": \\"2\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 2\\"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -355,26 +382,26 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`Film\`)
-WHERE this.id = $param0
-WITH this
-CALL {
-	WITH this
-	OPTIONAL MATCH (this_connect_actors0_node:\`Person\`)
-	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
-	CALL {
-		WITH *
-		WITH collect(this_connect_actors0_node) as connectedNodes, collect(this) as parentNodes
-		UNWIND parentNodes as this
-		UNWIND connectedNodes as this_connect_actors0_node
-		MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
-		RETURN count(*) AS _
-	}
-	RETURN count(*) AS connect_this_connect_actors_Actor
-}
-WITH *
-RETURN collect(DISTINCT this { .id }) AS data"
-`);
+            "MATCH (this:\`Film\`)
+            WHERE this.id = $param0
+            WITH this
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this_connect_actors0_node:\`Person\`)
+            	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actors0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actors0_node
+            		MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
+            		RETURN count(*) AS _
+            	}
+            	RETURN count(*) AS connect_this_connect_actors_Actor
+            }
+            WITH *
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -402,25 +429,25 @@ RETURN collect(DISTINCT this { .id }) AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`Film\`)
-WHERE this.id = $param0
-WITH this
-CALL {
-WITH this
-OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:\`Person\`)
-WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actorparam0
-CALL {
-	WITH this_disconnect_actors0, this_disconnect_actors0_rel
-	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel
-	UNWIND this_disconnect_actors0 as x
-	DELETE this_disconnect_actors0_rel
-	RETURN count(*) AS _
-}
-RETURN count(*) AS disconnect_this_disconnect_actors_Actor
-}
-WITH *
-RETURN collect(DISTINCT this { .id }) AS data"
-`);
+            "MATCH (this:\`Film\`)
+            WHERE this.id = $param0
+            WITH this
+            CALL {
+            WITH this
+            OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:\`Person\`)
+            WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actorparam0
+            CALL {
+            	WITH this_disconnect_actors0, this_disconnect_actors0_rel
+            	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel
+            	UNWIND this_disconnect_actors0 as x
+            	DELETE this_disconnect_actors0_rel
+            	RETURN count(*) AS _
+            }
+            RETURN count(*) AS disconnect_this_disconnect_actors_Actor
+            }
+            WITH *
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -488,20 +515,20 @@ RETURN collect(DISTINCT this { .id }) AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`Film\`)
-WHERE this.id = $param0
-WITH this
-OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
-WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
-WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
-CALL {
-	WITH this_actors0_to_delete
-	UNWIND this_actors0_to_delete AS x
-	DETACH DELETE x
-	RETURN count(*) AS _
-}
-DETACH DELETE this"
-`);
+            "MATCH (this:\`Film\`)
+            WHERE this.id = $param0
+            WITH this
+            OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
+            WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
+            WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
+            CALL {
+            	WITH this_actors0_to_delete
+            	UNWIND this_actors0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
+            DETACH DELETE this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

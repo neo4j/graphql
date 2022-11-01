@@ -30,9 +30,11 @@ const DEFAULT_VERSION: AmqpVersion = "0-9-1";
 type AmqpVersion = "0-9-1";
 
 export type Neo4jGraphQLSubscriptionsAMQPPluginConstructorOptions = {
+    connection: ConnectionOptions;
     amqpVersion?: AmqpVersion;
     exchange?: string;
-    connection: ConnectionOptions;
+    reconnectTimeout?: number;
+    log?: boolean;
 };
 
 export class Neo4jGraphQLSubscriptionsAMQPPlugin implements Neo4jGraphQLSubscriptionsPlugin {
@@ -41,11 +43,15 @@ export class Neo4jGraphQLSubscriptionsAMQPPlugin implements Neo4jGraphQLSubscrip
     private connectionOptions: ConnectionOptions;
 
     constructor(options: Neo4jGraphQLSubscriptionsAMQPPluginConstructorOptions) {
-        const defaultOptions = { exchange: DEFAULT_EXCHANGE, amqpVersion: DEFAULT_VERSION };
+        const defaultOptions = { exchange: DEFAULT_EXCHANGE, amqpVersion: DEFAULT_VERSION, log: true };
         const finalOptions = { ...defaultOptions, ...options };
 
         this.events = new EventEmitter();
-        this.amqpApi = new AmqpApi({ exchange: finalOptions.exchange });
+        this.amqpApi = new AmqpApi({
+            exchange: finalOptions.exchange,
+            reconnectTimeout: finalOptions.reconnectTimeout,
+            log: finalOptions.log,
+        });
         this.connectionOptions = options.connection;
     }
 
