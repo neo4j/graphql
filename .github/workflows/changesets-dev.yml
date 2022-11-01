@@ -74,7 +74,7 @@ jobs:
           git merge --no-ff origin/dev --strategy-option theirs
           git push
 
-  slack-notify:
+  slack-release-notify:
     needs:
       - release
 
@@ -93,3 +93,18 @@ jobs:
           payload: '{"version":"${{ matrix.package.version }}"}'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_RELEASE_ANNOUNCEMENT_WEBHOOK_URL }}
+
+  slack-publish-public-docs-notify:
+    needs:
+      - release
+
+    if: ${{ needs.release.outputs.published == 'true' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Slack notification to publish the public GraphQL docs
+        if: matrix.package.name == '@neo4j/graphql'
+        uses: slackapi/slack-github-action@v1.23.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PUBLISH_PUBLIC_DOCS_NOTIFICATION_WEBHOOK_URL }}
