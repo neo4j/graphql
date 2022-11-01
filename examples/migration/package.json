@@ -6,7 +6,7 @@
     },
     "dependencies": {
         "@neo4j/graphql": "^3.5.0",
-        "apollo-server": "3.10.3",
+        "apollo-server": "3.10.4",
         "graphql": "16.6.0",
         "neo4j-driver": "5.2.0"
     }
