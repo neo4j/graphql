@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
+import type Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type Relationship from "../../../classes/Relationship";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createDatetimeElement, createDatetimeExpression } from "./create-datetime-element";
 import createPointElement, { createPointExpression } from "./create-point-element";
-import type * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 
 export function createRelationshipPropertyElement({
     resolveTree,
@@ -56,8 +56,8 @@ export function createRelationshipPropertyValue({
 }: {
     resolveTree: ResolveTree;
     relationship: Relationship;
-    relationshipVariable: CypherBuilder.Relationship;
-}): CypherBuilder.Variable | CypherBuilder.Expr {
+    relationshipVariable: Cypher.Relationship;
+}): Cypher.Variable | Cypher.Expr {
     const temporalField = relationship.temporalFields.find((f) => f.fieldName === resolveTree.name);
     const pointField = relationship.pointFields.find((f) => f.fieldName === resolveTree.name);
 

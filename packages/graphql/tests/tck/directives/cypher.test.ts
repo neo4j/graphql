@@ -202,18 +202,23 @@ describe("Cypher directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
             WITH *
-            LIMIT $this_limit
+            LIMIT $param0
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", { this: this, auth: $auth }) AS this_randomNumber
                 RETURN head(collect(this_randomNumber)) AS this_randomNumber
             }
-            RETURN this { randomNumber: this_randomNumber } AS this"
+            RETURN this { randomNumber: this_randomNumber } AS this
+            LIMIT $param2"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_limit\\": {
+                \\"param0\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                },
+                \\"param2\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
@@ -248,13 +253,13 @@ describe("Cypher directive", () => {
             }
             WITH *
             ORDER BY this_randomNumber ASC
-            LIMIT $this_limit
+            LIMIT $param1
             RETURN this { randomNumber: this_randomNumber } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_limit\\": {
+                \\"param1\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },

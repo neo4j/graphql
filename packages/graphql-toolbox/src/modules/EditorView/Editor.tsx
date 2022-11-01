@@ -34,7 +34,7 @@ import {
     LOCAL_STATE_TYPE_LAST_QUERY,
 } from "../../constants";
 import { Grid } from "./grid/Grid";
-import { formatCode, safeParse, ParserOptions } from "./utils";
+import { formatCode, safeParse, ParserOptions, calculateQueryComplexity } from "./utils";
 import { Extension } from "../../components/Filename";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
 import { SettingsContext } from "../../contexts/settings";
@@ -42,6 +42,8 @@ import { AppSettings } from "../AppSettings/AppSettings";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
 import { Storage } from "../../utils/storage";
+import { tracking } from "../../analytics/tracking";
+import { Screen } from "../../contexts/screen";
 
 const DEBOUNCE_TIMEOUT = 500;
 
@@ -73,9 +75,15 @@ export const Editor = ({ schema }: Props) => {
         formatCode(refForQueryEditorMirror.current, ParserOptions.GRAPH_QL);
     };
 
+    const handleShowDocs = () => {
+        setShowDocs(!showDocs);
+        tracking.trackOpenSchemaDocs({ screen: Screen.EDITOR, origin: "explorer", action: !showDocs });
+    };
+
     const onSubmit = useCallback(
         async (override?: string) => {
             let result: string;
+
             setLoading(true);
             if (!schema) return;
 
@@ -91,6 +99,9 @@ export const Editor = ({ schema }: Props) => {
             } catch (error) {
                 result = JSON.stringify({ errors: [error] });
             }
+
+            const complexity = calculateQueryComplexity(schema, override || query || "", variableValues);
+            tracking.trackExecuteQuery({ screen: "query editor", queryComplexity: complexity });
 
             setTimeout(() => {
                 setOutput(result);
@@ -132,7 +143,7 @@ export const Editor = ({ schema }: Props) => {
                                             data-test-explorer-show-docs-switch
                                             label="Docs"
                                             checked={showDocs}
-                                            onChange={() => setShowDocs(!showDocs)}
+                                            onChange={handleShowDocs}
                                         />
                                     </div>
                                     <GraphiQLExplorer

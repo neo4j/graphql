@@ -24,9 +24,9 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createEventMeta } from "./subscriptions/create-event-meta";
-import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 
-export function translateDelete({ context, node }: { context: Context; node: Node }): CypherBuilder.CypherResult {
+export function translateDelete({ context, node }: { context: Context; node: Node }): Cypher.CypherResult {
     const { resolveTree } = context;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
@@ -41,7 +41,8 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
         withVars.push(META_CYPHER_VARIABLE);
     }
 
-    const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "DELETE" });
+    const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
+    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "DELETE" });
     matchAndWhereStr = topLevelMatch.cypher;
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
@@ -81,7 +82,7 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
         };
     }
 
-    const deleteQuery = new CypherBuilder.RawCypher(() => {
+    const deleteQuery = new Cypher.RawCypher(() => {
         const eventMeta = createEventMeta({ event: "delete", nodeVariable: varName, typename: node.name });
         const cypher = [
             ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),

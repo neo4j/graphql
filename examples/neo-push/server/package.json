@@ -16,7 +16,7 @@
         "@neo4j/graphql": "^3.5.0",
         "@neo4j/graphql-ogm": "^3.5.0",
         "@neo4j/graphql-plugin-auth": "^1.0.0",
-        "apollo-server-express": "3.10.3",
+        "apollo-server-express": "3.10.4",
         "bcrypt": "5.1.0",
         "debug": "4.3.4",
         "dotenv": "^16.0.1",
@@ -24,7 +24,7 @@
         "express-rate-limit": "^6.5.2",
         "graphql": "16.6.0",
         "jsonwebtoken": "8.5.1",
-        "neo4j-driver": "5.1.0"
+        "neo4j-driver": "5.2.0"
     },
     "devDependencies": {
         "@faker-js/faker": "7.6.0",
@@ -34,10 +34,10 @@
         "@types/express": "4.17.14",
         "@types/jest": "29.2.0",
         "@types/jsonwebtoken": "8.5.9",
-        "@types/node": "16.18.0",
+        "@types/node": "16.18.3",
         "@types/uuid": "8.3.4",
         "cross-env": "7.0.3",
-        "jest": "29.2.1",
+        "jest": "29.2.2",
         "nodemon": "2.0.20",
         "randomstring": "1.2.3",
         "ts-jest": "29.0.3",

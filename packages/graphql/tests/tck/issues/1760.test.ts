@@ -132,8 +132,8 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
             WITH *
             ORDER BY this_relatedId ASC
-            SKIP $this_offset
-            LIMIT $this_limit
+            SKIP $param4
+            LIMIT $param5
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_NameDetails:\`NameDetails\`)
@@ -170,17 +170,28 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_baseObjectConnection
             }
-            RETURN this { relatedId: this_relatedId, nameDetailsConnection: this_nameDetailsConnection, marketsConnection: this_marketsConnection, baseObjectConnection: this_baseObjectConnection } AS this"
+            RETURN this { relatedId: this_relatedId, nameDetailsConnection: this_nameDetailsConnection, marketsConnection: this_marketsConnection, baseObjectConnection: this_baseObjectConnection } AS this
+            ORDER BY this.relatedId ASC
+            SKIP $param6
+            LIMIT $param7"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
-                \\"this_offset\\": {
+                \\"param4\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
                 },
-                \\"this_limit\\": {
+                \\"param5\\": {
+                    \\"low\\": 50,
+                    \\"high\\": 0
+                },
+                \\"param6\\": {
+                    \\"low\\": 0,
+                    \\"high\\": 0
+                },
+                \\"param7\\": {
                     \\"low\\": 50,
                     \\"high\\": 0
                 },

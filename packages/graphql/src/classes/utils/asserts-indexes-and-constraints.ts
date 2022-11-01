@@ -78,7 +78,12 @@ async function createIndexesAndConstraints({
 
         if (node.fulltextDirective) {
             node.fulltextDirective.indexes.forEach((index) => {
-                const existingIndex = existingIndexes[index.name];
+                // TODO: remove indexName assignment and undefined check once the name argument has been removed.
+                const indexName = index.indexName || index.name;
+                if (indexName === undefined) {
+                    throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+                }
+                const existingIndex = existingIndexes[indexName];
                 if (!existingIndex) {
                     const properties = index.fields.map((field) => {
                         const stringField = node.primitiveFields.find((f) => f.fieldName === field);
@@ -87,7 +92,7 @@ async function createIndexesAndConstraints({
                     });
 
                     indexesToCreate.push({
-                        indexName: index.name,
+                        indexName: indexName,
                         label: node.getMainLabel(),
                         properties,
                     });
@@ -101,7 +106,7 @@ async function createIndexesAndConstraints({
                             const aliasError = stringField?.dbPropertyName ? ` aliased to field '${fieldName}''` : "";
 
                             indexErrors.push(
-                                `@fulltext index '${index.name}' on Node '${node.name}' already exists, but is missing field '${field}'${aliasError}`
+                                `@fulltext index '${indexName}' on Node '${node.name}' already exists, but is missing field '${field}'${aliasError}`
                             );
                         }
                     });
@@ -211,9 +216,14 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
     nodes.forEach((node) => {
         if (node.fulltextDirective) {
             node.fulltextDirective.indexes.forEach((index) => {
-                const existingIndex = existingIndexes[index.name];
+                // TODO: remove indexName assignment and undefined check once the name argument has been removed.
+                const indexName = index.indexName || index.name;
+                if (indexName === undefined) {
+                    throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+                }
+                const existingIndex = existingIndexes[indexName];
                 if (!existingIndex) {
-                    indexErrors.push(`Missing @fulltext index '${index.name}' on Node '${node.name}'`);
+                    indexErrors.push(`Missing @fulltext index '${indexName}' on Node '${node.name}'`);
 
                     return;
                 }
@@ -227,7 +237,7 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
                         const aliasError = stringField?.dbPropertyName ? ` aliased to field '${fieldName}''` : "";
 
                         indexErrors.push(
-                            `@fulltext index '${index.name}' on Node '${node.name}' is missing field '${field}'${aliasError}`
+                            `@fulltext index '${indexName}' on Node '${node.name}' is missing field '${field}'${aliasError}`
                         );
                     }
                 });
