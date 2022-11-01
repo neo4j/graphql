@@ -30,6 +30,7 @@ import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface FullTextQueryNodes extends WithReturn {}
 
+// TODO: remove yield and CALL and put them in CallProcedure
 @mixin(WithReturn)
 export class FullTextQueryNodes extends Clause {
     private targetNode: NodeRef;

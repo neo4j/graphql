@@ -21,6 +21,8 @@ import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import type { Predicate } from "../../types";
 
+// Note, this is a procedure, but acts as a predicate expression
+
 export class ValidatePredicate extends CypherASTNode {
     private predicate: Predicate;
     private message: string;

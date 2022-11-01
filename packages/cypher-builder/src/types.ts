@@ -36,6 +36,8 @@ import type { ListExpr } from "./expressions/list/ListExpr";
 import type { MapProjection } from "./expressions/map/MapProjection";
 import type { HasLabel } from "./expressions/HasLabel";
 import type { Reference } from "./variables/Reference";
+import type { RunFirstColumn } from "./procedures/apoc/RunFirstColumn";
+import type { FullTextQueryNodes } from "./procedures/db";
 
 export type Operation = BooleanOp | ComparisonOp | MathOp;
 
@@ -66,7 +68,7 @@ export type Predicate =
     | HasLabel;
 
 /** Represents a procedure invocable with the CALL statement */
-export type Procedure = ValidatePredicate;
+export type Procedure = ValidatePredicate | RunFirstColumn | FullTextQueryNodes;
 
 export type CypherResult = {
     cypher: string;
