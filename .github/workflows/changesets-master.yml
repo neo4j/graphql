@@ -105,6 +105,9 @@ jobs:
     if: ${{ needs.release.outputs.published == 'true' }}
 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: ${{ fromJson(needs.release.outputs.published-packages) }}
 
     steps:
       - name: Send Slack notification to publish the public GraphQL docs
