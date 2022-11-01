@@ -31,9 +31,9 @@ type UnwindCreateScopeDefinition = {
     unwindVar: Cypher.Variable;
     parentVar: Cypher.Variable;
     clause?: Cypher.Clause;
-}
+};
 type GraphQLInputASTNodeRef = string;
-type UnwindCreateEnvironment = Record<GraphQLInputASTNodeRef, UnwindCreateScopeDefinition>
+type UnwindCreateEnvironment = Record<GraphQLInputASTNodeRef, UnwindCreateScopeDefinition>;
 
 export class UnwindCreateVisitor implements Visitor {
     unwindVar: Cypher.Variable;
@@ -42,13 +42,8 @@ export class UnwindCreateVisitor implements Visitor {
     rootNode: Cypher.Node | undefined;
     clause: Cypher.Clause | undefined;
     environment: UnwindCreateEnvironment;
-    
 
-    constructor(
-        unwindVar: Cypher.Variable,
-        callbackBucket: CallbackBucket,
-        context: Context,
-    ) {
+    constructor(unwindVar: Cypher.Variable, callbackBucket: CallbackBucket, context: Context) {
         this.unwindVar = unwindVar;
         this.callbackBucket = callbackBucket;
         this.context = context;
@@ -191,7 +186,7 @@ export class UnwindCreateVisitor implements Visitor {
             subQueryStatements.push(...nestedClauses);
         }
         subQueryStatements.push(relationshipValidationClause);
-        subQueryStatements.push(new Cypher.Return(Cypher.collect(new Cypher.Literal(null))));
+        subQueryStatements.push(new Cypher.Return([Cypher.collect(new Cypher.Literal(null)), new Cypher.Variable()]));
         const subQuery = Cypher.concat(...subQueryStatements);
         const callClause = new Cypher.Call(subQuery);
         const outsideWith = new Cypher.With(parentVar, unwindVar);
