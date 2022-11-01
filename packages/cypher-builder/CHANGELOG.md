@@ -1,5 +1,12 @@
 # @neo4j/cypher-builder
 
+## 0.1.3
+
+### Patch Changes
+
+-   [#2115](https://github.com/neo4j/graphql/pull/2115) [`7aff0cf19`](https://github.com/neo4j/graphql/commit/7aff0cf194010c8268024917abec931d9ba2c359) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Included List, date, localtime, localdatetime, time, randomUUID.
+    It's possible now to set edge properties from the Merge clause.
+
 ## 0.1.2
 
 ### Patch Changes
