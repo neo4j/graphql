@@ -26,7 +26,7 @@ describe("parseFulltextDirective", () => {
     test("should throw error when directive has duplicate name", () => {
         const typeDefs = gql`
             type Movie
-                @fulltext(indexes: [{ name: "MyIndex", fields: ["title"] }, { name: "MyIndex", fields: ["title"] }]) {
+                @fulltext(indexes: [{ indexName: "MyIndex", fields: ["title"] }, { indexName: "MyIndex", fields: ["title"] }]) {
                 title: String
                 description: String
             }
@@ -55,7 +55,7 @@ describe("parseFulltextDirective", () => {
 
     test("should throw error when directive field is missing", () => {
         const typeDefs = gql`
-            type Movie @fulltext(indexes: [{ name: "MyIndex", fields: ["title"] }]) {
+            type Movie @fulltext(indexes: [{ indexName: "MyIndex", fields: ["title"] }]) {
                 description: String
                 imdbRating: Int
             }
@@ -89,8 +89,8 @@ describe("parseFulltextDirective", () => {
             type Movie
                 @fulltext(
                     indexes: [
-                        { name: "MovieTitle", fields: ["title"] }
-                        { name: "MovieDescription", fields: ["description"] }
+                        { indexName: "MovieTitle", fields: ["title"] }
+                        { indexName: "MovieDescription", fields: ["description"] }
                     ]
                 ) {
                 title: String
@@ -118,8 +118,8 @@ describe("parseFulltextDirective", () => {
 
         expect(result).toEqual({
             indexes: [
-                { name: "MovieTitle", fields: ["title"] },
-                { name: "MovieDescription", fields: ["description"] },
+                { indexName: "MovieTitle", fields: ["title"] },
+                { indexName: "MovieDescription", fields: ["description"] },
             ],
         });
     });

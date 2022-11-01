@@ -48,7 +48,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node as this
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
             WHERE (\\"Movie\\" IN labels(this) AND \\"AnotherLabel\\" IN labels(this))
             RETURN this { .title } AS this"
         `);
@@ -96,7 +96,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node as this
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
             WHERE (\\"Movie\\" IN labels(this) AND \\"some-label\\" IN labels(this))
             RETURN this { .title } AS this"
         `);

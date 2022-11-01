@@ -30,8 +30,16 @@ export function publishEventsToPlugin(
 
         for (const rawEvent of metadata) {
             const subscriptionsEvent = serializeEvent(rawEvent);
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            plugin.publish(subscriptionsEvent);
+            try {
+                const publishPromise = plugin.publish(subscriptionsEvent); // Not using await to avoid blocking
+                if (publishPromise) {
+                    publishPromise.catch((error) => {
+                        console.warn(error);
+                    });
+                }
+            } catch (error) {
+                console.warn(error);
+            }
         }
     }
 }
