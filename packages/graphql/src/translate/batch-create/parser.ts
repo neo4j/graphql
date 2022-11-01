@@ -22,9 +22,33 @@ import type { GraphQLCreateInput, TreeDescriptor } from "./types";
 import { UnsupportedUnwindOptimization } from "./types";
 import { GraphElement, Neo4jGraphQLError, Node, Relationship } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
-import { getRelationshipFields } from "./utils";
 import { AST, CreateAST, NestedCreateAST } from "./GraphQLInputAST/GraphQLInputAST";
 import mapToDbProperty from "../../utils/map-to-db-property";
+
+function getRelationshipFields(
+    node: Node,
+    key: string,
+    value: any,
+    context: Context
+): [RelationField | undefined, Node[]] {
+    const relationField = node.relationFields.find((x) => key === x.fieldName);
+    const refNodes: Node[] = [];
+
+    if (relationField) {
+        if (relationField.union) {
+            Object.keys(value as Record<string, any>).forEach((unionTypeName) => {
+                refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
+            });
+        } else if (relationField.interface) {
+            relationField.interface?.implementations?.forEach((implementationName) => {
+                refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
+            });
+        } else {
+            refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+        }
+    }
+    return [relationField, refNodes];
+}
 
 export function inputTreeToCypherMap(
     input: GraphQLCreateInput[] | GraphQLCreateInput,
