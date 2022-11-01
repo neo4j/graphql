@@ -70,6 +70,10 @@ function createRelationshipFields({
         let anyNonNullRelProperties = false;
         let relFields: ObjectFields | undefined;
 
+        const deprecatedDirectives = graphqlDirectivesToCompose(
+            rel.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+        );
+
         if (rel.properties) {
             relFields = relationshipPropertyFields.get(rel.properties);
 
@@ -770,7 +774,7 @@ function createRelationshipFields({
                     [`${rel.fieldName}Aggregate`]: {
                         type: aggregationTypeObject,
                         args: aggregationFieldsArgs,
-                        directives: graphqlDirectivesToCompose(rel.otherDirectives),
+                        directives: deprecatedDirectives,
                     },
                 });
             }

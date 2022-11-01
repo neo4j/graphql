@@ -222,11 +222,14 @@ function createConnectionFields({
         }
 
         if (!connectionField.relationship.writeonly) {
+            const deprecatedDirectives = graphqlDirectivesToCompose(
+                connectionField.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+            );
             composeNode.addFields({
                 [connectionField.fieldName]: {
                     type: connection.NonNull,
                     args: composeNodeArgs,
-                    directives: graphqlDirectivesToCompose(connectionField.otherDirectives),
+                    directives: deprecatedDirectives,
                     resolve: (source, args: ConnectionQueryArgs, _ctx, info: GraphQLResolveInfo) => {
                         return connectionFieldResolver({
                             connectionField,
