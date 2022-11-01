@@ -63,6 +63,12 @@ describe("@fulltext schema", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"The input for filtering a float\\"\\"\\"
+            input FloatWhere {
+              max: Float
+              min: Float
+            }
+
             type Movie {
               description: String
               title: String
@@ -87,6 +93,24 @@ describe("@fulltext schema", () => {
             input MovieFulltext {
               MovieDescription: MovieMovieDescriptionFulltext
               MovieTitle: MovieMovieTitleFulltext
+            }
+
+            \\"\\"\\"The result of a fulltext search on an index of Movie\\"\\"\\"
+            type MovieFulltextResult {
+              movie: Movie!
+              score: Float!
+            }
+
+            \\"\\"\\"The input for sorting a fulltext query on an index of Movie\\"\\"\\"
+            input MovieFulltextSort {
+              movie: MovieSort
+              score: SortDirection
+            }
+
+            \\"\\"\\"The input for filtering a fulltext query on an index of Movie\\"\\"\\"
+            input MovieFulltextWhere {
+              movie: MovieWhere
+              score: FloatWhere
             }
 
             input MovieMovieDescriptionFulltext {
@@ -168,6 +192,8 @@ describe("@fulltext schema", () => {
               movies(fulltext: MovieFulltext, options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(fulltext: MovieFulltext, where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, fulltext: MovieFulltext, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesFulltextMovieDescription(limit: Int, offset: Int, phrase: String!, sort: [MovieFulltextSort!], where: MovieFulltextWhere): [MovieFulltextResult!]!
+              moviesFulltextMovieTitle(limit: Int, offset: Int, phrase: String!, sort: [MovieFulltextSort!], where: MovieFulltextWhere): [MovieFulltextResult!]!
             }
 
             enum SortDirection {

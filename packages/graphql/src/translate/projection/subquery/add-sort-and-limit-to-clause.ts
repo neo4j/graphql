@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import type { GraphQLOptionsArg, GraphQLSortArg } from "../../../types";
-import Cypher from "@neo4j/cypher-builder";
 import * as neo4j from "neo4j-driver";
+import type { CypherField, GraphQLOptionsArg, GraphQLSortArg, NestedGraphQLSortArg } from "../../../types";
+import Cypher from "@neo4j/cypher-builder";
+import { SCORE_FIELD } from "../../../graphql/directives/fulltext";
 
 export function addLimitOrOffsetOptionsToClause({
     optionsInput,
@@ -40,15 +41,27 @@ export function addSortAndLimitOptionsToClause({
     optionsInput,
     target,
     projectionClause,
+    nodeField,
+    fulltextScoreVariable,
+    cypherFields,
+    varName,
 }: {
     optionsInput: GraphQLOptionsArg;
     target: Cypher.Variable | Cypher.PropertyRef;
     projectionClause: Cypher.Return | Cypher.With;
+    nodeField?: string;
+    fulltextScoreVariable?: Cypher.Variable;
+    cypherFields?: CypherField[];
+    varName?: string;
 }): void {
     if (optionsInput.sort) {
         const orderByParams = createOrderByParams({
             optionsInput,
             target, // This works because targetNode uses alias
+            nodeField,
+            fulltextScoreVariable,
+            cypherFields,
+            varName,
         });
         if (orderByParams.length > 0) {
             projectionClause.orderBy(...orderByParams);
@@ -63,14 +76,34 @@ export function addSortAndLimitOptionsToClause({
 function createOrderByParams({
     optionsInput,
     target,
+    nodeField,
+    fulltextScoreVariable,
+    cypherFields,
+    varName,
 }: {
     optionsInput: GraphQLOptionsArg;
     target: Cypher.Variable | Cypher.PropertyRef;
+    nodeField?: string;
+    fulltextScoreVariable?: Cypher.Variable;
+    cypherFields?: CypherField[];
+    varName?: string;
 }): Array<[Cypher.Expr, Cypher.Order]> {
-    const orderList = (optionsInput.sort || []).flatMap((arg: GraphQLSortArg): Array<[string, "ASC" | "DESC"]> => {
-        return Object.entries(arg);
-    });
+    const orderList = (optionsInput.sort || []).flatMap(
+        (arg: GraphQLSortArg | NestedGraphQLSortArg): Array<[string, "ASC" | "DESC"]> => {
+            if (fulltextScoreVariable && nodeField && arg[nodeField] && typeof arg[nodeField] === "object") {
+                return Object.entries(arg[nodeField] as GraphQLSortArg);
+            }
+            return Object.entries(arg);
+        }
+    );
     return orderList.map(([field, order]) => {
+        // TODO: remove this once translation of cypher fields moved to cypher builder.
+        if (varName && cypherFields && cypherFields.some((f) => f.fieldName === field)) {
+            return [new Cypher.NamedVariable(`${varName}_${field}`), order];
+        }
+        if (fulltextScoreVariable && field === SCORE_FIELD) {
+            return [fulltextScoreVariable, order];
+        }
         return [target.property(field), order];
     });
 }

@@ -19,26 +19,26 @@
 
 import type { CypherEnvironment } from "../../Environment";
 import type { CypherCompilable, Expr } from "../../types";
+import type { Variable } from "../../variables/Variable";
 import { serializeMap } from "../../utils/serialize-map";
-import { Variable } from "../../variables/Variable";
 
 /** Represents a Map projection https://neo4j.com/docs/cypher-manual/current/syntax/maps/#cypher-map-projection */
 export class MapProjection implements CypherCompilable {
     private extraValues: Record<string, Expr>;
     private variable: Variable;
-    private projection: Array<Variable>;
+    private projection: string[];
 
-    constructor(variable: Variable, projection: Array<Variable>, extraValues: Record<string, Expr> = {}) {
+    constructor(variable: Variable, projection: string[], extraValues: Record<string, Expr> = {}) {
         this.variable = variable;
         this.projection = projection;
         this.extraValues = extraValues;
     }
 
-    public set(values: Record<string, Expr> | Variable): void {
-        if (values instanceof Variable) {
-            this.projection.push(values);
+    public set(values: Record<string, Expr> | string): void {
+        if (values instanceof String) {
+            this.projection.push(values as string);
         } else {
-            this.extraValues = { ...this.extraValues, ...values };
+            this.extraValues = { ...this.extraValues, ...values as Record<string, Expr> };
         }
     }
 
@@ -46,7 +46,7 @@ export class MapProjection implements CypherCompilable {
         const variableStr = this.variable.getCypher(env);
         const extraValuesStr = serializeMap(env, this.extraValues, true);
 
-        const projectionStr = this.projection.map((v) => `.${v.getCypher(env)}`).join(", ");
+        const projectionStr = this.projection.join(", ");
 
         const commaStr = extraValuesStr && projectionStr ? ", " : "";
 

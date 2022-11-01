@@ -632,11 +632,28 @@ CREATE (JohnC)-[:LIKES]->(CloudAtlas)
 
 `;
 
+const indexQuery = `
+
+CREATE FULLTEXT INDEX MovieTaglineFulltextIndex
+IF NOT EXISTS FOR (n:Movie)
+ON EACH [n.tagline]
+
+`;
+
+const deleteIndexQuery = `
+
+CALL apoc.schema.assert({},{},true) YIELD label, key
+RETURN *
+
+`;
+
 export async function cleanDatabase(session: Session): Promise<void> {
     await session.run("MATCH (N) DETACH DELETE N");
+    await session.run(deleteIndexQuery);
 }
 
 export async function setupDatabase(session: Session): Promise<void> {
     await cleanDatabase(session);
     await session.run(cypherQuery);
+    await session.run(indexQuery);
 }
