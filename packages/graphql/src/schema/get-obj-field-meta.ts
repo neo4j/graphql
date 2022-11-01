@@ -290,7 +290,7 @@ function getObjFieldMeta({
                             },
                         },
                     },
-                    otherDirectives: [],
+                    otherDirectives: baseField.otherDirectives,
                     arguments: [...(field.arguments || [])],
                     description: field.description?.value,
                     relationship: relationField,

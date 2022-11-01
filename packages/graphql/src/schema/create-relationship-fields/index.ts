@@ -28,6 +28,7 @@ import { createConnectOrCreateField } from "./create-connect-or-create-field";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
+import { graphqlDirectivesToCompose } from "../to-compose";
 
 function createRelationshipFields({
     relationshipFields,
@@ -743,6 +744,7 @@ function createRelationshipFields({
                     type: rel.typeMeta.pretty,
                     args: nodeFieldsArgs,
                     description: rel.description,
+                    directives: graphqlDirectivesToCompose(rel.otherDirectives),
                 },
             });
 
