@@ -2488,8 +2488,622 @@ describe("Directive-preserve", () => {
             }"
         `);
     });
-    // relationships
-    // interfact relationships
-    // union relationships
-    // various inputs? probably not possible?
+
+    test("Directives on unions preserved", async () => {
+        const typeDefs = gql`
+            union Content = Blog | Post
+
+            type Blog {
+                title: String
+                posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+            }
+
+            type Post {
+                content: String @deprecated(reason: "Do not use post.content")
+            }
+
+            type User {
+                name: String
+                content: [Content!]!
+                    @relationship(type: "HAS_CONTENT", direction: OUT)
+                    @deprecated(reason: "Do not use user.content")
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            type Blog {
+              posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
+              postsAggregate(directed: Boolean = true, where: PostWhere): BlogPostPostsAggregationSelection
+              postsConnection(after: String, directed: Boolean = true, first: Int, sort: [BlogPostsConnectionSort!], where: BlogPostsConnectionWhere): BlogPostsConnection!
+              title: String
+            }
+
+            type BlogAggregateSelection {
+              count: Int!
+              title: StringAggregateSelectionNullable!
+            }
+
+            input BlogConnectInput {
+              posts: [BlogPostsConnectFieldInput!]
+            }
+
+            input BlogConnectWhere {
+              node: BlogWhere!
+            }
+
+            input BlogCreateInput {
+              posts: BlogPostsFieldInput
+              title: String
+            }
+
+            input BlogDeleteInput {
+              posts: [BlogPostsDeleteFieldInput!]
+            }
+
+            input BlogDisconnectInput {
+              posts: [BlogPostsDisconnectFieldInput!]
+            }
+
+            type BlogEdge {
+              cursor: String!
+              node: Blog!
+            }
+
+            input BlogOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more BlogSort objects to sort Blogs by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [BlogSort!]
+            }
+
+            type BlogPostPostsAggregationSelection {
+              count: Int!
+              node: BlogPostPostsNodeAggregateSelection
+            }
+
+            type BlogPostPostsNodeAggregateSelection {
+              content: StringAggregateSelectionNullable!
+            }
+
+            input BlogPostsAggregateInput {
+              AND: [BlogPostsAggregateInput!]
+              OR: [BlogPostsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: BlogPostsNodeAggregationWhereInput
+            }
+
+            input BlogPostsConnectFieldInput {
+              where: PostConnectWhere
+            }
+
+            type BlogPostsConnection {
+              edges: [BlogPostsRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input BlogPostsConnectionSort {
+              node: PostSort
+            }
+
+            input BlogPostsConnectionWhere {
+              AND: [BlogPostsConnectionWhere!]
+              OR: [BlogPostsConnectionWhere!]
+              node: PostWhere
+              node_NOT: PostWhere
+            }
+
+            input BlogPostsCreateFieldInput {
+              node: PostCreateInput!
+            }
+
+            input BlogPostsDeleteFieldInput {
+              where: BlogPostsConnectionWhere
+            }
+
+            input BlogPostsDisconnectFieldInput {
+              where: BlogPostsConnectionWhere
+            }
+
+            input BlogPostsFieldInput {
+              connect: [BlogPostsConnectFieldInput!]
+              create: [BlogPostsCreateFieldInput!]
+            }
+
+            input BlogPostsNodeAggregationWhereInput {
+              AND: [BlogPostsNodeAggregationWhereInput!]
+              OR: [BlogPostsNodeAggregationWhereInput!]
+              content_AVERAGE_EQUAL: Float
+              content_AVERAGE_GT: Float
+              content_AVERAGE_GTE: Float
+              content_AVERAGE_LT: Float
+              content_AVERAGE_LTE: Float
+              content_EQUAL: String
+              content_GT: Int
+              content_GTE: Int
+              content_LONGEST_EQUAL: Int
+              content_LONGEST_GT: Int
+              content_LONGEST_GTE: Int
+              content_LONGEST_LT: Int
+              content_LONGEST_LTE: Int
+              content_LT: Int
+              content_LTE: Int
+              content_SHORTEST_EQUAL: Int
+              content_SHORTEST_GT: Int
+              content_SHORTEST_GTE: Int
+              content_SHORTEST_LT: Int
+              content_SHORTEST_LTE: Int
+            }
+
+            type BlogPostsRelationship {
+              cursor: String!
+              node: Post!
+            }
+
+            input BlogPostsUpdateConnectionInput {
+              node: PostUpdateInput
+            }
+
+            input BlogPostsUpdateFieldInput {
+              connect: [BlogPostsConnectFieldInput!]
+              create: [BlogPostsCreateFieldInput!]
+              delete: [BlogPostsDeleteFieldInput!]
+              disconnect: [BlogPostsDisconnectFieldInput!]
+              update: BlogPostsUpdateConnectionInput
+              where: BlogPostsConnectionWhere
+            }
+
+            input BlogRelationInput {
+              posts: [BlogPostsCreateFieldInput!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Blogs by. The order in which sorts are applied is not guaranteed when specifying many fields in one BlogSort object.
+            \\"\\"\\"
+            input BlogSort {
+              title: SortDirection
+            }
+
+            input BlogUpdateInput {
+              posts: [BlogPostsUpdateFieldInput!]
+              title: String
+            }
+
+            input BlogWhere {
+              AND: [BlogWhere!]
+              OR: [BlogWhere!]
+              posts: PostWhere @deprecated(reason: \\"Use \`posts_SOME\` instead.\\")
+              postsAggregate: BlogPostsAggregateInput
+              postsConnection: BlogPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_SOME\` instead.\\")
+              postsConnection_ALL: BlogPostsConnectionWhere
+              postsConnection_NONE: BlogPostsConnectionWhere
+              postsConnection_NOT: BlogPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              postsConnection_SINGLE: BlogPostsConnectionWhere
+              postsConnection_SOME: BlogPostsConnectionWhere
+              \\"\\"\\"Return Blogs where all of the related Posts match this filter\\"\\"\\"
+              posts_ALL: PostWhere
+              \\"\\"\\"Return Blogs where none of the related Posts match this filter\\"\\"\\"
+              posts_NONE: PostWhere
+              posts_NOT: PostWhere @deprecated(reason: \\"Use \`posts_NONE\` instead.\\")
+              \\"\\"\\"Return Blogs where one of the related Posts match this filter\\"\\"\\"
+              posts_SINGLE: PostWhere
+              \\"\\"\\"Return Blogs where some of the related Posts match this filter\\"\\"\\"
+              posts_SOME: PostWhere
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String]
+              title_NOT: String
+              title_NOT_CONTAINS: String
+              title_NOT_ENDS_WITH: String
+              title_NOT_IN: [String]
+              title_NOT_STARTS_WITH: String
+              title_STARTS_WITH: String
+            }
+
+            type BlogsConnection {
+              edges: [BlogEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            union Content = Blog | Post
+
+            input ContentWhere {
+              Blog: BlogWhere
+              Post: PostWhere
+            }
+
+            type CreateBlogsMutationResponse {
+              blogs: [Blog!]!
+              info: CreateInfo!
+            }
+
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreatePostsMutationResponse {
+              info: CreateInfo!
+              posts: [Post!]!
+            }
+
+            type CreateUsersMutationResponse {
+              info: CreateInfo!
+              users: [User!]!
+            }
+
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type Mutation {
+              createBlogs(input: [BlogCreateInput!]!): CreateBlogsMutationResponse!
+              createPosts(input: [PostCreateInput!]!): CreatePostsMutationResponse!
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+              deleteBlogs(delete: BlogDeleteInput, where: BlogWhere): DeleteInfo!
+              deletePosts(where: PostWhere): DeleteInfo!
+              deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
+              updateBlogs(connect: BlogConnectInput, create: BlogRelationInput, delete: BlogDeleteInput, disconnect: BlogDisconnectInput, update: BlogUpdateInput, where: BlogWhere): UpdateBlogsMutationResponse!
+              updatePosts(update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
+              updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type Post {
+              content: String @deprecated(reason: \\"Do not use post.content\\")
+            }
+
+            type PostAggregateSelection {
+              content: StringAggregateSelectionNullable!
+              count: Int!
+            }
+
+            input PostConnectWhere {
+              node: PostWhere!
+            }
+
+            input PostCreateInput {
+              content: String
+            }
+
+            type PostEdge {
+              cursor: String!
+              node: Post!
+            }
+
+            input PostOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [PostSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.
+            \\"\\"\\"
+            input PostSort {
+              content: SortDirection
+            }
+
+            input PostUpdateInput {
+              content: String
+            }
+
+            input PostWhere {
+              AND: [PostWhere!]
+              OR: [PostWhere!]
+              content: String
+              content_CONTAINS: String
+              content_ENDS_WITH: String
+              content_IN: [String]
+              content_NOT: String
+              content_NOT_CONTAINS: String
+              content_NOT_ENDS_WITH: String
+              content_NOT_IN: [String]
+              content_NOT_STARTS_WITH: String
+              content_STARTS_WITH: String
+            }
+
+            type PostsConnection {
+              edges: [PostEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Query {
+              blogs(options: BlogOptions, where: BlogWhere): [Blog!]!
+              blogsAggregate(where: BlogWhere): BlogAggregateSelection!
+              blogsConnection(after: String, first: Int, sort: [BlogSort], where: BlogWhere): BlogsConnection!
+              posts(options: PostOptions, where: PostWhere): [Post!]!
+              postsAggregate(where: PostWhere): PostAggregateSelection!
+              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
+              users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+            }
+
+            input QueryOptions {
+              limit: Int
+              offset: Int
+            }
+
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
+            }
+
+            type UpdateBlogsMutationResponse {
+              blogs: [Blog!]!
+              info: UpdateInfo!
+            }
+
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdatePostsMutationResponse {
+              info: UpdateInfo!
+              posts: [Post!]!
+            }
+
+            type UpdateUsersMutationResponse {
+              info: UpdateInfo!
+              users: [User!]!
+            }
+
+            type User {
+              content(directed: Boolean = true, options: QueryOptions, where: ContentWhere): [Content!]! @deprecated(reason: \\"Do not use user.content\\")
+              contentConnection(after: String, directed: Boolean = true, first: Int, where: UserContentConnectionWhere): UserContentConnection! @deprecated(reason: \\"Do not use user.content\\")
+              name: String
+            }
+
+            type UserAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNullable!
+            }
+
+            input UserConnectInput {
+              content: UserContentConnectInput
+            }
+
+            input UserContentBlogConnectFieldInput {
+              connect: [BlogConnectInput!]
+              where: BlogConnectWhere
+            }
+
+            input UserContentBlogConnectionWhere {
+              AND: [UserContentBlogConnectionWhere!]
+              OR: [UserContentBlogConnectionWhere!]
+              node: BlogWhere
+              node_NOT: BlogWhere
+            }
+
+            input UserContentBlogCreateFieldInput {
+              node: BlogCreateInput!
+            }
+
+            input UserContentBlogDeleteFieldInput {
+              delete: BlogDeleteInput
+              where: UserContentBlogConnectionWhere
+            }
+
+            input UserContentBlogDisconnectFieldInput {
+              disconnect: BlogDisconnectInput
+              where: UserContentBlogConnectionWhere
+            }
+
+            input UserContentBlogFieldInput {
+              connect: [UserContentBlogConnectFieldInput!]
+              create: [UserContentBlogCreateFieldInput!]
+            }
+
+            input UserContentBlogUpdateConnectionInput {
+              node: BlogUpdateInput
+            }
+
+            input UserContentBlogUpdateFieldInput {
+              connect: [UserContentBlogConnectFieldInput!]
+              create: [UserContentBlogCreateFieldInput!]
+              delete: [UserContentBlogDeleteFieldInput!]
+              disconnect: [UserContentBlogDisconnectFieldInput!]
+              update: UserContentBlogUpdateConnectionInput
+              where: UserContentBlogConnectionWhere
+            }
+
+            input UserContentConnectInput {
+              Blog: [UserContentBlogConnectFieldInput!]
+              Post: [UserContentPostConnectFieldInput!]
+            }
+
+            type UserContentConnection {
+              edges: [UserContentRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input UserContentConnectionWhere {
+              Blog: UserContentBlogConnectionWhere
+              Post: UserContentPostConnectionWhere
+            }
+
+            input UserContentCreateFieldInput {
+              Blog: [UserContentBlogCreateFieldInput!]
+              Post: [UserContentPostCreateFieldInput!]
+            }
+
+            input UserContentCreateInput {
+              Blog: UserContentBlogFieldInput
+              Post: UserContentPostFieldInput
+            }
+
+            input UserContentDeleteInput {
+              Blog: [UserContentBlogDeleteFieldInput!]
+              Post: [UserContentPostDeleteFieldInput!]
+            }
+
+            input UserContentDisconnectInput {
+              Blog: [UserContentBlogDisconnectFieldInput!]
+              Post: [UserContentPostDisconnectFieldInput!]
+            }
+
+            input UserContentPostConnectFieldInput {
+              where: PostConnectWhere
+            }
+
+            input UserContentPostConnectionWhere {
+              AND: [UserContentPostConnectionWhere!]
+              OR: [UserContentPostConnectionWhere!]
+              node: PostWhere
+              node_NOT: PostWhere
+            }
+
+            input UserContentPostCreateFieldInput {
+              node: PostCreateInput!
+            }
+
+            input UserContentPostDeleteFieldInput {
+              where: UserContentPostConnectionWhere
+            }
+
+            input UserContentPostDisconnectFieldInput {
+              where: UserContentPostConnectionWhere
+            }
+
+            input UserContentPostFieldInput {
+              connect: [UserContentPostConnectFieldInput!]
+              create: [UserContentPostCreateFieldInput!]
+            }
+
+            input UserContentPostUpdateConnectionInput {
+              node: PostUpdateInput
+            }
+
+            input UserContentPostUpdateFieldInput {
+              connect: [UserContentPostConnectFieldInput!]
+              create: [UserContentPostCreateFieldInput!]
+              delete: [UserContentPostDeleteFieldInput!]
+              disconnect: [UserContentPostDisconnectFieldInput!]
+              update: UserContentPostUpdateConnectionInput
+              where: UserContentPostConnectionWhere
+            }
+
+            type UserContentRelationship {
+              cursor: String!
+              node: Content!
+            }
+
+            input UserContentUpdateInput {
+              Blog: [UserContentBlogUpdateFieldInput!]
+              Post: [UserContentPostUpdateFieldInput!]
+            }
+
+            input UserCreateInput {
+              content: UserContentCreateInput
+              name: String
+            }
+
+            input UserDeleteInput {
+              content: UserContentDeleteInput
+            }
+
+            input UserDisconnectInput {
+              content: UserContentDisconnectInput
+            }
+
+            type UserEdge {
+              cursor: String!
+              node: User!
+            }
+
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
+            }
+
+            input UserRelationInput {
+              content: UserContentCreateFieldInput
+            }
+
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
+            input UserSort {
+              name: SortDirection
+            }
+
+            input UserUpdateInput {
+              content: UserContentUpdateInput
+              name: String
+            }
+
+            input UserWhere {
+              AND: [UserWhere!]
+              OR: [UserWhere!]
+              contentConnection: UserContentConnectionWhere @deprecated(reason: \\"Use \`contentConnection_SOME\` instead.\\")
+              contentConnection_ALL: UserContentConnectionWhere
+              contentConnection_NONE: UserContentConnectionWhere
+              contentConnection_NOT: UserContentConnectionWhere @deprecated(reason: \\"Use \`contentConnection_NONE\` instead.\\")
+              contentConnection_SINGLE: UserContentConnectionWhere
+              contentConnection_SOME: UserContentConnectionWhere
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String
+              name_NOT_CONTAINS: String
+              name_NOT_ENDS_WITH: String
+              name_NOT_IN: [String]
+              name_NOT_STARTS_WITH: String
+              name_STARTS_WITH: String
+            }
+
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }"
+        `);
+    });
 });
