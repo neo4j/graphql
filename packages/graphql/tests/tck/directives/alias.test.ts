@@ -191,7 +191,7 @@ describe("Cypher alias directive", () => {
                     SET
                         create_this7.characterPropInDb = create_var5.character,
                         create_this7.screenTime = create_var5.screenTime
-                    RETURN collect(NULL) AS create_var8
+                    RETURN collect(NULL)
                 }
                 RETURN create_this1
             }

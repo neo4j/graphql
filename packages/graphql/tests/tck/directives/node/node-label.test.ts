@@ -221,7 +221,7 @@ describe("Label in Node directive", () => {
                     SET
                         create_this5.name = create_var3.name
                     MERGE (create_this5)-[create_this6:ACTED_IN]->(create_this0)
-                    RETURN collect(NULL) AS create_var7
+                    RETURN collect(NULL)
                 }
                 RETURN create_this0
             }

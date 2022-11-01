@@ -203,7 +203,7 @@ describe("Batch Create, Scalar types", () => {
                         SET
                             create_this10.address = create_var8.address
                         MERGE (create_this5)-[create_this11:HAS_WEBSITE]->(create_this10)
-                        RETURN collect(NULL) AS create_var12
+                        RETURN collect(NULL)
                     }
                     WITH create_this5
                     CALL {
@@ -213,18 +213,18 @@ describe("Batch Create, Scalar types", () => {
                     	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.website must be less than or equal to one', [0])
                     	RETURN c AS create_this5_website_Website_unique_ignored
                     }
-                    RETURN collect(NULL) AS create_var13
+                    RETURN collect(NULL)
                 }
                 WITH create_this0, create_var1
                 CALL {
                     WITH create_this0, create_var1
-                    UNWIND create_var1.website.create AS create_var14
-                    WITH create_var14.node AS create_var15, create_var14.edge AS create_var16, create_this0
-                    CREATE (create_this17:\`Website\`)
+                    UNWIND create_var1.website.create AS create_var12
+                    WITH create_var12.node AS create_var13, create_var12.edge AS create_var14, create_this0
+                    CREATE (create_this15:\`Website\`)
                     SET
-                        create_this17.address = create_var15.address
-                    MERGE (create_this0)-[create_this18:HAS_WEBSITE]->(create_this17)
-                    RETURN collect(NULL) AS create_var19
+                        create_this15.address = create_var13.address
+                    MERGE (create_this0)-[create_this16:HAS_WEBSITE]->(create_this15)
+                    RETURN collect(NULL)
                 }
                 WITH create_this0
                 CALL {
@@ -336,7 +336,7 @@ describe("Batch Create, Scalar types", () => {
                     	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.website must be less than or equal to one', [0])
                     	RETURN c AS create_this6_website_Website_unique_ignored
                     }
-                    RETURN collect(NULL) AS create_var8
+                    RETURN collect(NULL)
                 }
                 WITH create_this1
                 CALL {
