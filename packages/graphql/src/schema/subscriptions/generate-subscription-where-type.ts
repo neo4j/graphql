@@ -18,7 +18,6 @@
  */
 
 import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
-import { RelationDirection } from "../../graphql/enums/RelationDirection";
 import type { Node } from "../../classes";
 import { objectFieldsToSubscriptionsWhereInputFields } from "../to-compose";
 import type { ObjectFields } from "../get-obj-field-meta";
@@ -73,8 +72,6 @@ export function generateSubscriptionConnectionWhereType({
         name: `${typeName}ConnectionSubscriptionWhere`,
         fields: {
             [fieldName]: connectedNode,
-            relationshipName: "String",
-            direction: schemaComposer.createEnumTC(RelationDirection),
             relationship: _getRelationshipConnectionWhereTypes({
                 node,
                 schemaComposer,

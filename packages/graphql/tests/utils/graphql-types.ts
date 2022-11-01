@@ -80,8 +80,8 @@ export class UniqueType {
                     created: `created${pascalCaseSingular}`,
                     updated: `updated${pascalCaseSingular}`,
                     deleted: `deleted${pascalCaseSingular}`,
-                    connected: `connected${pascalCaseSingular}`,
-                    disconnected: `disconnected${pascalCaseSingular}`,
+                    connected: `${singular}`,
+                    disconnected: `${singular}`,
                 },
             },
         };

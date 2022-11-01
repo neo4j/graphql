@@ -276,8 +276,8 @@ class Node extends GraphElement {
             create: `created${pascalCaseSingular}`,
             update: `updated${pascalCaseSingular}`,
             delete: `deleted${pascalCaseSingular}`,
-            connect: `connected${pascalCaseSingular}`,
-            disconnect: `disconnected${pascalCaseSingular}`,
+            connect: `${this.singular}`,
+            disconnect: `${this.singular}`,
         };
     }
 

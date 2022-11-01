@@ -18,6 +18,7 @@
  */
 
 import { on } from "events";
+import type { ObjectFields } from "../../../schema/get-obj-field-meta";
 import { Neo4jGraphQLError } from "../../../classes";
 import type Node from "../../../classes/Node";
 import type { NodeSubscriptionsEvent, RelationSubscriptionsEvent, SubscriptionsEvent } from "../../../types";
@@ -38,7 +39,12 @@ type SubscriptionArgs = {
     where?: Record<string, any>;
 };
 
-export function generateSubscribeMethod(node: Node, type: "create" | "update" | "delete" | "connect" | "disconnect") {
+export function generateSubscribeMethod(
+    node: Node,
+    type: "create" | "update" | "delete" | "connect" | "disconnect",
+    nodes?: Node[],
+    relationshipFields?: Map<string, ObjectFields>
+) {
     return (_root: any, args: SubscriptionArgs, context: SubscriptionContext): AsyncIterator<[SubscriptionsEvent]> => {
         if (node.auth) {
             const authRules = node.auth.getRules(["SUBSCRIBE"]);
@@ -76,7 +82,7 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
                     (r) => r.type === relationEventPayload.relationshipName
                 )?.fieldName;
 
-                return !!relationFieldName && subscriptionWhere(args.where, data[0], node);
+                return !!relationFieldName && subscriptionWhere(args.where, data[0], node, nodes, relationshipFields);
             });
         }
 

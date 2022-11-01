@@ -19,10 +19,11 @@
 
 import { int } from "neo4j-driver";
 import type Node from "../../../../classes/Node";
-import type { PrimitiveField, RelationSubscriptionsEvent } from "../../../../types";
+import type { PrimitiveField, RelationField, RelationSubscriptionsEvent } from "../../../../types";
 import { whereRegEx } from "../../../../translate/where/utils";
 import type { WhereRegexGroups } from "../../../../translate/where/utils";
 import { isSameType, haveSameLength } from "../../../../utils/utils";
+import type { ObjectFields } from "../../../../schema/get-obj-field-meta";
 
 /**
  * Returns true if all properties in obj1 exists in obj2, false otherwise.
@@ -201,10 +202,20 @@ export function filterByProperties<T>(
     return true;
 }
 
+// TODO: refactor
+type recordType<T> = Record<string, T>;
+type standardType<T> = Record<string, Record<string, T>>;
+type unionType<T> = Record<string, standardType<T>>;
+type interfaceType<T> = Record<"edge", Record<string, T>> | Record<"node", Record<string, T | Record<string, T>>>;
 export function filterRelationshipConnectionsByProperties<T>(
     node: Node,
-    whereProperties: Record<string, T | Record<string, T>>,
-    receivedEvent: RelationSubscriptionsEvent
+    whereProperties: Record<
+        string,
+        recordType<T> | Record<string, Record<string, unionType<T> | interfaceType<T> | standardType<T>>>
+    >,
+    receivedEvent: RelationSubscriptionsEvent,
+    nodes: Node[] | undefined,
+    relationshipFields: Map<string, ObjectFields> | undefined
 ): boolean {
     const receivedProperties = receivedEvent.properties;
     const relationshipName = receivedEvent.relationshipName;
@@ -214,8 +225,7 @@ export function filterRelationshipConnectionsByProperties<T>(
     }
 
     for (const [k, v] of Object.entries(whereProperties)) {
-        const { fieldName, operator } = parseFilterProperty(k);
-        const checkFilterPasses = getFilteringFn(operator);
+        const { fieldName } = parseFilterProperty(k);
 
         const connectedNodeFieldName = node.subscriptionEventPayloadFieldNames.connect;
         if (fieldName === connectedNodeFieldName) {
@@ -225,24 +235,115 @@ export function filterRelationshipConnectionsByProperties<T>(
                 return false;
             }
         }
-        if (fieldName === "relationshipName") {
-            const relationWithRelationshipName = relations.find((r) => {
-                return checkFilterPasses(r.fieldName, v);
-            });
-            if (!relationWithRelationshipName) {
-                return false;
-            }
-        }
-        if (fieldName === "direction") {
-            const relationWithDirection = relations.find((r) => {
-                return checkFilterPasses(r.direction, v);
-            });
-            if (!relationWithDirection) {
-                return false;
-            }
-        }
+
         if (fieldName === "relationship") {
-            // TODO
+            if (!nodes) {
+                // TODO: why?
+                return false;
+            }
+            for (const [relationshipNameK, relationshipDataV] of Object.entries(v)) {
+                const relationByRelationshipName = relations.find((r) => r.fieldName === relationshipNameK);
+                if (!relationByRelationshipName) {
+                    return false;
+                }
+                const key = relationByRelationshipName.direction === "IN" ? "from" : "to";
+
+                for (const [innerK, innerV] of Object.entries(
+                    relationshipDataV as Record<
+                        string,
+                        Record<string, unionType<T> | interfaceType<T> | standardType<T>>
+                    >
+                )) {
+                    if (innerK === "edge") {
+                        const e = relationshipFields?.get(relationByRelationshipName.properties || "");
+                        if (!e) {
+                            // TODO: why?
+                            return false;
+                        }
+                        const r = filterByProperties(e as Node, innerV, receivedProperties.relationship);
+                        if (!r) {
+                            return false;
+                        }
+                    } else if (innerK === "node") {
+                        const interfaceNodeTypes = relationByRelationshipName.interface?.implementations;
+                        if (interfaceNodeTypes) {
+                            // interface type
+                            const nodesTo = nodes.filter((n) => interfaceNodeTypes.includes(n.name));
+                            if (!nodesTo.length) {
+                                // TODO: why?
+                                return false;
+                            }
+                            const { _on, ...commonFields } = innerV;
+                            if (commonFields && !_on) {
+                                const r = nodesTo
+                                    .map((nodeTo) => filterByProperties(nodeTo, commonFields, receivedProperties[key]))
+                                    .filter((x) => x === false);
+                                if (r.length) {
+                                    return false;
+                                }
+                            }
+                            if (_on) {
+                                const actualType = nodesTo.find((n) => n.name === receivedEvent[`${key}Typename`]);
+                                if (!actualType) {
+                                    // TODO: why?
+                                    return false;
+                                }
+                                const r = filterByProperties(
+                                    actualType,
+                                    { ...commonFields, ..._on[receivedEvent[`${key}Typename`]] }, //override common <fields, filter> combination with specific <fields, filter>
+                                    receivedProperties[key]
+                                );
+                                if (!r) {
+                                    return false;
+                                }
+                            }
+                        } else {
+                            // standard type fields
+                            const nodeTo = nodes.find((n) => n.name === relationByRelationshipName.typeMeta.name);
+                            if (!nodeTo) {
+                                // TODO: why?
+                                return false;
+                            }
+                            const r = filterByProperties(nodeTo, innerV as any, receivedProperties[key]);
+                            if (!r) {
+                                return false;
+                            }
+                        }
+                    } else {
+                        // union types
+                        if (innerK === receivedEvent[`${key}Typename`]) {
+                            const unionNodeTypes = relationByRelationshipName.union?.nodes as any[];
+                            const nodeTo = nodes.find((n) => unionNodeTypes.includes(n.name) && innerK === n.name);
+                            if (!nodeTo) {
+                                return false;
+                            }
+                            for (const [unionTypeK, unionDataV] of Object.entries(innerV)) {
+                                if (unionTypeK === "node") {
+                                    const r = filterByProperties(nodeTo, unionDataV, receivedProperties[key]);
+                                    if (!r) {
+                                        return false;
+                                    }
+                                }
+                                if (unionTypeK === "edge") {
+                                    const e = relationshipFields?.get(relationByRelationshipName.properties || "");
+                                    if (!e) {
+                                        // TODO: why?
+                                        return false;
+                                    }
+                                    const r = filterByProperties(
+                                        e as Node,
+                                        unionDataV,
+                                        receivedProperties.relationship
+                                    );
+                                    if (!r) {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     return true;

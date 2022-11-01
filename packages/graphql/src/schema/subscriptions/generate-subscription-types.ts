@@ -33,7 +33,6 @@ import type {
     RelationSubscriptionsEvent,
     SubscriptionsEvent,
 } from "../../types";
-import { RelationDirection } from "../../graphql/enums/RelationDirection";
 import type { ObjectFields } from "../get-obj-field-meta";
 import { objectFieldsToComposeFields } from "../to-compose";
 import { upperFirst } from "../../utils/upper-first";
@@ -52,7 +51,6 @@ export function generateSubscriptionTypes({
     const subscriptionComposer = schemaComposer.Subscription;
 
     const eventTypeEnum = schemaComposer.createEnumTC(EventType);
-    const relationDirectionEnum = schemaComposer.createEnumTC(RelationDirection);
 
     const shouldIncludeSubscriptionOperation = (node: Node) => !node.exclude?.operations.includes("subscribe");
     const nodesSubscribedTo = nodes.filter(shouldIncludeSubscriptionOperation);
@@ -185,20 +183,12 @@ export function generateSubscriptionTypes({
                         return (source as RelationSubscriptionsEvent).properties.to;
                     },
                 },
-                relationshipName: {
+                relationshipFieldName: {
                     type: new GraphQLNonNull(GraphQLString),
                     resolve: (source: SubscriptionsEvent) => {
                         const trueSource = source as RelationSubscriptionsEvent;
                         const r = node.relationFields.find((f) => f.type === trueSource.relationshipName)?.fieldName;
                         return r;
-                    },
-                },
-                direction: {
-                    type: relationDirectionEnum.NonNull,
-                    resolve: (source: SubscriptionsEvent) => {
-                        const trueSource = source as RelationSubscriptionsEvent;
-                        const isThisTo = trueSource.toTypename === node.name;
-                        return isThisTo ? "IN" : "OUT";
                     },
                 },
             });
@@ -213,19 +203,11 @@ export function generateSubscriptionTypes({
                         return (source as RelationSubscriptionsEvent).properties.to;
                     },
                 },
-                relationshipName: {
+                relationshipFieldName: {
                     type: new GraphQLNonNull(GraphQLString),
                     resolve: (source: SubscriptionsEvent) => {
                         const trueSource = source as RelationSubscriptionsEvent;
-                        return node.relationFields.find((f) => f.type === trueSource.relationshipName)?.properties;
-                    },
-                },
-                direction: {
-                    type: relationDirectionEnum.NonNull,
-                    resolve: (source: SubscriptionsEvent) => {
-                        const trueSource = source as RelationSubscriptionsEvent;
-                        const isThisTo = trueSource.toTypename === node.name;
-                        return isThisTo ? "IN" : "OUT";
+                        return node.relationFields.find((f) => f.type === trueSource.relationshipName)?.fieldName;
                     },
                 },
             });
@@ -300,13 +282,13 @@ export function generateSubscriptionTypes({
                 [subscribeOperation.connected]: {
                     args: { where: connectionWhere },
                     type: relationConnectedEvent.NonNull,
-                    subscribe: generateSubscribeMethod(node, "connect"),
+                    subscribe: generateSubscribeMethod(node, "connect", nodes, relationshipFields),
                     resolve: subscriptionResolve,
                 },
                 [subscribeOperation.disconnected]: {
                     args: { where: connectionWhere },
                     type: relationDisconnectedEvent.NonNull,
-                    subscribe: generateSubscribeMethod(node, "disconnect"),
+                    subscribe: generateSubscribeMethod(node, "disconnect", nodes, relationshipFields),
                     resolve: subscriptionResolve,
                 },
             });
