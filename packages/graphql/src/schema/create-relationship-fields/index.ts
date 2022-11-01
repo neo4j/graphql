@@ -768,6 +768,7 @@ function createRelationshipFields({
                     [`${rel.fieldName}Aggregate`]: {
                         type: aggregationTypeObject,
                         args: aggregationFieldsArgs,
+                        directives: graphqlDirectivesToCompose(rel.otherDirectives),
                     },
                 });
             }

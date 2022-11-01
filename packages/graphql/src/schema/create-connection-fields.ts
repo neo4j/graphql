@@ -26,6 +26,7 @@ import type { ObjectFields } from "./get-obj-field-meta";
 import getSortableFields from "./get-sortable-fields";
 import { addDirectedArgument } from "./directed-argument";
 import { connectionFieldResolver } from "./pagination";
+import { graphqlDirectivesToCompose } from "./to-compose";
 
 function createConnectionFields({
     connectionFields,
@@ -225,6 +226,7 @@ function createConnectionFields({
                 [connectionField.fieldName]: {
                     type: connection.NonNull,
                     args: composeNodeArgs,
+                    directives: graphqlDirectivesToCompose(connectionField.otherDirectives),
                     resolve: (source, args: ConnectionQueryArgs, _ctx, info: GraphQLResolveInfo) => {
                         return connectionFieldResolver({
                             connectionField,
