@@ -148,7 +148,7 @@ function getObjFieldMeta({
                 fieldName: field.name.value,
                 dbPropertyName: field.name.value,
                 typeMeta,
-                otherDirectives: (field.directives || []).filter(
+                otherDirectives: (directives || []).filter(
                     (x) =>
                         ![
                             "relationship",

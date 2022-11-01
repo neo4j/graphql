@@ -107,6 +107,7 @@ function createRelationshipFields({
                         type: rel.typeMeta.pretty,
                         args: nodeFieldArgs,
                         description: rel.description,
+                        directives: graphqlDirectivesToCompose(rel.otherDirectives),
                     },
                 });
             }
@@ -266,6 +267,7 @@ function createRelationshipFields({
                         type: rel.typeMeta.pretty,
                         args: nodeFieldArgs,
                         description: rel.description,
+                        directives: graphqlDirectivesToCompose(rel.otherDirectives),
                     },
                 });
             }

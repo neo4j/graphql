@@ -341,8 +341,8 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             type Movie {
               genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]! @deprecated(reason: \\"Do not use\\")
-              genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection
-              genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
+              genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection @deprecated(reason: \\"Do not use\\")
+              genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection! @deprecated(reason: \\"Do not use\\")
               imdbRating: Float
               title: String @deprecated(reason: \\"Do not use\\")
               year: Int
