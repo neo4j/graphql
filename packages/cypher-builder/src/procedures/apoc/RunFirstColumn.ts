@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../../../CypherASTNode";
-import type { Clause } from "../../../clauses/Clause";
-import type { Variable } from "../../../variables/Variable";
-import type { CypherEnvironment } from "../../../Environment";
-import type { MapExpr } from "../../map/MapExpr";
+import { CypherASTNode } from "../../CypherASTNode";
+import type { Clause } from "../../clauses/Clause";
+import type { Variable } from "../../variables/Variable";
+import type { CypherEnvironment } from "../../Environment";
+import type { MapExpr } from "../../expressions/map/MapExpr";
 
 export class RunFirstColumn extends CypherASTNode {
     private innerClause: Clause | string;

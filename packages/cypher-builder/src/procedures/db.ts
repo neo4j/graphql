@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "../../Environment";
-import { Where } from "../../clauses/sub-clauses/Where";
-import type { NodeRef } from "../../variables/NodeRef";
-import { Clause } from "../../clauses/Clause";
-import { WithReturn } from "../../clauses/mixins/WithReturn";
-import { mixin } from "../../clauses/utils/mixin";
-import type { Variable } from "../../variables/Variable";
-import type { Predicate } from "../../types";
-import { compileCypherIfExists } from "../../utils/compile-cypher-if-exists";
+import type { CypherEnvironment } from "../Environment";
+import { Where } from "../clauses/sub-clauses/Where";
+import type { NodeRef } from "../variables/NodeRef";
+import { Clause } from "../clauses/Clause";
+import { WithReturn } from "../clauses/mixins/WithReturn";
+import { mixin } from "../clauses/utils/mixin";
+import type { Variable } from "../variables/Variable";
+import type { Predicate } from "../types";
+import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface FullTextQueryNodes extends WithReturn {}
@@ -61,7 +61,9 @@ export class FullTextQueryNodes extends Clause {
         const targetId = this.targetNode.getCypher(env);
         const scoreYield = compileCypherIfExists(this.scoreVar, env, { prefix: ", score AS " });
 
-        const textSearchStr = `CALL db.index.fulltext.queryNodes("${this.indexName}", ${this.phrase.getCypher(env)}) YIELD node AS ${targetId}${scoreYield}`;
+        const textSearchStr = `CALL db.index.fulltext.queryNodes("${this.indexName}", ${this.phrase.getCypher(
+            env
+        )}) YIELD node AS ${targetId}${scoreYield}`;
 
         const whereStr = compileCypherIfExists(this.whereClause, env, { prefix: "\n" });
         const returnStr = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });

@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../../../CypherASTNode";
-import type { CypherEnvironment } from "../../../Environment";
-import type { Predicate } from "../../../types";
+import { CypherASTNode } from "../../CypherASTNode";
+import type { CypherEnvironment } from "../../Environment";
+import type { Predicate } from "../../types";
 
 export class ValidatePredicate extends CypherASTNode {
     private predicate: Predicate;

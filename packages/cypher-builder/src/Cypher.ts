@@ -44,8 +44,8 @@ export { Exists } from "./expressions/Exists";
 export { Case } from "./expressions/Case";
 
 // --Procedures
-export * as db from "./expressions/procedures/db";
-export * as apoc from "./expressions/procedures/apoc/apoc";
+export * as db from "./procedures/db";
+export * as apoc from "./procedures/apoc/apoc";
 
 // --Lists
 export { ListComprehension } from "./expressions/list/ListComprehension";
@@ -91,7 +91,7 @@ export {
     max,
     avg,
     sum,
-    randomUUID
+    randomUUID,
 } from "./expressions/functions/CypherFunction";
 export * from "./expressions/functions/ListFunctions";
 export { any, all, exists, single } from "./expressions/functions/PredicateFunctions";
@@ -116,5 +116,5 @@ export type { CompositeClause } from "./clauses/utils/concat";
 import { escapeLabel } from "./utils/escape-label";
 
 export const utils = {
-    escapeLabel
+    escapeLabel,
 };
