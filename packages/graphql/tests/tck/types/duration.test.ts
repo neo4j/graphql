@@ -134,7 +134,7 @@ describe("Cypher Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { duration: $create_param0 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -147,18 +147,22 @@ describe("Cypher Duration", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": {
-                    \\"months\\": 24,
-                    \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
+                \\"create_param0\\": [
+                    {
+                        \\"duration\\": {
+                            \\"months\\": 24,
+                            \\"days\\": 0,
+                            \\"seconds\\": {
+                                \\"low\\": 0,
+                                \\"high\\": 0
+                            },
+                            \\"nanoseconds\\": {
+                                \\"low\\": 0,
+                                \\"high\\": 0
+                            }
+                        }
                     }
-                },
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

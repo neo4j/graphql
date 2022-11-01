@@ -94,7 +94,7 @@ describe("Cypher DateTime", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { datetime: $create_param0 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -107,16 +107,20 @@ describe("Cypher DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": {
-                    \\"year\\": 1970,
-                    \\"month\\": 1,
-                    \\"day\\": 1,
-                    \\"hour\\": 0,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                },
+                \\"create_param0\\": [
+                    {
+                        \\"datetime\\": {
+                            \\"year\\": 1970,
+                            \\"month\\": 1,
+                            \\"day\\": 1,
+                            \\"hour\\": 0,
+                            \\"minute\\": 0,
+                            \\"second\\": 0,
+                            \\"nanosecond\\": 0,
+                            \\"timeZoneOffsetSeconds\\": 0
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

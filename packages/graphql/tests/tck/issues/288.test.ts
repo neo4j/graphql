@@ -64,7 +64,7 @@ describe("#288", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { USERID: $create_param0, COMPANYID: $create_param1 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`USER\`)
@@ -78,8 +78,12 @@ describe("#288", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"userid\\",
-                \\"create_param1\\": \\"companyid\\",
+                \\"create_param0\\": [
+                    {
+                        \\"USERID\\": \\"userid\\",
+                        \\"COMPANYID\\": \\"companyid\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

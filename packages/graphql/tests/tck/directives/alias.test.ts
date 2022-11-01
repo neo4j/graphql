@@ -171,7 +171,7 @@ describe("Cypher alias directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { name: $create_param0, city: $create_param1, actedIn: { create: [ { node: { title: $create_param2, rating: $create_param3 }, edge: { character: $create_param4, screenTime: $create_param5 } } ] } } ] AS create_var2
+            "UNWIND $create_param0 AS create_var2
             CALL {
                 WITH create_var2
                 CREATE (create_this1:\`Actor\`)
@@ -214,15 +214,29 @@ describe("Cypher alias directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"Molly\\",
-                \\"create_param1\\": \\"Sjömarken\\",
-                \\"create_param2\\": \\"Molly's game\\",
-                \\"create_param3\\": 5,
-                \\"create_param4\\": \\"Molly\\",
-                \\"create_param5\\": {
-                    \\"low\\": 120,
-                    \\"high\\": 0
-                },
+                \\"create_param0\\": [
+                    {
+                        \\"name\\": \\"Molly\\",
+                        \\"city\\": \\"Sjömarken\\",
+                        \\"actedIn\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"title\\": \\"Molly's game\\",
+                                        \\"rating\\": 5
+                                    },
+                                    \\"edge\\": {
+                                        \\"character\\": \\"Molly\\",
+                                        \\"screenTime\\": {
+                                            \\"low\\": 120,
+                                            \\"high\\": 0
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

@@ -75,7 +75,7 @@ describe("Batch Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { id: $create_param0 }, { id: $create_param1 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -96,8 +96,14 @@ describe("Batch Create", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"1\\",
-                \\"create_param1\\": \\"2\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\"
+                    },
+                    {
+                        \\"id\\": \\"2\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -139,7 +145,7 @@ describe("Batch Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { id: $create_param0, actors: { create: [ { node: { name: $create_param1, website: { create: { node: { address: $create_param2 } } } }, edge: { year: $create_param3 } } ] } }, { id: $create_param4, website: { create: { node: { address: $create_param5 } } } } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -204,15 +210,43 @@ describe("Batch Create", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"1\\",
-                \\"create_param1\\": \\"actor 1\\",
-                \\"create_param2\\": \\"Actor1.com\\",
-                \\"create_param3\\": {
-                    \\"low\\": 2022,
-                    \\"high\\": 0
-                },
-                \\"create_param4\\": \\"2\\",
-                \\"create_param5\\": \\"The Matrix2.com\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 1\\",
+                                        \\"website\\": {
+                                            \\"create\\": {
+                                                \\"node\\": {
+                                                    \\"address\\": \\"Actor1.com\\"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    \\"edge\\": {
+                                        \\"year\\": {
+                                            \\"low\\": 2022,
+                                            \\"high\\": 0
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        \\"id\\": \\"2\\",
+                        \\"website\\": {
+                            \\"create\\": {
+                                \\"node\\": {
+                                    \\"address\\": \\"The Matrix2.com\\"
+                                }
+                            }
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -243,7 +277,7 @@ describe("Batch Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { id: $create_param0, actors: { create: [ { node: { name: $create_param1 }, edge: { year: $create_param2 } } ] } }, { id: $create_param3, actors: { create: [ { node: { name: $create_param4 }, edge: { year: $create_param5 } } ] } } ] AS create_var2
+            "UNWIND $create_param0 AS create_var2
             CALL {
                 WITH create_var2
                 CREATE (create_this1:\`Movie\`)
@@ -292,18 +326,44 @@ describe("Batch Create", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"1\\",
-                \\"create_param1\\": \\"actor 1\\",
-                \\"create_param2\\": {
-                    \\"low\\": 2022,
-                    \\"high\\": 0
-                },
-                \\"create_param3\\": \\"2\\",
-                \\"create_param4\\": \\"actor 1\\",
-                \\"create_param5\\": {
-                    \\"low\\": 2022,
-                    \\"high\\": 0
-                },
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 1\\"
+                                    },
+                                    \\"edge\\": {
+                                        \\"year\\": {
+                                            \\"low\\": 2022,
+                                            \\"high\\": 0
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        \\"id\\": \\"2\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 1\\"
+                                    },
+                                    \\"edge\\": {
+                                        \\"year\\": {
+                                            \\"low\\": 2022,
+                                            \\"high\\": 0
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

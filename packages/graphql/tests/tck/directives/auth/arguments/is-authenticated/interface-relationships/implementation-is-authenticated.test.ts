@@ -139,7 +139,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { id: $create_param0, content: $create_param1 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Comment\`)
@@ -153,8 +153,12 @@ describe("Cypher Auth isAuthenticated", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"1\\",
-                \\"create_param1\\": \\"content\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\",
+                        \\"content\\": \\"content\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

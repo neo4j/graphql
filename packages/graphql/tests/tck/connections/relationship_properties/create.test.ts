@@ -89,7 +89,7 @@ describe("Relationship Properties Create Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { title: $create_param0, actors: { create: [ { node: { name: $create_param1 }, edge: { screenTime: $create_param2 } } ] } } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -123,12 +123,26 @@ describe("Relationship Properties Create Cypher", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"Forrest Gump\\",
-                \\"create_param1\\": \\"Tom Hanks\\",
-                \\"create_param2\\": {
-                    \\"low\\": 60,
-                    \\"high\\": 0
-                },
+                \\"create_param0\\": [
+                    {
+                        \\"title\\": \\"Forrest Gump\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"Tom Hanks\\"
+                                    },
+                                    \\"edge\\": {
+                                        \\"screenTime\\": {
+                                            \\"low\\": 60,
+                                            \\"high\\": 0
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

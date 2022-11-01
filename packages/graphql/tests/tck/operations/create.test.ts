@@ -63,7 +63,7 @@ describe("Cypher Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { id: $create_param0 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -76,7 +76,11 @@ describe("Cypher Create", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"1\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -99,7 +103,7 @@ describe("Cypher Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { id: $create_param0 }, { id: $create_param1 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -112,8 +116,14 @@ describe("Cypher Create", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"1\\",
-                \\"create_param1\\": \\"2\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\"
+                    },
+                    {
+                        \\"id\\": \\"2\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -141,7 +151,7 @@ describe("Cypher Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { id: $create_param0, actors: { create: [ { node: { name: $create_param1 } } ] } }, { id: $create_param2, actors: { create: [ { node: { name: $create_param3 } } ] } } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -165,10 +175,32 @@ describe("Cypher Create", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"1\\",
-                \\"create_param1\\": \\"actor 1\\",
-                \\"create_param2\\": \\"2\\",
-                \\"create_param3\\": \\"actor 2\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 1\\"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        \\"id\\": \\"2\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 2\\"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -206,7 +238,7 @@ describe("Cypher Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { id: $create_param0, actors: { create: [ { node: { name: $create_param1, movies: { create: [ { node: { id: $create_param2 } } ] } } } ] } }, { id: $create_param3, actors: { create: [ { node: { name: $create_param4, movies: { create: [ { node: { id: $create_param5 } } ] } } } ] } } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -241,12 +273,50 @@ describe("Cypher Create", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"1\\",
-                \\"create_param1\\": \\"actor 1\\",
-                \\"create_param2\\": \\"10\\",
-                \\"create_param3\\": \\"2\\",
-                \\"create_param4\\": \\"actor 2\\",
-                \\"create_param5\\": \\"20\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 1\\",
+                                        \\"movies\\": {
+                                            \\"create\\": [
+                                                {
+                                                    \\"node\\": {
+                                                        \\"id\\": \\"10\\"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        \\"id\\": \\"2\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 2\\",
+                                        \\"movies\\": {
+                                            \\"create\\": [
+                                                {
+                                                    \\"node\\": {
+                                                        \\"id\\": \\"20\\"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

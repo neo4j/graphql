@@ -124,7 +124,7 @@ describe("Cypher Time", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { time: $create_param0 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -137,13 +137,17 @@ describe("Cypher Time", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": {
-                    \\"hour\\": 22,
-                    \\"minute\\": 0,
-                    \\"second\\": 15,
-                    \\"nanosecond\\": 555000000,
-                    \\"timeZoneOffsetSeconds\\": -3600
-                },
+                \\"create_param0\\": [
+                    {
+                        \\"time\\": {
+                            \\"hour\\": 22,
+                            \\"minute\\": 0,
+                            \\"second\\": 15,
+                            \\"nanosecond\\": 555000000,
+                            \\"timeZoneOffsetSeconds\\": -3600
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -203,7 +207,7 @@ describe("Cypher Time", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { time: $create_param0 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -216,13 +220,17 @@ describe("Cypher Time", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": {
-                    \\"hour\\": 22,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                },
+                \\"create_param0\\": [
+                    {
+                        \\"time\\": {
+                            \\"hour\\": 22,
+                            \\"minute\\": 0,
+                            \\"second\\": 0,
+                            \\"nanosecond\\": 0,
+                            \\"timeZoneOffsetSeconds\\": 0
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

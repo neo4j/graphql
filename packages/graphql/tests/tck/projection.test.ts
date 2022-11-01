@@ -100,7 +100,7 @@ describe("Cypher Projection", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { id: $create_param3 }, { id: $create_param4 } ] AS create_var4
+            "UNWIND $create_param3 AS create_var4
             CALL {
                 WITH create_var4
                 CREATE (create_this3:\`Product\`)
@@ -140,8 +140,14 @@ describe("Cypher Projection", () => {
                 \\"create_param0\\": \\"url.com\\",
                 \\"create_param1\\": \\"123\\",
                 \\"create_param2\\": \\"small\\",
-                \\"create_param3\\": \\"1\\",
-                \\"create_param4\\": \\"2\\",
+                \\"create_param3\\": [
+                    {
+                        \\"id\\": \\"1\\"
+                    },
+                    {
+                        \\"id\\": \\"2\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

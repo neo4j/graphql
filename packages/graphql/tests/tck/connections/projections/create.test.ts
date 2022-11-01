@@ -82,7 +82,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { title: $create_param0 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -103,7 +103,11 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"Forrest Gump\\",
+                \\"create_param0\\": [
+                    {
+                        \\"title\\": \\"Forrest Gump\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -134,7 +138,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { title: $create_param0 }, { title: $create_param1 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -155,8 +159,14 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"Forrest Gump\\",
-                \\"create_param1\\": \\"Toy Story\\",
+                \\"create_param0\\": [
+                    {
+                        \\"title\\": \\"Forrest Gump\\"
+                    },
+                    {
+                        \\"title\\": \\"Toy Story\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -187,7 +197,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { title: $create_param0 }, { title: $create_param1 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -209,8 +219,14 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"Forrest Gump\\",
-                \\"create_param1\\": \\"Toy Story\\",
+                \\"create_param0\\": [
+                    {
+                        \\"title\\": \\"Forrest Gump\\"
+                    },
+                    {
+                        \\"title\\": \\"Toy Story\\"
+                    }
+                ],
                 \\"projection_connection_actorsConnectionparam0\\": \\"Tom Hanks\\",
                 \\"resolvedCallbacks\\": {}
             }"

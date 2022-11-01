@@ -67,7 +67,7 @@ describe("Cypher TimeStamps On Time Fields", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { id: $create_param0 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -83,7 +83,11 @@ describe("Cypher TimeStamps On Time Fields", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"123\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"123\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

@@ -135,7 +135,7 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { title: $create_param0 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Film\`)
@@ -148,7 +148,11 @@ describe("Label in Node directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"Titanic\\",
+                \\"create_param0\\": [
+                    {
+                        \\"title\\": \\"Titanic\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

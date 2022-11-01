@@ -122,7 +122,7 @@ describe("Cypher LocalTime", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { time: $create_param0 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Movie\`)
@@ -135,12 +135,16 @@ describe("Cypher LocalTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": {
-                    \\"hour\\": 22,
-                    \\"minute\\": 0,
-                    \\"second\\": 15,
-                    \\"nanosecond\\": 555000000
-                },
+                \\"create_param0\\": [
+                    {
+                        \\"time\\": {
+                            \\"hour\\": 22,
+                            \\"minute\\": 0,
+                            \\"second\\": 15,
+                            \\"nanosecond\\": 555000000
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

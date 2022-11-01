@@ -213,7 +213,7 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { points: $create_param0 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`PointContainer\`)
@@ -231,8 +231,12 @@ describe("Cypher Points", () => {
             "{
                 \\"create_param0\\": [
                     {
-                        \\"longitude\\": 1,
-                        \\"latitude\\": 2
+                        \\"points\\": [
+                            {
+                                \\"longitude\\": 1,
+                                \\"latitude\\": 2
+                            }
+                        ]
                     }
                 ],
                 \\"resolvedCallbacks\\": {}

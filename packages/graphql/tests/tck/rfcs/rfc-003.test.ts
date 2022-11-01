@@ -56,7 +56,7 @@ describe("tck/rfs/003", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "UNWIND [ { id: $create_param0 } ] AS create_var1
+                    "UNWIND $create_param0 AS create_var1
                     CALL {
                         WITH create_var1
                         CREATE (create_this0:\`Movie\`)
@@ -77,7 +77,11 @@ describe("tck/rfs/003", () => {
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"create_param0\\": \\"movieId-1\\",
+                        \\"create_param0\\": [
+                            {
+                                \\"id\\": \\"movieId-1\\"
+                            }
+                        ],
                         \\"resolvedCallbacks\\": {}
                     }"
                 `);
@@ -114,7 +118,7 @@ describe("tck/rfs/003", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "UNWIND [ { id: $create_param0 } ] AS create_var1
+                    "UNWIND $create_param0 AS create_var1
                     CALL {
                         WITH create_var1
                         CREATE (create_this0:\`Movie\`)
@@ -135,7 +139,11 @@ describe("tck/rfs/003", () => {
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"create_param0\\": \\"movieId-1\\",
+                        \\"create_param0\\": [
+                            {
+                                \\"id\\": \\"movieId-1\\"
+                            }
+                        ],
                         \\"resolvedCallbacks\\": {}
                     }"
                 `);
@@ -179,7 +187,7 @@ describe("tck/rfs/003", () => {
                     });
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                        "UNWIND [ { id: $create_param0, director: { create: { node: { id: $create_param1 } } } } ] AS create_var1
+                        "UNWIND $create_param0 AS create_var1
                         CALL {
                             WITH create_var1
                             CREATE (create_this0:\`Movie\`)
@@ -219,8 +227,18 @@ describe("tck/rfs/003", () => {
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
-                            \\"create_param0\\": \\"movieId-2\\",
-                            \\"create_param1\\": \\"directorId-2\\",
+                            \\"create_param0\\": [
+                                {
+                                    \\"id\\": \\"movieId-2\\",
+                                    \\"director\\": {
+                                        \\"create\\": {
+                                            \\"node\\": {
+                                                \\"id\\": \\"directorId-2\\"
+                                            }
+                                        }
+                                    }
+                                }
+                            ],
                             \\"resolvedCallbacks\\": {}
                         }"
                     `);
@@ -263,7 +281,7 @@ describe("tck/rfs/003", () => {
                     });
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                        "UNWIND [ { id: $create_param0, director: { create: { node: { id: $create_param1 } } } } ] AS create_var1
+                        "UNWIND $create_param0 AS create_var1
                         CALL {
                             WITH create_var1
                             CREATE (create_this0:\`Movie\`)
@@ -303,8 +321,18 @@ describe("tck/rfs/003", () => {
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
-                            \\"create_param0\\": \\"movieId-2\\",
-                            \\"create_param1\\": \\"directorId-2\\",
+                            \\"create_param0\\": [
+                                {
+                                    \\"id\\": \\"movieId-2\\",
+                                    \\"director\\": {
+                                        \\"create\\": {
+                                            \\"node\\": {
+                                                \\"id\\": \\"directorId-2\\"
+                                            }
+                                        }
+                                    }
+                                }
+                            ],
                             \\"resolvedCallbacks\\": {}
                         }"
                     `);

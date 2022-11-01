@@ -108,7 +108,7 @@ describe("Plural in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND [ { name: $create_param0 } ] AS create_var1
+            "UNWIND $create_param0 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`Tech\`)
@@ -121,7 +121,11 @@ describe("Plural in Node directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"Highlander\\",
+                \\"create_param0\\": [
+                    {
+                        \\"name\\": \\"Highlander\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
