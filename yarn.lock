@@ -1809,15 +1809,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/merge@npm:8.3.8":
-  version: 8.3.8
-  resolution: "@graphql-tools/merge@npm:8.3.8"
+"@graphql-tools/merge@npm:8.3.9":
+  version: 8.3.9
+  resolution: "@graphql-tools/merge@npm:8.3.9"
   dependencies:
-    "@graphql-tools/utils": 8.13.1
+    "@graphql-tools/utils": 9.0.0
     tslib: ^2.4.0
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: ee233b7e7ec555d9bdb0e2fdb28b18671ac96b78f36ed40174560681b91c4e788249a6b0bcee31f8a4cdc9e647d8128d0df9bf3580c135a7d98931e12a9ba1c8
+  checksum: 0852ce0c3391c7f7154848d5c25a4f0d34db1241d682400347d9d16289d5d7831f8b8cd8018f701f016a8f9f374ef10d067df212eb43c42f0387b3e2d64cb723
   languageName: node
   linkType: hard
 
@@ -1901,17 +1901,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/schema@npm:9.0.6":
-  version: 9.0.6
-  resolution: "@graphql-tools/schema@npm:9.0.6"
+"@graphql-tools/schema@npm:9.0.7":
+  version: 9.0.7
+  resolution: "@graphql-tools/schema@npm:9.0.7"
   dependencies:
-    "@graphql-tools/merge": 8.3.8
-    "@graphql-tools/utils": 8.13.1
+    "@graphql-tools/merge": 8.3.9
+    "@graphql-tools/utils": 9.0.0
     tslib: ^2.4.0
     value-or-promise: 1.0.11
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 317b8ba62b1dfcf957f5a1de91d2687f9854834d421514ac0dbb8e4fe4703c11160df32871da59a127fe8fd73ba531971aadfff52adce67077932e5f81685bf6
+  checksum: cba3c9dae3b9064374e778eab5873dbc4ac68fee9d65f37f920556a673c8b6f2cff779c6470073db95d063ce50654451d78df6a126c4612349ca85f4a50d1ce3
   languageName: node
   linkType: hard
 
@@ -1926,17 +1926,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/utils@npm:8.13.1":
-  version: 8.13.1
-  resolution: "@graphql-tools/utils@npm:8.13.1"
-  dependencies:
-    tslib: ^2.4.0
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: ff04fdeb29e9ac596ea53386cd5b23cd741bb14c1997c6b0ba3c34ca165bd82b528a355e8c8e2ba726eb39e833ba9cbb0851ba0addb8c6d367089a1145bf9a49
-  languageName: node
-  linkType: hard
-
 "@graphql-tools/utils@npm:8.9.0":
   version: 8.9.0
   resolution: "@graphql-tools/utils@npm:8.9.0"
@@ -1945,6 +1934,17 @@ __metadata:
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
   checksum: 8d1d8a11722e211dc8723cd3fd7a97fa5401ab22146e4240a0f9d45547792476c34814ff914524578beec961db7b0ff23a6ddff8fe059764537e594cff35c906
+  languageName: node
+  linkType: hard
+
+"@graphql-tools/utils@npm:9.0.0":
+  version: 9.0.0
+  resolution: "@graphql-tools/utils@npm:9.0.0"
+  dependencies:
+    tslib: ^2.4.0
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 8da22b13e0cfceac20f2ee08c45f360d0bd1390fa0edd8496ea75a0ca7d10ab3bbafca6b4b0dbc3f233a05cd53096e3063b9208f727c72db00e461751164afbd
   languageName: node
   linkType: hard
 
@@ -2642,7 +2642,7 @@ __metadata:
     "@faker-js/faker": 7.6.0
     "@graphql-tools/merge": ^8.3.3
     "@graphql-tools/resolvers-composition": ^6.5.3
-    "@graphql-tools/schema": 9.0.6
+    "@graphql-tools/schema": 9.0.7
     "@graphql-tools/utils": ^8.10.0
     "@neo4j/cypher-builder": ~0.1.3
     "@neo4j/graphql-plugin-auth": ^1.1.0
