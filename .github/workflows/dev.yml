@@ -74,7 +74,7 @@ jobs:
       - uses: martialonline/workflow-status@616a9642a17fa15d9b0c5b4483b82244f74446d6 # tag=v3
         id: check
       - name: Send Slack announcement of pipeline failure
-        if: steps.check.outputs.status == 'failure'
+        if: steps.check.outputs.status == 'failure' && github.event_name == "schedule"
         uses: slackapi/slack-github-action@v1.23.0
         with:
           payload: '{"url":"https://github.com/neo4j/graphql/actions/runs/${{ github.run_id }}"}'
