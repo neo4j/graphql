@@ -67,8 +67,8 @@ export type Predicate =
     | Case
     | HasLabel;
 
-/** Represents a procedure invocable with the CALL statement */
-export type Procedure = ValidatePredicate | RunFirstColumn;
+/** Represents a procedure, invocable with the CALL statement */
+export type Procedure = ValidatePredicate;
 
 export type CypherResult = {
     cypher: string;

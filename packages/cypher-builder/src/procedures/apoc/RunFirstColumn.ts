@@ -28,7 +28,7 @@ export class RunFirstColumn extends CypherASTNode {
     private variables: Variable[] | MapExpr;
     private expectMultipleValues: boolean;
 
-    constructor(clause: Clause | string, variables: Variable[] | MapExpr, expectMultipleValues = true) {
+    constructor(clause: Clause | string, variables: Variable[] | MapExpr = [], expectMultipleValues = true) {
         super();
         this.innerClause = clause;
         this.expectMultipleValues = expectMultipleValues;
