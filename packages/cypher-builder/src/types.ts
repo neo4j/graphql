@@ -35,7 +35,6 @@ import type { ListExpr } from "./expressions/list/ListExpr";
 import type { MapProjection } from "./expressions/map/MapProjection";
 import type { HasLabel } from "./expressions/HasLabel";
 import type { Reference } from "./variables/Reference";
-import type { RunFirstColumn } from "./procedures/apoc/RunFirstColumn";
 import type { ValidatePredicate } from "./procedures/apoc/ValidatePredicate";
 import type { ApocExpr, ApocPredicate } from "./procedures/apoc/apoc";
 

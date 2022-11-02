@@ -19,8 +19,6 @@
 
 import Cypher from "../src";
 
-const customInspectSymbol = Symbol.for("nodejs.util.inspect.custom");
-
 describe("Params", () => {
     test("Ignore unused parameters", () => {
         const param1 = new Cypher.Param(1999);
