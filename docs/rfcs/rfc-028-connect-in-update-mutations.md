@@ -12,7 +12,7 @@ For the following type defs:
 type Client {
     id: String!
     login: String!
-    sponsor: [Client] @relationship(type: "HAS_SPONSOR", properties: "HasSponsor", direction: OUT)
+    sponsor: [Client!]! @relationship(type: "HAS_SPONSOR", properties: "HasSponsor", direction: OUT)
 }
 
 interface HasSponsor @relationshipProperties {
@@ -26,20 +26,24 @@ The following query:
 
 ```gql
 mutation {
-    updateClients(where: { login: "x5" }, 
-        update: {
-            type: "Ambassador", 
-            sponsor: {
-                connect: {
+    updateClients(
+        where: {
+            id: "123",
+        },
+        connect: {
+            sponsor: [
+                {
                     where: {
-                        node: { login: "x2" }
+                        node: {
+                            id: "2"
+                        }
                     },
                     edge: {
-                        type: "Ambassador",
-                        startDate: "2022-04-15"
+                        type: "newType2",
+                        startDate: "123"
                     }
                 }
-            }
+            ]
         }
     ) {
         clients {
@@ -49,7 +53,33 @@ mutation {
 }
 ```
 
-Would merge an existing "HAS_SPONSOR" relation, overwriting the old relation with the properties provided in the `edge` input.
+Would produce the following cypher:
+
+```cypher
+MATCH (this:`Client`)
+WHERE this.id = $param0
+WITH this
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_sponsor0_node:Client)
+    WHERE this_connect_sponsor0_node.id = $this_connect_sponsor0_node_param0
+    CALL {
+        WITH *
+        WITH collect(this_connect_sponsor0_node) as connectedNodes, collect(this) as parentNodes
+        UNWIND parentNodes as this
+        UNWIND connectedNodes as this_connect_sponsor0_node
+        MERGE (this)-[this_connect_sponsor0_relationship:HAS_SPONSOR]->(this_connect_sponsor0_node)
+        SET this_connect_sponsor0_relationship.type = $this_connect_sponsor0_relationship_type
+        SET this_connect_sponsor0_relationship.startDate = $this_connect_sponsor0_relationship_startDate
+        RETURN count(*) AS _
+    }
+    RETURN count(*) AS connect_this_connect_sponsor_Client
+}
+WITH *
+RETURN collect(DISTINCT this { .id }) AS data
+```
+
+This would merge an existing "HAS_SPONSOR" relation, overwriting the old relation with the properties provided in the `edge` input.
 
 ### Questions
 
@@ -74,21 +104,25 @@ Using the new `operation` argument:
 
 ```gql
 mutation {
-    updateClients(where: { login: "x5" }, 
-        update: {
-            type: "Ambassador", 
-            sponsor: {
-                connect: {
-                    operation: "CREATE", # The new operation input argument that accepts either CREATE or UPDATE
+    updateClients(
+        where: {
+            id: "123",
+        },
+        connect: {
+            operation: "CREATE", # The new operation input argument that accepts either CREATE or UPDATE
+            sponsor: [
+                {
                     where: {
-                        node: { login: "x2" }
+                        node: {
+                            id: "2"
+                        }
                     },
                     edge: {
-                        type: "Ambassador",
-                        startDate: "2022-04-15"
+                        type: "newType2",
+                        startDate: "123"
                     }
                 }
-            }
+            ]
         }
     ) {
         clients {
@@ -104,7 +138,7 @@ Specifying the `defaultUpdateOperation` on the `@relationship` directive:
 type Client {
     id: String!
     login: String!
-    sponsor: [Client] @relationship(type: "HAS_SPONSOR", properties: "HasSponsor", direction: OUT, defaultUpdateOperation: "CREATE")
+    sponsor: [Client!]! @relationship(type: "HAS_SPONSOR", properties: "HasSponsor", direction: OUT, defaultUpdateOperation: "CREATE")
 }
 
 interface HasSponsor @relationshipProperties {
