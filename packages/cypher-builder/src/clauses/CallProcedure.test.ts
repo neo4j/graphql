@@ -18,8 +18,13 @@
  */
 
 import Cypher from "..";
+import { expectTypeOf } from "expect-type";
 
 describe("CypherBuilder CallProcedure", () => {
+    test("CallProcedure types", () => {
+        expectTypeOf<Cypher.CallProcedure>().toMatchTypeOf<Cypher.CallProcedure>();
+    });
+
     test("Call validatePredicate", () => {
         const validatePredicate = new Cypher.apoc.ValidatePredicate(
             Cypher.eq(new Cypher.Literal(1), new Cypher.Literal(2)),
