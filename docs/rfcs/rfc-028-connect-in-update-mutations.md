@@ -272,9 +272,10 @@ Would produce the following results:
 
 ### Security consideration
 
-Please take some time to think about potential security issues/considerations for the proposed solution.
-For example: How can a malicious user abuse this? How can we prevent that in such case?
+* Injection on new inputs - these should be enums and not passed directly to cypher.
+* How does this play with `@auth`? - include tests to ensure auth checks still work?
+* DoS - spamming many relationships. This kind of attack is not unique to creating new relationships and needs considerations at the library level.
 
 ## Out of Scope
 
-* Changing the default behaviour - the initial version of these changes should avoid anything breaking.
+* Changing the default behaviour - the initial version of these changes should avoid anything breaking. If we decide creating new connections is the desired behaviour, that change should be made as part of 4.0.
