@@ -56,21 +56,21 @@ mutation {
 Would produce the following cypher:
 
 ```cypher
-MATCH (this:`Client`)
-WHERE this.id = $param0
+MATCH (this:Client)
+WHERE this.id = "123"
 WITH this
 CALL {
     WITH this
     OPTIONAL MATCH (this_connect_sponsor0_node:Client)
-    WHERE this_connect_sponsor0_node.id = $this_connect_sponsor0_node_param0
+    WHERE this_connect_sponsor0_node.id = "2"
     CALL {
         WITH *
         WITH collect(this_connect_sponsor0_node) as connectedNodes, collect(this) as parentNodes
         UNWIND parentNodes as this
         UNWIND connectedNodes as this_connect_sponsor0_node
-        MERGE (this)-[this_connect_sponsor0_relationship:HAS_SPONSOR]->(this_connect_sponsor0_node)
-        SET this_connect_sponsor0_relationship.type = $this_connect_sponsor0_relationship_type
-        SET this_connect_sponsor0_relationship.startDate = $this_connect_sponsor0_relationship_startDate
+        MERGE (this)-[this_connect_sponsor0_relationship:HAS_SPONSOR]->(this_connect_sponsor0_node) # This is the line that causes the relationship to be overwritten instead of a new one being created
+        SET this_connect_sponsor0_relationship.type = "newType2"
+        SET this_connect_sponsor0_relationship.startDate = "0123-01-01"
         RETURN count(*) AS _
     }
     RETURN count(*) AS connect_this_connect_sponsor_Client
@@ -130,6 +130,32 @@ mutation {
         }
     }
 }
+```
+
+For this query the following cypher would be produced:
+
+```cypher
+MATCH (this:Client)
+WHERE this.id = "123"
+WITH this
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_sponsor0_node:Client)
+    WHERE this_connect_sponsor0_node.id = "2"
+    CALL {
+        WITH *
+        WITH collect(this_connect_sponsor0_node) as connectedNodes, collect(this) as parentNodes
+        UNWIND parentNodes as this
+        UNWIND connectedNodes as this_connect_sponsor0_node
+        CREATE (this)-[this_connect_sponsor0_relationship:HAS_SPONSOR]->(this_connect_sponsor0_node) # Note: this is now a CREATE, instead of a MERGE as it was previously
+        SET this_connect_sponsor0_relationship.type = "newType2"
+        SET this_connect_sponsor0_relationship.startDate = "0123-01-01"
+        RETURN count(*) AS _
+    }
+    RETURN count(*) AS connect_this_connect_sponsor_Client
+}
+WITH *
+RETURN collect(DISTINCT this { .id }) AS data
 ```
 
 Specifying the `defaultUpdateOperation` on the `@relationship` directive:
