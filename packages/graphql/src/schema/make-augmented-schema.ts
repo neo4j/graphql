@@ -41,6 +41,7 @@ import { createResolver } from "./resolvers/mutation/create";
 import { deleteResolver } from "./resolvers/mutation/delete";
 import { updateResolver } from "./resolvers/mutation/update";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import { augmentFulltextSchema } from "./augment/fulltext";
 import * as constants from "../constants";
 import * as Scalars from "../graphql/scalars";
 import type { Node } from "../classes";
@@ -84,6 +85,7 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { addMathOperatorsToITC } from "./math";
 import { addArrayMethodsToITC } from "./array-methods";
+import { FloatWhere } from "../graphql/input-objects/FloatWhere";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -151,7 +153,7 @@ function makeAugmentedSchema(
 
     const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers });
 
-    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
+    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames, floatWhereInTypeDefs } = getNodesResult;
 
     // graphql-compose will break if the Point and CartesianPoint types are created but not used,
     // because it will purge the unused types but leave behind orphaned field resolvers
@@ -515,6 +517,10 @@ function makeAugmentedSchema(
         composer.createInputTC(CartesianPointDistance);
     }
 
+    if (floatWhereInTypeDefs) {
+        composer.createInputTC(FloatWhere);
+    }
+
     unionTypes.forEach((union) => {
         if (union.types && union.types.length) {
             const fields = union.types.reduce((f, type) => {
@@ -571,20 +577,21 @@ function makeAugmentedSchema(
             {}
         );
 
+        const nodeSortTypeName = `${node.name}Sort`;
         if (Object.keys(sortFields).length) {
             const sortInput = composer.createInputTC({
-                name: `${node.name}Sort`,
+                name: nodeSortTypeName,
                 fields: sortFields,
                 description: `Fields to sort ${upperFirst(
                     node.plural
-                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${node.name}Sort`} object.`,
+                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${nodeSortTypeName} object.`,
             });
 
             composer.createInputTC({
                 name: `${node.name}Options`,
                 fields: {
                     sort: {
-                        description: `Specify one or more ${`${node.name}Sort`} objects to sort ${upperFirst(
+                        description: `Specify one or more ${nodeSortTypeName} objects to sort ${upperFirst(
                             node.plural
                         )} by. The sorts will be applied in the order in which they are arranged in the array.`,
                         type: sortInput.NonNull.List,
@@ -641,30 +648,13 @@ function makeAugmentedSchema(
             },
         });
 
+        const nodeWhereTypeName = `${node.name}Where`;
         composer.createInputTC({
-            name: `${node.name}Where`,
+            name: nodeWhereTypeName,
             fields: node.isGlobalNode ? { id: "ID", ...queryFields } : queryFields,
         });
 
-        if (node.fulltextDirective) {
-            const fields = node.fulltextDirective.indexes.reduce(
-                (res, index) => ({
-                    ...res,
-                    [index.name]: composer.createInputTC({
-                        name: `${node.name}${upperFirst(index.name)}Fulltext`,
-                        fields: {
-                            phrase: "String!",
-                        },
-                    }),
-                }),
-                {}
-            );
-
-            composer.createInputTC({
-                name: `${node.name}Fulltext`,
-                fields,
-            });
-        }
+        augmentFulltextSchema(node, composer, nodeWhereTypeName, nodeSortTypeName);
 
         const uniqueFields = getUniqueFields(node);
 

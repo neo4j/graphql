@@ -110,6 +110,12 @@ export type RootTypeFieldNames = {
     };
 };
 
+export type FulltextTypeNames = {
+    result: string;
+    where: string;
+    sort: string;
+};
+
 export type AggregateTypeNames = {
     selection: string;
     input: string;
@@ -238,6 +244,14 @@ class Node extends GraphElement {
                 connected: `${this.singular}Connected`,
                 disconnected: `${this.singular}Disconnected`,
             },
+        };
+    }
+
+    public get fulltextTypeNames(): FulltextTypeNames {
+        return {
+            result: `${this.pascalCaseSingular}FulltextResult`,
+            where: `${this.pascalCaseSingular}FulltextWhere`,
+            sort: `${this.pascalCaseSingular}FulltextSort`,
         };
     }
 

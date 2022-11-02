@@ -77,13 +77,16 @@ export interface Auth {
     type: "JWT";
 }
 
-export type FullTextIndex = {
-    name: string;
+export type FulltextIndex = {
+    name: string | undefined;
     fields: string[];
+    queryType: string;
+    queryName: string | undefined;
+    indexName: string | undefined; // TODO: not undefined once name is removed.
 };
 
 export type FullText = {
-    indexes: FullTextIndex[];
+    indexes: FulltextIndex[];
 };
 
 /**
@@ -220,6 +223,10 @@ export type SortDirection = "ASC" | "DESC";
 
 export interface GraphQLSortArg {
     [field: string]: SortDirection;
+}
+
+export interface NestedGraphQLSortArg {
+    [field: string]: GraphQLSortArg;
 }
 
 export interface ConnectionSortArg {

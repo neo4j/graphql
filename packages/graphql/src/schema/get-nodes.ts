@@ -37,6 +37,7 @@ type Nodes = {
     nodes: Node[];
     pointInTypeDefs: boolean;
     cartesianPointInTypeDefs: boolean;
+    floatWhereInTypeDefs: boolean;
     relationshipPropertyInterfaceNames: Set<string>;
     interfaceRelationshipNames: Set<string>;
 };
@@ -47,6 +48,7 @@ function getNodes(
 ): Nodes {
     let pointInTypeDefs = false;
     let cartesianPointInTypeDefs = false;
+    let floatWhereInTypeDefs = false;
 
     const relationshipPropertyInterfaceNames = new Set<string>();
     const interfaceRelationshipNames = new Set<string>();
@@ -160,6 +162,7 @@ function getNodes(
                 nodeFields,
                 definition,
             });
+            floatWhereInTypeDefs = true;
         }
 
         let queryOptionsDirective: QueryOptionsDirective | undefined;
@@ -248,6 +251,7 @@ function getNodes(
         nodes,
         pointInTypeDefs,
         cartesianPointInTypeDefs,
+        floatWhereInTypeDefs,
         relationshipPropertyInterfaceNames,
         interfaceRelationshipNames,
     };

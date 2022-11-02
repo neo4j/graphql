@@ -94,27 +94,33 @@ describe("Cypher DateTime", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.datetime = $this0_datetime
-            RETURN this0
+            "UNWIND $create_param0 AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.datetime = create_var1.datetime
+                RETURN create_this0
             }
-            RETURN [
-            this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }] AS data"
+            RETURN collect(create_this0 { datetime: apoc.date.convertFormat(toString(create_this0.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_datetime\\": {
-                    \\"year\\": 1970,
-                    \\"month\\": 1,
-                    \\"day\\": 1,
-                    \\"hour\\": 0,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                },
+                \\"create_param0\\": [
+                    {
+                        \\"datetime\\": {
+                            \\"year\\": 1970,
+                            \\"month\\": 1,
+                            \\"day\\": 1,
+                            \\"hour\\": 0,
+                            \\"minute\\": 0,
+                            \\"second\\": 0,
+                            \\"nanosecond\\": 0,
+                            \\"timeZoneOffsetSeconds\\": 0
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

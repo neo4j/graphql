@@ -629,24 +629,30 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:PointContainer)
-            SET this0.point = point($this0_point)
-            RETURN this0
+            "UNWIND $create_param0 AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`PointContainer\`)
+                SET
+                    create_this0.point = point(create_var1.point)
+                RETURN create_this0
             }
-            RETURN [
-            this0 { point: (CASE
-                WHEN this0.point IS NOT NULL THEN { point: this0.point, crs: this0.point.crs }
+            RETURN collect(create_this0 { point: (CASE
+                WHEN create_this0.point IS NOT NULL THEN { point: create_this0.point, crs: create_this0.point.crs }
                 ELSE NULL
-            END) }] AS data"
+            END) }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_point\\": {
-                    \\"longitude\\": 1,
-                    \\"latitude\\": 2
-                },
+                \\"create_param0\\": [
+                    {
+                        \\"point\\": {
+                            \\"longitude\\": 1,
+                            \\"latitude\\": 2
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
