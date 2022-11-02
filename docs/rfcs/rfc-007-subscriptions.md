@@ -239,9 +239,9 @@ For example, the following connections will trigger these events:
 -   Actor - follows: Will trigger 2 events (actor-follows, actors-followedBy)
 -   Movie - director: Will trigger 1 event (movie-director), the opposite will not be triggered as it is not defined in Actor type
 
-**Payload - current version** - **VALIDATE**
+**Payload - current version**
 
-The payload will contain the root fields of the node triggering the event, (e.g. `connectedActor`).
+The payload will contain the root fields of the node triggering the event, (e.g. `actor`).
 
 It will also contain the `relationship` field, which will contain **all** of the relationships defined in the root node. These relationships will each contain the properties and the related node, each event will only contain one of these, with the rest being nullable.
 
@@ -318,7 +318,7 @@ subscription {
 }
 ```
 
-**Payload - new version** - **VALIDATE**
+**Payload - new version**
 
 The payload will contain the root fields of the node triggering the event, (e.g. `actor` - renamed from `connectedActor`).
 
