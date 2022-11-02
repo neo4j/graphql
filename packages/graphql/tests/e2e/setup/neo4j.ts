@@ -48,7 +48,7 @@ class Neo4j {
             return this.driver;
         }
 
-        const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
+        const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
         if (process.env.NEO_WAIT && !this.driver) {
             await util.promisify(setTimeout)(Number(process.env.NEO_WAIT));
