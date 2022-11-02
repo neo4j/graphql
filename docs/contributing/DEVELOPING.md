@@ -73,22 +73,12 @@ easily get up and running with a local Neo4j instance.
 
 1. Create and start a new DBMS with a database named neo4j (default).
 2. Install APOC plugin for that DB.
-3. Create appropriate user by running the following command in the DB:
+3. Run tests with `yarn test`.
 
-    ```cypher
-    CREATE USER admin
-    SET PASSWORD "password"
-    SET PASSWORD CHANGE NOT REQUIRED
-    SET STATUS ACTIVE
-    ```
+**This might cause you errors with running the tests!**
 
-4. Grant roles to admin user:
-
-    ```cypher
-    GRANT ROLE admin to admin
-    ```
-
-5. Run tests with `yarn test`.
+We used to require an `admin` user to be created and further assigned permissions.
+We have since settled for the default `neo4j` user, which already has the required permissions.
 
 Tests are run using Jest, which has been configured to allow for execution of
 test suites at any level in the project.
