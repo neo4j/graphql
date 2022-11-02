@@ -244,7 +244,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorsConnectedRelationship {
-              node: ActorEventPayload
+              node: ActorEventPayload!
             }
 
             type MovieActorsConnection {
@@ -746,7 +746,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorMoviesConnectedRelationship {
-              node: MovieEventPayload
+              node: MovieEventPayload!
             }
 
             type ActorMoviesConnection {
@@ -1912,7 +1912,7 @@ describe("Subscriptions", () => {
             }
 
             type PersonMoviesConnectedRelationship {
-              node: MovieEventPayload
+              node: MovieEventPayload!
             }
 
             type PersonMoviesConnection {
@@ -2200,7 +2200,7 @@ describe("Subscriptions", () => {
             }
 
             type StarMoviesConnectedRelationship {
-              node: MovieEventPayload
+              node: MovieEventPayload!
             }
 
             type StarMoviesConnection {
@@ -2591,7 +2591,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorMoviesConnectedRelationship {
-              node: MovieEventPayload
+              node: MovieEventPayload!
             }
 
             type ActorMoviesConnection {

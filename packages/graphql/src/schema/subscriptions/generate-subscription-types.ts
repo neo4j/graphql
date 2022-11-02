@@ -497,7 +497,7 @@ function getConnectedTypes({
                 nodeNameToEventPayloadTypes,
             });
             if (nodeTo) {
-                relationshipFieldType.addFields({ node: nodeTo });
+                relationshipFieldType.addFields({ node: nodeTo.getTypeNonNull() });
             }
 
             return {
