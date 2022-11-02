@@ -23,6 +23,7 @@ import { translateRead } from "../../../translate";
 import type { Node } from "../../../classes";
 import type { Context } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import { fulltextArgDeprecationMessage } from "../../../schema/augment/fulltext";
 
 export function findResolver({ node }: { node: Node }) {
 
@@ -47,7 +48,21 @@ export function findResolver({ node }: { node: Node }) {
         args: {
             where: `${node.name}Where`,
             options: `${node.name}Options`,
-            ...(node.fulltextDirective ? { fulltext: `${node.name}Fulltext` } : {}),
+            ...(node.fulltextDirective
+                ? {
+                      fulltext: {
+                          type: `${node.name}Fulltext`,
+                          directives: [
+                              {
+                                  name: "deprecated",
+                                  args: {
+                                      reason: fulltextArgDeprecationMessage,
+                                  },
+                              },
+                          ],
+                      },
+                  }
+                : {}),
         },
     };
 }
