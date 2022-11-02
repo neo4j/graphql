@@ -73,7 +73,7 @@ function createRelationshipFields({
         const deprecatedDirectives = graphqlDirectivesToCompose(
             rel.otherDirectives.filter((directive) => directive.name.value === "deprecated")
         );
-
+        
         if (rel.properties) {
             relFields = relationshipPropertyFields.get(rel.properties);
 
@@ -707,12 +707,22 @@ function createRelationshipFields({
             );
 
             // Deprecate existing filters
-            whereInput.setFieldDirectiveByName(rel.fieldName, "deprecated", {
-                reason: `Use \`${rel.fieldName}_SOME\` instead.`,
-            });
-            whereInput.setFieldDirectiveByName(`${rel.fieldName}_NOT`, "deprecated", {
-                reason: `Use \`${rel.fieldName}_NONE\` instead.`,
-            });
+            whereInput.setFieldDirectives(rel.fieldName, [
+                {
+                    name: "deprecated",
+                    args: {
+                        reason: `Use \`${rel.fieldName}_SOME\` instead.`,
+                    },
+                },
+            ]);
+            whereInput.setFieldDirectives(`${rel.fieldName}_NOT`, [
+                {
+                    name: "deprecated",
+                    args: {
+                        reason: `Use \`${rel.fieldName}_NONE\` instead.`,
+                    },
+                },
+            ]);
         }
 
         const createName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}CreateFieldInput`;
