@@ -166,7 +166,7 @@ describe("Cypher Create", () => {
                     SET
                         create_this5.name = create_var3.name
                     MERGE (create_this5)-[create_this6:ACTED_IN]->(create_this0)
-                    RETURN collect(NULL)
+                    RETURN collect(NULL) AS create_var7
                 }
                 RETURN create_this0
             }
@@ -262,9 +262,9 @@ describe("Cypher Create", () => {
                         SET
                             create_this10.id = create_var8.id
                         MERGE (create_this5)-[create_this11:ACTED_IN]->(create_this10)
-                        RETURN collect(NULL)
+                        RETURN collect(NULL) AS create_var12
                     }
-                    RETURN collect(NULL)
+                    RETURN collect(NULL) AS create_var13
                 }
                 RETURN create_this0
             }
