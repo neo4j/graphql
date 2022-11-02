@@ -20,7 +20,7 @@
 import { on } from "events";
 import { Neo4jGraphQLError } from "../../../classes";
 import type Node from "../../../classes/Node";
-import type { NodeSubscriptionsEvent, RelationSubscriptionsEvent, SubscriptionsEvent } from "../../../types";
+import type { NodeSubscriptionsEvent, RelationshipSubscriptionsEvent, SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
 import { SubscriptionAuth } from "./subscription-auth";
 import type { SubscriptionContext } from "./types";
@@ -66,7 +66,7 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
 
         if (["connect", "disconnect"].includes(type)) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
-                const relationEventPayload = data[0] as RelationSubscriptionsEvent;
+                const relationEventPayload = data[0] as RelationshipSubscriptionsEvent;
                 const isOfRelevantType =
                     relationEventPayload.toTypename === node.name || relationEventPayload.fromTypename === node.name;
                 if (!isOfRelevantType) {
@@ -80,6 +80,6 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
             });
         }
 
-        throw Error(`Invalid type in subscription: ${type}`);
+        throw new Neo4jGraphQLError(`Invalid type in subscription: ${type}`);
     };
 }

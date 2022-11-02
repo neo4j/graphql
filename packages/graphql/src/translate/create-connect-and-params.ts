@@ -47,7 +47,7 @@ function createConnectAndParams({
     fromCreate,
     insideDoWhen,
     includeRelationshipValidation,
-    level = 1,
+    isFirstLevel = true,
 }: {
     withVars: string[];
     value: any;
@@ -62,13 +62,12 @@ function createConnectAndParams({
     fromCreate?: boolean;
     insideDoWhen?: boolean;
     includeRelationshipValidation?: boolean;
-    level?: number;
+    isFirstLevel?: boolean;
 }): [string, any] {
     function createSubqueryContents(
         relatedNode: Node,
         connect: any,
-        index: number,
-        level: number
+        index: number
     ): { subquery: string; params: Record<string, any> } {
         let params = {};
         const baseName = `${varName}${index}`;
@@ -87,7 +86,7 @@ function createConnectAndParams({
         subquery.push(`\tWITH ${filterMetaVariable(withVars).join(", ")}`);
         if (context.subscriptionsEnabled) {
             const innerMetaStr = `, [] as meta`;
-            subquery.push(`\tWITH ${filterMetaVariable(withVars).join(", ")}${innerMetaStr}`); //blaa
+            subquery.push(`\tWITH ${filterMetaVariable(withVars).join(", ")}${innerMetaStr}`);
         }
         subquery.push(`\tOPTIONAL MATCH (${nodeName}${label})`);
 
@@ -352,7 +351,7 @@ function createConnectAndParams({
                                 newRefNodes.push(context.nodes.find((x) => x.name === relField.typeMeta.name) as Node);
                             }
 
-                            newRefNodes.forEach((newRefNode, i) => {
+                            newRefNodes.forEach((newRefNode) => {
                                 const recurse = createConnectAndParams({
                                     withVars: [...withVars, nodeName],
                                     value: relField.union ? v[newRefNode.name] : v,
@@ -365,7 +364,7 @@ function createConnectAndParams({
                                     parentNode: relatedNode,
                                     labelOverride: relField.union ? newRefNode.name : "",
                                     includeRelationshipValidation: true,
-                                    level: level + 2 + i,
+                                    isFirstLevel: false,
                                 });
                                 r.connects.push(recurse[0]);
                                 r.params = { ...r.params, ...recurse[1] };
@@ -386,7 +385,7 @@ function createConnectAndParams({
 
                     onConnects.forEach((onConnect, onConnectIndex) => {
                         const onReduced = Object.entries(onConnect).reduce(
-                            (r: Res, [k, v]: [string, any], index: number) => {
+                            (r: Res, [k, v]: [string, any]) => {
                                 const relField = relatedNode.relationFields.find((x) =>
                                     k.startsWith(x.fieldName)
                                 ) as RelationField;
@@ -402,7 +401,7 @@ function createConnectAndParams({
                                     );
                                 }
 
-                                newRefNodes.forEach((newRefNode, i) => {
+                                newRefNodes.forEach((newRefNode) => {
                                     const recurse = createConnectAndParams({
                                         withVars: [...withVars, nodeName],
                                         value: relField.union ? v[newRefNode.name] : v,
@@ -414,7 +413,7 @@ function createConnectAndParams({
                                         refNodes: [newRefNode],
                                         parentNode: relatedNode,
                                         labelOverride: relField.union ? newRefNode.name : "",
-                                        level: level + 2 + index + i,
+                                        isFirstLevel: false,
                                     });
                                     r.connects.push(recurse[0]);
                                     r.params = { ...r.params, ...recurse[1] };
@@ -495,7 +494,7 @@ function createConnectAndParams({
             }
         }
 
-        if (level === 1) {
+        if (isFirstLevel) {
             res.connects.push(`WITH ${withVars.join(", ")}`);
         }
 
@@ -503,7 +502,7 @@ function createConnectAndParams({
         if (relationField.interface) {
             const subqueries: string[] = [];
             refNodes.forEach((refNode, i) => {
-                const subquery = createSubqueryContents(refNode, connect, i, level + i);
+                const subquery = createSubqueryContents(refNode, connect, i);
                 if (subquery.subquery) {
                     subqueries.push(subquery.subquery);
                     res.params = { ...res.params, ...subquery.params };
@@ -520,7 +519,7 @@ function createConnectAndParams({
                 }
             }
         } else {
-            const subquery = createSubqueryContents(refNodes[0], connect, index, level);
+            const subquery = createSubqueryContents(refNodes[0], connect, index);
             inner.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
         }

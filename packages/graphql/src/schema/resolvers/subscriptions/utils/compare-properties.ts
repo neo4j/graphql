@@ -19,7 +19,7 @@
 
 import { int } from "neo4j-driver";
 import type Node from "../../../../classes/Node";
-import type { PrimitiveField, RelationSubscriptionsEvent } from "../../../../types";
+import type { PrimitiveField, RelationshipSubscriptionsEvent } from "../../../../types";
 import { whereRegEx } from "../../../../translate/where/utils";
 import type { WhereRegexGroups } from "../../../../translate/where/utils";
 import { isSameType, haveSameLength } from "../../../../utils/utils";
@@ -204,12 +204,12 @@ export function filterByProperties<T>(
 export function filterRelationshipConnectionsByProperties<T>(
     node: Node,
     whereProperties: Record<string, T | Record<string, T>>,
-    receivedEvent: RelationSubscriptionsEvent
+    receivedEvent: RelationshipSubscriptionsEvent
 ): boolean {
     const receivedProperties = receivedEvent.properties;
     const relationshipName = receivedEvent.relationshipName;
-    const relations = node.relationFields.filter((f) => f.type === relationshipName);
-    if (relations.length === 0) {
+    const relationships = node.relationFields.filter((f) => f.type === relationshipName);
+    if (relationships.length === 0) {
         return false;
     }
 
@@ -226,7 +226,7 @@ export function filterRelationshipConnectionsByProperties<T>(
             }
         }
         if (fieldName === "relationshipName") {
-            const relationWithRelationshipName = relations.find((r) => {
+            const relationWithRelationshipName = relationships.find((r) => {
                 return checkFilterPasses(r.fieldName, v);
             });
             if (!relationWithRelationshipName) {
@@ -234,7 +234,7 @@ export function filterRelationshipConnectionsByProperties<T>(
             }
         }
         if (fieldName === "direction") {
-            const relationWithDirection = relations.find((r) => {
+            const relationWithDirection = relationships.find((r) => {
                 return checkFilterPasses(r.direction, v);
             });
             if (!relationWithDirection) {

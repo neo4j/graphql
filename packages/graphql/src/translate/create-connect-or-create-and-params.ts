@@ -179,7 +179,7 @@ function mergeStatement({
     parentRefNode: Node;
     context: Context;
     relationField: RelationField;
-    parentNode: Cypher.NamedNode;
+    parentNode: Cypher.Node;
     varName: string;
     callbackBucket: CallbackBucket;
     withVars: string[];
