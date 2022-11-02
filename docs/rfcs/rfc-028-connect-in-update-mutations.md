@@ -94,9 +94,9 @@ This would merge an existing "HAS_SPONSOR" relation, overwriting the old relatio
 * The existing default behaviour should be kept the same for now to avoid a breaking change.
 * It should be possible to overwrite the default behaviour when specifying the `@relationship` directive. This can be achieved with a `defaultUpdateOperation` argument that accepts either CREATE or UPDATE. This should be defaulted to UPDATE to avoid breaking changes.
 * Provide the option to the user to make use of either behaviour at query time. This can be achieved with an `operation` argument on to the `connect` input that accepts either CREATE or UPDATE. If this argument is not provided, maintain the default behaviour defined by `defaultUpdateOperation`.
-* If there are several connections of the same type, to the same nodes, these should be represented with the nodes being returned multiple times in the response.
-* To maintain consistency with returning duplicate nodes if multiple relationships, aggregetions should be accross all relationships.
-* Disconnect should disconnect all relations that meet the query filters (e.g. could use limit 1 to make it delete only a single relationship).
+* If there are several connections of the same type, to the same nodes, these should be represented with the nodes being returned multiple times in the response. This is already the current behaviour.
+* To maintain consistency with returning duplicate nodes if multiple relationships, aggregetions should be accross all relationships. This is already the current behaviour.
+* Disconnect should disconnect all relations that meet the query filters (e.g. could use limit 1 to make it delete only a single relationship). This is already the current behaviour.
 
 ### Usage Examples
 
@@ -269,7 +269,6 @@ Would produce the following results:
 
 * Adding extra complexity to our API.
 * Unclear to users what behaviour to expect/how to use these new features - will need good documentation and examples.
-* Disconnecting all relations that match the given filters could be a breaking change
 
 ### Security consideration
 
