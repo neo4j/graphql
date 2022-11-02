@@ -28,7 +28,7 @@ The following query:
 mutation {
     updateClients(
         where: {
-            id: "123",
+            id: "1",
         },
         connect: {
             sponsor: [
@@ -39,7 +39,7 @@ mutation {
                         }
                     },
                     edge: {
-                        type: "newType2",
+                        type: "newType",
                         startDate: "123"
                     }
                 }
@@ -57,7 +57,7 @@ Would produce the following cypher:
 
 ```cypher
 MATCH (this:Client)
-WHERE this.id = "123"
+WHERE this.id = "1"
 WITH this
 CALL {
     WITH this
@@ -69,7 +69,7 @@ CALL {
         UNWIND parentNodes as this
         UNWIND connectedNodes as this_connect_sponsor0_node
         MERGE (this)-[this_connect_sponsor0_relationship:HAS_SPONSOR]->(this_connect_sponsor0_node) # This is the line that causes the relationship to be overwritten instead of a new one being created
-        SET this_connect_sponsor0_relationship.type = "newType2"
+        SET this_connect_sponsor0_relationship.type = "newType"
         SET this_connect_sponsor0_relationship.startDate = "0123-01-01"
         RETURN count(*) AS _
     }
@@ -96,9 +96,29 @@ This would merge an existing "HAS_SPONSOR" relation, overwriting the old relatio
 * Provide the option to the user to make use of either behaviour at query time. This can be achieved with an `operation` argument on to the `connect` input that accepts either CREATE or UPDATE. If this argument is not provided, maintain the default behaviour defined by `defaultUpdateOperation`.
 * If there are several connections of the same type, to the same nodes, these should be represented with the nodes being returned multiple times in the response.
 * To maintain consistency with returning duplicate nodes if multiple relationships, aggregetions should be accross all relationships.
-* Disconnect should disconnect as relations that meet the query filters (e.g. could use limit 1 to make it delete only a single relationship).
+* Disconnect should disconnect all relations that meet the query filters (e.g. could use limit 1 to make it delete only a single relationship).
 
 ### Usage Examples
+
+#### `@relationship` definition
+
+Specifying the `defaultUpdateOperation` on the `@relationship` directive:
+
+```gql
+type Client {
+    id: String!
+    login: String!
+    sponsor: [Client!]! @relationship(type: "HAS_SPONSOR", properties: "HasSponsor", direction: OUT, defaultUpdateOperation: "CREATE")
+}
+
+interface HasSponsor @relationshipProperties {
+    type: String!
+    startDate: Date!
+    endDate: Date
+}
+```
+
+#### New update mutation
 
 Using the new `operation` argument:
 
@@ -106,10 +126,10 @@ Using the new `operation` argument:
 mutation {
     updateClients(
         where: {
-            id: "123",
+            id: "1",
         },
         connect: {
-            operation: "CREATE", # The new operation input argument that accepts either CREATE or UPDATE
+            operation: "CREATE", # The new operation input argument, that accepts either CREATE or UPDATE
             sponsor: [
                 {
                     where: {
@@ -136,7 +156,7 @@ For this query the following cypher would be produced:
 
 ```cypher
 MATCH (this:Client)
-WHERE this.id = "123"
+WHERE this.id = "1"
 WITH this
 CALL {
     WITH this
@@ -158,19 +178,90 @@ WITH *
 RETURN collect(DISTINCT this { .id }) AS data
 ```
 
-Specifying the `defaultUpdateOperation` on the `@relationship` directive:
+#### New query behaviour
+
+**Note:** this is already the behaviour of the library, these examples are just to document this is now the expected behaviour.
+
+Assuming there was an existing HAS_SPONSOR relation between the clients with id = 1 and id = 2. The following query:
 
 ```gql
-type Client {
-    id: String!
-    login: String!
-    sponsor: [Client!]! @relationship(type: "HAS_SPONSOR", properties: "HasSponsor", direction: OUT, defaultUpdateOperation: "CREATE")
+query {
+    clients(where: { id: "1" }) {
+        id
+        sponsorConnection {
+            edges {
+                type
+                node {
+                    id
+                }
+            }
+        }
+    }
 }
+```
 
-interface HasSponsor @relationshipProperties {
-    type: String!
-    startDate: Date!
-    endDate: Date
+Would now produce the following results:
+
+```json
+{
+    "data": {
+        "clients": [
+            {
+                "id": "123",
+                "sponsorConnection": {
+                    "edges": [
+                        {
+                            "type": "newType2",
+                            "node": {
+                                "id": "2"
+                            }
+                        },
+                        {
+                            "type": "newType",
+                            "node": {
+                                "id": "2"
+                            }
+                        },
+                    ]
+                }
+            }
+        ]
+    }
+}
+```
+
+Additionally, the following query:
+
+```gql
+query {
+  clients(where: { id: "1" }) {
+    sponsor {
+      id
+    }
+    id
+  }
+}
+```
+
+Would produce the following results:
+
+```json
+{
+    "data": {
+        "clients": [
+            {
+                "sponsor": [
+                    {
+                        "id": "2"
+                    },
+                    {
+                        "id": "2"
+                    },
+                ],
+                "id": "1"
+            }
+        ]
+    }
 }
 ```
 
@@ -178,6 +269,7 @@ interface HasSponsor @relationshipProperties {
 
 * Adding extra complexity to our API.
 * Unclear to users what behaviour to expect/how to use these new features - will need good documentation and examples.
+* Disconnecting all relations that match the given filters could be a breaking change
 
 ### Security consideration
 
