@@ -772,7 +772,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             WITH this
             CALL {
             	 WITH this
@@ -830,6 +830,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"auth_param0\\": \\"id-01\\",
                 \\"thisauth_param0\\": \\"id-01\\",
                 \\"this_content0_connect0_nodeauth_param0\\": \\"id-01\\",
                 \\"resolvedCallbacks\\": {}
@@ -855,7 +856,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             WITH this
             CALL {
             	 WITH this
@@ -914,6 +915,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"auth_param0\\": \\"id-01\\",
                 \\"thisauth_param0\\": \\"id-01\\",
                 \\"this_content0_connect0_node_param0\\": \\"new-id\\",
                 \\"this_content0_connect0_nodeauth_param0\\": \\"id-01\\",
@@ -940,7 +942,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
@@ -987,6 +989,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"auth_param0\\": \\"id-01\\",
                 \\"thisauth_param0\\": \\"id-01\\",
                 \\"this_connect_content1_nodeauth_param0\\": \\"id-01\\",
                 \\"resolvedCallbacks\\": {}
@@ -1012,7 +1015,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
@@ -1060,6 +1063,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"auth_param0\\": \\"id-01\\",
                 \\"thisauth_param0\\": \\"id-01\\",
                 \\"this_connect_content0_node_param0\\": \\"some-id\\",
                 \\"this_connect_content1_node_param0\\": \\"some-id\\",

@@ -1022,7 +1022,7 @@ describe("Cypher Auth Where with Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (this.id IS NOT NULL AND this.id = $thisauth_param1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))
+            WHERE ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (this.id IS NOT NULL AND this.id = $auth_param1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))
             WITH this
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
@@ -1054,6 +1054,7 @@ describe("Cypher Auth Where with Roles", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"auth_param1\\": \\"id-01\\",
                 \\"thisauth_param1\\": \\"id-01\\",
                 \\"this_posts0_connect0_nodeauth_param1\\": \\"id-01\\",
                 \\"resolvedCallbacks\\": {},
@@ -1091,7 +1092,7 @@ describe("Cypher Auth Where with Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (this.id IS NOT NULL AND this.id = $thisauth_param1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))
+            WHERE ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (this.id IS NOT NULL AND this.id = $auth_param1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))
             WITH this
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
@@ -1123,6 +1124,7 @@ describe("Cypher Auth Where with Roles", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"auth_param1\\": \\"id-01\\",
                 \\"thisauth_param1\\": \\"id-01\\",
                 \\"this_posts0_connect0_node_param0\\": \\"new-id\\",
                 \\"this_posts0_connect0_nodeauth_param1\\": \\"id-01\\",
@@ -1161,7 +1163,7 @@ describe("Cypher Auth Where with Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (this.id IS NOT NULL AND this.id = $thisauth_param1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))
+            WHERE ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (this.id IS NOT NULL AND this.id = $auth_param1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))
             WITH this
             WHERE ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (this.id IS NOT NULL AND this.id = $thisauth_param1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))
             WITH this
@@ -1192,6 +1194,7 @@ describe("Cypher Auth Where with Roles", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"auth_param1\\": \\"id-01\\",
                 \\"thisauth_param1\\": \\"id-01\\",
                 \\"this_connect_posts0_nodeauth_param1\\": \\"id-01\\",
                 \\"resolvedCallbacks\\": {},
@@ -1229,7 +1232,7 @@ describe("Cypher Auth Where with Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (this.id IS NOT NULL AND this.id = $thisauth_param1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))
+            WHERE ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (this.id IS NOT NULL AND this.id = $auth_param1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))
             WITH this
             WHERE ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (this.id IS NOT NULL AND this.id = $thisauth_param1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))
             WITH this
@@ -1260,6 +1263,7 @@ describe("Cypher Auth Where with Roles", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"auth_param1\\": \\"id-01\\",
                 \\"thisauth_param1\\": \\"id-01\\",
                 \\"this_connect_posts0_node_param0\\": \\"some-id\\",
                 \\"this_connect_posts0_nodeauth_param1\\": \\"id-01\\",
