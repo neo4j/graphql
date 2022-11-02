@@ -153,7 +153,8 @@ function makeAugmentedSchema(
 
     const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers });
 
-    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames, floatWhereInTypeDefs } = getNodesResult;
+    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames, floatWhereInTypeDefs } =
+        getNodesResult;
 
     // graphql-compose will break if the Point and CartesianPoint types are created but not used,
     // because it will purge the unused types but leave behind orphaned field resolvers
@@ -318,7 +319,12 @@ function makeAugmentedSchema(
         const interfaceSortableFields = getSortableFields(interfaceFields).reduce(
             (res, f) => ({
                 ...res,
-                [f.fieldName]: sortDirection.getTypeName(),
+                [f.fieldName]: {
+                    type: sortDirection.getTypeName(),
+                    directives: graphqlDirectivesToCompose(
+                        f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                    ),
+                },
             }),
             {}
         );
@@ -569,7 +575,12 @@ function makeAugmentedSchema(
         const sortFields = getSortableFields(node).reduce(
             (res, f) => ({
                 ...res,
-                [f.fieldName]: sortDirection.getTypeName(),
+                [f.fieldName]: {
+                    type: sortDirection.getTypeName(),
+                    directives: graphqlDirectivesToCompose(
+                        f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                    ),
+                },
             }),
             {}
         );

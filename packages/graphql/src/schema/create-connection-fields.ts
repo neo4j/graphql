@@ -52,6 +52,9 @@ function createConnectionFields({
                 node: `${connectionField.relationship.typeMeta.name}!`,
             });
         });
+        const deprecatedDirectives = graphqlDirectivesToCompose(
+            connectionField.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+        );
 
         const connectionWhereName = `${connectionField.typeMeta.name}Where`;
 
@@ -95,7 +98,10 @@ function createConnectionFields({
                 (["ALL", "NONE", "SINGLE", "SOME"] as const).reduce(
                     (acc, filter) => ({
                         ...acc,
-                        [`${connectionField.fieldName}_${filter}`]: connectionWhere,
+                        [`${connectionField.fieldName}_${filter}`]: {
+                            type: connectionWhere,
+                            directives: deprecatedDirectives
+                        },
                     }),
                     {}
                 )

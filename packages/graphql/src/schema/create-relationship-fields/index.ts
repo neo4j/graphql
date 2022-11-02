@@ -671,9 +671,18 @@ function createRelationshipFields({
 
         whereInput.addFields({
             ...{
-                [rel.fieldName]: `${n.name}Where`,
-                [`${rel.fieldName}_NOT`]: `${n.name}Where`,
-                [`${rel.fieldName}Aggregate`]: whereAggregateInput,
+                [rel.fieldName]: {
+                    type: `${n.name}Where`,
+                    directives: deprecatedDirectives,
+                },
+                [`${rel.fieldName}_NOT`]: {
+                    type: `${n.name}Where`,
+                    directives: deprecatedDirectives,
+                },
+                [`${rel.fieldName}Aggregate`]: {
+                    type: whereAggregateInput,
+                    directives: deprecatedDirectives,
+                },
             },
         });
 
@@ -690,6 +699,7 @@ function createRelationshipFields({
                             description: `Return ${pluralize(sourceName)} where ${
                                 filter !== "SINGLE" ? filter.toLowerCase() : "one"
                             } of the related ${pluralize(rel.typeMeta.name)} match this filter`,
+                            directives: deprecatedDirectives,
                         },
                     }),
                     {}
