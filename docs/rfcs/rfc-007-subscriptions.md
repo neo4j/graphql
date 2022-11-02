@@ -241,18 +241,18 @@ For example, the following connections will trigger these events:
 
 **Payload - current version** - **VALIDATE**
 
-The payload will contain the root fields of the node triggering the event, (e.g. `actor`).
+The payload will contain the root fields of the node triggering the event, (e.g. `connectedActor`).
 
 It will also contain the `relationship` field, which will contain **all** of the relationships defined in the root node. These relationships will each contain the properties and the related node, each event will only contain one of these, with the rest being nullable.
 
-Additionally the `relationshipFieldName` field will contain the relationship field name.
+Additionally the fields `direction` and `relationshipName` will contain the relationship direction and field name respectively.
 
 ```graphql
 actorConnected {
-   actor: ActorEventPayload! // The node subscribed to (Actor), regardless of direction
+   connectedActor: ActorEventPayload! // The node subscribed to (Actor), regardless of direction
    timestamp: Float!
    event // CONNECT / DISCONNECT
-   relationshipFieldName: "movies" // The name of the relationship prop (movies or follows)
+   relationshipName: "movies" // The name of the relationship prop (movies or follows)
    relationship {
       movies { // nullable
         edge {
@@ -267,6 +267,7 @@ actorConnected {
         node
       }
    }
+   direction: IN | OUT
 }
 ```
 
@@ -283,7 +284,7 @@ An example of the full payload:
 ```graphql
 subscription {
     actorConnected() {
-        actor {
+        connectedActor {
             name
         }
         relationship {
@@ -312,20 +313,59 @@ subscription {
             }
           }
         }
-      relationshipFieldName
+      relationshipName
     }
 }
 ```
 
 **Payload - new version** - **VALIDATE**
 
-The payload will contain the root fields of the node triggering the event, (e.g. `actor`).
+The payload will contain the root fields of the node triggering the event, (e.g. `actor` - renamed from `connectedActor`).
 
 It will also contain the `relationship` field, which will contain **all** of the relationships defined in the root node. These relationships will each contain the properties and the related node, each event will only contain one of these, with the rest being nullable.
 
-Additionally the `relationshipFieldName` field will contain the relationship field name.
+Additionally the `relationshipName` field has been renamed to `relationshipFieldName` and it will contain the relationship field name.
+The `direction` field has been discarded.
 
-The subscription operation (`actorRelationshipConnected`/ `actorRelationshipDisconnected`) is now split between the previous state of the connection:
+The `edge` field from the payload is discarded and the edge properties are instead embedded in the relationship.
+
+_! to not be confused with the input type, which keeps the `edge` object format_
+
+An example of the full payload:
+
+```graphql
+subscription {
+    actorRelationshipCreated() { // renamed from `actorConnected` - see below
+        actor { // renamed from `connectedActor`
+            name
+        }
+        relationship {
+          movies {
+            role // relation property embedded inside the `movies` field, instead of inside an `edge` object
+            node {
+              title
+            }
+          }
+          follows {
+            date // relation property embedded
+            node {
+              name
+            }
+          }
+          followedBy {
+            date // relation property embedded
+            node {
+              name
+            }
+          }
+        }
+      relationshipFieldName // renamed from `relationshipName`
+      // `direction` field has been discarded
+    }
+}
+```
+
+The subscription operation (`actorConnected`/ `actorDisconnected`) is now split between the previous state of the connection:
 
 1. If the connection is new -> `actorRelationshipCreated`
 2. If the connection previously existed but some field values have changed -> `actorRelationshipUpdated`
@@ -363,7 +403,7 @@ subscription {
 }
 ```
 
--   _Updated_ connection
+-   _Updated_ connection - _out of scope for now_
 
 ```graphql
 subscription {
@@ -412,7 +452,7 @@ subscription {
 }
 ```
 
--   _Deleted_ connection - **VALIDATE**
+-   _Deleted_ connection
 
 ```graphql
 subscription {
@@ -448,13 +488,21 @@ Filtering can be done with a `where` input field that will have the following pr
 
 -   `actor`: Filter of top level properties of the node (e.g. `actor`) from which the subscription is done
 -   All of the `relationships` can be filtered either by related node or properties, by using the same properties as in the payload, only top-level properties of the related node can be filtered
--   By providing the relationship field name inside the `relationship` field, connection events of the type, properties and direction specified in the `@relationship` directive which the field is annotated with will be triggered.
+-   By providing the relationship field name inside the `relationship` field, connection events of the type, properties and direction specified in the `@relationship` directive which the field is annotated with will be triggered.Logic is:
+    -   if no fields are specified, everything is included
+    -   if some fields are specified, **only** those are included
+    -   if filtering operations (eg. _name_NOT_) are specified, they are taken into account
+    -   if no filtering operation is specified, everything that complies is included
+    -   the same holds for all levels of granularity:
+        -   relationship field names inside the `relationship` field: `where: { relationship: { actors: {} } }`
+        -   concrete type names inside a relationship field name related to a Union type: `where: { relationship: { directors: { Person: {} } } }`
+        -   concrete type names inside a (\_on) relationship field name related to an Interface type: `where: { relationship: { reviewers: { _on: { Person: {} } } } }`
 
 For instance, for subscribing only to connections of type `ACTED_IN` between types `Movie` and `Actor` as described in the `actors @relationship` annotation we can use the `actors` field:
 
 ```graphql
 subscription {
-    movieConnected(where: { movie: { title: "The Matrix" }, relationship: { actors: {} } }) {
+    movieRelationshipCreated(where: { movie: { title: "The Matrix" }, relationship: { actors: {} } }) {
         movie {
             title
         }
@@ -473,7 +521,7 @@ If we are only interested in connections to `actors` that have a specific node o
 
 ```graphql
 subscription {
-    movieConnected(
+    movieRelationshipCreated(
         where: {
             movie: { title: "The Matrix" }
             relationship: { actors: { node: { name_STARTS_WITH: "Keanu" }, edge: { screenTime_GT: 2345 } } }
@@ -487,16 +535,14 @@ subscription {
                 node {
                     name
                 }
-                edge {
-                    screenTime
-                }
+                screenTime
             }
         }
     }
 }
 ```
 
-More examples for _interfaces and unions_, given the following type defs: - **VALIDATE**
+More examples for **interfaces and unions**, given the following type defs:
 
 ```graphql
 type Movie {
@@ -546,15 +592,13 @@ interface Reviewer {
 
 ```graphql
 subscription {
-    movieConnected(where: { movie: { title: "The Matrix" }, relationship: { directors: { Actor: {} } } }) {
+    movieRelationshipCreated(where: { movie: { title: "The Matrix" }, relationship: { directors: { Actor: {} } } }) {
         movie {
             title
         }
         relationship {
             directors {
-                edge {
-                    year
-                }
+                year
                 node {
                     ... on PersonEventPayload {
                         name
@@ -574,7 +618,7 @@ subscription {
 
 ```graphql
 subscription {
-    movieConnected(
+    movieRelationshipCreated(
         where: {
             movie: { title: "The Matrix" }
             relationship: {
@@ -587,9 +631,7 @@ subscription {
         }
         relationship {
             directors {
-                edge {
-                    year
-                }
+                year
                 node {
                     ... on PersonEventPayload {
                         name
@@ -609,7 +651,7 @@ subscription {
 
 ```graphql
 subscription {
-    movieConnected(
+    movieRelationshipCreated(
         where: {
             movie: { title: "The Matrix" }
             relationship: { reviewers: { edge: { score_IN: [10] }, node: { reputation_GT: 10, _on: { Person: {} } } } }
@@ -620,9 +662,7 @@ subscription {
         }
         relationship {
             reviewers {
-                edge {
-                    score
-                }
+                score
                 node {
                     reputation
                     ... on PersonEventPayload {
@@ -642,7 +682,7 @@ subscription {
 
 ```graphql
 subscription {
-    movieConnected(
+    movieRelationshipCreated(
         where: {
             movie: { title: "The Matrix" }
             relationship: {
@@ -658,9 +698,7 @@ subscription {
         }
         relationship {
             reviewers {
-                edge {
-                    score
-                }
+                score
                 node {
                     reputation
                     ... on PersonEventPayload {
@@ -676,11 +714,11 @@ subscription {
 }
 ```
 
-5. From interface type Reviewers with implementations Person, Influencer - want connections to both Person and Influencer, filtered by common
+5. From interface type Reviewers with implementations Person, Influencer - want connections to both Person and Influencer, filtered by common field
 
 ```graphql
 subscription {
-    movieConnected(
+    movieRelationshipCreated(
         where: {
             movie: { title: "The Matrix" }
             relationship: { reviewers: { edge: { score_IN: [10] }, node: { reputation_GT: 10 } } }
@@ -691,9 +729,7 @@ subscription {
         }
         relationship {
             reviewers {
-                edge {
-                    score
-                }
+                score
                 node {
                     reputation
                     ... on PersonEventPayload {
@@ -713,15 +749,13 @@ subscription {
 
 ```graphql
 subscription {
-    movieConnected(where: { movie: { title: "The Matrix" } }) {
+    movieRelationshipCreated(where: { movie: { title: "The Matrix" } }) {
         movie {
             title
         }
         relationship {
             reviewers {
-                edge {
-                    score
-                }
+                score
                 node {
                     reputation
                     ... on PersonEventPayload {
@@ -741,15 +775,15 @@ subscription {
 
 ```graphql
 subscription {
-    movieConnected(where: { movie: { title: "The Matrix" }, relationship: { reviewers: {}, directors: {} } }) {
+    movieRelationshipCreated(
+        where: { movie: { title: "The Matrix" }, relationship: { reviewers: {}, directors: {} } }
+    ) {
         movie {
             title
         }
         relationship {
             reviewers {
-                edge {
-                    score
-                }
+                score
                 node {
                     reputation
                     ... on PersonEventPayload {
@@ -761,9 +795,7 @@ subscription {
                 }
             }
             directors {
-                edge {
-                    year
-                }
+                year
                 node {
                     ... on PersonEventPayload {
                         name
@@ -793,7 +825,7 @@ The input type would look like:
                     "node": {
                         "name_NOT": null
                     },
-                    "edge": {
+                    "edge": { // relationship properties inside an `edge` object, unlike the selection set format
                         "year": null
                     }
                 },
@@ -801,7 +833,7 @@ The input type would look like:
                     "node": {
                         "name_NOT_IN": null
                     },
-                    "edge": {
+                    "edge": { // relationship properties inside an `edge` object, unlike the selection set format
                         "year": null
                     }
                 }
@@ -813,11 +845,11 @@ The input type would look like:
                 "node": {
                     "reputation_LT": null, // interface common types
                     "_on": {
-                        "Person": { // interface types
+                        "Person": { // interface specific types
                             "name_NOT_STARTS_WITH": null,
                             "reputation_LT": null,
                         },
-                        "Influencer": { // interface types
+                        "Influencer": { // interface specific types
                             "url_ENDS_WITH": null
                         }
                     }
@@ -827,7 +859,7 @@ The input type would look like:
                 "node": {
                     "name_ENDS_WITH": null
                 },
-                "edge": {
+                "edge": { // relationship properties inside an `edge` object, unlike the selection set format
                     "screenTime": null
                 }
             }
@@ -836,14 +868,12 @@ The input type would look like:
   }
 ```
 
--   Relationship filtering can be cut out of scope if needed
-
 #### Risks and Limitations on connections
 
--   (blocker) FOREACH on nested Connect, disconnect and delete
--   (unknown) ConnectOrCreate
--   (non-blocker) Currently, connection works as a idempotent operation with `MERGE`, the event should only trigger when a new connection is made.
--   (non-blocker) (Dis)Connections should be triggered regardless of the way the connection is created. (e.g. ActorUpdate or MovieUpdate as top level operation).
+-   FOREACH on nested Connect, disconnect and delete
+-   ConnectOrCreate
+-   (out of scope) Currently, connection works as a idempotent operation with `MERGE`, the event should only trigger when a new connection is made.
+-   (Dis)Connections should be triggered regardless of the way the connection is created. (e.g. ActorUpdate or MovieUpdate as top level operation).
 -   (out of scope) Subscription to changes to the relationship properties are out of scope, only creation/deletion of relationships trigger events.
 
 #### Cypher Examples
