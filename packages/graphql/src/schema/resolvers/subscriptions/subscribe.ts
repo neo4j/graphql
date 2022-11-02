@@ -64,7 +64,8 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
             });
         }
 
-        if (["connect", "disconnect"].includes(type)) {
+        // eslint-disable-next-line no-constant-condition
+        if (["connect", "disconnect"].includes(type) && false) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
                 const relationEventPayload = data[0] as RelationshipSubscriptionsEvent;
                 const isOfRelevantType =
