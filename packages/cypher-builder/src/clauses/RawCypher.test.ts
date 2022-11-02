@@ -40,4 +40,32 @@ describe("RawCypher", () => {
             }
         `);
     });
+
+    test("Create a custom query with RawCypher callback", () => {
+        const releasedParam = new Cypher.Param(1999);
+
+        const rawCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
+            const releasedParamId = releasedParam.getCypher(env); // Gets the raw Cypher for the param
+
+            const customCypher = `MATCH(n) WHERE n.title=$title_param AND n.released=${releasedParamId}`;
+
+            const customParams = {
+                title_param: "The Matrix",
+            };
+
+            return [customCypher, customParams];
+        });
+
+        const queryResult = rawCypher.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(
+            `"MATCH(n) WHERE n.title=$title_param AND n.released=$param0"`
+        );
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": 1999,
+              "title_param": "The Matrix",
+            }
+        `);
+    });
 });
