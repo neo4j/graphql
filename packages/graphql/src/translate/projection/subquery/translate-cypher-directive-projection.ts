@@ -18,12 +18,12 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import { GraphQLUnionType } from "graphql";
 import type { Node } from "../../../classes";
 import type { GraphQLSortArg, Context, CypherField } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 
 import createProjectionAndParams, { ProjectionMeta } from "../../create-projection-and-params";
+import { CompositeEntity } from "../../../schema-model/CompositeEntity";
 
 interface Res {
     projection: string[];
@@ -53,11 +53,10 @@ export function translateCypherDirectiveProjection({
     res: Res;
 }): Res {
     const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
-    const graphqlType = context.schema.getType(cypherField.typeMeta.name);
-    const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
+    const entity = context.entities.get(cypherField.typeMeta.name);
 
     const isArray = Boolean(cypherField.typeMeta.array);
-    const expectMultipleValues = Boolean((referenceNode || referenceUnion) && isArray);
+    const expectMultipleValues = Boolean((referenceNode || entity instanceof CompositeEntity) && isArray);
 
     const fieldFields = field.fieldsByTypeName;
 
@@ -83,7 +82,7 @@ export function translateCypherDirectiveProjection({
         projectionExpr = new Cypher.RawCypher(`${param} ${str}`);
         res.params = { ...res.params, ...p };
         subqueries.push(...nestedSubqueriesBeforeSort, ...nestedSubqueries);
-    } else if (referenceUnion) {
+    } else if (entity instanceof CompositeEntity) {
         const unionProjections: Array<{ predicate: Cypher.Predicate; projection: string }> = [];
         const labelsSubPredicates: Cypher.Predicate[] = [];
 
@@ -91,8 +90,8 @@ export function translateCypherDirectiveProjection({
         const hasMultipleFieldFields = fieldFieldsKeys.length > 1;
 
         let referencedNodes =
-            referenceUnion?.types
-                ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
+            entity.concreteEntities
+                ?.map((u) => context.nodes.find((n) => n.name === u.name))
                 ?.filter((b) => b !== undefined) || [];
         if (hasMultipleFieldFields) {
             referencedNodes = referencedNodes?.filter((n) => fieldFieldsKeys.includes(n?.name ?? "")) || [];
