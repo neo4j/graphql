@@ -64,9 +64,51 @@ new Neo4jGraphQL({
 [customResolver-migration]
 === `@computed` renamed to `@customResolver`
 
+Previously, there was ambiguity over the behaviour of `@computed` and it wasn't clear that it was intended to be used with a custom resolver. In order to make this clear, `@computed` has been renamed to `@customResolver`.
+Furthermore, the behaviour of the `from` argument was not clear. The argument is used to specify which fields other fields are required by the custom resolver. As a result, `from` has been renamed to `requires`.
+
+These changes mean that the following type definition is invalid in version 4.x.x:
+
+[source, graphql, indent=0]
+----
+type User {
+  firstName: String!
+  lastName: String!
+  fullName: String! @computed(from: ["firstName", "lastName"])
+}
+----
+
+Instead, it would need to be updated to use the new directive and argument as below:
+
+[source, graphql, indent=0]
+----
+type User {
+  firstName: String!
+  lastName: String!
+  fullName: String! @customResolver(requires: ["firstName", "lastName"])
+}
+----
+
+Note that before and after these changes, a custom resolver would need to be defined as below:
+
+[source, javascript, indent=0]
+----
+new Neo4jGraphQL({
+  typeDefs,
+  resolvers: {
+    User: {
+      fullName: ({ firstName, lastName }, args, context, info) => (`${firstName} ${lastName}`),
+    }
+  }
+});
+----
 
 ==== Checks for custom resolvers
 
+Previously, if no custom resolver was specified for a `@computed` field when creating an instance of Neo4jGraphQL, no errors would be thrown when generating the schema.
+However, it is likely that the lack of a custom resolver would lead to errors at runtime. It is preferable to fail fast in this case as it is easier to debug and makes it less likely that bugs will make it into production.
+
+As a result, check are now performed to ensure that every `@customResolver` field has a custom resolver provided. If not the library will throw an error during schema generation.
 
 [plural-migration]
 === `plural` argument removed from `@node` and replaced with `@plural`
