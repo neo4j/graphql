@@ -1,0 +1,43 @@
+[[v4-migration]]
+
+= 4.0.0 Migration
+
+NOTE: Version 4.0.0 of the library has not yet been released. However, we recommend making these changes early, in order to avoid issues in the future.
+
+This document lists all breaking changes from version 3.x.y to 4.0.0 and how to update.
+
+== How to upgrade
+Simply update `@neo4j/graphql` using npm or your package manager of choice:
+
+[source, bash, indent=0]
+----
+npm update @neo4j/graphql
+----
+
+== Updated Directives
+
+We have renamed a number of directives and their arguments, in order to make using `@neo4j/graphql` more intuative.
+
+[populatedBy-migration]
+=== `@callback` renamed to `@populatedBy`
+
+
+[customResolver-migration]
+=== `@computed` renamed to `@customResolver`
+
+
+==== Checks for custom resolvers
+
+
+[plural-migration]
+=== `plural` argument removed from `@node` and replaced with `@plural`
+
+
+[full-text-migration]
+=== `@fulltext` changes
+
+==== Argument changes
+
+
+==== Query changes
+
