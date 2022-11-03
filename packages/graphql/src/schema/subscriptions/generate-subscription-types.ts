@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { GraphQLFloat, GraphQLNonNull, GraphQLString } from "graphql";
 import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
@@ -112,33 +114,36 @@ export function generateSubscriptionTypes({
             },
         });
 
-        const relationConnectedEvent = schemaComposer.createObjectTC({
-            name: subscriptionEventTypeNames.connect,
-            fields: {
-                event: {
-                    type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("CONNECT")?.value,
+        // eslint-disable-next-line no-constant-condition
+        if (false) {
+            const relationConnectedEvent = schemaComposer.createObjectTC({
+                name: subscriptionEventTypeNames.connect,
+                fields: {
+                    event: {
+                        type: eventTypeEnum.NonNull,
+                        resolve: () => EventType.getValue("CONNECT")?.value,
+                    },
+                    timestamp: {
+                        type: new GraphQLNonNull(GraphQLFloat),
+                        resolve: (source: RelationshipSubscriptionsEvent) => source.timestamp,
+                    },
                 },
-                timestamp: {
-                    type: new GraphQLNonNull(GraphQLFloat),
-                    resolve: (source: RelationshipSubscriptionsEvent) => source.timestamp,
-                },
-            },
-        });
+            });
 
-        const relationDisconnectedEvent = schemaComposer.createObjectTC({
-            name: subscriptionEventTypeNames.disconnect,
-            fields: {
-                event: {
-                    type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("DISCONNECT")?.value,
+            const relationDisconnectedEvent = schemaComposer.createObjectTC({
+                name: subscriptionEventTypeNames.disconnect,
+                fields: {
+                    event: {
+                        type: eventTypeEnum.NonNull,
+                        resolve: () => EventType.getValue("DISCONNECT")?.value,
+                    },
+                    timestamp: {
+                        type: new GraphQLNonNull(GraphQLFloat),
+                        resolve: (source: RelationshipSubscriptionsEvent) => source.timestamp,
+                    },
                 },
-                timestamp: {
-                    type: new GraphQLNonNull(GraphQLFloat),
-                    resolve: (source: RelationshipSubscriptionsEvent) => source.timestamp,
-                },
-            },
-        });
+            });
+        }
 
         const connectedTypes = getConnectedTypes({
             node,
@@ -178,51 +183,55 @@ export function generateSubscriptionTypes({
                 },
             });
 
-            relationConnectedEvent.addFields({
-                [subscriptionEventPayloadFieldNames.connect]: {
-                    type: eventPayload.NonNull,
-                    resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationshipEventDataForNode(source, node).properties;
+            // eslint-disable-next-line no-constant-condition
+            if (false) {
+                relationConnectedEvent.addFields({
+                    [subscriptionEventPayloadFieldNames.connect]: {
+                        type: eventPayload.NonNull,
+                        resolve: (source: RelationshipSubscriptionsEvent) => {
+                            return getRelationshipEventDataForNode(source, node).properties;
+                        },
                     },
-                },
-                relationshipName: {
-                    type: new GraphQLNonNull(GraphQLString),
-                    resolve: (source: RelationshipSubscriptionsEvent) => {
-                        const r = node.relationFields.find((f) => f.type === source.relationshipName)?.fieldName;
-                        return r;
+                    relationshipName: {
+                        type: new GraphQLNonNull(GraphQLString),
+                        resolve: (source: RelationshipSubscriptionsEvent) => {
+                            const r = node.relationFields.find((f) => f.type === source.relationshipName)?.fieldName;
+                            return r;
+                        },
                     },
-                },
-                direction: {
-                    type: relationDirectionEnum.NonNull,
-                    resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationshipEventDataForNode(source, node).direction;
+                    direction: {
+                        type: relationDirectionEnum.NonNull,
+                        resolve: (source: RelationshipSubscriptionsEvent) => {
+                            return getRelationshipEventDataForNode(source, node).direction;
+                        },
                     },
-                },
-            });
+                });
 
-            relationDisconnectedEvent.addFields({
-                [subscriptionEventPayloadFieldNames.disconnect]: {
-                    type: eventPayload.NonNull,
-                    resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationshipEventDataForNode(source, node).properties;
+                relationDisconnectedEvent.addFields({
+                    [subscriptionEventPayloadFieldNames.disconnect]: {
+                        type: eventPayload.NonNull,
+                        resolve: (source: RelationshipSubscriptionsEvent) => {
+                            return getRelationshipEventDataForNode(source, node).properties;
+                        },
                     },
-                },
-                relationshipName: {
-                    type: new GraphQLNonNull(GraphQLString),
-                    resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return node.relationFields.find((f) => f.type === source.relationshipName)?.properties;
+                    relationshipName: {
+                        type: new GraphQLNonNull(GraphQLString),
+                        resolve: (source: RelationshipSubscriptionsEvent) => {
+                            return node.relationFields.find((f) => f.type === source.relationshipName)?.properties;
+                        },
                     },
-                },
-                direction: {
-                    type: relationDirectionEnum.NonNull,
-                    resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationshipEventDataForNode(source, node).direction;
+                    direction: {
+                        type: relationDirectionEnum.NonNull,
+                        resolve: (source: RelationshipSubscriptionsEvent) => {
+                            return getRelationshipEventDataForNode(source, node).direction;
+                        },
                     },
-                },
-            });
+                });
+            }
         }
 
-        if (_hasProperties(relationsEventPayload)) {
+        // eslint-disable-next-line no-constant-condition
+        if (_hasProperties(relationsEventPayload) && false) {
             const resolveRelationship = (source: RelationshipSubscriptionsEvent) => {
                 const { destinationProperties: props, destinationTypename: typename } = getRelationshipEventDataForNode(
                     source,
@@ -284,7 +293,8 @@ export function generateSubscriptionTypes({
             relationshipFields,
             interfaceCommonFields,
         });
-        if (node.relationFields.length > 0) {
+        // eslint-disable-next-line no-constant-condition
+        if (node.relationFields.length > 0 && false) {
             subscriptionComposer.addFields({
                 [subscribeOperation.connected]: {
                     args: { where: connectionWhere },
