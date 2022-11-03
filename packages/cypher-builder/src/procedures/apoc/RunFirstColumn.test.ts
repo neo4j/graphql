@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { TestClause } from "../../../utils/TestClause";
-import { CypherEnvironment } from "../../../Environment";
-import { MapExpr } from "../../map/MapExpr";
-import Cypher from "../../..";
+import { TestClause } from "../../utils/TestClause";
+import { CypherEnvironment } from "../../Environment";
+import Cypher from "../..";
+import { MapExpr } from "../../expressions/map/MapExpr";
 
 describe("RunFirstColumn", () => {
     let env: CypherEnvironment;

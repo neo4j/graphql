@@ -17,21 +17,6 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "../Environment";
-import { Clause } from "./Clause";
-import type { Procedure } from "../types";
-
-// ADD yield, where and return
-export class CallProcedure extends Clause {
-    private procedure: Procedure;
-
-    constructor(procedure: Procedure) {
-        super();
-        this.procedure = procedure;
-    }
-
-    public getCypher(env: CypherEnvironment): string {
-        const procedureCypher = this.procedure.getCypher(env);
-        return `CALL ${procedureCypher}`;
-    }
+export interface Entity {
+    readonly name: string;
 }
