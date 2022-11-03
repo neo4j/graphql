@@ -210,7 +210,7 @@ describe("tck/rfs/003", () => {
                                 	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
                                 	RETURN c AS create_this5_address_Address_unique_ignored
                                 }
-                                RETURN collect(NULL)
+                                RETURN collect(NULL) AS create_var7
                             }
                             WITH create_this0
                             CALL {
@@ -304,7 +304,7 @@ describe("tck/rfs/003", () => {
                                 	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
                                 	RETURN c AS create_this5_address_Address_unique_ignored
                                 }
-                                RETURN collect(NULL)
+                                RETURN collect(NULL) AS create_var7
                             }
                             WITH create_this0
                             CALL {

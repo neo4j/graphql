@@ -1,5 +1,18 @@
 # @neo4j/graphql-toolbox
 
+## 1.4.0
+
+### Minor Changes
+
+-   [#2293](https://github.com/neo4j/graphql/pull/2293) [`4932b9752`](https://github.com/neo4j/graphql/commit/4932b9752b4c0819cfdd3e26dd14520034cae5b9) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox product usage tracking - events
+
+### Patch Changes
+
+-   [#2307](https://github.com/neo4j/graphql/pull/2307) [`965d8b7bc`](https://github.com/neo4j/graphql/commit/965d8b7bc003ddd49d3dd1d2c568dcd0c0e1f8f5) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox - link to GraphQLaaS interest form
+
+-   Updated dependencies [[`0faef6f33`](https://github.com/neo4j/graphql/commit/0faef6f3330d70126817f6496556f5ad85611ad9), [`8642d3d67`](https://github.com/neo4j/graphql/commit/8642d3d67882cda2a0e212bdcf4b56376d419509), [`3b06cafbc`](https://github.com/neo4j/graphql/commit/3b06cafbc9f8ac6bfe43997bdd8e9db784b3907b)]:
+    -   @neo4j/graphql@3.12.0
+
 ## 1.3.1
 
 ### Patch Changes

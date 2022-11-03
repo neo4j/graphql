@@ -58,7 +58,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
         });
     });
 
-    test("DISTANCE", async () => {
+    test("GT and LT", async () => {
         const query = gql`
             query {
                 movies {

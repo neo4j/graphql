@@ -106,7 +106,7 @@ describe("Relationship Properties Create Cypher", () => {
                     MERGE (create_this5)-[create_this6:ACTED_IN]->(create_this0)
                     SET
                         create_this6.screenTime = create_var4.screenTime
-                    RETURN collect(NULL)
+                    RETURN collect(NULL) AS create_var7
                 }
                 RETURN create_this0
             }
