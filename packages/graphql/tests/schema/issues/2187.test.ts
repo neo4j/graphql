@@ -26,10 +26,12 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
     test("Deprecated directive should be present on genres in generated schema", async () => {
         const typeDefs = gql`
             type Movie {
-                title: String @deprecated(reason: "Do not use")
+                title: String @deprecated(reason: "Do not use title")
                 year: Int
                 imdbRating: Float
-                genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT) @deprecated(reason: "Do not use")
+                genres: [Genre!]!
+                    @relationship(type: "IN_GENRE", direction: OUT)
+                    @deprecated(reason: "Do not use genre")
             }
 
             type Genre {
@@ -340,11 +342,11 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             type Movie {
-              genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]! @deprecated(reason: \\"Do not use\\")
-              genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection @deprecated(reason: \\"Do not use\\")
-              genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection! @deprecated(reason: \\"Do not use\\")
+              genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]! @deprecated(reason: \\"Do not use genre\\")
+              genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection @deprecated(reason: \\"Do not use genre\\")
+              genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection! @deprecated(reason: \\"Do not use genre\\")
               imdbRating: Float
-              title: String @deprecated(reason: \\"Do not use\\")
+              title: String @deprecated(reason: \\"Do not use title\\")
               year: Int
             }
 
@@ -356,7 +358,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             input MovieConnectInput {
-              genres: [MovieGenresConnectFieldInput!]
+              genres: [MovieGenresConnectFieldInput!] @deprecated(reason: \\"Do not use genre\\")
             }
 
             input MovieConnectWhere {
@@ -364,18 +366,18 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             input MovieCreateInput {
-              genres: MovieGenresFieldInput
+              genres: MovieGenresFieldInput @deprecated(reason: \\"Do not use genre\\")
               imdbRating: Float
-              title: String
+              title: String @deprecated(reason: \\"Do not use title\\")
               year: Int
             }
 
             input MovieDeleteInput {
-              genres: [MovieGenresDeleteFieldInput!]
+              genres: [MovieGenresDeleteFieldInput!] @deprecated(reason: \\"Do not use genre\\")
             }
 
             input MovieDisconnectInput {
-              genres: [MovieGenresDisconnectFieldInput!]
+              genres: [MovieGenresDisconnectFieldInput!] @deprecated(reason: \\"Do not use genre\\")
             }
 
             type MovieEdge {
@@ -497,7 +499,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             input MovieRelationInput {
-              genres: [MovieGenresCreateFieldInput!]
+              genres: [MovieGenresCreateFieldInput!] @deprecated(reason: \\"Do not use genre\\")
             }
 
             \\"\\"\\"
@@ -505,18 +507,18 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             \\"\\"\\"
             input MovieSort {
               imdbRating: SortDirection
-              title: SortDirection
+              title: SortDirection @deprecated(reason: \\"Do not use title\\")
               year: SortDirection
             }
 
             input MovieUpdateInput {
-              genres: [MovieGenresUpdateFieldInput!]
+              genres: [MovieGenresUpdateFieldInput!] @deprecated(reason: \\"Do not use genre\\")
               imdbRating: Float
               imdbRating_ADD: Float
               imdbRating_DIVIDE: Float
               imdbRating_MULTIPLY: Float
               imdbRating_SUBTRACT: Float
-              title: String
+              title: String @deprecated(reason: \\"Do not use title\\")
               year: Int
               year_DECREMENT: Int
               year_INCREMENT: Int
@@ -526,22 +528,22 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
               genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
-              genresAggregate: MovieGenresAggregateInput
+              genresAggregate: MovieGenresAggregateInput @deprecated(reason: \\"Do not use genre\\")
               genresConnection: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_SOME\` instead.\\")
-              genresConnection_ALL: MovieGenresConnectionWhere
-              genresConnection_NONE: MovieGenresConnectionWhere
+              genresConnection_ALL: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use genre\\")
+              genresConnection_NONE: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use genre\\")
               genresConnection_NOT: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_NONE\` instead.\\")
-              genresConnection_SINGLE: MovieGenresConnectionWhere
-              genresConnection_SOME: MovieGenresConnectionWhere
+              genresConnection_SINGLE: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use genre\\")
+              genresConnection_SOME: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use genre\\")
               \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
-              genres_ALL: GenreWhere
+              genres_ALL: GenreWhere @deprecated(reason: \\"Do not use genre\\")
               \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
-              genres_NONE: GenreWhere
+              genres_NONE: GenreWhere @deprecated(reason: \\"Do not use genre\\")
               genres_NOT: GenreWhere @deprecated(reason: \\"Use \`genres_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
-              genres_SINGLE: GenreWhere
+              genres_SINGLE: GenreWhere @deprecated(reason: \\"Do not use genre\\")
               \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
-              genres_SOME: GenreWhere
+              genres_SOME: GenreWhere @deprecated(reason: \\"Do not use genre\\")
               imdbRating: Float
               imdbRating_GT: Float
               imdbRating_GTE: Float
@@ -550,16 +552,16 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               imdbRating_LTE: Float
               imdbRating_NOT: Float
               imdbRating_NOT_IN: [Float]
-              title: String
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_IN: [String]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
-              title_NOT_STARTS_WITH: String
-              title_STARTS_WITH: String
+              title: String @deprecated(reason: \\"Do not use title\\")
+              title_CONTAINS: String @deprecated(reason: \\"Do not use title\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Do not use title\\")
+              title_IN: [String] @deprecated(reason: \\"Do not use title\\")
+              title_NOT: String @deprecated(reason: \\"Do not use title\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Do not use title\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Do not use title\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Do not use title\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Do not use title\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Do not use title\\")
               year: Int
               year_GT: Int
               year_GTE: Int

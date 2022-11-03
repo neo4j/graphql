@@ -65,7 +65,7 @@ describe("609", () => {
             }
 
             input DeprecatedCreateInput {
-              deprecatedField: String
+              deprecatedField: String @deprecated
             }
 
             type DeprecatedEdge {
@@ -86,26 +86,26 @@ describe("609", () => {
             Fields to sort Deprecateds by. The order in which sorts are applied is not guaranteed when specifying many fields in one DeprecatedSort object.
             \\"\\"\\"
             input DeprecatedSort {
-              deprecatedField: SortDirection
+              deprecatedField: SortDirection @deprecated
             }
 
             input DeprecatedUpdateInput {
-              deprecatedField: String
+              deprecatedField: String @deprecated
             }
 
             input DeprecatedWhere {
               AND: [DeprecatedWhere!]
               OR: [DeprecatedWhere!]
-              deprecatedField: String
-              deprecatedField_CONTAINS: String
-              deprecatedField_ENDS_WITH: String
-              deprecatedField_IN: [String]
-              deprecatedField_NOT: String
-              deprecatedField_NOT_CONTAINS: String
-              deprecatedField_NOT_ENDS_WITH: String
-              deprecatedField_NOT_IN: [String]
-              deprecatedField_NOT_STARTS_WITH: String
-              deprecatedField_STARTS_WITH: String
+              deprecatedField: String @deprecated
+              deprecatedField_CONTAINS: String @deprecated
+              deprecatedField_ENDS_WITH: String @deprecated
+              deprecatedField_IN: [String] @deprecated
+              deprecatedField_NOT: String @deprecated
+              deprecatedField_NOT_CONTAINS: String @deprecated
+              deprecatedField_NOT_ENDS_WITH: String @deprecated
+              deprecatedField_NOT_IN: [String] @deprecated
+              deprecatedField_NOT_STARTS_WITH: String @deprecated
+              deprecatedField_STARTS_WITH: String @deprecated
             }
 
             type DeprecatedsConnection {
