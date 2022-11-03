@@ -996,7 +996,7 @@ RETURN collect(DISTINCT this { .title }) AS data, collect(DISTINCT m) as meta
 
 With a delete:
 
--   Delete
+-   Delete (just nodes targeted)
 
 ```cypher
 WITH [] AS meta
@@ -1008,9 +1008,7 @@ OPTIONAL MATCH (this)<-[this_relationship:*]-(this_destination0)
 WITH this, meta, collect(DISTINCT ???? this_destination0) as this_destination0_to_delete
 WITH this, this_destination0_to_delete, REDUCE(m=meta, n IN this_destination0_to_delete | m + { event: "delete", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: ???? }) AS meta
 WITH this, this_destination0_to_delete, REDUCE(m=meta, n IN this_destination0_to_delete | m + { event: "disconnect", id_from: id(n), id_to: id(this), id: id(this_relationship), properties: {from: n {.*}, to: this {.*}, relationship: this_relationship {.*}} ,timestamp: timestamp(), relationshipName: ???? }) AS meta
-
- RETURN count(*) AS _ // fix cardinality
-
+RETURN collect(meta) as meta
 <<<<<<<<<<<<<<<<<<<<<
 DETACH DELETE this
 WITH meta
@@ -1018,7 +1016,7 @@ UNWIND meta AS m
 RETURN collect(DISTINCT m) AS meta
 ```
 
--   Delete - delete
+-   Delete - delete (relationship(s) targeted)
 
 1. Legacy foreach impl version
 
