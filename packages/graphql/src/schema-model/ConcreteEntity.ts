@@ -17,23 +17,12 @@
  * limitations under the License.
  */
 
-import { TestClause } from "../../../utils/TestClause";
-import Cypher from "../../..";
+import type { Entity } from "./Entity";
 
-describe("apoc.date", () => {
-    test("convertFormat", () => {
-        const converFormat = Cypher.apoc.date.convertFormat(
-            new Cypher.Variable(),
-            "iso_zoned_date_time",
-            "iso_offset_date_time"
-        );
+export class ConcreteEntity implements Entity {
+    public readonly name: string;
 
-        const queryResult = new TestClause(converFormat).build();
-
-        expect(queryResult.cypher).toMatchInlineSnapshot(
-            `"apoc.date.convertFormat(toString(var0), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")"`
-        );
-
-        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
-    });
-});
+    constructor({ name }: { name: string }) {
+        this.name = name;
+    }
+}

@@ -17,21 +17,23 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "../Environment";
-import { Clause } from "./Clause";
-import type { Procedure } from "../types";
+import { TestClause } from "../../utils/TestClause";
+import Cypher from "../..";
 
-// ADD yield, where and return
-export class CallProcedure extends Clause {
-    private procedure: Procedure;
+describe("apoc.date", () => {
+    test("convertFormat", () => {
+        const converFormat = Cypher.apoc.date.convertFormat(
+            new Cypher.Variable(),
+            "iso_zoned_date_time",
+            "iso_offset_date_time"
+        );
 
-    constructor(procedure: Procedure) {
-        super();
-        this.procedure = procedure;
-    }
+        const queryResult = new TestClause(converFormat).build();
 
-    public getCypher(env: CypherEnvironment): string {
-        const procedureCypher = this.procedure.getCypher(env);
-        return `CALL ${procedureCypher}`;
-    }
-}
+        expect(queryResult.cypher).toMatchInlineSnapshot(
+            `"apoc.date.convertFormat(toString(var0), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")"`
+        );
+
+        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+    });
+});
