@@ -16,10 +16,49 @@ npm update @neo4j/graphql
 
 == Updated Directives
 
-We have renamed a number of directives and their arguments, in order to make using `@neo4j/graphql` more intuative.
+We have renamed a number of directives and their arguments, in order to make using `@neo4j/graphql` more intuitive.
 
 [populatedBy-migration]
 === `@callback` renamed to `@populatedBy`
+
+Previously, there was ambiguity over the behaviour of `@callback`. As the directive is used to populate a value on input, using a JavaScript callback, it has been renamed `@populatedBy` to reflect this.
+Additionally, the `name` argument which was previously used to specify the callback that is used, has been renamed to `callback`.
+
+Therefore, the following usage of the directive would be invalid:
+
+[source, graphql, indent=0]
+----
+type User {
+  id: ID! @callback(name: "nanoid", operations: [CREATE])
+  firstName: String! 
+  surname: String!
+}
+----
+
+It would instead need to be updated to use the new directive and argument as below:
+
+[source, graphql, indent=0]
+----
+type User {
+  id: ID! @populatedBy(callback: "nanoid", operations: [CREATE])
+  firstName: String! 
+  surname: String!
+}
+----
+
+Note that before and after these changes, a callback named `nanoid` would need to be defined as below:
+
+[source, javascript, indent=0]
+----
+new Neo4jGraphQL({
+  typeDefs,
+  config: {
+    callbacks: {
+      nanoid: () => { return nanoid(); }
+    }
+  }
+});
+----
 
 
 [customResolver-migration]
