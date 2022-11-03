@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { TestClause } from "../../../utils/TestClause";
-import Cypher from "../../..";
+import { TestClause } from "../../utils/TestClause";
+import Cypher from "../..";
 
 describe("apoc.date", () => {
     test("convertFormat", () => {
