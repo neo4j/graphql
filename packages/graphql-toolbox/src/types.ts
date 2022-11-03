@@ -17,12 +17,6 @@
  * limitations under the License.
  */
 
-export interface LoginPayload {
-    username: string;
-    password?: string;
-    url: string;
-}
-
 export interface Favorite {
     id: string;
     name: string;

@@ -17,46 +17,15 @@
  * limitations under the License.
  */
 
-import { request } from "graphql-request";
 import type * as neo4j from "neo4j-driver";
 import { Storage } from "../utils/storage";
-import type { LoginPayload, Neo4jDatabase } from "../types";
+import type { Neo4jDatabase } from "../types";
 import {
     CONNECT_URL_PARAM_NAME,
     DATABASE_PARAM_NAME,
     DEFAULT_DATABASE_NAME,
     LOCAL_STATE_SELECTED_DATABASE_NAME,
 } from "../constants";
-
-const GET_DATABASES_QUERY = `
-    query {
-        workspace {
-            projects {
-            name
-                graphs {
-                    name
-                    status
-                    connection {
-                        info {
-                            version
-                            edition
-                        }
-                        principals {
-                            protocols {
-                                bolt {
-                                    tlsLevel
-                                    url
-                                    username
-                                    password
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-`;
 
 const isMultiDbUnsupportedError = (e: Error) => {
     if (
@@ -68,51 +37,6 @@ const isMultiDbUnsupportedError = (e: Error) => {
         return true;
     }
     return false;
-};
-
-export const resolveNeo4jDesktopLoginPayload = async (): Promise<LoginPayload | null> => {
-    const url = new URL(window.location.href);
-    const apiEndpoint = url.searchParams.get("neo4jDesktopApiUrl");
-    const clientId = url.searchParams.get("neo4jDesktopGraphAppClientId");
-
-    if (!apiEndpoint && !clientId) {
-        return null;
-    }
-    try {
-        const data = await request({
-            url: apiEndpoint || "",
-            document: GET_DATABASES_QUERY,
-            requestHeaders: {
-                clientId: clientId || "",
-            },
-        });
-        if (!data) {
-            return null;
-        }
-
-        const graphsData = data?.workspace?.projects
-            .map((project) => ({
-                graphs: project.graphs.filter((graph) => graph.status === "ACTIVE"),
-            }))
-            .reduce((acc, { graphs }) => acc.concat(graphs), []);
-
-        if (!graphsData.length) {
-            return null;
-        }
-
-        const { url: boltUrl, username, password } = graphsData[0].connection.principals.protocols.bolt;
-
-        // INFO: to get the current database name and all available databases use cypher "SHOW databases"
-
-        return {
-            url: boltUrl,
-            username,
-            password,
-        };
-    } catch (error) {
-        console.log("Error while fetching and processing Neo4jDesktop GraphQL API, e: ", error);
-        return null;
-    }
 };
 
 export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[] | undefined> => {
