@@ -880,6 +880,8 @@ The input type would look like:
 
 These are proposals on how to inject the given subscriptions into Cypher, the changes require for the source node, target node and relationship variables to be available on the metadata generation
 
+**!! UPDATE THESE !!**
+
 **Connect**  
 Whenever a create or update operation is executed, metadata regarding the connection events will be created
 
@@ -958,6 +960,122 @@ this0 { .name, actedIn: [ (this0)-[:ACTED_IN]->(this0_actedIn:Movie)   | this0_a
 **Disconnect**  
 Whenever a delete or update operation is executed, metadata regarding the connection events will be created:
 
+With a disconnect:
+
+```cypher
+WITH [] AS meta
+MATCH (this:`Movie`)
+WITH this, meta
+CALL {
+    WITH this, meta
+    OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
+    WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actorparam0
+    CALL {
+            WITH this_disconnect_actors0, this_disconnect_actors0_rel
+            WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel
+            UNWIND this_disconnect_actors0 as x
+            >>>
+            WITH { event: \"disconnect\", id_from: id(x), id_to: id(this), id: id(this_disconnect_actors0_rel), properties: { from: x { .* }, to: this { .* }, relationship: this_disconnect_actors0_rel { .* } }, timestamp: timestamp(), relationshipName: \"ACTED_IN\", fromTypename: \"Actor\", toTypename: \"Movie\" } as meta, x
+            <<<
+            DELETE this_disconnect_actors0_rel
+            >>>
+            RETURN collect(meta) as disconnect_meta
+            <<<
+    }
+    >>>
+    WITH disconnect_meta + meta AS meta
+    WITH collect(meta) AS disconnect_meta
+    RETURN REDUCE(m=[],m1 IN disconnect_meta | m+m1 ) as disconnect_meta
+    <<<
+}
+WITH *
+WITH *, meta + disconnect_meta AS meta
+UNWIND meta AS m
+RETURN collect(DISTINCT this { .title }) AS data, collect(DISTINCT m) as meta
+```
+
+With a delete:
+
+-   Delete
+
+```cypher
+WITH [] AS meta
+MATCH (this:`Movie`)
+WHERE this.title = $param0
+WITH this, meta + { event: "delete", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: "Movie" } AS meta
+>>>>>>>>>>>>>>>>>>>>>
+OPTIONAL MATCH (this)<-[this_relationship:*]-(this_destination0)
+WITH this, meta, collect(DISTINCT ???? this_destination0) as this_destination0_to_delete
+WITH this, this_destination0_to_delete, REDUCE(m=meta, n IN this_destination0_to_delete | m + { event: "delete", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: ???? }) AS meta
+WITH this, this_destination0_to_delete, REDUCE(m=meta, n IN this_destination0_to_delete | m + { event: "disconnect", id_from: id(n), id_to: id(this), id: id(this_relationship), properties: {from: n {.*}, to: this {.*}, relationship: this_relationship {.*}} ,timestamp: timestamp(), relationshipName: ???? }) AS meta
+
+ RETURN count(*) AS _ // fix cardinality
+
+<<<<<<<<<<<<<<<<<<<<<
+DETACH DELETE this
+WITH meta
+UNWIND meta AS m
+RETURN collect(DISTINCT m) AS meta
+```
+
+-   Delete - delete
+
+1. Legacy foreach impl version
+
+```cypher
+WITH [] AS meta
+MATCH (this:`Movie`)
+WHERE this.title = $param0
+WITH this, meta + { event: "delete", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: "Movie" } AS meta
+WITH this, meta
+OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
+WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
+WITH this, meta, collect(DISTINCT this_actors0) as this_actors0_to_delete
+WITH this, this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: "delete", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: "Actor" }) AS meta
+>>>
+WITH this, this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: "disconnect", id_from: id(n), id_to: id(this), id: id(this_actors0_relationship), properties: {from: n {.*}, to: this {.*}, relationship: this_actors0_relationship {.*}} ,timestamp: timestamp(), relationshipName: "ACTED_IN" }) AS meta
+<<<
+CALL {
+        WITH this_actors0_to_delete
+        UNWIND this_actors0_to_delete AS x
+        DETACH DELETE x
+        RETURN count(*) AS _
+}
+DETACH DELETE this
+WITH meta
+UNWIND meta AS m
+RETURN collect(DISTINCT m) AS meta
+```
+
+2. Uniform with disconnect impl version
+
+```cypher
+WITH [] AS meta
+MATCH (this:`Movie`)
+WHERE this.title = $param0
+WITH this, meta + { event: "delete", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: "Movie" } AS meta
+WITH this, meta
+OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
+WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
+WITH this, meta, collect(DISTINCT this_actors0) as this_actors0_to_delete
+CALL {
+        WITH this_actors0_to_delete, meta
+        UNWIND this_actors0_to_delete AS n
+        >>>
+        WITH n, meta + { event: "delete", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: "Actor" } + { event: "disconnect", id_from: id(n), id_to: id(this), id: id(this_actors0_relationship), properties: {from: n {.*}, to: this {.*}, relationship: this_actors0_relationship {.*}} ,timestamp: timestamp(), relationshipName: "ACTED_IN" } as meta
+        <<<
+        DETACH DELETE n
+        >>>
+        RETURN collect(meta) as disconnect_meta
+        <<<
+}
+DETACH DELETE this
+UNWIND meta AS m
+RETURN collect(DISTINCT m) AS meta
+```
+
+---
+
 ```cypher
 WITH [] AS meta
 MATCH (this:Movie)
@@ -977,6 +1095,8 @@ WITH meta
 UNWIND meta AS m
 RETURN collect(DISTINCT m) AS meta
 ```
+
+---
 
 With the provided metadata, subscription events should be triggered for both nodes, taking into account all of the relationship properties to generate the payload.
 
