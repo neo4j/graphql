@@ -44,34 +44,39 @@ export const resolveNeo4jDesktopLoginPayload = async (): Promise<LoginPayload | 
         return null;
     }
 
-    const context = (await window.neo4jDesktopApi.getContext()) as Record<string, any>;
-    if (!context) {
+    try {
+        const context = (await window.neo4jDesktopApi.getContext()) as Record<string, any>;
+        if (!context) {
+            return null;
+        }
+
+        const graphsData = context.projects
+            .map((project) => ({
+                graphs: project.graphs.filter((graph) => graph.status === "ACTIVE"),
+            }))
+            .reduce((acc, { graphs }) => acc.concat(graphs), []);
+        if (!graphsData.length) {
+            return null;
+        }
+
+        const boltProtocolData = graphsData[0].connection.configuration.protocols.bolt;
+        if (!boltProtocolData) {
+            return null;
+        }
+
+        const { url: boltUrl, username, password } = boltProtocolData;
+
+        // INFO: to get the current database name and all available databases use cypher "SHOW databases"
+
+        return {
+            url: boltUrl,
+            username,
+            password,
+        };
+    } catch (error) {
+        console.log("Error while fetching and processing window Neo4jDesktopAPI, error: ", error);
         return null;
     }
-
-    const graphsData = context.projects
-        .map((project) => ({
-            graphs: project.graphs.filter((graph) => graph.status === "ACTIVE"),
-        }))
-        .reduce((acc, { graphs }) => acc.concat(graphs), []);
-    if (!graphsData.length) {
-        return null;
-    }
-
-    const boltProtocolData = graphsData[0].connection.configuration.protocols.bolt;
-    if (!boltProtocolData) {
-        return null;
-    }
-
-    const { url: boltUrl, username, password } = boltProtocolData;
-
-    // INFO: to get the current database name and all available databases use cypher "SHOW databases"
-
-    return {
-        url: boltUrl,
-        username,
-        password,
-    };
 };
 
 export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[] | undefined> => {
