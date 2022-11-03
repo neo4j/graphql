@@ -40,7 +40,7 @@ describe("multi-database", () => {
         try {
             // Create DB
             const createSession = await neo4j.getSession();
-            await createSession.executeWrite((tx) => tx.run(`CREATE DATABASE \`${dbName}\``));
+            await createSession.executeWrite((tx) => tx.run(`CREATE DATABASE \`${dbName}\` WAIT`));
             await createSession.close();
 
             // Write data

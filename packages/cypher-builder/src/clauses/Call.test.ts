@@ -71,7 +71,7 @@ describe("CypherBuilder Call", () => {
             `);
     });
 
-    it("CALL with with", () => {
+    it("CALL with inner with", () => {
         const node = new Cypher.Node({ labels: ["Movie"] });
 
         const matchClause = new Cypher.Match(node)
@@ -87,6 +87,32 @@ describe("CypherBuilder Call", () => {
                 WHERE $param0 = $param1
                 RETURN this0.title AS movie
             }"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "aa",
+              "param1": "bb",
+            }
+        `);
+    });
+
+    it("CALL with external with", () => {
+        const node = new Cypher.Node({ labels: ["Movie"] });
+
+        const matchClause = new Cypher.Match(node)
+            .where(Cypher.eq(new Cypher.Param("aa"), new Cypher.Param("bb")))
+            .return([node.property("title"), "movie"]);
+
+        const clause = new Cypher.Call(matchClause).with("*");
+        const queryResult = clause.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "CALL {
+                MATCH (this0:\`Movie\`)
+                WHERE $param0 = $param1
+                RETURN this0.title AS movie
+            }
+            WITH *"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`

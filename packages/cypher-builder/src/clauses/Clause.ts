@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
-import util from "util";
 import { CypherASTNode } from "../CypherASTNode";
 import { CypherEnvironment, EnvPrefix } from "../Environment";
 import type { CypherResult } from "../types";
 import { convertToCypherParams } from "../utils/convert-to-cypher-params";
 import { padBlock } from "../utils/utils";
+
+const customInspectSymbol = Symbol.for("nodejs.util.inspect.custom");
 
 /** Represents a clause AST node */
 export abstract class Clause extends CypherASTNode {
@@ -47,9 +48,14 @@ export abstract class Clause extends CypherASTNode {
         return new CypherEnvironment(prefix);
     }
 
-    /** Custom log for console.log */
-    [util.inspect.custom](): string {
+    // Custom string for browsers and templating
+    public toString() {
         const cypher = padBlock(this.build().cypher);
         return `<Clause ${this.constructor.name}> """\n${cypher}\n"""`;
+    }
+
+    // /** Custom log for console.log in Node */
+    [customInspectSymbol](): string {
+        return this.toString();
     }
 }
