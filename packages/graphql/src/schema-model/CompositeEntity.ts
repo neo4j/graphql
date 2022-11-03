@@ -17,21 +17,16 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "../Environment";
-import { Clause } from "./Clause";
-import type { Procedure } from "../types";
+import type { ConcreteEntity } from "./ConcreteEntity";
+import type { Entity } from "./Entity";
 
-// ADD yield, where and return
-export class CallProcedure extends Clause {
-    private procedure: Procedure;
+/** Entity for abstract GraphQL types, Interface and Union */
+export class CompositeEntity implements Entity {
+    public readonly name: string;
+    public concreteEntities: ConcreteEntity[];
 
-    constructor(procedure: Procedure) {
-        super();
-        this.procedure = procedure;
-    }
-
-    public getCypher(env: CypherEnvironment): string {
-        const procedureCypher = this.procedure.getCypher(env);
-        return `CALL ${procedureCypher}`;
+    constructor({ name, concreteEntities }: { name: string; concreteEntities: ConcreteEntity[] }) {
+        this.name = name;
+        this.concreteEntities = concreteEntities;
     }
 }

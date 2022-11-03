@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver} from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { int, isInt } from "neo4j-driver";
 import { generate } from "randomstring";
 import type { ValueNode } from "graphql";
@@ -89,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
 
         databaseName = generate({ readable: true, charset: "alphabetic" });
 
-        const cypher = `CREATE DATABASE ${databaseName}`;
+        const cypher = `CREATE DATABASE ${databaseName} WAIT`;
         const session = driver.session();
         try {
             await session.run(cypher);
