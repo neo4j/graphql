@@ -73,7 +73,7 @@ function createRelationshipFields({
         const deprecatedDirectives = graphqlDirectivesToCompose(
             rel.otherDirectives.filter((directive) => directive.name.value === "deprecated")
         );
-        
+
         if (rel.properties) {
             relFields = relationshipPropertyFields.get(rel.properties);
 
@@ -866,29 +866,47 @@ function createRelationshipFields({
         }
 
         nodeRelationInput.addFields({
-            [rel.fieldName]: create,
+            [rel.fieldName]: {
+                type: create,
+                directives: deprecatedDirectives,
+            },
         });
 
         if (!(composeNode instanceof InterfaceTypeComposer)) {
             nodeCreateInput.addFields({
-                [rel.fieldName]: nodeFieldInputName,
+                [rel.fieldName]: {
+                    type: nodeFieldInputName,
+                    directives: deprecatedDirectives,
+                },
             });
         }
 
         nodeUpdateInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldUpdateInputName}!]` : nodeFieldUpdateInputName,
+            [rel.fieldName]: {
+                type: rel.typeMeta.array ? `[${nodeFieldUpdateInputName}!]` : nodeFieldUpdateInputName,
+                directives: deprecatedDirectives,
+            },
         });
 
         nodeDeleteInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
+            [rel.fieldName]: {
+                type: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
+                directives: deprecatedDirectives,
+            },
         });
 
         nodeConnectInput.addFields({
-            [rel.fieldName]: connect,
+            [rel.fieldName]: {
+                type: connect,
+                directives: deprecatedDirectives,
+            },
         });
 
         nodeDisconnectInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldDisconnectInputName}!]` : nodeFieldDisconnectInputName,
+            [rel.fieldName]: {
+                type: rel.typeMeta.array ? `[${nodeFieldDisconnectInputName}!]` : nodeFieldDisconnectInputName,
+                directives: deprecatedDirectives,
+            },
         });
 
         if (n.uniqueFields.length) {
