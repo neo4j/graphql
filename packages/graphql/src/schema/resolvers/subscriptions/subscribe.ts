@@ -66,17 +66,22 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
 
         if (["connect", "disconnect"].includes(type)) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
-                const relationEventPayload = data[0] as RelationshipSubscriptionsEvent;
-                const isOfRelevantType =
-                    relationEventPayload.toTypename === node.name || relationEventPayload.fromTypename === node.name;
-                if (!isOfRelevantType) {
-                    return false;
-                }
-                const relationFieldName = node.relationFields.find(
-                    (r) => r.type === relationEventPayload.relationshipName
-                )?.fieldName;
+                // eslint-disable-next-line no-constant-condition
+                if (false) {
+                    const relationEventPayload = data[0] as RelationshipSubscriptionsEvent;
+                    const isOfRelevantType =
+                        relationEventPayload.toTypename === node.name ||
+                        relationEventPayload.fromTypename === node.name;
+                    if (!isOfRelevantType) {
+                        return false;
+                    }
+                    const relationFieldName = node.relationFields.find(
+                        (r) => r.type === relationEventPayload.relationshipName
+                    )?.fieldName;
 
-                return !!relationFieldName && subscriptionWhere(args.where, data[0], node) && false;
+                    return !!relationFieldName && subscriptionWhere(args.where, data[0], node);
+                }
+                return false;
             });
         }
 

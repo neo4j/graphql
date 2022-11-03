@@ -130,8 +130,8 @@ export type SubscriptionEvents = {
     create: string;
     update: string;
     delete: string;
-    connect: string;
-    disconnect: string;
+    // connect: string;
+    // disconnect: string;
 };
 
 class Node extends GraphElement {
@@ -278,8 +278,8 @@ class Node extends GraphElement {
             create: `${pascalCaseSingular}CreatedEvent`,
             update: `${pascalCaseSingular}UpdatedEvent`,
             delete: `${pascalCaseSingular}DeletedEvent`,
-            connect: `${pascalCaseSingular}ConnectedEvent`,
-            disconnect: `${pascalCaseSingular}DisconnectedEvent`,
+            // connect: `${pascalCaseSingular}ConnectedEvent`,
+            // disconnect: `${pascalCaseSingular}DisconnectedEvent`,
         };
     }
 
@@ -290,8 +290,8 @@ class Node extends GraphElement {
             create: `created${pascalCaseSingular}`,
             update: `updated${pascalCaseSingular}`,
             delete: `deleted${pascalCaseSingular}`,
-            connect: `connected${pascalCaseSingular}`,
-            disconnect: `disconnected${pascalCaseSingular}`,
+            // connect: `connected${pascalCaseSingular}`,
+            // disconnect: `disconnected${pascalCaseSingular}`,
         };
     }
 

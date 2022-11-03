@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { int } from "neo4j-driver";
 import type Node from "../../../../classes/Node";
 import type { PrimitiveField, RelationshipSubscriptionsEvent } from "../../../../types";
