@@ -251,3 +251,43 @@ The above query would be expected to return results in the following format:
 ----
 
 ==== Argument changes
+
+The following changes have been made to `@fulltext` arguments:
+* `queryName` has been added to specify a custom name for the top-level query that is generated.
+* `name` renamed to `indexName` to avoid ambiguity with the new `queryName` argument.
+
+These changes means that the following type definition is now invalid:
+
+[source, graphql, indent=0]
+----
+type Movie @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) {
+  title: String!
+}
+----
+
+The `name` argument would need to be replaced with `indexName` as below:
+
+[source, graphql, indent=0]
+----
+type Movie @fulltext(indexes: [{ indexName: "MovieTitle", fields: ["title"] }]) {
+  title: String!
+}
+----
+
+The `queryName` argument can be used as below:
+
+[source, graphql, indent=0]
+----
+type Movie @fulltext(indexes: [{ queryName: "moviesByTitle", indexName: "MovieTitle", fields: ["title"] }]) {
+  title: String!
+}
+----
+
+This means the top-level query would now be `moviesByTitle` instead of `movieFulltextMovieTitle`:
+
+[source, graphql, indent=0]
+----
+type Query {
+  moviesByTitle(phrase: String!, where: MovieFulltextWhere, sort: [MovieFulltextSort!], limit: Int, offset: Int): [MovieFulltextResult!]!
+}
+----
