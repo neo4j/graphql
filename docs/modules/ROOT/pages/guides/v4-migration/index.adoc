@@ -113,6 +113,26 @@ As a result, check are now performed to ensure that every `@customResolver` fiel
 [plural-migration]
 === `plural` argument removed from `@node` and replaced with `@plural`
 
+How a type name is pluralised has nothing to do with nodes in the database. As a result, having a `plural` argument on the `@node` directive did not make sense.
+As a result, the `plural` argument of `@node` has been removed and replaced with a new `@plural` directive. The `@plural` directive takes the pluralised type name using the `value` argument.
+
+This means that the following type definition is invalid:
+
+[source, graphql, indent=0]
+----
+type Tech @node(label: "TechDB", plural: "Techs") {
+  name: String
+}
+----
+
+It would need to be updated to use the new directive as below:
+
+[source, graphql, indent=0]
+----
+type Tech @node(label: "TechDB") @plural(value: "Techs") {
+  name: String
+}
+----
 
 [full-text-migration]
 === `@fulltext` changes
