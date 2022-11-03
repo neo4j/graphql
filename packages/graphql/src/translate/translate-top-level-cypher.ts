@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo, GraphQLUnionType } from "graphql";
+import type { GraphQLResolveInfo } from "graphql";
 import createProjectionAndParams from "./create-projection-and-params";
 import type { Context, CypherField } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
@@ -25,6 +25,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import Cypher from "@neo4j/cypher-builder";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "./create-auth-param";
+import { CompositeEntity } from "../schema-model/CompositeEntity";
 
 export function translateTopLevelCypher({
     context,
@@ -79,14 +80,13 @@ export function translateTopLevelCypher({
 
     const unionWhere: string[] = [];
 
-    const graphqlType = context.schema.getType(field.typeMeta.name);
-    const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
+    const entity = context.entities.get(field.typeMeta.name);
 
-    if (referenceUnion) {
+    if (entity instanceof CompositeEntity) {
         const headStrs: string[] = [];
         const referencedNodes =
-            referenceUnion.types
-                ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
+            entity.concreteEntities
+                ?.map((u) => context.nodes.find((n) => n.name === u.name))
                 ?.filter((b) => b !== undefined)
                 ?.filter((n) => Object.keys(resolveTree.fieldsByTypeName).includes(n?.name ?? "")) || [];
 
@@ -196,7 +196,7 @@ export function translateTopLevelCypher({
 
         if (field.isScalar || field.isEnum) {
             cypherStrs.push(`RETURN this`);
-        } else if (referenceUnion) {
+        } else if (entity instanceof CompositeEntity) {
             cypherStrs.push(`RETURN head( ${projectionStr} ) AS this`);
         } else {
             cypherStrs.push(`RETURN this ${projectionStr} AS this`);
