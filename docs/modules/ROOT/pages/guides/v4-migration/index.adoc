@@ -146,7 +146,7 @@ Full-text queries now need to be performed using a top-level query, instead of b
 
 These top-level queries can be used to return the full-text score, which indicates the confidence of a match, as well as the nodes that have been matched.
 
-The new top-level queries accept the following arguments:
+.The new top-level queries accept the following arguments:
 * `phrase` which specifies the string to search for in the full-text index.
 * `where` which accepts a min/max score as well as the normal filters available on a node.
 * `sort` which can be used to sort using the score and node attributes.
@@ -252,7 +252,7 @@ The above query would be expected to return results in the following format:
 
 ==== Argument changes
 
-The following changes have been made to `@fulltext` arguments:
+.The following changes have been made to `@fulltext` arguments:
 * `queryName` has been added to specify a custom name for the top-level query that is generated.
 * `name` renamed to `indexName` to avoid ambiguity with the new `queryName` argument.
 
