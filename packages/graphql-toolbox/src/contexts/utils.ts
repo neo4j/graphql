@@ -64,12 +64,12 @@ export const resolveNeo4jDesktopLoginPayload = async (): Promise<LoginPayload | 
             return null;
         }
 
-        const { url: boltUrl, username, password } = boltProtocolData;
+        const { url, username, password } = boltProtocolData;
 
         // INFO: to get the current database name and all available databases use cypher "SHOW databases"
 
         return {
-            url: boltUrl,
+            url,
             username,
             password,
         };
