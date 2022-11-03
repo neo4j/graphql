@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as neo4j from "neo4j-driver";
 import {
     LOCAL_STATE_CONNECTION_URL,
@@ -27,8 +27,13 @@ import {
     LOCAL_STATE_SELECTED_DATABASE_NAME,
     VERIFY_CONNECTION_INTERVAL_MS,
 } from "../constants";
-import { checkDatabaseHasData, getDatabases, resolveSelectedDatabaseName } from "./utils";
-import { Neo4jDatabase } from "../types";
+import {
+    checkDatabaseHasData,
+    getDatabases,
+    resolveNeo4jDesktopLoginPayload,
+    resolveSelectedDatabaseName,
+} from "./utils";
+import { LoginPayload, Neo4jDatabase } from "../types";
 import { Storage } from "../utils/storage";
 import { getURLProtocolFromText } from "../utils/utils";
 
@@ -124,6 +129,10 @@ export function AuthProvider(props: any) {
         },
     });
 
+    useEffect(() => {
+        resolveNeo4jDesktopLoginPayload().then(processLoginPayload.bind(null, value)).catch(console.error);
+    }, []);
+
     const checkForDatabaseUpdates = async (driver: neo4j.Driver, setValue: any) => {
         try {
             await driver.verifyConnectivity();
@@ -131,6 +140,32 @@ export function AuthProvider(props: any) {
             setValue((values) => ({ ...values, isConnected: true, databases: databases || [] }));
         } catch (err) {
             setValue((values) => ({ ...values, isConnected: false }));
+        }
+    };
+
+    const processLoginPayload = (value: State | undefined, loginPayloadFromDesktop: LoginPayload | null) => {
+        let loginPayload: LoginPayload | null = null;
+        if (loginPayloadFromDesktop) {
+            loginPayload = loginPayloadFromDesktop;
+            setValue((values) => ({ ...values, isNeo4jDesktop: true }));
+        } else {
+            const storedConnectionUsername = Storage.retrieve(LOCAL_STATE_CONNECTION_USERNAME);
+            const storedConnectionUrl = Storage.retrieve(LOCAL_STATE_CONNECTION_URL);
+            if (storedConnectionUrl && storedConnectionUsername) {
+                loginPayload = {
+                    username: storedConnectionUsername,
+                    url: storedConnectionUrl,
+                };
+            }
+        }
+        if (loginPayload?.password && value && !value.driver) {
+            value
+                .login({
+                    username: loginPayload.username,
+                    password: loginPayload.password,
+                    url: loginPayload.url,
+                })
+                .catch((error) => console.log(error));
         }
     };
 

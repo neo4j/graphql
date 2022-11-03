@@ -17,6 +17,12 @@
  * limitations under the License.
  */
 
+export interface LoginPayload {
+    username: string;
+    password?: string;
+    url: string;
+}
+
 export interface Favorite {
     id: string;
     name: string;
@@ -41,3 +47,13 @@ export enum ConstraintState {
     create,
     ignore,
 }
+
+export {};
+declare global {
+    interface Window {
+        neo4jDesktopApi: {
+            getContext: () => Promise<Record<string, unknown> | unknown>;
+        };
+    }
+}
+window.neo4jDesktopApi = window.neo4jDesktopApi || {};

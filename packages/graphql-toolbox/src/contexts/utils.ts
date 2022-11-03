@@ -19,7 +19,7 @@
 
 import type * as neo4j from "neo4j-driver";
 import { Storage } from "../utils/storage";
-import type { Neo4jDatabase } from "../types";
+import type { LoginPayload, Neo4jDatabase } from "../types";
 import {
     CONNECT_URL_PARAM_NAME,
     DATABASE_PARAM_NAME,
@@ -37,6 +37,41 @@ const isMultiDbUnsupportedError = (e: Error) => {
         return true;
     }
     return false;
+};
+
+export const resolveNeo4jDesktopLoginPayload = async (): Promise<LoginPayload | null> => {
+    if (!window?.neo4jDesktopApi?.getContext) {
+        return null;
+    }
+
+    const context = (await window.neo4jDesktopApi.getContext()) as Record<string, any>;
+    if (!context) {
+        return null;
+    }
+
+    const graphsData = context.projects
+        .map((project) => ({
+            graphs: project.graphs.filter((graph) => graph.status === "ACTIVE"),
+        }))
+        .reduce((acc, { graphs }) => acc.concat(graphs), []);
+    if (!graphsData.length) {
+        return null;
+    }
+
+    const boltProtocolData = graphsData[0].connection.configuration.protocols.bolt;
+    if (!boltProtocolData) {
+        return null;
+    }
+
+    const { url: boltUrl, username, password } = boltProtocolData;
+
+    // INFO: to get the current database name and all available databases use cypher "SHOW databases"
+
+    return {
+        url: boltUrl,
+        username,
+        password,
+    };
 };
 
 export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[] | undefined> => {
