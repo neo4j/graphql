@@ -59,7 +59,7 @@ describe("@fulltext directive", () => {
 
         databaseName = generate({ readable: true, charset: "alphabetic" });
 
-        const cypher = `CREATE DATABASE ${databaseName}`;
+        const cypher = `CREATE DATABASE ${databaseName} WAIT`;
         const session = driver.session();
 
         try {

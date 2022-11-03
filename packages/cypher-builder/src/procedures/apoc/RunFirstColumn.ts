@@ -17,18 +17,18 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../../../CypherASTNode";
-import type { Clause } from "../../../clauses/Clause";
-import type { Variable } from "../../../variables/Variable";
-import type { CypherEnvironment } from "../../../Environment";
-import type { MapExpr } from "../../map/MapExpr";
+import { CypherASTNode } from "../../CypherASTNode";
+import type { Clause } from "../../clauses/Clause";
+import type { Variable } from "../../variables/Variable";
+import type { CypherEnvironment } from "../../Environment";
+import type { MapExpr } from "../../expressions/map/MapExpr";
 
 export class RunFirstColumn extends CypherASTNode {
     private innerClause: Clause | string;
     private variables: Variable[] | MapExpr;
     private expectMultipleValues: boolean;
 
-    constructor(clause: Clause | string, variables: Variable[] | MapExpr, expectMultipleValues = true) {
+    constructor(clause: Clause | string, variables: Variable[] | MapExpr = [], expectMultipleValues = true) {
         super();
         this.innerClause = clause;
         this.expectMultipleValues = expectMultipleValues;
