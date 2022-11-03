@@ -20,7 +20,7 @@
 import Cypher from "../..";
 
 describe("CypherBuilder concat", () => {
-    it("Should concatenate 2 clauses", () => {
+    it("concatenates Match and Return", () => {
         const node = new Cypher.Node({ labels: ["Movie"] });
 
         const clause = new Cypher.Match(node).where(Cypher.eq(new Cypher.Param("aa"), new Cypher.Param("bb")));
@@ -39,6 +39,39 @@ describe("CypherBuilder concat", () => {
             Object {
               "param0": "aa",
               "param1": "bb",
+            }
+        `);
+    });
+
+    test("Create two nodes by concatenating clauses", () => {
+        const titleParam = new Cypher.Param("The Matrix");
+
+        const movie1 = new Cypher.Node({
+            labels: ["Movie"],
+        });
+
+        const movie2 = new Cypher.Node({
+            labels: ["Movie"],
+        });
+
+        // Note that both nodes share the same param
+        const create1 = new Cypher.Create(movie1).set([movie1.property("title"), titleParam]);
+        const create2 = new Cypher.Create(movie2).set([movie2.property("title"), titleParam]);
+
+        const queryResult = Cypher.concat(create1, create2).build();
+
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "CREATE (this0:\`Movie\`)
+            SET
+                this0.title = $param0
+            CREATE (this1:\`Movie\`)
+            SET
+                this1.title = $param0"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "The Matrix",
             }
         `);
     });
