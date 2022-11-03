@@ -1,8 +1,6 @@
 ## Problem
 
-Currently, the `unwind-create` does not supports the auth capability, this RFC wants to extends the RFC-024 to support fully the auth mechanism.
-The `@auth` directive implements both Authorization and Authentification mechanism, this RFC will consider only the Authorization mechanism as it seems
-that are the only ones impacted by the unwind-create RFC.
+Currently, the `unwind-create` does not supports the auth capability, this RFC wants to extends the RFC-024 to fully support the auth mechanism.
 
 ### Examples
 
@@ -76,7 +74,8 @@ CALL {
 RETURN [ this0 { .title }, this1 { .title }] AS data
 ```
 
-As it's visible by the example, for every `CREATE` subquery the statement `CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])` is introduced to check if the request is authorised or not.
+As it's visible by the example, for every `CREATE` subquery the statement `apoc.util.validate` is introduced to check if the request is authorised or not.
+This mechanism is not implemented in the first version of unwind create and this RFC wants to describe a possible implementation of it
 
 ## Proposed Solution
 
@@ -87,11 +86,81 @@ Authorization in the Neo4jGraphQL library is built on top of these mechanism:
 -   `Where`
 -   `Allow`
 
-As `Where` and `Allow` seems to have no impact on the unwind-create, this solution will focus on the `Bind` and `Roles` rule,
+`Where` and `Allow` seems to have no impact during creates, for this reason this solution is focused on the `Bind` and `Roles` rule.
+
+There is a common pattern in how the `@auth` directive could be used in the type definitions and it could be resumed as:
+
+-   ### Type auth
+
+    **Schema**
+
+    ```graphql
+    type User {
+        id: ID
+        name: String
+    }
+
+    type Post @auth(rules: [{ operations: [CREATE], roles: ["admin"] }]) {
+        title: String
+        content: String
+        moderators: [User!]! @relationship(type: "MODERATES_POST", direction: IN)
+    }
+    ```
+
+-   ### Field-level auth
+
+    **Schema**
+
+    ```graphql
+    type User {
+        id: ID
+        name: String
+    }
+
+    type Post {
+        title: String @auth(rules: [{ operations: [CREATE], roles: ["admin"] }])
+        content: String
+        moderators: [User!]! @relationship(type: "MODERATES_POST", direction: IN)
+    }
+    ```
+
+-   ### Nested type auth
+
+    **Schema**
+
+    ```graphql
+    type User @auth(rules: [{ operations: [CREATE], roles: ["admin"] }]) {
+        id: ID
+        name: String
+    }
+
+    type Post {
+        title: String
+        content: String
+        moderators: [User!]! @relationship(type: "MODERATES_POST", direction: IN)
+    }
+    ```
+
+-   ### Nested type auth at field-level auth
+
+    **Schema**
+
+    ```graphql
+    type User {
+        id: ID @auth(rules: [{ operations: [CREATE], roles: ["admin"] }])
+        name: String
+    }
+
+    type Post {
+        title: String
+        content: String
+        moderators: [User!]! @relationship(type: "MODERATES_POST", direction: IN)
+    }
+    ```
 
 ### Roles rule
 
-Given the following typeDefinitions:
+**Schema**
 
 ```graphql
 type User {
@@ -105,7 +174,7 @@ type Post @auth(rules: [{ operations: [CREATE], roles: ["admin"] }]) {
 }
 ```
 
-the following mutation:
+**GraphQL**
 
 ```graphql
 mutation CreatePosts {
@@ -117,7 +186,7 @@ mutation CreatePosts {
 }
 ```
 
-The current cypher generated is:
+**Current Cypher**
 
 ```cypher
 CALL {
@@ -148,7 +217,7 @@ params:
 }
 ```
 
-The same behaviour is achievable also in the unwind-create format, as:
+**Unwind Cypher**
 
 ```cypher
 UNWIND $create_param0 AS create_var1
@@ -179,7 +248,7 @@ params:
 
 ### Field level definition
 
-Given the following typeDefinitions:
+**Schema**
 
 ```graphql
 type User {
@@ -194,7 +263,7 @@ type Post {
 }
 ```
 
-the following mutation:
+**GraphQL**
 
 ```graphql
 mutation CreatePosts {
@@ -206,7 +275,7 @@ mutation CreatePosts {
 }
 ```
 
-The current cypher generated is:
+**Current Cypher**
 
 ```cypher
 CALL {
@@ -243,7 +312,7 @@ params:
 }
 ```
 
-To achieve the same behaviour using the unwind-create format:
+**Unwind Cypher**
 
 ```cypher
 UNWIND $create_param0 AS create_var1
@@ -285,9 +354,9 @@ params:
 }
 ```
 
-### Nested auth
+### Nested role
 
-Given the following type definitions:
+**Schema**
 
 ```graphql
 type User @auth(rules: [{ operations: [CREATE], roles: ["admin"] }]) {
@@ -301,6 +370,8 @@ type Post {
     moderators: [User!]! @relationship(type: "MODERATES_POST", direction: IN)
 }
 ```
+
+**GraphQL**
 
 ```graphql
 mutation CreatePosts {
@@ -324,7 +395,7 @@ mutation CreatePosts {
 }
 ```
 
-The current cypher generated is:
+**Current Cypher**
 
 ```cypher
 CALL {
@@ -370,7 +441,7 @@ params:
 }
 ```
 
---- unwind
+**Unwind Cypher**
 
 ```cypher
 UNWIND $create_param0 AS create_var2
@@ -429,9 +500,9 @@ params:
 }
 ```
 
-#### Field level definition
+#### Nested Role - Field level definition
 
-Given the following type definitions:
+**Schema**
 
 ```graphql
 type User {
@@ -445,6 +516,8 @@ type Post {
     moderators: [User!]! @relationship(type: "MODERATES_POST", direction: IN)
 }
 ```
+
+**GraphQL**
 
 ```graphql
 mutation CreatePosts {
@@ -468,7 +541,7 @@ mutation CreatePosts {
 }
 ```
 
-The current cypher generated is:
+**Current Cypher**
 
 ```cypher
 CALL {
@@ -519,7 +592,7 @@ params:
 }
 ```
 
---- unwind
+**Unwind Cypher**
 
 ```cypher
 UNWIND $create_param0 AS create_var2
@@ -585,7 +658,7 @@ params:
 
 ### Bind
 
-Given the following type definitions:
+**Schema**
 
 ```graphql
 type User {
@@ -601,6 +674,8 @@ type Post @auth(rules: [{ operations: [CREATE], bind: { authorId: "$jwt.sub" } }
 }
 ```
 
+**GraphQL**
+
 ```graphql
 mutation CreatePosts {
     createPosts(input: [{ authorId: "new-id-1", content: "A wonderful post!" }]) {
@@ -615,7 +690,7 @@ mutation CreatePosts {
 }
 ```
 
-generates the following cypher:
+**Current Cypher**
 
 ```cypher
 CALL {
@@ -640,7 +715,7 @@ params:
 }
 ```
 
--- unwind
+**Unwind Cypher**
 
 ```cypher
 UNWIND $create_param0 AS create_var1
@@ -670,9 +745,10 @@ params:
   "resolvedCallbacks": {}
 }
 ```
-#### field level auth
 
-Given the following type definitions:
+#### Bind - Field-level bind
+
+**Schema**
 
 ```graphql
 type User {
@@ -688,9 +764,11 @@ type Post {
 }
 ```
 
+**GraphQL**
+
 ```graphql
 mutation CreatePosts {
-    createPosts(input: [{ authorId: "new-id-1", content: "A wonderful post!" }, { content: "A wonderful post!" } ]) {
+    createPosts(input: [{ authorId: "new-id-1", content: "A wonderful post!" }, { content: "A wonderful post!" }]) {
         posts {
             title
             content
@@ -702,7 +780,7 @@ mutation CreatePosts {
 }
 ```
 
-it generates:
+**Cypher**
 
 ```cypher
 CALL {
@@ -722,6 +800,7 @@ RETURN [this0 { .content }, this1 { .content }] AS data
 ```
 
 params:
+
 ```javascript
 {
   "this0auth_param0": "new-id-1",
@@ -732,9 +811,8 @@ params:
 }
 ```
 
--- unwind
+**Unwind Cypher**
 
-cypher:
 ```
 UNWIND $create_param0 AS create_var1
 CALL {
@@ -743,6 +821,8 @@ CALL {
     SET
         create_this0.authorId = create_var1.authorId,
         create_this0.content = create_var1.content
+    WITH create_var1, create_this0
+    CALL apoc.util.validate(create_var1.authorId IS NOT NULL and NOT ((create_this0.authorId IS NOT NULL AND create_this0.authorId = $this0auth_param0)), "@neo4j/graphql/FORBIDDEN", [0])
     RETURN create_this0
 }
 RETURN collect(create_this0 { .content }) AS data
@@ -765,6 +845,303 @@ params:
 }
 ```
 
+#### Bind - Nested Bind
+
+**Schema**
+
+```graphql
+type User @auth(rules: [{ operations: [CREATE], bind: { id: "$jwt.sub" } }]) {
+    id: ID
+    name: String
+}
+
+type Post {
+    title: String
+    content: String
+    moderators: [User!]! @relationship(type: "MODERATES_POST", direction: IN)
+}
+```
+
+**GraphQL**
+
+```graphql
+mutation CreatePosts {
+    createPosts(
+        input: [
+            {
+                title: "A wonderful title!"
+                content: "A wonderful post!"
+                moderators: { create: [{ node: { id: "new-id-1", name: "Simone" } }, { node: { id: "new-id-2" } }] }
+            }
+        ]
+    ) {
+        posts {
+            title
+            content
+            moderators {
+                name
+            }
+        }
+    }
+}
+```
+
+**Current Cypher**
+
+```cypher
+CALL {
+    CREATE (this0:Post)
+    SET this0.title = $this0_title
+    SET this0.content = $this0_content
+    WITH this0
+    CREATE (this0_moderators0_node:User)
+    SET this0_moderators0_node.id = $this0_moderators0_node_id
+    SET this0_moderators0_node.name = $this0_moderators0_node_name
+    WITH this0, this0_moderators0_node
+    CALL apoc.util.validate(NOT ((this0_moderators0_node.id IS NOT NULL AND this0_moderators0_node.id = $this0_moderators0_nodeauth_param0)), "@neo4j/graphql/FORBIDDEN", [0])
+    MERGE (this0)<-[:MODERATES_POST]-(this0_moderators0_node)
+    WITH this0
+    CREATE (this0_moderators1_node:User)
+    SET this0_moderators1_node.id = $this0_moderators1_node_id
+    WITH this0, this0_moderators1_node
+    CALL apoc.util.validate(NOT ((this0_moderators1_node.id IS NOT NULL AND this0_moderators1_node.id = $this0_moderators1_nodeauth_param0)), "@neo4j/graphql/FORBIDDEN", [0])
+    MERGE (this0)<-[:MODERATES_POST]-(this0_moderators1_node)
+    RETURN this0
+}
+CALL {
+    WITH this0
+    MATCH (this0_moderators:`User`)-[create_this0:MODERATES_POST]->(this0)
+    WITH this0_moderators { .name } AS this0_moderators
+    RETURN collect(this0_moderators) AS this0_moderators
+}
+RETURN [this0 { .title, .content, moderators: this0_moderators }] AS data
+```
+
+params:
+
+```javascript
+{
+  "this0_title": "A wonderful title!",
+  "this0_content": "A wonderful post!",
+  "this0_moderators0_node_id": "new-id-1",
+  "this0_moderators0_node_name": "Simone",
+  "this0_moderators0_nodeauth_param0": "1234567890",
+  "this0_moderators1_node_id": "new-id-2",
+  "this0_moderators1_nodeauth_param0": "1234567890",
+  "resolvedCallbacks": {}
+}
+```
+
+**Unwind Cypher**
+
+```cypher
+UNWIND $create_param0 AS create_var2
+CALL {
+    WITH create_var2
+    CREATE (create_this1:`Post`)
+    SET
+        create_this1.title = create_var2.title,
+        create_this1.content = create_var2.content
+    WITH create_this1, create_var2
+    CALL {
+        WITH create_this1, create_var2
+        UNWIND create_var2.moderators.create AS create_var3
+        WITH create_var3.node AS create_var4, create_var3.edge AS create_var5, create_this1
+        CREATE (create_this6:`User`)
+        SET
+            create_this6.id = create_var4.id,
+            create_this6.name = create_var4.name
+        MERGE (create_this6)-[create_this7:MODERATES_POST]->(create_this1)
+        WITH create_this6
+        CALL apoc.util.validate(NOT ((create_this6.id IS NOT NULL AND create_this6.id = $auth_param)), "@neo4j/graphql/FORBIDDEN", [0])
+        RETURN collect(NULL)
+    }
+    RETURN create_this1
+}
+CALL {
+    WITH create_this1
+    MATCH (create_this1_moderators:`User`)-[create_this0:MODERATES_POST]->(create_this1)
+    WITH create_this1_moderators { .name } AS create_this1_moderators
+    RETURN collect(create_this1_moderators) AS create_this1_moderators
+}
+RETURN collect(create_this1 { .title, .content, moderators: create_this1_moderators }) AS data
+```
+
+params:
+
+```javascript
+{
+  "create_param0": [
+    {
+      "title": "A wonderful title!",
+      "content": "A wonderful post!",
+      "moderators": {
+        "create": [
+          {
+            "node": {
+              "id": "1234567890",
+              "name": "Simone"
+            }
+          },
+          {
+            "node": {
+              "id": "1234567890"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "auth_param": "1234567890",
+  "resolvedCallbacks": {}
+}
+```
+
+#### Bind - Nested - Field-level
+
+**Schema**
+
+```graphql
+type User {
+    id: ID @auth(rules: [{ operations: [CREATE], bind: { id: "$jwt.sub" } }])
+    name: String
+}
+
+type Post {
+    title: String
+    content: String
+    moderators: [User!]! @relationship(type: "MODERATES_POST", direction: IN)
+}
+```
+
+**GraphQL**
+
+```graphql
+mutation CreatePosts {
+    createPosts(
+        input: [
+            {
+                title: "A wonderful title!"
+                content: "A wonderful post!"
+                moderators: { create: [{ node: { id: "new-id-1" } }, { node: { name: "Simone" } }] }
+            }
+        ]
+    ) {
+        posts {
+            title
+            content
+            moderators {
+                name
+            }
+        }
+    }
+}
+```
+
+**Current Cypher**
+
+```cypher
+CALL {
+    CREATE (this0:Post)
+    SET this0.title = $this0_title
+    SET this0.content = $this0_content
+    WITH this0
+    CREATE (this0_moderators0_node:User)
+    SET this0_moderators0_node.id = $this0_moderators0_node_id
+    WITH this0, this0_moderators0_node
+    CALL apoc.util.validate(NOT ((this0_moderators0_node.id IS NOT NULL AND this0_moderators0_node.id = $this0_moderators0_nodeauth_param0)), "@neo4j/graphql/FORBIDDEN", [0])
+    MERGE (this0)<-[:MODERATES_POST]-(this0_moderators0_node)
+    WITH this0
+    CREATE (this0_moderators1_node:User)
+    SET this0_moderators1_node.name = $this0_moderators1_node_name
+    MERGE (this0)<-[:MODERATES_POST]-(this0_moderators1_node)
+    RETURN this0
+}
+CALL {
+    WITH this0
+    MATCH (this0_moderators:`User`)-[create_this0:MODERATES_POST]->(this0)
+    WITH this0_moderators { .name } AS this0_moderators
+    RETURN collect(this0_moderators) AS this0_moderators
+}
+RETURN [this0 { .title, .content, moderators: this0_moderators }] AS data
+```
+
+params:
+
+```javascript
+{
+  "this0_title": "A wonderful title!",
+  "this0_content": "A wonderful post!",
+  "this0_moderators0_nodeauth_param0": "1234567890",
+  "this0_moderators0_node_id": "new-id-1",
+  "this0_moderators1_node_name": "Simone",
+  "resolvedCallbacks": {}
+}
+```
+
+**Unwind Cypher**
+
+```cypher
+UNWIND $create_param0 AS create_var2
+CALL {
+    WITH create_var2
+    CREATE (create_this1:`Post`)
+    SET
+        create_this1.title = create_var2.title,
+        create_this1.content = create_var2.content
+    WITH create_this1, create_var2
+    CALL {
+        WITH create_this1, create_var2
+        UNWIND create_var2.moderators.create AS create_var3
+        WITH create_var3.node AS create_var4, create_var3.edge AS create_var5, create_this1
+        CREATE (create_this6:`User`)
+        SET
+            create_this6.id = create_var4.id,
+            create_this6.name = create_var4.name
+        MERGE (create_this6)-[create_this7:MODERATES_POST]->(create_this1)
+        WITH this0, this0_moderators0_node
+        CALL apoc.util.validate(create_var4.id IS NOT NULL AND NOT ((create_this6.id IS NOT NULL AND create_this6.id = $auth_jwt_sub)), "@neo4j/graphql/FORBIDDEN", [0])
+        RETURN collect(NULL)
+    }
+    RETURN create_this1
+}
+CALL {
+    WITH create_this1
+    MATCH (create_this1_moderators:`User`)-[create_this0:MODERATES_POST]->(create_this1)
+    WITH create_this1_moderators { .name } AS create_this1_moderators
+    RETURN collect(create_this1_moderators) AS create_this1_moderators
+}
+RETURN collect(create_this1 { .title, .content, moderators: create_this1_moderators }) AS data
+```
+
+params:
+
+```javascript
+{
+  "create_param0": [
+    {
+      "title": "A wonderful title!",
+      "content": "A wonderful post!",
+      "moderators": {
+        "create": [
+          {
+            "node": {
+              "id": "new-id-1"
+            }
+          },
+          {
+            "node": {
+              "name": "Simone"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "auth_jwt_sub": "123456789",
+  "resolvedCallbacks": {}
+}
+```
 
 ## TODO
 
