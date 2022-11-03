@@ -39,6 +39,30 @@ describe("Neo4jGraphQLAuthJWTPlugin", () => {
         expect(decoded).toMatchObject(payload);
     });
 
+    test("should decode token when secret is a generic", async () => {
+        const payload = {
+            sub: "my-id",
+        };
+
+        const encoded = jsonwebtoken.sign(payload, secret);
+
+        const plugin = new Neo4jGraphQLAuthJWTPlugin({
+            secret: () => {
+                return secret;
+            },
+        });
+
+        plugin.tryToResolveKeys({
+            headers: {
+                "test": "test-header"
+            }
+        });
+
+        const decoded = await plugin.decode(encoded);
+
+        expect(decoded).toMatchObject(payload);
+    })
+
     test("should decode token when using noVerify", async () => {
         const payload = {
             sub: "my-id",

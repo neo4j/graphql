@@ -20,24 +20,27 @@
 import jsonwebtoken from "jsonwebtoken";
 import Debug from "debug";
 import { DEBUG_PREFIX } from "./constants";
+import type { RequestLike } from "./types";
 
 const debug = Debug(DEBUG_PREFIX);
 
 export interface JWTPluginInput {
-    secret: jsonwebtoken.Secret;
+    secret: jsonwebtoken.Secret | ((req: RequestLike) => jsonwebtoken.Secret);
     noVerify?: boolean;
     globalAuthentication?: boolean;
     rolesPath?: string;
 }
 
 class Neo4jGraphQLAuthJWTPlugin {
-    private secret: jsonwebtoken.Secret;
+    private secret: jsonwebtoken.Secret | null = null;
     private noVerify?: boolean;
     rolesPath?: string;
     isGlobalAuthenticationEnabled?: boolean;
-
+    input: JWTPluginInput;
     constructor(input: JWTPluginInput) {
-        this.secret = input.secret;
+        this.input = input;
+
+        this.secret = typeof input.secret === 'function' ? null : input.secret;
         this.noVerify = input.noVerify;
         this.rolesPath = input.rolesPath;
         this.isGlobalAuthenticationEnabled = input.globalAuthentication || false;
@@ -49,6 +52,17 @@ class Neo4jGraphQLAuthJWTPlugin {
         }
     }
 
+    tryToResolveKeys(req: RequestLike): void {
+        //If the secret is set, we don't need to fetch it again.
+        if (this.secret) return;
+        if (typeof this.input.secret !== 'function') return;
+
+        this.secret = this.input.secret(req);
+
+        return;
+    }
+
+
     /* eslint-disable @typescript-eslint/require-await */
     async decode<T>(token: string): Promise<T | undefined> {
         let result: T | undefined;
@@ -59,7 +73,7 @@ class Neo4jGraphQLAuthJWTPlugin {
 
                 result = jsonwebtoken.decode(token, { json: true }) as unknown as T;
             }
-
+            //In case that the secret is null, make sure the 'tryToResolveKeys' is ran before the decode method.
             if (this.secret) {
                 debug("Verifying JWT using secret");
 
