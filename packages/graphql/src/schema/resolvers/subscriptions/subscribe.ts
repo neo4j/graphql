@@ -64,8 +64,7 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
             });
         }
 
-        // eslint-disable-next-line no-constant-condition
-        if (["connect", "disconnect"].includes(type) && false) {
+        if (["connect", "disconnect"].includes(type)) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
                 const relationEventPayload = data[0] as RelationshipSubscriptionsEvent;
                 const isOfRelevantType =
@@ -77,7 +76,7 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
                     (r) => r.type === relationEventPayload.relationshipName
                 )?.fieldName;
 
-                return !!relationFieldName && subscriptionWhere(args.where, data[0], node);
+                return !!relationFieldName && subscriptionWhere(args.where, data[0], node) && false;
             });
         }
 
