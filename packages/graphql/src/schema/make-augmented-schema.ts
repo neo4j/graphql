@@ -773,9 +773,13 @@ function makeAugmentedSchema(
     const compositeEntities: Map<string, CompositeEntity> = new Map();
 
     unionTypes.forEach((union) => {
+        if (!union.types) {
+            throw new Error(`Union ${union.name.value} has no types`);
+        }
+
         const compositeConcreteEntities: ConcreteEntity[] = [];
 
-        const fields = union.types!.reduce((f, type) => {
+        const fields = union.types.reduce((f, type) => {
             const concreteEntity = concreteEntities.get(type.name.value);
             if (!concreteEntity) {
                 throw new Error(`Could not find concrete entity with name ${type.name.value}`);

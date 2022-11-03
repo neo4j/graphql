@@ -20,6 +20,7 @@
 import type { ConcreteEntity } from "./ConcreteEntity";
 import type { Entity } from "./Entity";
 
+/** Entity for abstract GraphQL types, Interface and Union */
 export class CompositeEntity implements Entity {
     public readonly name: string;
     public concreteEntities: ConcreteEntity[];
