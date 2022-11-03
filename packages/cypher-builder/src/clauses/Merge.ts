@@ -56,14 +56,9 @@ export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
     public getCypher(env: CypherEnvironment): string {
         const mergeStr = `MERGE ${this.pattern.getCypher(env)}`;
         const setCypher = compileCypherIfExists(this.setSubClause, env, { prefix: "\n" });
-        const onCreateStatement = this.onCreateClause.getCypher(env);
-        const separator = onCreateStatement ? "\n" : "";
+        const onCreateStr = compileCypherIfExists(this.onCreateClause, env, { prefix: "\n" });
+        const returnStr = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
 
-        let returnCypher = "";
-        if (this.returnStatement) {
-            returnCypher = `\n${this.returnStatement.getCypher(env)}`;
-        }
-
-        return `${mergeStr}${separator}${setCypher}${onCreateStatement}${returnCypher}`;
+        return `${mergeStr}${setCypher}${onCreateStr}${returnStr}`;
     }
 }

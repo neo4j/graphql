@@ -49,4 +49,20 @@ describe("CypherBuilder Return", () => {
         expect(queryResult.cypher).toMatchInlineSnapshot(`"RETURN this0 AS var1"`);
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
     });
+
+    test("Return with order", () => {
+        const movieNode = new Cypher.Node({
+            labels: ["Movie"],
+        });
+
+        const matchQuery = new Cypher.Return(movieNode).orderBy([movieNode.property("age"), "DESC"]);
+
+        const queryResult = matchQuery.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "RETURN this0
+            ORDER BY this0.age DESC"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+    });
 });
