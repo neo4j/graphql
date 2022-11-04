@@ -782,11 +782,16 @@ describe("@auth allow when inherited from interface", () => {
             	CALL {
             		WITH *
             		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_connect_posts0_node
-            		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_posts0_node
+            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_connect_posts0_node
             	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
