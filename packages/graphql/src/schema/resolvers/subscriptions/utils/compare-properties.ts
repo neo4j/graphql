@@ -19,7 +19,7 @@
 
 import { int } from "neo4j-driver";
 import type Node from "../../../../classes/Node";
-import type { PrimitiveField, RelationField, RelationSubscriptionsEvent } from "../../../../types";
+import type { PrimitiveField, RelationField, RelationshipSubscriptionsEvent } from "../../../../types";
 import { whereRegEx } from "../../../../translate/where/utils";
 import type { WhereRegexGroups } from "../../../../translate/where/utils";
 import { isSameType, haveSameLength } from "../../../../utils/utils";
@@ -213,14 +213,14 @@ export function filterRelationshipConnectionsByProperties<T>(
         string,
         recordType<T> | Record<string, Record<string, unionType<T> | interfaceType<T> | standardType<T>>>
     >,
-    receivedEvent: RelationSubscriptionsEvent,
+    receivedEvent: RelationshipSubscriptionsEvent,
     nodes: Node[] | undefined,
     relationshipFields: Map<string, ObjectFields> | undefined
 ): boolean {
     const receivedProperties = receivedEvent.properties;
     const relationshipName = receivedEvent.relationshipName;
-    const relations = node.relationFields.filter((f) => f.type === relationshipName);
-    if (relations.length === 0) {
+    const relationships = node.relationFields.filter((f) => f.type === relationshipName);
+    if (relationships.length === 0) {
         return false;
     }
 
@@ -242,7 +242,7 @@ export function filterRelationshipConnectionsByProperties<T>(
                 return false;
             }
             for (const [relationshipNameK, relationshipDataV] of Object.entries(v)) {
-                const relationByRelationshipName = relations.find((r) => r.fieldName === relationshipNameK);
+                const relationByRelationshipName = relationships.find((r) => r.fieldName === relationshipNameK);
                 if (!relationByRelationshipName) {
                     return false;
                 }

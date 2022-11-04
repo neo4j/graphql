@@ -26,6 +26,8 @@ import {
     GraphQLString,
 } from "graphql";
 
+export const SCORE_FIELD = "score";
+
 export const fulltextDirective = new GraphQLDirective({
     name: "fulltext",
     description:
@@ -38,10 +40,18 @@ export const fulltextDirective = new GraphQLDirective({
                         name: "FullTextInput",
                         fields: {
                             name: {
-                                type: new GraphQLNonNull(GraphQLString),
+                                deprecationReason:
+                                    "The name argument has been deprecated and will be removed in 4.0. Please use indexName instead.",
+                                type: GraphQLString,
                             },
                             fields: {
                                 type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
+                            },
+                            queryName: {
+                                type: GraphQLString,
+                            },
+                            indexName: {
+                                type: GraphQLString,
                             },
                         },
                     })

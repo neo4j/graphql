@@ -22,8 +22,8 @@ import { serializeNeo4jValue } from "../../utils/neo4j-serializers";
 import type {
     EventMeta,
     Neo4jGraphQLSubscriptionsPlugin,
-    NodeMeta,
-    RelationMeta,
+    NodeSubscriptionMeta,
+    RelationshipSubscriptionMeta,
     SubscriptionsEvent,
 } from "../../types";
 
@@ -54,30 +54,38 @@ export function publishEventsToPlugin(
     }
 }
 
+function isNodeSubscriptionMeta(event: EventMeta): event is NodeSubscriptionMeta {
+    return ["create", "update", "delete"].includes(event.event);
+}
+function isRelationshipSubscriptionMeta(event: EventMeta): event is RelationshipSubscriptionMeta {
+    return ["connect", "disconnect"].includes(event.event);
+}
 function serializeEvent(event: EventMeta): SubscriptionsEvent | undefined {
     let properties = {},
         extraFields = {};
-    if (["create", "update", "delete"].includes(event.event)) {
+    if (isNodeSubscriptionMeta(event)) {
         extraFields = {
-            typename: (event as NodeMeta).typename,
+            typename: event.typename,
         };
         properties = {
-            old: serializeProperties((event as NodeMeta).properties.old),
-            new: serializeProperties((event as NodeMeta).properties.new),
+            old: serializeProperties(event.properties.old),
+            new: serializeProperties(event.properties.new),
         };
-    } else if (["connect", "disconnect"].includes(event.event)) {
+    } else if (isRelationshipSubscriptionMeta(event)) {
         properties = {
-            from: serializeProperties((event as RelationMeta).properties.from),
-            to: serializeProperties((event as RelationMeta).properties.to),
-            relationship: serializeProperties((event as RelationMeta).properties.relationship),
+            from: serializeProperties(event.properties.from),
+            to: serializeProperties(event.properties.to),
+            relationship: serializeProperties(event.properties.relationship),
         };
         extraFields = {
-            id_from: serializeNeo4jValue((event as RelationMeta).id_from),
-            id_to: serializeNeo4jValue((event as RelationMeta).id_to),
-            fromTypename: serializeNeo4jValue((event as RelationMeta).fromTypename),
-            toTypename: serializeNeo4jValue((event as RelationMeta).toTypename),
-            relationshipName: (event as RelationMeta).relationshipName,
+            id_from: serializeNeo4jValue(event.id_from),
+            id_to: serializeNeo4jValue(event.id_to),
+            fromTypename: serializeNeo4jValue(event.fromTypename),
+            toTypename: serializeNeo4jValue(event.toTypename),
+            relationshipName: event.relationshipName,
         };
+    } else {
+        return undefined;
     }
     return {
         id: serializeNeo4jValue(event.id),

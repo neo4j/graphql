@@ -82,26 +82,32 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            RETURN this0
+            "UNWIND $create_param0 AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.title = create_var1.title
+                RETURN create_this0
             }
             CALL {
-                WITH this0
-                MATCH (this0)<-[this0_connection_actorsConnectionthis0:ACTED_IN]-(this0_Actor:\`Actor\`)
-                WITH { screenTime: this0_connection_actorsConnectionthis0.screenTime, node: { name: this0_Actor.name } } AS edge
+                WITH create_this0
+                MATCH (create_this0)<-[create_this0_connection_actorsConnectionthis0:ACTED_IN]-(create_this0_Actor:\`Actor\`)
+                WITH { screenTime: create_this0_connection_actorsConnectionthis0.screenTime, node: { name: create_this0_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this0_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS create_this0_actorsConnection
             }
-            RETURN [
-            this0 { .title, actorsConnection: this0_actorsConnection }] AS data"
+            RETURN collect(create_this0 { .title, actorsConnection: create_this0_actorsConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_title\\": \\"Forrest Gump\\",
+                \\"create_param0\\": [
+                    {
+                        \\"title\\": \\"Forrest Gump\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -132,41 +138,35 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            RETURN this0
+            "UNWIND $create_param0 AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.title = create_var1.title
+                RETURN create_this0
             }
             CALL {
-            CREATE (this1:Movie)
-            SET this1.title = $this1_title
-            RETURN this1
-            }
-            CALL {
-                WITH this0
-                MATCH (this0)<-[this0_connection_actorsConnectionthis0:ACTED_IN]-(this0_Actor:\`Actor\`)
-                WITH { screenTime: this0_connection_actorsConnectionthis0.screenTime, node: { name: this0_Actor.name } } AS edge
+                WITH create_this0
+                MATCH (create_this0)<-[create_this0_connection_actorsConnectionthis0:ACTED_IN]-(create_this0_Actor:\`Actor\`)
+                WITH { screenTime: create_this0_connection_actorsConnectionthis0.screenTime, node: { name: create_this0_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this0_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS create_this0_actorsConnection
             }
-            CALL {
-                WITH this1
-                MATCH (this1)<-[this1_connection_actorsConnectionthis0:ACTED_IN]-(this1_Actor:\`Actor\`)
-                WITH { screenTime: this1_connection_actorsConnectionthis0.screenTime, node: { name: this1_Actor.name } } AS edge
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this1_actorsConnection
-            }
-            RETURN [
-            this0 { .title, actorsConnection: this0_actorsConnection },
-            this1 { .title, actorsConnection: this1_actorsConnection }] AS data"
+            RETURN collect(create_this0 { .title, actorsConnection: create_this0_actorsConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_title\\": \\"Forrest Gump\\",
-                \\"this1_title\\": \\"Toy Story\\",
+                \\"create_param0\\": [
+                    {
+                        \\"title\\": \\"Forrest Gump\\"
+                    },
+                    {
+                        \\"title\\": \\"Toy Story\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -197,43 +197,36 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            RETURN this0
+            "UNWIND $create_param0 AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.title = create_var1.title
+                RETURN create_this0
             }
             CALL {
-            CREATE (this1:Movie)
-            SET this1.title = $this1_title
-            RETURN this1
-            }
-            CALL {
-                WITH this0
-                MATCH (this0)<-[this0_connection_actorsConnectionthis0:ACTED_IN]-(this0_Actor:\`Actor\`)
-                WHERE this0_Actor.name = $projection_connection_actorsConnectionparam0
-                WITH { screenTime: this0_connection_actorsConnectionthis0.screenTime, node: { name: this0_Actor.name } } AS edge
+                WITH create_this0
+                MATCH (create_this0)<-[create_this0_connection_actorsConnectionthis0:ACTED_IN]-(create_this0_Actor:\`Actor\`)
+                WHERE create_this0_Actor.name = $projection_connection_actorsConnectionparam0
+                WITH { screenTime: create_this0_connection_actorsConnectionthis0.screenTime, node: { name: create_this0_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this0_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS create_this0_actorsConnection
             }
-            CALL {
-                WITH this1
-                MATCH (this1)<-[this1_connection_actorsConnectionthis0:ACTED_IN]-(this1_Actor:\`Actor\`)
-                WHERE this1_Actor.name = $projection_connection_actorsConnectionparam0
-                WITH { screenTime: this1_connection_actorsConnectionthis0.screenTime, node: { name: this1_Actor.name } } AS edge
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this1_actorsConnection
-            }
-            RETURN [
-            this0 { .title, actorsConnection: this0_actorsConnection },
-            this1 { .title, actorsConnection: this1_actorsConnection }] AS data"
+            RETURN collect(create_this0 { .title, actorsConnection: create_this0_actorsConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_title\\": \\"Forrest Gump\\",
-                \\"this1_title\\": \\"Toy Story\\",
+                \\"create_param0\\": [
+                    {
+                        \\"title\\": \\"Forrest Gump\\"
+                    },
+                    {
+                        \\"title\\": \\"Toy Story\\"
+                    }
+                ],
                 \\"projection_connection_actorsConnectionparam0\\": \\"Tom Hanks\\",
                 \\"resolvedCallbacks\\": {}
             }"

@@ -30,14 +30,14 @@
         "react-dom": "18.2.0",
         "react-markdown": "8.0.3",
         "react-mde": "11.5.0",
-        "react-router-dom": "6.4.2",
+        "react-router-dom": "6.4.3",
         "showdown": "2.1.0",
         "style-loader": "3.3.1",
         "ts-loader": "9.4.1",
         "typescript": "4.8.4"
     },
     "devDependencies": {
-        "@tsconfig/create-react-app": "1.0.2",
+        "@tsconfig/create-react-app": "1.0.3",
         "@webpack-cli/serve": "1.7.0",
         "html-webpack-plugin": "5.5.0",
         "webpack": "5.74.0",

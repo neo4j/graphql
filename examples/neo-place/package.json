@@ -29,7 +29,7 @@
     "dependencies": {
         "@neo4j/graphql": "^3.6.3",
         "@neo4j/graphql-plugin-auth": "^1.0.0",
-        "@neo4j/graphql-plugin-subscriptions-amqp": "^0.2.0",
+        "@neo4j/graphql-plugin-subscriptions-amqp": "^0.3.0",
         "apollo-server-core": "^3.10.1",
         "apollo-server-express": "^3.10.1",
         "dotenv": "^16.0.1",

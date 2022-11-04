@@ -59,6 +59,12 @@ export class UniqueType {
         return pluralize(camelcase(this.name));
     }
 
+    public get singular(): string {
+        const singular = camelcase(this.name);
+
+        return `${this.leadingUnderscores(this.name)}${singular}`;
+    }
+
     public get operations(): UniqueTypeOperations {
         const pascalCasePlural = upperFirst(this.plural);
         const singular = camelcase(this.name);
@@ -89,6 +95,12 @@ export class UniqueType {
 
     public toString(): string {
         return this.name;
+    }
+
+    private leadingUnderscores(name: string): string {
+        const re = /^(_+).+/;
+        const match = re.exec(name);
+        return match?.[1] || "";
     }
 }
 

@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import { objectFieldsToSubscriptionsWhereInputFields } from "../to-compose";

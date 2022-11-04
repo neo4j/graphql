@@ -212,7 +212,7 @@ describe("Subscriptions update", () => {
         expect(gqlResult.errors).toBeUndefined();
 
         expect(gqlResult.data[typeMovie.operations.update]).toEqual({
-            [typeMovie.plural]: [{ id: "1" }, { id: "2" }],
+            [typeMovie.plural]: expect.toIncludeSameMembers([{ id: "1" }, { id: "2" }]),
         });
 
         expect(plugin.eventList).toEqual(

@@ -96,6 +96,7 @@ jobs:
   quality-gate:
     needs:
       - reviewdog-eslint
+      - code-scanning
       - package-tests
       - neo-push-tests
       - license-header-check

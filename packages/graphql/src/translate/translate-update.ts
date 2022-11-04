@@ -68,8 +68,8 @@ export default async function translateUpdate({
     let projStr = "";
     let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
     const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
-
-    const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "UPDATE" });
+    const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
+    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "UPDATE" });
     matchAndWhereStr = topLevelMatch.cypher;
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 

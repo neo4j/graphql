@@ -56,25 +56,32 @@ describe("tck/rfs/003", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "CALL {
-                    CREATE (this0:Movie)
-                    SET this0.id = $this0_id
-                    WITH this0
+                    "UNWIND $create_param0 AS create_var1
                     CALL {
-                    	WITH this0
-                    	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
-                    	WITH count(this0_director_Director_unique) as c
-                    	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
-                    	RETURN c AS this0_director_Director_unique_ignored
-                    }
-                    RETURN this0
+                        WITH create_var1
+                        CREATE (create_this0:\`Movie\`)
+                        SET
+                            create_this0.id = create_var1.id
+                        WITH create_this0
+                        CALL {
+                        	WITH create_this0
+                        	MATCH (create_this0)<-[create_this0_director_Director_unique:DIRECTED]-(:Director)
+                        	WITH count(create_this0_director_Director_unique) as c
+                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
+                        	RETURN c AS create_this0_director_Director_unique_ignored
+                        }
+                        RETURN create_this0
                     }
                     RETURN 'Query cannot conclude with CALL'"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"this0_id\\": \\"movieId-1\\",
+                        \\"create_param0\\": [
+                            {
+                                \\"id\\": \\"movieId-1\\"
+                            }
+                        ],
                         \\"resolvedCallbacks\\": {}
                     }"
                 `);
@@ -111,25 +118,32 @@ describe("tck/rfs/003", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "CALL {
-                    CREATE (this0:Movie)
-                    SET this0.id = $this0_id
-                    WITH this0
+                    "UNWIND $create_param0 AS create_var1
                     CALL {
-                    	WITH this0
-                    	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
-                    	WITH count(this0_director_Director_unique) as c
-                    	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
-                    	RETURN c AS this0_director_Director_unique_ignored
-                    }
-                    RETURN this0
+                        WITH create_var1
+                        CREATE (create_this0:\`Movie\`)
+                        SET
+                            create_this0.id = create_var1.id
+                        WITH create_this0
+                        CALL {
+                        	WITH create_this0
+                        	MATCH (create_this0)<-[create_this0_director_Director_unique:DIRECTED]-(:Director)
+                        	WITH count(create_this0_director_Director_unique) as c
+                        	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                        	RETURN c AS create_this0_director_Director_unique_ignored
+                        }
+                        RETURN create_this0
                     }
                     RETURN 'Query cannot conclude with CALL'"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"this0_id\\": \\"movieId-1\\",
+                        \\"create_param0\\": [
+                            {
+                                \\"id\\": \\"movieId-1\\"
+                            }
+                        ],
                         \\"resolvedCallbacks\\": {}
                     }"
                 `);
@@ -173,38 +187,58 @@ describe("tck/rfs/003", () => {
                     });
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                        "CALL {
-                        CREATE (this0:Movie)
-                        SET this0.id = $this0_id
-                        WITH this0
-                        CREATE (this0_director0_node:Director)
-                        SET this0_director0_node.id = $this0_director0_node_id
-                        MERGE (this0)<-[:DIRECTED]-(this0_director0_node)
-                        WITH this0, this0_director0_node
+                        "UNWIND $create_param0 AS create_var1
                         CALL {
-                        	WITH this0_director0_node
-                        	MATCH (this0_director0_node)-[this0_director0_node_address_Address_unique:HAS_ADDRESS]->(:Address)
-                        	WITH count(this0_director0_node_address_Address_unique) as c
-                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
-                        	RETURN c AS this0_director0_node_address_Address_unique_ignored
-                        }
-                        WITH this0
-                        CALL {
-                        	WITH this0
-                        	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
-                        	WITH count(this0_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
-                        	RETURN c AS this0_director_Director_unique_ignored
-                        }
-                        RETURN this0
+                            WITH create_var1
+                            CREATE (create_this0:\`Movie\`)
+                            SET
+                                create_this0.id = create_var1.id
+                            WITH create_this0, create_var1
+                            CALL {
+                                WITH create_this0, create_var1
+                                UNWIND create_var1.director.create AS create_var2
+                                WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
+                                CREATE (create_this5:\`Director\`)
+                                SET
+                                    create_this5.id = create_var3.id
+                                MERGE (create_this5)-[create_this6:DIRECTED]->(create_this0)
+                                WITH create_this5
+                                CALL {
+                                	WITH create_this5
+                                	MATCH (create_this5)-[create_this5_address_Address_unique:HAS_ADDRESS]->(:Address)
+                                	WITH count(create_this5_address_Address_unique) as c
+                                	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
+                                	RETURN c AS create_this5_address_Address_unique_ignored
+                                }
+                                RETURN collect(NULL) AS create_var7
+                            }
+                            WITH create_this0
+                            CALL {
+                            	WITH create_this0
+                            	MATCH (create_this0)<-[create_this0_director_Director_unique:DIRECTED]-(:Director)
+                            	WITH count(create_this0_director_Director_unique) as c
+                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
+                            	RETURN c AS create_this0_director_Director_unique_ignored
+                            }
+                            RETURN create_this0
                         }
                         RETURN 'Query cannot conclude with CALL'"
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
-                            \\"this0_id\\": \\"movieId-2\\",
-                            \\"this0_director0_node_id\\": \\"directorId-2\\",
+                            \\"create_param0\\": [
+                                {
+                                    \\"id\\": \\"movieId-2\\",
+                                    \\"director\\": {
+                                        \\"create\\": {
+                                            \\"node\\": {
+                                                \\"id\\": \\"directorId-2\\"
+                                            }
+                                        }
+                                    }
+                                }
+                            ],
                             \\"resolvedCallbacks\\": {}
                         }"
                     `);
@@ -247,38 +281,58 @@ describe("tck/rfs/003", () => {
                     });
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                        "CALL {
-                        CREATE (this0:Movie)
-                        SET this0.id = $this0_id
-                        WITH this0
-                        CREATE (this0_director0_node:Director)
-                        SET this0_director0_node.id = $this0_director0_node_id
-                        MERGE (this0)<-[:DIRECTED]-(this0_director0_node)
-                        WITH this0, this0_director0_node
+                        "UNWIND $create_param0 AS create_var1
                         CALL {
-                        	WITH this0_director0_node
-                        	MATCH (this0_director0_node)-[this0_director0_node_address_Address_unique:HAS_ADDRESS]->(:Address)
-                        	WITH count(this0_director0_node_address_Address_unique) as c
-                        	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
-                        	RETURN c AS this0_director0_node_address_Address_unique_ignored
-                        }
-                        WITH this0
-                        CALL {
-                        	WITH this0
-                        	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
-                        	WITH count(this0_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
-                        	RETURN c AS this0_director_Director_unique_ignored
-                        }
-                        RETURN this0
+                            WITH create_var1
+                            CREATE (create_this0:\`Movie\`)
+                            SET
+                                create_this0.id = create_var1.id
+                            WITH create_this0, create_var1
+                            CALL {
+                                WITH create_this0, create_var1
+                                UNWIND create_var1.director.create AS create_var2
+                                WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
+                                CREATE (create_this5:\`Director\`)
+                                SET
+                                    create_this5.id = create_var3.id
+                                MERGE (create_this5)-[create_this6:DIRECTED]->(create_this0)
+                                WITH create_this5
+                                CALL {
+                                	WITH create_this5
+                                	MATCH (create_this5)-[create_this5_address_Address_unique:HAS_ADDRESS]->(:Address)
+                                	WITH count(create_this5_address_Address_unique) as c
+                                	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
+                                	RETURN c AS create_this5_address_Address_unique_ignored
+                                }
+                                RETURN collect(NULL) AS create_var7
+                            }
+                            WITH create_this0
+                            CALL {
+                            	WITH create_this0
+                            	MATCH (create_this0)<-[create_this0_director_Director_unique:DIRECTED]-(:Director)
+                            	WITH count(create_this0_director_Director_unique) as c
+                            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                            	RETURN c AS create_this0_director_Director_unique_ignored
+                            }
+                            RETURN create_this0
                         }
                         RETURN 'Query cannot conclude with CALL'"
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
-                            \\"this0_id\\": \\"movieId-2\\",
-                            \\"this0_director0_node_id\\": \\"directorId-2\\",
+                            \\"create_param0\\": [
+                                {
+                                    \\"id\\": \\"movieId-2\\",
+                                    \\"director\\": {
+                                        \\"create\\": {
+                                            \\"node\\": {
+                                                \\"id\\": \\"directorId-2\\"
+                                            }
+                                        }
+                                    }
+                                }
+                            ],
                             \\"resolvedCallbacks\\": {}
                         }"
                     `);

@@ -28,8 +28,8 @@
     },
     "devDependencies": {
         "@tsconfig/node16": "1.0.3",
-        "@typescript-eslint/eslint-plugin": "5.41.0",
-        "@typescript-eslint/parser": "5.41.0",
+        "@typescript-eslint/eslint-plugin": "5.42.0",
+        "@typescript-eslint/parser": "5.42.0",
         "concurrently": "7.5.0",
         "dotenv": "16.0.3",
         "eslint": "8.26.0",
@@ -55,6 +55,6 @@
     "packageManager": "yarn@3.2.4",
     "dependencies": {
         "@changesets/changelog-github": "0.4.7",
-        "@changesets/cli": "2.25.1"
+        "@changesets/cli": "2.25.2"
     }
 }

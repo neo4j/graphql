@@ -36,12 +36,14 @@ function applyMixins<T>(
 ): ConstructorType<T> {
     mixins.forEach((baseCtor) => {
         Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
-            Object.defineProperty(
-                baseClass.prototype,
-                name,
-
-                Object.getOwnPropertyDescriptor(baseCtor.prototype, name) || Object.create(null)
-            );
+            if (name !== "constructor") {
+                // Base class constructor takes precedence over mixins
+                Object.defineProperty(
+                    baseClass.prototype,
+                    name,
+                    Object.getOwnPropertyDescriptor(baseCtor.prototype, name) || Object.create(null)
+                );
+            }
         });
     });
 
