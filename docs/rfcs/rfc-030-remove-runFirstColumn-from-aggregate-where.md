@@ -63,7 +63,7 @@ RETURN this { .content } AS this
 
 ## Risks
 
-A `CALL` clause may not be valid in all locations that a WHERE `runFirstColumn` is for some edge cases.
+A `CALL` clause may not be valid in all locations that a `WHERE` `runFirstColumn` is for some edge cases.
 
 ## Out of Scope
 
