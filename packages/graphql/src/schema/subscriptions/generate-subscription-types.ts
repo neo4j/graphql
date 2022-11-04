@@ -28,6 +28,7 @@ import {
 import { generateEventPayloadType } from "./generate-event-payload-type";
 import { generateSubscribeMethod, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
 import type {
+    BaseField,
     NodeSubscriptionsEvent,
     RelationField,
     RelationshipSubscriptionsEvent,
@@ -220,9 +221,7 @@ export function generateSubscriptionTypes({
 
                 return {
                     [thisRel.fieldName]: {
-                        edge: {
-                            ...source.properties.relationship,
-                        },
+                        ...source.properties.relationship,
                         node: {
                             ...props,
                             __typename: `${typename}EventPayload`,
@@ -231,13 +230,13 @@ export function generateSubscriptionTypes({
                 };
             };
             relationConnectedEvent.addFields({
-                relationship: {
+                createdRelationship: {
                     type: relationsEventPayload.NonNull,
                     resolve: resolveRelationship,
                 },
             });
             relationDisconnectedEvent.addFields({
-                relationship: {
+                deletedRelationship: {
                     type: relationsEventPayload.NonNull,
                     resolve: resolveRelationship,
                 },
@@ -424,28 +423,22 @@ function _buildRelationshipFieldDestinationTypes({
     });
 }
 
-function _buildRelationshipType({
+function _getRelationshipFields({
     relationField,
     relationshipFields,
-    schemaComposer,
 }: {
     relationField: RelationField;
     relationshipFields: Map<string, ObjectFields>;
-    schemaComposer: SchemaComposer;
-}): ObjectTypeComposer | undefined {
+}): BaseField[] | undefined {
     const relationshipProperties = relationshipFields.get(relationField.properties || "");
     if (relationshipProperties) {
-        return schemaComposer.getOrCreateOTC(`${relationField.properties}RelationshipEventPayload`, (tc) =>
-            tc.addFields(
-                objectFieldsToComposeFields([
-                    ...relationshipProperties.primitiveFields,
-                    ...relationshipProperties.enumFields,
-                    ...relationshipProperties.scalarFields,
-                    ...relationshipProperties.temporalFields,
-                    ...relationshipProperties.pointFields,
-                ])
-            )
-        );
+        return [
+            ...relationshipProperties.primitiveFields,
+            ...relationshipProperties.enumFields,
+            ...relationshipProperties.scalarFields,
+            ...relationshipProperties.temporalFields,
+            ...relationshipProperties.pointFields,
+        ];
     }
 }
 // TODO: move this + helpers to separate file
@@ -472,9 +465,9 @@ function getConnectedTypes({
                 name: `${name}${upperFirst(fieldName)}ConnectedRelationship`,
             });
 
-            const edge = _buildRelationshipType({ relationField, relationshipFields, schemaComposer });
-            if (edge) {
-                relationshipFieldType.addFields({ edge });
+            const edgeProps = _getRelationshipFields({ relationField, relationshipFields });
+            if (edgeProps) {
+                relationshipFieldType.addFields(objectFieldsToComposeFields(edgeProps));
             }
 
             const nodeTo = _buildRelationshipFieldDestinationTypes({

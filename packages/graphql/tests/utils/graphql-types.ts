@@ -80,8 +80,8 @@ export class UniqueType {
                 created: `${singular}Created`,
                 updated: `${singular}Updated`,
                 deleted: `${singular}Deleted`,
-                connected: `${singular}Connected`,
-                disconnected: `${singular}Disconnected`,
+                connected: `${singular}RelationshipCreated`,
+                disconnected: `${singular}RelationshipDeleted`,
                 payload: {
                     created: `created${pascalCaseSingular}`,
                     updated: `updated${pascalCaseSingular}`,
