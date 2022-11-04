@@ -108,7 +108,7 @@ new Neo4jGraphQL({
 Previously, if no custom resolver was specified for a `@computed` field when creating an instance of Neo4jGraphQL, no errors would be thrown when generating the schema.
 However, it is likely that the lack of a custom resolver would lead to errors at runtime. It is preferable to fail fast in this case as it is easier to debug and makes it less likely that bugs will make it into production.
 
-As a result, check are now performed to ensure that every `@customResolver` field has a custom resolver provided. If not the library will throw an error during schema generation.
+As a result, checks are now performed to ensure that every `@customResolver` field has a custom resolver provided. If not the library will throw an error during schema generation.
 
 [plural-migration]
 === `plural` argument removed from `@node` and replaced with `@plural`
