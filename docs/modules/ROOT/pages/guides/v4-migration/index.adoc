@@ -2,7 +2,7 @@
 
 = 4.0.0 Migration
 
-NOTE: Version 4.0.0 of the library has not yet been released. However, we recommend making these changes early, in order to avoid issues in the future.
+NOTE: Version 4.0.0 of the library has not yet been released. However, we recommend making these changes early in order to avoid issues in the future.
 
 This document lists all breaking changes from version 3.x.y to 4.0.0 and how to update.
 
