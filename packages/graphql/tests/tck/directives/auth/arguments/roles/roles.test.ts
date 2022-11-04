@@ -427,11 +427,16 @@ describe("Cypher Auth Roles", () => {
             	CALL {
             		WITH *
             		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_connect_posts0_node
-            		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_posts0_node
+            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_connect_posts0_node
             	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
@@ -492,11 +497,16 @@ describe("Cypher Auth Roles", () => {
             	CALL {
             		WITH *
             		WITH this, collect(this_post0_creator0_connect0_node) as connectedNodes, collect(this_post0) as parentNodes
-            		UNWIND parentNodes as this_post0
-            		UNWIND connectedNodes as this_post0_creator0_connect0_node
-            		MERGE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this_post0
+            			UNWIND connectedNodes as this_post0_creator0_connect0_node
+            			MERGE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_post0, this_post0_creator0_connect0_node
             	RETURN count(*) AS connect_this_post0_creator0_connect_User
             }
             WITH this, this_post0
