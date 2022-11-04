@@ -19,13 +19,10 @@
 
 import { GraphQLEnumType } from "graphql";
 
-export const EventType = new GraphQLEnumType({
-    name: "EventType",
+export const RelationDirection = new GraphQLEnumType({
+    name: "RelationDirection",
     values: {
-        CREATE: {},
-        DELETE: {},
-        UPDATE: {},
-        CONNECT: {},
-        DISCONNECT: {},
+        IN: {},
+        OUT: {},
     },
 });
