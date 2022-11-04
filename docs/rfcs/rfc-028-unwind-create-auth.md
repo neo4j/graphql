@@ -170,7 +170,7 @@ There is a common pattern in how the `@auth` directive could impact the create m
     type Post @auth(rules: [{ operations: [CREATE], bind: { creator: { id: "$jwt.sub" } } }]) {
         title: String
         content: String
-        creator: [User!]! @relationship(type: "MODERATES_POST", direction: IN)
+        creator: [User!]! @relationship(type: "HAS_POST", direction: IN)
     }
     ```
 
