@@ -47,3 +47,13 @@ export enum ConstraintState {
     create,
     ignore,
 }
+
+export {};
+declare global {
+    interface Window {
+        neo4jDesktopApi: {
+            getContext: () => Promise<Record<string, unknown> | unknown>;
+        };
+    }
+}
+window.neo4jDesktopApi = window.neo4jDesktopApi || {};
