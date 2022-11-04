@@ -19,10 +19,7 @@
 
 import type { Entity } from "./Entity";
 
-export class ConcreteEntity implements Entity {
-    public readonly name: string;
-
-    constructor({ name }: { name: string }) {
-        this.name = name;
-    }
+/** Represents the internal model for the Neo4jGraphQL schema */
+export class Neo4jGraphQLSchemaModel {
+    private entities: Map<string, Entity>;
 }

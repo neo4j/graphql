@@ -86,9 +86,10 @@ import { addGlobalNodeFields } from "./create-global-nodes";
 import { addMathOperatorsToITC } from "./math";
 import { addArrayMethodsToITC } from "./array-methods";
 import { FloatWhere } from "../graphql/input-objects/FloatWhere";
-import { ConcreteEntity } from "../schema-model/ConcreteEntity";
-import type { Entity } from "../schema-model/Entity";
-import { CompositeEntity } from "../schema-model/CompositeEntity";
+import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
+import type { Entity } from "../schema-model/entity/Entity";
+import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
+import { generateModel } from "../schema-model/poc-generate-model";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -115,7 +116,7 @@ function makeAugmentedSchema(
     resolvers: IResolvers;
 } {
     const document = getDocument(typeDefs);
-
+    generateModel(document);
     if (!skipValidateTypeDefs) {
         validateDocument(document);
     }
@@ -952,7 +953,7 @@ function makeAugmentedSchema(
         }),
     };
 
-    const entities: Map<string, Entity> = new Map([...concreteEntities, ...compositeEntities]);
+    const entities = new Map<string, Entity>([...concreteEntities, ...compositeEntities]);
 
     return {
         nodes,

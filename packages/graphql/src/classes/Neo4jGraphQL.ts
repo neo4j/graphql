@@ -45,7 +45,7 @@ import { asArray } from "../utils/utils";
 import { DEBUG_ALL } from "../constants";
 import { getNeo4jDatabaseInfo, Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
 import { Executor, ExecutorConstructorParam } from "./Executor";
-import type { Entity } from "../schema-model/Entity";
+import type { Entity } from "../schema-model/entity/Entity";
 
 export interface Neo4jGraphQLJWT {
     jwksEndpoint?: string;
