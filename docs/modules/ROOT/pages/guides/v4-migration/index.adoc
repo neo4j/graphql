@@ -139,7 +139,7 @@ type Tech @node(label: "TechDB") @plural(value: "Techs") {
 
 In version 4.0.0, a number of improvements have been made to full-text queries. These include the ability to return the full-text score, filter by the score and sorting by the score.
 
-However, these required a number of breaking changes.
+However, these improvements required a number of breaking changes.
 
 ==== Query changes
 
