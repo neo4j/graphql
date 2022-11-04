@@ -1,6 +1,6 @@
 ## Problem
 
-Currently, the `unwind-create` does not supports the auth capability, this RFC wants to extends the RFC-024 to fully support the auth mechanism.
+Currently, the `unwind-create` does not support the auth capability, this RFC wants to extend the RFC-024 to fully support the auth mechanism.
 
 ### Examples
 
@@ -48,11 +48,11 @@ CALL {
     CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
     WITH this0
     CALL {
-    	WITH this0
-    	MATCH (this0)-[this0_website_Website_unique:HAS_WEBSITE]->(:Website)
-    	WITH count(this0_website_Website_unique) as c
-    	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
-    	RETURN c AS this0_website_Website_unique_ignored
+        WITH this0
+        MATCH (this0)-[this0_website_Website_unique:HAS_WEBSITE]->(:Website)
+        WITH count(this0_website_Website_unique) as c
+        CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
+        RETURN c AS this0_website_Website_unique_ignored
     }
     RETURN this0
 }
@@ -63,34 +63,34 @@ CALL {
     CALL apoc.util.validate(NOT (any(auth_var1 IN ["admin"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
     WITH this1
     CALL {
-    	WITH this1
-    	MATCH (this1)-[this1_website_Website_unique:HAS_WEBSITE]->(:Website)
-    	WITH count(this1_website_Website_unique) as c
-    	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
-    	RETURN c AS this1_website_Website_unique_ignored
+        WITH this1
+        MATCH (this1)-[this1_website_Website_unique:HAS_WEBSITE]->(:Website)
+        WITH count(this1_website_Website_unique) as c
+        CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
+        RETURN c AS this1_website_Website_unique_ignored
     }
     RETURN this1
 }
 RETURN [ this0 { .title }, this1 { .title }] AS data
 ```
 
-As it's visible by the example, for every `CREATE` subquery the statement `apoc.util.validate` is introduced to check if the request is authorised or not.
+As it's visible by the example, for every `CREATE` subquery the statement `apoc.util.validate` is introduced to check if the request is authorized or not.
 This mechanism is not implemented in the first version of unwind create and this RFC wants to describe a possible implementation of it
 
 ## Proposed Solution
 
-Authorization in the Neo4jGraphQL library is built on top of these mechanism:
+Authorization in the Neo4jGraphQL library is built on top of these mechanisms:
 
 -   `Roles`
 -   `Bind`
 -   `Where`
 -   `Allow`
 
-`Where` and `Allow` seems to have no impact during creates, for this reason this solution is focused on the `Bind` and `Roles` rule.
+`Where` and `Allow` seems to have no impact during creation, for this reason, this solution is focused on the `Bind` and `Roles` rule.
 
-There is a common pattern in how the `@auth` directive could be used in the type definitions and it could be resumed as:
+There is a common pattern in how the `@auth` directive could impact the create mutation depending on how it is used in the type definitions and could be resumed as:
 
--   ### Type auth
+-   ### Entity-type auth
 
     **Schema**
 
@@ -107,7 +107,7 @@ There is a common pattern in how the `@auth` directive could be used in the type
     }
     ```
 
--   ### Field-level auth
+-   ### Entity-type auth - Field-level definition
 
     **Schema**
 
@@ -124,7 +124,7 @@ There is a common pattern in how the `@auth` directive could be used in the type
     }
     ```
 
--   ### Nested type auth
+-   ### Nested Entity-type auth
 
     **Schema**
 
@@ -141,7 +141,7 @@ There is a common pattern in how the `@auth` directive could be used in the type
     }
     ```
 
--   ### Nested type auth at field-level auth
+-   ### Nested Entity-type auth - Field-level definition
 
     **Schema**
 
@@ -158,7 +158,163 @@ There is a common pattern in how the `@auth` directive could be used in the type
     }
     ```
 
-### Roles rule
+### Entity-type solution
+
+Entity type `@auth` as well as Nested Entity type `@auth` no needs particular consideration when used in the unwind-create context.
+
+It could be appended directly on the entity modified,
+For instance, preventing a post is created by users without the `ADMIN` role, could be achieved as follow:
+
+```cypher
+UNWIND $create_param0 AS create_var1
+CALL {
+    WITH create_var1
+    CREATE (create_this0:`Post`)
+    SET
+        create_this0.content = create_var1.content
+    WITH create_this0, create_var1
+    CALL apoc.util.validate(NOT (any(auth_var1 IN ["admin"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), "@neo4j/graphql/FORBIDDEN", [0])
+    RETURN create_this0
+}
+RETURN collect(create_this0 { .content }) AS data
+```
+
+The validation could be achieved by appending the statement: `CALL apoc.util.validate(NOT (any(auth_var1 IN ["admin"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), "@neo4j/graphql/FORBIDDEN", [0])` during the creation of the `Post`.
+
+#### Nested Entity-type solution
+
+As for the Entity type solution, when trying to create a new moderator starting from a `Post` create, could be achieved by statically applying the validation block to the `User` create block.
+
+As follow:
+
+```cypher
+UNWIND $create_param0 AS create_var2
+CALL {
+    WITH create_var2
+    CREATE (create_this1:`Post`)
+    SET
+        create_this1.title = create_var2.title,
+        create_this1.content = create_var2.content
+    WITH create_this1, create_var2
+    CALL {
+        WITH create_this1, create_var2
+        UNWIND create_var2.moderators.create AS create_var3
+        WITH create_var3.node AS create_var4, create_var3.edge AS create_var5, create_this1
+        CREATE (create_this6:`User`)
+        SET
+            create_this6.id = create_var4.id,
+            create_this6.name = create_var4.name
+        MERGE (create_this6)-[create_this7:MODERATES_POST]->(create_this1)
+        WITH create_this1, create_var4
+        CALL apoc.util.validate(NOT (any(auth_var1 IN ["admin"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), "@neo4j/graphql/FORBIDDEN", [0])
+        RETURN collect(NULL)
+    }
+    RETURN create_this1
+}
+CALL {
+    WITH create_this1
+    MATCH (create_this1_moderators:`User`)-[create_this0:MODERATES_POST]->(create_this1)
+    WITH create_this1_moderators { .name } AS create_this1_moderators
+    RETURN collect(create_this1_moderators) AS create_this1_moderators
+}
+RETURN collect(create_this1 { .title, .content, moderators: create_this1_moderators }) AS data
+```
+
+As shown by the above the `@auth` mechanism can be statically applied to the Nested Entity with the statement `CALL apoc.util.validate(NOT (any(auth_var1 IN ["admin"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), "@neo4j/graphql/FORBIDDEN", [0])`.
+
+### Field-level definition auth
+
+When `@auth` is applied directly to the field it needs to be considered that the validation should be applied only when the field is impacted by the mutation.
+
+As we compress the whole input in a single query the previous mechanism should be changed accordingly.
+
+Initially, the Cypher generated adds this validation only the `Posts` with the `@auth` fields were present as follow:
+
+```cypher
+CALL {
+    CREATE (this0:Post)
+    SET this0.content = $this0_content
+    WITH this0
+    CALL apoc.util.validate(NOT (any(auth_var1 IN ["admin"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), "@neo4j/graphql/FORBIDDEN", [0])
+    RETURN this0
+}
+CALL {
+    CREATE (this1:Post)
+    SET this1.title = $this1_title
+    RETURN this1
+}
+RETURN [ this0 { .content }, this1 { .content }] AS data
+```
+
+To achieve the same behavior in the unwind-create context, the validation needs to be changed in a way that is applied only for input with the field present.
+This RFC proposes to change the validation string and prepend the statement
+`{unwind field} IS NOT NULL and..` to it.
+
+For instance, if we let the `Post` content be modified only by the `ADMIN` users the unwind creation will looks like this:
+
+```cypher
+UNWIND $create_param0 AS create_var1
+CALL {
+    WITH create_var1
+    CREATE (create_this0:`Post`)
+    SET
+        create_this0.content = create_var1.content,
+        create_this0.title = create_var1.title
+    WITH create_var1, create_this0
+    CALL apoc.util.validate(create_var1.content IS NOT NULL and NOT (any(auth_var1 IN ["admin"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), "@neo4j/graphql/FORBIDDEN", [0])
+    RETURN create_this0
+}
+RETURN collect(create_this0 { .content }) AS data
+```
+
+#### Nested Entity-type auth at field-level auth
+
+The same mechanism described in the Field-level auth can be applied on nested create blocks.
+
+For instance, preventing the field `name` of the type `User` is set in a `Post` creation can be achieved as follow:
+
+```cypher
+UNWIND $create_param0 AS create_var2
+CALL {
+    WITH create_var2
+    CREATE (create_this1:`Post`)
+    SET
+        create_this1.title = create_var2.title,
+        create_this1.content = create_var2.content
+    WITH create_this1, create_var2
+    CALL {
+        WITH create_this1, create_var2
+        UNWIND create_var2.moderators.create AS create_var3
+        WITH create_var3.node AS create_var4, create_var3.edge AS create_var5, create_this1
+        CREATE (create_this6:`User`)
+        SET
+            create_this6.id = create_var4.id,
+            create_this6.name = create_var4.name
+        WITH create_this6, create_this1, create_var4
+        CALL apoc.util.validate(create_var4.name IS NOT NULL AND NOT (any(auth_var1 IN ["admin"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), "@neo4j/graphql/FORBIDDEN", [0])
+        MERGE (create_this6)-[create_this7:MODERATES_POST]->(create_this1)
+        RETURN collect(NULL)
+    }
+    RETURN create_this1
+}
+CALL {
+    WITH create_this1
+    MATCH (create_this1_moderators:`User`)-[create_this0:MODERATES_POST]->(create_this1)
+    WITH create_this1_moderators { .name } AS create_this1_moderators
+    RETURN collect(create_this1_moderators) AS create_this1_moderators
+}
+RETURN collect(create_this1 { .title, .content, moderators: create_this1_moderators }) AS data
+```
+
+## Out of scope
+
+-   Subscription rules.
+-   `Allow` rules.
+-   Rules on `connect` or `connectOrCreate` operations.
+
+Full examples:
+
+## Roles rule
 
 **Schema**
 
@@ -246,7 +402,7 @@ params:
 }
 ```
 
-### Field level definition
+### Roles rule - Field level definition
 
 **Schema**
 
@@ -354,7 +510,7 @@ params:
 }
 ```
 
-### Nested role
+### Nested Entity Roles rule
 
 **Schema**
 
@@ -500,7 +656,7 @@ params:
 }
 ```
 
-#### Nested Role - Field level definition
+#### Nested Entity Roles rule - Field level definition
 
 **Schema**
 
@@ -612,7 +768,7 @@ CALL {
             create_this6.id = create_var4.id,
             create_this6.name = create_var4.name
         WITH create_this6, create_this1, create_var4
-        CALL apoc.util.validate(create_this6.name IS NOT NULL AND NOT (any(auth_var1 IN ["admin"] WHERE any(auth_var0 IN [] WHERE auth_var0 = auth_var1))), "@neo4j/graphql/FORBIDDEN", [0])
+        CALL apoc.util.validate(create_var4.name IS NOT NULL AND NOT (any(auth_var1 IN ["admin"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), "@neo4j/graphql/FORBIDDEN", [0])
         MERGE (create_this6)-[create_this7:MODERATES_POST]->(create_this1)
         RETURN collect(NULL)
     }
@@ -656,7 +812,7 @@ params:
 }
 ```
 
-### Bind
+## Bind rule
 
 **Schema**
 
@@ -746,7 +902,7 @@ params:
 }
 ```
 
-#### Bind - Field-level bind
+#### Bind rule - Field level definition
 
 **Schema**
 
@@ -845,7 +1001,7 @@ params:
 }
 ```
 
-#### Bind - Nested Bind
+#### Bind rule - Nested Entity Bind rule
 
 **Schema**
 
@@ -997,7 +1153,7 @@ params:
 }
 ```
 
-#### Bind - Nested - Field-level
+#### Bind rule - Nested Entity Bind rule - Field-level definition
 
 **Schema**
 
@@ -1142,11 +1298,3 @@ params:
   "resolvedCallbacks": {}
 }
 ```
-
-## TODO
-
--   `Allow` Semes out of scope
--   `Bind` To be implemented
--   `Roles` To be implemented in both Root and Nested
--   `Where` Seems to not be impacted
--   `Field level definition` To be implemented at least for Roles, only when the field is part of the input
