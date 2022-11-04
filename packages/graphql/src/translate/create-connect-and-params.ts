@@ -25,6 +25,8 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import createRelationshipValidationString from "./create-relationship-validation-string";
 import type { CallbackBucket } from "../classes/CallbackBucket";
+import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 
 interface Res {
     connects: string[];
@@ -45,6 +47,7 @@ function createConnectAndParams({
     fromCreate,
     insideDoWhen,
     includeRelationshipValidation,
+    isFirstLevel = true,
 }: {
     withVars: string[];
     value: any;
@@ -59,6 +62,7 @@ function createConnectAndParams({
     fromCreate?: boolean;
     insideDoWhen?: boolean;
     includeRelationshipValidation?: boolean;
+    isFirstLevel?: boolean;
 }): [string, any] {
     function createSubqueryContents(
         relatedNode: Node,
@@ -66,19 +70,24 @@ function createConnectAndParams({
         index: number
     ): { subquery: string; params: Record<string, any> } {
         let params = {};
-
         const baseName = `${varName}${index}`;
         const nodeName = `${baseName}_node`;
         const relationshipName = `${baseName}_relationship`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
-        const relTypeStr = `[${relationField.properties ? relationshipName : ""}:${relationField.type}]`;
+        const relTypeStr = `[${relationField.properties || context.subscriptionsEnabled ? relationshipName : ""}:${
+            relationField.type
+        }]`;
 
         const subquery: string[] = [];
         const labels = relatedNode.getLabelString(context);
         const label = labelOverride ? `:${labelOverride}` : labels;
 
-        subquery.push(`\tWITH ${withVars.join(", ")}`);
+        subquery.push(`\tWITH ${filterMetaVariable(withVars).join(", ")}`);
+        if (context.subscriptionsEnabled) {
+            const innerMetaStr = `, [] as meta`;
+            subquery.push(`\tWITH ${filterMetaVariable(withVars).join(", ")}${innerMetaStr}`);
+        }
         subquery.push(`\tOPTIONAL MATCH (${nodeName}${label})`);
 
         const whereStrs: string[] = [];
@@ -209,16 +218,21 @@ function createConnectAndParams({
         */
         subquery.push("\tCALL {");
         subquery.push("\t\tWITH *");
-        subquery.push(
-            `\t\tWITH ${[
-                ...withVars.filter((v) => v !== parentVar),
-                `collect(${nodeName}) as connectedNodes`,
-                `collect(${parentVar}) as parentNodes`,
-            ].join(", ")}`
-        );
-        subquery.push(`\t\tUNWIND parentNodes as ${parentVar}`);
-        subquery.push(`\t\tUNWIND connectedNodes as ${nodeName}`);
-        subquery.push(`\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        const withVarsInner = [
+            ...withVars.filter((v) => v !== parentVar),
+            `collect(${nodeName}) as connectedNodes`,
+            `collect(${parentVar}) as parentNodes`,
+        ];
+        if (context.subscriptionsEnabled) {
+            withVarsInner.push(`[] as meta`);
+        }
+        subquery.push(`\t\tWITH ${filterMetaVariable(withVarsInner).join(", ")}`);
+
+        subquery.push("\t\tCALL {"); //
+        subquery.push("\t\t\tWITH connectedNodes, parentNodes"); //
+        subquery.push(`\t\t\tUNWIND parentNodes as ${parentVar}`);
+        subquery.push(`\t\t\tUNWIND connectedNodes as ${nodeName}`);
+        subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
         if (relationField.properties) {
             const relationship = context.relationships.find(
@@ -231,11 +245,47 @@ function createConnectAndParams({
                 operation: "CREATE",
                 callbackBucket,
             });
-            subquery.push(setA[0]);
+            subquery.push(`\t\t\t${setA[0]}`);
             params = { ...params, ...setA[1] };
         }
-        subquery.push(`\t\tRETURN count(*) AS _`);
-        subquery.push("\t}");
+
+        if (context.subscriptionsEnabled) {
+            const [fromVariable, toVariable] =
+                relationField.direction === "IN" ? [nodeName, parentVar] : [parentVar, nodeName];
+            const [fromTypename, toTypename] =
+                relationField.direction === "IN"
+                    ? [relatedNode.name, parentNode.name]
+                    : [parentNode.name, relatedNode.name];
+            const eventWithMetaStr = createConnectionEventMetaObject({
+                event: "connect",
+                relVariable: relationshipName,
+                fromVariable,
+                toVariable,
+                typename: relationField.type,
+                fromTypename,
+                toTypename,
+            });
+            subquery.push(`\t\t\tWITH ${eventWithMetaStr} as meta`);
+            subquery.push(`\t\t\tRETURN collect(meta) as update_meta`);
+        } else {
+            subquery.push(`\t\t\tRETURN count(*) AS _`);
+        }
+
+        subquery.push("\t\t}");
+
+        if (context.subscriptionsEnabled) {
+            subquery.push(`\t\tWITH meta + update_meta as meta`);
+            subquery.push(`\t\tRETURN meta AS connect_meta`);
+            subquery.push("\t}");
+        } else {
+            subquery.push(`\t\tRETURN count(*) AS _`);
+            subquery.push("\t}");
+        }
+
+        let innerMetaStr = "";
+        if (context.subscriptionsEnabled) {
+            innerMetaStr = `, connect_meta + meta AS meta`;
+        }
 
         if (includeRelationshipValidation) {
             const relValidationStrs: string[] = [];
@@ -256,10 +306,12 @@ function createConnectAndParams({
             });
 
             if (relValidationStrs.length) {
-                subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
+                subquery.push(`\tWITH ${[...filterMetaVariable(withVars), nodeName].join(", ")}${innerMetaStr}`);
                 subquery.push(relValidationStrs.join("\n"));
             }
         }
+
+        subquery.push(`WITH ${[...filterMetaVariable(withVars), nodeName].join(", ")}${innerMetaStr}`);
 
         if (connect.connect) {
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];
@@ -291,6 +343,10 @@ function createConnectAndParams({
                                 Object.keys(v).forEach((modelName) => {
                                     newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
                                 });
+                            } else if (relField.interface) {
+                                (relField.interface.implementations as string[]).forEach((modelName) => {
+                                    newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
+                                });
                             } else {
                                 newRefNodes.push(context.nodes.find((x) => x.name === relField.typeMeta.name) as Node);
                             }
@@ -308,6 +364,7 @@ function createConnectAndParams({
                                     parentNode: relatedNode,
                                     labelOverride: relField.union ? newRefNode.name : "",
                                     includeRelationshipValidation: true,
+                                    isFirstLevel: false,
                                 });
                                 r.connects.push(recurse[0]);
                                 r.params = { ...r.params, ...recurse[1] };
@@ -356,6 +413,7 @@ function createConnectAndParams({
                                         refNodes: [newRefNode],
                                         parentNode: relatedNode,
                                         labelOverride: relField.union ? newRefNode.name : "",
+                                        isFirstLevel: false,
                                     });
                                     r.connects.push(recurse[0]);
                                     r.params = { ...r.params, ...recurse[1] };
@@ -365,7 +423,6 @@ function createConnectAndParams({
                             },
                             { connects: [], params: {} }
                         );
-
                         subquery.push(onReduced.connects.join("\n"));
                         params = { ...params, ...onReduced.params };
                     });
@@ -412,7 +469,12 @@ function createConnectAndParams({
             params = { ...params, ...postAuth.params };
         }
 
-        subquery.push(`\tRETURN count(*) AS connect_${varName}_${relatedNode.name}`);
+        if (context.subscriptionsEnabled) {
+            subquery.push(`WITH collect(meta) AS connect_meta`);
+            subquery.push(`RETURN REDUCE(m=[],m1 IN connect_meta | m+m1 ) as connect_meta`);
+        } else {
+            subquery.push(`\tRETURN count(*) AS connect_${varName}_${relatedNode.name}`);
+        }
 
         return { subquery: subquery.join("\n"), params };
     }
@@ -432,26 +494,45 @@ function createConnectAndParams({
             }
         }
 
-        res.connects.push(`WITH ${withVars.join(", ")}`);
-        res.connects.push("CALL {");
+        if (isFirstLevel) {
+            res.connects.push(`WITH ${withVars.join(", ")}`);
+        }
 
+        const inner: string[] = [];
         if (relationField.interface) {
             const subqueries: string[] = [];
-            refNodes.forEach((refNode) => {
-                const subquery = createSubqueryContents(refNode, connect, index);
+            refNodes.forEach((refNode, i) => {
+                const subquery = createSubqueryContents(refNode, connect, i);
                 if (subquery.subquery) {
                     subqueries.push(subquery.subquery);
                     res.params = { ...res.params, ...subquery.params };
                 }
             });
-            res.connects.push(subqueries.join("\n}\nCALL {\n\t"));
+            if (subqueries.length > 0) {
+                if (context.subscriptionsEnabled) {
+                    const withStatement = `WITH ${filterMetaVariable(withVars).join(
+                        ", "
+                    )}, connect_meta + meta AS meta`;
+                    inner.push(subqueries.join(`\n}\n${withStatement}\nCALL {\n\t`));
+                } else {
+                    inner.push(subqueries.join("\n}\nCALL {\n\t"));
+                }
+            }
         } else {
             const subquery = createSubqueryContents(refNodes[0], connect, index);
-            res.connects.push(subquery.subquery);
+            inner.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
         }
 
-        res.connects.push("}");
+        if (inner.length > 0) {
+            res.connects.push("CALL {");
+            res.connects.push(...inner);
+            res.connects.push("}");
+
+            if (context.subscriptionsEnabled) {
+                res.connects.push(`WITH connect_meta + meta AS meta, ${filterMetaVariable(withVars).join(", ")}`);
+            }
+        }
 
         return res;
     }

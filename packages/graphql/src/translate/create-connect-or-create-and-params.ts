@@ -26,6 +26,8 @@ import { asArray, omitFields } from "../utils/utils";
 import Cypher from "@neo4j/cypher-builder";
 import { addCallbackAndSetParamCypher } from "./utils/callback-utils";
 import { findConflictingProperties } from "../utils/is-property-clash";
+import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 
 type CreateOrConnectInput = {
     where?: {
@@ -43,6 +45,7 @@ export function createConnectOrCreateAndParams({
     parentVar,
     relationField,
     refNode,
+    node,
     context,
     withVars,
     callbackBucket,
@@ -52,6 +55,7 @@ export function createConnectOrCreateAndParams({
     parentVar: string;
     relationField: RelationField;
     refNode: Node;
+    node: Node;
     context: Context;
     withVars: string[];
     callbackBucket: CallbackBucket;
@@ -80,21 +84,33 @@ export function createConnectOrCreateAndParams({
             parentVar,
             relationField,
             refNode,
+            node,
             context,
             callbackBucket,
+            withVars,
         });
         return result;
     });
 
     const wrappedQueries = statements.map((statement) => {
-        const countResult = new Cypher.RawCypher(() => "COUNT(*) AS _");
+        const countResult = new Cypher.RawCypher(() => {
+            if (context.subscriptionsEnabled) {
+                return "meta as update_meta";
+            }
+            return "COUNT(*) AS _";
+        });
         const returnStatement = new Cypher.Return(countResult);
         const withStatement = new Cypher.With(...withVarsVariables);
         const callStatement = new Cypher.Call(Cypher.concat(statement, returnStatement)).innerWith(
             ...withVarsVariables
         );
+        const subqueryClause = Cypher.concat(withStatement, callStatement);
+        if (context.subscriptionsEnabled) {
+            const afterCallWithStatement = new Cypher.With("*", [new Cypher.NamedVariable("update_meta"), "meta"]);
+            Cypher.concat(subqueryClause, afterCallWithStatement);
+        }
 
-        return Cypher.concat(withStatement, callStatement);
+        return subqueryClause;
     });
 
     const query = Cypher.concat(...wrappedQueries);
@@ -108,25 +124,31 @@ function createConnectOrCreatePartialStatement({
     parentVar,
     relationField,
     refNode,
+    node,
     context,
     callbackBucket,
+    withVars,
 }: {
     input: CreateOrConnectInput;
     baseName: string;
     parentVar: string;
     relationField: RelationField;
     refNode: Node;
+    node: Node;
     context: Context;
     callbackBucket: CallbackBucket;
+    withVars: string[];
 }): Cypher.Clause {
     const mergeQuery = mergeStatement({
         input,
         refNode,
+        parentRefNode: node,
         context,
         relationField,
         parentNode: new Cypher.NamedNode(parentVar),
         varName: baseName,
         callbackBucket,
+        withVars,
     });
 
     const authQuery = createAuthStatement({
@@ -144,19 +166,23 @@ function createConnectOrCreatePartialStatement({
 function mergeStatement({
     input,
     refNode,
+    parentRefNode,
     context,
     relationField,
     parentNode,
     varName,
     callbackBucket,
+    withVars,
 }: {
     input: CreateOrConnectInput;
     refNode: Node;
+    parentRefNode: Node;
     context: Context;
     relationField: RelationField;
     parentNode: Cypher.Node;
     varName: string;
     callbackBucket: CallbackBucket;
+    withVars: string[];
 }): Cypher.Clause {
     const whereNodeParameters = getCypherParameters(input.where?.node, refNode);
     const onCreateNodeParameters = getCypherParameters(input.onCreate?.node, refNode);
@@ -216,7 +242,27 @@ function mergeStatement({
     );
 
     const relationshipMerge = new Cypher.Merge(relationship).onCreate(...onCreateRelationshipParams);
-    return Cypher.concat(merge, relationshipMerge);
+
+    let withClause: Cypher.Clause | undefined;
+    if (context.subscriptionsEnabled) {
+        const [fromTypename, toTypename] =
+            relationField.direction === "IN" ? [refNode.name, parentRefNode.name] : [parentRefNode.name, refNode.name];
+
+        withClause = new Cypher.RawCypher((env: Cypher.Environment) => {
+            const eventWithMetaStr = createConnectionEventMeta({
+                event: "connect",
+                relVariable: relationship.getCypher(env),
+                fromVariable: relationship.source.getCypher(env),
+                toVariable: relationship.target.getCypher(env),
+                typename: relationField.type,
+                fromTypename,
+                toTypename,
+            });
+            return `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, varName]).join(", ")}`;
+        });
+    }
+
+    return Cypher.concat(merge, relationshipMerge, withClause);
 }
 
 function createAuthStatement({
