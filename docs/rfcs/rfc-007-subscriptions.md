@@ -996,12 +996,12 @@ RETURN collect(DISTINCT this { .title }) AS data, collect(DISTINCT m) as meta
 
 With a delete:
 
--   Delete (just nodes targeted)
-
-Solution 1:
+1.  Delete (just nodes targeted)
 
 -   match all relationships connected to the node, irrespective of the direction
--   add to meta array
+-   add to meta array via 2 additional properties: nodeLables, otherNodeLabels
+-   labels to be transformed to node type via new helper Map data structure of type Map<Set<string>, node> that maps a Set of labels to a node Type, created in the Node.ts file and exported in the context to be used in the translation code
+    -   !! **IMPORTANT** all labels have to be taken into account (check @additionalLabels / @node directives)
 
 ```cypher
 WITH [] AS meta
@@ -1009,10 +1009,12 @@ MATCH (this:`Movie`)
 WHERE this.title = $param0
 WITH this, meta + { event: "delete", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: "Movie" } AS meta
 >>>
-OPTIONAL MATCH (this)-[this_relationship:*]-(this_destination0)
-WITH this, meta, this_relationship, this_destination0
-WITH this,  this_relationship, this_destination0, meta + { event: "disconnect", id_from: id(this_destination0), id_to: id(this), id: id(this_relationship), properties: {from: this_destination0 {.*}, to: this {.*}, relationship: this_relationship {.*}} ,timestamp: timestamp(), relationshipName: type(this_relationship), fromTypename: labels(this_destination0), toTypename: labels(this) } AS meta
-RETURN collect(meta) as meta
+CALL {
+    OPTIONAL MATCH (this)-[this_relationship:*]-(this_other0)
+    WITH { event: "disconnect", id_from: id(this_other0), id_to: id(this), id: id(this_relationship), properties: {node: this {.*}, otherNode: this_other0 {.*}, relationship: this_relationship {.*}} ,timestamp: timestamp(), relationshipName: type(this_relationship), nodeLabels: labels(this), otherNodeLabels: labels(this_other0) } AS disconnect_meta
+    RETURN collect(disconnect_meta) as disconnect_meta
+}
+WITH disconnect_meta + meta as meta, this
 <<<
 DETACH DELETE this
 WITH meta
@@ -1022,39 +1024,19 @@ RETURN collect(DISTINCT m) AS meta
 
 Problem: How do we know the direction of the relationship?
 
-Solution 2:
+Solution 1 (**Prefered**): Remove the need to know the direction in the first place
 
--   2 subqueries each explicitly specifying the relationship directive
--   both subqueries add to meta array
+-   Remove any indication of direction from the event properties, given that we don't return it any more. => { event: "connect|disconnect", id_from, id_to, id, properties: {from, to, relationship}, timestamp, relationshipName, fromTypename, toTypename } becomes { event: "connect|disconnect", id_node, id_otherNode, id, properties: {node, otherNode, relationship}, timestamp, relationshipName, nodeTypename, otherNodeTypename } + additional nodeLables, otherNodeLabels
+-   Filter-out the events by {id, event} combination before publishing them
 
-```cypher
-WITH [] AS meta
-MATCH (this:`Movie`)
-WHERE this.title = $param0
-WITH this, meta + { event: "delete", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: "Movie" } AS meta
->>>
-CALL {
-    OPTIONAL MATCH (this)-[this_relationship:*]->(this_destination0)
-    WITH this,  this_relationship, this_destination0, meta + { event: "disconnect", id_from: id(this), id_to: id(this_destination0), id: id(this_relationship), properties: {from: this {.*}, to: this_destination0 {.*}, relationship: this_relationship {.*}} ,timestamp: timestamp(), relationshipName: type(this_relationship), fromTypename: labels(this), toTypename: labels(this_destination0) } AS meta
-    RETURN collect(meta) as disconnect_meta
-}
-WITH meta + disconnect_meta as meta
-CALL {
-    OPTIONAL MATCH (this)<-[this_relationship:*]-(this_start0)
-    WITH this, this_relationship, this_start0, meta + { event: "disconnect", id_from: id(this_start0), id_to: id(this), id: id(this_relationship), properties: {from: this_start0 {.*}, to: this {.*}, relationship: this_relationship {.*}} ,timestamp: timestamp(), relationshipName: type(this_relationship), fromTypename: labels(this_start0), toTypename: labels(this) } AS meta
-    RETURN collect(meta) as meta
-}
-WITH meta + disconnect_meta as meta
-<<<
-DETACH DELETE this
-WITH meta
-UNWIND meta AS m
-RETURN collect(DISTINCT m) AS meta
-```
+Solution 2: Using case & startNode
 
--   Delete - delete (relationship(s) targeted)
+-   use startNode(this_relationship) and case st to determine which node has the labels of the startNode => it is the `from` node
+-   no need to filter-out from js as DISTINCT will do the job in this case
 
-1. Legacy foreach impl version
+2.  Delete - delete (relationship(s) targeted)
+
+2.1. Legacy foreach impl version
 
 ```cypher
 WITH [] AS meta
@@ -1081,7 +1063,7 @@ UNWIND meta AS m
 RETURN collect(DISTINCT m) AS meta
 ```
 
-2. Uniform with disconnect impl version
+2.2 Uniform with disconnect impl version (**prefered**)
 
 ```cypher
 WITH [] AS meta
@@ -1093,22 +1075,25 @@ OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
 WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
 WITH this, meta, collect(DISTINCT this_actors0) as this_actors0_to_delete
 CALL {
-        WITH this_actors0_to_delete, meta
+        WITH this_actors0_to_delete
         UNWIND this_actors0_to_delete AS n
         >>>
-        WITH n, meta + { event: "delete", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: "Actor" } + { event: "disconnect", id_from: id(n), id_to: id(this), id: id(this_actors0_relationship), properties: {from: n {.*}, to: this {.*}, relationship: this_actors0_relationship {.*}} ,timestamp: timestamp(), relationshipName: "ACTED_IN" } as meta
+        WITH n, { event: "delete", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: "Actor" } + { event: "disconnect", id_from: id(n), id_to: id(this), id: id(this_actors0_relationship), properties: {from: n {.*}, to: this {.*}, relationship: this_actors0_relationship {.*}} ,timestamp: timestamp(), relationshipName: "ACTED_IN" } as meta
         <<<
         DETACH DELETE n
         >>>
         RETURN collect(meta) as disconnect_meta
         <<<
 }
+WITH meta + disconnect_meta as meta, this
 DETACH DELETE this
 UNWIND meta AS m
 RETURN collect(DISTINCT m) AS meta
 ```
 
 ---
+
+Before FOREACH conversion to subquery + UNWIND
 
 ```cypher
 WITH [] AS meta
