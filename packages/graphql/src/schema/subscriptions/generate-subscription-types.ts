@@ -264,7 +264,7 @@ export function generateSubscriptionTypes({
             },
         });
 
-        const connectionWhere = generateSubscriptionConnectionWhereType({
+        const { created: createdWhere, deleted: deletedWhere } = generateSubscriptionConnectionWhereType({
             node,
             schemaComposer,
             relationshipFields,
@@ -273,13 +273,13 @@ export function generateSubscriptionTypes({
         if (node.relationFields.length > 0) {
             subscriptionComposer.addFields({
                 [subscribeOperation.connected]: {
-                    args: { where: connectionWhere },
+                    args: { where: createdWhere },
                     type: relationConnectedEvent.NonNull,
                     subscribe: generateSubscribeMethod(node, "connect", nodes, relationshipFields),
                     resolve: subscriptionResolve,
                 },
                 [subscribeOperation.disconnected]: {
-                    args: { where: connectionWhere },
+                    args: { where: deletedWhere },
                     type: relationDisconnectedEvent.NonNull,
                     subscribe: generateSubscribeMethod(node, "disconnect", nodes, relationshipFields),
                     resolve: subscriptionResolve,

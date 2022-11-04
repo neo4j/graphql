@@ -174,7 +174,7 @@ subscription SubscriptionMovie {
 `;
 
     test("node filter on standard type", async () => {
-        const where = `{relationship: {actors: {node: {name_NOT: "Keanu"}}}}`;
+        const where = `{createdRelationship: {actors: {node: {name_NOT: "Keanu"}}}}`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -242,7 +242,7 @@ subscription SubscriptionMovie {
     });
 
     test("edge filter on standard type", async () => {
-        const where = `{relationship: {actors: {edge: {screenTime_IN: [42, 420]}}}}`;
+        const where = `{createdRelationship: {actors: {edge: {screenTime_IN: [42, 420]}}}}`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -327,7 +327,7 @@ subscription SubscriptionMovie {
     });
 
     test("node and edge filter on standard type", async () => {
-        const where = `{relationship: {actors: {node: {name_STARTS_WITH: "K"}, edge: {screenTime_IN: [42, 420]}}}}`;
+        const where = `{createdRelationship: {actors: {node: {name_STARTS_WITH: "K"}, edge: {screenTime_IN: [42, 420]}}}}`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -395,7 +395,7 @@ subscription SubscriptionMovie {
     });
 
     test("node filter on union type - both types", async () => {
-        const where = `{relationship: { directors: { ${typePerson.name}: { node: { reputation_GTE: 50 } }, ${typeActor.name}: { node: { name_NOT_IN: ["Keanu", "K"] } } } } }`;
+        const where = `{createdRelationship: { directors: { ${typePerson.name}: { node: { reputation_GTE: 50 } }, ${typeActor.name}: { node: { name_NOT_IN: ["Keanu", "K"] } } } } }`;
 
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
@@ -506,7 +506,7 @@ subscription SubscriptionMovie {
     });
 
     test("node filter on union type - single type", async () => {
-        const where = `{ relationship: { directors: { ${typePerson.name}: { node: { reputation_GTE: 50 } } } } }`;
+        const where = `{ createdRelationship: { directors: { ${typePerson.name}: { node: { reputation_GTE: 50 } } } } }`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -575,42 +575,8 @@ subscription SubscriptionMovie {
             .expect(200);
 
         expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toHaveLength(3);
+        expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
-                    relationshipFieldName: "directors",
-                    createdRelationship: {
-                        actors: null,
-                        directors: {
-                            year: 2001,
-                            node: {
-                                name: "Jim",
-                            },
-                        },
-                        reviewers: null,
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
-                    relationshipFieldName: "directors",
-                    createdRelationship: {
-                        actors: null,
-                        directors: {
-                            year: 2010,
-                            node: {
-                                name: "Keanu",
-                            },
-                        },
-                        reviewers: null,
-                    },
-                },
-            },
             {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
@@ -633,7 +599,7 @@ subscription SubscriptionMovie {
     });
 
     test("node & edge filter on union type - both types", async () => {
-        const where = `{ relationship: { directors: { ${typePerson.name}: { node: { reputation_GTE: 50 } }, ${typeActor.name}: { edge: { year_GT: 2005 } } } } }`;
+        const where = `{ createdRelationship: { directors: { ${typePerson.name}: { node: { reputation_GTE: 50 } }, ${typeActor.name}: { edge: { year_GT: 2005 } } } } }`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -743,7 +709,80 @@ subscription SubscriptionMovie {
     });
 
     test("node & edge filter on union type - single types", async () => {
-        const where = `{ relationship: { directors: { ${typePerson}: { node: { reputation_GTE: 50 }, edge: { year_LT: 2005 } } } } } `;
+        const where = `{ createdRelationship: { directors: { ${typePerson}: { node: { reputation_GTE: 50 }, edge: { year_LT: 2005 } } } } } `;
+        await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.create}(
+                            input: [
+                                {
+                                    directors: {
+                                        ${typeActor.name}: {
+                                          create: [
+                                            {
+                                              node: {
+                                                name: "Jim"
+                                              },
+                                              edge: {
+                                                year: 2001
+                                              }
+                                            },
+                                            {
+                                                node: {
+                                                  name: "Keanu"
+                                                },
+                                                edge: {
+                                                  year: 2010
+                                                }
+                                              }
+                                          ]
+                                        },
+                                        ${typePerson.name}: {
+                                          create: [
+                                            {
+                                              node: {
+                                                name: "Jill",
+                                                reputation: 5
+                                              },
+                                              edge: {
+                                                year: 2001
+                                              }
+                                            },
+                                            {
+                                                node: {
+                                                  name: "Kim",
+                                                  reputation: 55
+                                                },
+                                                edge: {
+                                                  year: 2005
+                                                }
+                                              }
+                                          ]
+                                        }
+                                      },
+                                    title: "Matrix",
+                                }
+                            ]
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toHaveLength(0);
+    });
+
+    test("node & edge filter on union type - single types, include both types", async () => {
+        const where = `{ createdRelationship: { directors: { ${typePerson}: { node: { reputation_GTE: 50 }, edge: { year_LT: 2005 } }, ${typeActor}: {} } } } `;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -852,7 +891,7 @@ subscription SubscriptionMovie {
     });
 
     test("edge filter on interface type", async () => {
-        const where = `{relationship: {reviewers: {edge: {score_IN: [10, 100, 42]}}}}`;
+        const where = `{createdRelationship: {reviewers: {edge: {score_IN: [10, 100, 42]}}}}`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -937,8 +976,76 @@ subscription SubscriptionMovie {
         ]);
     });
 
+    test("edge filter on interface type, only one type", async () => {
+        const where = `{createdRelationship: {reviewers: {edge: {score_IN: [10, 100, 42]}, node: { _on: { ${typeInfluencer.name}: {} } }}}}`;
+        await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.create}(
+                            input: [
+                                {
+                                    reviewers: {
+                                        create: [
+                                          {
+                                            edge: {
+                                              score: 100
+                                            },
+                                            node: {
+                                              ${typePerson.name}: {
+                                                name: "Ana",
+                                                reputation: 10
+                                              },
+                                              ${typeInfluencer.name}: {
+                                                  url: "/bob"
+                                                  reputation: 9,
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      },
+                                    title: "Matrix",
+                                }
+                            ]
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toHaveLength(1);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
+                    event: "CONNECT",
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 100,
+                            node: {
+                                url: "/bob",
+                                reputation: 9,
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+
     test("node filter on interface type - common fields only", async () => {
-        const where = `{relationship: {reviewers: {node: {reputation_LT: 10}}}}`;
+        const where = `{createdRelationship: {reviewers: {node: {reputation_LT: 10}}}}`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -1005,8 +1112,144 @@ subscription SubscriptionMovie {
         ]);
     });
 
+    test("node filter on interface type - common fields only, for a single type", async () => {
+        const where = `{createdRelationship: {reviewers: {node: {reputation_LT: 10, _on: { ${typeInfluencer.name}: {} } }}}}`;
+        await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.create}(
+                            input: [
+                                {
+                                    reviewers: {
+                                        create: [
+                                          {
+                                            edge: {
+                                              score: 100
+                                            },
+                                            node: {
+                                              ${typePerson.name}: {
+                                                name: "Ana",
+                                                reputation: 10
+                                              },
+                                              ${typeInfluencer.name}: {
+                                                reputation: 9,
+                                                url: "/bob"
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      },
+                                    title: "Matrix",
+                                }
+                            ]
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toHaveLength(1);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
+                    event: "CONNECT",
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 100,
+                            node: {
+                                url: "/bob",
+                                reputation: 9,
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+
+    test("node filter on interface type - common fields only, override for a single type", async () => {
+        const where = `{createdRelationship: {reviewers: {node: {reputation_LT: 10, _on: { ${typePerson.name}: { reputation_LTE: 10 } } }}}}`;
+        await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.create}(
+                            input: [
+                                {
+                                    reviewers: {
+                                        create: [
+                                          {
+                                            edge: {
+                                              score: 100
+                                            },
+                                            node: {
+                                              ${typePerson.name}: {
+                                                name: "Ana",
+                                                reputation: 10
+                                              },
+                                              ${typeInfluencer.name}: {
+                                                reputation: 9,
+                                                url: "/bob"
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      },
+                                    title: "Matrix",
+                                }
+                            ]
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toHaveLength(1);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
+                    event: "CONNECT",
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 100,
+                            node: {
+                                name: "Ana",
+                                reputation: 10,
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+
     test("node filter on interface type - specific fields only", async () => {
-        const where = `{ relationship: { reviewers: { node: { _on: { ${typePerson.name}: {name_STARTS_WITH: "A"}, ${typeInfluencer.name}: {url_STARTS_WITH: "/"} } } } } }`;
+        const where = `{ createdRelationship: { reviewers: { node: { _on: { ${typePerson.name}: {name_STARTS_WITH: "A"}, ${typeInfluencer.name}: {url_STARTS_WITH: "/"} } } } } }`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -1091,8 +1334,56 @@ subscription SubscriptionMovie {
         ]);
     });
 
-    test("node filter on interface type - specific fields on one type", async () => {
-        const where = `{ relationship: { reviewers: { node: { _on: { ${typePerson.name}: {name_NOT: "Ana"} } } } } }`;
+    test("node filter on interface type - specific fields on one type, other type not included", async () => {
+        const where = `{ createdRelationship: { reviewers: { node: { _on: { ${typePerson.name}: {name_NOT: "Ana"} } } } } }`;
+        await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.create}(
+                            input: [
+                                {
+                                    reviewers: {
+                                        create: [
+                                          {
+                                            edge: {
+                                              score: 100
+                                            },
+                                            node: {
+                                              ${typePerson.name}: {
+                                                name: "Ana",
+                                                reputation: 10
+                                              },
+                                              ${typeInfluencer.name}: {
+                                                reputation: 9,
+                                                url: "/bob"
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      },
+                                    title: "Matrix",
+                                }
+                            ]
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toHaveLength(0);
+    });
+
+    test("node filter on interface type - specific fields on one type, other type included", async () => {
+        const where = `{ createdRelationship: { reviewers: { node: { _on: { ${typePerson.name}: {name_NOT: "Ana"}, ${typeInfluencer.name}: {} } } } } }`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -1160,7 +1451,7 @@ subscription SubscriptionMovie {
     });
 
     test("node filter on interface type - common and specific fields", async () => {
-        const where = `{ relationship: { reviewers: { node: { reputation_GT: 8, _on: { ${typePerson.name}: {name_STARTS_WITH: "A"}, ${typeInfluencer.name}: {url_STARTS_WITH: "/"} } } } } }`;
+        const where = `{ createdRelationship: { reviewers: { node: { reputation_GT: 8, _on: { ${typePerson.name}: {name_STARTS_WITH: "A"}, ${typeInfluencer.name}: {url_STARTS_WITH: "/"} } } } } }`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -1246,7 +1537,7 @@ subscription SubscriptionMovie {
     });
 
     test("node filter on interface type - common and specific fields overlapping making interval", async () => {
-        const where = `{ relationship: { reviewers: { node: { reputation_GT: 8, _on: { ${typePerson.name}: {reputation_LT: 10, name_STARTS_WITH: "A"}, ${typeInfluencer.name}: {url_STARTS_WITH: "/"} } } } } }`;
+        const where = `{ createdRelationship: { reviewers: { node: { reputation_GT: 8, _on: { ${typePerson.name}: {reputation_LT: 10, name_STARTS_WITH: "A"}, ${typeInfluencer.name}: {url_STARTS_WITH: "/"} } } } } }`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -1314,7 +1605,7 @@ subscription SubscriptionMovie {
     });
 
     test("node filter on interface type - common and specific fields overlapping overriding", async () => {
-        const where = `{ relationship: { reviewers: { node: { reputation_LT: 10, _on: { ${typePerson.name}: {reputation_LT: 11, name_STARTS_WITH: "A"}, ${typeInfluencer.name}: {url_STARTS_WITH: "/"} } } } } }`;
+        const where = `{ createdRelationship: { reviewers: { node: { reputation_LT: 10, _on: { ${typePerson.name}: {reputation_LT: 11, name_STARTS_WITH: "A"}, ${typeInfluencer.name}: {url_STARTS_WITH: "/"} } } } } }`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -1399,9 +1690,116 @@ subscription SubscriptionMovie {
         ]);
     });
 
+    test("filter included type", async () => {
+        const where = `{ createdRelationship: { reviewers: {}, actors: {} } }`;
+        await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.create}(
+                            input: [
+                                {
+                                    reviewers: {
+                                        create: [
+                                          {
+                                            edge: {
+                                              score: 100
+                                            },
+                                            node: {
+                                              ${typePerson.name}: {
+                                                name: "Ana",
+                                                reputation: 10
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      directors: {
+                                        ${typeActor.name}: {
+                                          create: [
+                                            {
+                                              node: {
+                                                name: "Jim"
+                                              },
+                                              edge: {
+                                                year: 2001
+                                              }
+                                            }
+                                          ]
+                                        }
+                                    },
+                                    actors: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    name: "Keanu"
+                                                },
+                                                edge: {
+                                                    screenTime: 1000
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    title: "Matrix",
+                                }
+                            ]
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toHaveLength(2);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
+                    event: "CONNECT",
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 100,
+                            node: {
+                                name: "Ana",
+                                reputation: 10,
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
+                    event: "CONNECT",
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
+                        actors: {
+                            screenTime: 1000,
+                            node: {
+                                name: "Keanu",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+        ]);
+    });
+
     // TODO:
     // 1. finish impl relationship filter (include/exclude based on types :{})
-    // 2. add tests for finished impl
+    // 2. add tests for finished impl [done?]
     // include test with type relation to same type
     // 3. refactor compare-properties.ts
 });

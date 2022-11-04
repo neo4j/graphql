@@ -52,7 +52,7 @@ export function generateSubscriptionConnectionWhereType({
     schemaComposer: SchemaComposer;
     relationshipFields: Map<string, ObjectFields>;
     interfaceCommonFields: Map<string, ObjectFields>;
-}): InputTypeComposer {
+}): { created: InputTypeComposer; deleted: InputTypeComposer } {
     const fieldName = node.subscriptionEventPayloadFieldNames.connect;
     const typeName = node.name;
 
@@ -70,18 +70,32 @@ export function generateSubscriptionConnectionWhereType({
         });
     }
 
-    return schemaComposer.createInputTC({
-        name: `${typeName}ConnectionSubscriptionWhere`,
-        fields: {
-            [fieldName]: connectedNode,
-            relationship: _getRelationshipConnectionWhereTypes({
-                node,
-                schemaComposer,
-                relationshipFields,
-                interfaceCommonFields,
-            }),
-        },
-    });
+    return {
+        created: schemaComposer.createInputTC({
+            name: `${typeName}RelationshipCreatedSubscriptionWhere`,
+            fields: {
+                [fieldName]: connectedNode,
+                createdRelationship: _getRelationshipConnectionWhereTypes({
+                    node,
+                    schemaComposer,
+                    relationshipFields,
+                    interfaceCommonFields,
+                }),
+            },
+        }),
+        deleted: schemaComposer.createInputTC({
+            name: `${typeName}RelationshipDeletedSubscriptionWhere`,
+            fields: {
+                [fieldName]: connectedNode,
+                deletedRelationship: _getRelationshipConnectionWhereTypes({
+                    node,
+                    schemaComposer,
+                    relationshipFields,
+                    interfaceCommonFields,
+                }),
+            },
+        }),
+    };
 }
 
 function _getRelationshipConnectionWhereTypes({

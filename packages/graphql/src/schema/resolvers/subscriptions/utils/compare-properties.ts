@@ -236,7 +236,7 @@ export function filterRelationshipConnectionsByProperties<T>(
             }
         }
 
-        if (fieldName === "relationship") {
+        if (fieldName === "createdRelationship" || fieldName === "deletedRelationship") {
             if (!nodes) {
                 // TODO: why?
                 return false;
@@ -247,6 +247,8 @@ export function filterRelationshipConnectionsByProperties<T>(
                     return false;
                 }
                 const key = relationByRelationshipName.direction === "IN" ? "from" : "to";
+
+                // TODO: if no keys in relationshipDataV && receivedProperties.relationship exists => all can pass
 
                 for (const [innerK, innerV] of Object.entries(
                     relationshipDataV as Record<
@@ -288,6 +290,7 @@ export function filterRelationshipConnectionsByProperties<T>(
                                     // TODO: why?
                                     return false;
                                 }
+                                // TODO: if no keys in _on[actualType] && ???
                                 const r = filterByProperties(
                                     actualType,
                                     { ...commonFields, ..._on[receivedEvent[`${key}Typename`]] }, //override common <fields, filter> combination with specific <fields, filter>
