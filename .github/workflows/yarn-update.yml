@@ -31,8 +31,9 @@ jobs:
       - name: Set output variables
         id: vars
         run: |
-          echo ::set-output name=title::"[Test] Update yarn $(date +%Y-%m-%d)"
-          echo ::set-output name=branch::"yarn-update-$(date +%Y-%m-%d)"
+          today="$(date +%Y-%m-%d)"
+          echo "title=[Test] Update yarn $today" >> "$GITHUB_OUTPUT"
+          echo "branch=yarn-update-$today" >> "$GITHUB_OUTPUT"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@b4d51739f96fca8047ad065eccef63442d8e99f7 # tag=v4.2.0
         with:
