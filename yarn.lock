@@ -2581,7 +2581,7 @@ __metadata:
     "@neo4j/graphql": 3.12.0
     "@neo4j/introspector": 1.0.2
     "@playwright/test": 1.27.1
-    "@tsconfig/create-react-app": 1.0.2
+    "@tsconfig/create-react-app": 1.0.3
     "@types/codemirror": 5.60.5
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 12.2.3
@@ -3051,10 +3051,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/create-react-app@npm:1.0.2":
-  version: 1.0.2
-  resolution: "@tsconfig/create-react-app@npm:1.0.2"
-  checksum: 0b60b40cdc9b96cebf94628b4f993a1182b275e29b67d662c578cfcef357266b736fdf17cfe204f30a7e4ea63b8a115d77acfc17bafa376d9001df8537373497
+"@tsconfig/create-react-app@npm:1.0.3":
+  version: 1.0.3
+  resolution: "@tsconfig/create-react-app@npm:1.0.3"
+  checksum: df945bed7a802f38ca63ae373670f445e8bfec74ccb2cdd4b9eca7b76e1b3dd74994c7b59040fd6374136a9f7353d6eb45e4363e6588015317c4e86779172a5f
   languageName: node
   linkType: hard
 
@@ -14242,7 +14242,7 @@ __metadata:
     "@fortawesome/fontawesome-svg-core": 6.2.0
     "@fortawesome/free-solid-svg-icons": 6.2.0
     "@fortawesome/react-fontawesome": 0.2.0
-    "@tsconfig/create-react-app": 1.0.2
+    "@tsconfig/create-react-app": 1.0.3
     "@types/react-dom": 18.0.8
     "@types/react-router-dom": 5.3.3
     "@types/showdown": 2.0.0
