@@ -255,7 +255,7 @@ The above query would be expected to return results in the following format:
 
 .The following changes have been made to `@fulltext` arguments:
 * `queryName` has been added to specify a custom name for the top-level query that is generated.
-* `name` renamed to `indexName` to avoid ambiguity with the new `queryName` argument.
+* `name` has been renamed to `indexName` to avoid ambiguity with the new `queryName` argument.
 
 These changes means that the following type definition is now invalid:
 
