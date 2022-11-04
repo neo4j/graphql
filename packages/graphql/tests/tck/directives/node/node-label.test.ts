@@ -392,11 +392,16 @@ describe("Label in Node directive", () => {
             	CALL {
             		WITH *
             		WITH collect(this_connect_actors0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_connect_actors0_node
-            		MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_actors0_node
+            			MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_connect_actors0_node
             	RETURN count(*) AS connect_this_connect_actors_Actor
             }
             WITH *

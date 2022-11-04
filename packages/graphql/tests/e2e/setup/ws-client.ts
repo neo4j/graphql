@@ -63,7 +63,8 @@ export class WebSocketTestClient {
                             this.onEvent = undefined;
                         }
                     },
-                    error(err) {
+                    error: (err: Array<unknown>) => {
+                        this.errors.push(...err);
                         if (callback) {
                             // hack to be able to expect errors on bad subscriptions
                             // bc. resolve() happens before below reject()

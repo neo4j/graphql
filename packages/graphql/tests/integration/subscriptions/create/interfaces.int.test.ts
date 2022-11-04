@@ -18,7 +18,7 @@
  */
 
 import type { Driver, Session } from "neo4j-driver";
-import type { DocumentNode} from "graphql";
+import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
 import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
@@ -224,69 +224,71 @@ describe("interface relationships", () => {
             },
         });
 
-        expect(subscriptionsPlugin.eventList).toHaveLength(5);
-        expect(subscriptionsPlugin.eventList).toEqual([
-            {
-                event: "create",
-                id: expect.any(Number),
-                properties: {
-                    new: {
-                        name: name2,
+        expect(subscriptionsPlugin.eventList.filter((event) => event.event === "create")).toHaveLength(5);
+        expect(subscriptionsPlugin.eventList).toEqual(
+            expect.arrayContaining([
+                {
+                    event: "create",
+                    id: expect.any(Number),
+                    properties: {
+                        new: {
+                            name: name2,
+                        },
+                        old: undefined,
                     },
-                    old: undefined,
+                    typename: "Actor",
+                    timestamp: expect.any(Number),
                 },
-                typename: "Actor",
-                timestamp: expect.any(Number),
-            },
-            {
-                event: "create",
-                id: expect.any(Number),
-                properties: {
-                    new: {
-                        runtime: movieRuntime,
-                        title: movieTitle,
+                {
+                    event: "create",
+                    id: expect.any(Number),
+                    properties: {
+                        new: {
+                            runtime: movieRuntime,
+                            title: movieTitle,
+                        },
+                        old: undefined,
                     },
-                    old: undefined,
+                    typename: "Movie",
+                    timestamp: expect.any(Number),
                 },
-                typename: "Movie",
-                timestamp: expect.any(Number),
-            },
-            {
-                event: "create",
-                id: expect.any(Number),
-                properties: {
-                    new: {
-                        runtime: episodeRuntime,
+                {
+                    event: "create",
+                    id: expect.any(Number),
+                    properties: {
+                        new: {
+                            runtime: episodeRuntime,
+                        },
+                        old: undefined,
                     },
-                    old: undefined,
+                    typename: "Episode",
+                    timestamp: expect.any(Number),
                 },
-                typename: "Episode",
-                timestamp: expect.any(Number),
-            },
-            {
-                event: "create",
-                id: expect.any(Number),
-                properties: {
-                    new: {
-                        title: seriesTitle,
+                {
+                    event: "create",
+                    id: expect.any(Number),
+                    properties: {
+                        new: {
+                            title: seriesTitle,
+                        },
+                        old: undefined,
                     },
-                    old: undefined,
+                    typename: "Series",
+                    timestamp: expect.any(Number),
                 },
-                typename: "Series",
-                timestamp: expect.any(Number),
-            },
-            {
-                event: "create",
-                id: expect.any(Number),
-                properties: {
-                    new: {
-                        name: name1,
+                {
+                    event: "create",
+                    id: expect.any(Number),
+                    properties: {
+                        new: {
+                            name: name1,
+                        },
+                        old: undefined,
                     },
-                    old: undefined,
+                    typename: "Actor",
+                    timestamp: expect.any(Number),
                 },
-                typename: "Actor",
-                timestamp: expect.any(Number),
-            },
-        ]);
+            ])
+        );
     });
 });
