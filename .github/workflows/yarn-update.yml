@@ -32,7 +32,7 @@ jobs:
         id: vars
         run: |
           today="$(date +%Y-%m-%d)"
-          echo "title=[Test] Update yarn $today" >> "$GITHUB_OUTPUT"
+          echo "title=[YARN UPDATE] Update yarn $today" >> "$GITHUB_OUTPUT"
           echo "branch=yarn-update-$today" >> "$GITHUB_OUTPUT"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@b4d51739f96fca8047ad065eccef63442d8e99f7 # tag=v4.2.0
