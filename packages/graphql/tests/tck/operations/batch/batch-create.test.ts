@@ -405,11 +405,16 @@ describe("Batch Create", () => {
             	CALL {
             		WITH *
             		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		UNWIND parentNodes as this0
-            		UNWIND connectedNodes as this0_actors_connect0_node
-            		MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_actors_connect0_node
+            			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this0, this0_actors_connect0_node
             	RETURN count(*) AS connect_this0_actors_connect_Actor
             }
             WITH this0
@@ -433,11 +438,16 @@ describe("Batch Create", () => {
             	CALL {
             		WITH *
             		WITH collect(this1_actors_connect0_node) as connectedNodes, collect(this1) as parentNodes
-            		UNWIND parentNodes as this1
-            		UNWIND connectedNodes as this1_actors_connect0_node
-            		MERGE (this1)<-[this1_actors_connect0_relationship:ACTED_IN]-(this1_actors_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this1
+            			UNWIND connectedNodes as this1_actors_connect0_node
+            			MERGE (this1)<-[this1_actors_connect0_relationship:ACTED_IN]-(this1_actors_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this1, this1_actors_connect0_node
             	RETURN count(*) AS connect_this1_actors_connect_Actor
             }
             WITH this1
@@ -599,11 +609,16 @@ describe("Batch Create", () => {
             	CALL {
             		WITH *
             		WITH collect(this3_actors_connect0_node) as connectedNodes, collect(this3) as parentNodes
-            		UNWIND parentNodes as this3
-            		UNWIND connectedNodes as this3_actors_connect0_node
-            		MERGE (this3)<-[this3_actors_connect0_relationship:ACTED_IN]-(this3_actors_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this3
+            			UNWIND connectedNodes as this3_actors_connect0_node
+            			MERGE (this3)<-[this3_actors_connect0_relationship:ACTED_IN]-(this3_actors_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this3, this3_actors_connect0_node
             	RETURN count(*) AS connect_this3_actors_connect_Actor
             }
             WITH this3

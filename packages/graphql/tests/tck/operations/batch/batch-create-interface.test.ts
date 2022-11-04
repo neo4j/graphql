@@ -386,25 +386,35 @@ describe("Batch Create, Interface", () => {
             	CALL {
             		WITH *
             		WITH collect(this3_workers_connect0_node) as connectedNodes, collect(this3) as parentNodes
-            		UNWIND parentNodes as this3
-            		UNWIND connectedNodes as this3_workers_connect0_node
-            		MERGE (this3)<-[this3_workers_connect0_relationship:EMPLOYED]-(this3_workers_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this3
+            			UNWIND connectedNodes as this3_workers_connect0_node
+            			MERGE (this3)<-[this3_workers_connect0_relationship:EMPLOYED]-(this3_workers_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this3, this3_workers_connect0_node
             	RETURN count(*) AS connect_this3_workers_connect_Actor
             }
             CALL {
             		WITH this3
-            	OPTIONAL MATCH (this3_workers_connect0_node:Modeler)
-            	WHERE this3_workers_connect0_node.id = $this3_workers_connect0_node_param0
+            	OPTIONAL MATCH (this3_workers_connect1_node:Modeler)
+            	WHERE this3_workers_connect1_node.id = $this3_workers_connect1_node_param0
             	CALL {
             		WITH *
-            		WITH collect(this3_workers_connect0_node) as connectedNodes, collect(this3) as parentNodes
-            		UNWIND parentNodes as this3
-            		UNWIND connectedNodes as this3_workers_connect0_node
-            		MERGE (this3)<-[this3_workers_connect0_relationship:EMPLOYED]-(this3_workers_connect0_node)
+            		WITH collect(this3_workers_connect1_node) as connectedNodes, collect(this3) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this3
+            			UNWIND connectedNodes as this3_workers_connect1_node
+            			MERGE (this3)<-[this3_workers_connect1_relationship:EMPLOYED]-(this3_workers_connect1_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this3, this3_workers_connect1_node
             	RETURN count(*) AS connect_this3_workers_connect_Modeler
             }
             WITH this3
@@ -524,6 +534,7 @@ describe("Batch Create, Interface", () => {
                 \\"this2_website0_node_address\\": \\"mywebsite.com\\",
                 \\"this3_id\\": \\"4\\",
                 \\"this3_workers_connect0_node_param0\\": \\"2\\",
+                \\"this3_workers_connect1_node_param0\\": \\"2\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
