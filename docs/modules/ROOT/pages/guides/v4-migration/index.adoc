@@ -23,7 +23,7 @@ We have renamed a number of directives and their arguments, in order to make usi
 
 Previously, there was ambiguity over the behaviour of `@callback`. As the directive is used to populate a value on input, it has been renamed `@populatedBy` to reflect this.
 Additionally, the `name` argument was previously used to specify the callback used to populate the field's value.
-This has been renamed to `callback` to make clear that it refers to a callback.
+This has been renamed to `callback` to make it clear that it refers to a callback.
 
 Therefore, the following usage of the directive would be invalid:
 
