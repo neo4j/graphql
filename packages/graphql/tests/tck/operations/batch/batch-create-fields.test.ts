@@ -529,11 +529,16 @@ describe("Batch Create, Scalar types", () => {
             	CALL {
             		WITH *
             		WITH collect(this3_actors_connect0_node) as connectedNodes, collect(this3) as parentNodes
-            		UNWIND parentNodes as this3
-            		UNWIND connectedNodes as this3_actors_connect0_node
-            		MERGE (this3)<-[this3_actors_connect0_relationship:ACTED_IN]-(this3_actors_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this3
+            			UNWIND connectedNodes as this3_actors_connect0_node
+            			MERGE (this3)<-[this3_actors_connect0_relationship:ACTED_IN]-(this3_actors_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this3, this3_actors_connect0_node
             	RETURN count(*) AS connect_this3_actors_connect_Actor
             }
             WITH this3

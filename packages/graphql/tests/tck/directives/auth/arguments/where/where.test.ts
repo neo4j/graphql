@@ -725,11 +725,16 @@ describe("Cypher Auth Where", () => {
             	CALL {
             		WITH *
             		WITH collect(this0_posts_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		UNWIND parentNodes as this0
-            		UNWIND connectedNodes as this0_posts_connect0_node
-            		MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_posts_connect0_node
+            			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this0, this0_posts_connect0_node
             	RETURN count(*) AS connect_this0_posts_connect_Post
             }
             RETURN this0
@@ -788,11 +793,16 @@ describe("Cypher Auth Where", () => {
             	CALL {
             		WITH *
             		WITH collect(this0_posts_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		UNWIND parentNodes as this0
-            		UNWIND connectedNodes as this0_posts_connect0_node
-            		MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_posts_connect0_node
+            			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this0, this0_posts_connect0_node
             	RETURN count(*) AS connect_this0_posts_connect_Post
             }
             RETURN this0
@@ -842,11 +852,16 @@ describe("Cypher Auth Where", () => {
             	CALL {
             		WITH *
             		WITH collect(this_posts0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_posts0_connect0_node
-            		MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_posts0_connect0_node
+            			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_posts0_connect0_node
             	RETURN count(*) AS connect_this_posts0_connect_Post
             }
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -891,11 +906,16 @@ describe("Cypher Auth Where", () => {
             	CALL {
             		WITH *
             		WITH collect(this_posts0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_posts0_connect0_node
-            		MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_posts0_connect0_node
+            			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_posts0_connect0_node
             	RETURN count(*) AS connect_this_posts0_connect_Post
             }
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -941,11 +961,16 @@ describe("Cypher Auth Where", () => {
             	CALL {
             		WITH *
             		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_connect_posts0_node
-            		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_posts0_node
+            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_connect_posts0_node
             	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
@@ -991,11 +1016,16 @@ describe("Cypher Auth Where", () => {
             	CALL {
             		WITH *
             		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_connect_posts0_node
-            		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_posts0_node
+            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_connect_posts0_node
             	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
