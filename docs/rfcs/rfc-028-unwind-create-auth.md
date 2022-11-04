@@ -158,6 +158,22 @@ There is a common pattern in how the `@auth` directive could impact the create m
     }
     ```
 
+-   ### Particular case: Entity-type Bind - across relationship
+
+    **Schema**
+
+    ```graphql
+    type User {
+        id: ID
+        name: String
+    }
+    type Post @auth(rules: [{ operations: [CREATE], bind: { creator: { id: "$jwt.sub" } } }]) {
+        title: String
+        content: String
+        creator: [User!]! @relationship(type: "MODERATES_POST", direction: IN)
+    }
+    ```
+
 ### Entity-type solution
 
 Entity type `@auth` as well as Nested Entity type `@auth` no needs particular consideration when used in the unwind-create context.
@@ -305,6 +321,91 @@ CALL {
 }
 RETURN collect(create_this1 { .title, .content, moderators: create_this1_moderators }) AS data
 ```
+
+### Entity-type Bind - across relationship
+
+Bind could be used across relationship, a valid use case it may be "ensure that users only create Posts related to themselves".
+
+This could be achieved in the unwind-create context by adding the following validation block to the Entity where the `@auth` is definded:
+
+```cypher
+    WITH create_this1
+    CALL {
+            WITH create_this1
+            CALL apoc.util.validate(
+                NOT ((exists((create_this1)<-[:HAS_POST]-(:`User`)) 
+                    AND 
+            all(auth_this0 IN [(create_this1)<-[:HAS_POST]-(auth_this0:`User`) | auth_this0]
+                 WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this0auth_param0))))
+                 , "@neo4j/graphql/FORBIDDEN", [0])
+    }
+```
+For instance:
+
+```cypher
+UNWIND [
+    {
+      "title": "A wonderful title!",
+      "content": "A wonderful post!",
+      "creator": {
+        "create": {
+          "node": {
+            "id": "1234567890",
+            "name": "Simone"
+          }
+        }
+      }
+    }
+  ] AS create_var2
+CALL {
+    WITH create_var2
+    CREATE (create_this1:`Post`)
+    SET
+        create_this1.title = create_var2.title,
+        create_this1.content = create_var2.content
+    WITH create_this1, create_var2
+    CALL {
+        WITH create_this1, create_var2
+        UNWIND create_var2.creator.create AS create_var3
+        WITH create_var3.node AS create_var4, create_var3.edge AS create_var5, create_this1
+        CREATE (create_this6:`User`)
+        SET
+            create_this6.id = create_var4.id,
+            create_this6.name = create_var4.name
+        MERGE (create_this6)-[create_this7:HAS_POST]->(create_this1)
+        
+        RETURN collect(NULL)
+    }
+    WITH create_this1
+    CALL {
+        WITH create_this1
+        MATCH (create_this1)<-[create_this1_creator_User_unique:HAS_POST]-(:User)
+        WITH count(create_this1_creator_User_unique) as c
+        CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+        RETURN c AS create_this1_creator_User_unique_ignored
+    }
+    WITH create_this1
+    CALL {
+            WITH create_this1
+            CALL apoc.util.validate(
+                NOT ((exists((create_this1)<-[:HAS_POST]-(:`User`)) 
+                    AND 
+            all(auth_this0 IN [(create_this1)<-[:HAS_POST]-(auth_this0:`User`) | auth_this0]
+                 WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this0auth_param0))))
+                 , "@neo4j/graphql/FORBIDDEN", [0])
+            RETURN create_this1
+    }
+    RETURN create_this1
+}
+CALL {
+    WITH create_this1
+    MATCH (create_this1_creator:`User`)-[create_this0:HAS_POST]->(create_this1)
+    WITH create_this1_creator { .id, .name } AS create_this1_creator
+    RETURN head(collect(create_this1_creator)) AS create_this1_creator
+}
+RETURN collect(create_this1 { .title, .content, creator: create_this1_creator }) AS data
+```
+
 
 ## Out of scope
 
