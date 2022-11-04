@@ -998,18 +998,54 @@ With a delete:
 
 -   Delete (just nodes targeted)
 
+Solution 1:
+
+-   match all relationships connected to the node, irrespective of the direction
+-   add to meta array
+
 ```cypher
 WITH [] AS meta
 MATCH (this:`Movie`)
 WHERE this.title = $param0
 WITH this, meta + { event: "delete", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: "Movie" } AS meta
->>>>>>>>>>>>>>>>>>>>>
-OPTIONAL MATCH (this)<-[this_relationship:*]-(this_destination0)
-WITH this, meta, collect(DISTINCT ???? this_destination0) as this_destination0_to_delete
-WITH this, this_destination0_to_delete, REDUCE(m=meta, n IN this_destination0_to_delete | m + { event: "delete", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: ???? }) AS meta
-WITH this, this_destination0_to_delete, REDUCE(m=meta, n IN this_destination0_to_delete | m + { event: "disconnect", id_from: id(n), id_to: id(this), id: id(this_relationship), properties: {from: n {.*}, to: this {.*}, relationship: this_relationship {.*}} ,timestamp: timestamp(), relationshipName: ???? }) AS meta
+>>>
+OPTIONAL MATCH (this)-[this_relationship:*]-(this_destination0)
+WITH this, meta, this_relationship, this_destination0
+WITH this,  this_relationship, this_destination0, meta + { event: "disconnect", id_from: id(this_destination0), id_to: id(this), id: id(this_relationship), properties: {from: this_destination0 {.*}, to: this {.*}, relationship: this_relationship {.*}} ,timestamp: timestamp(), relationshipName: type(this_relationship), fromTypename: labels(this_destination0), toTypename: labels(this) } AS meta
 RETURN collect(meta) as meta
-<<<<<<<<<<<<<<<<<<<<<
+<<<
+DETACH DELETE this
+WITH meta
+UNWIND meta AS m
+RETURN collect(DISTINCT m) AS meta
+```
+
+Problem: How do we know the direction of the relationship?
+
+Solution 2:
+
+-   2 subqueries each explicitly specifying the relationship directive
+-   both subqueries add to meta array
+
+```cypher
+WITH [] AS meta
+MATCH (this:`Movie`)
+WHERE this.title = $param0
+WITH this, meta + { event: "delete", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: "Movie" } AS meta
+>>>
+CALL {
+    OPTIONAL MATCH (this)-[this_relationship:*]->(this_destination0)
+    WITH this,  this_relationship, this_destination0, meta + { event: "disconnect", id_from: id(this), id_to: id(this_destination0), id: id(this_relationship), properties: {from: this {.*}, to: this_destination0 {.*}, relationship: this_relationship {.*}} ,timestamp: timestamp(), relationshipName: type(this_relationship), fromTypename: labels(this), toTypename: labels(this_destination0) } AS meta
+    RETURN collect(meta) as disconnect_meta
+}
+WITH meta + disconnect_meta as meta
+CALL {
+    OPTIONAL MATCH (this)<-[this_relationship:*]-(this_start0)
+    WITH this, this_relationship, this_start0, meta + { event: "disconnect", id_from: id(this_start0), id_to: id(this), id: id(this_relationship), properties: {from: this_start0 {.*}, to: this {.*}, relationship: this_relationship {.*}} ,timestamp: timestamp(), relationshipName: type(this_relationship), fromTypename: labels(this_start0), toTypename: labels(this) } AS meta
+    RETURN collect(meta) as meta
+}
+WITH meta + disconnect_meta as meta
+<<<
 DETACH DELETE this
 WITH meta
 UNWIND meta AS m
