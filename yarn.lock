@@ -2489,7 +2489,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/cypher-builder@workspace:packages/cypher-builder"
   dependencies:
-    "@types/jest": 29.2.1
+    "@types/jest": 29.2.2
     "@types/node": 18.11.5
     expect-type: 0.15.0
     jest: 29.2.2
@@ -2508,7 +2508,7 @@ __metadata:
     "@graphql-tools/merge": ^8.3.3
     "@neo4j/graphql": ^3.12.0
     "@neo4j/graphql-plugin-auth": ^1.1.0
-    "@types/jest": 29.2.1
+    "@types/jest": 29.2.2
     "@types/node": 16.18.3
     camelcase: 6.3.0
     graphql-tag: 2.12.6
@@ -2533,7 +2533,7 @@ __metadata:
   resolution: "@neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth"
   dependencies:
     "@types/debug": 4.1.7
-    "@types/jest": 29.2.1
+    "@types/jest": 29.2.2
     "@types/jsonwebtoken": 8.5.9
     "@types/node": 16.18.3
     debug: ^4.3.4
@@ -2552,7 +2552,7 @@ __metadata:
     "@neo4j/graphql": ^3.12.0
     "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
-    "@types/jest": 29.2.1
+    "@types/jest": 29.2.2
     "@types/node": 16.18.3
     amqplib: 0.10.3
     apollo-server: 3.11.1
@@ -2648,7 +2648,7 @@ __metadata:
     "@neo4j/graphql-plugin-auth": ^1.1.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
-    "@types/jest": 29.2.1
+    "@types/jest": 29.2.2
     "@types/jsonwebtoken": 8.5.9
     "@types/node": 16.18.3
     "@types/pluralize": 0.0.29
@@ -2699,7 +2699,7 @@ __metadata:
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
     "@neo4j/graphql": ^3.8.0
-    "@types/jest": 29.2.1
+    "@types/jest": 29.2.2
     "@types/node": 16.18.3
     "@types/pluralize": 0.0.29
     camelcase: ^6.3.0
@@ -3405,13 +3405,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:29.2.1":
-  version: 29.2.1
-  resolution: "@types/jest@npm:29.2.1"
+"@types/jest@npm:29.2.2":
+  version: 29.2.2
+  resolution: "@types/jest@npm:29.2.2"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: 5610c9a44c57f6dc39cf54429ea8d04574ad4c3e3ddf9a2621882aa94a0758a42ca97a0d0aec41a8d0b149fa63bf3d077d1f07c1f1d82e3d89ad7408de211255
+  checksum: 13b1a48858c8c451109c2838205fdcee6f41d672674d2f0e3cada35e94f133370aba4f4b5c3f5b174f3e16244d76d7d718afa7cc67d4d6f90d1b87951f4c87c3
   languageName: node
   linkType: hard
 
@@ -14258,7 +14258,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/dotenv": 8.2.0
     "@types/express": 4.17.14
-    "@types/jest": 29.2.1
+    "@types/jest": 29.2.2
     "@types/jsonwebtoken": 8.5.9
     "@types/node": 16.18.3
     "@types/uuid": 8.3.4
