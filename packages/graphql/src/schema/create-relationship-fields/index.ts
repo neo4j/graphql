@@ -128,6 +128,7 @@ function createRelationshipFields({
                             ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
                             : {}),
                         where: connectWhere,
+                        createDuplicates: CreateDuplicates,
                     });
                 }
             );

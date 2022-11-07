@@ -443,4 +443,83 @@ describe("interface relationships", () => {
             await session.close();
         }
     });
+    test("should create duplicate relationships when using createDuplicates on a single connect value", async () => {
+        const session = await neo4j.getSession();
+
+        const query = `
+            mutation ConnectMovie($name: String, $title: String, $screenTime: Int!) {
+                ${actorType.operations.update}(
+                    where: { name: $name }
+                    connect: { 
+                        actedIn: [{
+                            createDuplicates: true
+                            edge: { screenTime: $screenTime }
+                            where: { node: { title: $title } }
+                        }],
+                    }
+                ) {
+                    ${actorType.plural} {
+                        name
+                        actedInConnection {
+                            edges {
+                                screenTime
+                                node {
+                                    title
+                                    ... on ${movieType.name} {
+                                        runtime
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (a:${actorType.name} { name: $actorName })-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${seriesType.name} { title: $seriesTitle })
+            `,
+                { actorName: actorName1, seriesTitle, seriesScreenTime }
+            );
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                variableValues: { name: actorName1, title: seriesTitle, screenTime: movieScreenTime },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult.data).toEqual({
+                [actorType.operations.update]: {
+                    [actorType.plural]: [
+                        {
+                            name: actorName1,
+                            actedInConnection: {
+                                edges: expect.toIncludeSameMembers([
+                                    {
+                                        screenTime: seriesScreenTime,
+                                        node: {
+                                            title: seriesTitle,
+                                        },
+                                    },
+                                    {
+                                        screenTime: movieScreenTime,
+                                        node: {
+                                            title: seriesTitle,
+                                        },
+                                    },
+                                ]),
+                            },
+                        },
+                    ],
+                },
+            });
+        } finally {
+            await session.close();
+        }
+    });
 });
