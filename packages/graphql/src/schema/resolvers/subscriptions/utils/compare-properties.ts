@@ -202,18 +202,18 @@ export function filterByProperties<T>(
     return true;
 }
 
-type recordType = Record<string, unknown>;
-type standardType = Record<string, Record<string, unknown>>;
-type unionType = Record<string, standardType>;
-type interfaceType =
-    | Record<"edge", Record<string, unknown>>
-    | Record<"node", Record<string, unknown | Record<string, unknown>>>;
+export type RecordType = Record<string, unknown>;
+export type StandardType = Record<string, Record<string, unknown>>;
+export type UnionType = Record<string, StandardType>;
+export type InterfaceType = Record<string, unknown | InterfaceSpecificType>;
+export type InterfaceSpecificType = Record<string, Record<string, unknown>>;
+export type RelationshipType = Record<string, Record<string, UnionType | InterfaceType | StandardType>>;
 type EventProperties = {
     from: Record<string, unknown>;
     to: Record<string, unknown>;
     relationship: Record<string, unknown>;
 };
-export function filterRelationshipConnectionsByProperties<T>({
+export function filterRelationshipConnectionsByProperties({
     node,
     whereProperties,
     receivedEvent,
@@ -221,11 +221,7 @@ export function filterRelationshipConnectionsByProperties<T>({
     relationshipFields,
 }: {
     node: Node;
-    whereProperties: Record<
-        string,
-        | recordType
-        | Record<string, recordType | Record<string, Record<string, unionType | interfaceType | standardType>>>
-    >;
+    whereProperties: Record<string, RecordType | Record<string, RecordType | RelationshipType>>;
     receivedEvent: RelationshipSubscriptionsEvent;
     nodes: Node[];
     relationshipFields: Map<string, ObjectFields>;
@@ -254,7 +250,7 @@ export function filterRelationshipConnectionsByProperties<T>({
             const receivedEventRelationshipName = receivedEventRelationship.fieldName;
             const receivedEventRelationshipData = wherePropertyValue[receivedEventRelationshipName] as Record<
                 string,
-                Record<string, unionType | interfaceType | standardType>
+                RelationshipType
             >;
             const isRelationshipOfReceivedTypeFilteredOut = !receivedEventRelationshipData;
             if (isRelationshipOfReceivedTypeFilteredOut) {
@@ -273,7 +269,7 @@ export function filterRelationshipConnectionsByProperties<T>({
             const {
                 edge: receivedEventRelationshipDataEdgeProp,
                 node: receivedEventRelationshipDataNodeProp,
-                unions: receivedEventRelationshipDataUnionProp,
+                unionMap: receivedEventRelationshipDataUnionMapProp,
             } = buildRelationshipDataPropertyMap(receivedEventRelationshipData);
 
             if (
@@ -289,8 +285,7 @@ export function filterRelationshipConnectionsByProperties<T>({
             }
 
             if (receivedEventRelationshipDataNodeProp) {
-                const interfaceNodeTypes = receivedEventRelationship.interface?.implementations;
-                if (interfaceNodeTypes) {
+                if (isInterfaceType(receivedEventRelationshipDataNodeProp, receivedEventRelationship)) {
                     const targetNodeTypename = receivedEvent[`${key}Typename`];
                     if (
                         !filterRelationshipInterfaceProperty({
@@ -303,7 +298,7 @@ export function filterRelationshipConnectionsByProperties<T>({
                     ) {
                         return false;
                     }
-                } else {
+                } else if (isStandardType(receivedEventRelationshipDataNodeProp, receivedEventRelationship)) {
                     // standard type fields
                     const nodeTo = nodes.find((n) => n.name === receivedEventRelationship.typeMeta.name) as Node;
                     if (
@@ -313,13 +308,10 @@ export function filterRelationshipConnectionsByProperties<T>({
                     }
                 }
             }
-            if (receivedEventRelationshipDataUnionProp) {
+            if (receivedEventRelationshipDataUnionMapProp) {
                 // union types
                 const targetNodeTypename = receivedEvent[`${key}Typename`];
-                const targetNodePropsByTypename = receivedEventRelationshipDataUnionProp[targetNodeTypename] as Record<
-                    string,
-                    any
-                >;
+                const targetNodePropsByTypename = receivedEventRelationshipDataUnionMapProp[targetNodeTypename];
                 const isRelationshipOfReceivedTypeFilteredOut = !targetNodePropsByTypename;
                 if (isRelationshipOfReceivedTypeFilteredOut) {
                     return false;
@@ -343,12 +335,26 @@ export function filterRelationshipConnectionsByProperties<T>({
     return true;
 }
 
-function buildRelationshipDataPropertyMap(
-    receivedEventRelationshipData: Record<string, unionType | interfaceType | standardType>
-): {
-    edge?: Record<string, unknown>;
-    node?: Record<string, unknown>;
-    unions?: Record<string, Record<string, unknown>>;
+function isInterfaceType(
+    node: StandardType | InterfaceType,
+    receivedEventRelationship: RelationField
+): node is InterfaceType {
+    return !!receivedEventRelationship.interface?.implementations;
+}
+function isStandardType(
+    node: StandardType | InterfaceType,
+    receivedEventRelationship: RelationField
+): node is StandardType {
+    return !receivedEventRelationship.interface?.implementations;
+}
+function isInterfaceSpecificFieldType(node: unknown): node is InterfaceSpecificType {
+    return !!node;
+}
+
+function buildRelationshipDataPropertyMap(receivedEventRelationshipData: RelationshipType): {
+    edge?: StandardType;
+    node?: InterfaceType | StandardType;
+    unionMap?: Record<string, Record<string, UnionType>>;
 } {
     return Object.entries(receivedEventRelationshipData).reduce((acc, [innerK, innerV]) => {
         if (innerK === "edge") {
@@ -356,7 +362,7 @@ function buildRelationshipDataPropertyMap(
         } else if (innerK === "node") {
             acc["node"] = innerV;
         } else {
-            acc["unions"] = { ...acc["unions"], [innerK]: innerV };
+            acc["unionMap"] = { ...acc["unionMap"], [innerK]: innerV };
         }
         return acc;
     }, {});
@@ -370,7 +376,7 @@ function filterRelationshipEdgeProperty({
 }: {
     relationshipFields: Map<string, ObjectFields>;
     relationshipPropertiesInterfaceName: string;
-    receivedEventRelationshipDataEdgeProp: Record<string, unknown>;
+    receivedEventRelationshipDataEdgeProp: StandardType;
     receivedEventProperties: EventProperties;
 }): boolean {
     const relationship = relationshipFields.get(relationshipPropertiesInterfaceName);
@@ -394,7 +400,7 @@ function filterRelationshipUnionProperties({
     key,
     nodes,
 }: {
-    targetNodePropsByTypename: Record<string, any>;
+    targetNodePropsByTypename: Record<string, UnionType>;
     targetNodeTypename: string;
     receivedEventProperties: EventProperties;
     relationshipFields: Map<string, ObjectFields>;
@@ -431,7 +437,7 @@ function filterRelationshipInterfaceProperty({
     targetNodeTypename,
     key,
 }: {
-    receivedEventRelationshipDataNodeProp: any;
+    receivedEventRelationshipDataNodeProp: InterfaceType;
     nodes: Node[];
     receivedEventProperties: EventProperties;
     targetNodeTypename: string;
@@ -444,7 +450,7 @@ function filterRelationshipInterfaceProperty({
             return false;
         }
     }
-    if (_on) {
+    if (isInterfaceSpecificFieldType(_on)) {
         const isRelationshipOfReceivedTypeFilteredOut = !_on[targetNodeTypename];
         if (isRelationshipOfReceivedTypeFilteredOut) {
             return false;
