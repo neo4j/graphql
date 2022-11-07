@@ -1,4 +1,4 @@
-# Connect on Update
+# Create new relationship on update mutations if relationship already exists
 
 ## Problem
 
