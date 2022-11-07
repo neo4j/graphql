@@ -202,170 +202,257 @@ export function filterByProperties<T>(
     return true;
 }
 
-// TODO: refactor
-type recordType<T> = Record<string, T>;
-type standardType<T> = Record<string, Record<string, T>>;
-type unionType<T> = Record<string, standardType<T>>;
-type interfaceType<T> = Record<"edge", Record<string, T>> | Record<"node", Record<string, T | Record<string, T>>>;
-export function filterRelationshipConnectionsByProperties<T>(
-    node: Node,
+type recordType = Record<string, unknown>;
+type standardType = Record<string, Record<string, unknown>>;
+type unionType = Record<string, standardType>;
+type interfaceType =
+    | Record<"edge", Record<string, unknown>>
+    | Record<"node", Record<string, unknown | Record<string, unknown>>>;
+type EventProperties = {
+    from: Record<string, unknown>;
+    to: Record<string, unknown>;
+    relationship: Record<string, unknown>;
+};
+export function filterRelationshipConnectionsByProperties<T>({
+    node,
+    whereProperties,
+    receivedEvent,
+    nodes,
+    relationshipFields,
+}: {
+    node: Node;
     whereProperties: Record<
         string,
-        recordType<T> | Record<string, Record<string, unionType<T> | interfaceType<T> | standardType<T>>>
-    >,
-    receivedEvent: RelationshipSubscriptionsEvent,
-    nodes: Node[] | undefined,
-    relationshipFields: Map<string, ObjectFields> | undefined
-): boolean {
-    console.log("in filter", whereProperties, receivedEvent);
-    const receivedProperties = receivedEvent.properties;
-    const relationshipName = receivedEvent.relationshipName;
-    const relationships = node.relationFields.filter((f) => f.type === relationshipName);
+        | recordType
+        | Record<string, recordType | Record<string, Record<string, unionType | interfaceType | standardType>>>
+    >;
+    receivedEvent: RelationshipSubscriptionsEvent;
+    nodes: Node[];
+    relationshipFields: Map<string, ObjectFields>;
+}): boolean {
+    const receivedEventProperties = receivedEvent.properties;
+    const receivedEventRelationshipType = receivedEvent.relationshipName;
+    const relationships = node.relationFields.filter((f) => f.type === receivedEventRelationshipType);
     if (!relationships.length) {
-        console.log("no relationships");
         return false;
     }
-    const relationByRelationshipName = relationships[0]; // ONE relationship only possible
+    const receivedEventRelationship = relationships[0]; // ONE relationship only possible
 
-    for (const [k, v] of Object.entries(whereProperties)) {
-        console.log("in where", k, v);
-        const { fieldName } = parseFilterProperty(k);
+    for (const [wherePropertyKey, wherePropertyValue] of Object.entries(whereProperties)) {
+        const { fieldName } = parseFilterProperty(wherePropertyKey);
 
         const connectedNodeFieldName = node.subscriptionEventPayloadFieldNames.connect;
         if (fieldName === connectedNodeFieldName) {
-            const inFrom = filterByProperties(node, v as Record<string, T>, receivedProperties.from);
-            const inTo = filterByProperties(node, v as Record<string, T>, receivedProperties.to);
+            const inFrom = filterByProperties(node, wherePropertyValue, receivedEventProperties.from);
+            const inTo = filterByProperties(node, wherePropertyValue, receivedEventProperties.to);
             if (!inFrom && !inTo) {
                 return false;
             }
         }
 
         if (fieldName === "createdRelationship" || fieldName === "deletedRelationship") {
-            if (!nodes) {
-                // TODO: why?
-                console.log("why1");
+            const receivedEventRelationshipName = receivedEventRelationship.fieldName;
+            const receivedEventRelationshipData = wherePropertyValue[receivedEventRelationshipName] as Record<
+                string,
+                Record<string, unionType | interfaceType | standardType>
+            >;
+            const isRelationshipOfReceivedTypeFilteredOut = !receivedEventRelationshipData;
+            if (isRelationshipOfReceivedTypeFilteredOut) {
+                // case `actors: {}` filtering out relationships of other type
                 return false;
             }
-            if (!Object.keys(v).includes(relationByRelationshipName.fieldName)) {
+            const isRelationshipOfReceivedTypeIncludedWithNoFilters =
+                !Object.keys(receivedEventRelationshipData).length;
+            if (isRelationshipOfReceivedTypeIncludedWithNoFilters) {
+                // case `actors: {}` including all relationships of the type
+                return true;
+            }
+            const key = receivedEventRelationship.direction === "IN" ? "from" : "to";
+            const relationshipPropertiesInterfaceName = receivedEventRelationship.properties || "";
+
+            const {
+                edge: receivedEventRelationshipDataEdgeProp,
+                node: receivedEventRelationshipDataNodeProp,
+                unions: receivedEventRelationshipDataUnionProp,
+            } = buildRelationshipDataPropertyMap(receivedEventRelationshipData);
+
+            if (
+                receivedEventRelationshipDataEdgeProp &&
+                !filterRelationshipEdgeProperty({
+                    relationshipFields,
+                    relationshipPropertiesInterfaceName,
+                    receivedEventRelationshipDataEdgeProp,
+                    receivedEventProperties,
+                })
+            ) {
                 return false;
             }
-            for (const [relationshipNameK, relationshipDataV] of Object.entries(v)) {
-                if (relationByRelationshipName.fieldName !== relationshipNameK) {
-                    continue;
-                }
-                const key = relationByRelationshipName.direction === "IN" ? "from" : "to";
 
-                if (!Object.keys(relationshipDataV).length) {
-                    console.log("returning true");
-                    return true;
-                }
-
-                for (const [innerK, innerV] of Object.entries(
-                    relationshipDataV as Record<
-                        string,
-                        Record<string, unionType<T> | interfaceType<T> | standardType<T>>
-                    >
-                )) {
-                    if (innerK === "edge") {
-                        const e = relationshipFields?.get(relationByRelationshipName.properties || "");
-                        if (!e) {
-                            // TODO: why?
-                            return false;
-                        }
-                        const r = filterByProperties(e as Node, innerV, receivedProperties.relationship);
-                        if (!r) {
-                            return false;
-                        }
-                    } else if (innerK === "node") {
-                        const interfaceNodeTypes = relationByRelationshipName.interface?.implementations;
-                        if (interfaceNodeTypes) {
-                            // interface type
-                            const nodesTo = nodes.filter((n) => interfaceNodeTypes.includes(n.name));
-                            if (!nodesTo.length) {
-                                // TODO: why?
-                                return false;
-                            }
-                            const { _on, ...commonFields } = innerV;
-                            if (commonFields && !_on) {
-                                const r = nodesTo
-                                    .map((nodeTo) => filterByProperties(nodeTo, commonFields, receivedProperties[key]))
-                                    .filter((x) => x === false);
-                                if (r.length) {
-                                    return false;
-                                }
-                            }
-                            if (_on) {
-                                if (!Object.keys(_on).includes(receivedEvent[`${key}Typename`])) {
-                                    return false;
-                                }
-
-                                const actualType = nodesTo.find((n) => n.name === receivedEvent[`${key}Typename`]);
-                                if (!actualType) {
-                                    // TODO: why?
-                                    return false;
-                                }
-                                const r = filterByProperties(
-                                    actualType,
-                                    { ...commonFields, ..._on[receivedEvent[`${key}Typename`]] }, //override common <fields, filter> combination with specific <fields, filter>
-                                    receivedProperties[key]
-                                );
-                                console.log("is this r?", { ...commonFields, ..._on[receivedEvent[`${key}Typename`]] });
-                                if (!r) {
-                                    return false;
-                                }
-                            }
-                        } else {
-                            // standard type fields
-                            const nodeTo = nodes.find((n) => n.name === relationByRelationshipName.typeMeta.name);
-                            if (!nodeTo) {
-                                // TODO: why?
-                                return false;
-                            }
-                            const r = filterByProperties(nodeTo, innerV as any, receivedProperties[key]);
-                            if (!r) {
-                                return false;
-                            }
-                        }
-                    } else {
-                        // union types
-
-                        if (!Object.keys(relationshipDataV).includes(receivedEvent[`${key}Typename`])) {
-                            return false;
-                        }
-                        if (innerK === receivedEvent[`${key}Typename`]) {
-                            const unionNodeTypes = relationByRelationshipName.union?.nodes as any[];
-                            const nodeTo = nodes.find((n) => unionNodeTypes.includes(n.name) && innerK === n.name);
-                            if (!nodeTo) {
-                                return false;
-                            }
-                            for (const [unionTypeK, unionDataV] of Object.entries(innerV)) {
-                                if (unionTypeK === "node") {
-                                    const r = filterByProperties(nodeTo, unionDataV, receivedProperties[key]);
-                                    console.log("compare result:", r);
-                                    if (!r) {
-                                        return false;
-                                    }
-                                }
-                                if (unionTypeK === "edge") {
-                                    const e = relationshipFields?.get(relationByRelationshipName.properties || "");
-                                    if (!e) {
-                                        // TODO: why?
-                                        return false;
-                                    }
-                                    const r = filterByProperties(
-                                        e as Node,
-                                        unionDataV,
-                                        receivedProperties.relationship
-                                    );
-                                    if (!r) {
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
+            if (receivedEventRelationshipDataNodeProp) {
+                const interfaceNodeTypes = receivedEventRelationship.interface?.implementations;
+                if (interfaceNodeTypes) {
+                    const targetNodeTypename = receivedEvent[`${key}Typename`];
+                    if (
+                        !filterRelationshipInterfaceProperty({
+                            receivedEventRelationshipDataNodeProp,
+                            nodes,
+                            receivedEventProperties,
+                            targetNodeTypename,
+                            key,
+                        })
+                    ) {
+                        return false;
+                    }
+                } else {
+                    // standard type fields
+                    const nodeTo = nodes.find((n) => n.name === receivedEventRelationship.typeMeta.name) as Node;
+                    if (
+                        !filterByProperties(nodeTo, receivedEventRelationshipDataNodeProp, receivedEventProperties[key])
+                    ) {
+                        return false;
                     }
                 }
             }
+            if (receivedEventRelationshipDataUnionProp) {
+                // union types
+                const targetNodeTypename = receivedEvent[`${key}Typename`];
+                const targetNodePropsByTypename = receivedEventRelationshipDataUnionProp[targetNodeTypename] as Record<
+                    string,
+                    any
+                >;
+                const isRelationshipOfReceivedTypeFilteredOut = !targetNodePropsByTypename;
+                if (isRelationshipOfReceivedTypeFilteredOut) {
+                    return false;
+                }
+                if (
+                    !filterRelationshipUnionProperties({
+                        targetNodePropsByTypename,
+                        targetNodeTypename,
+                        receivedEventProperties,
+                        relationshipFields,
+                        relationshipPropertiesInterfaceName,
+                        key,
+                        nodes,
+                    })
+                ) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+function buildRelationshipDataPropertyMap(
+    receivedEventRelationshipData: Record<string, unionType | interfaceType | standardType>
+): {
+    edge?: Record<string, unknown>;
+    node?: Record<string, unknown>;
+    unions?: Record<string, Record<string, unknown>>;
+} {
+    return Object.entries(receivedEventRelationshipData).reduce((acc, [innerK, innerV]) => {
+        if (innerK === "edge") {
+            acc["edge"] = innerV;
+        } else if (innerK === "node") {
+            acc["node"] = innerV;
+        } else {
+            acc["unions"] = { ...acc["unions"], [innerK]: innerV };
+        }
+        return acc;
+    }, {});
+}
+
+function filterRelationshipEdgeProperty({
+    relationshipFields,
+    relationshipPropertiesInterfaceName,
+    receivedEventRelationshipDataEdgeProp,
+    receivedEventProperties,
+}: {
+    relationshipFields: Map<string, ObjectFields>;
+    relationshipPropertiesInterfaceName: string;
+    receivedEventRelationshipDataEdgeProp: Record<string, unknown>;
+    receivedEventProperties: EventProperties;
+}): boolean {
+    const relationship = relationshipFields.get(relationshipPropertiesInterfaceName);
+    const noRelationshipPropertiesFound = !relationship;
+    if (noRelationshipPropertiesFound) {
+        return true;
+    }
+    return filterByProperties(
+        relationship as Node,
+        receivedEventRelationshipDataEdgeProp,
+        receivedEventProperties.relationship
+    );
+}
+
+function filterRelationshipUnionProperties({
+    targetNodePropsByTypename,
+    targetNodeTypename,
+    receivedEventProperties,
+    relationshipFields,
+    relationshipPropertiesInterfaceName,
+    key,
+    nodes,
+}: {
+    targetNodePropsByTypename: Record<string, any>;
+    targetNodeTypename: string;
+    receivedEventProperties: EventProperties;
+    relationshipFields: Map<string, ObjectFields>;
+    relationshipPropertiesInterfaceName: string;
+    key: string;
+    nodes: Node[];
+}): boolean {
+    for (const [propertyName, propertyValueAsUnionTypeData] of Object.entries(targetNodePropsByTypename)) {
+        if (propertyName === "node") {
+            const nodeTo = nodes.find((n) => targetNodeTypename === n.name) as Node;
+            if (!filterByProperties(nodeTo, propertyValueAsUnionTypeData, receivedEventProperties[key])) {
+                return false;
+            }
+        }
+        if (
+            propertyName === "edge" &&
+            !filterRelationshipEdgeProperty({
+                relationshipFields,
+                relationshipPropertiesInterfaceName,
+                receivedEventRelationshipDataEdgeProp: propertyValueAsUnionTypeData,
+                receivedEventProperties,
+            })
+        ) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function filterRelationshipInterfaceProperty({
+    receivedEventRelationshipDataNodeProp,
+    nodes,
+    receivedEventProperties,
+    targetNodeTypename,
+    key,
+}: {
+    receivedEventRelationshipDataNodeProp: any;
+    nodes: Node[];
+    receivedEventProperties: EventProperties;
+    targetNodeTypename: string;
+    key: string;
+}): boolean {
+    const { _on, ...commonFields } = receivedEventRelationshipDataNodeProp;
+    const targetNode = nodes.find((n) => n.name === targetNodeTypename) as Node;
+    if (commonFields && !_on) {
+        if (!filterByProperties(targetNode, commonFields, receivedEventProperties[key])) {
+            return false;
+        }
+    }
+    if (_on) {
+        const isRelationshipOfReceivedTypeFilteredOut = !_on[targetNodeTypename];
+        if (isRelationshipOfReceivedTypeFilteredOut) {
+            return false;
+        }
+        const commonFieldsMergedWithSpecificFields = { ...commonFields, ..._on[targetNodeTypename] }; //override common <fields, filter> combination with specific <fields, filter>
+
+        if (!filterByProperties(targetNode, commonFieldsMergedWithSpecificFields, receivedEventProperties[key])) {
+            return false;
         }
     }
     return true;

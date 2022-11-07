@@ -39,12 +39,17 @@ type SubscriptionArgs = {
     where?: Record<string, any>;
 };
 
-export function generateSubscribeMethod(
-    node: Node,
-    type: "create" | "update" | "delete" | "connect" | "disconnect",
-    nodes?: Node[],
-    relationshipFields?: Map<string, ObjectFields>
-) {
+export function generateSubscribeMethod({
+    node,
+    type,
+    nodes,
+    relationshipFields,
+}: {
+    node: Node;
+    type: "create" | "update" | "delete" | "connect" | "disconnect";
+    nodes: Node[];
+    relationshipFields: Map<string, ObjectFields>;
+}) {
     return (_root: any, args: SubscriptionArgs, context: SubscriptionContext): AsyncIterator<[SubscriptionsEvent]> => {
         if (node.auth) {
             const authRules = node.auth.getRules(["SUBSCRIBE"]);
@@ -64,7 +69,7 @@ export function generateSubscribeMethod(
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
                 return (
                     (data[0] as NodeSubscriptionsEvent).typename === node.name &&
-                    subscriptionWhere(args.where, data[0], node) &&
+                    subscriptionWhere({ where: args.where, event: data[0], node, nodes, relationshipFields }) &&
                     updateDiffFilter(data[0])
                 );
             });
@@ -82,7 +87,10 @@ export function generateSubscribeMethod(
                     (r) => r.type === relationEventPayload.relationshipName
                 )?.fieldName;
 
-                return !!relationFieldName && subscriptionWhere(args.where, data[0], node, nodes, relationshipFields);
+                return (
+                    !!relationFieldName &&
+                    subscriptionWhere({ where: args.where, event: data[0], node, nodes, relationshipFields })
+                );
             });
         }
 

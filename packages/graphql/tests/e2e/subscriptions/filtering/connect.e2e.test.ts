@@ -574,7 +574,7 @@ subscription SubscriptionMovie {
                 `,
             })
             .expect(200);
-        await delay(10);
+        await delay(3);
         console.log(wsClient.events);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
@@ -1758,6 +1758,7 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
@@ -1800,7 +1801,7 @@ subscription SubscriptionMovie {
     });
 
     // TODO:
-    // 1. finish impl relationship filter (include/exclude based on types :{})
+    // 1. finish impl relationship filter (include/exclude based on types :{}) [done]
     // 2. add tests for finished impl [done?]
     // include test with type relation to same type
     // 3. refactor compare-properties.ts

@@ -247,19 +247,19 @@ export function generateSubscriptionTypes({
             [subscribeOperation.created]: {
                 args: { where },
                 type: nodeCreatedEvent.NonNull,
-                subscribe: generateSubscribeMethod(node, "create"),
+                subscribe: generateSubscribeMethod({ node, type: "create", nodes, relationshipFields }),
                 resolve: subscriptionResolve,
             },
             [subscribeOperation.updated]: {
                 args: { where },
                 type: nodeUpdatedEvent.NonNull,
-                subscribe: generateSubscribeMethod(node, "update"),
+                subscribe: generateSubscribeMethod({ node, type: "update", nodes, relationshipFields }),
                 resolve: subscriptionResolve,
             },
             [subscribeOperation.deleted]: {
                 args: { where },
                 type: nodeDeletedEvent.NonNull,
-                subscribe: generateSubscribeMethod(node, "delete"),
+                subscribe: generateSubscribeMethod({ node, type: "delete", nodes, relationshipFields }),
                 resolve: subscriptionResolve,
             },
         });
@@ -275,13 +275,13 @@ export function generateSubscriptionTypes({
                 [subscribeOperation.connected]: {
                     args: { where: createdWhere },
                     type: relationConnectedEvent.NonNull,
-                    subscribe: generateSubscribeMethod(node, "connect", nodes, relationshipFields),
+                    subscribe: generateSubscribeMethod({ node, type: "connect", nodes, relationshipFields }),
                     resolve: subscriptionResolve,
                 },
                 [subscribeOperation.disconnected]: {
                     args: { where: deletedWhere },
                     type: relationDisconnectedEvent.NonNull,
-                    subscribe: generateSubscribeMethod(node, "disconnect", nodes, relationshipFields),
+                    subscribe: generateSubscribeMethod({ node, type: "disconnect", nodes, relationshipFields }),
                     resolve: subscriptionResolve,
                 },
             });

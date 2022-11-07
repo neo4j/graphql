@@ -22,13 +22,27 @@ import type Node from "../../../classes/Node";
 import { filterByProperties, filterRelationshipConnectionsByProperties } from "./utils/compare-properties";
 import type { ObjectFields } from "../../../schema/get-obj-field-meta";
 
-export function subscriptionWhere(
-    where: Record<string, any> | undefined,
-    event: SubscriptionsEvent,
-    node: Node,
-    nodes?: Node[],
-    relationshipFields?: Map<string, ObjectFields>
-): boolean {
+type recordType = Record<string, unknown>;
+type standardType = Record<string, Record<string, unknown>>;
+type unionType = Record<string, standardType>;
+type interfaceType =
+    | Record<"edge", Record<string, unknown>>
+    | Record<"node", Record<string, unknown | Record<string, unknown>>>;
+export function subscriptionWhere({
+    where,
+    event,
+    node,
+    nodes,
+    relationshipFields,
+}: {
+    where:
+        | Record<string, recordType | Record<string, Record<string, unionType | interfaceType | standardType>>>
+        | undefined;
+    event: SubscriptionsEvent;
+    node: Node;
+    nodes: Node[];
+    relationshipFields: Map<string, ObjectFields>;
+}): boolean {
     if (!where) {
         return true;
     }
@@ -39,7 +53,13 @@ export function subscriptionWhere(
         return filterByProperties(node, where, event.properties.old);
     }
     if (event.event === "connect") {
-        return filterRelationshipConnectionsByProperties(node, where, event, nodes, relationshipFields);
+        return filterRelationshipConnectionsByProperties({
+            node,
+            whereProperties: where,
+            receivedEvent: event,
+            nodes,
+            relationshipFields,
+        });
     }
     return false;
 }
