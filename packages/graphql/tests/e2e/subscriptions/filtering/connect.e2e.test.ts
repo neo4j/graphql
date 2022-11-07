@@ -27,6 +27,7 @@ import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
 import { cleanNodes } from "../../../utils/clean-nodes";
+import { delay } from "../../../../src/utils/utils";
 
 describe("Connect Subscription with optional filters valid for all types", () => {
     let neo4j: Neo4j;
@@ -573,7 +574,8 @@ subscription SubscriptionMovie {
                 `,
             })
             .expect(200);
-
+        await delay(10);
+        console.log(wsClient.events);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
@@ -1181,7 +1183,7 @@ subscription SubscriptionMovie {
     });
 
     test("node filter on interface type - common fields only, override for a single type", async () => {
-        const where = `{createdRelationship: {reviewers: {node: {reputation_LT: 10, _on: { ${typePerson.name}: { reputation_LTE: 10 } } }}}}`;
+        const where = `{createdRelationship: {reviewers: {node: {reputation_LT: 10, _on: { ${typePerson.name}: { reputation_LT: 11 } } }}}}`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -1802,4 +1804,6 @@ subscription SubscriptionMovie {
     // 2. add tests for finished impl [done?]
     // include test with type relation to same type
     // 3. refactor compare-properties.ts
+
+    // tests matching 2 nodes for disconnect
 });

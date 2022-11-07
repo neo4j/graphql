@@ -217,14 +217,18 @@ export function filterRelationshipConnectionsByProperties<T>(
     nodes: Node[] | undefined,
     relationshipFields: Map<string, ObjectFields> | undefined
 ): boolean {
+    console.log("in filter", whereProperties, receivedEvent);
     const receivedProperties = receivedEvent.properties;
     const relationshipName = receivedEvent.relationshipName;
     const relationships = node.relationFields.filter((f) => f.type === relationshipName);
-    if (relationships.length === 0) {
+    if (!relationships.length) {
+        console.log("no relationships");
         return false;
     }
+    const relationByRelationshipName = relationships[0]; // ONE relationship only possible
 
     for (const [k, v] of Object.entries(whereProperties)) {
+        console.log("in where", k, v);
         const { fieldName } = parseFilterProperty(k);
 
         const connectedNodeFieldName = node.subscriptionEventPayloadFieldNames.connect;
@@ -239,16 +243,22 @@ export function filterRelationshipConnectionsByProperties<T>(
         if (fieldName === "createdRelationship" || fieldName === "deletedRelationship") {
             if (!nodes) {
                 // TODO: why?
+                console.log("why1");
+                return false;
+            }
+            if (!Object.keys(v).includes(relationByRelationshipName.fieldName)) {
                 return false;
             }
             for (const [relationshipNameK, relationshipDataV] of Object.entries(v)) {
-                const relationByRelationshipName = relationships.find((r) => r.fieldName === relationshipNameK);
-                if (!relationByRelationshipName) {
-                    return false;
+                if (relationByRelationshipName.fieldName !== relationshipNameK) {
+                    continue;
                 }
                 const key = relationByRelationshipName.direction === "IN" ? "from" : "to";
 
-                // TODO: if no keys in relationshipDataV && receivedProperties.relationship exists => all can pass
+                if (!Object.keys(relationshipDataV).length) {
+                    console.log("returning true");
+                    return true;
+                }
 
                 for (const [innerK, innerV] of Object.entries(
                     relationshipDataV as Record<
@@ -285,17 +295,21 @@ export function filterRelationshipConnectionsByProperties<T>(
                                 }
                             }
                             if (_on) {
+                                if (!Object.keys(_on).includes(receivedEvent[`${key}Typename`])) {
+                                    return false;
+                                }
+
                                 const actualType = nodesTo.find((n) => n.name === receivedEvent[`${key}Typename`]);
                                 if (!actualType) {
                                     // TODO: why?
                                     return false;
                                 }
-                                // TODO: if no keys in _on[actualType] && ???
                                 const r = filterByProperties(
                                     actualType,
                                     { ...commonFields, ..._on[receivedEvent[`${key}Typename`]] }, //override common <fields, filter> combination with specific <fields, filter>
                                     receivedProperties[key]
                                 );
+                                console.log("is this r?", { ...commonFields, ..._on[receivedEvent[`${key}Typename`]] });
                                 if (!r) {
                                     return false;
                                 }
@@ -314,6 +328,10 @@ export function filterRelationshipConnectionsByProperties<T>(
                         }
                     } else {
                         // union types
+
+                        if (!Object.keys(relationshipDataV).includes(receivedEvent[`${key}Typename`])) {
+                            return false;
+                        }
                         if (innerK === receivedEvent[`${key}Typename`]) {
                             const unionNodeTypes = relationByRelationshipName.union?.nodes as any[];
                             const nodeTo = nodes.find((n) => unionNodeTypes.includes(n.name) && innerK === n.name);
@@ -323,6 +341,7 @@ export function filterRelationshipConnectionsByProperties<T>(
                             for (const [unionTypeK, unionDataV] of Object.entries(innerV)) {
                                 if (unionTypeK === "node") {
                                     const r = filterByProperties(nodeTo, unionDataV, receivedProperties[key]);
+                                    console.log("compare result:", r);
                                     if (!r) {
                                         return false;
                                     }
