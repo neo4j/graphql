@@ -92,10 +92,10 @@ This would merge an existing "HAS_SPONSOR" relation, overwriting the old relatio
 
 * Add the possibility to create new connections, instead of always overwriting existing relationships.
 * The existing default behaviour should be kept the same for now to avoid a breaking change.
-* It should be possible to overwrite the default behaviour when specifying the `@relationship` directive. This can be achieved with a `defaultUpdateOperation` argument that accepts either CREATE or UPDATE. This should be defaulted to UPDATE to avoid breaking changes.
-* Provide the option to the user to make use of either behaviour at query time. This can be achieved with an `operation` argument on to the `connect` input that accepts either CREATE or UPDATE. If this argument is not provided, maintain the default behaviour defined by `defaultUpdateOperation`.
+* It should be possible to overwrite the default behaviour when specifying the `@relationship` directive. This can be achieved with a `newConnectionIfExists` argument that accepts a boolean. This should be defaulted to `false` to avoid breaking changes.
+* Provide the option to the user to make use of either behaviour at query time. This can be achieved with an `newConnectionIfExists` argument on each item of the `connect` input that accepts a boolean. If this argument is not provided, maintain the default behaviour defined on the directive.
 * If there are several connections of the same type, to the same nodes, these should be represented with the nodes being returned multiple times in the response. This is already the current behaviour.
-* To maintain consistency with returning duplicate nodes if multiple relationships, aggregetions should be accross all relationships. This is already the current behaviour.
+* To maintain consistency with returning duplicate nodes if multiple relationships, aggregations should be across all relationships. This is already the current behaviour.
 * Disconnect should disconnect all relations that meet the query filters (e.g. could use limit 1 to make it delete only a single relationship). This is already the current behaviour.
 
 ### Usage Examples
@@ -108,7 +108,7 @@ Specifying the `defaultUpdateOperation` on the `@relationship` directive:
 type Client {
     id: String!
     login: String!
-    sponsor: [Client!]! @relationship(type: "HAS_SPONSOR", properties: "HasSponsor", direction: OUT, defaultUpdateOperation: "CREATE")
+    sponsor: [Client!]! @relationship(type: "HAS_SPONSOR", properties: "HasSponsor", direction: OUT, newConnectionIfExists: true)
 }
 
 interface HasSponsor @relationshipProperties {
@@ -129,7 +129,6 @@ mutation {
             id: "1",
         },
         connect: {
-            operation: "CREATE", # The new operation input argument, that accepts either CREATE or UPDATE
             sponsor: [
                 {
                     where: {
@@ -140,7 +139,20 @@ mutation {
                     edge: {
                         type: "newType2",
                         startDate: "123"
-                    }
+                    },
+                    newConnectionIfExists: true, # The new argument
+                },
+                                {
+                    where: {
+                        node: {
+                            id: "2"
+                        }
+                    },
+                    edge: {
+                        type: "newType2",
+                        startDate: "123"
+                    },
+                    newConnectionIfExists: false, # The new argument
                 }
             ]
         }
