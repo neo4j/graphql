@@ -64,6 +64,11 @@ import checkDirectiveCombinations from "./check-directive-combinations";
 import { upperFirst } from "../utils/upper-first";
 import { getCallbackMeta, getPopulatedByMeta } from "./get-populated-by-meta";
 
+const deprecationWarning =
+    "The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead." +
+    "More information can be found at " +
+    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby.";
+
 export interface ObjectFields {
     relationFields: RelationField[];
     connectionFields: ConnectionField[];
@@ -462,9 +467,7 @@ function getObjFieldMeta({
 
                     if (callbackDirective) {
                         if (!callbackDeprecatedWarningShown) {
-                            console.warn(
-                                "The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead."
-                            );
+                            console.warn(deprecationWarning);
                             callbackDeprecatedWarningShown = true;
                         }
                         const callback = getCallbackMeta(callbackDirective, callbacks);

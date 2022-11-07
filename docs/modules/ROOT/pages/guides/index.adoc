@@ -10,3 +10,4 @@ Here you can find a selection of guides to help you work with the Neo4j GraphQL 
 * xref::guides/migration-guide/index.adoc[Migration Guide] - migrating from `neo4j-graphql-js` to `@neo4j/graphql`
 * xref::guides/v2-migration/index.adoc[2.0.0 Migration] - migrating from version 1.* of `@neo4j/graphql` to version 2.* for relationship property support
 * xref::guides/v3-migration/index.adoc[3.0.0 Migration] - migrating from version 2.* of `@neo4j/graphql` to version 3.*
+* xref::guides/v4-migration/index.adoc[4.0.0 Migration] - migrating from version 3.* of `@neo4j/graphql` to version 4.*
