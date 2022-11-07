@@ -247,19 +247,19 @@ export function generateSubscriptionTypes({
             [subscribeOperation.created]: {
                 args: { where },
                 type: nodeCreatedEvent.NonNull,
-                subscribe: generateSubscribeMethod({ node, type: "create", nodes, relationshipFields }),
+                subscribe: generateSubscribeMethod({ node, type: "create" }),
                 resolve: subscriptionResolve,
             },
             [subscribeOperation.updated]: {
                 args: { where },
                 type: nodeUpdatedEvent.NonNull,
-                subscribe: generateSubscribeMethod({ node, type: "update", nodes, relationshipFields }),
+                subscribe: generateSubscribeMethod({ node, type: "update" }),
                 resolve: subscriptionResolve,
             },
             [subscribeOperation.deleted]: {
                 args: { where },
                 type: nodeDeletedEvent.NonNull,
-                subscribe: generateSubscribeMethod({ node, type: "delete", nodes, relationshipFields }),
+                subscribe: generateSubscribeMethod({ node, type: "delete" }),
                 resolve: subscriptionResolve,
             },
         });

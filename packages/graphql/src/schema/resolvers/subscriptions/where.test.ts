@@ -71,7 +71,7 @@ describe("subscriptionWhere", () => {
             ],
         }).instance();
 
-        expect(subscriptionWhere(args, event, node)).toBe(true);
+        expect(subscriptionWhere({ where: args, event, node })).toBe(true);
     });
 
     test("filters expected not", () => {
@@ -123,6 +123,6 @@ describe("subscriptionWhere", () => {
             ],
         }).instance();
 
-        expect(subscriptionWhere(args, event, node)).toBe(false);
+        expect(subscriptionWhere({ where: args, event, node })).toBe(false);
     });
 });

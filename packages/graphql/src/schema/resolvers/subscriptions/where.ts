@@ -37,8 +37,8 @@ export function subscriptionWhere({
     where: Record<string, RecordType | RelationshipType> | undefined;
     event: SubscriptionsEvent;
     node: Node;
-    nodes: Node[];
-    relationshipFields: Map<string, ObjectFields>;
+    nodes?: Node[];
+    relationshipFields?: Map<string, ObjectFields>;
 }): boolean {
     if (!where) {
         return true;
@@ -50,6 +50,10 @@ export function subscriptionWhere({
         return filterByProperties(node, where, event.properties.old);
     }
     if (event.event === "connect") {
+        if (!nodes || !relationshipFields) {
+            // throw?
+            return false;
+        }
         return filterRelationshipConnectionsByProperties({
             node,
             whereProperties: where,

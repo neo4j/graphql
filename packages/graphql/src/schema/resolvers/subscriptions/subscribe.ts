@@ -47,8 +47,8 @@ export function generateSubscribeMethod({
 }: {
     node: Node;
     type: "create" | "update" | "delete" | "connect" | "disconnect";
-    nodes: Node[];
-    relationshipFields: Map<string, ObjectFields>;
+    nodes?: Node[];
+    relationshipFields?: Map<string, ObjectFields>;
 }) {
     return (_root: any, args: SubscriptionArgs, context: SubscriptionContext): AsyncIterator<[SubscriptionsEvent]> => {
         if (node.auth) {
@@ -69,7 +69,7 @@ export function generateSubscribeMethod({
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
                 return (
                     (data[0] as NodeSubscriptionsEvent).typename === node.name &&
-                    subscriptionWhere({ where: args.where, event: data[0], node, nodes, relationshipFields }) &&
+                    subscriptionWhere({ where: args.where, event: data[0], node }) &&
                     updateDiffFilter(data[0])
                 );
             });
