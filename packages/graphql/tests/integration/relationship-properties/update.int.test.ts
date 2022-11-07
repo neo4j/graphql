@@ -20,33 +20,38 @@
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
-import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("Relationship properties - update", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let bookmarks: string[];
+
+    const movieType = generateUniqueType("Movie");
+    const actorType = generateUniqueType("Actor");
+    const actedInInterface = generateUniqueType("ActedIn");
+
     const typeDefs = gql`
-        type Movie {
+        type ${movieType.name} {
             title: String!
-            actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            actors: [${actorType.name}!]! @relationship(type: "ACTED_IN", properties: "${actedInInterface.name}", direction: IN)
         }
 
-        type Actor {
+        type ${actorType.name} {
             name: String!
-            movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            movies: [${movieType.name}!]! @relationship(type: "ACTED_IN", properties: "${actedInInterface.name}", direction: OUT)
         }
 
-        interface ActedIn {
+        interface ${actedInInterface.name} {
             screenTime: Int!
         }
     `;
-    const movieTitle = generate({ charset: "alphabetic" });
-    const actor1 = generate({ charset: "alphabetic" });
-    const actor2 = generate({ charset: "alphabetic" });
-    const actor3 = generate({ charset: "alphabetic" });
+    const movieTitle = "A Movie Title";
+    const actor1 = "Some Actor";
+    const actor2 = "Second Actor";
+    const actor3 = "Tom Cruise";
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -59,8 +64,8 @@ describe("Relationship properties - update", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Actor { name: '${actor1}' })-[:ACTED_IN { screenTime: 105 }]->(m:Movie { title: '${movieTitle}'})
-                    CREATE (m)<-[:ACTED_IN { screenTime: 100 }]-(:Actor { name: '${actor2}' })
+                    CREATE (:${actorType.name} { name: '${actor1}' })-[:ACTED_IN { screenTime: 105 }]->(m:${movieType.name} { title: '${movieTitle}'})
+                    CREATE (m)<-[:ACTED_IN { screenTime: 100 }]-(:${actorType.name} { name: '${actor2}' })
                 `
             );
             bookmarks = session.lastBookmark();
@@ -73,10 +78,10 @@ describe("Relationship properties - update", () => {
         const session = await neo4j.getSession();
 
         try {
-            await session.run(`MATCH (a:Actor) WHERE a.name = '${actor1}' DETACH DELETE a`);
-            await session.run(`MATCH (a:Actor) WHERE a.name = '${actor2}' DETACH DELETE a`);
-            await session.run(`MATCH (a:Actor) WHERE a.name = '${actor3}' DETACH DELETE a`);
-            await session.run(`MATCH (m:Movie) WHERE m.title = '${movieTitle}' DETACH DELETE m`);
+            await session.run(`MATCH (a:${actorType.name}) WHERE a.name = '${actor1}' DETACH DELETE a`);
+            await session.run(`MATCH (a:${actorType.name}) WHERE a.name = '${actor2}' DETACH DELETE a`);
+            await session.run(`MATCH (a:${actorType.name}) WHERE a.name = '${actor3}' DETACH DELETE a`);
+            await session.run(`MATCH (m:${movieType.name}) WHERE m.title = '${movieTitle}' DETACH DELETE m`);
         } finally {
             await session.close();
         }
@@ -93,11 +98,11 @@ describe("Relationship properties - update", () => {
 
         const mutation = `
             mutation {
-                updateMovies(
+                ${movieType.operations.update}(
                     where: { title: "${movieTitle}" }
                     update: { actors: [{ where: { node: { name: "${actor1}" } }, update: { edge: { screenTime: 60 } } }] }
                 ) {
-                    movies {
+                    ${movieType.plural} {
                         title
                         actorsConnection(sort: { edge: { screenTime: DESC }}) {
                             edges {
@@ -123,7 +128,7 @@ describe("Relationship properties - update", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect((result?.data as any)?.updateMovies?.movies).toEqual([
+            expect((result?.data as any)?.[movieType.operations.update]?.[movieType.plural]).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
@@ -156,7 +161,7 @@ describe("Relationship properties - update", () => {
 
         const mutation = `
             mutation {
-                updateMovies(
+                ${movieType.operations.update}(
                     where: { title: "${movieTitle}" }
                     update: {
                         actors: [
@@ -170,7 +175,7 @@ describe("Relationship properties - update", () => {
                         ]
                     }
                 ) {
-                    movies {
+                    ${movieType.plural} {
                         title
                         actorsConnection(sort: { edge: { screenTime: ASC }}) {
                             edges {
@@ -196,7 +201,7 @@ describe("Relationship properties - update", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect((result?.data as any)?.updateMovies?.movies).toEqual([
+            expect((result?.data as any)?.[movieType.operations.update]?.[movieType.plural]).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
@@ -229,7 +234,7 @@ describe("Relationship properties - update", () => {
 
         const mutation = `
             mutation {
-                updateMovies(
+                ${movieType.operations.update}(
                     where: { title: "${movieTitle}" }
                     update: {
                         actors: [
@@ -242,7 +247,7 @@ describe("Relationship properties - update", () => {
                         ]
                     }
                 ) {
-                    movies {
+                    ${movieType.plural} {
                         title
                         actorsConnection(sort: { edge: { screenTime: ASC }}) {
                             edges {
@@ -268,7 +273,7 @@ describe("Relationship properties - update", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect((result?.data as any)?.updateMovies?.movies).toEqual([
+            expect((result?.data as any)?.[movieType.operations.update]?.[movieType.plural]).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
@@ -307,7 +312,7 @@ describe("Relationship properties - update", () => {
 
         const mutation = `
             mutation {
-                updateMovies(
+                ${movieType.operations.update}(
                     where: { title: "${movieTitle}" }
                     create: {
                         actors: [
@@ -318,7 +323,7 @@ describe("Relationship properties - update", () => {
                         ]
                     }
                 ) {
-                    movies {
+                    ${movieType.plural} {
                         title
                         actorsConnection(sort: { edge: { screenTime: ASC }}) {
                             edges {
@@ -344,7 +349,7 @@ describe("Relationship properties - update", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect((result?.data as any)?.updateMovies?.movies).toEqual([
+            expect((result?.data as any)?.[movieType.operations.update]?.[movieType.plural]).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
