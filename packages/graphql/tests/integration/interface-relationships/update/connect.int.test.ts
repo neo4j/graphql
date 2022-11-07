@@ -19,51 +19,77 @@
 
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
-import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
 
 describe("interface relationships", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
+    let episodeType: UniqueType;
+    let movieType: UniqueType;
+    let seriesType: UniqueType;
+    let actorType: UniqueType;
+    let productionInterface: UniqueType;
+    let actedInInterface: UniqueType;
+
+    const actorName1 = "Some Actor";
+    const actorName2 = "Another Name";
+    const movieTitle = "A Title";
+    const movieRuntime = 123;
+    const movieScreenTime = 4019;
+    const seriesTitle = "Another Title";
+    const seriesScreenTime = 99;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+    });
+
+    afterAll(async () => {
+        await driver.close();
+    });
+
+    beforeEach(() => {
+        productionInterface = generateUniqueType("Production");
+        episodeType = generateUniqueType("Episode");
+        movieType = generateUniqueType("Movie");
+        seriesType = generateUniqueType("Series");
+        actedInInterface = generateUniqueType("ActedIn");
+        actorType = generateUniqueType("Actor");
 
         const typeDefs = gql`
-            type Episode {
+            type ${episodeType.name} {
                 runtime: Int!
-                series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
+                series: ${seriesType.name}! @relationship(type: "HAS_EPISODE", direction: IN)
             }
 
-            interface Production {
+            interface ${productionInterface.name} {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [${actorType.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "${actedInInterface.name}")
             }
 
-            type Movie implements Production {
+            type ${movieType.name} implements ${productionInterface.name} {
                 title: String!
                 runtime: Int!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [${actorType.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "${actedInInterface.name}")
             }
 
-            type Series implements Production {
+            type ${seriesType.name} implements ${productionInterface.name} {
                 title: String!
-                episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                episodes: [${episodeType.name}!]! @relationship(type: "HAS_EPISODE", direction: OUT)
+                actors: [${actorType.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "${actedInInterface.name}")
             }
 
-            interface ActedIn @relationshipProperties {
+            interface ${actedInInterface.name} @relationshipProperties {
                 screenTime: Int!
             }
 
-            type Actor {
+            type ${actorType.name} {
                 name: String!
-                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: [${productionInterface.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "${actedInInterface.name}")
             }
         `;
 
@@ -72,42 +98,36 @@ describe("interface relationships", () => {
         });
     });
 
-    afterAll(async () => {
-        await driver.close();
+    afterEach(async () => {
+        const session = await neo4j.getSession();
+
+        try {
+            await session.run(`
+                MATCH (episodes:${episodeType.name})
+                MATCH (movies:${movieType.name})
+                MATCH (series:${seriesType.name})
+                MATCH (actors:${actorType.name})
+                DETACH DELETE episodes, movies, series, actors
+            `);
+        } finally {
+            await session.close();
+        }
     });
 
     test("should connect using interface relationship fields", async () => {
         const session = await neo4j.getSession();
 
-        const actorName = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
-
-        const seriesTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesScreenTime = faker.datatype.number();
-
         const query = `
             mutation ConnectMovie($name: String, $title: String, $screenTime: Int!) {
-                updateActors(
+                ${actorType.operations.update}(
                     where: { name: $name }
                     connect: { actedIn: { edge: { screenTime: $screenTime }, where: { node: { title: $title } } } }
                 ) {
-                    actors {
+                    ${actorType.plural} {
                         name
                         actedIn {
                             title
-                            ... on Movie {
+                            ... on ${movieType.name} {
                                 runtime
                             }
                         }
@@ -119,25 +139,25 @@ describe("interface relationships", () => {
         try {
             await session.run(
                 `
-                CREATE (a:Actor { name: $actorName })
-                CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $seriesTitle })
+                CREATE (a:${actorType.name} { name: $actorName })
+                CREATE (:${movieType.name} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${seriesType.name} { title: $seriesTitle })
             `,
-                { actorName, movieTitle, movieRuntime, seriesTitle, seriesScreenTime }
+                { actorName: actorName1, movieTitle, movieRuntime, seriesTitle, seriesScreenTime }
             );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                variableValues: { name: actorName, title: movieTitle, screenTime: movieScreenTime },
+                variableValues: { name: actorName1, title: movieTitle, screenTime: movieScreenTime },
             });
 
             expect(gqlResult.errors).toBeFalsy();
 
             expect(gqlResult.data).toEqual({
-                updateActors: {
-                    actors: [
+                [actorType.operations.update]: {
+                    [actorType.plural]: [
                         {
                             actedIn: expect.toIncludeSameMembers([
                                 {
@@ -148,7 +168,7 @@ describe("interface relationships", () => {
                                     title: seriesTitle,
                                 },
                             ]),
-                            name: actorName,
+                            name: actorName1,
                         },
                     ],
                 },
@@ -161,31 +181,9 @@ describe("interface relationships", () => {
     test("should nested connect using interface relationship fields", async () => {
         const session = await neo4j.getSession();
 
-        const actorName1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const actorName2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
-
-        const seriesTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesScreenTime = faker.datatype.number();
-
         const query = `
             mutation ConnectMovie($name1: String, $name2: String, $title: String, $screenTime: Int!) {
-                updateActors(
+                ${actorType.operations.update}(
                     where: { name: $name1 }
                     connect: {
                         actedIn: {
@@ -197,14 +195,14 @@ describe("interface relationships", () => {
                         }
                     }
                 ) {
-                    actors {
+                    ${actorType.plural} {
                         name
                         actedIn {
                             title
                             actors {
                                 name
                             }
-                            ... on Movie {
+                            ... on ${movieType.name} {
                                 runtime
                             }
                         }
@@ -216,10 +214,10 @@ describe("interface relationships", () => {
         try {
             await session.run(
                 `
-                CREATE (a:Actor { name: $actorName1 })
-                CREATE (:Actor { name: $actorName2 })
-                CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $seriesTitle })
+                CREATE (a:${actorType.name} { name: $actorName1 })
+                CREATE (:${actorType.name} { name: $actorName2 })
+                CREATE (:${movieType.name} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${seriesType.name} { title: $seriesTitle })
             `,
                 { actorName1, actorName2, movieTitle, movieRuntime, seriesTitle, seriesScreenTime }
             );
@@ -239,8 +237,8 @@ describe("interface relationships", () => {
             expect(gqlResult.errors).toBeFalsy();
 
             expect(gqlResult.data).toEqual({
-                updateActors: {
-                    actors: [
+                [actorType.operations.update]: {
+                    [actorType.plural]: [
                         {
                             actedIn: expect.toIncludeSameMembers([
                                 {
@@ -266,31 +264,9 @@ describe("interface relationships", () => {
     test("should nested connect using interface relationship fields using _on to only connect from certain nested type", async () => {
         const session = await neo4j.getSession();
 
-        const actorName1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const actorName2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
-
-        const seriesTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesScreenTime = faker.datatype.number();
-
         const query = `
             mutation ConnectMovie($name1: String, $name2: String, $title: String, $screenTime: Int!) {
-                updateActors(
+                ${actorType.operations.update}(
                     where: { name: $name1 }
                     connect: {
                         actedIn: {
@@ -298,7 +274,7 @@ describe("interface relationships", () => {
                             where: { node: { title: $title } }
                             connect: {
                                 _on: {
-                                    Movie: {
+                                    ${movieType.name}: {
                                         actors: { edge: { screenTime: $screenTime }, where: { node: { name: $name2 } } }
                                     }
                                 }
@@ -306,7 +282,7 @@ describe("interface relationships", () => {
                         }
                     }
                 ) {
-                    actors {
+                    ${actorType.plural} {
                         name
                         actedIn {
                             __typename
@@ -314,7 +290,7 @@ describe("interface relationships", () => {
                             actors {
                                 name
                             }
-                            ... on Movie {
+                            ... on ${movieType.name} {
                                 runtime
                             }
                         }
@@ -326,11 +302,11 @@ describe("interface relationships", () => {
         try {
             await session.run(
                 `
-                CREATE (a:Actor { name: $actorName1 })
-                CREATE (:Actor { name: $actorName2 })
-                CREATE (:Series { title: $movieTitle })
-                CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $seriesTitle })
+                CREATE (a:${actorType.name} { name: $actorName1 })
+                CREATE (:${actorType.name} { name: $actorName2 })
+                CREATE (:${seriesType.name} { title: $movieTitle })
+                CREATE (:${movieType.name} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${seriesType.name} { title: $seriesTitle })
             `,
                 { actorName1, actorName2, movieTitle, movieRuntime, seriesTitle, seriesScreenTime }
             );
@@ -350,23 +326,23 @@ describe("interface relationships", () => {
             expect(gqlResult.errors).toBeFalsy();
 
             expect(gqlResult.data).toEqual({
-                updateActors: {
-                    actors: [
+                [actorType.operations.update]: {
+                    [actorType.plural]: [
                         {
                             actedIn: expect.toIncludeSameMembers([
                                 {
-                                    __typename: "Movie",
+                                    __typename: movieType.name,
                                     runtime: movieRuntime,
                                     title: movieTitle,
                                     actors: expect.toIncludeSameMembers([{ name: actorName2 }, { name: actorName1 }]),
                                 },
                                 {
-                                    __typename: "Series",
+                                    __typename: seriesType.name,
                                     title: movieTitle,
                                     actors: [{ name: actorName1 }],
                                 },
                                 {
-                                    __typename: "Series",
+                                    __typename: seriesType.name,
                                     title: seriesTitle,
                                     actors: [{ name: actorName1 }],
                                 },
@@ -384,43 +360,21 @@ describe("interface relationships", () => {
     test("should nested connect using interface relationship fields using where _on to only connect to certain type", async () => {
         const session = await neo4j.getSession();
 
-        const actorName1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const actorName2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
-
-        const seriesTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesScreenTime = faker.datatype.number();
-
         const query = `
             mutation ConnectMovie($name1: String, $name2: String, $title: String, $screenTime: Int!) {
-                updateActors(
+                ${actorType.operations.update}(
                     where: { name: $name1 }
                     connect: {
                         actedIn: {
                             edge: { screenTime: $screenTime }
-                            where: { node: { _on: { Movie: { title: $title } } } }
+                            where: { node: { _on: { ${movieType.name}: { title: $title } } } }
                             connect: {
                                 actors: { edge: { screenTime: $screenTime }, where: { node: { name: $name2 } } }
                             }
                         }
                     }
                 ) {
-                    actors {
+                    ${actorType.plural} {
                         name
                         actedIn {
                             __typename
@@ -428,7 +382,7 @@ describe("interface relationships", () => {
                             actors {
                                 name
                             }
-                            ... on Movie {
+                            ... on ${movieType.name} {
                                 runtime
                             }
                         }
@@ -440,11 +394,11 @@ describe("interface relationships", () => {
         try {
             await session.run(
                 `
-                CREATE (a:Actor { name: $actorName1 })
-                CREATE (:Actor { name: $actorName2 })
-                CREATE (:Series { title: $movieTitle })
-                CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $seriesTitle })
+                CREATE (a:${actorType.name} { name: $actorName1 })
+                CREATE (:${actorType.name} { name: $actorName2 })
+                CREATE (:${seriesType.name} { title: $movieTitle })
+                CREATE (:${movieType.name} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${seriesType.name} { title: $seriesTitle })
             `,
                 { actorName1, actorName2, movieTitle, movieRuntime, seriesTitle, seriesScreenTime }
             );
@@ -464,18 +418,18 @@ describe("interface relationships", () => {
             expect(gqlResult.errors).toBeFalsy();
 
             expect(gqlResult.data).toEqual({
-                updateActors: {
-                    actors: [
+                [actorType.operations.update]: {
+                    [actorType.plural]: [
                         {
                             actedIn: expect.toIncludeSameMembers([
                                 {
-                                    __typename: "Movie",
+                                    __typename: movieType.name,
                                     runtime: movieRuntime,
                                     title: movieTitle,
                                     actors: expect.toIncludeSameMembers([{ name: actorName2 }, { name: actorName1 }]),
                                 },
                                 {
-                                    __typename: "Series",
+                                    __typename: seriesType.name,
                                     title: seriesTitle,
                                     actors: [{ name: actorName1 }],
                                 },
