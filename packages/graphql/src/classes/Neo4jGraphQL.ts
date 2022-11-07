@@ -134,7 +134,6 @@ class Neo4jGraphQL {
     public async getSchema(): Promise<GraphQLSchema> {
         if (!this.schema) {
             this.schema = this.generateSchema();
-            await this.pluginsSetup();
         }
 
         return this.schema;
