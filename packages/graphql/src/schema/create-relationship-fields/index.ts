@@ -28,6 +28,7 @@ import { createConnectOrCreateField } from "./create-connect-or-create-field";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
+import { CreateDuplicates } from "../../graphql/input-objects/CreateDuplicates";
 
 function createRelationshipFields({
     relationshipFields,
@@ -720,6 +721,7 @@ function createRelationshipFields({
         const connect = rel.typeMeta.array ? `[${connectName}!]` : connectName;
         schemaComposer.getOrCreateITC(connectName, (tc) => {
             tc.addFields({
+                createDuplicates: CreateDuplicates,
                 where: connectWhereName,
                 ...(n.relationFields.length
                     ? { connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput` }
