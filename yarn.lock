@@ -2539,7 +2539,7 @@ __metadata:
     debug: ^4.3.4
     jest: 29.2.2
     jsonwebtoken: ^8.5.1
-    jwks-rsa: ^2.1.4
+    jwks-rsa: ^3.0.0
     ts-jest: 29.0.3
     typescript: 4.8.4
   languageName: unknown
@@ -2786,13 +2786,6 @@ __metadata:
     mkdirp: ^1.0.4
     rimraf: ^3.0.2
   checksum: 5ccce4b1e9d94234e303bdd93cbb23720ce52f48bfc7ffbe88554eab63af2b26d5bd8b62f3e10b6649b88a5d69e2ea48790f86de737dbbdc49e31ec050a2e64a
-  languageName: node
-  linkType: hard
-
-"@panva/asn1.js@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@panva/asn1.js@npm:1.0.0"
-  checksum: cb6bcc1918a7f08e81e7d7f5bde83c20a66b30248ddc3ef10b1612e0e0b9f722c2b07ca6b586a089a49c1b6cfb29d63fdd23d4bc00c8cc40538b5595bec66d7d
   languageName: node
   linkType: hard
 
@@ -12122,12 +12115,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^2.0.6":
-  version: 2.0.6
-  resolution: "jose@npm:2.0.6"
-  dependencies:
-    "@panva/asn1.js": ^1.0.0
-  checksum: c13a95f38fc175eb7522579fc6490fd29e3ca08dd33454295af48ab096674f6e434f5784b1a8d6b8f361c38971c8fb8840b06efce3ce6128b032e2b3de55ea25
+"jose@npm:^4.10.3":
+  version: 4.10.4
+  resolution: "jose@npm:4.10.4"
+  checksum: 0e6caaae0b0303534c0ac23711d45eadfbdbff63d9aeed80965c668b5532c254ab25b48afddc3e1ecfcfd36b4275dee41174a097c5a47a25ce04268c78f3c130
   languageName: node
   linkType: hard
 
@@ -12443,17 +12434,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwks-rsa@npm:^2.1.4":
-  version: 2.1.5
-  resolution: "jwks-rsa@npm:2.1.5"
+"jwks-rsa@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "jwks-rsa@npm:3.0.0"
   dependencies:
     "@types/express": ^4.17.14
     "@types/jsonwebtoken": ^8.5.9
     debug: ^4.3.4
-    jose: ^2.0.6
+    jose: ^4.10.3
     limiter: ^1.1.5
     lru-memoizer: ^2.1.4
-  checksum: 3fe49f0921cd2da9e1a486ab2d6c23b89b7c0058ac54ca1093a617042b15876dd98fd9bd81fcaa1ebbc10ab92589b81a9aaa5a9f3bf8716b68d217ba9b786f63
+  checksum: 1697f9599b723be8853041c643af6ec6457e8ab65ca0c086b80fdb642396d37ad9d4c69984b619bd8e5cf668bbe073f3a4b5d2335306615951afb7e54dc2721a
   languageName: node
   linkType: hard
 
