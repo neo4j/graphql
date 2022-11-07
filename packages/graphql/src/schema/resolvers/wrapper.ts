@@ -31,6 +31,7 @@ import type { Context, Neo4jGraphQLPlugins } from "../../types";
 import { getToken, parseBearerToken } from "../../utils/get-token";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
+import type { Entity } from "../../schema-model/Entity";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -39,7 +40,7 @@ type WrapResolverArguments = {
     config: Neo4jGraphQLConfig;
     nodes: Node[];
     relationships: Relationship[];
-    schema: GraphQLSchema;
+    entities: Map<string, Entity>;
     plugins?: Neo4jGraphQLPlugins;
     dbInfo?: Neo4jDatabaseInfo;
 };
@@ -47,7 +48,7 @@ type WrapResolverArguments = {
 let neo4jDatabaseInfo: Neo4jDatabaseInfo;
 
 export const wrapResolver =
-    ({ driver, config, nodes, relationships, schema, plugins, dbInfo }: WrapResolverArguments) =>
+    ({ driver, config, nodes, relationships, entities, plugins, dbInfo }: WrapResolverArguments) =>
     (next) =>
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
         const { driverConfig } = config;
@@ -80,7 +81,7 @@ export const wrapResolver =
 
         context.nodes = nodes;
         context.relationships = relationships;
-        context.schema = schema;
+        context.entities = entities;
         context.plugins = plugins || {};
         context.subscriptionsEnabled = Boolean(context.plugins?.subscriptions);
         context.callbacks = config.callbacks;

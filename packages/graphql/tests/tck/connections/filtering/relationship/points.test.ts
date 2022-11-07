@@ -59,6 +59,13 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
     });
 
     test("DISTANCE", async () => {
+        let verifyTCK;
+
+        if (process.env.VERIFY_TCK) {
+            verifyTCK = process.env.VERIFY_TCK;
+            delete process.env.VERIFY_TCK;
+        }
+
         const query = gql`
             query {
                 movies {
@@ -116,5 +123,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
                 }
             }"
         `);
+
+        if (verifyTCK) {
+            process.env.VERIFY_TCK = verifyTCK;
+        }
     });
 });

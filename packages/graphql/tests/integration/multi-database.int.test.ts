@@ -40,17 +40,17 @@ describe("multi-database", () => {
         try {
             // Create DB
             const createSession = await neo4j.getSession();
-            await createSession.writeTransaction((tx) => tx.run(`CREATE DATABASE \`${dbName}\``));
+            await createSession.executeWrite((tx) => tx.run(`CREATE DATABASE \`${dbName}\` WAIT`));
             await createSession.close();
 
             // Write data
-            const writeSession = driver.session({ database: dbName, bookmarks: createSession.lastBookmark() });
-            await writeSession.writeTransaction((tx) => tx.run("CREATE (:Movie {id: $id})", { id }));
+            const writeSession = driver.session({ database: dbName, bookmarks: createSession.lastBookmarks() });
+            await writeSession.executeWrite((tx) => tx.run("CREATE (:Movie {id: $id})", { id }));
             await writeSession.close();
 
             // Make sure it's written before we continue
-            const waitSession = driver.session({ database: dbName, bookmarks: writeSession.lastBookmark() });
-            await waitSession.readTransaction((tx) => tx.run("MATCH (m:Movie) RETURN COUNT(m)"));
+            const waitSession = driver.session({ database: dbName, bookmarks: writeSession.lastBookmarks() });
+            await waitSession.executeRead((tx) => tx.run("MATCH (m:Movie) RETURN COUNT(m)"));
             await waitSession.close();
         } catch (e) {
             if (e instanceof Error) {
