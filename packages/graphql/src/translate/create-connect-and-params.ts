@@ -232,7 +232,12 @@ function createConnectAndParams({
         subquery.push("\t\t\tWITH connectedNodes, parentNodes"); //
         subquery.push(`\t\t\tUNWIND parentNodes as ${parentVar}`);
         subquery.push(`\t\t\tUNWIND connectedNodes as ${nodeName}`);
-        subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        
+        if (connect.createDuplicates) {
+            subquery.push(`\t\t\tCREATE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        } else {
+            subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        }
 
         if (relationField.properties) {
             const relationship = context.relationships.find(
