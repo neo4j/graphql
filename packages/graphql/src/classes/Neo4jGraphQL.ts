@@ -69,7 +69,7 @@ export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
     plugins?: Omit<Neo4jGraphQLPlugins, "federation">;
 }
 
-type SchemaDefinition = {
+export type SchemaDefinition = {
     typeDefs: IExecutableSchemaDefinition["typeDefs"];
     resolvers: IExecutableSchemaDefinition["resolvers"];
 };
@@ -242,7 +242,11 @@ class Neo4jGraphQL {
         return getNeo4jDatabaseInfo(new Executor(executorConstructorParam));
     }
 
-    private wrapResolvers(resolvers: IResolvers) {
+    private wrapResolvers(resolvers: IExecutableSchemaDefinition["resolvers"]) {
+        if (!resolvers) {
+            throw new Error("No resolvers to wrap");
+        }
+
         if (!this.entities) {
             throw new Error("this.entities is undefined");
         }
@@ -263,12 +267,30 @@ class Neo4jGraphQL {
         };
 
         // Merge generated and custom resolvers
-        const mergedResolvers = mergeResolvers([resolvers, ...asArray(this.schemaDefinition.resolvers)]);
+        const mergedResolvers = mergeResolvers([...asArray(resolvers), ...asArray(this.schemaDefinition.resolvers)]);
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
     private generateSchemaDefinition(): Promise<SchemaDefinition> {
         return new Promise((resolve) => {
+            const pluginResolvers: IExecutableSchemaDefinition["resolvers"] = [];
+
+            if (this.plugins?.federation) {
+                const { resolvers: federationResolvers } = this.plugins.federation.augmentSchemaDefinition(
+                    this.schemaDefinition.typeDefs
+                );
+
+                if (federationResolvers) {
+                    if (Array.isArray(federationResolvers)) {
+                        for (const r of federationResolvers) {
+                            pluginResolvers.push(r);
+                        }
+                    } else {
+                        pluginResolvers.push(federationResolvers);
+                    }
+                }
+            }
+
             const { nodes, relationships, entities, typeDefs, resolvers } = makeAugmentedSchema(
                 this.schemaDefinition.typeDefs,
                 {
@@ -287,7 +309,7 @@ class Neo4jGraphQL {
             this.entities = entities;
 
             // Wrap the generated and custom resolvers, which adds a context including the schema to every request
-            const wrappedResolvers = this.wrapResolvers(resolvers);
+            const wrappedResolvers = this.wrapResolvers([resolvers, ...pluginResolvers]);
 
             const resolversWithDefaults = this.addDefaultFieldResolversToResolvers(typeDefs, wrappedResolvers);
 
@@ -309,14 +331,23 @@ class Neo4jGraphQL {
         });
     }
 
-    private async pluginsSetup(): Promise<void> {
+    private async pluginsSetup(): Promise<void[]> {
+        const initializers: Promise<void>[] = [];
+
         const subscriptionsPlugin = this.plugins?.subscriptions;
         if (subscriptionsPlugin) {
             subscriptionsPlugin.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
             if (subscriptionsPlugin.init) {
-                await subscriptionsPlugin.init();
+                initializers.push(subscriptionsPlugin.init());
             }
         }
+
+        const federationPlugin = this.plugins?.federation;
+        if (federationPlugin) {
+            initializers.push(federationPlugin.init());
+        }
+
+        return Promise.all(initializers);
     }
 }
 

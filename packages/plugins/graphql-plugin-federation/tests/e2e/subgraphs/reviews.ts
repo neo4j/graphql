@@ -17,4 +17,26 @@
  * limitations under the License.
  */
 
-export { Neo4jGraphQLApolloFederationPlugin } from "./Neo4jGraphQLApolloFederationPlugin";
+import { gql } from "graphql-tag";
+
+export const typeDefs = gql`
+    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+
+    type Location @key(fields: "id") {
+        id: ID!
+        "The calculated overall rating based on all reviews"
+        overallRating: Float
+        "All submitted reviews about this location"
+        reviewsForLocation: [Review]!
+    }
+
+    type Review {
+        id: ID!
+        "Written text"
+        comment: String
+        "A number from 1 - 5 with 1 being lowest and 5 being highest"
+        rating: Int
+        "The location the review is about"
+        location: Location
+    }
+`;

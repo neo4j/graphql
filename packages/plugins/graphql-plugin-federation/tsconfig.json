@@ -5,9 +5,10 @@
         "baseUrl": ".",
         "outDir": "dist",
         "paths": {
+            "@neo4j/graphql": ["../../graphql/src"],
             "@neo4j/graphql-ogm": ["../../ogm/src"]
         }
     },
-    "include": ["src/**/*"],
-    "references": [{ "path": "../../ogm/tsconfig.json" }]
+    "include": ["src/**/*", "tests/**/*"],
+    "references": [{ "path": "../../graphql/tsconfig.json" }, { "path": "../../ogm/tsconfig.json" }]
 }

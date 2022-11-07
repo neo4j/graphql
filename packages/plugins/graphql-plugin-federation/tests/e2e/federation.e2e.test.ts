@@ -17,4 +17,5 @@
  * limitations under the License.
  */
 
-export { Neo4jGraphQLApolloFederationPlugin } from "./Neo4jGraphQLApolloFederationPlugin";
+import { typeDefs as locations } from "./subgraphs/locations";
+import { typeDefs as reviews } from "./subgraphs/reviews";
