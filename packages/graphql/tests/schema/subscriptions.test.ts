@@ -343,11 +343,6 @@ describe("Subscriptions", () => {
               actors: MovieActorsConnectedRelationship
             }
 
-            input MovieConnectionSubscriptionWhere {
-              movie: MovieSubscriptionWhere
-              relationship: MovieRelationshipsSubscriptionWhere
-            }
-
             input MovieCreateInput {
               actorCount: Int
               actors: MovieActorsFieldInput
@@ -409,12 +404,22 @@ describe("Subscriptions", () => {
               timestamp: Float!
             }
 
+            input MovieRelationshipCreatedSubscriptionWhere {
+              createdRelationship: MovieRelationshipsSubscriptionWhere
+              movie: MovieSubscriptionWhere
+            }
+
             type MovieRelationshipDeletedEvent {
               deletedRelationship: MovieConnectedRelationships!
               event: EventType!
               movie: MovieEventPayload!
               relationshipFieldName: String!
               timestamp: Float!
+            }
+
+            input MovieRelationshipDeletedSubscriptionWhere {
+              deletedRelationship: MovieRelationshipsSubscriptionWhere
+              movie: MovieSubscriptionWhere
             }
 
             input MovieRelationshipsSubscriptionWhere {
@@ -585,8 +590,8 @@ describe("Subscriptions", () => {
               actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
               movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
               movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieRelationshipCreated(where: MovieConnectionSubscriptionWhere): MovieRelationshipCreatedEvent!
-              movieRelationshipDeleted(where: MovieConnectionSubscriptionWhere): MovieRelationshipDeletedEvent!
+              movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
+              movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
               movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
             }
 
@@ -661,11 +666,6 @@ describe("Subscriptions", () => {
 
             type ActorConnectedRelationships {
               movies: ActorMoviesConnectedRelationship
-            }
-
-            input ActorConnectionSubscriptionWhere {
-              actor: ActorSubscriptionWhere
-              relationship: ActorRelationshipsSubscriptionWhere
             }
 
             input ActorCreateInput {
@@ -855,10 +855,20 @@ describe("Subscriptions", () => {
               timestamp: Float!
             }
 
+            input ActorRelationshipCreatedSubscriptionWhere {
+              actor: ActorSubscriptionWhere
+              createdRelationship: ActorRelationshipsSubscriptionWhere
+            }
+
             type ActorRelationshipDeletedEvent {
               deletedRelationship: ActorConnectedRelationships!
               event: EventType!
               timestamp: Float!
+            }
+
+            input ActorRelationshipDeletedSubscriptionWhere {
+              actor: ActorSubscriptionWhere
+              deletedRelationship: ActorRelationshipsSubscriptionWhere
             }
 
             input ActorRelationshipsSubscriptionWhere {
@@ -1051,11 +1061,6 @@ describe("Subscriptions", () => {
               node: MovieWhere!
             }
 
-            input MovieConnectionSubscriptionWhere {
-              movie: MovieSubscriptionWhere
-              relationship: MovieRelationshipsSubscriptionWhere
-            }
-
             input MovieCreateInput {
               actorCount: Int
               actors: MovieActorsFieldInput
@@ -1116,11 +1121,21 @@ describe("Subscriptions", () => {
               timestamp: Float!
             }
 
+            input MovieRelationshipCreatedSubscriptionWhere {
+              createdRelationship: MovieRelationshipsSubscriptionWhere
+              movie: MovieSubscriptionWhere
+            }
+
             type MovieRelationshipDeletedEvent {
               event: EventType!
               movie: MovieEventPayload!
               relationshipFieldName: String!
               timestamp: Float!
+            }
+
+            input MovieRelationshipDeletedSubscriptionWhere {
+              deletedRelationship: MovieRelationshipsSubscriptionWhere
+              movie: MovieSubscriptionWhere
             }
 
             input MovieRelationshipsSubscriptionWhere {
@@ -1283,13 +1298,13 @@ describe("Subscriptions", () => {
             type Subscription {
               actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
               actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-              actorRelationshipCreated(where: ActorConnectionSubscriptionWhere): ActorRelationshipCreatedEvent!
-              actorRelationshipDeleted(where: ActorConnectionSubscriptionWhere): ActorRelationshipDeletedEvent!
+              actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
+              actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
               actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
               movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
               movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieRelationshipCreated(where: MovieConnectionSubscriptionWhere): MovieRelationshipCreatedEvent!
-              movieRelationshipDeleted(where: MovieConnectionSubscriptionWhere): MovieRelationshipDeletedEvent!
+              movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
+              movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
               movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
             }
 
@@ -1581,11 +1596,6 @@ describe("Subscriptions", () => {
               node: MovieWhere!
             }
 
-            input MovieConnectionSubscriptionWhere {
-              movie: MovieSubscriptionWhere
-              relationship: MovieRelationshipsSubscriptionWhere
-            }
-
             input MovieCreateInput {
               actorCount: Int
               actors: MovieActorsCreateInput
@@ -1646,11 +1656,21 @@ describe("Subscriptions", () => {
               timestamp: Float!
             }
 
+            input MovieRelationshipCreatedSubscriptionWhere {
+              createdRelationship: MovieRelationshipsSubscriptionWhere
+              movie: MovieSubscriptionWhere
+            }
+
             type MovieRelationshipDeletedEvent {
               event: EventType!
               movie: MovieEventPayload!
               relationshipFieldName: String!
               timestamp: Float!
+            }
+
+            input MovieRelationshipDeletedSubscriptionWhere {
+              deletedRelationship: MovieRelationshipsSubscriptionWhere
+              movie: MovieSubscriptionWhere
             }
 
             input MovieRelationshipsSubscriptionWhere {
@@ -1812,11 +1832,6 @@ describe("Subscriptions", () => {
 
             type PersonConnectedRelationships {
               movies: PersonMoviesConnectedRelationship
-            }
-
-            input PersonConnectionSubscriptionWhere {
-              person: PersonSubscriptionWhere
-              relationship: PersonRelationshipsSubscriptionWhere
             }
 
             input PersonCreateInput {
@@ -2006,10 +2021,20 @@ describe("Subscriptions", () => {
               timestamp: Float!
             }
 
+            input PersonRelationshipCreatedSubscriptionWhere {
+              createdRelationship: PersonRelationshipsSubscriptionWhere
+              person: PersonSubscriptionWhere
+            }
+
             type PersonRelationshipDeletedEvent {
               deletedRelationship: PersonConnectedRelationships!
               event: EventType!
               timestamp: Float!
+            }
+
+            input PersonRelationshipDeletedSubscriptionWhere {
+              deletedRelationship: PersonRelationshipsSubscriptionWhere
+              person: PersonSubscriptionWhere
             }
 
             input PersonRelationshipsSubscriptionWhere {
@@ -2093,11 +2118,6 @@ describe("Subscriptions", () => {
 
             type StarConnectedRelationships {
               movies: StarMoviesConnectedRelationship
-            }
-
-            input StarConnectionSubscriptionWhere {
-              relationship: StarRelationshipsSubscriptionWhere
-              star: StarSubscriptionWhere
             }
 
             input StarCreateInput {
@@ -2287,10 +2307,20 @@ describe("Subscriptions", () => {
               timestamp: Float!
             }
 
+            input StarRelationshipCreatedSubscriptionWhere {
+              createdRelationship: StarRelationshipsSubscriptionWhere
+              star: StarSubscriptionWhere
+            }
+
             type StarRelationshipDeletedEvent {
               deletedRelationship: StarConnectedRelationships!
               event: EventType!
               timestamp: Float!
+            }
+
+            input StarRelationshipDeletedSubscriptionWhere {
+              deletedRelationship: StarRelationshipsSubscriptionWhere
+              star: StarSubscriptionWhere
             }
 
             input StarRelationshipsSubscriptionWhere {
@@ -2339,18 +2369,18 @@ describe("Subscriptions", () => {
             type Subscription {
               movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
               movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieRelationshipCreated(where: MovieConnectionSubscriptionWhere): MovieRelationshipCreatedEvent!
-              movieRelationshipDeleted(where: MovieConnectionSubscriptionWhere): MovieRelationshipDeletedEvent!
+              movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
+              movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
               movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
               personCreated(where: PersonSubscriptionWhere): PersonCreatedEvent!
               personDeleted(where: PersonSubscriptionWhere): PersonDeletedEvent!
-              personRelationshipCreated(where: PersonConnectionSubscriptionWhere): PersonRelationshipCreatedEvent!
-              personRelationshipDeleted(where: PersonConnectionSubscriptionWhere): PersonRelationshipDeletedEvent!
+              personRelationshipCreated(where: PersonRelationshipCreatedSubscriptionWhere): PersonRelationshipCreatedEvent!
+              personRelationshipDeleted(where: PersonRelationshipDeletedSubscriptionWhere): PersonRelationshipDeletedEvent!
               personUpdated(where: PersonSubscriptionWhere): PersonUpdatedEvent!
               starCreated(where: StarSubscriptionWhere): StarCreatedEvent!
               starDeleted(where: StarSubscriptionWhere): StarDeletedEvent!
-              starRelationshipCreated(where: StarConnectionSubscriptionWhere): StarRelationshipCreatedEvent!
-              starRelationshipDeleted(where: StarConnectionSubscriptionWhere): StarRelationshipDeletedEvent!
+              starRelationshipCreated(where: StarRelationshipCreatedSubscriptionWhere): StarRelationshipCreatedEvent!
+              starRelationshipDeleted(where: StarRelationshipDeletedSubscriptionWhere): StarRelationshipDeletedEvent!
               starUpdated(where: StarSubscriptionWhere): StarUpdatedEvent!
             }
 
@@ -2478,11 +2508,6 @@ describe("Subscriptions", () => {
 
             type ActorConnectedRelationships {
               movies: ActorMoviesConnectedRelationship
-            }
-
-            input ActorConnectionSubscriptionWhere {
-              actor: ActorSubscriptionWhere
-              relationship: ActorRelationshipsSubscriptionWhere
             }
 
             input ActorCreateInput {
@@ -2672,10 +2697,20 @@ describe("Subscriptions", () => {
               timestamp: Float!
             }
 
+            input ActorRelationshipCreatedSubscriptionWhere {
+              actor: ActorSubscriptionWhere
+              createdRelationship: ActorRelationshipsSubscriptionWhere
+            }
+
             type ActorRelationshipDeletedEvent {
               deletedRelationship: ActorConnectedRelationships!
               event: EventType!
               timestamp: Float!
+            }
+
+            input ActorRelationshipDeletedSubscriptionWhere {
+              actor: ActorSubscriptionWhere
+              deletedRelationship: ActorRelationshipsSubscriptionWhere
             }
 
             input ActorRelationshipsSubscriptionWhere {
@@ -2930,11 +2965,6 @@ describe("Subscriptions", () => {
               actors: MovieActorsConnectedRelationship
             }
 
-            input MovieConnectionSubscriptionWhere {
-              movie: MovieSubscriptionWhere
-              relationship: MovieRelationshipsSubscriptionWhere
-            }
-
             input MovieCreateInput {
               actorCount: Int
               actors: MovieActorsFieldInput
@@ -2996,12 +3026,22 @@ describe("Subscriptions", () => {
               timestamp: Float!
             }
 
+            input MovieRelationshipCreatedSubscriptionWhere {
+              createdRelationship: MovieRelationshipsSubscriptionWhere
+              movie: MovieSubscriptionWhere
+            }
+
             type MovieRelationshipDeletedEvent {
               deletedRelationship: MovieConnectedRelationships!
               event: EventType!
               movie: MovieEventPayload!
               relationshipFieldName: String!
               timestamp: Float!
+            }
+
+            input MovieRelationshipDeletedSubscriptionWhere {
+              deletedRelationship: MovieRelationshipsSubscriptionWhere
+              movie: MovieSubscriptionWhere
             }
 
             input MovieRelationshipsSubscriptionWhere {
@@ -3164,13 +3204,13 @@ describe("Subscriptions", () => {
             type Subscription {
               actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
               actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-              actorRelationshipCreated(where: ActorConnectionSubscriptionWhere): ActorRelationshipCreatedEvent!
-              actorRelationshipDeleted(where: ActorConnectionSubscriptionWhere): ActorRelationshipDeletedEvent!
+              actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
+              actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
               actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
               movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
               movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieRelationshipCreated(where: MovieConnectionSubscriptionWhere): MovieRelationshipCreatedEvent!
-              movieRelationshipDeleted(where: MovieConnectionSubscriptionWhere): MovieRelationshipDeletedEvent!
+              movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
+              movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
               movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
             }
 
