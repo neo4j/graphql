@@ -18,12 +18,11 @@
  */
 
 import type { Driver } from "neo4j-driver";
-import { DocumentNode, GraphQLSchema, Kind, parse } from "graphql";
+import { DocumentNode, GraphQLSchema, Kind } from "graphql";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import type { IResolvers } from "@graphql-tools/utils";
-import { forEachField } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
 import Debug from "debug";
 import type {
