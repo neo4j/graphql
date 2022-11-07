@@ -20,71 +20,72 @@
 import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
 import type { Node } from "../classes";
 import { createAuthAndParams } from "./create-auth-and-params";
-import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
+import { SCORE_FIELD } from "../graphql/directives/fulltext";
 
 export function translateTopLevelMatch({
+    matchNode,
     node,
     context,
-    varName,
     operation,
 }: {
+    matchNode: Cypher.Node;
     context: Context;
     node: Node;
-    varName: string;
     operation: AuthOperations;
-}): CypherBuilder.CypherResult {
-    const matchQuery = createMatchClause({ node, context, varName, operation });
+}): Cypher.CypherResult {
+    const matchQuery = createMatchClause({ matchNode, node, context, operation });
 
     const result = matchQuery.build();
     return result;
 }
 
 export function createMatchClause({
+    matchNode,
     node,
     context,
-    varName,
     operation,
 }: {
+    matchNode: Cypher.Node;
     context: Context;
     node: Node;
-    varName: string;
     operation: AuthOperations;
-}): CypherBuilder.Match | CypherBuilder.db.FullTextQueryNodes {
+}): Cypher.Match | Cypher.db.FullTextQueryNodes {
     const { resolveTree } = context;
-    const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
+    let matchQuery: Cypher.Match<Cypher.Node> | Cypher.db.FullTextQueryNodes;
+    let whereInput = resolveTree.args.where as GraphQLWhereArg | undefined;
 
-    const matchNode = new CypherBuilder.NamedNode(varName, { labels: node.getLabels(context) });
-
-    let matchQuery: CypherBuilder.Match<CypherBuilder.Node> | CypherBuilder.db.FullTextQueryNodes;
-
+    // TODO: removed deprecated fulltext translation
     if (Object.entries(fulltextInput).length) {
-        // This is only for fulltext search
         if (Object.entries(fulltextInput).length > 1) {
             throw new Error("Can only call one search at any given time");
         }
         const [indexName, indexInput] = Object.entries(fulltextInput)[0];
-        const phraseParam = new CypherBuilder.Param(indexInput.phrase);
+        const phraseParam = new Cypher.Param(indexInput.phrase);
 
-        matchQuery = new CypherBuilder.db.FullTextQueryNodes(matchNode, indexName, phraseParam);
+        matchQuery = new Cypher.db.FullTextQueryNodes(matchNode, indexName, phraseParam);
 
         const labelsChecks = node.getLabels(context).map((label) => {
-            return CypherBuilder.in(new CypherBuilder.Literal(label), CypherBuilder.labels(matchNode));
+            return Cypher.in(new Cypher.Literal(label), Cypher.labels(matchNode));
         });
 
-        const andChecks = CypherBuilder.and(...labelsChecks);
+        const andChecks = Cypher.and(...labelsChecks);
         if (andChecks) matchQuery.where(andChecks);
+    } else if (context.fulltextIndex) {
+        matchQuery = createFulltextMatchClause(matchNode, whereInput, node, context);
+        whereInput = whereInput?.[node.singular];
     } else {
-        matchQuery = new CypherBuilder.Match(matchNode);
+        matchQuery = new Cypher.Match(matchNode);
     }
 
     if (whereInput) {
         const whereOp = createWherePredicate({
-            whereInput,
-            element: node,
-            context,
             targetElement: matchNode,
+            whereInput,
+            context,
+            element: node,
         });
 
         if (whereOp) matchQuery.where(whereOp);
@@ -94,15 +95,50 @@ export function createMatchClause({
         operations: operation,
         entity: node,
         context,
-        where: { varName, node },
+        where: { varName: matchNode, node },
     });
     if (whereAuth[0]) {
-        const authQuery = new CypherBuilder.RawCypher(() => {
+        const authQuery = new Cypher.RawCypher(() => {
             return whereAuth;
         });
 
         matchQuery.where(authQuery);
     }
+
+    return matchQuery;
+}
+
+function createFulltextMatchClause(
+    matchNode: Cypher.Node,
+    whereInput: GraphQLWhereArg | undefined,
+    node: Node,
+    context: Context
+): Cypher.db.FullTextQueryNodes {
+    // TODO: remove indexName assignment and undefined check once the name argument has been removed.
+    const indexName = context.fulltextIndex.indexName || context.fulltextIndex.name;
+    if (indexName === undefined) {
+        throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+    }
+    const phraseParam = new Cypher.Param(context.resolveTree.args.phrase);
+    const scoreVar = context.fulltextIndex.scoreVariable;
+
+    const matchQuery = new Cypher.db.FullTextQueryNodes(matchNode, indexName, phraseParam, scoreVar);
+
+    const expectedLabels = node.getLabels(context);
+    const labelsChecks = matchNode.hasLabels(...expectedLabels);
+
+    if (whereInput?.[SCORE_FIELD]) {
+        if (whereInput[SCORE_FIELD].min || whereInput[SCORE_FIELD].min === 0) {
+            const scoreMinOp = Cypher.gte(scoreVar, new Cypher.Param(whereInput[SCORE_FIELD].min));
+            if (scoreMinOp) matchQuery.where(scoreMinOp);
+        }
+        if (whereInput[SCORE_FIELD].max || whereInput[SCORE_FIELD].max === 0) {
+            const scoreMaxOp = Cypher.lte(scoreVar, new Cypher.Param(whereInput[SCORE_FIELD].max));
+            if (scoreMaxOp) matchQuery.where(scoreMaxOp);
+        }
+    }
+
+    if (labelsChecks) matchQuery.where(labelsChecks);
 
     return matchQuery;
 }

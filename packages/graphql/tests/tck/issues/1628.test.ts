@@ -67,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
                 WHERE this0.value CONTAINS $param0
             }
             WITH *
-            LIMIT $this_limit
+            LIMIT $param1
             CALL {
                 WITH this
                 MATCH (this)-[this1:dcterms__title]->(this_dcterms__title:\`dcterms_title\`:\`property\`)
@@ -75,17 +75,22 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
                 WITH this_dcterms__title { .value } AS this_dcterms__title
                 RETURN collect(this_dcterms__title) AS this_dcterms__title
             }
-            RETURN this { iri: this.uri, dcterms__title: this_dcterms__title } AS this"
+            RETURN this { iri: this.uri, dcterms__title: this_dcterms__title } AS this
+            LIMIT $param3"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"0777\\",
-                \\"this_limit\\": {
+                \\"param1\\": {
                     \\"low\\": 10000,
                     \\"high\\": 0
                 },
-                \\"param2\\": \\"0777\\"
+                \\"param2\\": \\"0777\\",
+                \\"param3\\": {
+                    \\"low\\": 10000,
+                    \\"high\\": 0
+                }
             }"
         `);
     });

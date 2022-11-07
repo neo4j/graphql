@@ -17,25 +17,34 @@
  * limitations under the License.
  */
 
-import type { FieldDefinitionNode, StringValueNode } from "graphql";
+import type { IResolvers } from "@graphql-tools/utils";
+import type {
+    FieldDefinitionNode,
+    StringValueNode,
+    InterfaceTypeDefinitionNode,
+    ObjectTypeDefinitionNode,
+} from "graphql";
 import { Kind } from "graphql";
 import { removeDuplicates } from "../utils/utils";
 
-type IgnoreMeta = {
+type CustomResolverMeta = {
     requiredFields: string[];
 };
 
 const DEPRECATION_WARNING =
-    "The @computed directive has been deprecated and will be removed in version 4.0. Please use " +
-    "the @customResolver directive instead.";
+    "The @computed directive has been deprecated and will be removed in version 4.0.0. Please use " +
+    "the @customResolver directive instead. More information can be found at " +
+    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_computed_renamed_to_customresolver.";
 export const ERROR_MESSAGE = "Required fields of @customResolver must be a list of strings";
 
 let deprecationWarningShown = false;
 
 function getCustomResolverMeta(
     field: FieldDefinitionNode,
+    object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    customResolvers?: IResolvers | IResolvers[],
     interfaceField?: FieldDefinitionNode
-): IgnoreMeta | undefined {
+): CustomResolverMeta | undefined {
     const deprecatedDirective =
         field.directives?.find((x) => x.name.value === "computed") ||
         interfaceField?.directives?.find((x) => x.name.value === "computed");
@@ -51,6 +60,11 @@ function getCustomResolverMeta(
 
     if (!directive && !deprecatedDirective) {
         return undefined;
+    }
+
+    // TODO: remove check for directive when removing @computed
+    if (object.kind !== Kind.INTERFACE_TYPE_DEFINITION && directive && !customResolvers?.[field.name.value]) {
+        throw new Error(`Custom resolver for ${field.name.value} has not been provided`);
     }
 
     const directiveFromArgument =

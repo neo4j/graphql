@@ -64,13 +64,13 @@ describe("Cypher pagination tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WITH *
-            SKIP $this_offset
+            SKIP $param0
             RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_offset\\": {
+                \\"param0\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 }
@@ -95,13 +95,13 @@ describe("Cypher pagination tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WITH *
-            LIMIT $this_limit
+            LIMIT $param0
             RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_limit\\": {
+                \\"param0\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 }
@@ -126,18 +126,18 @@ describe("Cypher pagination tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WITH *
-            SKIP $this_offset
-            LIMIT $this_limit
+            SKIP $param0
+            LIMIT $param1
             RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_offset\\": {
+                \\"param0\\": {
                     \\"low\\": 2,
                     \\"high\\": 0
                 },
-                \\"this_limit\\": {
+                \\"param1\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 }
@@ -163,18 +163,18 @@ describe("Cypher pagination tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WITH *
-            SKIP $this_offset
-            LIMIT $this_limit
+            SKIP $param0
+            LIMIT $param1
             RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_offset\\": {
+                \\"param0\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
                 },
-                \\"this_limit\\": {
+                \\"param1\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
                 }
@@ -201,19 +201,19 @@ describe("Cypher pagination tests", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
             WITH *
-            SKIP $this_offset
-            LIMIT $this_limit
+            SKIP $param1
+            LIMIT $param2
             RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some title\\",
-                \\"this_offset\\": {
+                \\"param1\\": {
                     \\"low\\": 2,
                     \\"high\\": 0
                 },
-                \\"this_limit\\": {
+                \\"param2\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 }

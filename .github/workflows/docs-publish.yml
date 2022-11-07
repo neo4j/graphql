@@ -38,7 +38,7 @@ jobs:
         run: |
           number=$(<prnumber)
           case "$number" in ''|*[!0-9]*) echo "Provided PR number is not an integer"; exit 1 ;; esac
-          echo "::set-output name=pr-number::$number"
+          echo "pr-number=$number" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
@@ -47,7 +47,7 @@ jobs:
           npm install -g surge
           surge ./site neo4j-graphql-docs-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
       - name: Comment on PR
-        uses: marocchino/sticky-pull-request-comment@97bddef64db61b9d80edc69593cc4e4c415c3362 # tag=v2.2.1
+        uses: marocchino/sticky-pull-request-comment@adca94abcaf73c10466a71cc83ae561fd66d1a56 # tag=v2.3.0
         with:
           number: ${{ steps.get-pr-number.outputs.pr-number }}
           message: |

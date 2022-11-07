@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import type { BaseField, Context, PrimitiveField, TemporalField } from "../types";
@@ -29,8 +30,8 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     const varName = "this";
     let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
     const cypherStrs: string[] = [];
-
-    const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ" });
+    const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
+    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "READ" });
     cypherStrs.push(topLevelMatch.cypher);
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 

@@ -23,6 +23,7 @@ import type { Node } from "../../../classes";
 import type { Context } from "../../../types";
 import { translateAggregate } from "../../../translate";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import { fulltextArgDeprecationMessage } from "../../../schema/augment/fulltext";
 
 export function aggregateResolver({ node }: { node: Node }) {
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
@@ -47,6 +48,23 @@ export function aggregateResolver({ node }: { node: Node }) {
     return {
         type: `${node.aggregateTypeNames.selection}!`,
         resolve,
-        args: { where: `${node.name}Where`, ...(node.fulltextDirective ? { fulltext: `${node.name}Fulltext` } : {}) },
+        args: {
+            where: `${node.name}Where`,
+            ...(node.fulltextDirective
+                ? {
+                      fulltext: {
+                          type: `${node.name}Fulltext`,
+                          directives: [
+                              {
+                                  name: "deprecated",
+                                  args: {
+                                      reason: fulltextArgDeprecationMessage,
+                                  },
+                              },
+                          ],
+                      },
+                  }
+                : {}),
+        },
     };
 }

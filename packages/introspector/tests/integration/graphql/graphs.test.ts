@@ -34,7 +34,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
         driver = await createDriver();
         const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
         try {
-            await cSession.writeTransaction((tx) => tx.run(`CREATE DATABASE ${dbName}`));
+            await cSession.writeTransaction((tx) => tx.run(`CREATE DATABASE ${dbName} WAIT`));
         } catch (e) {
             if (e instanceof Error) {
                 if (

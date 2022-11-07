@@ -33,6 +33,7 @@ import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { createEventMeta } from "./subscriptions/create-event-meta";
+import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { escapeQuery } from "./utils/escape-query";
 import type { CallbackBucket } from "../classes/CallbackBucket";
@@ -124,11 +125,13 @@ export default function createUpdateAndParams({
             const outStr = relationField.direction === "OUT" ? "->" : "-";
 
             const subqueries: string[] = [];
+            const intermediateWithMetaStatements: string[] = [];
 
-            refNodes.forEach((refNode) => {
+            refNodes.forEach((refNode, idx) => {
                 const v = relationField.union ? value[refNode.name] : value;
                 const updates = relationField.typeMeta.array ? v : [v];
                 const subquery: string[] = [];
+                let returnMetaStatement = "";
 
                 updates.forEach((update, index) => {
                     const relationshipVariable = `${varName}_${relationField.type.toLowerCase()}${index}_relationship`;
@@ -342,6 +345,10 @@ export default function createUpdateAndParams({
                             parentNode: node,
                         });
                         subquery.push(connectAndParams[0]);
+                        if (context.subscriptionsEnabled) {
+                            returnMetaStatement = `meta as update${idx}_meta`;
+                            intermediateWithMetaStatements.push(`WITH *, update${idx}_meta as meta`);
+                        }
                         res.params = { ...res.params, ...connectAndParams[1] };
                     }
 
@@ -352,6 +359,7 @@ export default function createUpdateAndParams({
                             parentVar: varName,
                             relationField,
                             refNode,
+                            node,
                             context,
                             withVars,
                             callbackBucket,
@@ -390,32 +398,33 @@ export default function createUpdateAndParams({
                             const nodeName = `${baseName}_node`;
                             const propertiesName = `${baseName}_relationship`;
 
-                            let createNodeAndInputParams = {
-                                node: refNode,
+                            let createNodeInput = {
                                 input: create.node,
                             };
+
                             if (relationField.interface) {
-                                createNodeAndInputParams = {
-                                    node: node,
-                                    input: { [key]: create.node },
+                                const nodeFields = create.node[refNode.name];
+                                if (!nodeFields) return; // Interface specific type not defined
+                                createNodeInput = {
+                                    input: nodeFields,
                                 };
                             }
 
                             const createAndParams = createCreateAndParams({
                                 context,
+                                node: refNode,
+
                                 callbackBucket,
                                 varName: nodeName,
                                 withVars: [...withVars, nodeName],
                                 includeRelationshipValidation: false,
-                                ...createNodeAndInputParams,
+                                ...createNodeInput,
                             });
-
                             subquery.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };
+                            const relationVarName = create.edge || context.subscriptionsEnabled ? propertiesName : "";
                             subquery.push(
-                                `MERGE (${parentVar})${inStr}[${create.edge ? propertiesName : ""}:${
-                                    relationField.type
-                                }]${outStr}(${nodeName})`
+                                `MERGE (${parentVar})${inStr}[${relationVarName}:${relationField.type}]${outStr}(${nodeName})`
                             );
 
                             if (create.edge) {
@@ -433,6 +442,31 @@ export default function createUpdateAndParams({
                                 subquery.push(setA);
                             }
 
+                            if (context.subscriptionsEnabled) {
+                                const [fromVariable, toVariable] =
+                                    relationField.direction === "IN" ? [nodeName, varName] : [varName, nodeName];
+                                const [fromTypename, toTypename] =
+                                    relationField.direction === "IN"
+                                        ? [refNode.name, node.name]
+                                        : [node.name, refNode.name];
+                                const eventWithMetaStr = createConnectionEventMeta({
+                                    event: "connect",
+                                    relVariable: propertiesName,
+                                    fromVariable,
+                                    toVariable,
+                                    typename: relationField.type,
+                                    fromTypename,
+                                    toTypename,
+                                });
+                                subquery.push(
+                                    `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(
+                                        ", "
+                                    )}`
+                                );
+                                returnMetaStatement = `meta as update${idx}_meta`;
+                                intermediateWithMetaStatements.push(`WITH *, update${idx}_meta as meta`);
+                            }
+
                             const relationshipValidationStr = createRelationshipValidationStr({
                                 node: refNode,
                                 context,
@@ -446,7 +480,12 @@ export default function createUpdateAndParams({
                     }
 
                     if (relationField.interface) {
-                        subquery.push(`RETURN count(*) AS update_${varName}_${refNode.name}`);
+                        const returnStatement = `RETURN count(*) AS update_${varName}_${refNode.name}`;
+                        if (context.subscriptionsEnabled && returnMetaStatement) {
+                            subquery.push(`${returnStatement}, ${returnMetaStatement}`);
+                        } else {
+                            subquery.push(returnStatement);
+                        }
                     }
                 });
 
@@ -457,8 +496,10 @@ export default function createUpdateAndParams({
             if (relationField.interface) {
                 res.strs.push(`WITH ${withVars.join(", ")}`);
                 res.strs.push(`CALL {\n\t WITH ${withVars.join(", ")}\n\t`);
-                res.strs.push(subqueries.join(`\n}\nCALL {\n\t WITH ${withVars.join(", ")}\n\t`));
-                res.strs.push("}");
+                const subqueriesWithMetaPassedOn = subqueries.map(
+                    (each, i) => each + `\n}\n${intermediateWithMetaStatements[i] || ""}`
+                );
+                res.strs.push(subqueriesWithMetaPassedOn.join(`\nCALL {\n\t WITH ${withVars.join(", ")}\n\t`));
             } else {
                 res.strs.push(subqueries.join("\n"));
             }

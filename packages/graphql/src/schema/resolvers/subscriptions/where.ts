@@ -19,7 +19,7 @@
 
 import type { SubscriptionsEvent } from "../../../types";
 import type Node from "../../../classes/Node";
-import { filterByProperties } from "./utils/compare-properties";
+import { filterByProperties, filterRelationshipConnectionsByProperties } from "./utils/compare-properties";
 
 export function subscriptionWhere(
     where: Record<string, any> | undefined,
@@ -32,5 +32,11 @@ export function subscriptionWhere(
     if (event.event === "create") {
         return filterByProperties(node, where, event.properties.new);
     }
-    return filterByProperties(node, where, event.properties.old);
+    if (event.event === "update" || event.event === "delete") {
+        return filterByProperties(node, where, event.properties.old);
+    }
+    if (event.event === "connect") {
+        return filterRelationshipConnectionsByProperties(node, where, event);
+    }
+    return false;
 }

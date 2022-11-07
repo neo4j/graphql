@@ -23,9 +23,9 @@ import { translateRead } from "../../../translate";
 import type { Node } from "../../../classes";
 import type { Context } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import { fulltextArgDeprecationMessage } from "../../../schema/augment/fulltext";
 
 export function findResolver({ node }: { node: Node }) {
-
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info, { args });
@@ -40,14 +40,28 @@ export function findResolver({ node }: { node: Node }) {
 
         return executeResult.records.map((x) => x.this);
     }
-    
+
     return {
         type: `[${node.name}!]!`,
         resolve,
         args: {
             where: `${node.name}Where`,
             options: `${node.name}Options`,
-            ...(node.fulltextDirective ? { fulltext: `${node.name}Fulltext` } : {}),
+            ...(node.fulltextDirective
+                ? {
+                      fulltext: {
+                          type: `${node.name}Fulltext`,
+                          directives: [
+                              {
+                                  name: "deprecated",
+                                  args: {
+                                      reason: fulltextArgDeprecationMessage,
+                                  },
+                              },
+                          ],
+                      },
+                  }
+                : {}),
         },
     };
 }

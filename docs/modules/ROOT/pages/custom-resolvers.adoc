@@ -54,6 +54,47 @@ directive @customResolver(
 ) on FIELD_DEFINITION
 ----
 
+Note that any field marked with the `@customResolver` directive, requires a custom resolver to be defined.
+If the directive is marked on an interface, any implementation of that interface requires a custom resolver to be defined.
+Take for example this schema:
+
+[source, graphql, indent=0]
+----
+interface UserInterface {
+    fullName: String! @customResolver
+}
+
+type User implements UserInterface {
+    id: ID!
+    fullName: String!
+}
+----
+
+The following resolvers definition would be invalid:
+
+[source, javascript, indent=0]
+----
+const resolvers = {
+    UserInterface: {
+        fullName() {
+            return "Hello World!";
+        },
+    },
+};
+----
+
+Instead, the following resolvers definition would be required:
+[source, javascript, indent=0]
+----
+const resolvers = {
+    User: {
+        fullName() {
+            return "Hello World!";
+        },
+    },
+};
+----
+
 [[custom-resolvers-computed]]
 === `@computed`
 

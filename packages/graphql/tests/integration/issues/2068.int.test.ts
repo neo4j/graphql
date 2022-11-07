@@ -109,7 +109,6 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
-                console.log(gqlResult.errors);
                 expect(gqlResult.errors).toBeUndefined();
 
                 const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];

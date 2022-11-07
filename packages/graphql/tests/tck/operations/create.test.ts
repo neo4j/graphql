@@ -63,18 +63,24 @@ describe("Cypher Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.id = $this0_id
-            RETURN this0
+            "UNWIND $create_param0 AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.id = create_var1.id
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .id }] AS data"
+            RETURN collect(create_this0 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -97,25 +103,27 @@ describe("Cypher Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.id = $this0_id
-            RETURN this0
-            }
+            "UNWIND $create_param0 AS create_var1
             CALL {
-            CREATE (this1:Movie)
-            SET this1.id = $this1_id
-            RETURN this1
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.id = create_var1.id
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .id },
-            this1 { .id }] AS data"
+            RETURN collect(create_this0 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\",
-                \\"this1_id\\": \\"2\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\"
+                    },
+                    {
+                        \\"id\\": \\"2\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -143,35 +151,56 @@ describe("Cypher Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.id = $this0_id
-            WITH this0
-            CREATE (this0_actors0_node:Actor)
-            SET this0_actors0_node.name = $this0_actors0_node_name
-            MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
-            RETURN this0
-            }
+            "UNWIND $create_param0 AS create_var1
             CALL {
-            CREATE (this1:Movie)
-            SET this1.id = $this1_id
-            WITH this1
-            CREATE (this1_actors0_node:Actor)
-            SET this1_actors0_node.name = $this1_actors0_node_name
-            MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
-            RETURN this1
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.id = create_var1.id
+                WITH create_this0, create_var1
+                CALL {
+                    WITH create_this0, create_var1
+                    UNWIND create_var1.actors.create AS create_var2
+                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
+                    CREATE (create_this5:\`Actor\`)
+                    SET
+                        create_this5.name = create_var3.name
+                    MERGE (create_this5)-[create_this6:ACTED_IN]->(create_this0)
+                    RETURN collect(NULL) AS create_var7
+                }
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .id },
-            this1 { .id }] AS data"
+            RETURN collect(create_this0 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\",
-                \\"this0_actors0_node_name\\": \\"actor 1\\",
-                \\"this1_id\\": \\"2\\",
-                \\"this1_actors0_node_name\\": \\"actor 2\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 1\\"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        \\"id\\": \\"2\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 2\\"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -209,45 +238,85 @@ describe("Cypher Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.id = $this0_id
-            WITH this0
-            CREATE (this0_actors0_node:Actor)
-            SET this0_actors0_node.name = $this0_actors0_node_name
-            WITH this0, this0_actors0_node
-            CREATE (this0_actors0_node_movies0_node:Movie)
-            SET this0_actors0_node_movies0_node.id = $this0_actors0_node_movies0_node_id
-            MERGE (this0_actors0_node)-[:ACTED_IN]->(this0_actors0_node_movies0_node)
-            MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
-            RETURN this0
-            }
+            "UNWIND $create_param0 AS create_var1
             CALL {
-            CREATE (this1:Movie)
-            SET this1.id = $this1_id
-            WITH this1
-            CREATE (this1_actors0_node:Actor)
-            SET this1_actors0_node.name = $this1_actors0_node_name
-            WITH this1, this1_actors0_node
-            CREATE (this1_actors0_node_movies0_node:Movie)
-            SET this1_actors0_node_movies0_node.id = $this1_actors0_node_movies0_node_id
-            MERGE (this1_actors0_node)-[:ACTED_IN]->(this1_actors0_node_movies0_node)
-            MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
-            RETURN this1
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.id = create_var1.id
+                WITH create_this0, create_var1
+                CALL {
+                    WITH create_this0, create_var1
+                    UNWIND create_var1.actors.create AS create_var2
+                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
+                    CREATE (create_this5:\`Actor\`)
+                    SET
+                        create_this5.name = create_var3.name
+                    MERGE (create_this5)-[create_this6:ACTED_IN]->(create_this0)
+                    WITH create_this5, create_var3
+                    CALL {
+                        WITH create_this5, create_var3
+                        UNWIND create_var3.movies.create AS create_var7
+                        WITH create_var7.node AS create_var8, create_var7.edge AS create_var9, create_this5
+                        CREATE (create_this10:\`Movie\`)
+                        SET
+                            create_this10.id = create_var8.id
+                        MERGE (create_this5)-[create_this11:ACTED_IN]->(create_this10)
+                        RETURN collect(NULL) AS create_var12
+                    }
+                    RETURN collect(NULL) AS create_var13
+                }
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .id },
-            this1 { .id }] AS data"
+            RETURN collect(create_this0 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\",
-                \\"this0_actors0_node_name\\": \\"actor 1\\",
-                \\"this0_actors0_node_movies0_node_id\\": \\"10\\",
-                \\"this1_id\\": \\"2\\",
-                \\"this1_actors0_node_name\\": \\"actor 2\\",
-                \\"this1_actors0_node_movies0_node_id\\": \\"20\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 1\\",
+                                        \\"movies\\": {
+                                            \\"create\\": [
+                                                {
+                                                    \\"node\\": {
+                                                        \\"id\\": \\"10\\"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        \\"id\\": \\"2\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 2\\",
+                                        \\"movies\\": {
+                                            \\"create\\": [
+                                                {
+                                                    \\"node\\": {
+                                                        \\"id\\": \\"20\\"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -270,29 +339,34 @@ describe("Cypher Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"CALL {
-CREATE (this0:Movie)
-SET this0.id = $this0_id
-WITH this0
-CALL {
-	WITH this0
-	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_param0
-	CALL {
-		WITH *
-		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
-		UNWIND parentNodes as this0
-		UNWIND connectedNodes as this0_actors_connect0_node
-		MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
-		RETURN count(*) AS _
-	}
-	RETURN count(*) AS connect_this0_actors_connect_Actor
-}
-RETURN this0
-}
-RETURN [
-this0 { .id }] AS data"
-`);
+            "CALL {
+            CREATE (this0:Movie)
+            SET this0.id = $this0_id
+            WITH this0
+            CALL {
+            	WITH this0
+            	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
+            	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_param0
+            	CALL {
+            		WITH *
+            		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_actors_connect0_node
+            			MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this0, this0_actors_connect0_node
+            	RETURN count(*) AS connect_this0_actors_connect_Actor
+            }
+            RETURN this0
+            }
+            RETURN [
+            this0 { .id }] AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -330,44 +404,49 @@ this0 { .id }] AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"CALL {
-CREATE (this0:Actor)
-SET this0.name = $this0_name
-WITH this0
-CALL {
-	WITH this0
-	OPTIONAL MATCH (this0_movies_connect0_node:Movie)
-	WHERE this0_movies_connect0_node.id = $this0_movies_connect0_node_param0
-	CALL {
-		WITH *
-		WITH collect(this0_movies_connect0_node) as connectedNodes, collect(this0) as parentNodes
-		UNWIND parentNodes as this0
-		UNWIND connectedNodes as this0_movies_connect0_node
-		MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
-		RETURN count(*) AS _
-	}
-	RETURN count(*) AS connect_this0_movies_connect_Movie
-}
-RETURN this0
-}
-CALL {
-    WITH this0
-    MATCH (this0)-[create_this0:ACTED_IN]->(this0_movies:\`Movie\`)
-    CALL {
-        WITH this0_movies
-        MATCH (this0_movies)<-[this0_movies_connection_actorsConnectionthis0:ACTED_IN]-(this0_movies_Actor:\`Actor\`)
-        WHERE this0_movies_Actor.name = $projection_movies_connection_actorsConnectionparam0
-        WITH { node: { name: this0_movies_Actor.name } } AS edge
-        WITH collect(edge) AS edges
-        WITH edges, size(edges) AS totalCount
-        RETURN { edges: edges, totalCount: totalCount } AS this0_movies_actorsConnection
-    }
-    WITH this0_movies { actorsConnection: this0_movies_actorsConnection } AS this0_movies
-    RETURN collect(this0_movies) AS this0_movies
-}
-RETURN [
-this0 { .name, movies: this0_movies }] AS data"
-`);
+            "CALL {
+            CREATE (this0:Actor)
+            SET this0.name = $this0_name
+            WITH this0
+            CALL {
+            	WITH this0
+            	OPTIONAL MATCH (this0_movies_connect0_node:Movie)
+            	WHERE this0_movies_connect0_node.id = $this0_movies_connect0_node_param0
+            	CALL {
+            		WITH *
+            		WITH collect(this0_movies_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_movies_connect0_node
+            			MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this0, this0_movies_connect0_node
+            	RETURN count(*) AS connect_this0_movies_connect_Movie
+            }
+            RETURN this0
+            }
+            CALL {
+                WITH this0
+                MATCH (this0)-[create_this0:ACTED_IN]->(this0_movies:\`Movie\`)
+                CALL {
+                    WITH this0_movies
+                    MATCH (this0_movies)<-[this0_movies_connection_actorsConnectionthis0:ACTED_IN]-(this0_movies_Actor:\`Actor\`)
+                    WHERE this0_movies_Actor.name = $projection_movies_connection_actorsConnectionparam0
+                    WITH { node: { name: this0_movies_Actor.name } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS this0_movies_actorsConnection
+                }
+                WITH this0_movies { actorsConnection: this0_movies_actorsConnection } AS this0_movies
+                RETURN collect(this0_movies) AS this0_movies
+            }
+            RETURN [
+            this0 { .name, movies: this0_movies }] AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

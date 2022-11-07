@@ -18,12 +18,11 @@
  */
 
 import type { Driver } from "neo4j-driver";
-import type { GraphQLSchema } from "graphql";
+import { DocumentNode, GraphQLSchema, Kind } from "graphql";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
-import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import type { IResolvers } from "@graphql-tools/utils";
-import { forEachField } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
 import Debug from "debug";
 import type {
@@ -45,6 +44,7 @@ import { asArray } from "../utils/utils";
 import { DEBUG_ALL } from "../constants";
 import { getNeo4jDatabaseInfo, Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
 import { Executor, ExecutorConstructorParam } from "./Executor";
+import type { Entity } from "../schema-model/Entity";
 
 export interface Neo4jGraphQLJWT {
     jwksEndpoint?: string;
@@ -69,6 +69,11 @@ export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
     plugins?: Omit<Neo4jGraphQLPlugins, "federation">;
 }
 
+type SchemaDefinition = {
+    typeDefs: IExecutableSchemaDefinition["typeDefs"];
+    resolvers: IExecutableSchemaDefinition["resolvers"];
+};
+
 class Neo4jGraphQL {
     private config: Neo4jGraphQLConfig;
     private driver?: Driver;
@@ -78,7 +83,11 @@ class Neo4jGraphQL {
     private _nodes?: Node[];
     private _relationships?: Relationship[];
     private plugins?: Neo4jGraphQLPlugins;
+
+    private entities?: Map<string, Entity>;
+
     private schema?: Promise<GraphQLSchema>;
+    private outputSchemaDefinition?: Promise<SchemaDefinition>;
 
     private dbInfo?: Neo4jDatabaseInfo;
 
@@ -96,7 +105,7 @@ class Neo4jGraphQL {
 
     public get nodes(): Node[] {
         if (!this._nodes) {
-            throw new Error("You must await `.getSchema()` before accessing `nodes`");
+            throw new Error("You must await `.getSchema()` or `.getSchemaDefinition()` before accessing `nodes`");
         }
 
         return this._nodes;
@@ -104,16 +113,26 @@ class Neo4jGraphQL {
 
     public get relationships(): Relationship[] {
         if (!this._relationships) {
-            throw new Error("You must await `.getSchema()` before accessing `relationships`");
+            throw new Error(
+                "You must await `.getSchema()` or `.getSchemaDefinition()` before accessing `relationships`"
+            );
         }
 
         return this._relationships;
     }
 
+    public async getSchemaDefinition(): Promise<SchemaDefinition> {
+        if (!this.outputSchemaDefinition) {
+            this.outputSchemaDefinition = this.generateSchemaDefinition();
+            await this.pluginsSetup();
+        }
+
+        return this.outputSchemaDefinition;
+    }
+
     public async getSchema(): Promise<GraphQLSchema> {
         if (!this.schema) {
             this.schema = this.generateSchema();
-            await this.pluginsSetup();
         }
 
         return this.schema;
@@ -137,11 +156,13 @@ class Neo4jGraphQL {
     public async assertIndexesAndConstraints(
         input: { driver?: Driver; driverConfig?: DriverConfig; options?: AssertIndexesAndConstraintsOptions } = {}
     ): Promise<void> {
-        if (!this.schema) {
-            throw new Error("You must call `.getSchema()` before `.assertIndexesAndConstraints()`");
+        if (!(this.schema || this.schemaDefinition)) {
+            throw new Error(
+                "You must await `.getSchema()` or `.getSchemaDefinition()` before `.assertIndexesAndConstraints()`"
+            );
         }
 
-        await this.schema;
+        await this.getSchema();
 
         const driver = input.driver || this.driver;
         const driverConfig = input.driverConfig || this.config?.driverConfig;
@@ -163,14 +184,36 @@ class Neo4jGraphQL {
         });
     }
 
-    private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
-        forEachField(schema, (field) => {
-            if (!field.resolve) {
-                field.resolve = defaultFieldResolver;
-            }
-        });
+    /**
+     * Based on the same logic as forEachField from graphql-tools which operates on schema objects
+     * @link https://github.com/ardatan/graphql-tools/blob/master/packages/utils/src/forEachField.ts
+     */
 
-        return schema;
+    private addDefaultFieldResolversToResolvers(
+        typeDefs: DocumentNode,
+        resolvers: IExecutableSchemaDefinition["resolvers"]
+    ): IExecutableSchemaDefinition["resolvers"] {
+        if (!resolvers) {
+            return resolvers;
+        }
+
+        for (const definition of typeDefs.definitions) {
+            if (definition.kind === Kind.OBJECT_TYPE_DEFINITION && !definition.name.value.startsWith("__")) {
+                if (definition.fields) {
+                    if (!resolvers[definition.name.value]) {
+                        resolvers[definition.name.value] = {};
+                    }
+
+                    for (const field of definition.fields) {
+                        if (!resolvers[definition.name.value][field.name.value]) {
+                            resolvers[definition.name.value][field.name.value] = defaultFieldResolver;
+                        }
+                    }
+                }
+            }
+        }
+
+        return resolvers;
     }
 
     private checkEnableDebug(): void {
@@ -199,13 +242,17 @@ class Neo4jGraphQL {
         return getNeo4jDatabaseInfo(new Executor(executorConstructorParam));
     }
 
-    private wrapResolvers(resolvers: IResolvers, { schema }: { schema: GraphQLSchema }) {
+    private wrapResolvers(resolvers: IResolvers) {
+        if (!this.entities) {
+            throw new Error("this.entities is undefined");
+        }
+
         const wrapResolverArgs = {
             driver: this.driver,
             config: this.config,
             nodes: this.nodes,
             relationships: this.relationships,
-            schema,
+            entities: this.entities,
             plugins: this.plugins,
         };
 
@@ -220,41 +267,43 @@ class Neo4jGraphQL {
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
-    private addWrappedResolversToSchema(resolverlessSchema: GraphQLSchema, resolvers: IResolvers): GraphQLSchema {
-        const schema = addResolversToSchema({ schema: resolverlessSchema, resolvers });
-        return this.addDefaultFieldResolvers(schema);
-    }
-
-    private generateSchema(): Promise<GraphQLSchema> {
+    private generateSchemaDefinition(): Promise<SchemaDefinition> {
         return new Promise((resolve) => {
-            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(this.schemaDefinition.typeDefs, {
-                features: this.features,
-                enableRegex: this.config?.enableRegex,
-                skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
-                generateSubscriptions: Boolean(this.plugins?.subscriptions),
-                callbacks: this.config.callbacks,
-            });
+            const { nodes, relationships, entities, typeDefs, resolvers } = makeAugmentedSchema(
+                this.schemaDefinition.typeDefs,
+                {
+                    features: this.features,
+                    enableRegex: this.config?.enableRegex,
+                    skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
+                    generateSubscriptions: Boolean(this.plugins?.subscriptions),
+                    callbacks: this.config.callbacks,
+                    userCustomResolvers: this.schemaDefinition.resolvers,
+                }
+            );
 
             this._nodes = nodes;
             this._relationships = relationships;
 
-            let resolverlessSchema: GraphQLSchema;
-            if (this.plugins?.federation) {
-                resolverlessSchema = this.plugins.federation.getSchema({
-                    ...this.schemaDefinition,
-                    typeDefs,
-                });
-            } else {
-                resolverlessSchema = makeExecutableSchema({
-                    ...this.schemaDefinition,
-                    typeDefs,
-                });
-            }
+            this.entities = entities;
 
-            // Wrap the generated resolvers, which adds a context including the schema to every request
-            const wrappedResolvers = this.wrapResolvers(resolvers, { schema: resolverlessSchema });
+            // Wrap the generated and custom resolvers, which adds a context including the schema to every request
+            const wrappedResolvers = this.wrapResolvers(resolvers);
 
-            const schema = this.addWrappedResolversToSchema(resolverlessSchema, wrappedResolvers);
+            const resolversWithDefaults = this.addDefaultFieldResolversToResolvers(typeDefs, wrappedResolvers);
+
+            resolve({ typeDefs, resolvers: resolversWithDefaults });
+        });
+    }
+
+    private async generateSchema(): Promise<GraphQLSchema> {
+        const { typeDefs, resolvers } = await this.getSchemaDefinition();
+
+        return new Promise((resolve) => {
+            const schema = makeExecutableSchema({
+                ...this.schemaDefinition,
+                typeDefs,
+                resolvers,
+            });
 
             resolve(schema);
         });

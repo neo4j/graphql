@@ -6,7 +6,7 @@ Subscription plugin for `@neo4j/graphql`, currently supporting AMQP 0-9-1 broker
 -   Apache Qpid
 -   Apache ActiveMQ
 
-1. [Documentation](https://neo4j.com/docs/graphql-manual/current/subscriptions/)
+[Documentation](https://neo4j.com/docs/graphql-manual/current/subscriptions/)
 
 ## Installation
 
@@ -41,6 +41,16 @@ To close the connection with RabbitMQ:
 ```javascript
 await plugin.close();
 ```
+
+## Options
+
+The following options are available in the plugin.
+
+-   **connection**: [AMQP](https://www.npmjs.com/package/amqplib) connection options or amqp url (e.g. `amqp://localhost`).
+-   **exchange**: (optional) Queue exchange, defaults to `neo4j.graphql.subscriptions.fx`.
+-   **reconnectTimeout**: (optional) Timeout (in ms) between reconnection attempts. If not set, the plugin will not reconnect. Note that if the first connection fails, it will not attempt to reconnect.
+-   **log**: (optional) Enable AMQP logs, defaults to `true`.
+-   **amqpVersion**: (optional) AMQP version to use, only `0-9-1` supported at the moment.
 
 ## Running tests
 

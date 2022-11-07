@@ -31,6 +31,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
 
     let Movie: UniqueType;
     let Person: UniqueType;
+    let Influencer: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -40,6 +41,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
     beforeEach(async () => {
         Movie = generateUniqueType("Movie");
         Person = generateUniqueType("Person");
+        Influencer = generateUniqueType("Influencer");
         session = await neo4j.getSession();
 
         const typeDefs = `
@@ -56,6 +58,11 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
             type ${Person} implements Reviewer {
                 name: String!
                 reputation: Int!
+            }
+            type ${Influencer} implements Reviewer {
+                reputation: Int!
+                url: String!
+                reviewerId: Int
             }
 
             interface Reviewer {
@@ -92,6 +99,12 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
                 ) {
                     ${Movie.plural} {
                         title
+                        reviewers {
+                            ... on ${Person} {
+                              name
+                              reputation
+                            }
+                          }
                     }
                 }
             }
@@ -109,6 +122,12 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
                 [Movie.plural]: [
                     {
                         title: "John Wick",
+                        reviewers: [
+                            {
+                                name: "Ana",
+                                reputation: 100,
+                            },
+                        ],
                     },
                 ],
             },

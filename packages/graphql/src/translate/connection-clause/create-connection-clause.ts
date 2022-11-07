@@ -19,14 +19,13 @@
 
 import type { Integer } from "neo4j-driver";
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import Cypher from "@neo4j/cypher-builder";
 import type { ConnectionField, ConnectionWhereArg, Context } from "../../types";
 import type { Node } from "../../classes";
 import { filterTruthy } from "../../utils/utils";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { hasExplicitNodeInInterfaceWhere } from "../where/property-operations/create-connection-operation";
 import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";
-
 import { createEdgeSubquery } from "./create-edge-subquery";
 
 export function createConnectionClause({
@@ -40,8 +39,8 @@ export function createConnectionClause({
     field: ConnectionField;
     context: Context;
     nodeVariable: string;
-    returnVariable: CypherBuilder.Variable;
-}): CypherBuilder.Clause {
+    returnVariable: Cypher.Variable;
+}): Cypher.Clause {
     if (field.relationship.union || field.relationship.interface) {
         return createConnectionClauseForUnions({
             resolveTree,
@@ -55,7 +54,7 @@ export function createConnectionClause({
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
     const firstArg = resolveTree.args.first as Integer | number | undefined;
     const relatedNode = context.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
-    const edgeItem = new CypherBuilder.NamedVariable("edge");
+    const edgeItem = new Cypher.NamedVariable("edge");
 
     const edgeSubquery = createEdgeSubquery({
         resolveTree,
@@ -67,39 +66,41 @@ export function createConnectionClause({
         whereInput,
     });
 
-    const edgesList = new CypherBuilder.NamedVariable("edges");
-    const totalCountItem = new CypherBuilder.NamedVariable("totalCount");
-    const withClause = new CypherBuilder.With([CypherBuilder.collect(edgeItem), edgesList]).with(edgesList, [
-        CypherBuilder.size(edgesList),
-        totalCountItem,
+    const edgesList = new Cypher.NamedVariable("edges");
+    const totalCount = new Cypher.NamedVariable("totalCount");
+    const withClause = new Cypher.With([Cypher.collect(edgeItem), edgesList]).with(edgesList, [
+        Cypher.size(edgesList),
+        totalCount,
     ]);
 
-    const totalCount = new CypherBuilder.NamedVariable("totalCount");
     const withSortAfterUnwindClause = createSortAndLimitProjection({
         resolveTree,
         relationshipRef: edgeItem,
         nodeRef: edgeItem.property("node"),
         limit: relatedNode?.queryOptions?.getLimit(firstArg), // `first` specified on connection field in query needs to be compared with existing `@queryOptions`-imposed limit
-        extraFields: [totalCountItem],
     });
 
-    let unwindSortClause: CypherBuilder.Clause | undefined;
+    let unwindSortClause: Cypher.Clause | undefined;
     if (withSortAfterUnwindClause) {
-        const unwind = new CypherBuilder.Unwind([edgesList, edgeItem]);
+        const sortedEdges = new Cypher.Variable();
+        const unwind = new Cypher.Unwind([edgesList, edgeItem]);
 
-        const collectEdges = new CypherBuilder.With([CypherBuilder.collect(edgeItem), edgesList], totalCountItem);
+        const collectEdges = new Cypher.Return([Cypher.collect(edgeItem), sortedEdges]);
 
-        unwindSortClause = CypherBuilder.concat(unwind, withSortAfterUnwindClause, collectEdges);
+        // This subquery (CALL) is required due to the edge case of having cardinality 0 in the Cypher Match
+        unwindSortClause = new Cypher.Call(Cypher.concat(unwind, withSortAfterUnwindClause, collectEdges))
+            .innerWith(edgesList)
+            .with([sortedEdges, edgesList], totalCount);
     }
 
-    const returnClause = new CypherBuilder.Return([
-        new CypherBuilder.Map({
+    const returnClause = new Cypher.Return([
+        new Cypher.Map({
             edges: edgesList,
             totalCount,
         }),
         returnVariable,
     ]);
-    return CypherBuilder.concat(edgeSubquery, withClause, unwindSortClause, returnClause);
+    return Cypher.concat(edgeSubquery, withClause, unwindSortClause, returnClause);
 }
 
 function createConnectionClauseForUnions({
@@ -113,7 +114,7 @@ function createConnectionClauseForUnions({
     field: ConnectionField;
     context: Context;
     nodeVariable: string;
-    returnVariable: CypherBuilder.Variable;
+    returnVariable: Cypher.Variable;
 }) {
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
     const relatedNode = context.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
@@ -121,7 +122,7 @@ function createConnectionClauseForUnions({
         ? context.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name))
         : context.nodes.filter((x) => field.relationship?.interface?.implementations?.includes(x.name));
 
-    const collectUnionVariable = new CypherBuilder.NamedNode("edge");
+    const collectUnionVariable = new Cypher.NamedNode("edge");
     const subqueries = relatedNodes.map((subqueryRelatedNode) => {
         if (
             whereInput &&
@@ -145,18 +146,18 @@ function createConnectionClauseForUnions({
         });
     });
 
-    const unionClauses = new CypherBuilder.Call(new CypherBuilder.Union(...filterTruthy(subqueries)));
+    const unionClauses = new Cypher.Call(new Cypher.Union(...filterTruthy(subqueries)));
 
-    const edgesList = new CypherBuilder.NamedVariable("edges");
-    const edgeItem = new CypherBuilder.NamedVariable("edge");
-    const totalCount = new CypherBuilder.NamedVariable("totalCount");
+    const edgesList = new Cypher.NamedVariable("edges");
+    const edgeItem = new Cypher.NamedVariable("edge");
+    const totalCount = new Cypher.NamedVariable("totalCount");
 
-    const withEdgesAndTotalCount = new CypherBuilder.With([
-        CypherBuilder.collect(collectUnionVariable),
-        edgesList,
-    ]).with(edgesList, [CypherBuilder.size(edgesList), totalCount]);
+    const withEdgesAndTotalCount = new Cypher.With([Cypher.collect(collectUnionVariable), edgesList]).with(edgesList, [
+        Cypher.size(edgesList),
+        totalCount,
+    ]);
 
-    let withOrderClause: CypherBuilder.Clause | undefined;
+    let withOrderClause: Cypher.Clause | undefined;
     const limit = relatedNode?.queryOptions?.getLimit();
     const withOrder = createSortAndLimitProjection({
         resolveTree,
@@ -166,21 +167,21 @@ function createConnectionClauseForUnions({
         extraFields: [totalCount],
     });
     if (withOrder) {
-        const unwind = new CypherBuilder.Unwind([edgesList, edgeItem]);
+        const unwind = new Cypher.Unwind([edgesList, edgeItem]);
 
-        const withAndCollectEdges = new CypherBuilder.With([CypherBuilder.collect(edgeItem), edgesList], totalCount);
-        withOrderClause = CypherBuilder.concat(unwind, withOrder, withAndCollectEdges);
+        const withAndCollectEdges = new Cypher.With([Cypher.collect(edgeItem), edgesList], totalCount);
+        withOrderClause = Cypher.concat(unwind, withOrder, withAndCollectEdges);
     }
 
-    const returnClause = new CypherBuilder.Return([
-        new CypherBuilder.Map({
+    const returnClause = new Cypher.Return([
+        new Cypher.Map({
             edges: edgesList,
             totalCount,
         }),
         returnVariable,
     ]);
 
-    return CypherBuilder.concat(unionClauses, withEdgesAndTotalCount, withOrderClause, returnClause);
+    return Cypher.concat(unionClauses, withEdgesAndTotalCount, withOrderClause, returnClause);
 }
 
 function createConnectionSubquery({
@@ -196,10 +197,10 @@ function createConnectionSubquery({
     context: Context;
     parentNode: string;
     relatedNode: Node;
-    returnVariable: CypherBuilder.Variable;
-}): CypherBuilder.Clause | undefined {
+    returnVariable: Cypher.Variable;
+}): Cypher.Clause | undefined {
     const parentNodeRef = getOrCreateCypherNode(parentNode);
-    const withClause = new CypherBuilder.With(parentNodeRef);
+    const withClause = new Cypher.With(parentNodeRef);
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
     const unionInterfaceWhere = field.relationship.union ? (whereInput || {})[relatedNode.name] : whereInput || {};
@@ -225,6 +226,6 @@ function createConnectionSubquery({
         ignoreSort: true,
     });
     if (!edgeSubquery) return undefined;
-    const returnClause = new CypherBuilder.Return(returnVariable);
-    return CypherBuilder.concat(withClause, edgeSubquery, returnClause);
+    const returnClause = new Cypher.Return(returnVariable);
+    return Cypher.concat(withClause, edgeSubquery, returnClause);
 }
