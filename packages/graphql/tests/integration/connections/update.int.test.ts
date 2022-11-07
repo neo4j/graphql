@@ -36,15 +36,18 @@ describe("Connections -> Update", () => {
         id: "1",
         name: "Client 1 Name",
     };
-
     const client2 = {
         id: "1001",
         name: "Second Name",
     };
-
     const edge1 = {
         type: "someType",
         startDate: "1972-11-01",
+    };
+    const edge2 = {
+        type: "Another Edge Type",
+        startDate: "2022-11-07",
+        endDate: "2022-11-30",
     };
 
     const typeDefs = gql`
@@ -178,9 +181,279 @@ describe("Connections -> Update", () => {
             }
         });
 
-        test("Updates existing relationship", () => {});
+        test("Updates existing relationship", async () => {
+            const session = await neo4j.getSession();
 
-        test("Creates duplicate relationships", () => {});
+            const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+            const initialConnectionQuery = `
+                mutation {
+                    ${clientType.operations.update}(
+                        where: { id: "${client1.id}" },
+                        connect: {
+                            sponsor: [
+                                {
+                                    where: {
+                                        node: {
+                                            id: "${client2.id}"
+                                        }
+                                    }
+                                    edge: {
+                                        type: "${edge1.type}"
+                                        startDate: "${edge1.startDate}"
+                                    }
+                                }
+                            ]
+                        }
+                    ) {
+                        ${clientType.plural} {
+                            name
+                            sponsorConnection {
+                                edges {
+                                    node {
+                                        name
+                                    }
+                                    type
+                                    startDate
+                                    endDate
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const updateConnectionQuery = `
+                mutation {
+                    ${clientType.operations.update}(
+                        where: { id: "${client1.id}" },
+                        connect: {
+                            sponsor: [
+                                {
+                                    where: {
+                                        node: {
+                                            id: "${client2.id}"
+                                        }
+                                    }
+                                    edge: {
+                                        type: "${edge2.type}"
+                                        startDate: "${edge2.startDate}"
+                                        endDate: "${edge2.endDate}"
+                                    }
+                                }
+                            ]
+                        }
+                    ) {
+                        ${clientType.plural} {
+                            name
+                            sponsorConnection {
+                                edges {
+                                    node {
+                                        name
+                                    }
+                                    type
+                                    startDate
+                                    endDate
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            try {
+                await neoSchema.checkNeo4jCompat();
+
+                const initialConnectionResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: initialConnectionQuery,
+                    contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                });
+                const updateConnectionResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: updateConnectionQuery,
+                    contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                });
+
+                expect(initialConnectionResult.errors).toBeFalsy();
+                expect(updateConnectionResult.errors).toBeFalsy();
+
+                expect(initialConnectionResult?.data?.[clientType.operations.update]?.[clientType.plural]).toEqual([
+                    {
+                        name: client1.name,
+                        sponsorConnection: {
+                            edges: [
+                                {
+                                    node: {
+                                        name: client2.name,
+                                    },
+                                    ...edge1,
+                                    endDate: null,
+                                },
+                            ],
+                        },
+                    },
+                ]);
+                expect(updateConnectionResult?.data?.[clientType.operations.update]?.[clientType.plural]).toEqual([
+                    {
+                        name: client1.name,
+                        sponsorConnection: {
+                            edges: [
+                                {
+                                    node: {
+                                        name: client2.name,
+                                    },
+                                    ...edge2,
+                                },
+                            ],
+                        },
+                    },
+                ]);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("Creates duplicate relationships", async () => {
+            const session = await neo4j.getSession();
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+            const initialConnectionQuery = `
+                mutation {
+                    ${clientType.operations.update}(
+                        where: { id: "${client1.id}" },
+                        connect: {
+                            sponsor: [
+                                {
+                                    where: {
+                                        node: {
+                                            id: "${client2.id}"
+                                        }
+                                    }
+                                    edge: {
+                                        type: "${edge1.type}"
+                                        startDate: "${edge1.startDate}"
+                                    }
+                                }
+                            ]
+                        }
+                    ) {
+                        ${clientType.plural} {
+                            name
+                            sponsorConnection {
+                                edges {
+                                    node {
+                                        name
+                                    }
+                                    type
+                                    startDate
+                                    endDate
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const updateConnectionQuery = `
+                mutation {
+                    ${clientType.operations.update}(
+                        where: { id: "${client1.id}" },
+                        connect: {
+                            sponsor: [
+                                {
+                                    createDuplicates: true
+                                    where: {
+                                        node: {
+                                            id: "${client2.id}"
+                                        }
+                                    }
+                                    edge: {
+                                        type: "${edge2.type}"
+                                        startDate: "${edge2.startDate}"
+                                        endDate: "${edge2.endDate}"
+                                    }
+                                }
+                            ]
+                        }
+                    ) {
+                        ${clientType.plural} {
+                            name
+                            sponsorConnection {
+                                edges {
+                                    node {
+                                        name
+                                    }
+                                    type
+                                    startDate
+                                    endDate
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            try {
+                await neoSchema.checkNeo4jCompat();
+
+                const initialConnectionResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: initialConnectionQuery,
+                    contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                });
+                const updateConnectionResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: updateConnectionQuery,
+                    contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                });
+
+                expect(initialConnectionResult.errors).toBeFalsy();
+                expect(updateConnectionResult.errors).toBeFalsy();
+
+                expect(initialConnectionResult?.data?.[clientType.operations.update]?.[clientType.plural]).toEqual([
+                    {
+                        name: client1.name,
+                        sponsorConnection: {
+                            edges: [
+                                {
+                                    node: {
+                                        name: client2.name,
+                                    },
+                                    ...edge1,
+                                    endDate: null,
+                                },
+                            ],
+                        },
+                    },
+                ]);
+                expect(updateConnectionResult?.data?.[clientType.operations.update]?.[clientType.plural]).toEqual([
+                    {
+                        name: client1.name,
+                        sponsorConnection: {
+                            edges: expect.toIncludeSameMembers([
+                                {
+                                    node: {
+                                        name: client2.name,
+                                    },
+                                    ...edge1,
+                                    endDate: null,
+                                },
+                                {
+                                    node: {
+                                        name: client2.name,
+                                    },
+                                    ...edge2,
+                                },
+                            ]),
+                        },
+                    },
+                ]);
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("Union Relationships", () => {
