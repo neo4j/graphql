@@ -1,6 +1,6 @@
 ## Problem
 
-Currently, the `unwind-create` does not support the auth capability, this RFC wants to extend the RFC-024 to fully support the auth mechanism.
+Currently, the `unwind-create` does not support the auth capability, this RFC wants to extend the RFC-024-unwind-create to fully support the auth mechanism.
 
 ### Examples
 
