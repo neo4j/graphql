@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
-import { RelationDirection } from "../../graphql/enums/RelationDirection";
 import type { Node } from "../../classes";
 import { objectFieldsToSubscriptionsWhereInputFields } from "../to-compose";
 import type { ObjectFields } from "../get-obj-field-meta";
@@ -51,7 +52,7 @@ export function generateSubscriptionConnectionWhereType({
     schemaComposer: SchemaComposer;
     relationshipFields: Map<string, ObjectFields>;
     interfaceCommonFields: Map<string, ObjectFields>;
-}): InputTypeComposer {
+}): { created: InputTypeComposer; deleted: InputTypeComposer } {
     const fieldName = node.subscriptionEventPayloadFieldNames.connect;
     const typeName = node.name;
 
@@ -69,20 +70,32 @@ export function generateSubscriptionConnectionWhereType({
         });
     }
 
-    return schemaComposer.createInputTC({
-        name: `${typeName}ConnectionSubscriptionWhere`,
-        fields: {
-            [fieldName]: connectedNode,
-            relationshipName: "String",
-            direction: schemaComposer.createEnumTC(RelationDirection),
-            relationship: _getRelationshipConnectionWhereTypes({
-                node,
-                schemaComposer,
-                relationshipFields,
-                interfaceCommonFields,
-            }),
-        },
-    });
+    return {
+        created: schemaComposer.createInputTC({
+            name: `${typeName}RelationshipCreatedSubscriptionWhere`,
+            fields: {
+                [fieldName]: connectedNode,
+                createdRelationship: _getRelationshipConnectionWhereTypes({
+                    node,
+                    schemaComposer,
+                    relationshipFields,
+                    interfaceCommonFields,
+                }),
+            },
+        }),
+        deleted: schemaComposer.createInputTC({
+            name: `${typeName}RelationshipDeletedSubscriptionWhere`,
+            fields: {
+                [fieldName]: connectedNode,
+                deletedRelationship: _getRelationshipConnectionWhereTypes({
+                    node,
+                    schemaComposer,
+                    relationshipFields,
+                    interfaceCommonFields,
+                }),
+            },
+        }),
+    };
 }
 
 function _getRelationshipConnectionWhereTypes({

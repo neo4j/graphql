@@ -108,18 +108,24 @@ describe("Plural in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:\`Tech\`)
-            SET this0.name = $this0_name
-            RETURN this0
+            "UNWIND $create_param0 AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Tech\`)
+                SET
+                    create_this0.name = create_var1.name
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .name }] AS data"
+            RETURN collect(create_this0 { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_name\\": \\"Highlander\\",
+                \\"create_param0\\": [
+                    {
+                        \\"name\\": \\"Highlander\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

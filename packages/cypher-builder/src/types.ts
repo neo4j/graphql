@@ -27,14 +27,16 @@ import type { BooleanOp } from "./expressions/operations/boolean";
 import type { ComparisonOp } from "./expressions/operations/comparison";
 import type { RawCypher } from "./clauses/RawCypher";
 import type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
-import type { ApocExpr, ApocPredicate } from "./expressions/procedures/apoc/apoc";
 import type { Case } from "./expressions/Case";
 import type { MathOp } from "./expressions/operations/math";
 import type { ListComprehension } from "./expressions/list/ListComprehension";
 import type { PatternComprehension } from "./expressions/list/PatternComprehension";
-import type { MapProjection } from ".";
+import type { ListExpr } from "./expressions/list/ListExpr";
+import type { MapProjection } from "./expressions/map/MapProjection";
 import type { HasLabel } from "./expressions/HasLabel";
 import type { Reference } from "./variables/Reference";
+import type { ValidatePredicate } from "./procedures/apoc/ValidatePredicate";
+import type { ApocExpr, ApocPredicate } from "./procedures/apoc/apoc";
 
 export type Operation = BooleanOp | ComparisonOp | MathOp;
 
@@ -49,6 +51,7 @@ export type Expr =
     | PatternComprehension
     | MapExpr // NOTE this cannot be set as a property in a node
     | MapProjection // NOTE this cannot be set as a property in a node
+    | ListExpr
     | ApocExpr;
 
 /** Represents a predicate statement (i.e returns a boolean). Note that RawCypher is only added for compatibility */
@@ -62,6 +65,9 @@ export type Predicate =
     | Literal<boolean>
     | Case
     | HasLabel;
+
+/** Represents a procedure, invocable with the CALL statement */
+export type Procedure = ValidatePredicate;
 
 export type CypherResult = {
     cypher: string;

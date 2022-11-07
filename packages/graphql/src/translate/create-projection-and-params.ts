@@ -319,6 +319,18 @@ export default function createProjectionAndParams({
 
     let existingProjection = { ...resolveTree.fieldsByTypeName[node.name] };
 
+    if (context.fulltextIndex) {
+        return createFulltextProjection({
+            resolveTree,
+            node,
+            context,
+            chainStr,
+            varName,
+            literalElements,
+            resolveType,
+        });
+    }
+
     // If we have a query for a globalNode and it includes the "id" field
     // we modify the projection to include the appropriate db fields
 
@@ -408,3 +420,45 @@ const generateMissingOrAliasedRequiredFields = ({
 
     return generateMissingOrAliasedFields({ fieldNames: requiredFields, selection });
 };
+
+function createFulltextProjection({
+    resolveTree,
+    node,
+    context,
+    chainStr,
+    varName,
+    literalElements,
+    resolveType,
+}: {
+    resolveTree: ResolveTree;
+    node: Node;
+    context: Context;
+    chainStr?: string;
+    varName: string;
+    literalElements?: boolean;
+    resolveType?: boolean;
+}): ProjectionResult {
+    if (!resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.singular]) {
+        return {
+            projection: "{ }",
+            params: {},
+            meta: {},
+            subqueries: [],
+            subqueriesBeforeSort: [],
+        };
+    }
+
+    const nodeResolveTree = resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.singular];
+
+    const nodeContext = { ...context, fulltextIndex: false };
+
+    return createProjectionAndParams({
+        resolveTree: nodeResolveTree,
+        node,
+        context: nodeContext,
+        chainStr,
+        varName,
+        literalElements,
+        resolveType,
+    });
+}

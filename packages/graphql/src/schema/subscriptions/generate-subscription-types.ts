@@ -28,12 +28,12 @@ import {
 import { generateEventPayloadType } from "./generate-event-payload-type";
 import { generateSubscribeMethod, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
 import type {
+    BaseField,
     NodeSubscriptionsEvent,
     RelationField,
-    RelationSubscriptionsEvent,
+    RelationshipSubscriptionsEvent,
     SubscriptionsEvent,
 } from "../../types";
-import { RelationDirection } from "../../graphql/enums/RelationDirection";
 import type { ObjectFields } from "../get-obj-field-meta";
 import { objectFieldsToComposeFields } from "../to-compose";
 import { upperFirst } from "../../utils/upper-first";
@@ -52,16 +52,18 @@ export function generateSubscriptionTypes({
     const subscriptionComposer = schemaComposer.Subscription;
 
     const eventTypeEnum = schemaComposer.createEnumTC(EventType);
-    const relationDirectionEnum = schemaComposer.createEnumTC(RelationDirection);
 
     const shouldIncludeSubscriptionOperation = (node: Node) => !node.exclude?.operations.includes("subscribe");
-    const nodesSubscribedTo = nodes.filter(shouldIncludeSubscriptionOperation);
-    const nodeNameToEventPayloadTypes = nodesSubscribedTo.reduce((acc, node) => {
-        acc[node.name] = generateEventPayloadType(node, schemaComposer);
-        return acc;
-    }, {});
+    const nodesWithSubscriptionOperation = nodes.filter(shouldIncludeSubscriptionOperation);
+    const nodeNameToEventPayloadTypes: Record<string, ObjectTypeComposer> = nodesWithSubscriptionOperation.reduce(
+        (acc, node) => {
+            acc[node.name] = generateEventPayloadType(node, schemaComposer);
+            return acc;
+        },
+        {}
+    );
 
-    nodesSubscribedTo.forEach((node) => {
+    nodesWithSubscriptionOperation.forEach((node) => {
         const eventPayload = nodeNameToEventPayloadTypes[node.name];
         const where = generateSubscriptionWhereType(node, schemaComposer);
         const { subscriptionEventTypeNames, subscriptionEventPayloadFieldNames, rootTypeFieldNames } = node;
@@ -118,7 +120,7 @@ export function generateSubscriptionTypes({
                 },
                 timestamp: {
                     type: new GraphQLNonNull(GraphQLFloat),
-                    resolve: (source: SubscriptionsEvent) => source.timestamp,
+                    resolve: (source: RelationshipSubscriptionsEvent) => source.timestamp,
                 },
             },
         });
@@ -132,7 +134,7 @@ export function generateSubscriptionTypes({
                 },
                 timestamp: {
                     type: new GraphQLNonNull(GraphQLFloat),
-                    resolve: (source: SubscriptionsEvent) => source.timestamp,
+                    resolve: (source: RelationshipSubscriptionsEvent) => source.timestamp,
                 },
             },
         });
@@ -178,27 +180,15 @@ export function generateSubscriptionTypes({
             relationConnectedEvent.addFields({
                 [subscriptionEventPayloadFieldNames.connect]: {
                     type: eventPayload.NonNull,
-                    resolve: (source: SubscriptionsEvent) => {
-                        if ((source as RelationSubscriptionsEvent).fromTypename === node.name) {
-                            return (source as RelationSubscriptionsEvent).properties.from;
-                        }
-                        return (source as RelationSubscriptionsEvent).properties.to;
+                    resolve: (source: RelationshipSubscriptionsEvent) => {
+                        return getRelationshipEventDataForNode(source, node).properties;
                     },
                 },
-                relationshipName: {
+                relationshipFieldName: {
                     type: new GraphQLNonNull(GraphQLString),
-                    resolve: (source: SubscriptionsEvent) => {
-                        const trueSource = source as RelationSubscriptionsEvent;
-                        const r = node.relationFields.find((f) => f.type === trueSource.relationshipName)?.fieldName;
+                    resolve: (source: RelationshipSubscriptionsEvent) => {
+                        const r = node.relationFields.find((f) => f.type === source.relationshipName)?.fieldName;
                         return r;
-                    },
-                },
-                direction: {
-                    type: relationDirectionEnum.NonNull,
-                    resolve: (source: SubscriptionsEvent) => {
-                        const trueSource = source as RelationSubscriptionsEvent;
-                        const isThisTo = trueSource.toTypename === node.name;
-                        return isThisTo ? "IN" : "OUT";
                     },
                 },
             });
@@ -206,47 +196,32 @@ export function generateSubscriptionTypes({
             relationDisconnectedEvent.addFields({
                 [subscriptionEventPayloadFieldNames.disconnect]: {
                     type: eventPayload.NonNull,
-                    resolve: (source: SubscriptionsEvent) => {
-                        if ((source as RelationSubscriptionsEvent).fromTypename === node.name) {
-                            return (source as RelationSubscriptionsEvent).properties.from;
-                        }
-                        return (source as RelationSubscriptionsEvent).properties.to;
+                    resolve: (source: RelationshipSubscriptionsEvent) => {
+                        return getRelationshipEventDataForNode(source, node).properties;
                     },
                 },
-                relationshipName: {
+                relationshipFieldName: {
                     type: new GraphQLNonNull(GraphQLString),
-                    resolve: (source: SubscriptionsEvent) => {
-                        const trueSource = source as RelationSubscriptionsEvent;
-                        return node.relationFields.find((f) => f.type === trueSource.relationshipName)?.fieldName;
-                    },
-                },
-                direction: {
-                    type: relationDirectionEnum.NonNull,
-                    resolve: (source: SubscriptionsEvent) => {
-                        const trueSource = source as RelationSubscriptionsEvent;
-                        const isThisTo = trueSource.toTypename === node.name;
-                        return isThisTo ? "IN" : "OUT";
+                    resolve: (source: RelationshipSubscriptionsEvent) => {
+                        const r = node.relationFields.find((f) => f.type === source.relationshipName)?.fieldName;
+                        return r;
                     },
                 },
             });
         }
 
         if (_hasProperties(relationsEventPayload)) {
-            const resolveRelationship = (source: SubscriptionsEvent) => {
-                const trueSource = source as RelationSubscriptionsEvent;
-                const isThisTo = trueSource.toTypename === node.name;
-                const props = isThisTo ? trueSource.properties.from : trueSource.properties.to;
-                const typename = isThisTo ? trueSource.fromTypename : trueSource.toTypename;
+            const resolveRelationship = (source: RelationshipSubscriptionsEvent) => {
+                const { destinationProperties: props, destinationTypename: typename } = getRelationshipEventDataForNode(
+                    source,
+                    node
+                );
 
-                const thisRel = node.relationFields.find(
-                    (f) => f.type === trueSource.relationshipName
-                ) as RelationField;
+                const thisRel = node.relationFields.find((f) => f.type === source.relationshipName) as RelationField;
 
                 return {
                     [thisRel.fieldName]: {
-                        edge: {
-                            ...trueSource.properties.relationship,
-                        },
+                        ...source.properties.relationship,
                         node: {
                             ...props,
                             __typename: `${typename}EventPayload`,
@@ -255,13 +230,13 @@ export function generateSubscriptionTypes({
                 };
             };
             relationConnectedEvent.addFields({
-                relationship: {
+                createdRelationship: {
                     type: relationsEventPayload.NonNull,
                     resolve: resolveRelationship,
                 },
             });
             relationDisconnectedEvent.addFields({
-                relationship: {
+                deletedRelationship: {
                     type: relationsEventPayload.NonNull,
                     resolve: resolveRelationship,
                 },
@@ -272,24 +247,24 @@ export function generateSubscriptionTypes({
             [subscribeOperation.created]: {
                 args: { where },
                 type: nodeCreatedEvent.NonNull,
-                subscribe: generateSubscribeMethod(node, "create"),
+                subscribe: generateSubscribeMethod({ node, type: "create" }),
                 resolve: subscriptionResolve,
             },
             [subscribeOperation.updated]: {
                 args: { where },
                 type: nodeUpdatedEvent.NonNull,
-                subscribe: generateSubscribeMethod(node, "update"),
+                subscribe: generateSubscribeMethod({ node, type: "update" }),
                 resolve: subscriptionResolve,
             },
             [subscribeOperation.deleted]: {
                 args: { where },
                 type: nodeDeletedEvent.NonNull,
-                subscribe: generateSubscribeMethod(node, "delete"),
+                subscribe: generateSubscribeMethod({ node, type: "delete" }),
                 resolve: subscriptionResolve,
             },
         });
 
-        const connectionWhere = generateSubscriptionConnectionWhereType({
+        const { created: createdWhere, deleted: deletedWhere } = generateSubscriptionConnectionWhereType({
             node,
             schemaComposer,
             relationshipFields,
@@ -298,15 +273,15 @@ export function generateSubscriptionTypes({
         if (node.relationFields.length > 0) {
             subscriptionComposer.addFields({
                 [subscribeOperation.connected]: {
-                    args: { where: connectionWhere },
+                    args: { where: createdWhere },
                     type: relationConnectedEvent.NonNull,
-                    subscribe: generateSubscribeMethod(node, "connect"),
+                    subscribe: generateSubscribeMethod({ node, type: "connect", nodes, relationshipFields }),
                     resolve: subscriptionResolve,
                 },
                 [subscribeOperation.disconnected]: {
-                    args: { where: connectionWhere },
+                    args: { where: deletedWhere },
                     type: relationDisconnectedEvent.NonNull,
-                    subscribe: generateSubscribeMethod(node, "disconnect"),
+                    subscribe: generateSubscribeMethod({ node, type: "disconnect", nodes, relationshipFields }),
                     resolve: subscriptionResolve,
                 },
             });
@@ -314,11 +289,36 @@ export function generateSubscriptionTypes({
     });
 }
 
-function _hasProperties(x: any): boolean {
+function getRelationshipEventDataForNode(
+    event: RelationshipSubscriptionsEvent,
+    node: Node
+): {
+    direction: string;
+    properties: Record<string, any>;
+    destinationProperties: Record<string, any>;
+    destinationTypename: string;
+} {
+    if (event.toTypename === node.name) {
+        return {
+            direction: "IN",
+            properties: event.properties.to,
+            destinationProperties: event.properties.from,
+            destinationTypename: event.fromTypename,
+        };
+    }
+    return {
+        direction: "OUT",
+        properties: event.properties.from,
+        destinationProperties: event.properties.to,
+        destinationTypename: event.toTypename,
+    };
+}
+
+function _hasProperties(x: ObjectTypeComposer): boolean {
     return !!Object.keys(x.getFields()).length;
 }
 
-function _buildRelationDestinationUnionNodeType({
+function _buildRelationshipDestinationUnionNodeType({
     unionNodes,
     relationNodeTypeName,
     schemaComposer,
@@ -337,7 +337,7 @@ function _buildRelationDestinationUnionNodeType({
     });
 }
 
-function _buildRelationDestinationInterfaceNodeType({
+function _buildRelationshipDestinationInterfaceNodeType({
     relevantInterface,
     interfaceNodes,
     relationNodeTypeName,
@@ -364,7 +364,7 @@ function _buildRelationDestinationInterfaceNodeType({
     return nodeTo;
 }
 
-function _buildRelationDestinationAbstractType({
+function _buildRelationshipDestinationAbstractType({
     relationField,
     relationNodeTypeName,
     interfaceCommonFields,
@@ -380,23 +380,23 @@ function _buildRelationDestinationAbstractType({
     const unionNodeTypes = relationField.union?.nodes;
     if (unionNodeTypes) {
         const unionNodes = unionNodeTypes?.map((typeName) => nodeNameToEventPayloadTypes[typeName]);
-        return _buildRelationDestinationUnionNodeType({ unionNodes, relationNodeTypeName, schemaComposer });
+        return _buildRelationshipDestinationUnionNodeType({ unionNodes, relationNodeTypeName, schemaComposer });
     }
     const interfaceNodeTypeNames = relationField.interface?.implementations;
     if (interfaceNodeTypeNames) {
         const relevantInterfaceFields = interfaceCommonFields.get(relationNodeTypeName) || ({} as ObjectFields);
         const interfaceNodes = interfaceNodeTypeNames.map((name: string) => nodeNameToEventPayloadTypes[name]);
-        return _buildRelationDestinationInterfaceNodeType({
+        return _buildRelationshipDestinationInterfaceNodeType({
             schemaComposer,
             relevantInterface: relevantInterfaceFields,
             interfaceNodes,
             relationNodeTypeName,
         });
     }
-    return null;
+    return undefined;
 }
 
-function _buildRelationFieldDestinationTypes({
+function _buildRelationshipFieldDestinationTypes({
     relationField,
     interfaceCommonFields,
     schemaComposer,
@@ -414,7 +414,7 @@ function _buildRelationFieldDestinationTypes({
         return _hasProperties(nodeTo) && nodeTo;
     }
     // union/interface type
-    return _buildRelationDestinationAbstractType({
+    return _buildRelationshipDestinationAbstractType({
         relationField,
         relationNodeTypeName,
         interfaceCommonFields,
@@ -423,31 +423,25 @@ function _buildRelationFieldDestinationTypes({
     });
 }
 
-function _buildRelationType({
+function _getRelationshipFields({
     relationField,
     relationshipFields,
-    schemaComposer,
 }: {
     relationField: RelationField;
     relationshipFields: Map<string, ObjectFields>;
-    schemaComposer: SchemaComposer;
-}): ObjectTypeComposer | undefined {
-    const relationProperties = relationshipFields.get(relationField.properties || "");
-    if (relationProperties) {
-        return schemaComposer.getOrCreateOTC(`${relationField.properties}RelationshipEventPayload`, (tc) =>
-            tc.addFields(
-                objectFieldsToComposeFields([
-                    ...relationProperties.primitiveFields,
-                    ...relationProperties.enumFields,
-                    ...relationProperties.scalarFields,
-                    ...relationProperties.temporalFields,
-                    ...relationProperties.pointFields,
-                ])
-            )
-        );
+}): BaseField[] | undefined {
+    const relationshipProperties = relationshipFields.get(relationField.properties || "");
+    if (relationshipProperties) {
+        return [
+            ...relationshipProperties.primitiveFields,
+            ...relationshipProperties.enumFields,
+            ...relationshipProperties.scalarFields,
+            ...relationshipProperties.temporalFields,
+            ...relationshipProperties.pointFields,
+        ];
     }
 }
-
+// TODO: move this + helpers to separate file
 function getConnectedTypes({
     node,
     relationshipFields,
@@ -467,33 +461,33 @@ function getConnectedTypes({
         .map((relationField) => {
             const fieldName = relationField.fieldName;
 
-            const relationFieldType = schemaComposer.createObjectTC({
+            const relationshipFieldType = schemaComposer.createObjectTC({
                 name: `${name}${upperFirst(fieldName)}ConnectedRelationship`,
             });
 
-            const edge = _buildRelationType({ relationField, relationshipFields, schemaComposer });
-            if (edge) {
-                relationFieldType.addFields({ edge });
+            const edgeProps = _getRelationshipFields({ relationField, relationshipFields });
+            if (edgeProps) {
+                relationshipFieldType.addFields(objectFieldsToComposeFields(edgeProps));
             }
 
-            const nodeTo = _buildRelationFieldDestinationTypes({
+            const nodeTo = _buildRelationshipFieldDestinationTypes({
                 relationField,
                 interfaceCommonFields,
                 schemaComposer,
                 nodeNameToEventPayloadTypes,
             });
             if (nodeTo) {
-                relationFieldType.addFields({ node: nodeTo });
+                relationshipFieldType.addFields({ node: nodeTo.getTypeNonNull() });
             }
 
             return {
-                relationFieldType,
+                relationshipFieldType,
                 fieldName,
             };
         })
-        .reduce((acc, { relationFieldType, fieldName }) => {
-            if (relationFieldType && _hasProperties(relationFieldType)) {
-                acc[fieldName] = relationFieldType;
+        .reduce((acc, { relationshipFieldType, fieldName }) => {
+            if (relationshipFieldType && _hasProperties(relationshipFieldType)) {
+                acc[fieldName] = relationshipFieldType;
             }
             return acc;
         }, {});

@@ -41,6 +41,7 @@ import { createResolver } from "./resolvers/mutation/create";
 import { deleteResolver } from "./resolvers/mutation/delete";
 import { updateResolver } from "./resolvers/mutation/update";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import { augmentFulltextSchema } from "./augment/fulltext";
 import * as constants from "../constants";
 import * as Scalars from "../graphql/scalars";
 import type { Node } from "../classes";
@@ -84,6 +85,10 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { addMathOperatorsToITC } from "./math";
 import { addArrayMethodsToITC } from "./array-methods";
+import { FloatWhere } from "../graphql/input-objects/FloatWhere";
+import { ConcreteEntity } from "../schema-model/ConcreteEntity";
+import type { Entity } from "../schema-model/Entity";
+import { CompositeEntity } from "../schema-model/CompositeEntity";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -102,7 +107,13 @@ function makeAugmentedSchema(
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
     } = {}
-): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers: IResolvers } {
+): {
+    nodes: Node[];
+    relationships: Relationship[];
+    entities: Map<string, Entity>;
+    typeDefs: DocumentNode;
+    resolvers: IResolvers;
+} {
     const document = getDocument(typeDefs);
 
     if (!skipValidateTypeDefs) {
@@ -151,7 +162,8 @@ function makeAugmentedSchema(
 
     const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers });
 
-    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
+    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames, floatWhereInTypeDefs } =
+        getNodesResult;
 
     // graphql-compose will break if the Point and CartesianPoint types are created but not used,
     // because it will purge the unused types but leave behind orphaned field resolvers
@@ -515,20 +527,19 @@ function makeAugmentedSchema(
         composer.createInputTC(CartesianPointDistance);
     }
 
-    unionTypes.forEach((union) => {
-        if (union.types && union.types.length) {
-            const fields = union.types.reduce((f, type) => {
-                return { ...f, [type.name.value]: `${type.name.value}Where` };
-            }, {});
+    if (floatWhereInTypeDefs) {
+        composer.createInputTC(FloatWhere);
+    }
 
-            composer.createInputTC({
-                name: `${union.name.value}Where`,
-                fields,
-            });
-        }
-    });
+    const concreteEntities: Map<string, ConcreteEntity> = new Map();
 
     nodes.forEach((node) => {
+        const concreteEntity = new ConcreteEntity({ name: node.name });
+        if (concreteEntities.has(node.name)) {
+            throw new Error(`Duplicate node ${node.name}`);
+        }
+        concreteEntities.set(node.name, concreteEntity);
+
         const nodeFields = objectFieldsToComposeFields([
             ...node.primitiveFields,
             ...node.cypherFields,
@@ -571,20 +582,21 @@ function makeAugmentedSchema(
             {}
         );
 
+        const nodeSortTypeName = `${node.name}Sort`;
         if (Object.keys(sortFields).length) {
             const sortInput = composer.createInputTC({
-                name: `${node.name}Sort`,
+                name: nodeSortTypeName,
                 fields: sortFields,
                 description: `Fields to sort ${upperFirst(
                     node.plural
-                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${node.name}Sort`} object.`,
+                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${nodeSortTypeName} object.`,
             });
 
             composer.createInputTC({
                 name: `${node.name}Options`,
                 fields: {
                     sort: {
-                        description: `Specify one or more ${`${node.name}Sort`} objects to sort ${upperFirst(
+                        description: `Specify one or more ${nodeSortTypeName} objects to sort ${upperFirst(
                             node.plural
                         )} by. The sorts will be applied in the order in which they are arranged in the array.`,
                         type: sortInput.NonNull.List,
@@ -641,30 +653,13 @@ function makeAugmentedSchema(
             },
         });
 
+        const nodeWhereTypeName = `${node.name}Where`;
         composer.createInputTC({
-            name: `${node.name}Where`,
+            name: nodeWhereTypeName,
             fields: node.isGlobalNode ? { id: "ID", ...queryFields } : queryFields,
         });
 
-        if (node.fulltextDirective) {
-            const fields = node.fulltextDirective.indexes.reduce(
-                (res, index) => ({
-                    ...res,
-                    [index.name]: composer.createInputTC({
-                        name: `${node.name}${upperFirst(index.name)}Fulltext`,
-                        fields: {
-                            phrase: "String!",
-                        },
-                    }),
-                }),
-                {}
-            );
-
-            composer.createInputTC({
-                name: `${node.name}Fulltext`,
-                fields,
-            });
-        }
+        augmentFulltextSchema(node, composer, nodeWhereTypeName, nodeSortTypeName);
 
         const uniqueFields = getUniqueFields(node);
 
@@ -778,6 +773,40 @@ function makeAugmentedSchema(
         }
     });
 
+    const compositeEntities: Map<string, CompositeEntity> = new Map();
+
+    unionTypes.forEach((union) => {
+        if (!union.types) {
+            throw new Error(`Union ${union.name.value} has no types`);
+        }
+
+        const compositeConcreteEntities: ConcreteEntity[] = [];
+
+        const fields = union.types.reduce((f, type) => {
+            const concreteEntity = concreteEntities.get(type.name.value);
+            if (!concreteEntity) {
+                throw new Error(`Could not find concrete entity with name ${type.name.value}`);
+            }
+            compositeConcreteEntities.push(concreteEntity);
+            return { ...f, [type.name.value]: `${type.name.value}Where` };
+        }, {});
+
+        composer.createInputTC({
+            name: `${union.name.value}Where`,
+            fields,
+        });
+
+        if (!compositeConcreteEntities.length) {
+            throw new Error(`Composite entity ${union.name.value} has no concrete entities`);
+        }
+        const compositeEntity = new CompositeEntity({
+            name: union.name.value,
+            concreteEntities: compositeConcreteEntities,
+        });
+
+        compositeEntities.set(union.name.value, compositeEntity);
+    });
+
     if (generateSubscriptions) {
         generateSubscriptionTypes({ schemaComposer: composer, nodes, relationshipFields, interfaceCommonFields });
     }
@@ -874,17 +903,19 @@ function makeAugmentedSchema(
         );
     }
 
-    const documentNames = parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value);
-
+    const documentNames = new Set(parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value));
     const resolveMethods = getResolveAndSubscriptionMethods(composer);
-    const generatedResolvers = {
-        ...Object.entries(resolveMethods).reduce((res, [key, value]) => {
-            if (!documentNames.includes(key)) {
-                return res;
-            }
 
-            return { ...res, [key]: value };
-        }, {}),
+    const generatedResolveMethods: Record<string, any> = {};
+
+    for (const [key, value] of Object.entries(resolveMethods)) {
+        if (documentNames.has(key)) {
+            generatedResolveMethods[key] = value;
+        }
+    }
+
+    const generatedResolvers = {
+        ...generatedResolveMethods,
         ...Object.values(Scalars).reduce((res, scalar: GraphQLScalarType) => {
             if (generatedTypeDefs.includes(`scalar ${scalar.name}\n`)) {
                 res[scalar.name] = scalar;
@@ -926,9 +957,12 @@ function makeAugmentedSchema(
         }),
     };
 
+    const entities: Map<string, Entity> = new Map([...concreteEntities, ...compositeEntities]);
+
     return {
         nodes,
         relationships,
+        entities,
         typeDefs: parsedDoc,
         resolvers: generatedResolvers,
     };

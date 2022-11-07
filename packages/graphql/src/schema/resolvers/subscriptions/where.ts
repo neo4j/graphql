@@ -19,13 +19,27 @@
 
 import type { SubscriptionsEvent } from "../../../types";
 import type Node from "../../../classes/Node";
-import { filterByProperties, filterRelationshipConnectionsByProperties } from "./utils/compare-properties";
+import {
+    filterByProperties,
+    filterRelationshipConnectionsByProperties,
+    RecordType,
+    RelationshipType,
+} from "./utils/compare-properties";
+import type { ObjectFields } from "../../../schema/get-obj-field-meta";
 
-export function subscriptionWhere(
-    where: Record<string, any> | undefined,
-    event: SubscriptionsEvent,
-    node: Node
-): boolean {
+export function subscriptionWhere({
+    where,
+    event,
+    node,
+    nodes,
+    relationshipFields,
+}: {
+    where: Record<string, RecordType | RelationshipType> | undefined;
+    event: SubscriptionsEvent;
+    node: Node;
+    nodes?: Node[];
+    relationshipFields?: Map<string, ObjectFields>;
+}): boolean {
     if (!where) {
         return true;
     }
@@ -36,7 +50,17 @@ export function subscriptionWhere(
         return filterByProperties(node, where, event.properties.old);
     }
     if (event.event === "connect") {
-        return filterRelationshipConnectionsByProperties(node, where, event);
+        if (!nodes || !relationshipFields) {
+            // throw?
+            return false;
+        }
+        return filterRelationshipConnectionsByProperties({
+            node,
+            whereProperties: where,
+            receivedEvent: event,
+            nodes,
+            relationshipFields,
+        });
     }
     return false;
 }

@@ -131,8 +131,8 @@ export function objectFieldsToSubscriptionsWhereInputFields(
                 [`${f.fieldName}_NOT_INCLUDES`]: f.typeMeta.name,
             }),
             ...(ifAnyTypeExceptArrayAndBoolean && {
-                [`${f.fieldName}_IN`]: `[${f.typeMeta.name}${f.typeMeta.required ? "!" : ""}]`,
-                [`${f.fieldName}_NOT_IN`]: `[${f.typeMeta.name}${f.typeMeta.required ? "!" : ""}]`,
+                [`${f.fieldName}_IN`]: `[${f.typeMeta.name}]`,
+                [`${f.fieldName}_NOT_IN`]: `[${f.typeMeta.name}]`,
             }),
             ...(isOneOfNumberTypes && {
                 [`${f.fieldName}_LT`]: fieldType,

@@ -25,6 +25,7 @@ import type { Node, Relationship } from "./classes";
 import type { Neo4jDatabaseInfo } from "./classes/Neo4jDatabaseInfo";
 import type { RelationshipQueryDirectionOption } from "./constants";
 import type { Executor } from "./classes/Executor";
+import type { Entity } from "./schema-model/Entity";
 
 export { Node } from "./classes";
 
@@ -46,6 +47,7 @@ export interface Context {
     neo4jDatabaseInfo: Neo4jDatabaseInfo;
     nodes: Node[];
     relationships: Relationship[];
+    entities: Map<string, Entity>;
     schema: GraphQLSchema;
     auth?: AuthContext;
     callbacks?: Neo4jGraphQLCallbacks;
@@ -77,13 +79,16 @@ export interface Auth {
     type: "JWT";
 }
 
-export type FullTextIndex = {
-    name: string;
+export type FulltextIndex = {
+    name: string | undefined;
     fields: string[];
+    queryType: string;
+    queryName: string | undefined;
+    indexName: string | undefined; // TODO: not undefined once name is removed.
 };
 
 export type FullText = {
-    indexes: FullTextIndex[];
+    indexes: FulltextIndex[];
 };
 
 /**
@@ -222,6 +227,10 @@ export interface GraphQLSortArg {
     [field: string]: SortDirection;
 }
 
+export interface NestedGraphQLSortArg {
+    [field: string]: GraphQLSortArg;
+}
+
 export interface ConnectionSortArg {
     node?: GraphQLSortArg;
     edge?: GraphQLSortArg;
@@ -356,15 +365,17 @@ export interface Neo4jGraphQLAuthPlugin {
 }
 
 /** Raw event metadata returned from queries */
-export type NodeMeta = {
+export type NodeSubscriptionMeta = {
     event: "create" | "update" | "delete";
     typename: string;
     properties: {
         old: Record<string, any>;
         new: Record<string, any>;
     };
+    id: Integer | string | number;
+    timestamp: Integer | string | number;
 };
-export type RelationMeta = {
+export type RelationshipSubscriptionMeta = {
     event: "connect" | "disconnect";
     relationshipName: string;
     id_from: Integer | string | number;
@@ -376,11 +387,10 @@ export type RelationMeta = {
         to: Record<string, any>;
         relationship: Record<string, any>;
     };
-};
-export type EventMeta = (NodeMeta | RelationMeta) & {
     id: Integer | string | number;
     timestamp: Integer | string | number;
 };
+export type EventMeta = NodeSubscriptionMeta | RelationshipSubscriptionMeta;
 
 export type NodeSubscriptionsEvent =
     | {
@@ -390,6 +400,8 @@ export type NodeSubscriptionsEvent =
               old: undefined;
               new: Record<string, any>;
           };
+          id: number;
+          timestamp: number;
       }
     | {
           event: "update";
@@ -398,6 +410,8 @@ export type NodeSubscriptionsEvent =
               old: Record<string, any>;
               new: Record<string, any>;
           };
+          id: number;
+          timestamp: number;
       }
     | {
           event: "delete";
@@ -406,8 +420,10 @@ export type NodeSubscriptionsEvent =
               old: Record<string, any>;
               new: undefined;
           };
+          id: number;
+          timestamp: number;
       };
-export type RelationSubscriptionsEvent =
+export type RelationshipSubscriptionsEvent =
     | {
           event: "connect";
           relationshipName: string;
@@ -420,6 +436,8 @@ export type RelationSubscriptionsEvent =
           id_to: number;
           fromTypename: string;
           toTypename: string;
+          id: number;
+          timestamp: number;
       }
     | {
           event: "disconnect";
@@ -433,12 +451,15 @@ export type RelationSubscriptionsEvent =
           id_to: number;
           fromTypename: string;
           toTypename: string;
+          id: number;
+          timestamp: number;
       };
 /** Serialized subscription event */
-export type SubscriptionsEvent = (NodeSubscriptionsEvent | RelationSubscriptionsEvent) & {
-    id: number;
-    timestamp: number;
-};
+export type SubscriptionsEvent = NodeSubscriptionsEvent | RelationshipSubscriptionsEvent;
+// export type SubscriptionsEvent = (NodeSubscriptionsEvent | RelationSubscriptionsEvent) & {
+//     id: number;
+//     timestamp: number;
+// };
 
 export interface Neo4jGraphQLSubscriptionsPlugin {
     events: EventEmitter;

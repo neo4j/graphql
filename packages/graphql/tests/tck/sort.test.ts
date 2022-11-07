@@ -233,19 +233,19 @@ describe("Cypher sort tests", () => {
             WHERE this.title = $param0
             WITH *
             ORDER BY this.id DESC, this.title ASC
-            SKIP $this_offset
-            LIMIT $this_limit
+            SKIP $param1
+            LIMIT $param2
             RETURN this { .id, .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some title\\",
-                \\"this_offset\\": {
+                \\"param1\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 },
-                \\"this_limit\\": {
+                \\"param2\\": {
                     \\"low\\": 2,
                     \\"high\\": 0
                 }

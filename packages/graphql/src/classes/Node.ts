@@ -110,6 +110,12 @@ export type RootTypeFieldNames = {
     };
 };
 
+export type FulltextTypeNames = {
+    result: string;
+    where: string;
+    sort: string;
+};
+
 export type AggregateTypeNames = {
     selection: string;
     input: string;
@@ -235,9 +241,17 @@ class Node extends GraphElement {
                 created: `${this.singular}Created`,
                 updated: `${this.singular}Updated`,
                 deleted: `${this.singular}Deleted`,
-                connected: `${this.singular}Connected`,
-                disconnected: `${this.singular}Disconnected`,
+                connected: `${this.singular}RelationshipCreated`,
+                disconnected: `${this.singular}RelationshipDeleted`,
             },
+        };
+    }
+
+    public get fulltextTypeNames(): FulltextTypeNames {
+        return {
+            result: `${this.pascalCaseSingular}FulltextResult`,
+            where: `${this.pascalCaseSingular}FulltextWhere`,
+            sort: `${this.pascalCaseSingular}FulltextSort`,
         };
     }
 
@@ -264,8 +278,8 @@ class Node extends GraphElement {
             create: `${pascalCaseSingular}CreatedEvent`,
             update: `${pascalCaseSingular}UpdatedEvent`,
             delete: `${pascalCaseSingular}DeletedEvent`,
-            connect: `${pascalCaseSingular}ConnectedEvent`,
-            disconnect: `${pascalCaseSingular}DisconnectedEvent`,
+            connect: `${pascalCaseSingular}RelationshipCreatedEvent`,
+            disconnect: `${pascalCaseSingular}RelationshipDeletedEvent`,
         };
     }
 
@@ -276,8 +290,8 @@ class Node extends GraphElement {
             create: `created${pascalCaseSingular}`,
             update: `updated${pascalCaseSingular}`,
             delete: `deleted${pascalCaseSingular}`,
-            connect: `connected${pascalCaseSingular}`,
-            disconnect: `disconnected${pascalCaseSingular}`,
+            connect: `${this.singular}`,
+            disconnect: `${this.singular}`,
         };
     }
 
