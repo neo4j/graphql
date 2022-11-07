@@ -22,6 +22,9 @@ import type { FullText, FulltextIndex } from "../../types";
 import type { ObjectFields } from "../get-obj-field-meta";
 import parseValueNode from "../parse-value-node";
 
+const deprecationWarning = "The @fulltext name argument has been deprecated and will be removed in 4.0.0. " +
+    "Please use indexName instead. More information about the changes to @fulltext can be found here: " +
+    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.";
 let deprecationWarningShown = false;
 
 function parseFulltextDirective({
@@ -46,9 +49,7 @@ function parseFulltextDirective({
             throw new Error("The name of the fulltext index should be defined using the indexName argument.");
         }
         if (index.name && !deprecationWarningShown) {
-            console.warn(
-                "The @fulltext name argument has been deprecated and will be removed in 4.0. Please use indexName instead."
-            );
+            console.warn(deprecationWarning);
             deprecationWarningShown = true;
         }
         const names = value.filter((i) => indexName === i.indexName || indexName === i.name);

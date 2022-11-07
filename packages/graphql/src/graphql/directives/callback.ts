@@ -20,8 +20,12 @@
 import { DirectiveLocation, GraphQLDirective, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
 import { CallbackOperationEnum } from "./arguments/enums/CallbackOperation";
 
-const description = "NOTE: this directive has been deprecated and will be removed in @neo4j/graphql version 4.0." +
-    "Instructs @neo4j/graphql to invoke the specified callback function when updating or creating the properties on a node or relationship."
+const description =
+    "NOTE: this directive has been deprecated and will be removed in @neo4j/graphql version 4.0.0. " +
+    "Please use the @populatedBy directive instead. More information can be found at " +
+    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby. " +
+    "Instructs @neo4j/graphql to invoke the specified callback function when updating or " +
+    "creating the properties on a node or relationship.";
 
 /** Deprecated in favour of @populatedBy */
 export const callbackDirective = new GraphQLDirective({
