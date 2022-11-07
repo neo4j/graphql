@@ -132,7 +132,7 @@ describe("Relationship properties - update", () => {
                 {
                     title: movieTitle,
                     actorsConnection: {
-                        edges: [
+                        edges: expect.toIncludeSameMembers([
                             {
                                 screenTime: 100,
                                 node: {
@@ -145,7 +145,7 @@ describe("Relationship properties - update", () => {
                                     name: actor1,
                                 },
                             },
-                        ],
+                        ]),
                     },
                 },
             ]);
@@ -205,7 +205,7 @@ describe("Relationship properties - update", () => {
                 {
                     title: movieTitle,
                     actorsConnection: {
-                        edges: [
+                        edges: expect.toIncludeSameMembers([
                             {
                                 screenTime: 60,
                                 node: {
@@ -218,7 +218,7 @@ describe("Relationship properties - update", () => {
                                     name: actor1,
                                 },
                             },
-                        ],
+                        ]),
                     },
                 },
             ]);
@@ -277,7 +277,7 @@ describe("Relationship properties - update", () => {
                 {
                     title: movieTitle,
                     actorsConnection: {
-                        edges: [
+                        edges: expect.toIncludeSameMembers([
                             {
                                 screenTime: 60,
                                 node: {
@@ -296,7 +296,7 @@ describe("Relationship properties - update", () => {
                                     name: actor1,
                                 },
                             },
-                        ],
+                        ]),
                     },
                 },
             ]);
@@ -353,7 +353,7 @@ describe("Relationship properties - update", () => {
                 {
                     title: movieTitle,
                     actorsConnection: {
-                        edges: [
+                        edges: expect.toIncludeSameMembers([
                             {
                                 screenTime: 60,
                                 node: {
@@ -372,7 +372,7 @@ describe("Relationship properties - update", () => {
                                     name: actor1,
                                 },
                             },
-                        ],
+                        ]),
                     },
                 },
             ]);
