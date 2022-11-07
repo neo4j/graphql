@@ -47,6 +47,14 @@ function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): strin
     `;
 }
 
+function checkMultiDbSupport(MULTIDB_SUPPORT: boolean): void {
+    // Skip if multi-db not supported
+    if (!MULTIDB_SUPPORT) {
+        console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+        return;
+    }
+}
+
 describe("@fulltext directive", () => {
     let driver: Driver;
     let neo4j: Neo4j;
@@ -94,12 +102,9 @@ describe("@fulltext directive", () => {
 
         await driver.close();
     });
+
     describe("Query Tests", () => {
-        // Skip if multi-db not supported
-        if (!MULTIDB_SUPPORT) {
-            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-            return;
-        }
+        checkMultiDbSupport(MULTIDB_SUPPORT);
 
         let session: Session;
         let neoSchema: Neo4jGraphQL;
@@ -133,6 +138,8 @@ describe("@fulltext directive", () => {
         };
 
         beforeEach(async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             personType = generateUniqueType("Person");
             movieType = generateUniqueType("Movie");
             queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
@@ -174,6 +181,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Orders by score DESC as default", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name") {
@@ -212,6 +221,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Order updates when using a different phrase", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "some name") {
@@ -250,6 +261,8 @@ describe("@fulltext directive", () => {
         });
 
         test("No results if phrase doesn't match", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "should not match") {
@@ -274,6 +287,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Filters node to single result", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name: "${person1.name}" } }) {
@@ -300,6 +315,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Filters node to multiple results", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { born_GTE: ${person2.born} } }) {
@@ -334,6 +351,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Filters node to no results", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name_CONTAINS: "not in anything!!" } }) {
@@ -358,6 +377,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Filters score to single result", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", where: { score: { min: 0.5 } }) {
@@ -384,6 +405,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Filters score to multiple results", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", where: { score: { max: 0.5 } }) {
@@ -413,6 +436,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Filters score to no results", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", where: { score: { min: 100 } }) {
@@ -437,6 +462,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Filters score with combined min and max", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", where: { score: { min: 0.201, max: 0.57 } }) {
@@ -463,6 +490,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Filters score with max score of 0", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", where: { score: { max: 0 } }) {
@@ -487,6 +516,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Throws error if score filtered with a non-number", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const nonNumberScoreInput = "not a number";
             const query = `
                 query {
@@ -513,6 +544,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Filters a related node to multiple values", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_SOME: { title: "${movie1.title}" } } }) {
@@ -562,6 +595,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Filters a related node to a single value", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_ALL: { released: ${movie1.released} } } }) {
@@ -601,6 +636,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Filters a related node to no values", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_ALL: { released_NOT_IN: [${movie1.released}, ${movie2.released}] } } }) {
@@ -629,6 +666,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Throws an error for a non-string phrase", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const nonStringValue = '["not", "a", "string"]';
             const query = `
                 query {
@@ -659,6 +698,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Throws an error for an invalid where", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const invalidField = "not_a_field";
             const query = `
                 query {
@@ -689,6 +730,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Sorting by score ascending", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", sort: { score: ASC }) {
@@ -721,6 +764,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Sorting by node", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", sort: [{ ${personTypeLowerFirst}: { name: ASC } }]) {
@@ -750,6 +795,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Unordered sorting", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "this is", sort: { ${personTypeLowerFirst}: { born: ASC, name: DESC } }) {
@@ -781,6 +828,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Ordered sorting, no score", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const person1 = {
                 name: "a b c",
                 born: 123,
@@ -856,6 +905,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Ordered sorting, with score", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const person1 = {
                 name: "a b c",
                 born: 123,
@@ -933,6 +984,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Sort on nested field", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a name") {
@@ -998,6 +1051,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Combined filter and sort", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a name", sort: { score: ASC }, where: { score: { min: 0.2 } }) {
@@ -1028,6 +1083,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Limiting is possible", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a name", limit: 2) {
@@ -1052,6 +1109,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Offsetting is possible", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a name", offset: 2) {
@@ -1080,6 +1139,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Combined limiting and offsetting is possible", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a name", limit: 1, offset: 1) {
@@ -1107,6 +1168,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Sorting by score when the score is not returned", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", sort: { score: ASC }) {
@@ -1146,6 +1209,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Sort by node when node is not returned", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "this is", sort: { ${personTypeLowerFirst}: { born: ASC } }) {
@@ -1171,6 +1236,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Filters by node when node is not returned", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name: "${person1.name}" } }) {
@@ -1194,6 +1261,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Filters by score when no score is returned", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", where: { score: { max: 0.5 } }) {
@@ -1228,6 +1297,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Works with @auth 'where' when authenticated", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = `
                 type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                 @auth(rules: [{ where: { name: "$jwt.name" } }]) {
@@ -1292,6 +1363,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Works with @auth 'where' when unauthenticated", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = `
                 type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                 @auth(rules: [{ where: { name: "$jwt.name" } }]) {
@@ -1352,6 +1425,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Works with @auth 'roles' when authenticated", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = `
                 type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                 @auth(rules: [{ roles: ["admin"] }]) {
@@ -1427,6 +1502,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Works with @auth 'roles' when unauthenticated", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = `
                 type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                 @auth(rules: [{ roles: ["admin"] }]) {
@@ -1486,6 +1563,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Works with @auth 'allow' when all match", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = `
                 type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                 @auth(rules: [{ allow: { name: "$jwt.name" } }]) {
@@ -1548,6 +1627,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Works with @auth 'allow' when one match", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = `
                 type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                 @auth(rules: [{ allow: { name: "$jwt.name" } }]) {
@@ -1607,6 +1688,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Works with @auth 'roles' when only READ operation is specified", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = `
                 type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                 @auth(rules: [{ roles: ["admin"], operations: [READ] }]) {
@@ -1666,6 +1749,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Multiple fulltext index fields", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const moveTypeLowerFirst = movieType.singular;
             queryType = `${movieType.plural}Fulltext${upperFirst(movieType.name)}Index`;
             const typeDefs = `
@@ -1729,6 +1814,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Custom query name", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             personType = generateUniqueType("Person");
             personTypeLowerFirst = personType.singular;
             queryType = "CustomQueryName";
@@ -1807,6 +1894,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Multiple index fields with custom query name", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const moveTypeLowerFirst = movieType.singular;
             queryType = "SomeCustomQueryName";
             const typeDefs = `
@@ -1863,6 +1952,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Creating and querying multiple indexes", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             movieType = generateUniqueType("Movie");
             const movieTypeLowerFirst = movieType.singular;
             const queryType1 = "CustomQueryName";
@@ -1966,11 +2057,7 @@ describe("@fulltext directive", () => {
         });
     });
     describe("Index Creation", () => {
-        // Skip if multi-db not supported
-        if (!MULTIDB_SUPPORT) {
-            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-            return;
-        }
+        checkMultiDbSupport(MULTIDB_SUPPORT);
 
         let type: UniqueType;
 
@@ -2009,6 +2096,8 @@ describe("@fulltext directive", () => {
         });
 
         afterEach(async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const session = driver.session({ database: databaseName });
 
             try {
@@ -2020,6 +2109,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Creates index if it doesn't exist", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = gql`
             type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
                     title: String!
@@ -2055,6 +2146,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Creates two index's if they dont exist", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }, { indexName: "${indexName2}", fields: ["description"] }]) {
                     title: String!
@@ -2098,6 +2191,8 @@ describe("@fulltext directive", () => {
         });
 
         test("When using the node label, creates index if it doesn't exist", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) @node(label: "${label}") {
                     title: String!
@@ -2133,6 +2228,8 @@ describe("@fulltext directive", () => {
         });
 
         test("When using the field alias, creates index if it doesn't exist", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) @node(label: "${label}") {
                     title: String! @alias(property: "${aliasName}")
@@ -2168,6 +2265,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Throws when missing index (create index and constraint option not true)", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
                     title: String!
@@ -2186,6 +2285,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Throws when an index is missing fields", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title", "description"] }]) {
                     title: String!
@@ -2219,6 +2320,8 @@ describe("@fulltext directive", () => {
         });
 
         test("When using the field alias, throws when index is missing fields", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title", "description"] }]) {
                     title: String!
@@ -2254,6 +2357,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Doesn't throw if an index exists", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
                     title: String!
@@ -2280,6 +2385,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Throws when index is missing fields when used with create option", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title", "description"] }]) {
                     title: String!
@@ -2316,6 +2423,8 @@ describe("@fulltext directive", () => {
         });
 
         test("Create index for ID field if it doesn't exist", async () => {
+            checkMultiDbSupport(MULTIDB_SUPPORT);
+
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["id"] }]) {
                     id: ID!
