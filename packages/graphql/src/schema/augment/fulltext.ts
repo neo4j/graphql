@@ -26,10 +26,10 @@ import { FloatWhere } from "../../graphql/input-objects/FloatWhere";
 import { SCORE_FIELD } from "../../graphql/directives/fulltext";
 
 export const fulltextArgDeprecationMessage =
-    "This argument has been deprecated and will be removed in version 4.0 of the library. " +
+    "This argument has been deprecated and will be removed in version 4.0.0 of the library. " +
     "Please use the top-level query that corresponds to the index you wish to query instead. " +
-    "More information can be found here: " +
-    "https://neo4j.com/docs/graphql-manual/current/type-definitions/indexes-and-constraints/#type-definitions-indexes-fulltext";
+    "More information about the changes to @fulltext can be found here: " +
+    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.";
 
 export function augmentFulltextSchema(
     node: Node,
