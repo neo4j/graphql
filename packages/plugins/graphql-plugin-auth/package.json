@@ -31,7 +31,7 @@
     "dependencies": {
         "debug": "^4.3.4",
         "jsonwebtoken": "^8.5.1",
-        "jwks-rsa": "^2.1.4"
+        "jwks-rsa": "^3.0.0"
     },
     "devDependencies": {
         "@types/debug": "4.1.7",
