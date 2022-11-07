@@ -39,6 +39,7 @@ describe("Connect Subscription with optional filters valid for all types", () =>
     let typeActor: UniqueType;
     let typePerson: UniqueType;
     let typeInfluencer: UniqueType;
+    let typeArticle: UniqueType;
     let typeDefs: string;
 
     beforeEach(async () => {
@@ -46,6 +47,7 @@ describe("Connect Subscription with optional filters valid for all types", () =>
         typeMovie = generateUniqueType("Movie");
         typePerson = generateUniqueType("Person");
         typeInfluencer = generateUniqueType("Influencer");
+        typeArticle = generateUniqueType("Article");
 
         typeDefs = `
             type ${typeMovie} {
@@ -93,7 +95,15 @@ describe("Connect Subscription with optional filters valid for all types", () =>
             interface Reviewer {
                 reputation: Int!
                 reviewerId: Int
+            }
 
+            type ${typeArticle} {
+                title: String!
+                references: [${typeArticle}!]! @relationship(type: "REFERENCES", direction: OUT, properties: "Reference")
+            }
+            interface Reference @relationshipProperties {
+                year: Int!
+                edition: Int!
             }
         `;
 
@@ -167,6 +177,26 @@ subscription SubscriptionMovie {
                     ... on ${typeActor.name}EventPayload {
                         name
                     }
+                }
+            }
+        }
+    }
+}
+`;
+    const articleSubscriptionQuery = ({ typeArticle, where }) => `
+subscription SubscriptionMovie {
+    ${typeArticle.operations.subscribe.connected}(where: ${where}) {
+        relationshipFieldName
+        event
+        ${typeArticle.operations.subscribe.payload.connected} {
+            title
+        }
+        createdRelationship {
+            references {
+                edition
+                year
+                node {
+                    title
                 }
             }
         }
@@ -1800,11 +1830,72 @@ subscription SubscriptionMovie {
         ]);
     });
 
-    // TODO:
-    // 1. finish impl relationship filter (include/exclude based on types :{}) [done]
-    // 2. add tests for finished impl [done?]
-    // include test with type relation to same type
-    // 3. refactor compare-properties.ts
+    test.only("node relationship to self - standard type", async () => {
+        const where = `{createdRelationship: {references: {node: {title_IN: ["art"]}}}}`;
+        await wsClient.subscribe(articleSubscriptionQuery({ typeArticle, where }));
 
-    // tests matching 2 nodes for disconnect
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeArticle.operations.create}(
+                            input: [
+                                {
+                                    references: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    title: "art"
+                                                },
+                                                edge: {
+                                                    year: 2020,
+                                                    edition: 1
+                                                }
+                                            },
+                                            {
+                                                node: {
+                                                    title: "art2"
+                                                },
+                                                edge: {
+                                                    year: 2010,
+                                                    edition: 2
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    title: "articol",
+                                }
+                            ]
+                        ) {
+                            ${typeArticle.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toHaveLength(1);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeArticle.operations.subscribe.connected]: {
+                    [typeArticle.operations.subscribe.payload.connected]: { title: "art" },
+                    event: "CONNECT",
+                    relationshipFieldName: "references",
+                    createdRelationship: {
+                        references: {
+                            year: 2020,
+                            edition: 1,
+                            node: {
+                                title: "articol",
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
 });
