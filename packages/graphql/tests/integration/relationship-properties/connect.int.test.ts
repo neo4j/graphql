@@ -974,5 +974,100 @@ describe("Relationship properties - connect", () => {
                 await session.close();
             }
         });
+
+        test("should create duplicate relationships with a single connect when createDuplicates true", async () => {
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            const session = await neo4j.getSession();
+
+            const source = `
+                mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
+                    ${actorType.operations.update}(
+                        where: { name: $actorName }
+                        connect: {
+                            actedIn: {
+                                ${movieType.name}: {
+                                    createDuplicates: true
+                                    where: { node: { title: $movieTitle } }
+                                    edge: { screenTime: $screenTime }
+                                }
+                            }
+                        }
+                    ) {
+                        ${actorType.plural} {
+                            name
+                            actedInConnection {
+                                edges {
+                                    screenTime
+                                    node {
+                                        ... on ${movieType.name} {
+                                            title
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            try {
+                await session.run(
+                    `
+                        CREATE (:${movieType.name} { title: $movieTitle })<-[:ACTED_IN { screenTime: $screenTime1 } ]-(:${actorType.name} { name: $actorName1 })
+                    `,
+                    { movieTitle, screenTime1, actorName1 }
+                );
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    variableValues: { movieTitle, actorName: actorName1, screenTime: screenTime2 },
+                });
+                expect(gqlResult.errors).toBeFalsy();
+                expect(gqlResult.data).toEqual({
+                    [actorType.operations.update]: {
+                        [actorType.plural]: [
+                            {
+                                name: actorName1,
+                                actedInConnection: {
+                                    edges: expect.toIncludeSameMembers([
+                                        {
+                                            screenTime: screenTime1,
+                                            node: {
+                                                title: movieTitle,
+                                            },
+                                        },
+                                        {
+                                            screenTime: screenTime2,
+                                            node: {
+                                                title: movieTitle,
+                                            },
+                                        },
+                                    ]),
+                                },
+                            },
+                        ],
+                    },
+                });
+
+                const cypher = `
+                    MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
+                    RETURN r
+                `;
+
+                const neo4jResult = await session.run(cypher, {
+                    movieTitle,
+                    screenTime: screenTime1,
+                    actorName: actorName1,
+                });
+                expect(neo4jResult.records).toHaveLength(2);
+            } finally {
+                await session.close();
+            }
+        });
     });
 });
