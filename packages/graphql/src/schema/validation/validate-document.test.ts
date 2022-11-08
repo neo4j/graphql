@@ -656,4 +656,25 @@ describe("validateDocument", () => {
             expect(res).toBeUndefined();
         });
     });
+
+    describe("https://github.com/neo4j/graphql/issues/2325 - SortDirection", () => {
+        test("should not throw error when using SortDirection", () => {
+            const doc = gql`
+                type Movie {
+                    title: String
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+                type Actor {
+                    name: String
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+                type Mutation {
+                    hello(direction: SortDirection): Boolean!
+                }
+            `;
+
+            const res = validateDocument(doc);
+            expect(res).toBeUndefined();
+        });
+    });
 });
