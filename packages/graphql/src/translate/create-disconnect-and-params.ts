@@ -42,7 +42,7 @@ function createDisconnectAndParams({
     parentNode,
     insideDoWhen,
     parameterPrefix,
-    level = 1,
+    isFirstLevel = true,
 }: {
     withVars: string[];
     value: any;
@@ -55,13 +55,12 @@ function createDisconnectAndParams({
     parentNode: Node;
     insideDoWhen?: boolean;
     parameterPrefix: string;
-    level?: number;
+    isFirstLevel?: boolean;
 }): [string, any] {
     function createSubqueryContents(
         relatedNode: Node,
         disconnect: any,
-        index: number,
-        level: number
+        index: number
     ): { subquery: string; params: Record<string, any> } {
         const variableName = `${varName}${index}`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
@@ -203,7 +202,7 @@ function createDisconnectAndParams({
                 ? disconnect.disconnect
                 : [disconnect.disconnect];
 
-            disconnects.forEach((c, i) => {
+            disconnects.forEach((c) => {
                 const reduced = Object.entries(c)
                     .filter(([k]) => {
                         if (k === "_on") {
@@ -254,7 +253,7 @@ function createDisconnectAndParams({
                                         relField.typeMeta.array ? `[${i}]` : ""
                                     }.disconnect.${k}${relField.union ? `.${newRefNode.name}` : ""}`,
                                     labelOverride: relField.union ? newRefNode.name : "",
-                                    level: level + 2 + i,
+                                    isFirstLevel: false,
                                 });
                                 r.disconnects.push(recurse[0]);
                                 r.params = { ...r.params, ...recurse[1] };
@@ -275,7 +274,7 @@ function createDisconnectAndParams({
 
                     onDisconnects.forEach((onDisconnect, onDisconnectIndex) => {
                         const onReduced = Object.entries(onDisconnect).reduce(
-                            (r: Res, [k, v]: [string, any], index: number) => {
+                            (r: Res, [k, v]: [string, any]) => {
                                 const relField = relatedNode.relationFields.find((x) =>
                                     k.startsWith(x.fieldName)
                                 ) as RelationField;
@@ -307,7 +306,7 @@ function createDisconnectAndParams({
                                             relField.typeMeta.array ? `[${onDisconnectIndex}]` : ""
                                         }.${k}${relField.union ? `.${newRefNode.name}` : ""}`,
                                         labelOverride: relField.union ? newRefNode.name : "",
-                                        level: level + 2 + index + i,
+                                        isFirstLevel: false,
                                     });
                                     r.disconnects.push(recurse[0]);
                                     r.params = { ...r.params, ...recurse[1] };
@@ -365,7 +364,6 @@ function createDisconnectAndParams({
         }
 
         if (context.subscriptionsEnabled) {
-            // subquery.push(`RETURN meta as disconnect_meta`);
             subquery.push(`WITH collect(meta) AS disconnect_meta`);
             subquery.push(`RETURN REDUCE(m=[],m1 IN disconnect_meta | m+m1 ) as disconnect_meta`);
         } else {
@@ -390,16 +388,15 @@ function createDisconnectAndParams({
             }
         }
 
-        if (level === 1) {
+        if (isFirstLevel) {
             res.disconnects.push(`WITH ${withVars.join(", ")}`);
         }
-        // res.disconnects.push("CALL {");
 
         const inner: string[] = [];
         if (relationField.interface) {
             const subqueries: string[] = [];
             refNodes.forEach((refNode, i) => {
-                const subquery = createSubqueryContents(refNode, disconnect, index, level + i);
+                const subquery = createSubqueryContents(refNode, disconnect, index);
                 if (subquery.subquery) {
                     subqueries.push(subquery.subquery);
                     res.params = { ...res.params, ...subquery.params };
@@ -415,10 +412,8 @@ function createDisconnectAndParams({
                     inner.push(subqueries.join("\n}\nCALL {\n\t"));
                 }
             }
-            // res.disconnects.push(subqueries.join("\n}\nCALL {\n\t"));
         } else {
-            const subquery = createSubqueryContents(refNodes[0], disconnect, index, level);
-            // res.disconnects.push(subquery.subquery);
+            const subquery = createSubqueryContents(refNodes[0], disconnect, index);
             inner.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
         }
@@ -432,7 +427,6 @@ function createDisconnectAndParams({
                 res.disconnects.push(`WITH ${filterMetaVariable(withVars).join(", ")}, disconnect_meta + meta as meta`);
             }
         }
-        // res.disconnects.push("}");
 
         return res;
     }
