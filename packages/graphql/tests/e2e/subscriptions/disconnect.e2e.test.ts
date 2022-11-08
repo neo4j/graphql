@@ -132,17 +132,14 @@ describe("Disconnect Subscription", () => {
     const actorSubscriptionQuery = (typeActor) => `
     subscription SubscriptionActor {
         ${typeActor.operations.subscribe.disconnected} {
-            relationshipName
+            relationshipFieldName
             event
-            direction
             ${typeActor.operations.subscribe.payload.disconnected} {
                 name
             }
-            relationship {
+            deletedRelationship {
                 movies {
-                    edge {
-                        screenTime
-                    }
+                    screenTime
                     node {
                         title
                     }
@@ -155,17 +152,14 @@ describe("Disconnect Subscription", () => {
     const movieSubscriptionQuery = ({ typeMovie, typePerson, typeInfluencer }) => `
 subscription SubscriptionMovie {
     ${typeMovie.operations.subscribe.disconnected} {
-        direction
-        relationshipName
+        relationshipFieldName
         event
         ${typeMovie.operations.subscribe.payload.disconnected} {
             title
         }
-        relationship {
+        deletedRelationship {
             reviewers {
-                edge {
-                    score
-                }
+                score
                 node {
                     ... on ${typePerson.name}EventPayload {
                         name
@@ -177,17 +171,13 @@ subscription SubscriptionMovie {
                 }
             }
             actors {
-                edge {
-                    screenTime
-                }
+                screenTime
                 node {
                     name
                 }
             }
             directors {
-                edge {
-                    year
-                }
+                year
                 node {
                     ... on ${typePerson.name}EventPayload {
                         name
@@ -206,17 +196,14 @@ subscription SubscriptionMovie {
     const personSubscriptionQuery = (typePerson) => `
 subscription SubscriptionPerson {
     ${typePerson.operations.subscribe.disconnected} {
-        relationshipName
+        relationshipFieldName
         event
-        direction
         ${typePerson.operations.subscribe.payload.disconnected} {
             name
         }
-        relationship {
+        deletedRelationship {
             movies {
-                edge {
-                    score
-                }
+                score
                 node {
                     title
                 }
@@ -308,13 +295,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 42,
-                            },
+                            screenTime: 42,
                             node: {
                                 name: "Keanu Reeves",
                             },
@@ -332,13 +317,11 @@ subscription SubscriptionPerson {
                         name: "Keanu Reeves",
                     },
                     event: "DISCONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 42,
-                            },
+                            screenTime: 42,
                             node: {
                                 title: "John Wick",
                             },
@@ -457,14 +440,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 2019,
-                            },
+                            year: 2019,
                             node: {
                                 name: "Keanu Reeves",
                             },
@@ -477,14 +458,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 2020,
-                            },
+                            year: 2020,
                             node: {
                                 name: "Jim",
                                 reputation: 10,
@@ -586,15 +565,13 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 100,
-                            },
+                            score: 100,
                             node: {
                                 name: "Ana",
                                 reputation: 10,
@@ -607,13 +584,13 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: { score: 100 },
+                            score: 100,
                             node: {
                                 url: "/bob",
                                 reputation: 10,
@@ -630,13 +607,11 @@ subscription SubscriptionPerson {
                         name: "Ana",
                     },
                     event: "DISCONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
                         movies: {
-                            edge: {
-                                score: 100,
-                            },
+                            score: 100,
                             node: {
                                 title: "John Wick",
                             },
@@ -743,15 +718,13 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -764,13 +737,13 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: { score: 10 },
+                            score: 10,
                             node: {
                                 url: "/bob",
                                 reputation: 1,
@@ -787,13 +760,11 @@ subscription SubscriptionPerson {
                         name: "Ana",
                     },
                     event: "DISCONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
                         movies: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 title: "John Wick",
                             },
@@ -944,15 +915,13 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 100,
-                            },
+                            score: 100,
                             node: {
                                 name: "Ana",
                                 reputation: 10,
@@ -965,15 +934,13 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 42,
-                            },
+                            score: 42,
                             node: {
                                 name: "Ana",
                                 reputation: 10,
@@ -986,13 +953,13 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: { score: 100 },
+                            score: 100,
                             node: {
                                 url: "/bob",
                                 reputation: 10,
@@ -1009,13 +976,11 @@ subscription SubscriptionPerson {
                         name: "Ana",
                     },
                     event: "DISCONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
                         movies: {
-                            edge: {
-                                score: 100,
-                            },
+                            score: 100,
                             node: {
                                 title: "John Wick",
                             },
@@ -1029,13 +994,11 @@ subscription SubscriptionPerson {
                         name: "Ana",
                     },
                     event: "DISCONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
                         movies: {
-                            edge: {
-                                score: 42,
-                            },
+                            score: 42,
                             node: {
                                 title: "Constantine",
                             },
@@ -1193,15 +1156,13 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 42,
-                            },
+                            score: 42,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -1214,15 +1175,13 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -1235,15 +1194,13 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 url: "/bob",
                                 reputation: 100,
@@ -1260,13 +1217,11 @@ subscription SubscriptionPerson {
                         name: "Ana",
                     },
                     event: "DISCONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
                         movies: {
-                            edge: {
-                                score: 42,
-                            },
+                            score: 42,
                             node: {
                                 title: "Constantine",
                             },
@@ -1280,13 +1235,11 @@ subscription SubscriptionPerson {
                         name: "Ana",
                     },
                     event: "DISCONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
                         movies: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 title: "John Wick",
                             },
@@ -1439,14 +1392,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John WICK" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 2020,
-                            },
+                            year: 2020,
                             node: {
                                 name: "Jill",
                             },
@@ -1459,14 +1410,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John WICK" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 2020,
-                            },
+                            year: 2020,
                             node: {
                                 name: "Jim",
                                 reputation: 10,
@@ -1480,13 +1429,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John WICK" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 42,
-                            },
+                            screenTime: 42,
                             node: {
                                 name: "Keanu",
                             },
@@ -1671,15 +1618,13 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 42,
-                            },
+                            score: 42,
                             node: {
                                 name: "Ana",
                                 reputation: 10,
@@ -1692,13 +1637,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John WICK" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 42,
-                            },
+                            screenTime: 42,
                             node: {
                                 name: "Keanu",
                             },
@@ -1712,6 +1655,8 @@ subscription SubscriptionPerson {
     });
 
     // =============================================
+    // add tests matching 2 nodes for disconnect
+
     test("disconnect via nested update - disconnect subscription sends events one way: interface to union type", async () => {
         // 1. create
         await supertest(server.path)
@@ -1911,15 +1856,13 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 42,
-                            },
+                            score: 42,
                             node: {
                                 name: "Ana",
                                 reputation: 10,
@@ -1932,14 +1875,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 2018,
-                            },
+                            year: 2018,
                             node: {
                                 name: "Jill",
                             },
@@ -1952,14 +1893,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 2019,
-                            },
+                            year: 2019,
                             node: {
                                 name: "Jim",
                                 reputation: 10,
@@ -1977,13 +1916,333 @@ subscription SubscriptionPerson {
                         name: "Ana",
                     },
                     event: "DISCONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
                         movies: {
-                            edge: {
-                                score: 42,
+                            score: 42,
+                            node: {
+                                title: "Constantine",
                             },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+
+    test.only("disconnect via nested update - disconnect subscription sends events one way: interface to union type - duplicate nodes", async () => {
+        // 1. create
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+            mutation {
+                ${typeMovie.operations.create}(
+                    input: [
+                        {
+                            reviewers: {
+                                create: [
+                                        {
+                                        node: {
+                                            ${typePerson.name}: {
+                                                name: "Ana",
+                                                reputation: 10
+                                            },
+                                            ${typeInfluencer.name}: {
+                                                url: "/bob",
+                                                reputation: 10
+                                            }
+                                        },
+                                        edge: {
+                                            score: 100
+                                        }
+                                    }
+                                ]
+                            },
+                            title: "John Wick",
+                        }
+                    ]
+                ) {
+                    ${typeMovie.plural} {
+                        title
+                    }
+                }
+            }
+        `,
+            })
+            .expect(200);
+        // duplicate node
+        // await supertest(server.path)
+        //     .post("")
+        //     .send({
+        //         query: `
+        //     mutation {
+        //         ${typePerson.operations.create}(
+        //             input: [
+        //                 {
+        //                     name: "Ana",
+        //                     reputation: 10
+        //                 }
+        //             ]
+        //         ) {
+        //             ${typePerson.plural} {
+        //                 name
+        //             }
+        //         }
+        //     }
+        // `,
+        //     })
+        //     .expect(200);
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+            mutation {
+                ${typeMovie.operations.create}(
+                    input: [
+                        {
+                            reviewers: {
+                                connect: [
+                                    {
+                                        where: {
+                                            node: {
+                                                _on: {
+                                                    ${typePerson.name}: {
+                                                        name: "Ana"
+                                                    },
+                                                    ${typeInfluencer.name}: {
+                                                        url: "/bob"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        edge: {
+                                            score: 42
+                                        }
+                                    }
+                                ]
+                            },
+                            directors: {
+                                ${typeActor.name}: {
+                                    create: [
+                                        {
+                                            node: {
+                                                name: "Jill"
+                                            },
+                                            edge: {
+                                                year: 2018
+                                            }
+                                        },
+                                        {
+                                            node: {
+                                                name: "Jill"
+                                            },
+                                            edge: {
+                                                year: 2018
+                                            }
+                                        }
+                                    ]
+                                },
+                                ${typePerson.name}: {
+                                    create: [
+                                        {
+                                            node: {
+                                                name: "Jim",
+                                                reputation: 10
+                                            },
+                                            edge: {
+                                                year: 2019
+                                            }
+                                        }
+                                    ]
+                                }   
+                            },
+                            title: "Constantine",
+                        }
+                    ]
+                ) {
+                    ${typeMovie.plural} {
+                        title
+                    }
+                }
+            }
+        `,
+            })
+            .expect(200);
+
+        // 2. subscribe both ways
+        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
+
+        await wsClient.subscribe(personSubscriptionQuery(typePerson));
+
+        // 3. perform update on created node
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.update}(
+                                where: {
+                                  title: "John Wick"
+                                },
+                                update: {
+                                    title: "John WICK",
+                                    reviewers: [
+                                        {
+                                          update: {
+                                            node: {
+                                              _on: {
+                                                ${typePerson.name}: {
+                                                  movies: [
+                                                    {
+                                                      disconnect: [
+                                                        {
+                                                          where: {
+                                                            node: {
+                                                              title: "Constantine"
+                                                            }
+                                                          },
+                                                          disconnect: {
+                                                            directors: {
+                                                              ${typePerson.name}: [
+                                                                {
+                                                                  where: {
+                                                                    edge: {
+                                                                      year: 2019
+                                                                    }
+                                                                  }
+                                                                }
+                                                              ],
+                                                              ${typeActor.name}: [
+                                                                {
+                                                                  where: {
+                                                                    node: {
+                                                                      name: "Jill"
+                                                                    }
+                                                                  }
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                ${typeInfluencer.name}: {
+                                                  url: "/bob"
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                    ]
+                                  }
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient2.errors).toEqual([]);
+
+        expect(wsClient2.events).toHaveLength(4);
+        expect(wsClient.events).toHaveLength(1);
+
+        expect(wsClient2.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 42,
+                            node: {
+                                name: "Ana",
+                                reputation: 10,
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: {
+                            year: 2018,
+                            node: {
+                                name: "Jill",
+                            },
+                        },
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: {
+                            year: 2018,
+                            node: {
+                                name: "Jill",
+                            },
+                        },
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: {
+                            year: 2019,
+                            node: {
+                                name: "Jim",
+                                reputation: 10,
+                            },
+                        },
+                        reviewers: null,
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Ana",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
+                        movies: {
+                            score: 42,
                             node: {
                                 title: "Constantine",
                             },
@@ -2174,15 +2433,13 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 42,
-                            },
+                            score: 42,
                             node: {
                                 name: "Ana",
                                 reputation: 10,
@@ -2195,13 +2452,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John WICK" },
                     event: "DISCONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 42,
-                            },
+                            screenTime: 42,
                             node: {
                                 name: "Keanu",
                             },
