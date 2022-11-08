@@ -1830,7 +1830,7 @@ subscription SubscriptionMovie {
         ]);
     });
 
-    test.only("node relationship to self - standard type", async () => {
+    test("node relationship to self - standard type", async () => {
         const where = `{createdRelationship: {references: {node: {title_IN: ["art"]}}}}`;
         await wsClient.subscribe(articleSubscriptionQuery({ typeArticle, where }));
 
