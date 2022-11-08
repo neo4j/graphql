@@ -95,14 +95,21 @@ export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<str
         .reduce((res, f) => {
             const fieldType = f.typeMeta.input.create.pretty;
             const defaultValue = (f as PrimitiveField)?.defaultValue;
+            const deprecatedDirectives = graphqlDirectivesToCompose(
+                f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+            );
 
             if (defaultValue !== undefined) {
                 res[f.fieldName] = {
                     type: fieldType,
                     defaultValue,
+                    directives: deprecatedDirectives,
                 };
             } else {
-                res[f.fieldName] = fieldType;
+                res[f.fieldName] = {
+                    type: fieldType,
+                    directives: deprecatedDirectives,
+                };
             }
 
             return res;
@@ -154,6 +161,9 @@ export function objectFieldsToSubscriptionsWhereInputFields(
 
 export function objectFieldsToUpdateInputFields(fields: BaseField[]): Record<string, InputField> {
     return fields.reduce((res, f) => {
+        const deprecatedDirectives = graphqlDirectivesToCompose(
+            f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+        );
         const staticField = f.readonly || (f as PrimitiveField)?.autogenerate;
         if (staticField) {
             return res;
@@ -161,7 +171,10 @@ export function objectFieldsToUpdateInputFields(fields: BaseField[]): Record<str
 
         const fieldType = f.typeMeta.input.update.pretty;
 
-        res[f.fieldName] = fieldType;
+        res[f.fieldName] = {
+            type: fieldType,
+            directives: deprecatedDirectives,
+        };
 
         return res;
     }, {});

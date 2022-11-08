@@ -28,6 +28,7 @@ import { createConnectOrCreateField } from "./create-connect-or-create-field";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
+import { graphqlDirectivesToCompose } from "../to-compose";
 
 function createRelationshipFields({
     relationshipFields,
@@ -69,6 +70,10 @@ function createRelationshipFields({
         let anyNonNullRelProperties = false;
         let relFields: ObjectFields | undefined;
 
+        const deprecatedDirectives = graphqlDirectivesToCompose(
+            rel.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+        );
+
         if (rel.properties) {
             relFields = relationshipPropertyFields.get(rel.properties);
 
@@ -106,6 +111,7 @@ function createRelationshipFields({
                         type: rel.typeMeta.pretty,
                         args: nodeFieldArgs,
                         description: rel.description,
+                        directives: graphqlDirectivesToCompose(rel.otherDirectives),
                     },
                 });
             }
@@ -265,6 +271,7 @@ function createRelationshipFields({
                         type: rel.typeMeta.pretty,
                         args: nodeFieldArgs,
                         description: rel.description,
+                        directives: graphqlDirectivesToCompose(rel.otherDirectives),
                     },
                 });
             }
@@ -664,9 +671,18 @@ function createRelationshipFields({
 
         whereInput.addFields({
             ...{
-                [rel.fieldName]: `${n.name}Where`,
-                [`${rel.fieldName}_NOT`]: `${n.name}Where`,
-                [`${rel.fieldName}Aggregate`]: whereAggregateInput,
+                [rel.fieldName]: {
+                    type: `${n.name}Where`,
+                    directives: deprecatedDirectives,
+                },
+                [`${rel.fieldName}_NOT`]: {
+                    type: `${n.name}Where`,
+                    directives: deprecatedDirectives,
+                },
+                [`${rel.fieldName}Aggregate`]: {
+                    type: whereAggregateInput,
+                    directives: deprecatedDirectives,
+                },
             },
         });
 
@@ -683,6 +699,7 @@ function createRelationshipFields({
                             description: `Return ${pluralize(sourceName)} where ${
                                 filter !== "SINGLE" ? filter.toLowerCase() : "one"
                             } of the related ${pluralize(rel.typeMeta.name)} match this filter`,
+                            directives: deprecatedDirectives,
                         },
                     }),
                     {}
@@ -690,12 +707,22 @@ function createRelationshipFields({
             );
 
             // Deprecate existing filters
-            whereInput.setFieldDirectiveByName(rel.fieldName, "deprecated", {
-                reason: `Use \`${rel.fieldName}_SOME\` instead.`,
-            });
-            whereInput.setFieldDirectiveByName(`${rel.fieldName}_NOT`, "deprecated", {
-                reason: `Use \`${rel.fieldName}_NONE\` instead.`,
-            });
+            whereInput.setFieldDirectives(rel.fieldName, [
+                {
+                    name: "deprecated",
+                    args: {
+                        reason: `Use \`${rel.fieldName}_SOME\` instead.`,
+                    },
+                },
+            ]);
+            whereInput.setFieldDirectives(`${rel.fieldName}_NOT`, [
+                {
+                    name: "deprecated",
+                    args: {
+                        reason: `Use \`${rel.fieldName}_NONE\` instead.`,
+                    },
+                },
+            ]);
         }
 
         const createName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}CreateFieldInput`;
@@ -743,6 +770,7 @@ function createRelationshipFields({
                     type: rel.typeMeta.pretty,
                     args: nodeFieldsArgs,
                     description: rel.description,
+                    directives: graphqlDirectivesToCompose(rel.otherDirectives),
                 },
             });
 
@@ -766,6 +794,7 @@ function createRelationshipFields({
                     [`${rel.fieldName}Aggregate`]: {
                         type: aggregationTypeObject,
                         args: aggregationFieldsArgs,
+                        directives: deprecatedDirectives,
                     },
                 });
             }
@@ -837,29 +866,47 @@ function createRelationshipFields({
         }
 
         nodeRelationInput.addFields({
-            [rel.fieldName]: create,
+            [rel.fieldName]: {
+                type: create,
+                directives: deprecatedDirectives,
+            },
         });
 
         if (!(composeNode instanceof InterfaceTypeComposer)) {
             nodeCreateInput.addFields({
-                [rel.fieldName]: nodeFieldInputName,
+                [rel.fieldName]: {
+                    type: nodeFieldInputName,
+                    directives: deprecatedDirectives,
+                },
             });
         }
 
         nodeUpdateInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldUpdateInputName}!]` : nodeFieldUpdateInputName,
+            [rel.fieldName]: {
+                type: rel.typeMeta.array ? `[${nodeFieldUpdateInputName}!]` : nodeFieldUpdateInputName,
+                directives: deprecatedDirectives,
+            },
         });
 
         nodeDeleteInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
+            [rel.fieldName]: {
+                type: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
+                directives: deprecatedDirectives,
+            },
         });
 
         nodeConnectInput.addFields({
-            [rel.fieldName]: connect,
+            [rel.fieldName]: {
+                type: connect,
+                directives: deprecatedDirectives,
+            },
         });
 
         nodeDisconnectInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldDisconnectInputName}!]` : nodeFieldDisconnectInputName,
+            [rel.fieldName]: {
+                type: rel.typeMeta.array ? `[${nodeFieldDisconnectInputName}!]` : nodeFieldDisconnectInputName,
+                directives: deprecatedDirectives,
+            },
         });
 
         if (n.uniqueFields.length) {
