@@ -69,8 +69,8 @@ export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
     plugins?: Omit<Neo4jGraphQLPlugins, "federation">;
 }
 
-export type SchemaDefinition = {
-    typeDefs: IExecutableSchemaDefinition["typeDefs"];
+type SchemaDefinition = {
+    typeDefs: DocumentNode;
     resolvers: IExecutableSchemaDefinition["resolvers"];
 };
 
