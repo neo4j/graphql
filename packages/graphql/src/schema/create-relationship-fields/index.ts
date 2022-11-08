@@ -350,6 +350,7 @@ function createRelationshipFields({
                         name: connectName,
                         fields: {
                             where: connectWhereName,
+                            createDuplicates: CreateDuplicates,
                             ...(n.relationFields.length
                                 ? {
                                       connect: rel.typeMeta.array
