@@ -28,8 +28,8 @@
     },
     "devDependencies": {
         "@tsconfig/node16": "1.0.3",
-        "@typescript-eslint/eslint-plugin": "5.42.0",
-        "@typescript-eslint/parser": "5.42.0",
+        "@typescript-eslint/eslint-plugin": "5.42.1",
+        "@typescript-eslint/parser": "5.42.1",
         "concurrently": "7.5.0",
         "dotenv": "16.0.3",
         "eslint": "8.27.0",
