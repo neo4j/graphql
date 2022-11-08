@@ -17,26 +17,11 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
+import type { ApolloServer } from "@apollo/server";
 
-export const typeDefs = gql`
-    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
-
-    type Location @key(fields: "id") {
-        id: ID!
-        "The calculated overall rating based on all reviews"
-        overallRating: Float
-        "All submitted reviews about this location"
-        reviewsForLocation: [Review]!
-    }
-
-    type Review {
-        id: ID!
-        "Written text"
-        comment: String
-        "A number from 1 - 5 with 1 being lowest and 5 being highest"
-        rating: Int
-        "The location the review is about"
-        location: Location
-    }
-`;
+export interface Server {
+    port: number;
+    server: ApolloServer;
+    start(): Promise<string>;
+    stop(): Promise<void>;
+}

@@ -17,11 +17,13 @@
  * limitations under the License.
  */
 
+import { buildSubgraphSchema, printSubgraphSchema } from "@apollo/subgraph";
 import { mergeTypeDefs } from "@graphql-tools/merge";
+import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import type { IResolvers, TypeSource } from "@graphql-tools/utils";
 import { OGM } from "@neo4j/graphql-ogm";
-import type { SchemaDefinition } from "@neo4j/graphql/src";
-import { ConstDirectiveNode, Kind } from "graphql";
+import type { SchemaDefinition } from "@neo4j/graphql";
+import { ConstDirectiveNode, DefinitionNode, DocumentNode, FieldDefinitionNode, GraphQLSchema, Kind } from "graphql";
 
 type FederationDirective =
     | "@key"
@@ -56,17 +58,30 @@ export class Neo4jGraphQLApolloFederationPlugin {
             ["@requires", "@federation__requires"],
             ["@tag", "@federation__tag"],
         ]);
-        this.ogm = new OGM({ typeDefs });
+
+        const linkDirective = this.findFederationLinkDirective(typeDefs);
+        if (!linkDirective) {
+            throw new Error(`typeDefs must contain \`@link\` schema extension to be used with Apollo Federation`);
+        }
+        this.parseLinkImportArgument(linkDirective);
+
+        const filteredTypeDefs = this.filterFederationDirectives(typeDefs);
+
+        this.ogm = new OGM({ typeDefs: filteredTypeDefs });
     }
 
     public init(): Promise<void> {
         return this.ogm.init();
     }
 
-    public augmentSchemaDefinition(typeDefs: TypeSource): SchemaDefinition {
+    public augmentSchemaDefinition(typeDefs: TypeSource): IExecutableSchemaDefinition {
         const resolvers = this.getReferenceResolvers(typeDefs);
 
         return { typeDefs, resolvers };
+    }
+
+    public buildSubgraphSchema({ typeDefs, resolvers }: SchemaDefinition): GraphQLSchema {
+        return buildSubgraphSchema({ typeDefs, resolvers: resolvers as Record<string, any> });
     }
 
     private getReferenceResolvers(typeDefs: TypeSource): IResolvers {
@@ -152,5 +167,67 @@ export class Neo4jGraphQLApolloFederationPlugin {
                 }
             }
         }
+    }
+
+    private filterFederationDirectives(typeDefs: TypeSource): DocumentNode {
+        const document = mergeTypeDefs(typeDefs);
+        const federationDirectives = Array.from(this.importArgument.values());
+
+        const definitions: DefinitionNode[] = [];
+
+        for (const definition of document.definitions) {
+            if (definition.kind === Kind.SCHEMA_DEFINITION || definition.kind === Kind.SCHEMA_EXTENSION) {
+                continue;
+            } else if (
+                definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
+                definition.kind === Kind.OBJECT_TYPE_EXTENSION ||
+                definition.kind === Kind.INTERFACE_TYPE_DEFINITION ||
+                definition.kind === Kind.INTERFACE_TYPE_EXTENSION
+            ) {
+                if (definition.directives) {
+                    if (definition.fields) {
+                        const fields: FieldDefinitionNode[] = [];
+
+                        for (const field of definition.fields) {
+                            if (field.directives) {
+                                fields.push({
+                                    ...field,
+                                    directives: field.directives.filter((directive) =>
+                                        federationDirectives.includes(directive.name.value)
+                                    ),
+                                });
+                            } else {
+                                fields.push(field);
+                            }
+                        }
+
+                        definitions.push({
+                            ...definition,
+                            directives: definition.directives.filter((directive) =>
+                                federationDirectives.includes(directive.name.value)
+                            ),
+                            fields,
+                        });
+                    } else {
+                        definitions.push({
+                            ...definition,
+                            directives: definition.directives.filter((directive) =>
+                                federationDirectives.includes(directive.name.value)
+                            ),
+                        });
+                    }
+                } else {
+                    definitions.push(definition);
+                }
+            } else {
+                // TODO: scalars, enums, enum values, unions
+                definitions.push(definition);
+            }
+        }
+
+        return {
+            ...document,
+            definitions,
+        };
     }
 }

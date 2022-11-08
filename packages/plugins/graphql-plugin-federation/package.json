@@ -30,6 +30,7 @@
     "author": "Neo4j Inc.",
     "dependencies": {
         "@graphql-tools/merge": "^8.3.6",
+        "@graphql-tools/schema": "^9.0.9",
         "@graphql-tools/utils": "^8.12.0",
         "@neo4j/graphql-ogm": "3.10.1",
         "debug": "^4.3.4"
