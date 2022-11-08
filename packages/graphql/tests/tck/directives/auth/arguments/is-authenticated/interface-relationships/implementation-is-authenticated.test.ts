@@ -345,8 +345,8 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
             CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
             	RETURN count(*) AS _
@@ -359,8 +359,8 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
             	RETURN count(*) AS _

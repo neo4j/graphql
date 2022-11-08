@@ -1102,8 +1102,8 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Comment)
             CALL {
-            	WITH this_content0_disconnect0, this_content0_disconnect0_rel
-            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel
+            	WITH this_content0_disconnect0, this_content0_disconnect0_rel, this
+            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel, this
             	UNWIND this_content0_disconnect0 as x
             	DELETE this_content0_disconnect0_rel
             	RETURN count(*) AS _
@@ -1122,8 +1122,8 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
             WHERE (exists((this_content0_disconnect0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content0_disconnect0auth_param0)))
             CALL {
-            	WITH this_content0_disconnect0, this_content0_disconnect0_rel
-            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel
+            	WITH this_content0_disconnect0, this_content0_disconnect0_rel, this
+            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel, this
             	UNWIND this_content0_disconnect0 as x
             	DELETE this_content0_disconnect0_rel
             	RETURN count(*) AS _
@@ -1175,8 +1175,8 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Comment)
             WHERE this_content0_disconnect0.id = $updateUsers_args_update_content0_disconnect0_where_Commentparam0
             CALL {
-            	WITH this_content0_disconnect0, this_content0_disconnect0_rel
-            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel
+            	WITH this_content0_disconnect0, this_content0_disconnect0_rel, this
+            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel, this
             	UNWIND this_content0_disconnect0 as x
             	DELETE this_content0_disconnect0_rel
             	RETURN count(*) AS _
@@ -1195,8 +1195,8 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
             WHERE this_content0_disconnect0.id = $updateUsers_args_update_content0_disconnect0_where_Postparam0 AND (exists((this_content0_disconnect0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content0_disconnect0auth_param0)))
             CALL {
-            	WITH this_content0_disconnect0, this_content0_disconnect0_rel
-            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel
+            	WITH this_content0_disconnect0, this_content0_disconnect0_rel, this
+            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel, this
             	UNWIND this_content0_disconnect0 as x
             	DELETE this_content0_disconnect0_rel
             	RETURN count(*) AS _
@@ -1265,8 +1265,8 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
             CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
             	RETURN count(*) AS _
@@ -1278,8 +1278,8 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WHERE (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_content0auth_param0)))
             CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
             	RETURN count(*) AS _
@@ -1338,8 +1338,8 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
             WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Commentparam0
             CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
             	RETURN count(*) AS _
@@ -1351,8 +1351,8 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Postparam0 AND (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_content0auth_param0)))
             CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
             	RETURN count(*) AS _

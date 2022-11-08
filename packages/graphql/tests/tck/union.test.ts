@@ -462,8 +462,8 @@ describe("Cypher Union", () => {
             OPTIONAL MATCH (this)-[this_search_Genre0_disconnect0_rel:SEARCH]->(this_search_Genre0_disconnect0:Genre)
             WHERE this_search_Genre0_disconnect0.name = $updateMovies_args_update_search_Genre0_disconnect0_where_Genreparam0
             CALL {
-            	WITH this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel
-            	WITH collect(this_search_Genre0_disconnect0) as this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel
+            	WITH this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel, this
+            	WITH collect(this_search_Genre0_disconnect0) as this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel, this
             	UNWIND this_search_Genre0_disconnect0 as x
             	DELETE this_search_Genre0_disconnect0_rel
             	RETURN count(*) AS _
@@ -531,8 +531,8 @@ describe("Cypher Union", () => {
             OPTIONAL MATCH (this)-[this_disconnect_search_Genre0_rel:SEARCH]->(this_disconnect_search_Genre0:Genre)
             WHERE this_disconnect_search_Genre0.name = $updateMovies_args_disconnect_search_Genre0_where_Genreparam0
             CALL {
-            	WITH this_disconnect_search_Genre0, this_disconnect_search_Genre0_rel
-            	WITH collect(this_disconnect_search_Genre0) as this_disconnect_search_Genre0, this_disconnect_search_Genre0_rel
+            	WITH this_disconnect_search_Genre0, this_disconnect_search_Genre0_rel, this
+            	WITH collect(this_disconnect_search_Genre0) as this_disconnect_search_Genre0, this_disconnect_search_Genre0_rel, this
             	UNWIND this_disconnect_search_Genre0 as x
             	DELETE this_disconnect_search_Genre0_rel
             	RETURN count(*) AS _

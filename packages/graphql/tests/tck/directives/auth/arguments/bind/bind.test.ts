@@ -403,8 +403,8 @@ describe("Cypher Auth Allow", () => {
             OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
             WHERE this_disconnect_creator0.id = $updatePosts_args_disconnect_creator_where_Userparam0
             CALL {
-            	WITH this_disconnect_creator0, this_disconnect_creator0_rel
-            	WITH collect(this_disconnect_creator0) as this_disconnect_creator0, this_disconnect_creator0_rel
+            	WITH this_disconnect_creator0, this_disconnect_creator0_rel, this
+            	WITH collect(this_disconnect_creator0) as this_disconnect_creator0, this_disconnect_creator0_rel, this
             	UNWIND this_disconnect_creator0 as x
             	DELETE this_disconnect_creator0_rel
             	RETURN count(*) AS _
