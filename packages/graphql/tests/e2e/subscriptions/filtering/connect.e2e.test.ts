@@ -39,7 +39,6 @@ describe("Connect Subscription with optional filters valid for all types", () =>
     let typeActor: UniqueType;
     let typePerson: UniqueType;
     let typeInfluencer: UniqueType;
-    let typeArticle: UniqueType;
     let typeDefs: string;
 
     beforeEach(async () => {
@@ -47,7 +46,6 @@ describe("Connect Subscription with optional filters valid for all types", () =>
         typeMovie = generateUniqueType("Movie");
         typePerson = generateUniqueType("Person");
         typeInfluencer = generateUniqueType("Influencer");
-        typeArticle = generateUniqueType("Article");
 
         typeDefs = `
             type ${typeMovie} {
@@ -96,15 +94,6 @@ describe("Connect Subscription with optional filters valid for all types", () =>
                 reputation: Int!
                 reviewerId: Int
             }
-
-            type ${typeArticle} {
-                title: String!
-                references: [${typeArticle}!]! @relationship(type: "REFERENCES", direction: OUT, properties: "Reference")
-            }
-            interface Reference @relationshipProperties {
-                year: Int!
-                edition: Int!
-            }
         `;
 
         neo4j = new Neo4j();
@@ -134,7 +123,7 @@ describe("Connect Subscription with optional filters valid for all types", () =>
         await wsClient2.close();
 
         const session = driver.session();
-        await cleanNodes(session, [typeActor, typeMovie, typePerson, typeInfluencer, typeArticle]);
+        await cleanNodes(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
 
         await server.close();
         await driver.close();
@@ -177,26 +166,6 @@ subscription SubscriptionMovie {
                     ... on ${typeActor.name}EventPayload {
                         name
                     }
-                }
-            }
-        }
-    }
-}
-`;
-    const articleSubscriptionQuery = ({ typeArticle, where }) => `
-subscription SubscriptionMovie {
-    ${typeArticle.operations.subscribe.connected}(where: ${where}) {
-        relationshipFieldName
-        event
-        ${typeArticle.operations.subscribe.payload.connected} {
-            title
-        }
-        createdRelationship {
-            references {
-                edition
-                year
-                node {
-                    title
                 }
             }
         }
@@ -1961,260 +1930,5 @@ subscription SubscriptionMovie {
                 },
             },
         ]);
-    });
-
-    test("node relationship to self - standard type", async () => {
-        const where = `{createdRelationship: {references: {node: {title_IN: ["art"]}}}}`;
-        await wsClient.subscribe(articleSubscriptionQuery({ typeArticle, where }));
-
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeArticle.operations.create}(
-                            input: [
-                                {
-                                    references: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    title: "art"
-                                                },
-                                                edge: {
-                                                    year: 2020,
-                                                    edition: 1
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    title: "art2"
-                                                },
-                                                edge: {
-                                                    year: 2010,
-                                                    edition: 2
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    title: "articol",
-                                }
-                            ]
-                        ) {
-                            ${typeArticle.plural} {
-                                title
-                            }
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toHaveLength(1);
-        expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typeArticle.operations.subscribe.connected]: {
-                    [typeArticle.operations.subscribe.payload.connected]: { title: "articol" },
-                    event: "CONNECT",
-                    relationshipFieldName: "references",
-                    createdRelationship: {
-                        references: {
-                            year: 2020,
-                            edition: 1,
-                            node: {
-                                title: "art",
-                            },
-                        },
-                    },
-                },
-            },
-        ]);
-    });
-
-    test("node relationship to self - standard type - by connected field expecting none", async () => {
-        const where = `{${typeArticle.operations.subscribe.payload.connected}: {title_IN: ["art"]}}`;
-        await wsClient.subscribe(articleSubscriptionQuery({ typeArticle, where }));
-
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeArticle.operations.create}(
-                            input: [
-                                {
-                                    references: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    title: "art"
-                                                },
-                                                edge: {
-                                                    year: 2020,
-                                                    edition: 1
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    title: "art2"
-                                                },
-                                                edge: {
-                                                    year: 2010,
-                                                    edition: 2
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    title: "articol",
-                                }
-                            ]
-                        ) {
-                            ${typeArticle.plural} {
-                                title
-                            }
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toHaveLength(0);
-    });
-    test("node relationship to self - standard type - by connected field", async () => {
-        const where = `{${typeArticle.operations.subscribe.payload.connected}: {title_IN: ["articol"]}}`;
-        await wsClient.subscribe(articleSubscriptionQuery({ typeArticle, where }));
-
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeArticle.operations.create}(
-                            input: [
-                                {
-                                    references: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    title: "art"
-                                                },
-                                                edge: {
-                                                    year: 2020,
-                                                    edition: 1
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    title: "art2"
-                                                },
-                                                edge: {
-                                                    year: 2010,
-                                                    edition: 2
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    title: "articol",
-                                }
-                            ]
-                        ) {
-                            ${typeArticle.plural} {
-                                title
-                            }
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toHaveLength(2);
-        expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typeArticle.operations.subscribe.connected]: {
-                    [typeArticle.operations.subscribe.payload.connected]: { title: "articol" },
-                    event: "CONNECT",
-                    relationshipFieldName: "references",
-                    createdRelationship: {
-                        references: {
-                            year: 2020,
-                            edition: 1,
-                            node: {
-                                title: "art",
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typeArticle.operations.subscribe.connected]: {
-                    [typeArticle.operations.subscribe.payload.connected]: { title: "articol" },
-                    event: "CONNECT",
-                    relationshipFieldName: "references",
-                    createdRelationship: {
-                        references: {
-                            year: 2010,
-                            edition: 2,
-                            node: {
-                                title: "art2",
-                            },
-                        },
-                    },
-                },
-            },
-        ]);
-    });
-
-    test("node relationship to self - standard type - inverse", async () => {
-        const where = `{createdRelationship: {references: {node: {title_IN: ["articol"]}}}}`;
-        await wsClient.subscribe(articleSubscriptionQuery({ typeArticle, where }));
-
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeArticle.operations.create}(
-                            input: [
-                                {
-                                    references: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    title: "art"
-                                                },
-                                                edge: {
-                                                    year: 2020,
-                                                    edition: 1
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    title: "art2"
-                                                },
-                                                edge: {
-                                                    year: 2010,
-                                                    edition: 2
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    title: "articol",
-                                }
-                            ]
-                        ) {
-                            ${typeArticle.plural} {
-                                title
-                            }
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toHaveLength(0);
     });
 });
