@@ -1882,7 +1882,7 @@ subscription SubscriptionMovie {
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeArticle.operations.subscribe.connected]: {
-                    [typeArticle.operations.subscribe.payload.connected]: { title: "art" },
+                    [typeArticle.operations.subscribe.payload.connected]: { title: "articol" },
                     event: "CONNECT",
                     relationshipFieldName: "references",
                     createdRelationship: {
@@ -1890,7 +1890,7 @@ subscription SubscriptionMovie {
                             year: 2020,
                             edition: 1,
                             node: {
-                                title: "articol",
+                                title: "art",
                             },
                         },
                     },
