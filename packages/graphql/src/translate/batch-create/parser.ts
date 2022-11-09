@@ -193,9 +193,9 @@ export function mergeTreeDescriptors(input: TreeDescriptor[]): TreeDescriptor {
 }
 
 function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNode: AST): AST {
-    if (node.auth) {
+/*     if (node.auth) {
         throw new UnsupportedUnwindOptimization("Not supported operation: Auth");
-    }
+    } */
     Object.entries(input.children).forEach(([key, value]) => {
         const [relationField, relatedNodes] = getRelationshipFields(node, key, {}, context);
 
@@ -266,9 +266,9 @@ function raiseOnNotSupportedProperty(graphElement: GraphElement) {
         if (property.callback && property.callback.operations.includes("CREATE")) {
             throw new UnsupportedUnwindOptimization("Not supported operation: Callback");
         }
-        if (property.auth) {
+/*         if (property.auth) {
             throw new UnsupportedUnwindOptimization("Not supported operation: Auth");
-        }
+        } */
     });
 }
 
