@@ -1830,8 +1830,81 @@ subscription SubscriptionMovie {
         ]);
     });
 
-    test("node relationship to self - standard type", async () => {
+    test.only("node relationship to self - standard type", async () => {
         const where = `{createdRelationship: {references: {node: {title_IN: ["art"]}}}}`;
+
+        // const where = `{createdRelationship: {references: {node: {title_NOT_IN: ["a"]}}}}`;
+        await wsClient.subscribe(articleSubscriptionQuery({ typeArticle, where }));
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeArticle.operations.create}(
+                            input: [
+                                {
+                                    references: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    title: "art"
+                                                },
+                                                edge: {
+                                                    year: 2020,
+                                                    edition: 1
+                                                }
+                                            },
+                                            {
+                                                node: {
+                                                    title: "art2"
+                                                },
+                                                edge: {
+                                                    year: 2010,
+                                                    edition: 2
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    title: "articol",
+                                }
+                            ]
+                        ) {
+                            ${typeArticle.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toHaveLength(1);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeArticle.operations.subscribe.connected]: {
+                    [typeArticle.operations.subscribe.payload.connected]: { title: "articol" },
+                    event: "CONNECT",
+                    relationshipFieldName: "references",
+                    createdRelationship: {
+                        references: {
+                            year: 2020,
+                            edition: 1,
+                            node: {
+                                title: "art",
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+
+    test.only("2 node relationship to self - standard type", async () => {
+        const where = `{createdRelationship: {references: {node: {title_IN: ["articol"]}}}}`;
+
+        // const where = `{createdRelationship: {references: {node: {title_NOT_IN: ["a"]}}}}`;
         await wsClient.subscribe(articleSubscriptionQuery({ typeArticle, where }));
 
         await supertest(server.path)

@@ -453,20 +453,23 @@ export default function createUpdateAndParams({
                             }
 
                             if (context.subscriptionsEnabled) {
-                                const [fromVariable, toVariable] =
-                                    relationField.direction === "IN" ? [nodeName, varName] : [varName, nodeName];
-                                const [fromTypename, toTypename] =
-                                    relationField.direction === "IN"
-                                        ? [refNode.name, node.name]
-                                        : [node.name, refNode.name];
+                                // const [fromVariable, toVariable] =
+                                //     relationField.direction === "IN" ? [nodeName, varName] : [varName, nodeName];
+                                // const [fromTypename, toTypename] =
+                                //     relationField.direction === "IN"
+                                //         ? [refNode.name, node.name]
+                                //         : [node.name, refNode.name];
+
+                                const [node1Variable, node1Typename] = [nodeName, refNode.name];
+                                const [node2Variable, node2Typename] = [varName, node.name];
                                 const eventWithMetaStr = createConnectionEventMeta({
                                     event: "connect",
                                     relVariable: propertiesName,
-                                    fromVariable,
-                                    toVariable,
+                                    node1Variable,
+                                    node2Variable,
                                     typename: relationField.type,
-                                    fromTypename,
-                                    toTypename,
+                                    node1Typename,
+                                    node2Typename,
                                 });
                                 subquery.push(
                                     `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(

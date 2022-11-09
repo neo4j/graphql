@@ -196,16 +196,16 @@ describe("Subscriptions connect with create", () => {
             expect.arrayContaining([
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node2: {
                             name: "Actor 1",
                             id: "1",
                         },
-                        to: {
+                        node1: {
                             title: "Movie 1",
                             id: "11",
                         },
@@ -214,21 +214,21 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "ACTED_IN",
-                    fromTypename: typeActor.name,
-                    toTypename: typeMovie.name,
+                    node2Typename: typeActor.name,
+                    node1Typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node1: {
                             name: "Actor 2",
                             id: "2",
                         },
-                        to: {
+                        node2: {
                             title: "Movie 1",
                             id: "11",
                         },
@@ -237,21 +237,21 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "ACTED_IN",
-                    fromTypename: typeActor.name,
-                    toTypename: typeMovie.name,
+                    node1Typename: typeActor.name,
+                    node2Typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node2: {
                             name: "Actor 3",
                             id: "3",
                         },
-                        to: {
+                        node1: {
                             title: "Movie 2",
                             id: "12",
                         },
@@ -260,21 +260,21 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "ACTED_IN",
-                    fromTypename: typeActor.name,
-                    toTypename: typeMovie.name,
+                    node2Typename: typeActor.name,
+                    node1Typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node1: {
                             name: "Actor 4",
                             id: "4",
                         },
-                        to: {
+                        node2: {
                             title: "Movie 2",
                             id: "12",
                         },
@@ -283,8 +283,8 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "ACTED_IN",
-                    fromTypename: typeActor.name,
-                    toTypename: typeMovie.name,
+                    node1Typename: typeActor.name,
+                    node2Typename: typeMovie.name,
                 },
             ])
         );
@@ -357,16 +357,16 @@ describe("Subscriptions connect with create", () => {
             expect.arrayContaining([
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node1: {
                             name: "ActorDirector",
                             id: "1",
                         },
-                        to: {
+                        node2: {
                             title: "Movie",
                             id: "11",
                         },
@@ -375,22 +375,22 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "DIRECTED",
-                    fromTypename: typeActor.name,
-                    toTypename: typeMovie.name,
+                    node1Typename: typeActor.name,
+                    node2Typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node1: {
                             name: "PersonDirector",
                             reputation: 100,
                             id: "2",
                         },
-                        to: {
+                        node2: {
                             title: "Movie",
                             id: "11",
                         },
@@ -399,8 +399,8 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "DIRECTED",
-                    fromTypename: typePerson.name,
-                    toTypename: typeMovie.name,
+                    node1Typename: typePerson.name,
+                    node2Typename: typeMovie.name,
                 },
             ])
         );
@@ -465,17 +465,17 @@ describe("Subscriptions connect with create", () => {
             expect.arrayContaining([
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node1: {
                             name: "PersonReviewer",
                             id: "1",
                             reputation: 420,
                         },
-                        to: {
+                        node2: {
                             title: "Movie",
                             id: "11",
                         },
@@ -484,22 +484,22 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "REVIEWED",
-                    fromTypename: typePerson.name,
-                    toTypename: typeMovie.name,
+                    node1Typename: typePerson.name,
+                    node2Typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node1: {
                             reputation: 1,
                             id: "2",
                             url: "dummy",
                         },
-                        to: {
+                        node2: {
                             title: "Movie",
                             id: "11",
                         },
@@ -508,8 +508,8 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "REVIEWED",
-                    fromTypename: typeInfluencer.name,
-                    toTypename: typeMovie.name,
+                    node1Typename: typeInfluencer.name,
+                    node2Typename: typeMovie.name,
                 },
             ])
         );
@@ -649,17 +649,17 @@ describe("Subscriptions connect with create", () => {
             expect.arrayContaining([
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node1: {
                             name: "PersonDirector",
                             id: "7",
                             reputation: 100,
                         },
-                        to: {
+                        node2: {
                             title: "Movie",
                             id: "11",
                         },
@@ -668,21 +668,21 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "DIRECTED",
-                    fromTypename: typePerson.name,
-                    toTypename: typeMovie.name,
+                    node1Typename: typePerson.name,
+                    node2Typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node1: {
                             name: "ActorDirector",
                             id: "4",
                         },
-                        to: {
+                        node2: {
                             title: "Movie",
                             id: "11",
                         },
@@ -691,21 +691,21 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "DIRECTED",
-                    fromTypename: typeActor.name,
-                    toTypename: typeMovie.name,
+                    node1Typename: typeActor.name,
+                    node2Typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node2: {
                             name: "ActorDirector",
                             id: "4",
                         },
-                        to: {
+                        node1: {
                             title: "Other Movie",
                             id: "12",
                         },
@@ -714,21 +714,21 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "ACTED_IN",
-                    fromTypename: typeActor.name,
-                    toTypename: typeMovie.name,
+                    node2Typename: typeActor.name,
+                    node1Typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node1: {
                             name: "OtherActorDirector",
                             id: "5",
                         },
-                        to: {
+                        node2: {
                             title: "Other Movie",
                             id: "12",
                         },
@@ -737,22 +737,22 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "DIRECTED",
-                    fromTypename: typeActor.name,
-                    toTypename: typeMovie.name,
+                    node1Typename: typeActor.name,
+                    node2Typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node1: {
                             name: "OtherPersonDirector",
                             id: "6",
                             reputation: 120,
                         },
-                        to: {
+                        node2: {
                             title: "Other Movie",
                             id: "12",
                         },
@@ -761,22 +761,22 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "DIRECTED",
-                    fromTypename: typePerson.name,
-                    toTypename: typeMovie.name,
+                    node1Typename: typePerson.name,
+                    node2Typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node1: {
                             name: "PersonReviewer",
                             id: "2",
                             reputation: 142,
                         },
-                        to: {
+                        node2: {
                             title: "Movie",
                             id: "11",
                         },
@@ -785,22 +785,22 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "REVIEWED",
-                    fromTypename: typePerson.name,
-                    toTypename: typeMovie.name,
+                    node1Typename: typePerson.name,
+                    node2Typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node1: {
                             url: "InfluencerReviewerUrl",
                             id: "3",
                             reputation: 0,
                         },
-                        to: {
+                        node2: {
                             title: "Movie",
                             id: "11",
                         },
@@ -809,21 +809,21 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "REVIEWED",
-                    fromTypename: typeInfluencer.name,
-                    toTypename: typeMovie.name,
+                    node1Typename: typeInfluencer.name,
+                    node2Typename: typeMovie.name,
                 },
                 {
                     id: expect.any(Number),
-                    id_from: expect.any(Number),
-                    id_to: expect.any(Number),
+                    id_node1: expect.any(Number),
+                    id_node2: expect.any(Number),
                     timestamp: expect.any(Number),
                     event: "connect",
                     properties: {
-                        from: {
+                        node2: {
                             name: "Actor",
                             id: "1",
                         },
-                        to: {
+                        node1: {
                             title: "Movie",
                             id: "11",
                         },
@@ -832,8 +832,8 @@ describe("Subscriptions connect with create", () => {
                         },
                     },
                     relationshipName: "ACTED_IN",
-                    fromTypename: typeActor.name,
-                    toTypename: typeMovie.name,
+                    node2Typename: typeActor.name,
+                    node1Typename: typeMovie.name,
                 },
             ])
         );

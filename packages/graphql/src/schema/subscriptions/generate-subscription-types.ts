@@ -292,13 +292,12 @@ function getRelationshipEventDataForNode(
     event: RelationshipSubscriptionsEvent,
     node: Node
 ): {
-    direction: string;
     properties: Record<string, any>;
     destinationProperties: Record<string, any>;
     destinationTypename: string;
 } {
-    let condition = event.toTypename === node.name;
-    if (event.toTypename === event.fromTypename) {
+    let condition = event.node2Typename === node.name;
+    if (event.node1Typename === event.node2Typename) {
         // must check relationship direction from schema
         // TODO: memoize result
         const { direction } = node.relationFields.find((f) => f.type === event.relationshipName) as RelationField;
@@ -306,17 +305,15 @@ function getRelationshipEventDataForNode(
     }
     if (condition) {
         return {
-            direction: "IN",
-            properties: event.properties.to,
-            destinationProperties: event.properties.from,
-            destinationTypename: event.fromTypename,
+            properties: event.properties.node2,
+            destinationProperties: event.properties.node1,
+            destinationTypename: event.node1Typename,
         };
     }
     return {
-        direction: "OUT",
-        properties: event.properties.from,
-        destinationProperties: event.properties.to,
-        destinationTypename: event.toTypename,
+        properties: event.properties.node1,
+        destinationProperties: event.properties.node2,
+        destinationTypename: event.node2Typename,
     };
 }
 

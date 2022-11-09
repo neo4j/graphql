@@ -24,11 +24,11 @@ export type SubscriptionsEventType = "connect" | "disconnect";
 type EventMetaParameters = {
     event: SubscriptionsEventType;
     relVariable: string;
+    node1Variable: string;
+    node2Variable: string;
     typename: string;
-    fromVariable: string;
-    toVariable: string;
-    fromTypename: string;
-    toTypename: string;
+    node1Typename: string;
+    node2Typename: string;
 };
 
 export function createConnectionEventMeta(params: EventMetaParameters): string {
@@ -38,29 +38,29 @@ export function createConnectionEventMeta(params: EventMetaParameters): string {
 export function createConnectionEventMetaObject({
     event,
     relVariable,
-    fromVariable,
-    toVariable,
+    node1Variable,
+    node2Variable,
     typename,
-    fromTypename,
-    toTypename,
+    node1Typename,
+    node2Typename,
 }: EventMetaParameters): string {
-    const idsAndProperties = createEventMetaIdsAndProperties({ relVariable, fromVariable, toVariable });
-    return `{ event: "${event}", ${idsAndProperties}, timestamp: timestamp(), relationshipName: "${typename}", fromTypename: "${fromTypename}", toTypename: "${toTypename}" }`;
+    const idsAndProperties = createEventMetaIdsAndProperties({ relVariable, node1Variable, node2Variable });
+    return `{ event: "${event}", ${idsAndProperties}, timestamp: timestamp(), relationshipName: "${typename}", node1Typename: "${node1Typename}", node2Typename: "${node2Typename}" }`;
 }
 
 function createEventMetaIdsAndProperties({
     relVariable,
-    fromVariable,
-    toVariable,
+    node1Variable,
+    node2Variable,
 }: {
     relVariable: string;
-    fromVariable: string;
-    toVariable: string;
+    node1Variable: string;
+    node2Variable: string;
 }): string {
     const projectAllProperties = (varName: string): string => `${varName} { .* }`;
-    const idsStr = `id_from: id(${fromVariable}), id_to: id(${toVariable}), id: id(${relVariable})`;
-    const propertiesStr = `properties: { from: ${projectAllProperties(fromVariable)}, to: ${projectAllProperties(
-        toVariable
+    const idsStr = `id_node1: id(${node1Variable}), id_node2: id(${node2Variable}), id: id(${relVariable})`;
+    const propertiesStr = `properties: { node1: ${projectAllProperties(node1Variable)}, node2: ${projectAllProperties(
+        node2Variable
     )}, relationship: ${projectAllProperties(relVariable)} }`;
     return [idsStr, propertiesStr].join(", ");
 }

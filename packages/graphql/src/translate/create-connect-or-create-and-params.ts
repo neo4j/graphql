@@ -245,18 +245,21 @@ function mergeStatement({
 
     let withClause: Cypher.Clause | undefined;
     if (context.subscriptionsEnabled) {
-        const [fromTypename, toTypename] =
+        // const [fromTypename, toTypename] =
+        //     relationField.direction === "IN" ? [refNode.name, parentRefNode.name] : [parentRefNode.name, refNode.name];
+
+        const [node1Typename, node2Typename] =
             relationField.direction === "IN" ? [refNode.name, parentRefNode.name] : [parentRefNode.name, refNode.name];
 
         withClause = new Cypher.RawCypher((env: Cypher.Environment) => {
             const eventWithMetaStr = createConnectionEventMeta({
                 event: "connect",
                 relVariable: relationship.getCypher(env),
-                fromVariable: relationship.source.getCypher(env),
-                toVariable: relationship.target.getCypher(env),
+                node1Variable: relationship.source.getCypher(env),
+                node2Variable: relationship.target.getCypher(env),
                 typename: relationField.type,
-                fromTypename,
-                toTypename,
+                node1Typename,
+                node2Typename,
             });
             return `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, varName]).join(", ")}`;
         });

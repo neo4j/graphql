@@ -883,6 +883,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2306,7 +2307,7 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    test("connect via create - connect subscription simple case with duplicate nodes + interface (NW)", async () => {
+    test("connect via create - connect subscription simple case with duplicate nodes + interface", async () => {
         // 1. create resources that will be connected
         await supertest(server.path)
             .post("")
@@ -2700,7 +2701,7 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    test("connect via create - connect subscription simple case with 2 matching nodes + interface (NW)", async () => {
+    test("connect via create - connect subscription simple case with 2 matching nodes + interface", async () => {
         // 1. create resources that will be connected
         await supertest(server.path)
             .post("")
@@ -3993,6 +3994,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(0);

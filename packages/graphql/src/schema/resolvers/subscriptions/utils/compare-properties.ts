@@ -209,8 +209,8 @@ export type InterfaceType = Record<string, unknown | InterfaceSpecificType>;
 export type InterfaceSpecificType = Record<string, Record<string, unknown>>;
 export type RelationshipType = Record<string, Record<string, UnionType | InterfaceType | StandardType>>;
 type EventProperties = {
-    from: Record<string, unknown>;
-    to: Record<string, unknown>;
+    node1: Record<string, unknown>;
+    node2: Record<string, unknown>;
     relationship: Record<string, unknown>;
 };
 export function filterRelationshipConnectionsByProperties({
@@ -239,9 +239,9 @@ export function filterRelationshipConnectionsByProperties({
 
         const connectedNodeFieldName = node.subscriptionEventPayloadFieldNames.connect;
         if (fieldName === connectedNodeFieldName) {
-            const inFrom = filterByProperties(node, wherePropertyValue, receivedEventProperties.from);
-            const inTo = filterByProperties(node, wherePropertyValue, receivedEventProperties.to);
-            if (!inFrom && !inTo) {
+            const inNode1 = filterByProperties(node, wherePropertyValue, receivedEventProperties.node1);
+            const inNode2 = filterByProperties(node, wherePropertyValue, receivedEventProperties.node2);
+            if (!inNode1 && !inNode2) {
                 return false;
             }
         }
@@ -263,7 +263,19 @@ export function filterRelationshipConnectionsByProperties({
                 // case `actors: {}` including all relationships of the type
                 return true;
             }
-            const key = receivedEventRelationship.direction === "IN" ? "from" : "to";
+            // const key = receivedEventRelationship.direction === "IN" ? "from" : "to";
+            // const relationshipEndsByNodeName =
+            //     node.name === receivedEvent.node1Typename ? ["node1", "node2"] : ["node2", "node1"];
+            // const relationshipTargetKey =
+            // receivedEventRelationship.direction === "IN"
+            // ? relationshipEndsByNodeName[1]
+            // : relationshipEndsByNodeName[0];
+            const relationshipTargetKey = getRelationshipTargetKey({
+                node: node,
+                receivedEvent,
+                receivedEventRelationship,
+            });
+            console.log(node.name, receivedEvent.node1Typename, receivedEvent.node2Typename, relationshipTargetKey);
             const relationshipPropertiesInterfaceName = receivedEventRelationship.properties || "";
 
             const {
@@ -286,14 +298,14 @@ export function filterRelationshipConnectionsByProperties({
 
             if (receivedEventRelationshipDataNodeProp) {
                 if (isInterfaceType(receivedEventRelationshipDataNodeProp, receivedEventRelationship)) {
-                    const targetNodeTypename = receivedEvent[`${key}Typename`];
+                    const targetNodeTypename = receivedEvent[`${relationshipTargetKey}Typename`];
                     if (
                         !filterRelationshipInterfaceProperty({
                             receivedEventRelationshipDataNodeProp,
                             nodes,
                             receivedEventProperties,
                             targetNodeTypename,
-                            key,
+                            key: relationshipTargetKey,
                         })
                     ) {
                         return false;
@@ -301,16 +313,29 @@ export function filterRelationshipConnectionsByProperties({
                 } else if (isStandardType(receivedEventRelationshipDataNodeProp, receivedEventRelationship)) {
                     // standard type fields
                     const nodeTo = nodes.find((n) => n.name === receivedEventRelationship.typeMeta.name) as Node;
-                    if (
-                        !filterByProperties(nodeTo, receivedEventRelationshipDataNodeProp, receivedEventProperties[key])
-                    ) {
+                    let condition = !filterByProperties(
+                        nodeTo,
+                        receivedEventRelationshipDataNodeProp,
+                        receivedEventProperties[relationshipTargetKey]
+                    );
+                    // if (receivedEvent.node1Typename === receivedEvent.node2Typename) {
+                    //     const otherKey = relationshipTargetKey === "node1" ? "node2" : "node1";
+                    //     condition =
+                    //         condition &&
+                    //         !filterByProperties(
+                    //             nodeTo,
+                    //             receivedEventRelationshipDataNodeProp,
+                    //             receivedEventProperties[otherKey]
+                    //         );
+                    // }
+                    if (condition) {
                         return false;
                     }
                 }
             }
             if (receivedEventRelationshipDataUnionMapProp) {
                 // union types
-                const targetNodeTypename = receivedEvent[`${key}Typename`];
+                const targetNodeTypename = receivedEvent[`${relationshipTargetKey}Typename`];
                 const targetNodePropsByTypename = receivedEventRelationshipDataUnionMapProp[targetNodeTypename];
                 const isRelationshipOfReceivedTypeFilteredOut = !targetNodePropsByTypename;
                 if (isRelationshipOfReceivedTypeFilteredOut) {
@@ -323,7 +348,7 @@ export function filterRelationshipConnectionsByProperties({
                         receivedEventProperties,
                         relationshipFields,
                         relationshipPropertiesInterfaceName,
-                        key,
+                        key: relationshipTargetKey,
                         nodes,
                     })
                 ) {
@@ -349,6 +374,28 @@ function isStandardType(
 }
 function isInterfaceSpecificFieldType(node: unknown): node is InterfaceSpecificType {
     return !!node;
+}
+
+function getRelationshipTargetKey({
+    node,
+    receivedEvent,
+    receivedEventRelationship,
+}: {
+    node: Node;
+    receivedEvent: RelationshipSubscriptionsEvent;
+    receivedEventRelationship: RelationField;
+}): string {
+    let condition = receivedEvent.node2Typename === node.name;
+    if (receivedEvent.node1Typename === receivedEvent.node2Typename) {
+        // must check relationship direction from schema
+        // TODO: memoize result
+        const { direction } = receivedEventRelationship;
+        condition = direction === "IN";
+    }
+    if (condition) {
+        return "node1";
+    }
+    return "node2";
 }
 
 function buildRelationshipDataPropertyMap(receivedEventRelationshipData: RelationshipType): {

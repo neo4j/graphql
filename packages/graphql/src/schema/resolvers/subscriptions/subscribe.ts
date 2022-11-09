@@ -79,7 +79,8 @@ export function generateSubscribeMethod({
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
                 const relationEventPayload = data[0] as RelationshipSubscriptionsEvent;
                 const isOfRelevantType =
-                    relationEventPayload.toTypename === node.name || relationEventPayload.fromTypename === node.name;
+                    relationEventPayload.node1Typename === node.name ||
+                    relationEventPayload.node2Typename === node.name;
                 if (!isOfRelevantType) {
                     return false;
                 }

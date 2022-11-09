@@ -250,20 +250,22 @@ function createConnectAndParams({
         }
 
         if (context.subscriptionsEnabled) {
-            const [fromVariable, toVariable] =
-                relationField.direction === "IN" ? [nodeName, parentVar] : [parentVar, nodeName];
-            const [fromTypename, toTypename] =
-                relationField.direction === "IN"
-                    ? [relatedNode.name, parentNode.name]
-                    : [parentNode.name, relatedNode.name];
+            // const [fromVariable, toVariable] =
+            //     relationField.direction === "IN" ? [nodeName, parentVar] : [parentVar, nodeName];
+            // const [fromTypename, toTypename] =
+            //     relationField.direction === "IN"
+            //         ? [relatedNode.name, parentNode.name]
+            //         : [parentNode.name, relatedNode.name];
+            const [node1Variable, node1Typename] = [nodeName, relatedNode.name];
+            const [node2Variable, node2Typename] = [parentVar, parentNode.name];
             const eventWithMetaStr = createConnectionEventMetaObject({
                 event: "connect",
                 relVariable: relationshipName,
-                fromVariable,
-                toVariable,
+                node1Variable,
+                node2Variable,
                 typename: relationField.type,
-                fromTypename,
-                toTypename,
+                node1Typename,
+                node2Typename,
             });
             subquery.push(`\t\t\tWITH ${eventWithMetaStr} as meta`);
             subquery.push(`\t\t\tRETURN collect(meta) as update_meta`);

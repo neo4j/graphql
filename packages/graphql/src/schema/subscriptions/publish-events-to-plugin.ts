@@ -40,6 +40,7 @@ export function publishEventsToPlugin(
                 // unsupported event type
                 return;
             }
+            console.log("publishing:", subscriptionsEvent);
             try {
                 const publishPromise = plugin.publish(subscriptionsEvent); // Not using await to avoid blocking
                 if (publishPromise) {
@@ -73,15 +74,15 @@ function serializeEvent(event: EventMeta): SubscriptionsEvent | undefined {
         };
     } else if (isRelationshipSubscriptionMeta(event)) {
         properties = {
-            from: serializeProperties(event.properties.from),
-            to: serializeProperties(event.properties.to),
+            node1: serializeProperties(event.properties.node1),
+            node2: serializeProperties(event.properties.node2),
             relationship: serializeProperties(event.properties.relationship),
         };
         extraFields = {
-            id_from: serializeNeo4jValue(event.id_from),
-            id_to: serializeNeo4jValue(event.id_to),
-            fromTypename: serializeNeo4jValue(event.fromTypename),
-            toTypename: serializeNeo4jValue(event.toTypename),
+            id_node1: serializeNeo4jValue(event.id_node1),
+            id_node2: serializeNeo4jValue(event.id_node2),
+            node1Typename: serializeNeo4jValue(event.node1Typename),
+            node2Typename: serializeNeo4jValue(event.node2Typename),
             relationshipName: event.relationshipName,
         };
     } else {

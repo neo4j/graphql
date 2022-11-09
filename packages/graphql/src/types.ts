@@ -379,13 +379,13 @@ export type NodeSubscriptionMeta = {
 export type RelationshipSubscriptionMeta = {
     event: "connect" | "disconnect";
     relationshipName: string;
-    id_from: Integer | string | number;
-    id_to: Integer | string | number;
-    fromTypename: string;
-    toTypename: string;
+    id_node1: Integer | string | number;
+    id_node2: Integer | string | number;
+    node1Typename: string;
+    node2Typename: string;
     properties: {
-        from: Record<string, any>;
-        to: Record<string, any>;
+        node1: Record<string, any>;
+        node2: Record<string, any>;
         relationship: Record<string, any>;
     };
     id: Integer | string | number;
@@ -429,14 +429,14 @@ export type RelationshipSubscriptionsEvent =
           event: "connect";
           relationshipName: string;
           properties: {
-              from: Record<string, any>;
-              to: Record<string, any>;
+              node1: Record<string, any>;
+              node2: Record<string, any>;
               relationship: Record<string, any>;
           };
-          id_from: number;
-          id_to: number;
-          fromTypename: string;
-          toTypename: string;
+          id_node1: number;
+          id_node2: number;
+          node1Typename: string;
+          node2Typename: string;
           id: number;
           timestamp: number;
       }
@@ -444,14 +444,14 @@ export type RelationshipSubscriptionsEvent =
           event: "disconnect";
           relationshipName: string;
           properties: {
-              from: Record<string, any>;
-              to: Record<string, any>;
+              node1: Record<string, any>;
+              node2: Record<string, any>;
               relationship: Record<string, any>;
           };
-          id_from: number;
-          id_to: number;
-          fromTypename: string;
-          toTypename: string;
+          id_node1: number;
+          id_node2: number;
+          node1Typename: string;
+          node2Typename: string;
           id: number;
           timestamp: number;
       };

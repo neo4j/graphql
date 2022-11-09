@@ -165,19 +165,22 @@ function createDisconnectAndParams({
         subquery.push(`\tUNWIND ${variableName} as x`);
 
         if (context.subscriptionsEnabled) {
-            const [fromVariable, toVariable] = relationField.direction === "IN" ? ["x", parentVar] : [parentVar, "x"];
-            const [fromTypename, toTypename] =
-                relationField.direction === "IN"
-                    ? [relatedNode.name, parentNode.name]
-                    : [parentNode.name, relatedNode.name];
+            // const [fromVariable, toVariable] = relationField.direction === "IN" ? ["x", parentVar] : [parentVar, "x"];
+            // const [fromTypename, toTypename] =
+            //     relationField.direction === "IN"
+            //         ? [relatedNode.name, parentNode.name]
+            //         : [parentNode.name, relatedNode.name];
+
+            const [node1Variable, node1Typename] = ["x", relatedNode.name];
+            const [node2Variable, node2Typename] = [parentVar, parentNode.name];
             const eventWithMetaStr = createConnectionEventMetaObject({
                 event: "disconnect",
                 relVariable: relVarName,
-                fromVariable,
-                toVariable,
+                node1Variable,
+                node2Variable,
                 typename: relationField.type,
-                fromTypename,
-                toTypename,
+                node1Typename,
+                node2Typename,
             });
             subquery.push(`\tWITH ${eventWithMetaStr} as meta, ${relVarName}`);
             subquery.push(`\tDELETE ${relVarName}`);
