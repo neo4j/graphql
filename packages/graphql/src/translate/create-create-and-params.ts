@@ -172,10 +172,10 @@ function createCreateAndParams({
                             //         ? [refNode.name, node.name]
                             //         : [node.name, refNode.name];
                             console.log("REVERSE COMMENT");
-                            // const [node1Variable, node1Typename] = [nodeName, refNode.name];
-                            // const [node2Variable, node2Typename] = [varName, node.name];
-                            const [node2Variable, node2Typename] = [nodeName, refNode.name];
-                            const [node1Variable, node1Typename] = [varName, node.name];
+                            const [node1Variable, node1Typename] = [nodeName, refNode.name];
+                            const [node2Variable, node2Typename] = [varName, node.name];
+                            // const [node2Variable, node2Typename] = [nodeName, refNode.name];
+                            // const [node1Variable, node1Typename] = [varName, node.name];
                             const eventWithMetaStr = createConnectionEventMeta({
                                 event: "connect",
                                 relVariable: propertiesName,

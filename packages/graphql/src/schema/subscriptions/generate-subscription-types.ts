@@ -301,7 +301,7 @@ function getRelationshipEventDataForNode(
         // must check relationship direction from schema
         // TODO: memoize result
         const { direction } = node.relationFields.find((f) => f.type === event.relationshipName) as RelationField;
-        condition = direction === "IN";
+        condition = direction === "OUT";
     }
     if (condition) {
         return {
