@@ -71,11 +71,6 @@ describe("Federation 2 quickstart", () => {
         const locationsSubgraph = new Subgraph(locations);
         const reviewsSubgraph = new Subgraph(reviews);
 
-        // const [locationsSchema] = await Promise.all([
-        //     locationsSubgraph.getSchema(),
-        //     // reviewsSubgraph.getSchema(),
-        // ]);
-
         const [locationsSchema, reviewsSchema] = await Promise.all([
             locationsSubgraph.getSchema(),
             reviewsSubgraph.getSchema(),

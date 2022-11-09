@@ -943,6 +943,13 @@ function makeAugmentedSchema(
         ...parsedDoc,
         definitions: [
             ...parsedDoc.definitions.filter((definition) => {
+                // Filter out default scalars, they are not needed and can cause issues
+                if (definition.kind === Kind.SCALAR_TYPE_DEFINITION) {
+                    if (["Boolean", "Float", "ID", "Int", "String"].includes(definition.name.value)) {
+                        return false;
+                    }
+                }
+
                 if (!("name" in definition)) {
                     return true;
                 }

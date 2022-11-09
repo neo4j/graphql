@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { printSchemaWithDirectives, TypeSource } from "@graphql-tools/utils";
+import type { TypeSource } from "@graphql-tools/utils";
 import { GraphQLSchema, print } from "graphql";
 import { Neo4jGraphQL } from "../../../../../graphql/src";
 import { Neo4jGraphQLApolloFederationPlugin } from "../../../src";
@@ -40,11 +40,7 @@ export class Subgraph {
     public async getSchema(): Promise<GraphQLSchema> {
         const { typeDefs, resolvers } = await this.library.getSchemaDefinition();
 
-        console.log(print(typeDefs));
-
         const schema = this.plugin.buildSubgraphSchema({ typeDefs, resolvers });
-
-        console.log(printSchemaWithDirectives(schema));
 
         return schema;
     }

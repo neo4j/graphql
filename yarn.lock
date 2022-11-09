@@ -2798,7 +2798,6 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/jest": 29.1.2
     "@types/node": 16.11.65
-    apollo-graphql: ^0.9.7
     debug: ^4.3.4
     graphql-tag: ^2.12.6
     jest: 29.1.2
@@ -2806,7 +2805,7 @@ __metadata:
     typescript: 4.8.4
   peerDependencies:
     "@neo4j/graphql": ^3.12.0
-    graphql: "*"
+    graphql: ^16.0.0
   languageName: unknown
   linkType: soft
 
@@ -4869,19 +4868,6 @@ __metadata:
     "@apollo/utils.keyvaluecache": ^1.0.1
     apollo-server-env: ^4.2.1
   checksum: 70244e792655b357213b92e9dd0e8ca553724857847c9bedb53a1dbf7a92fc0d8b05a60d77203d6c30331599b44c5d7cc5f4d94c934465fa05b146b681ed2293
-  languageName: node
-  linkType: hard
-
-"apollo-graphql@npm:^0.9.7":
-  version: 0.9.7
-  resolution: "apollo-graphql@npm:0.9.7"
-  dependencies:
-    core-js-pure: ^3.10.2
-    lodash.sortby: ^4.7.0
-    sha.js: ^2.4.11
-  peerDependencies:
-    graphql: ^14.2.1 || ^15.0.0
-  checksum: 684aea8f772ef62c6cfac65139be843054f85471ee9b8b750e738d9433ba092eefdbf20994b114701d01c37d52df250aa13240992fd8e7c88e10eca2dfe9ed80
   languageName: node
   linkType: hard
 
@@ -6971,7 +6957,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js-pure@npm:^3.10.2, core-js-pure@npm:^3.25.1":
+"core-js-pure@npm:^3.25.1":
   version: 3.26.0
   resolution: "core-js-pure@npm:3.26.0"
   checksum: bbf5fa65cf3368a25f9d9cc525863acc8082fa3797efc8dc514f85d7f4aa870f4999b68863f3c7b96ed0b062add261a448758e6d337626c2535ad89ee8481a92
