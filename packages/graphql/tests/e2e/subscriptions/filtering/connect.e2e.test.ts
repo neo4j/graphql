@@ -134,7 +134,7 @@ describe("Connect Subscription with optional filters valid for all types", () =>
         await wsClient2.close();
 
         const session = driver.session();
-        await cleanNodes(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
+        await cleanNodes(session, [typeActor, typeMovie, typePerson, typeInfluencer, typeArticle]);
 
         await server.close();
         await driver.close();
@@ -270,6 +270,139 @@ subscription SubscriptionMovie {
                 },
             },
         ]);
+    });
+
+    test("node filter on standard type - by connected field", async () => {
+        const where = `{${typeMovie.operations.subscribe.payload.connected}: {title: "Matrix"}}`;
+        await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.create}(
+                            input: [
+                                {
+                                    actors: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    name: "Keanu"
+                                                },
+                                                edge: {
+                                                    screenTime: 42
+                                                }
+                                            },
+                                            {
+                                                node: {
+                                                    name: "Reeves"
+                                                },
+                                                edge: {
+                                                    screenTime: 1000
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    title: "Matrix",
+                                }
+                            ]
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toHaveLength(2);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
+                    event: "CONNECT",
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
+                        actors: {
+                            screenTime: 1000,
+                            node: {
+                                name: "Reeves",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
+                    event: "CONNECT",
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
+                        actors: {
+                            screenTime: 42,
+                            node: {
+                                name: "Keanu",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+        ]);
+    });
+    test("node filter on standard type - by connected field expecting none", async () => {
+        const where = `{${typeMovie.operations.subscribe.payload.connected}: {title_NOT: "Matrix"}}`;
+        await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.create}(
+                            input: [
+                                {
+                                    actors: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    name: "Keanu"
+                                                },
+                                                edge: {
+                                                    screenTime: 42
+                                                }
+                                            },
+                                            {
+                                                node: {
+                                                    name: "Reeves"
+                                                },
+                                                edge: {
+                                                    screenTime: 1000
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    title: "Matrix",
+                                }
+                            ]
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toHaveLength(0);
     });
 
     test("edge filter on standard type", async () => {
@@ -1897,5 +2030,191 @@ subscription SubscriptionMovie {
                 },
             },
         ]);
+    });
+
+    test("node relationship to self - standard type - by connected field expecting none", async () => {
+        const where = `{${typeArticle.operations.subscribe.payload.connected}: {title_IN: ["art"]}}`;
+        await wsClient.subscribe(articleSubscriptionQuery({ typeArticle, where }));
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeArticle.operations.create}(
+                            input: [
+                                {
+                                    references: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    title: "art"
+                                                },
+                                                edge: {
+                                                    year: 2020,
+                                                    edition: 1
+                                                }
+                                            },
+                                            {
+                                                node: {
+                                                    title: "art2"
+                                                },
+                                                edge: {
+                                                    year: 2010,
+                                                    edition: 2
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    title: "articol",
+                                }
+                            ]
+                        ) {
+                            ${typeArticle.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toHaveLength(0);
+    });
+    test("node relationship to self - standard type - by connected field", async () => {
+        const where = `{${typeArticle.operations.subscribe.payload.connected}: {title_IN: ["articol"]}}`;
+        await wsClient.subscribe(articleSubscriptionQuery({ typeArticle, where }));
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeArticle.operations.create}(
+                            input: [
+                                {
+                                    references: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    title: "art"
+                                                },
+                                                edge: {
+                                                    year: 2020,
+                                                    edition: 1
+                                                }
+                                            },
+                                            {
+                                                node: {
+                                                    title: "art2"
+                                                },
+                                                edge: {
+                                                    year: 2010,
+                                                    edition: 2
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    title: "articol",
+                                }
+                            ]
+                        ) {
+                            ${typeArticle.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toHaveLength(2);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeArticle.operations.subscribe.connected]: {
+                    [typeArticle.operations.subscribe.payload.connected]: { title: "articol" },
+                    event: "CONNECT",
+                    relationshipFieldName: "references",
+                    createdRelationship: {
+                        references: {
+                            year: 2020,
+                            edition: 1,
+                            node: {
+                                title: "art",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeArticle.operations.subscribe.connected]: {
+                    [typeArticle.operations.subscribe.payload.connected]: { title: "articol" },
+                    event: "CONNECT",
+                    relationshipFieldName: "references",
+                    createdRelationship: {
+                        references: {
+                            year: 2010,
+                            edition: 2,
+                            node: {
+                                title: "art2",
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+
+    test("node relationship to self - standard type - inverse", async () => {
+        const where = `{createdRelationship: {references: {node: {title_IN: ["articol"]}}}}`;
+        await wsClient.subscribe(articleSubscriptionQuery({ typeArticle, where }));
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeArticle.operations.create}(
+                            input: [
+                                {
+                                    references: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    title: "art"
+                                                },
+                                                edge: {
+                                                    year: 2020,
+                                                    edition: 1
+                                                }
+                                            },
+                                            {
+                                                node: {
+                                                    title: "art2"
+                                                },
+                                                edge: {
+                                                    year: 2010,
+                                                    edition: 2
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    title: "articol",
+                                }
+                            ]
+                        ) {
+                            ${typeArticle.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toHaveLength(0);
     });
 });
