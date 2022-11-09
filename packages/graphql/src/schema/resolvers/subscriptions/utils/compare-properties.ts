@@ -239,9 +239,8 @@ export function filterRelationshipConnectionsByProperties({
 
         const connectedNodeFieldName = node.subscriptionEventPayloadFieldNames.connect;
         if (fieldName === connectedNodeFieldName) {
-            const inNode1 = filterByProperties(node, wherePropertyValue, receivedEventProperties.node1);
-            const inNode2 = filterByProperties(node, wherePropertyValue, receivedEventProperties.node2);
-            if (!inNode1 && !inNode2) {
+            const key = receivedEventRelationship.direction === "IN" ? "to" : "from";
+            if (!filterByProperties(node, wherePropertyValue, receivedEventProperties[key])) {
                 return false;
             }
         }
@@ -295,7 +294,7 @@ export function filterRelationshipConnectionsByProperties({
             ) {
                 return false;
             }
-
+            const key = receivedEventRelationship.direction === "IN" ? "from" : "to";
             if (receivedEventRelationshipDataNodeProp) {
                 if (isInterfaceType(receivedEventRelationshipDataNodeProp, receivedEventRelationship)) {
                     const targetNodeTypename = receivedEvent[`${relationshipTargetKey}Typename`];
