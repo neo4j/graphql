@@ -212,12 +212,11 @@ export function generateSubscriptionTypes({
 
         if (_hasProperties(relationsEventPayload)) {
             const resolveRelationship = (source: RelationshipSubscriptionsEvent) => {
+                const thisRel = node.relationFields.find((f) => f.type === source.relationshipName) as RelationField;
                 const { destinationProperties: props, destinationTypename: typename } = getRelationshipEventDataForNode(
                     source,
                     node
                 );
-
-                const thisRel = node.relationFields.find((f) => f.type === source.relationshipName) as RelationField;
 
                 return {
                     [thisRel.fieldName]: {
@@ -298,7 +297,14 @@ function getRelationshipEventDataForNode(
     destinationProperties: Record<string, any>;
     destinationTypename: string;
 } {
-    if (event.toTypename === node.name) {
+    let condition = event.toTypename === node.name;
+    if (event.toTypename === event.fromTypename) {
+        // must check relationship direction from schema
+        // TODO: memoize result
+        const { direction } = node.relationFields.find((f) => f.type === event.relationshipName) as RelationField;
+        condition = direction === "IN";
+    }
+    if (condition) {
         return {
             direction: "IN",
             properties: event.properties.to,
