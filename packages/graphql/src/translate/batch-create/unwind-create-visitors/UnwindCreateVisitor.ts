@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Context } from "../../../types";
+import type { Context, RelationField } from "../../../types";
 import type { CallbackBucket } from "../../../classes/CallbackBucket";
 import type {
     Visitor,
@@ -96,7 +96,7 @@ export class UnwindCreateVisitor implements Visitor {
         }
 
         const authNodeClause = getAuthNodeClause(create.node, this.context, currentNode);
-        const authFieldsClause = getAuthFieldClause(create, this.context, currentNode);
+        const authFieldsClause = getAuthFieldClause(create, this.context, currentNode, this.unwindVar);
         const clause = Cypher.concat(
             ...filterTruthy([
                 createClause,
@@ -114,7 +114,6 @@ export class UnwindCreateVisitor implements Visitor {
     visitNestedCreate(nestedCreate: INestedCreateAST): void {
         const parentVar = this.environment[nestedCreate.id].parentVar;
         const unwindVar = this.environment[nestedCreate.id].unwindVar;
-        if (!parentVar) throw new Neo4jGraphQLError("Generic Error");
         const { node, relationship, relationshipPropertyPath } = nestedCreate;
         const blockWith = new Cypher.With(parentVar, unwindVar);
         const createUnwindVar = new Cypher.Variable();
@@ -134,17 +133,15 @@ export class UnwindCreateVisitor implements Visitor {
             parentVar
         );
         const createClause = new Cypher.Create(currentNode);
-        if (!relationship[0]) {
-            throw new Neo4jGraphQLError("Nested created nodes should belong to a parent");
-        }
-
+        // TODO change this variable name
+        const firstRelationship = relationship[0] as RelationField;
         const relationshipClause = new Cypher.Relationship({
             source: currentNode,
             target: parentVar as Cypher.Node,
-            type: relationship[0].type,
+            type: firstRelationship.type,
         });
 
-        if (relationship[0].direction === "OUT") {
+        if (firstRelationship.direction === "OUT") {
             relationshipClause.reverse();
         }
 
@@ -200,7 +197,7 @@ export class UnwindCreateVisitor implements Visitor {
         }
 
         const authNodeClause = getAuthNodeClause(nestedCreate.node, this.context, currentNode);
-        const authFieldsClause = getAuthFieldClause(nestedCreate, this.context, currentNode);
+        const authFieldsClause = getAuthFieldClause(nestedCreate, this.context, currentNode, nodeVar);
         subQueryStatements.push(authNodeClause);
         subQueryStatements.push(authFieldsClause);
         subQueryStatements.push(relationshipValidationClause);
@@ -278,7 +275,7 @@ function getAuthNodeClause(node: Node, context: Context, nodeRef: Cypher.Node): 
             });
             if (authCypher) {
                 const creates: string[] = [];
-                creates.push(`WITH ${env.getReferenceId(nodeRef)}`);
+                creates.push(`WITH *`);
                 creates.push(`CALL apoc.util.validate(NOT (${authCypher}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
                 return [creates.join("\n"), authParams];
             }
@@ -289,7 +286,8 @@ function getAuthNodeClause(node: Node, context: Context, nodeRef: Cypher.Node): 
 function getAuthFieldClause(
     astNode: CreateAST | NestedCreateAST,
     context: Context,
-    nodeRef: Cypher.Node
+    nodeRef: Cypher.Node,
+    unwindVar: Cypher.Variable
 ): Cypher.RawCypher | undefined {
     const authFields = astNode.node.primitiveFields.filter((field) => field.auth);
     const usedAuthFields = astNode.nodeProperties
@@ -329,8 +327,9 @@ function getAuthFieldClause(
                     return [cypher, params];
                 }, []);
 
-            creates.push(`WITH ${env.getReferenceId(nodeRef)}`);
-            creates.push(`CALL apoc.util.validate(NOT (${clauses[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+            creates.push(`WITH *`);
+            const unwindFields = usedAuthFields.map((field) => Cypher.isNotNull(unwindVar.property(field.fieldName)).getCypher(env));
+            creates.push(`CALL apoc.util.validate(${unwindFields.join(" AND ")} AND NOT (${clauses[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
             return [creates.join("\n"), clauses[1]] as [string, Record<string, any>];
         });
     }

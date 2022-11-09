@@ -363,7 +363,7 @@ describe("auth/bind", () => {
             }
         });
 
-        test.only("should throw forbidden when creating field with invalid bind (bind across relationships)", async () => {
+        test("should throw forbidden when creating field with invalid bind (bind across relationships)", async () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
