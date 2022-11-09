@@ -18,7 +18,8 @@
  */
 
 import type { TypeSource } from "@graphql-tools/utils";
-import { GraphQLSchema, print } from "graphql";
+import type { GraphQLSchema } from "graphql";
+import type * as neo4j from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../../graphql/src";
 import { Neo4jGraphQLApolloFederationPlugin } from "../../../src";
 
@@ -26,11 +27,12 @@ export class Subgraph {
     plugin: Neo4jGraphQLApolloFederationPlugin;
     library: Neo4jGraphQL;
 
-    constructor(typeDefs: TypeSource) {
+    constructor(typeDefs: TypeSource, driver: neo4j.Driver) {
         this.plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs);
 
         this.library = new Neo4jGraphQL({
             typeDefs,
+            driver,
             // @ts-ignore: federation slot not yet released
             plugins: { federation: this.plugin },
             config: { skipValidateTypeDefs: true },

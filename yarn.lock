@@ -2801,6 +2801,7 @@ __metadata:
     debug: ^4.3.4
     graphql-tag: ^2.12.6
     jest: 29.1.2
+    supertest: ^6.3.1
     ts-jest: 29.0.3
     typescript: 4.8.4
   peerDependencies:
@@ -19118,7 +19119,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supertest@npm:6.3.1":
+"supertest@npm:6.3.1, supertest@npm:^6.3.1":
   version: 6.3.1
   resolution: "supertest@npm:6.3.1"
   dependencies:

@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { buildSubgraphSchema, printSubgraphSchema } from "@apollo/subgraph";
+import { buildSubgraphSchema } from "@apollo/subgraph";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
-import type { IResolvers, TypeSource } from "@graphql-tools/utils";
+import { IResolvers, makeDirectiveNode, TypeSource } from "@graphql-tools/utils";
 import { OGM } from "@neo4j/graphql-ogm";
 import type { SchemaDefinition } from "@neo4j/graphql";
 import { ConstDirectiveNode, DefinitionNode, DocumentNode, FieldDefinitionNode, GraphQLSchema, Kind } from "graphql";
@@ -78,6 +78,58 @@ export class Neo4jGraphQLApolloFederationPlugin {
         const resolvers = this.getReferenceResolvers(typeDefs);
 
         return { typeDefs, resolvers };
+    }
+
+    public augmentGeneratedSchemaDefinition(typeDefs: DocumentNode): DocumentNode {
+        const definitions: DefinitionNode[] = [];
+
+        const shareable = makeDirectiveNode(
+            (this.importArgument.get("@shareable") as string).replace("@", ""),
+            {}
+        ) as ConstDirectiveNode;
+
+        // This is a really filthy hack to apply @shareable
+        for (const definition of typeDefs.definitions) {
+            if (definition.kind === Kind.OBJECT_TYPE_DEFINITION) {
+                if (
+                    [
+                        "CreateInfo",
+                        "DeleteInfo",
+                        "PageInfo",
+                        "UpdateInfo",
+                        "StringAggregateSelectionNullable",
+                        "IDAggregateSelectionNonNullable",
+                        "Query",
+                        "Mutation",
+                    ].includes(definition.name.value) ||
+                    definition.name.value.endsWith("MutationResponse") ||
+                    definition.name.value.endsWith("Connection") ||
+                    definition.name.value.endsWith("AggregateSelection") ||
+                    definition.name.value.endsWith("Edge")
+                ) {
+                    if (definition.directives) {
+                        definitions.push({
+                            ...definition,
+                            directives: [...definition.directives, shareable],
+                        });
+                    } else {
+                        definitions.push({
+                            ...definition,
+                            directives: [shareable],
+                        });
+                    }
+                } else {
+                    definitions.push(definition);
+                }
+            } else {
+                definitions.push(definition);
+            }
+        }
+
+        return {
+            ...typeDefs,
+            definitions,
+        };
     }
 
     public buildSubgraphSchema({ typeDefs, resolvers }: SchemaDefinition): GraphQLSchema {

@@ -22,7 +22,6 @@ import { DocumentNode, GraphQLSchema, Kind } from "graphql";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
-import type { IResolvers } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
 import Debug from "debug";
 import type {
@@ -303,6 +302,12 @@ class Neo4jGraphQL {
                 }
             );
 
+            let pluginTypeDefs = typeDefs;
+
+            if (this.plugins?.federation) {
+                pluginTypeDefs = this.plugins.federation.augmentGeneratedSchemaDefinition(typeDefs);
+            }
+
             this._nodes = nodes;
             this._relationships = relationships;
 
@@ -311,9 +316,9 @@ class Neo4jGraphQL {
             // Wrap the generated and custom resolvers, which adds a context including the schema to every request
             const wrappedResolvers = this.wrapResolvers([resolvers, ...pluginResolvers]);
 
-            const resolversWithDefaults = this.addDefaultFieldResolversToResolvers(typeDefs, wrappedResolvers);
+            const resolversWithDefaults = this.addDefaultFieldResolversToResolvers(pluginTypeDefs, wrappedResolvers);
 
-            resolve({ typeDefs, resolvers: resolversWithDefaults });
+            resolve({ typeDefs: pluginTypeDefs, resolvers: resolversWithDefaults });
         });
     }
 
