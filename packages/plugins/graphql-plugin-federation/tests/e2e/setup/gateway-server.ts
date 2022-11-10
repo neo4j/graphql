@@ -21,6 +21,7 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { ApolloGateway, IntrospectAndCompose } from "@apollo/gateway";
 import type { Server } from "./server";
+import { getPort } from "./port";
 
 type Subgraph = {
     name: string;
@@ -30,8 +31,9 @@ type Subgraph = {
 export class GatewayServer implements Server {
     port: number;
     server: ApolloServer;
+    url?: string;
 
-    constructor(subgraphs: Subgraph[], port: number) {
+    constructor(subgraphs: Subgraph[], port?: number) {
         const gateway = new ApolloGateway({
             supergraphSdl: new IntrospectAndCompose({
                 subgraphs,
@@ -42,16 +44,18 @@ export class GatewayServer implements Server {
             gateway,
         });
 
-        this.port = port;
+        this.port = port || getPort();
     }
 
     public async start(): Promise<string> {
         const { url } = await startStandaloneServer(this.server, { listen: { port: this.port } });
+        this.url = url;
         console.log(`started gateway server on ${url}`);
         return url;
     }
 
     public async stop(): Promise<void> {
-        return this.server.stop();
+        await this.server.stop();
+        console.log(`stopped gateway server running on ${this.url}`);
     }
 }

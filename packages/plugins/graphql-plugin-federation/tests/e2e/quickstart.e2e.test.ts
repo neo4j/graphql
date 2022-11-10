@@ -94,8 +94,6 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
 
         const [locationsUrl, reviewsUrl] = await Promise.all([locationsServer.start(), reviewsServer.start()]);
 
-        await new Promise((r) => setTimeout(r, 5000));
-
         gatewayServer = new GatewayServer(
             [
                 { name: "locations", url: locationsUrl },
@@ -105,8 +103,6 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
         );
 
         gatewayUrl = await gatewayServer.start();
-
-        await new Promise((r) => setTimeout(r, 5000));
 
         await neo4j.executeWrite(
             `CREATE (:${Location} { id: "1", description: "description", name: "name", overallRating: 5.5, photo: "photo" })`

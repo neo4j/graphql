@@ -76,24 +76,20 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
             reviewsSubgraph.getSchema(),
         ]);
 
-        productsServer = new SubgraphServer(productsSchema, 4000);
-        reviewsServer = new SubgraphServer(reviewsSchema, 4001);
+        productsServer = new SubgraphServer(productsSchema, 4003);
+        reviewsServer = new SubgraphServer(reviewsSchema, 4004);
 
         const [productsUrl, reviewsUrl] = await Promise.all([productsServer.start(), reviewsServer.start()]);
-
-        await new Promise((r) => setTimeout(r, 5000));
 
         gatewayServer = new GatewayServer(
             [
                 { name: "products", url: productsUrl },
                 { name: "reviews", url: reviewsUrl },
             ],
-            4002
+            4005
         );
 
         gatewayUrl = await gatewayServer.start();
-
-        await new Promise((r) => setTimeout(r, 5000));
 
         await neo4j.executeWrite(
             `CREATE (:${Product} { id: "1", name: "product", price: 5 })-[:HAS_REVIEW]->(:${Review} { score: 5, description: "review" })`

@@ -20,28 +20,32 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import type { GraphQLSchema } from "graphql";
+import { getPort } from "./port";
 import type { Server } from "./server";
 
 export class SubgraphServer implements Server {
     port: number;
     server: ApolloServer;
+    url?: string;
 
-    constructor(schema: GraphQLSchema, port: number) {
+    constructor(schema: GraphQLSchema, port?: number) {
         this.server = new ApolloServer({
             schema,
         });
-        this.port = port;
+        this.port = port || getPort();
     }
 
     public async start(): Promise<string> {
         const { url } = await startStandaloneServer(this.server, {
             listen: { port: this.port },
         });
+        this.url = url;
         console.log(`started subgraph server on ${url}`);
         return url;
     }
 
     public async stop(): Promise<void> {
-        return this.server.stop();
+        await this.server.stop();
+        console.log(`stopped subgraph server running on ${this.url}`);
     }
 }
