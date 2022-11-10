@@ -40,7 +40,6 @@ export function publishEventsToPlugin(
                 // unsupported event type
                 return;
             }
-            console.log("publish:", subscriptionsEvent);
             try {
                 const publishPromise = plugin.publish(subscriptionsEvent); // Not using await to avoid blocking
                 if (publishPromise) {
