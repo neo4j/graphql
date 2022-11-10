@@ -28,7 +28,6 @@ import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
 import { cleanNodes } from "../../../utils/clean-nodes";
 import { delay } from "../../../../src/utils/utils";
-import { deflate } from "zlib";
 
 describe("Connect Subscription with optional filters valid for all types", () => {
     let neo4j: Neo4j;
