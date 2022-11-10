@@ -733,6 +733,10 @@ describe("Aggregations", () => {
             }
 
             input PostLikesConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: LikesCreateInput
               where: UserConnectWhere
             }

@@ -282,6 +282,10 @@ describe("Directive-preserve", () => {
 
             input GenreMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: MovieConnectWhere
             }
 
@@ -550,6 +554,10 @@ describe("Directive-preserve", () => {
 
             input MovieGenresConnectFieldInput {
               connect: [GenreConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: GenreConnectWhere
             }
 
@@ -857,6 +865,10 @@ describe("Directive-preserve", () => {
 
             input ActorActedInConnectFieldInput {
               connect: ProductionConnectInput
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput!
               where: ProductionConnectWhere
             }
@@ -1253,6 +1265,10 @@ describe("Directive-preserve", () => {
 
             input ProductionActorsConnectFieldInput {
               connect: [ActorConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput!
               where: ActorConnectWhere
             }
@@ -1711,6 +1727,10 @@ describe("Directive-preserve", () => {
 
             input ActorActedInConnectFieldInput {
               connect: ProductionConnectInput
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput!
               where: ProductionConnectWhere
             }
@@ -2107,6 +2127,10 @@ describe("Directive-preserve", () => {
 
             input ProductionActorsConnectFieldInput {
               connect: [ActorConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput!
               where: ActorConnectWhere
             }
@@ -2586,6 +2610,10 @@ describe("Directive-preserve", () => {
             }
 
             input BlogPostsConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: PostConnectWhere
             }
 
@@ -2906,6 +2934,10 @@ describe("Directive-preserve", () => {
 
             input UserContentBlogConnectFieldInput {
               connect: [BlogConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: BlogConnectWhere
             }
 
@@ -2985,6 +3017,10 @@ describe("Directive-preserve", () => {
             }
 
             input UserContentPostConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: PostConnectWhere
             }
 

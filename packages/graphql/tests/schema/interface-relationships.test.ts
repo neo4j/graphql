@@ -95,6 +95,10 @@ describe("Interface Relationships", () => {
             }
 
             input ActorActedInConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput!
               where: ProductionConnectWhere
             }
@@ -627,6 +631,10 @@ describe("Interface Relationships", () => {
 
             input ActorActedInConnectFieldInput {
               connect: ProductionConnectInput
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput!
               where: ProductionConnectWhere
             }
@@ -870,6 +878,10 @@ describe("Interface Relationships", () => {
 
             input EpisodeSeriesConnectFieldInput {
               connect: SeriesConnectInput
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: SeriesConnectWhere
             }
 
@@ -1268,6 +1280,10 @@ describe("Interface Relationships", () => {
 
             input ProductionActorsConnectFieldInput {
               connect: [ActorConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput!
               where: ActorConnectWhere
             }
@@ -1661,6 +1677,10 @@ describe("Interface Relationships", () => {
 
             input SeriesEpisodesConnectFieldInput {
               connect: [EpisodeConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: EpisodeConnectWhere
             }
 
@@ -2015,6 +2035,10 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1Interface2ConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: Interface2ConnectWhere
             }
 
@@ -2272,6 +2296,10 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1ConnectFieldInput {
               connect: Interface1ConnectInput
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: Interface1ConnectWhere
             }
 
@@ -2334,6 +2362,10 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1Interface2ConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: Interface2ConnectWhere
             }
 
@@ -2577,6 +2609,10 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface1Interface2ConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: Interface2ConnectWhere
             }
 
@@ -2901,6 +2937,10 @@ describe("Interface Relationships", () => {
 
             input CommentPostConnectFieldInput {
               connect: PostConnectInput
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: PostConnectWhere
             }
 
@@ -3099,6 +3139,10 @@ describe("Interface Relationships", () => {
 
             input ContentCreatorConnectFieldInput {
               connect: UserConnectInput
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: UserConnectWhere
             }
 
@@ -3362,6 +3406,10 @@ describe("Interface Relationships", () => {
 
             input PostCommentsConnectFieldInput {
               connect: [CommentConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: CommentConnectWhere
             }
 
@@ -3675,6 +3723,10 @@ describe("Interface Relationships", () => {
 
             input UserContentConnectFieldInput {
               connect: ContentConnectInput
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: ContentConnectWhere
             }
 

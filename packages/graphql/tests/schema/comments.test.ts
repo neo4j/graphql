@@ -415,6 +415,10 @@ describe("Comments", () => {
                 }
 
                 input MovieActorsConnectFieldInput {
+                  \\"\\"\\"
+                  Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+                  \\"\\"\\"
+                  createDuplicates: Boolean! = false
                   where: ActorConnectWhere
                 }
 
@@ -717,6 +721,10 @@ describe("Comments", () => {
                 }
 
                 input ActorActedInConnectFieldInput {
+                  \\"\\"\\"
+                  Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+                  \\"\\"\\"
+                  createDuplicates: Boolean! = false
                   edge: ActedInCreateInput!
                   where: ProductionConnectWhere
                 }
@@ -1368,6 +1376,10 @@ describe("Comments", () => {
                 }
 
                 input MovieSearchGenreConnectFieldInput {
+                  \\"\\"\\"
+                  Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+                  \\"\\"\\"
+                  createDuplicates: Boolean! = false
                   where: GenreConnectWhere
                 }
 
@@ -1410,6 +1422,10 @@ describe("Comments", () => {
 
                 input MovieSearchMovieConnectFieldInput {
                   connect: [MovieConnectInput!]
+                  \\"\\"\\"
+                  Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+                  \\"\\"\\"
+                  createDuplicates: Boolean! = false
                   where: MovieConnectWhere
                 }
 

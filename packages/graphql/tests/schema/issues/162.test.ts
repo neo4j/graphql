@@ -216,6 +216,10 @@ describe("162", () => {
 
             input TigerJawLevel2Part1ConnectFieldInput {
               connect: TigerJawLevel2Part1ConnectInput
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: TigerJawLevel2Part1ConnectWhere
             }
 
@@ -324,6 +328,10 @@ describe("162", () => {
             }
 
             input TigerJawLevel2Part1TigerConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: TigerConnectWhere
             }
 

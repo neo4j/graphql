@@ -236,6 +236,10 @@ describe("Pluralize consistency", () => {
             }
 
             input super_userMy_friendConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: super_friendConnectWhere
             }
 

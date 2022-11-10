@@ -224,6 +224,10 @@ describe("Unions", () => {
             }
 
             input MovieSearchGenreConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: GenreConnectWhere
             }
 
@@ -266,6 +270,10 @@ describe("Unions", () => {
 
             input MovieSearchMovieConnectFieldInput {
               connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: MovieConnectWhere
             }
 

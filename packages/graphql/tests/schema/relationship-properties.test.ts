@@ -165,6 +165,10 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput!
               where: MovieConnectWhere
             }
@@ -416,6 +420,10 @@ describe("Relationship-properties", () => {
 
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput!
               where: ActorConnectWhere
             }
@@ -837,6 +845,10 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput!
               where: MovieConnectWhere
             }
@@ -1116,6 +1128,10 @@ describe("Relationship-properties", () => {
 
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput!
               where: ActorConnectWhere
             }
@@ -1531,6 +1547,10 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: MovieConnectWhere
             }
 
@@ -1773,6 +1793,10 @@ describe("Relationship-properties", () => {
 
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: ActorConnectWhere
             }
 

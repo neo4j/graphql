@@ -732,6 +732,10 @@ describe("@exclude directive", () => {
             }
 
             input MovieActorsConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: ActorConnectWhere
             }
 

@@ -138,6 +138,10 @@ describe("Enums", () => {
 
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput!
               where: MovieConnectWhere
             }
@@ -341,6 +345,10 @@ describe("Enums", () => {
 
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput!
               where: ActorConnectWhere
             }

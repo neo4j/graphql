@@ -758,6 +758,10 @@ describe("@populatedBy tests", () => {
                 }
 
                 input MovieGenresConnectFieldInput {
+                  \\"\\"\\"
+                  Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+                  \\"\\"\\"
+                  createDuplicates: Boolean! = false
                   edge: RelPropertiesCreateInput!
                   where: GenreConnectWhere
                 }
@@ -1291,6 +1295,10 @@ describe("@populatedBy tests", () => {
                 }
 
                 input MovieGenresConnectFieldInput {
+                  \\"\\"\\"
+                  Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+                  \\"\\"\\"
+                  createDuplicates: Boolean! = false
                   edge: RelPropertiesCreateInput!
                   where: GenreConnectWhere
                 }

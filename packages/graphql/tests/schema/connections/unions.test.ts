@@ -103,6 +103,10 @@ describe("Unions", () => {
 
             input AuthorPublicationsBookConnectFieldInput {
               connect: [BookConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: WroteCreateInput!
               where: BookConnectWhere
             }
@@ -192,6 +196,10 @@ describe("Unions", () => {
 
             input AuthorPublicationsJournalConnectFieldInput {
               connect: [JournalConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: WroteCreateInput!
               where: JournalConnectWhere
             }
@@ -333,6 +341,10 @@ describe("Unions", () => {
 
             input BookAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: WroteCreateInput!
               where: AuthorConnectWhere
             }
@@ -615,6 +627,10 @@ describe("Unions", () => {
 
             input JournalAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: WroteCreateInput!
               where: AuthorConnectWhere
             }

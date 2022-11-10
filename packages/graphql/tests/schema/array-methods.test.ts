@@ -97,6 +97,10 @@ describe("Arrays Methods", () => {
 
             input ActorActedInConnectFieldInput {
               connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput
               where: MovieConnectWhere
             }
@@ -361,6 +365,10 @@ describe("Arrays Methods", () => {
 
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput
               where: ActorConnectWhere
             }

@@ -240,6 +240,10 @@ describe("Subscriptions", () => {
             }
 
             input MovieActorsConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: ActorConnectWhere
             }
 
@@ -671,6 +675,10 @@ describe("Subscriptions", () => {
 
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: MovieConnectWhere
             }
 
@@ -907,6 +915,10 @@ describe("Subscriptions", () => {
 
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: ActorConnectWhere
             }
 
@@ -1354,6 +1366,10 @@ describe("Subscriptions", () => {
 
             input MovieActorsPersonConnectFieldInput {
               connect: [PersonConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: PersonConnectWhere
             }
 
@@ -1403,6 +1419,10 @@ describe("Subscriptions", () => {
 
             input MovieActorsStarConnectFieldInput {
               connect: [StarConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: StarConnectWhere
             }
 
@@ -1722,6 +1742,10 @@ describe("Subscriptions", () => {
 
             input PersonMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: MovieConnectWhere
             }
 
@@ -1970,6 +1994,10 @@ describe("Subscriptions", () => {
 
             input StarMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: MovieConnectWhere
             }
 
@@ -2303,6 +2331,10 @@ describe("Subscriptions", () => {
 
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: MovieConnectWhere
             }
 
@@ -2552,6 +2584,10 @@ describe("Subscriptions", () => {
 
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               edge: ActedInCreateInput!
               where: ActorConnectWhere
             }
@@ -3105,6 +3141,10 @@ describe("Subscriptions", () => {
             }
 
             input MovieActorsConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              createDuplicates: Boolean! = false
               where: ActorConnectWhere
             }
 
