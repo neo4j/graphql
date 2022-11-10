@@ -18,61 +18,86 @@
  */
 
 import gql from "graphql-tag";
+import { Neo4j } from "../setup/neo4j";
 import { Subgraph } from "../setup/subgraph";
 import { SubgraphServer } from "../setup/subgraph-server";
-import connect from "../setup/neo4j";
 
 async function main() {
+    // const locations = gql`
+    //     extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+
+    //     # type Location @key(fields: "id") {
+    //     #     id: ID!
+    //     #     "The name of the location"
+    //     #     name: String!
+    //     #     "A short description about the location"
+    //     #     description: String!
+    //     #     "The location's main photo as a URL"
+    //     #     photo: String!
+    //     # }
+
+    //     type Location @key(fields: "id") {
+    //         id: ID!
+    //         "The name of the location"
+    //         name: String
+    //         "A short description about the location"
+    //         description: String
+    //         "The location's main photo as a URL"
+    //         photo: String
+    //     }
+    // `;
+
+    // const reviews = gql`
+    //     extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+
+    //     type Location @key(fields: "id") {
+    //         id: ID!
+    //         "The calculated overall rating based on all reviews"
+    //         overallRating: Float
+    //         "All submitted reviews about this location"
+    //         reviewsForLocation: [Review!]!
+    //     }
+
+    //     type Review {
+    //         id: ID!
+    //         "Written text"
+    //         comment: String
+    //         "A number from 1 - 5 with 1 being lowest and 5 being highest"
+    //         rating: Int
+    //         "The location the review is about"
+    //         location: Location
+    //     }
+    // `;
+
     const locations = gql`
         extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
 
-        # type Location @key(fields: "id") {
-        #     id: ID!
-        #     "The name of the location"
-        #     name: String!
-        #     "A short description about the location"
-        #     description: String!
-        #     "The location's main photo as a URL"
-        #     photo: String!
-        # }
-
-        type Location @key(fields: "id") {
+        type Product @key(fields: "id") {
             id: ID!
-            "The name of the location"
             name: String
-            "A short description about the location"
-            description: String
-            "The location's main photo as a URL"
-            photo: String
+            price: Int
         }
     `;
 
     const reviews = gql`
         extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
 
-        type Location @key(fields: "id") {
+        type Product @key(fields: "id", resolvable: false) {
             id: ID!
-            "The calculated overall rating based on all reviews"
-            overallRating: Float
-            "All submitted reviews about this location"
-            reviewsForLocation: [Review]!
         }
 
         type Review {
-            id: ID!
-            "Written text"
-            comment: String
-            "A number from 1 - 5 with 1 being lowest and 5 being highest"
-            rating: Int
-            "The location the review is about"
-            location: Location
+            score: Int!
+            description: String!
+            product: Product! @relationship(type: "HAS_REVIEW", direction: IN)
         }
     `;
 
-    const driver = await connect();
+    const neo4j = new Neo4j();
+    await neo4j.init();
 
-    const locationsSubgraph = new Subgraph(locations, driver);
-    const reviewsSubgraph = new Subgraph(reviews, driver);
+    const locationsSubgraph = new Subgraph(locations, neo4j.driver);
+    const reviewsSubgraph = new Subgraph(reviews, neo4j.driver);
 
     const [locationsSchema, reviewsSchema] = await Promise.all([
         locationsSubgraph.getSchema(),

@@ -28,7 +28,7 @@ export class Subgraph {
     library: Neo4jGraphQL;
 
     constructor(typeDefs: TypeSource, driver: neo4j.Driver) {
-        this.plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs);
+        this.plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, driver);
 
         this.library = new Neo4jGraphQL({
             typeDefs,

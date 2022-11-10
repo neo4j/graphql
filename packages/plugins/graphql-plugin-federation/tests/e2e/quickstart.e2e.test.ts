@@ -19,38 +19,31 @@
 
 import type * as neo4j from "neo4j-driver";
 import supertest from "supertest";
-import { generateUniqueType } from "../utils/graphql-types";
+import { generateUniqueType, UniqueType } from "../utils/graphql-types";
 import { GatewayServer } from "./setup/gateway-server";
 import type { Server } from "./setup/server";
 import { Subgraph } from "./setup/subgraph";
 import { SubgraphServer } from "./setup/subgraph-server";
-import connect from "./setup/neo4j";
+import { Neo4j } from "./setup/neo4j";
 
-describe("Federation 2 quickstart", () => {
+describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation/quickstart/setup/)", () => {
     let locationsServer: Server;
     let reviewsServer: Server;
     let gatewayServer: Server;
 
-    let driver: neo4j.Driver;
+    let neo4j: Neo4j;
 
     let gatewayUrl: string;
 
+    let Location: UniqueType;
+    let Review: UniqueType;
+
     beforeAll(async () => {
-        const Location = generateUniqueType("Location");
-        const Review = generateUniqueType("Review");
+        Location = generateUniqueType("Location");
+        Review = generateUniqueType("Review");
 
         const locations = `
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
-
-            # type ${Location} @key(fields: "id") {
-            #     id: ID!
-            #     "The name of the location"
-            #     name: String!
-            #     "A short description about the location"
-            #     description: String!
-            #     "The location's main photo as a URL"
-            #     photo: String!
-            # }
 
             type ${Location} @key(fields: "id") {
                 id: ID!
@@ -71,7 +64,7 @@ describe("Federation 2 quickstart", () => {
                 "The calculated overall rating based on all reviews"
                 overallRating: Float
                 "All submitted reviews about this location"
-                reviewsForLocation: [${Review}!]! @relationship(type: "HAS_REVIEW", direction: IN)
+                reviewsForLocation: [${Review}!]!
             }
 
             type ${Review} {
@@ -81,14 +74,15 @@ describe("Federation 2 quickstart", () => {
                 "A number from 1 - 5 with 1 being lowest and 5 being highest"
                 rating: Int
                 "The location the review is about"
-                location: ${Location} @relationship(type: "HAS_REVIEW", direction: OUT)
+                location: ${Location}
             }
         `;
 
-        driver = await connect();
+        neo4j = new Neo4j();
+        await neo4j.init();
 
-        const locationsSubgraph = new Subgraph(locations, driver);
-        const reviewsSubgraph = new Subgraph(reviews, driver);
+        const locationsSubgraph = new Subgraph(locations, neo4j.driver);
+        const reviewsSubgraph = new Subgraph(reviews, neo4j.driver);
 
         const [locationsSchema, reviewsSchema] = await Promise.all([
             locationsSubgraph.getSchema(),
@@ -100,6 +94,8 @@ describe("Federation 2 quickstart", () => {
 
         const [locationsUrl, reviewsUrl] = await Promise.all([locationsServer.start(), reviewsServer.start()]);
 
+        await new Promise((r) => setTimeout(r, 5000));
+
         gatewayServer = new GatewayServer(
             [
                 { name: "locations", url: locationsUrl },
@@ -110,38 +106,43 @@ describe("Federation 2 quickstart", () => {
 
         gatewayUrl = await gatewayServer.start();
 
-        const session = driver.session();
-        await session.executeWrite((tx) =>
-            tx.run(
-                `CREATE (:${Location} { id: 1, description: "desc", name: "name", overallRating: 5.5, photo: "photo"})`
-            )
+        await new Promise((r) => setTimeout(r, 5000));
+
+        await neo4j.executeWrite(
+            `CREATE (:${Location} { id: "1", description: "description", name: "name", overallRating: 5.5, photo: "photo" })`
         );
-        await session.close();
     });
 
     afterAll(async () => {
-        await Promise.all([locationsServer.stop(), reviewsServer.stop(), gatewayServer.stop()]);
-        await driver.close();
+        await gatewayServer.stop();
+        await Promise.all([locationsServer.stop(), reviewsServer.stop()]);
+        await neo4j.close();
     });
 
-    test("blah", async () => {
-        const result = await supertest(gatewayUrl)
-            .post("")
-            .send({
-                query: `
-                {
-                    locations {
-                      description
-                      id
-                      name
-                      overallRating
-                      photo
-                    }
-                  }
-            `,
-            })
-            .expect(200);
+    test("all Location fields can be resolved across both subgraphs", async () => {
+        const request = supertest(gatewayUrl);
 
-        expect(result).toMatchInlineSnapshot();
+        const response = await request.post("").send({
+            query: `
+            {
+                ${Location.plural} {
+                  description
+                  id
+                  name
+                  overallRating
+                  photo
+                }
+              }
+        `,
+        });
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({
+            data: {
+                [Location.plural]: [
+                    { description: "description", id: "1", name: "name", overallRating: 5.5, photo: "photo" },
+                ],
+            },
+        });
     });
 });

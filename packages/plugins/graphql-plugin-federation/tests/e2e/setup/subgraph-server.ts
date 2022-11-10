@@ -34,9 +34,10 @@ export class SubgraphServer implements Server {
     }
 
     public async start(): Promise<string> {
-        console.log("starting");
-        const { url } = await startStandaloneServer(this.server, { listen: { port: this.port } });
-        console.log(`started ${url}`);
+        const { url } = await startStandaloneServer(this.server, {
+            listen: { port: this.port },
+        });
+        console.log(`started subgraph server on ${url}`);
         return url;
     }
 

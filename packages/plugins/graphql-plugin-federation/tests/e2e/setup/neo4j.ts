@@ -18,32 +18,31 @@
  */
 
 import * as neo4j from "neo4j-driver";
-import * as util from "util";
 
-let driver: neo4j.Driver;
+export class Neo4j {
+    driver: neo4j.Driver;
 
-async function connect(): Promise<neo4j.Driver> {
-    if (driver) {
-        return driver;
+    constructor(url = "neo4j://localhost:7687/neo4j", username = "neo4j", password = "password") {
+        const auth = neo4j.auth.basic(username, password);
+        this.driver = neo4j.driver(url, auth);
     }
 
-    const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
-
-    if (process.env.NEO_WAIT && !driver) {
-        await util.promisify(setTimeout)(Number(process.env.NEO_WAIT));
+    public async init() {
+        return this.driver.verifyConnectivity();
     }
 
-    const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
-
-    driver = neo4j.driver(NEO_URL, auth);
-
-    try {
-        await driver.verifyConnectivity();
-    } catch (error: any) {
-        throw new Error(`Could not connect to neo4j @ ${NEO_URL} Error: ${error.message}`);
+    public async createDatabase(name: string): Promise<void> {
+        await this.executeWrite(`CREATE DATABASE ${name} WAIT`);
     }
 
-    return driver;
+    public async executeWrite(cypher: string, params: Record<string, unknown> = {}) {
+        const session = this.driver.session();
+        const records = await session.executeWrite((tx) => tx.run(cypher, params));
+        await session.close();
+        return records;
+    }
+
+    public close(): Promise<void> {
+        return this.driver.close();
+    }
 }
-
-export default connect;

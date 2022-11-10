@@ -24,6 +24,7 @@ import { IResolvers, makeDirectiveNode, TypeSource } from "@graphql-tools/utils"
 import { OGM } from "@neo4j/graphql-ogm";
 import type { SchemaDefinition } from "@neo4j/graphql";
 import { ConstDirectiveNode, DefinitionNode, DocumentNode, FieldDefinitionNode, GraphQLSchema, Kind } from "graphql";
+import type * as neo4j from "neo4j-driver";
 
 type FederationDirective =
     | "@key"
@@ -47,7 +48,7 @@ export class Neo4jGraphQLApolloFederationPlugin {
     >;
     private ogm: OGM;
 
-    constructor(typeDefs: TypeSource) {
+    constructor(typeDefs: TypeSource, driver: neo4j.Driver) {
         this.importArgument = new Map([
             ["@key", "@federation__key"],
             ["@shareable", "@federation__shareable"],
@@ -67,7 +68,7 @@ export class Neo4jGraphQLApolloFederationPlugin {
 
         const filteredTypeDefs = this.filterFederationDirectives(typeDefs);
 
-        this.ogm = new OGM({ typeDefs: filteredTypeDefs });
+        this.ogm = new OGM({ typeDefs: filteredTypeDefs, driver });
     }
 
     public init(): Promise<void> {
@@ -98,6 +99,7 @@ export class Neo4jGraphQLApolloFederationPlugin {
                         "PageInfo",
                         "UpdateInfo",
                         "StringAggregateSelectionNullable",
+                        "StringAggregateSelectionNonNullable",
                         "IDAggregateSelectionNonNullable",
                         "Query",
                         "Mutation",
@@ -144,7 +146,7 @@ export class Neo4jGraphQLApolloFederationPlugin {
         document.definitions.forEach((def) => {
             if (def.kind === Kind.OBJECT_TYPE_DEFINITION) {
                 resolverMap[def.name.value] = {
-                    __resolveReference: this.getReferenceResolver(def.name.value),
+                    __resolveReference: this.getReferenceResolver(),
                 };
             }
         });
@@ -152,10 +154,14 @@ export class Neo4jGraphQLApolloFederationPlugin {
         return resolverMap;
     }
 
-    private getReferenceResolver(typename: string): (reference, context) => Promise<unknown> {
-        const __resolveReference = (reference, context): Promise<unknown> => {
-            const model = this.ogm.model(typename);
-            return model.find({ where: reference, context });
+    private getReferenceResolver(): (reference, context) => Promise<unknown | undefined> {
+        const __resolveReference = async (reference, context): Promise<unknown> => {
+            const { __typename, ...where } = reference;
+            const model = this.ogm.model(__typename);
+            const records = await model.find({ where, context });
+            if (records[0]) {
+                return records[0];
+            }
         };
         return __resolveReference;
     }

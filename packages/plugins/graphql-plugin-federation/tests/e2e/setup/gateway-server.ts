@@ -47,6 +47,7 @@ export class GatewayServer implements Server {
 
     public async start(): Promise<string> {
         const { url } = await startStandaloneServer(this.server, { listen: { port: this.port } });
+        console.log(`started gateway server on ${url}`);
         return url;
     }
 
