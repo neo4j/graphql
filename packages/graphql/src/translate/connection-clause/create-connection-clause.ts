@@ -146,7 +146,7 @@ function createConnectionClauseForUnions({
         });
     });
 
-    const unionClauses = new Cypher.Call(new Cypher.Union(...filterTruthy(subqueries)));
+    const unionClauses = new Cypher.Call(new Cypher.Union(...filterTruthy(subqueries)).all());
 
     const edgesList = new Cypher.NamedVariable("edges");
     const edgeItem = new Cypher.NamedVariable("edge");
