@@ -554,7 +554,7 @@ describe("Cypher Auth Roles", () => {
                                     \\"node\\": {
                                         \\"creator\\": {
                                             \\"connect\\": {
-                                                \\"createDuplicates\\": false,
+                                                \\"createAsDuplicate\\": false,
                                                 \\"where\\": {
                                                     \\"node\\": {
                                                         \\"id\\": \\"user-id\\"

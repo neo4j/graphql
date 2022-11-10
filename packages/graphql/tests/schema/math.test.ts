@@ -599,7 +599,7 @@ describe("Algebraic", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               where: MovieConnectWhere
             }
 
@@ -830,7 +830,7 @@ describe("Algebraic", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               where: DirectorConnectWhere
             }
 
@@ -1242,7 +1242,7 @@ describe("Algebraic", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               where: PersonConnectWhere
             }
 
@@ -1442,7 +1442,7 @@ describe("Algebraic", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               where: ProductionConnectWhere
             }
 
@@ -1742,7 +1742,7 @@ describe("Algebraic", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               edge: ActedInCreateInput
               where: PersonConnectWhere
             }
@@ -2018,7 +2018,7 @@ describe("Algebraic", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               edge: ActedInCreateInput
               where: MovieConnectWhere
             }

@@ -100,7 +100,7 @@ describe("Arrays Methods", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               edge: ActedInCreateInput
               where: MovieConnectWhere
             }
@@ -368,7 +368,7 @@ describe("Arrays Methods", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               edge: ActedInCreateInput
               where: ActorConnectWhere
             }

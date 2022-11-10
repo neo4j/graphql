@@ -472,7 +472,7 @@ describe("interface relationships", () => {
         }
     });
 
-    test("should create duplicate relationships when using createDuplicates on a single connect value", async () => {
+    test("should create duplicate relationships when using createAsDuplicate on a single connect value", async () => {
         const session = await neo4j.getSession();
 
         const query = `
@@ -481,7 +481,7 @@ describe("interface relationships", () => {
                     where: { name: $name }
                     connect: { 
                         actedIn: {
-                            createDuplicates: true
+                            createAsDuplicate: true
                             edge: { screenTime: $screenTime }
                             where: { node: { title: $title } }
                         },
@@ -550,7 +550,7 @@ describe("interface relationships", () => {
     });
 
     // TODO: remove skip when https://github.com/neo4j/graphql/issues/2389 is fixed
-    test.skip("should create duplicate relationships when createDuplicates true in all values in array of connect values", async () => {
+    test.skip("should create duplicate relationships when createAsDuplicate true in all values in array of connect values", async () => {
         const session = await neo4j.getSession();
 
         const query = `
@@ -560,12 +560,12 @@ describe("interface relationships", () => {
                     connect: {
                         actedIn: [
                             {
-                                createDuplicates: true
+                                createAsDuplicate: true
                                 edge: { screenTime: $screenTime3 }
                                 where: { node: { title: $seriesTitle } }
                             },
                             {
-                                createDuplicates: true
+                                createAsDuplicate: true
                                 edge: { screenTime: $screenTime2 }
                                 where: { node: { title: $movieTitle } }
                             },
@@ -645,7 +645,7 @@ describe("interface relationships", () => {
     });
 
     // TODO: remove skip when https://github.com/neo4j/graphql/issues/2389 is fixed
-    test.skip("should create duplicate relationships when createDuplicates true in some values in array of connect values", async () => {
+    test.skip("should create duplicate relationships when createAsDuplicate true in some values in array of connect values", async () => {
         const session = await neo4j.getSession();
 
         const query = `
@@ -655,12 +655,12 @@ describe("interface relationships", () => {
                     connect: {
                         actedIn: [
                             {
-                                createDuplicates: true
+                                createAsDuplicate: true
                                 edge: { screenTime: $screenTime3 }
                                 where: { node: { title: $seriesTitle } }
                             },
                             {
-                                createDuplicates: false
+                                createAsDuplicate: false
                                 edge: { screenTime: $screenTime2 }
                                 where: { node: { title: $movieTitle } }
                             },
@@ -739,7 +739,7 @@ describe("interface relationships", () => {
         }
     });
 
-    test("should not create duplicate relationships when createDuplicates false on multiple of the same connect values", async () => {
+    test("should not create duplicate relationships when createAsDuplicate false on multiple of the same connect values", async () => {
         const session = await neo4j.getSession();
 
         const query = `
@@ -749,12 +749,12 @@ describe("interface relationships", () => {
                     connect: { 
                         actedIn: [
                             {
-                                createDuplicates: false
+                                createAsDuplicate: false
                                 edge: { screenTime: $screenTime }
                                 where: { node: { title: $title } }
                             },
                             {
-                                createDuplicates: false
+                                createAsDuplicate: false
                                 edge: { screenTime: $screenTime }
                                 where: { node: { title: $title } }
                             },

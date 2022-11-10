@@ -176,7 +176,7 @@ describe("#324", () => {
                                                     \\"name\\": \\"Manufacturer\\",
                                                     \\"logo\\": {
                                                         \\"connect\\": {
-                                                            \\"createDuplicates\\": false,
+                                                            \\"createAsDuplicate\\": false,
                                                             \\"where\\": {
                                                                 \\"node\\": {
                                                                     \\"identifier\\": \\"Opel Logo\\"

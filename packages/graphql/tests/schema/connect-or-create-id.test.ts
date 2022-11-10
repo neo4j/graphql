@@ -107,7 +107,7 @@ describe("connect or create with id", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               where: MovieConnectWhere
             }
 
@@ -567,7 +567,7 @@ describe("connect or create with id", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               where: UserConnectWhere
             }
 
@@ -895,7 +895,7 @@ describe("connect or create with id", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               where: PostConnectWhere
             }
 

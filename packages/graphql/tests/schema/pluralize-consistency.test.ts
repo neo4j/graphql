@@ -239,7 +239,7 @@ describe("Pluralize consistency", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               where: super_friendConnectWhere
             }
 

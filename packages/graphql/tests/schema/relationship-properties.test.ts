@@ -168,7 +168,7 @@ describe("Relationship-properties", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               edge: ActedInCreateInput!
               where: MovieConnectWhere
             }
@@ -423,7 +423,7 @@ describe("Relationship-properties", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               edge: ActedInCreateInput!
               where: ActorConnectWhere
             }
@@ -848,7 +848,7 @@ describe("Relationship-properties", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               edge: ActedInCreateInput!
               where: MovieConnectWhere
             }
@@ -1131,7 +1131,7 @@ describe("Relationship-properties", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               edge: ActedInCreateInput!
               where: ActorConnectWhere
             }
@@ -1550,7 +1550,7 @@ describe("Relationship-properties", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               where: MovieConnectWhere
             }
 
@@ -1796,7 +1796,7 @@ describe("Relationship-properties", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createDuplicates: Boolean! = false
+              createAsDuplicate: Boolean! = false
               where: ActorConnectWhere
             }
 

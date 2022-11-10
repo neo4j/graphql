@@ -29,7 +29,7 @@ import { FieldAggregationComposer } from "../aggregations/field-aggregation-comp
 import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
-import { CreateDuplicates } from "../../graphql/input-objects/CreateDuplicates";
+import { CreateAsDuplicate } from "../../graphql/input-objects/CreateDuplicates";
 
 function createRelationshipFields({
     relationshipFields,
@@ -134,7 +134,7 @@ function createRelationshipFields({
                             ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
                             : {}),
                         where: connectWhere,
-                        createDuplicates: CreateDuplicates,
+                        createAsDuplicate: CreateAsDuplicate,
                     });
                 }
             );
@@ -357,7 +357,7 @@ function createRelationshipFields({
                         name: connectName,
                         fields: {
                             where: connectWhereName,
-                            createDuplicates: CreateDuplicates,
+                            createAsDuplicate: CreateAsDuplicate,
                             ...(n.relationFields.length
                                 ? {
                                       connect: rel.typeMeta.array
@@ -750,7 +750,7 @@ function createRelationshipFields({
         const connect = rel.typeMeta.array ? `[${connectName}!]` : connectName;
         schemaComposer.getOrCreateITC(connectName, (tc) => {
             tc.addFields({
-                createDuplicates: CreateDuplicates,
+                createAsDuplicate: CreateAsDuplicate,
                 where: connectWhereName,
                 ...(n.relationFields.length
                     ? { connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput` }
