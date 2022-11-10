@@ -225,7 +225,7 @@ describe("Cypher Auth Where", () => {
                     WHERE (exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis1 IN [(this_Comment)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis1:\`User\`) | this_connection_contentConnectionthis1] WHERE (this_connection_contentConnectionthis1.id IS NOT NULL AND this_connection_contentConnectionthis1.id = $this_connection_contentConnectionparam0)))
                     WITH { node: { __resolveType: \\"Comment\\" } } AS edge
                     RETURN edge
-                    UNION
+                    UNION ALL
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis2:HAS_CONTENT]->(this_Post:\`Post\`)
                     WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis3 IN [(this_Post)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis3:\`User\`) | this_connection_contentConnectionthis3] WHERE (this_connection_contentConnectionthis3.id IS NOT NULL AND this_connection_contentConnectionthis3.id = $this_connection_contentConnectionparam1)))
@@ -282,7 +282,7 @@ describe("Cypher Auth Where", () => {
                     WHERE (this_Comment.id = $this_connection_contentConnectionparam0 AND (exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis1 IN [(this_Comment)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis1:\`User\`) | this_connection_contentConnectionthis1] WHERE (this_connection_contentConnectionthis1.id IS NOT NULL AND this_connection_contentConnectionthis1.id = $this_connection_contentConnectionparam1))))
                     WITH { node: { __resolveType: \\"Comment\\" } } AS edge
                     RETURN edge
-                    UNION
+                    UNION ALL
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis2:HAS_CONTENT]->(this_Post:\`Post\`)
                     WHERE (this_Post.id = $this_connection_contentConnectionparam2 AND (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis3 IN [(this_Post)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis3:\`User\`) | this_connection_contentConnectionthis3] WHERE (this_connection_contentConnectionthis3.id IS NOT NULL AND this_connection_contentConnectionthis3.id = $this_connection_contentConnectionparam3))))

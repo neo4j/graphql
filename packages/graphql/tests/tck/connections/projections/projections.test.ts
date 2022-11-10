@@ -206,7 +206,7 @@ describe("Relay Cursor Connection projections", () => {
                     MATCH (this)-[this_connection_productionsConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
                     WITH { node: { __resolveType: \\"Movie\\" } } AS edge
                     RETURN edge
-                    UNION
+                    UNION ALL
                     WITH this
                     MATCH (this)-[this_connection_productionsConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
                     WITH { node: { __resolveType: \\"Series\\" } } AS edge
@@ -258,7 +258,7 @@ describe("Relay Cursor Connection projections", () => {
                     MATCH (this)-[this_connection_productionsConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
                     WITH { node: { __resolveType: \\"Movie\\" } } AS edge
                     RETURN edge
-                    UNION
+                    UNION ALL
                     WITH this
                     MATCH (this)-[this_connection_productionsConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
                     WITH { node: { __resolveType: \\"Series\\" } } AS edge

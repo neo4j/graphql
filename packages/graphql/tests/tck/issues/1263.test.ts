@@ -88,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/1263", () => {
                     WHERE (this_Movie.title = $this_connection_actedInConnectionparam0 AND this_Movie.runtime > $this_connection_actedInConnectionparam1)
                     WITH { node: { __resolveType: \\"Movie\\", title: this_Movie.title } } AS edge
                     RETURN edge
-                    UNION
+                    UNION ALL
                     WITH this
                     MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
                     WHERE (this_Series.title = $this_connection_actedInConnectionparam2 AND this_Series.episodes > $this_connection_actedInConnectionparam3)
