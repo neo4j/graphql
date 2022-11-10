@@ -21,19 +21,26 @@ import type { InputTypeComposer } from "graphql-compose";
 
 export function addMathOperatorsToITC(itc: InputTypeComposer): void {
     // Add mathematical operators for Int/BigInt/Float fields
-    itc.getFieldNames().forEach(fieldName => {
+    itc.getFieldNames().forEach((fieldName) => {
         const fieldType = itc.getFieldTypeName(fieldName);
-        if (fieldType === 'Int' || fieldType === 'BigInt') {
+        const deprecatedDirectives = itc
+            .getFieldDirectives(fieldName)
+            .filter((directive) => directive.name === "deprecated");
+        const fieldDefinition = {
+            type: fieldType,
+            directives: deprecatedDirectives,
+        };
+        if (fieldType === "Int" || fieldType === "BigInt") {
             itc.addFields({
-                [`${fieldName}_INCREMENT`]: { type: fieldType },
-                [`${fieldName}_DECREMENT`]: { type: fieldType }
+                [`${fieldName}_INCREMENT`]: fieldDefinition,
+                [`${fieldName}_DECREMENT`]: fieldDefinition,
             });
-        } else if (fieldType === 'Float') {
+        } else if (fieldType === "Float") {
             itc.addFields({
-                [`${fieldName}_ADD`]: { type: fieldType },
-                [`${fieldName}_SUBTRACT`]: { type: fieldType },
-                [`${fieldName}_DIVIDE`]: { type: fieldType },
-                [`${fieldName}_MULTIPLY`]: { type: fieldType }
+                [`${fieldName}_ADD`]: fieldDefinition,
+                [`${fieldName}_SUBTRACT`]: fieldDefinition,
+                [`${fieldName}_DIVIDE`]: fieldDefinition,
+                [`${fieldName}_MULTIPLY`]: fieldDefinition,
             });
         }
     });
