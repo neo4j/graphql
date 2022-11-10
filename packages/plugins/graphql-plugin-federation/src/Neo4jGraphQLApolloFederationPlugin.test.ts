@@ -46,7 +46,8 @@ describe("Neo4jGraphQLApolloFederationPlugin", () => {
                 }
             `;
 
-            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs);
+            // @ts-ignore
+            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined);
 
             await expect(plugin.init()).resolves.not.toThrow();
         });
@@ -77,7 +78,8 @@ describe("Neo4jGraphQLApolloFederationPlugin", () => {
                 }
             `;
 
-            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs);
+            // @ts-ignore
+            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined);
 
             expect(plugin["findFederationLinkDirective"](typeDefs)?.name.value).toBe("link");
         });
@@ -104,7 +106,8 @@ describe("Neo4jGraphQLApolloFederationPlugin", () => {
                 }
             `;
 
-            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs);
+            // @ts-ignore
+            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined);
 
             expect(plugin["findFederationLinkDirective"](typeDefs)?.name.value).toBe("link");
         });
@@ -135,9 +138,12 @@ describe("Neo4jGraphQLApolloFederationPlugin", () => {
                 }
             `;
 
-            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs);
+            // @ts-ignore
+            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined);
 
-            expect(plugin["findFederationLinkDirective"](typeDefs)).toBeUndefined();
+            expect(() => plugin["findFederationLinkDirective"](typeDefs)).toThrow(
+                "typeDefs must contain `@link` schema extension to be used with Apollo Federation"
+            );
         });
 
         test("returns undefined if directive is not defined", () => {
@@ -160,9 +166,12 @@ describe("Neo4jGraphQLApolloFederationPlugin", () => {
                 }
             `;
 
-            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs);
+            // @ts-ignore
+            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined);
 
-            expect(plugin["findFederationLinkDirective"](typeDefs)).toBeUndefined();
+            expect(() => plugin["findFederationLinkDirective"](typeDefs)).toThrow(
+                "typeDefs must contain `@link` schema extension to be used with Apollo Federation"
+            );
         });
     });
 
@@ -198,7 +207,8 @@ describe("Neo4jGraphQLApolloFederationPlugin", () => {
                 }
             `;
 
-            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs);
+            // @ts-ignore
+            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined);
 
             const directive = plugin["findFederationLinkDirective"](typeDefs);
 
@@ -249,7 +259,8 @@ describe("Neo4jGraphQLApolloFederationPlugin", () => {
                 }
             `;
 
-            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs);
+            // @ts-ignore
+            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined);
 
             const directive = plugin["findFederationLinkDirective"](typeDefs);
 
@@ -289,7 +300,8 @@ describe("Neo4jGraphQLApolloFederationPlugin", () => {
                 }
             `;
 
-            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs);
+            // @ts-ignore
+            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined);
 
             const directive = plugin["findFederationLinkDirective"](typeDefs);
 
@@ -322,7 +334,8 @@ describe("Neo4jGraphQLApolloFederationPlugin", () => {
                 }
             `;
 
-            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs);
+            // @ts-ignore
+            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined);
 
             const filteredTypeDefs = plugin["filterFederationDirectives"](typeDefs);
 
