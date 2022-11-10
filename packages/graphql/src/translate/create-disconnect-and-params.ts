@@ -395,7 +395,7 @@ function createDisconnectAndParams({
         const inner: string[] = [];
         if (relationField.interface) {
             const subqueries: string[] = [];
-            refNodes.forEach((refNode, i) => {
+            refNodes.forEach((refNode) => {
                 const subquery = createSubqueryContents(refNode, disconnect, index);
                 if (subquery.subquery) {
                     subqueries.push(subquery.subquery);
