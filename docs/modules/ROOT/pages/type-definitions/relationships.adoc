@@ -59,7 +59,7 @@ Relationship properties can be added to the above type definitions in two steps:
 1. Add an interface definition containing the desired relationship properties
 2. Add a `properties` argument to both "sides" of the `@relationship` directive which points to the newly defined interface
 
-For example, to distinguish which roles an actor played in a movie:
+For example, to distinguish which role an actor played in a movie:
 
 [source, graphql, indent=0]
 ----
@@ -78,7 +78,7 @@ type Movie {
 }
 
 interface ActedIn @relationshipProperties {
-    roles: [String!]
+    role: String!
 }
 ----
 
@@ -111,8 +111,8 @@ Nested mutations mean that there are many ways in which you can insert data into
 mutation CreateMovieAndDirector {
     createMovies(input: [
         {
-            title: "Forrest Gump"
-            released: 1994
+            title: "The Polar Express"
+            released: 2004
             director: {
                 create: {
                     node: {
@@ -135,7 +135,7 @@ mutation CreateMovieAndDirector {
 }
 ----
 
-You then need to create the actor in this example, and connect them to the new Movie node, also specifying which roles they played:
+You then need to create the actor in this example, and connect them to the new Movie node, also specifying which role they played:
 
 [source, graphql, indent=0]
 ----
@@ -147,28 +147,28 @@ mutation CreateActor {
             actedInMovies: {
                 connect: {
                     where: {
-                        node: { title: "Forrest Gump" }
+                        node: { title: "The Polar Express" }
                     }
                     edge: {
-                        roles: ["Forrest"]
+                        role: "Santa Clause"
                     }
                 }
             }
         }
     ]) {
-        movies {
-            title
-            released
-            director {
-                name
-                born
-            }
-            actorsConnection {
+        people {
+            name
+            born
+            actedInMoviesConnection {
                 edges {
-                    roles
+                    role
                     node {
-                        name
-                        born
+                        title
+                        released
+                        director {
+                            name
+                            born
+                        }
                     }
                 }
             }
@@ -177,17 +177,56 @@ mutation CreateActor {
 }
 ----
 
-Note the selection of the `actorsConnection` field in order to query the `roles` relationship property.
+Note the selection of the `actedInMoviesConnection` field in order to query the `role` relationship property.
 
-As you can see, these nested mutations are very powerful, and in the second Mutation you ran, you were able to return the entire graph which was created in this example. In fact, these mutations can actually be compressed down into a single Mutation which inserts all of the data needed:
+It is also possible update nodes and to create duplicates of the same connection by specifying `createAsDuplicate: true` on connections that should not override existing ones.
+In this case, Tom Hanks also played Scrooge in the Polar Express:
+
+[source, graphql, indent=0]
+----
+mutation UpdateActor {
+    updatePeople(
+        where: { name: "Tom Hanks" }
+        connect: {
+            actedInMovies: [
+                {
+                    createAsDuplicate: true
+                    where: { node: { title: "The Polar Express" } }
+                    edge: { role: "Scrooge" }
+                }
+            ]
+        }
+    ) {
+        people {
+            name
+            born
+            actedInMoviesConnection {
+                edges {
+                    role
+                    node {
+                        title
+                        released
+                        director {
+                            name
+                            born
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+----
+
+As you can see, these nested mutations are very powerful, and in the second and third Mutations you ran, you were able to return the entire graph which was created in this example. In fact, these mutations can actually be compressed down into a single Mutation which inserts all of the data needed:
 
 [source, graphql, indent=0]
 ----
 mutation CreateMovieDirectorAndActor {
     createMovies(input: [
         {
-            title: "Forrest Gump"
-            released: 1994
+            title: "The Polar Express"
+            released: 2004
             director: {
                 create: {
                     node: {
@@ -204,8 +243,15 @@ mutation CreateMovieDirectorAndActor {
                             born: 1956
                         }
                         edge: {
-                            roles: ["Forrest"]
+                            role: "Santa Clause"
                         }
+                    }
+                ]
+                connect: [
+                    {
+                        createAsDuplicate: true
+                        where: { node: { name: "Tom Hanks" } }
+                        edge: { role: "Scrooge" }
                     }
                 ]
             }
@@ -220,7 +266,7 @@ mutation CreateMovieDirectorAndActor {
             }
             actorsConnection {
                 edges {
-                    roles
+                    role
                     node {
                         name
                         born
@@ -241,7 +287,7 @@ Now that you have the Movie information in your database, you can query all of t
 [source, graphql, indent=0]
 ----
 query {
-    movies(where: { title: "Forrest Gump" }) {
+    movies(where: { title: "The Polar Express" }) {
         title
         released
         director {
@@ -250,7 +296,7 @@ query {
         }
         actorsConnection {
             edges {
-                roles
+                role
                 node {
                     name
                     born
