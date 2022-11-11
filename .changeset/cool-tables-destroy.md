@@ -3,4 +3,4 @@
 "@neo4j/graphql": patch
 ---
 
-Include auth to the unwind optimization
+Bulk-create performance improvements for protected nodes and fields.
