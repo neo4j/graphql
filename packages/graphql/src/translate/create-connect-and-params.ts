@@ -484,7 +484,9 @@ function createConnectAndParams({
         return { subquery: subquery.join("\n"), params };
     }
 
-    function reducer(res: Res, connect: any, index: number): Res {
+    let index = 0;
+
+    function reducer(res: Res, connect: any): Res {
         if (parentNode.auth && !fromCreate) {
             const whereAuth = createAuthAndParams({
                 operations: "CONNECT",
@@ -506,12 +508,13 @@ function createConnectAndParams({
         const inner: string[] = [];
         if (relationField.interface) {
             const subqueries: string[] = [];
-            refNodes.forEach((refNode, i) => {
-                const subquery = createSubqueryContents(refNode, connect, i);
+            refNodes.forEach((refNode) => {
+                const subquery = createSubqueryContents(refNode, connect, index);
                 if (subquery.subquery) {
                     subqueries.push(subquery.subquery);
                     res.params = { ...res.params, ...subquery.params };
                 }
+                index++;
             });
             if (subqueries.length > 0) {
                 if (context.subscriptionsEnabled) {
@@ -527,6 +530,7 @@ function createConnectAndParams({
             const subquery = createSubqueryContents(refNodes[0], connect, index);
             inner.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
+            index++;
         }
 
         if (inner.length > 0) {

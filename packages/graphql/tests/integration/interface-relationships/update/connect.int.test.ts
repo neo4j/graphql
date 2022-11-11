@@ -549,8 +549,7 @@ describe("interface relationships", () => {
         }
     });
 
-    // TODO: remove skip when https://github.com/neo4j/graphql/issues/2389 is fixed
-    test.skip("should create duplicate relationships when createAsDuplicate true in all values in array of connect values", async () => {
+    test("should create duplicate relationships when createAsDuplicate true in all values in array of connect values", async () => {
         const session = await neo4j.getSession();
 
         const query = `
@@ -628,7 +627,7 @@ describe("interface relationships", () => {
                                         },
                                     },
                                     {
-                                        screenTime: screenTime1,
+                                        screenTime: screenTime3,
                                         node: {
                                             title: seriesTitle,
                                         },
@@ -644,8 +643,7 @@ describe("interface relationships", () => {
         }
     });
 
-    // TODO: remove skip when https://github.com/neo4j/graphql/issues/2389 is fixed
-    test.skip("should create duplicate relationships when createAsDuplicate true in some values in array of connect values", async () => {
+    test("should create duplicate relationships when createAsDuplicate true in some values in array of connect values", async () => {
         const session = await neo4j.getSession();
 
         const query = `
@@ -723,7 +721,7 @@ describe("interface relationships", () => {
                                         },
                                     },
                                     {
-                                        screenTime: screenTime1,
+                                        screenTime: screenTime3,
                                         node: {
                                             title: seriesTitle,
                                         },
