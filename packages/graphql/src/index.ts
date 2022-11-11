@@ -46,7 +46,6 @@ export {
     Neo4jGraphQLConstructor,
     Neo4jGraphQLAuthenticationError,
     Neo4jGraphQLForbiddenError,
-    Neo4jDatabaseInfo,
 } from "./classes";
 
 export { Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "./classes/Neo4jGraphQLSubscriptionsSingleInstancePlugin";
