@@ -49,7 +49,7 @@ export const TopBar = () => {
     };
 
     const handleSendFeedbackClick = () => {
-        window.open("https://feedback.neo4j.com/graphql", "_blank");
+        window.open("https://feedback.neo4j.com/graphql", "SendFeedback");
         tracking.trackHelpLearnFeatureLinks({ screen: screen.view, actionLabel: "Send Feedback" });
     };
 

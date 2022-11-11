@@ -55,7 +55,7 @@ export const Main = () => {
 
     const Banner = () => {
         const handleInterestedInGraphQLaaSClick = () => {
-            window.open("https://forms.gle/uQgai8zaemJz6X4B6", "_blank");
+            window.open("https://forms.gle/uQgai8zaemJz6X4B6", "GraphQLaaSInterestForm");
             tracking.trackExploreGraphQLaaSLink({ screen: screen.view });
         };
 
