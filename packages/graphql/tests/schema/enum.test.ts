@@ -30,7 +30,7 @@ describe("Enum", () => {
                 INACTIVE
                 PENDING
             }
-
+            
             type Movie {
                 status: Status
             }
