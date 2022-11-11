@@ -77,7 +77,7 @@ export default function createInterfaceProjectionAndParams({
         });
     }
 
-    const unionClause = new Cypher.Union(...subqueries);
+    const unionClause = new Cypher.Union(...subqueries).all();
     const call = new Cypher.Call(unionClause);
 
     return new Cypher.RawCypher((env) => {

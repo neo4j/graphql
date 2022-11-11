@@ -166,6 +166,102 @@ describe("Relationship properties - connect", () => {
                 }
             });
 
+            test("should not create duplicate relationships when createAsDuplicate false", async () => {
+                const neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                });
+
+                const session = await neo4j.getSession();
+
+                const source = `
+                    mutation($movieTitle: String!, $screenTime1: Int!, $screenTime2: Int!, $actorName: String!) {
+                        ${movieType.operations.create}(
+                            input: [
+                                {
+                                    title: $movieTitle
+                                    actors: {
+                                        connect: [
+                                            {
+                                                where: { node: { name: $actorName } },
+                                                edge: { screenTime: $screenTime1 },
+                                            },
+                                            {
+                                                createAsDuplicate: false,
+                                                where: { node: { name: $actorName } },
+                                                edge: { screenTime: $screenTime2 },
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        ) {
+                            ${movieType.plural} {
+                                title
+                                actorsConnection {
+                                    edges {
+                                        screenTime
+                                        node {
+                                            name
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (:${actorType.name} { name: $actorName1 })
+                        `,
+                        { movieTitle, screenTime1, actorName1 }
+                    );
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        variableValues: { movieTitle, actorName: actorName1, screenTime1, screenTime2 },
+                    });
+
+                    const cypher = `
+                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
+                        RETURN r
+                    `;
+                    const neo4jResult = await session.run(cypher, {
+                        movieTitle,
+                        screenTime: screenTime1,
+                        actorName: actorName1,
+                    });
+
+                    expect(gqlResult.errors).toBeFalsy();
+                    expect(gqlResult.data).toEqual({
+                        [movieType.operations.create]: {
+                            [movieType.plural]: [
+                                {
+                                    title: movieTitle,
+                                    actorsConnection: {
+                                        edges: expect.toIncludeSameMembers([
+                                            {
+                                                screenTime: screenTime2,
+                                                node: {
+                                                    name: actorName1,
+                                                },
+                                            },
+                                        ]),
+                                    },
+                                },
+                            ],
+                        },
+                    });
+
+                    expect(neo4jResult.records).toHaveLength(1);
+                } finally {
+                    await session.close();
+                }
+            });
+
             test("should create duplicate relationships when createAsDuplicate true", async () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
@@ -1032,7 +1128,119 @@ describe("Relationship properties - connect", () => {
                 }
             });
 
-            test("should create duplicate relationships with a single connect when createAsDuplicate true", async () => {
+            test("should not create duplicate relationships when createAsDuplicate false", async () => {
+                const neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                });
+
+                const session = await neo4j.getSession();
+
+                const source = `
+                    mutation($movieTitle: String!, $screenTime1: Int!, $screenTime2: Int!, $actorName: String!) {
+                        ${actorType.operations.create}(input: [{
+                            name: $actorName,
+                            actedIn: {
+                                ${movieType.name}: {
+                                    connect: [
+                                        {
+                                            where: {
+                                                node: { title: $movieTitle }
+                                            },
+                                            edge: {
+                                                screenTime: $screenTime1
+                                            }
+                                        },
+                                        {
+                                            createAsDuplicate: false
+                                            where: {
+                                                node: { title: $movieTitle }
+                                            },
+                                            edge: {
+                                                screenTime: $screenTime2
+                                            }
+                                        },
+                                        {
+                                            where: {
+                                                node: { title: $movieTitle }
+                                            },
+                                            edge: {
+                                                screenTime: $screenTime1
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }]) {
+                            ${actorType.plural} {
+                                name
+                                actedInConnection {
+                                    edges {
+                                        screenTime
+                                        node {
+                                            ... on ${movieType.name} {
+                                                title
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (:${movieType.name} { title: $movieTitle })
+                        `,
+                        { movieTitle }
+                    );
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        variableValues: { movieTitle, actorName: actorName1, screenTime1, screenTime2 },
+                    });
+
+                    const cypher = `
+                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
+                        RETURN r
+                    `;
+                    const neo4jResult = await session.run(cypher, {
+                        movieTitle,
+                        screenTime: screenTime1,
+                        actorName: actorName1,
+                    });
+
+                    expect(gqlResult.errors).toBeFalsy();
+                    expect(gqlResult.data).toEqual({
+                        [actorType.operations.create]: {
+                            [actorType.plural]: [
+                                {
+                                    name: actorName1,
+                                    actedInConnection: {
+                                        edges: expect.toIncludeSameMembers([
+                                            {
+                                                screenTime: screenTime1,
+                                                node: {
+                                                    title: movieTitle,
+                                                },
+                                            },
+                                        ]),
+                                    },
+                                },
+                            ],
+                        },
+                    });
+
+                    expect(neo4jResult.records).toHaveLength(1);
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should create duplicate relationships when createAsDuplicate true", async () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                 });

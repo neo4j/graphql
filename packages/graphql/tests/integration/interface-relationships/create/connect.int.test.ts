@@ -346,4 +346,168 @@ describe("interface relationships", () => {
             await session.close();
         }
     });
+
+    test("should not create duplicate connections when createAsDuplicates false", async () => {
+        const session = await neo4j.getSession();
+
+        const query = `
+            mutation CreateActorConnectMovie($name1: String!, $title: String, $screenTime: Int!) {
+                ${actorType.operations.create}(
+                    input: [
+                        {
+                            name: $name1
+                            actedIn: {
+                                connect: [
+                                    {
+                                        createAsDuplicate: true
+                                        edge: { screenTime: $screenTime }
+                                        where: { node: { _on: { ${movieType.name}: { title: $title } } } }
+                                    },
+                                    {
+                                        createAsDuplicate: false
+                                        edge: { screenTime: $screenTime }
+                                        where: { node: { _on: { ${movieType.name}: { title: $title } } } }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                ) {
+                    ${actorType.plural} {
+                        name
+                        actedIn {
+                            title
+                            ... on ${movieType.name} {
+                                runtime
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (:${movieType.name} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (:${seriesType.name} { title: $movieTitle, episodes:$movieRuntime })
+            `,
+                { movieTitle, movieRuntime }
+            );
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                variableValues: {
+                    name1: actorName1,
+                    title: movieTitle,
+                    screenTime: movieScreenTime,
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data).toEqual({
+                [actorType.operations.create]: {
+                    [actorType.plural]: [
+                        {
+                            actedIn: [
+                                {
+                                    runtime: movieRuntime,
+                                    title: movieTitle,
+                                },
+                            ],
+                            name: actorName1,
+                        },
+                    ],
+                },
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should create duplicate connections when createAsDuplicates true", async () => {
+        const session = await neo4j.getSession();
+
+        const query = `
+            mutation CreateActorConnectMovie($name1: String!, $title: String, $screenTime: Int!) {
+                ${actorType.operations.create}(
+                    input: [
+                        {
+                            name: $name1
+                            actedIn: {
+                                connect: [
+                                    {
+                                        createAsDuplicate: true
+                                        edge: { screenTime: $screenTime }
+                                        where: { node: { _on: { ${movieType.name}: { title: $title } } } }
+                                    },
+                                    {
+                                        createAsDuplicate: true
+                                        edge: { screenTime: $screenTime }
+                                        where: { node: { _on: { ${movieType.name}: { title: $title } } } }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                ) {
+                    ${actorType.plural} {
+                        name
+                        actedIn {
+                            title
+                            ... on ${movieType.name} {
+                                runtime
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (:${movieType.name} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (:${seriesType.name} { title: $movieTitle, episodes:$movieRuntime })
+            `,
+                { movieTitle, movieRuntime }
+            );
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                variableValues: {
+                    name1: actorName1,
+                    title: movieTitle,
+                    screenTime: movieScreenTime,
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data).toEqual({
+                [actorType.operations.create]: {
+                    [actorType.plural]: [
+                        {
+                            actedIn: expect.toIncludeSameMembers([
+                                {
+                                    runtime: movieRuntime,
+                                    title: movieTitle,
+                                },
+                                {
+                                    runtime: movieRuntime,
+                                    title: movieTitle,
+                                },
+                            ]),
+                            name: actorName1,
+                        },
+                    ],
+                },
+            });
+        } finally {
+            await session.close();
+        }
+    });
 });
