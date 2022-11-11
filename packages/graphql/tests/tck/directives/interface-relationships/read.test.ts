@@ -91,7 +91,7 @@ describe("Interface Relationships", () => {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this_Movie:\`Movie\`)
                 RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS this_actedIn
-                UNION
+                UNION ALL
                 WITH this
                 MATCH (this)-[this1:ACTED_IN]->(this_Series:\`Series\`)
                 RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS this_actedIn
@@ -133,7 +133,7 @@ describe("Interface Relationships", () => {
                 WITH this
                 MATCH (this)-[this0:CURRENTLY_ACTING_IN]->(this_Movie:\`Movie\`)
                 RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS this_currentlyActingIn
-                UNION
+                UNION ALL
                 WITH this
                 MATCH (this)-[this1:CURRENTLY_ACTING_IN]->(this_Series:\`Series\`)
                 RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS this_currentlyActingIn
@@ -175,7 +175,7 @@ describe("Interface Relationships", () => {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this_Movie:\`Movie\`)
                 RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS this_actedIn
-                UNION
+                UNION ALL
                 WITH this
                 MATCH (this)-[this1:ACTED_IN]->(this_Series:\`Series\`)
                 RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS this_actedIn
@@ -277,7 +277,7 @@ describe("Interface Relationships", () => {
                 MATCH (this)-[this0:ACTED_IN]->(this_Movie:\`Movie\`)
                 WHERE this_Movie.title STARTS WITH $param0
                 RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS this_actedIn
-                UNION
+                UNION ALL
                 WITH this
                 MATCH (this)-[this1:ACTED_IN]->(this_Series:\`Series\`)
                 WHERE this_Series.title STARTS WITH $param1

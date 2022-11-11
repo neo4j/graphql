@@ -147,7 +147,7 @@ describe("Interface Relationships - Create connect", () => {
                 WITH this0
                 MATCH (this0)-[create_this0:ACTED_IN]->(this0_Movie:\`Movie\`)
                 RETURN { __resolveType: \\"Movie\\", runtime: this0_Movie.runtime, title: this0_Movie.title } AS this0_actedIn
-                UNION
+                UNION ALL
                 WITH this0
                 MATCH (this0)-[create_this1:ACTED_IN]->(this0_Series:\`Series\`)
                 RETURN { __resolveType: \\"Series\\", episodes: this0_Series.episodes, title: this0_Series.title } AS this0_actedIn

@@ -132,25 +132,25 @@ describe("Undirected relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-CALL {
-    WITH this
-    CALL {
-        WITH *
-        MATCH (this)-[this0:HAS_CONTENT]-(this_content:\`Blog\`)
-        WITH this_content  { __resolveType: \\"Blog\\",  .title } AS this_content
-        RETURN this_content AS this_content
-        UNION
-        WITH *
-        MATCH (this)-[this1:HAS_CONTENT]-(this_content:\`Post\`)
-        WITH this_content  { __resolveType: \\"Post\\",  .content } AS this_content
-        RETURN this_content AS this_content
-    }
-    WITH this_content
-    RETURN collect(this_content) AS this_content
-}
-RETURN this { content: this_content } AS this"
-`);
+            "MATCH (this:\`User\`)
+            CALL {
+                WITH this
+                CALL {
+                    WITH *
+                    MATCH (this)-[this0:HAS_CONTENT]-(this_content:\`Blog\`)
+                    WITH this_content  { __resolveType: \\"Blog\\",  .title } AS this_content
+                    RETURN this_content AS this_content
+                    UNION
+                    WITH *
+                    MATCH (this)-[this1:HAS_CONTENT]-(this_content:\`Post\`)
+                    WITH this_content  { __resolveType: \\"Post\\",  .content } AS this_content
+                    RETURN this_content AS this_content
+                }
+                WITH this_content
+                RETURN collect(this_content) AS this_content
+            }
+            RETURN this { content: this_content } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -208,23 +208,23 @@ RETURN this { content: this_content } AS this"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`Actor\`)
-WITH *
-CALL {
-WITH *
-CALL {
-    WITH this
-    MATCH (this)-[this0:ACTED_IN]-(this_Movie:\`Movie\`)
-    RETURN { __resolveType: \\"Movie\\", title: this_Movie.title } AS this_actedIn
-    UNION
-    WITH this
-    MATCH (this)-[this1:ACTED_IN]-(this_Series:\`Series\`)
-    RETURN { __resolveType: \\"Series\\", title: this_Series.title } AS this_actedIn
-}
-RETURN collect(this_actedIn) AS this_actedIn
-}
-RETURN this { actedIn: this_actedIn } AS this"
-`);
+            "MATCH (this:\`Actor\`)
+            WITH *
+            CALL {
+            WITH *
+            CALL {
+                WITH this
+                MATCH (this)-[this0:ACTED_IN]-(this_Movie:\`Movie\`)
+                RETURN { __resolveType: \\"Movie\\", title: this_Movie.title } AS this_actedIn
+                UNION ALL
+                WITH this
+                MATCH (this)-[this1:ACTED_IN]-(this_Series:\`Series\`)
+                RETURN { __resolveType: \\"Series\\", title: this_Series.title } AS this_actedIn
+            }
+            RETURN collect(this_actedIn) AS this_actedIn
+            }
+            RETURN this { actedIn: this_actedIn } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });

@@ -104,7 +104,7 @@ describe("@auth allow on specific interface implementation", () => {
                 WITH this
                 MATCH (this)-[this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
                 RETURN { __resolveType: \\"Comment\\", id: this_Comment.id, content: this_Comment.content } AS this_content
-                UNION
+                UNION ALL
                 WITH this
                 MATCH (this)-[this1:HAS_CONTENT]->(this_Post:\`Post\`)
                 WHERE apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(this2 IN [(this_Post)<-[:HAS_CONTENT]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -154,7 +154,7 @@ describe("@auth allow on specific interface implementation", () => {
                 MATCH (this)-[this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
                 WHERE this_Comment.id = $param1
                 RETURN { __resolveType: \\"Comment\\" } AS this_content
-                UNION
+                UNION ALL
                 WITH this
                 MATCH (this)-[this1:HAS_CONTENT]->(this_Post:\`Post\`)
                 WHERE (apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(this2 IN [(this_Post)<-[:HAS_CONTENT]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param2)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND this_Post.id = $param3)
@@ -261,7 +261,7 @@ describe("@auth allow on specific interface implementation", () => {
                 WITH this
                 MATCH (this)-[update_this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
                 RETURN { __resolveType: \\"Comment\\", id: this_Comment.id } AS this_content
-                UNION
+                UNION ALL
                 WITH this
                 MATCH (this)-[update_this1:HAS_CONTENT]->(this_Post:\`Post\`)
                 WHERE apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(update_this2 IN [(this_Post)<-[:HAS_CONTENT]-(update_this2:\`User\`) | update_this2] WHERE (update_this2.id IS NOT NULL AND update_this2.id = $update_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])

@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
                 WITH this
                 MATCH (this)-[update_this0:HAS_INTERFACE]->(this_ChildOne:\`ChildOne\`)
                 RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS this_interface
-                UNION
+                UNION ALL
                 WITH this
                 MATCH (this)-[update_this1:HAS_INTERFACE]->(this_ChildTwo:\`ChildTwo\`)
                 RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS this_interface
@@ -180,7 +180,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
                 WITH this
                 MATCH (this)-[update_this0:HAS_INTERFACE]->(this_ChildOne:\`ChildOne\`)
                 RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS this_interface
-                UNION
+                UNION ALL
                 WITH this
                 MATCH (this)-[update_this1:HAS_INTERFACE]->(this_ChildTwo:\`ChildTwo\`)
                 RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS this_interface

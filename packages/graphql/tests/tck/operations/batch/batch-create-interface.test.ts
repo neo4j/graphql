@@ -217,7 +217,7 @@ describe("Batch Create, Interface", () => {
                 WITH this0
                 MATCH (this0)<-[create_this0:EMPLOYED]-(this0_Actor:\`Actor\`)
                 RETURN { __resolveType: \\"Actor\\", name: this0_Actor.name } AS this0_workers
-                UNION
+                UNION ALL
                 WITH this0
                 MATCH (this0)<-[create_this1:EMPLOYED]-(this0_Modeler:\`Modeler\`)
                 RETURN { __resolveType: \\"Modeler\\", name: this0_Modeler.name } AS this0_workers
@@ -231,7 +231,7 @@ describe("Batch Create, Interface", () => {
                 WITH this1
                 MATCH (this1)<-[create_this0:EMPLOYED]-(this1_Actor:\`Actor\`)
                 RETURN { __resolveType: \\"Actor\\", name: this1_Actor.name } AS this1_workers
-                UNION
+                UNION ALL
                 WITH this1
                 MATCH (this1)<-[create_this1:EMPLOYED]-(this1_Modeler:\`Modeler\`)
                 RETURN { __resolveType: \\"Modeler\\", name: this1_Modeler.name } AS this1_workers
@@ -440,7 +440,7 @@ describe("Batch Create, Interface", () => {
                 WITH this0
                 MATCH (this0)<-[create_this1:EMPLOYED]-(this0_Actor:\`Actor\`)
                 RETURN { __resolveType: \\"Actor\\", name: this0_Actor.name } AS this0_workers
-                UNION
+                UNION ALL
                 WITH this0
                 MATCH (this0)<-[create_this2:EMPLOYED]-(this0_Modeler:\`Modeler\`)
                 RETURN { __resolveType: \\"Modeler\\", name: this0_Modeler.name } AS this0_workers
@@ -460,7 +460,7 @@ describe("Batch Create, Interface", () => {
                 WITH this1
                 MATCH (this1)<-[create_this1:EMPLOYED]-(this1_Actor:\`Actor\`)
                 RETURN { __resolveType: \\"Actor\\", name: this1_Actor.name } AS this1_workers
-                UNION
+                UNION ALL
                 WITH this1
                 MATCH (this1)<-[create_this2:EMPLOYED]-(this1_Modeler:\`Modeler\`)
                 RETURN { __resolveType: \\"Modeler\\", name: this1_Modeler.name } AS this1_workers
@@ -480,7 +480,7 @@ describe("Batch Create, Interface", () => {
                 WITH this2
                 MATCH (this2)<-[create_this1:EMPLOYED]-(this2_Actor:\`Actor\`)
                 RETURN { __resolveType: \\"Actor\\", name: this2_Actor.name } AS this2_workers
-                UNION
+                UNION ALL
                 WITH this2
                 MATCH (this2)<-[create_this2:EMPLOYED]-(this2_Modeler:\`Modeler\`)
                 RETURN { __resolveType: \\"Modeler\\", name: this2_Modeler.name } AS this2_workers
@@ -500,7 +500,7 @@ describe("Batch Create, Interface", () => {
                 WITH this3
                 MATCH (this3)<-[create_this1:EMPLOYED]-(this3_Actor:\`Actor\`)
                 RETURN { __resolveType: \\"Actor\\", name: this3_Actor.name } AS this3_workers
-                UNION
+                UNION ALL
                 WITH this3
                 MATCH (this3)<-[create_this2:EMPLOYED]-(this3_Modeler:\`Modeler\`)
                 RETURN { __resolveType: \\"Modeler\\", name: this3_Modeler.name } AS this3_workers

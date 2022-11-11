@@ -776,7 +776,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 WITH this0
                 MATCH (this0)<-[create_this0:ACTED_IN]-(this0_Person:\`Person\`)
                 RETURN { __resolveType: \\"Person\\", id: this0_Person.id } AS this0_subjects
-                UNION
+                UNION ALL
                 WITH this0
                 MATCH (this0)<-[create_this1:ACTED_IN]-(this0_Place:\`Place\`)
                 RETURN { __resolveType: \\"Place\\", id: this0_Place.id } AS this0_subjects
@@ -790,7 +790,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 WITH this0
                 MATCH (this0)-[create_this2:ACTED_IN]->(this0_Person:\`Person\`)
                 RETURN { __resolveType: \\"Person\\", id: this0_Person.id } AS this0_objects
-                UNION
+                UNION ALL
                 WITH this0
                 MATCH (this0)-[create_this3:ACTED_IN]->(this0_Place:\`Place\`)
                 RETURN { __resolveType: \\"Place\\", id: this0_Place.id } AS this0_objects
@@ -804,7 +804,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 WITH this1
                 MATCH (this1)<-[create_this0:ACTED_IN]-(this1_Person:\`Person\`)
                 RETURN { __resolveType: \\"Person\\", id: this1_Person.id } AS this1_subjects
-                UNION
+                UNION ALL
                 WITH this1
                 MATCH (this1)<-[create_this1:ACTED_IN]-(this1_Place:\`Place\`)
                 RETURN { __resolveType: \\"Place\\", id: this1_Place.id } AS this1_subjects
@@ -818,7 +818,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 WITH this1
                 MATCH (this1)-[create_this2:ACTED_IN]->(this1_Person:\`Person\`)
                 RETURN { __resolveType: \\"Person\\", id: this1_Person.id } AS this1_objects
-                UNION
+                UNION ALL
                 WITH this1
                 MATCH (this1)-[create_this3:ACTED_IN]->(this1_Place:\`Place\`)
                 RETURN { __resolveType: \\"Place\\", id: this1_Place.id } AS this1_objects
