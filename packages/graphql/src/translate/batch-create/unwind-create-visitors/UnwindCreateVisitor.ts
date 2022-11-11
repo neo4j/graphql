@@ -25,11 +25,11 @@ import type {
     INestedCreateAST,
     CreateAST,
     NestedCreateAST,
+    IAST,
 } from "../GraphQLInputAST/GraphQLInputAST";
 import type { Node, Relationship } from "../../../classes";
 import createRelationshipValidationString from "../../create-relationship-validation-string";
 import { filterTruthy } from "../../../utils/utils";
-import { Neo4jGraphQLError } from "../../../classes";
 import Cypher, { Expr, Map, MapProjection } from "@neo4j/cypher-builder";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createAuthAndParams } from "../../create-auth-and-params";
@@ -58,11 +58,25 @@ export class UnwindCreateVisitor implements Visitor {
         this.environment = {};
     }
 
+    visitChildren(currentASTNode: IAST, unwindVar: Cypher.Variable, parentVar: Cypher.Variable): (Cypher.Clause | undefined)[] {
+        if (currentASTNode.children) {
+            const childrenRefs = currentASTNode.children.map((children) => {
+                this.environment[children.id] = { unwindVar, parentVar};
+                children.accept(this);
+                return children.id;
+            });
+            return childrenRefs.map((childrenRef) => this.environment[childrenRef].clause);
+        }
+        return []
+    }
+
     visitCreate(create: ICreateAST): void {
         const labels = create.node.getLabels(this.context);
         const currentNode = new Cypher.Node({
             labels,
         });
+        
+        const nestedClauses = this.visitChildren(create, this.unwindVar, currentNode);
 
         const setProperties = create.nodeProperties.map((property: string) =>
             fieldToSetParam(create.node, currentNode, property, this.unwindVar.property(property))
@@ -85,16 +99,7 @@ export class UnwindCreateVisitor implements Visitor {
             }
             return cypher.join("\n");
         });
-        let nestedClauses;
-        if (create.children) {
-            const childrenRefs = create.children.map((children) => {
-                this.environment[children.id] = { unwindVar: this.unwindVar, parentVar: currentNode };
-                children.accept(this);
-                return children.id;
-            });
-            nestedClauses = childrenRefs.map((childrenRef) => this.environment[childrenRef].clause);
-        }
-
+   
         const authNodeClause = getAuthNodeClause(create.node, this.context, currentNode);
         const authFieldsClause = getAuthFieldClause(create, this.context, currentNode, this.unwindVar);
         const clause = Cypher.concat(
@@ -121,6 +126,7 @@ export class UnwindCreateVisitor implements Visitor {
             unwindVar.property(relationshipPropertyPath).property("create"),
             createUnwindVar,
         ]);
+
         const labels = node.getLabels(this.context);
         const currentNode = new Cypher.Node({
             labels,
@@ -132,16 +138,18 @@ export class UnwindCreateVisitor implements Visitor {
             [createUnwindVar.property("edge"), edgeVar],
             parentVar
         );
+        
+        const nestedClauses = this.visitChildren(nestedCreate, nodeVar, currentNode);
+
         const createClause = new Cypher.Create(currentNode);
-        // TODO change this variable name
-        const firstRelationship = relationship[0] as RelationField;
+        const relationField = relationship[0] as RelationField;
         const relationshipClause = new Cypher.Relationship({
             source: currentNode,
             target: parentVar as Cypher.Node,
-            type: firstRelationship.type,
+            type: relationField.type,
         });
 
-        if (firstRelationship.direction === "OUT") {
+        if (relationField.direction === "OUT") {
             relationshipClause.reverse();
         }
 
@@ -184,20 +192,9 @@ export class UnwindCreateVisitor implements Visitor {
             return cypher.join("\n");
         });
 
-        let nestedClauses;
-
-        if (nestedCreate.children) {
-            const childrenRefs = nestedCreate.children.map((children) => {
-                this.environment[children.id] = { unwindVar: nodeVar, parentVar: currentNode };
-                children.accept(this);
-                return children.id;
-            });
-            nestedClauses = childrenRefs.map((childrenRef) => this.environment[childrenRef].clause);
-            subQueryStatements.push(...nestedClauses);
-        }
-
         const authNodeClause = getAuthNodeClause(nestedCreate.node, this.context, currentNode);
         const authFieldsClause = getAuthFieldClause(nestedCreate, this.context, currentNode, nodeVar);
+        subQueryStatements.push(...nestedClauses);
         subQueryStatements.push(authNodeClause);
         subQueryStatements.push(authFieldsClause);
         subQueryStatements.push(relationshipValidationClause);
@@ -314,20 +311,19 @@ function getAuthFieldClause(
                     });
                     return [authCypher, authParams];
                 })
-                .reduce((prev, curr) => {
-                    const leftCypher = prev[0] ? prev[0] : "";
-                    const rightCypher = curr[0] ? curr[0] : "";
-                    const cypher = leftCypher.length ? `${leftCypher} AND ${rightCypher}` : rightCypher;
-                    const leftParam = (prev[1] ? prev[1] : {}) as Record<string, any>;
-                    const rightParam = (curr[1] ? curr[1] : {}) as Record<string, any>;
+                .reduce((accumulator, current) => {
+                    const [accumulatedCypher, accumulatedParams] = accumulator as [string, Record<string, any>];
+                    const [currentCypher, currentParams] = current as [string, Record<string, any>];
+                    const cypher = currentCypher ? `${accumulatedCypher} AND ${currentCypher}` : accumulatedCypher;
                     const params = {
-                        ...leftParam,
-                        ...rightParam,
+                        ...accumulatedParams,
+                        ...currentParams,
                     };
                     return [cypher, params];
-                }, []);
+                });
 
             creates.push(`WITH *`);
+            // The next line is needed to avoid to apply auth to a field that is not present in the input.
             const unwindFields = usedAuthFields.map((field) => Cypher.isNotNull(unwindVar.property(field.fieldName)).getCypher(env));
             creates.push(`CALL apoc.util.validate(${unwindFields.join(" AND ")} AND NOT (${clauses[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
             return [creates.join("\n"), clauses[1]] as [string, Record<string, any>];
