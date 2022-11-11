@@ -139,6 +139,19 @@ describe("Relationship properties - connect", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { movieTitle, actorName: actorName1, screenTime: screenTime1 },
                     });
+
+                    const cypher = `
+                        MATCH (m:${movieType.name} {title: $movieTitle})
+                                <-[:ACTED_IN {screenTime: $screenTime}]-
+                                    (:${actorType.name} {name: $actorName})
+                        RETURN m
+                    `;
+                    const neo4jResult = await session.run(cypher, {
+                        movieTitle,
+                        screenTime: screenTime1,
+                        actorName: actorName1,
+                    });
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect((gqlResult.data as any)?.[movieType.operations.create][movieType.plural]).toEqual([
                         {
@@ -147,18 +160,6 @@ describe("Relationship properties - connect", () => {
                         },
                     ]);
 
-                    const cypher = `
-                        MATCH (m:${movieType.name} {title: $movieTitle})
-                                <-[:ACTED_IN {screenTime: $screenTime}]-
-                                    (:${actorType.name} {name: $actorName})
-                        RETURN m
-                    `;
-
-                    const neo4jResult = await session.run(cypher, {
-                        movieTitle,
-                        screenTime: screenTime1,
-                        actorName: actorName1,
-                    });
                     expect(neo4jResult.records).toHaveLength(1);
                 } finally {
                     await session.close();
@@ -224,6 +225,17 @@ describe("Relationship properties - connect", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { movieTitle, actorName: actorName1, screenTime1, screenTime2 },
                     });
+
+                    const cypher = `
+                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
+                        RETURN r
+                    `;
+                    const neo4jResult = await session.run(cypher, {
+                        movieTitle,
+                        screenTime: screenTime1,
+                        actorName: actorName1,
+                    });
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect(gqlResult.data).toEqual({
                         [movieType.operations.create]: {
@@ -251,16 +263,6 @@ describe("Relationship properties - connect", () => {
                         },
                     });
 
-                    const cypher = `
-                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
-                        RETURN r
-                    `;
-
-                    const neo4jResult = await session.run(cypher, {
-                        movieTitle,
-                        screenTime: screenTime1,
-                        actorName: actorName1,
-                    });
                     expect(neo4jResult.records).toHaveLength(2);
                 } finally {
                     await session.close();
@@ -317,6 +319,19 @@ describe("Relationship properties - connect", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { movieTitle, actorName: actorName1, screenTime: screenTime1 },
                     });
+
+                    const cypher = `
+                        MATCH (m:${movieType.name} {title: $movieTitle})
+                                <-[:ACTED_IN {screenTime: $screenTime}]-
+                                    (:${actorType.name} {name: $actorName})
+                        RETURN m
+                    `;
+                    const neo4jResult = await session.run(cypher, {
+                        movieTitle,
+                        screenTime: screenTime1,
+                        actorName: actorName1,
+                    });
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect((gqlResult.data as any)?.[movieType.operations.update][movieType.plural]).toEqual([
                         {
@@ -325,18 +340,6 @@ describe("Relationship properties - connect", () => {
                         },
                     ]);
 
-                    const cypher = `
-                        MATCH (m:${movieType.name} {title: $movieTitle})
-                                <-[:ACTED_IN {screenTime: $screenTime}]-
-                                    (:${actorType.name} {name: $actorName})
-                        RETURN m
-                    `;
-
-                    const neo4jResult = await session.run(cypher, {
-                        movieTitle,
-                        screenTime: screenTime1,
-                        actorName: actorName1,
-                    });
                     expect(neo4jResult.records).toHaveLength(1);
                 } finally {
                     await session.close();
@@ -391,6 +394,17 @@ describe("Relationship properties - connect", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { movieTitle, actorName: actorName1, screenTime: screenTime2 },
                     });
+
+                    const cypher = `
+                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
+                        RETURN r
+                    `;
+                    const neo4jResult = await session.run(cypher, {
+                        movieTitle,
+                        screenTime: screenTime1,
+                        actorName: actorName1,
+                    });
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect(gqlResult.data).toEqual({
                         [movieType.operations.update]: {
@@ -418,16 +432,6 @@ describe("Relationship properties - connect", () => {
                         },
                     });
 
-                    const cypher = `
-                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
-                        RETURN r
-                    `;
-
-                    const neo4jResult = await session.run(cypher, {
-                        movieTitle,
-                        screenTime: screenTime1,
-                        actorName: actorName1,
-                    });
                     expect(neo4jResult.records).toHaveLength(2);
                 } finally {
                     await session.close();
@@ -490,6 +494,17 @@ describe("Relationship properties - connect", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { movieTitle, actorName1, actorName2, screenTime1, screenTime2 },
                     });
+
+                    const cypher = `
+                        MATCH (:${movieType.name})<-[r:ACTED_IN]-(:${actorType.name})
+                        RETURN r
+                    `;
+                    const neo4jResult = await session.run(cypher, {
+                        movieTitle,
+                        screenTime: screenTime1,
+                        actorName: actorName1,
+                    });
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect(gqlResult.data).toEqual({
                         [movieType.operations.update]: {
@@ -523,16 +538,6 @@ describe("Relationship properties - connect", () => {
                         },
                     });
 
-                    const cypher = `
-                        MATCH (:${movieType.name})<-[r:ACTED_IN]-(:${actorType.name})
-                        RETURN r
-                    `;
-
-                    const neo4jResult = await session.run(cypher, {
-                        movieTitle,
-                        screenTime: screenTime1,
-                        actorName: actorName1,
-                    });
                     expect(neo4jResult.records).toHaveLength(3);
                 } finally {
                     await session.close();
@@ -588,6 +593,17 @@ describe("Relationship properties - connect", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { movieTitle, actorName: actorName1, screenTime: screenTime2 },
                     });
+
+                    const cypher = `
+                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
+                        RETURN r
+                    `;
+                    const neo4jResult = await session.run(cypher, {
+                        movieTitle,
+                        screenTime: screenTime1,
+                        actorName: actorName1,
+                    });
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect(gqlResult.data).toEqual({
                         [movieType.operations.update]: {
@@ -609,16 +625,6 @@ describe("Relationship properties - connect", () => {
                         },
                     });
 
-                    const cypher = `
-                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
-                        RETURN r
-                    `;
-
-                    const neo4jResult = await session.run(cypher, {
-                        movieTitle,
-                        screenTime: screenTime1,
-                        actorName: actorName1,
-                    });
                     expect(neo4jResult.records).toHaveLength(1);
                 } finally {
                     await session.close();
@@ -686,6 +692,17 @@ describe("Relationship properties - connect", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { movieTitle, actorName1, actorName2, screenTime1, screenTime2 },
                     });
+
+                    const cypher = `
+                        MATCH (:${movieType.name})<-[r:ACTED_IN]-(:${actorType.name})
+                        RETURN r
+                    `;
+                    const neo4jResult = await session.run(cypher, {
+                        movieTitle,
+                        screenTime: screenTime1,
+                        actorName: actorName1,
+                    });
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect(gqlResult.data).toEqual({
                         [movieType.operations.update]: {
@@ -725,16 +742,6 @@ describe("Relationship properties - connect", () => {
                         },
                     });
 
-                    const cypher = `
-                        MATCH (:${movieType.name})<-[r:ACTED_IN]-(:${actorType.name})
-                        RETURN r
-                    `;
-
-                    const neo4jResult = await session.run(cypher, {
-                        movieTitle,
-                        screenTime: screenTime1,
-                        actorName: actorName1,
-                    });
                     expect(neo4jResult.records).toHaveLength(4);
                 } finally {
                     await session.close();
@@ -794,6 +801,17 @@ describe("Relationship properties - connect", () => {
                             screenTime: screenTime2,
                         },
                     });
+
+                    const cypher = `
+                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
+                        RETURN r
+                    `;
+                    const neo4jResult = await session.run(cypher, {
+                        movieTitle,
+                        screenTime: screenTime1,
+                        actorName: actorName1,
+                    });
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect(gqlResult.data).toEqual({
                         [movieType.operations.update]: {
@@ -801,16 +819,6 @@ describe("Relationship properties - connect", () => {
                         },
                     });
 
-                    const cypher = `
-                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
-                        RETURN r
-                    `;
-
-                    const neo4jResult = await session.run(cypher, {
-                        movieTitle,
-                        screenTime: screenTime1,
-                        actorName: actorName1,
-                    });
                     expect(neo4jResult.records).toHaveLength(0);
                 } finally {
                     await session.close();
@@ -866,6 +874,17 @@ describe("Relationship properties - connect", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { movieTitle, actorName: nonExistantActor, screenTime: screenTime2 },
                     });
+
+                    const cypher = `
+                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
+                        RETURN r
+                    `;
+                    const neo4jResult = await session.run(cypher, {
+                        movieTitle,
+                        screenTime: screenTime1,
+                        actorName: actorName1,
+                    });
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect(gqlResult.data).toEqual({
                         [movieType.operations.update]: {
@@ -880,16 +899,6 @@ describe("Relationship properties - connect", () => {
                         },
                     });
 
-                    const cypher = `
-                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
-                        RETURN r
-                    `;
-
-                    const neo4jResult = await session.run(cypher, {
-                        movieTitle,
-                        screenTime: screenTime1,
-                        actorName: actorName1,
-                    });
                     expect(neo4jResult.records).toHaveLength(0);
                 } finally {
                     await session.close();
@@ -997,12 +1006,6 @@ describe("Relationship properties - connect", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { movieTitle, actorName: actorName1, screenTime: screenTime1 },
                     });
-                    expect(gqlResult.errors).toBeFalsy();
-                    expect((gqlResult.data as any)?.[actorType.operations.create][actorType.plural]).toEqual([
-                        {
-                            name: actorName1,
-                        },
-                    ]);
 
                     const cypher = `
                         MATCH (a:${actorType.name} {name: $actorName})
@@ -1010,12 +1013,19 @@ describe("Relationship properties - connect", () => {
                                     (:${movieType.name} {title: $movieTitle})
                         RETURN a
                     `;
-
                     const neo4jResult = await session.run(cypher, {
                         movieTitle,
                         screenTime: screenTime1,
                         actorName: actorName1,
                     });
+
+                    expect(gqlResult.errors).toBeFalsy();
+                    expect((gqlResult.data as any)?.[actorType.operations.create][actorType.plural]).toEqual([
+                        {
+                            name: actorName1,
+                        },
+                    ]);
+
                     expect(neo4jResult.records).toHaveLength(1);
                 } finally {
                     await session.close();
@@ -1097,6 +1107,17 @@ describe("Relationship properties - connect", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { movieTitle, actorName: actorName1, screenTime1, screenTime2 },
                     });
+
+                    const cypher = `
+                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
+                        RETURN r
+                    `;
+                    const neo4jResult = await session.run(cypher, {
+                        movieTitle,
+                        screenTime: screenTime1,
+                        actorName: actorName1,
+                    });
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect(gqlResult.data).toEqual({
                         [actorType.operations.create]: {
@@ -1130,16 +1151,6 @@ describe("Relationship properties - connect", () => {
                         },
                     });
 
-                    const cypher = `
-                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
-                        RETURN r
-                    `;
-
-                    const neo4jResult = await session.run(cypher, {
-                        movieTitle,
-                        screenTime: screenTime1,
-                        actorName: actorName1,
-                    });
                     expect(neo4jResult.records).toHaveLength(3);
                 } finally {
                     await session.close();
@@ -1190,12 +1201,6 @@ describe("Relationship properties - connect", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { movieTitle, actorName: actorName1, screenTime: screenTime1 },
                     });
-                    expect(gqlResult.errors).toBeFalsy();
-                    expect((gqlResult.data as any)?.[actorType.operations.update][actorType.plural]).toEqual([
-                        {
-                            name: actorName1,
-                        },
-                    ]);
 
                     const cypher = `
                         MATCH (a:${actorType.name} {name: $actorName})
@@ -1203,12 +1208,19 @@ describe("Relationship properties - connect", () => {
                                     (:${movieType.name} {title: $movieTitle})
                         RETURN a
                     `;
-
                     const neo4jResult = await session.run(cypher, {
                         movieTitle,
                         screenTime: screenTime1,
                         actorName: actorName1,
                     });
+
+                    expect(gqlResult.errors).toBeFalsy();
+                    expect((gqlResult.data as any)?.[actorType.operations.update][actorType.plural]).toEqual([
+                        {
+                            name: actorName1,
+                        },
+                    ]);
+
                     expect(neo4jResult.records).toHaveLength(1);
                 } finally {
                     await session.close();
@@ -1267,6 +1279,17 @@ describe("Relationship properties - connect", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { movieTitle, actorName: actorName1, screenTime: screenTime2 },
                     });
+
+                    const cypher = `
+                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
+                        RETURN r
+                    `;
+                    const neo4jResult = await session.run(cypher, {
+                        movieTitle,
+                        screenTime: screenTime1,
+                        actorName: actorName1,
+                    });
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect(gqlResult.data).toEqual({
                         [actorType.operations.update]: {
@@ -1294,16 +1317,6 @@ describe("Relationship properties - connect", () => {
                         },
                     });
 
-                    const cypher = `
-                        MATCH (:${movieType.name} {title: $movieTitle})<-[r:ACTED_IN]-(:${actorType.name} {name: $actorName})
-                        RETURN r
-                    `;
-
-                    const neo4jResult = await session.run(cypher, {
-                        movieTitle,
-                        screenTime: screenTime1,
-                        actorName: actorName1,
-                    });
                     expect(neo4jResult.records).toHaveLength(2);
                 } finally {
                     await session.close();
@@ -1371,6 +1384,13 @@ describe("Relationship properties - connect", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { movieTitle, showTitle, actorName: actorName1, screenTime: screenTime2 },
                     });
+
+                    const cypher = `
+                        MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
+                        RETURN r
+                    `;
+                    const neo4jResult = await session.run(cypher);
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect(gqlResult.data).toEqual({
                         [actorType.operations.update]: {
@@ -1404,12 +1424,6 @@ describe("Relationship properties - connect", () => {
                         },
                     });
 
-                    const cypher = `
-                        MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
-                        RETURN r
-                    `;
-
-                    const neo4jResult = await session.run(cypher);
                     expect(neo4jResult.records).toHaveLength(3);
                 } finally {
                     await session.close();
@@ -1469,6 +1483,13 @@ describe("Relationship properties - connect", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { movieTitle, showTitle, actorName: actorName1, screenTime: screenTime2 },
                     });
+
+                    const cypher = `
+                        MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
+                        RETURN r
+                    `;
+                    const neo4jResult = await session.run(cypher);
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect(gqlResult.data).toEqual({
                         [actorType.operations.update]: {
@@ -1490,12 +1511,6 @@ describe("Relationship properties - connect", () => {
                         },
                     });
 
-                    const cypher = `
-                        MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
-                        RETURN r
-                    `;
-
-                    const neo4jResult = await session.run(cypher);
                     expect(neo4jResult.records).toHaveLength(1);
                 } finally {
                     await session.close();
@@ -1571,6 +1586,13 @@ describe("Relationship properties - connect", () => {
                         variableValues: { movieTitle, showTitle, actorName: actorName1, screenTime: screenTime2 },
                     });
 
+                    const cypher = `
+                        MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
+                        RETURN r
+                    `;
+
+                    const neo4jResult = await session.run(cypher);
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect(gqlResult.data).toEqual({
                         [actorType.operations.update]: {
@@ -1616,12 +1638,6 @@ describe("Relationship properties - connect", () => {
                         },
                     });
 
-                    const cypher = `
-                        MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
-                        RETURN r
-                    `;
-
-                    const neo4jResult = await session.run(cypher);
                     expect(neo4jResult.records).toHaveLength(5);
                 } finally {
                     await session.close();
@@ -1687,6 +1703,13 @@ describe("Relationship properties - connect", () => {
                         variableValues: { movieTitle, actorName: nonExistantActor, screenTime: screenTime2 },
                     });
 
+                    const cypher = `
+                        MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
+                        RETURN r
+                    `;
+
+                    const neo4jResult = await session.run(cypher);
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect(gqlResult.data).toEqual({
                         [actorType.operations.update]: {
@@ -1694,12 +1717,6 @@ describe("Relationship properties - connect", () => {
                         },
                     });
 
-                    const cypher = `
-                        MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
-                        RETURN r
-                    `;
-
-                    const neo4jResult = await session.run(cypher);
                     expect(neo4jResult.records).toHaveLength(0);
                 } finally {
                     await session.close();
@@ -1768,6 +1785,13 @@ describe("Relationship properties - connect", () => {
                         },
                     });
 
+                    const cypher = `
+                        MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
+                        RETURN r
+                    `;
+
+                    const neo4jResult = await session.run(cypher);
+
                     expect(gqlResult.errors).toBeFalsy();
                     expect(gqlResult.data).toEqual({
                         [actorType.operations.update]: {
@@ -1789,12 +1813,6 @@ describe("Relationship properties - connect", () => {
                         },
                     });
 
-                    const cypher = `
-                        MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
-                        RETURN r
-                    `;
-
-                    const neo4jResult = await session.run(cypher);
                     expect(neo4jResult.records).toHaveLength(1);
                 } finally {
                     await session.close();

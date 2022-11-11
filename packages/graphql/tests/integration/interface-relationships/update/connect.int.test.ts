@@ -37,7 +37,9 @@ describe("interface relationships", () => {
 
     const actorName1 = "Some Actor";
     const actorName2 = "Another Name";
+    const nonExistantActorName = "Doesn't exist";
     const movieTitle = "A Title";
+    const nonExistantMovieTitle = "Not a move title";
     const movieRuntime = 123;
     const seriesTitle = "Another Title";
     const screenTime1 = 4019;
@@ -160,8 +162,13 @@ describe("interface relationships", () => {
                 variableValues: { name: actorName1, title: movieTitle, screenTime: screenTime1 },
             });
 
-            expect(gqlResult.errors).toBeFalsy();
+            const cypher = `
+                MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
+                RETURN r
+            `;
+            const neo4jResult = await session.run(cypher);
 
+            expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data).toEqual({
                 [actorType.operations.update]: {
                     [actorType.plural]: [
@@ -180,6 +187,8 @@ describe("interface relationships", () => {
                     ],
                 },
             });
+
+            expect(neo4jResult.records).toHaveLength(2);
         } finally {
             await session.close();
         }
@@ -248,8 +257,13 @@ describe("interface relationships", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeFalsy();
+            const cypher = `
+                MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
+                RETURN r
+            `;
+            const neo4jResult = await session.run(cypher);
 
+            expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data).toEqual({
                 [actorType.operations.update]: {
                     [actorType.plural]: [
@@ -270,6 +284,8 @@ describe("interface relationships", () => {
                     ],
                 },
             });
+
+            expect(neo4jResult.records).toHaveLength(3);
         } finally {
             await session.close();
         }
@@ -344,8 +360,13 @@ describe("interface relationships", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeFalsy();
+            const cypher = `
+                MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
+                RETURN r
+            `;
+            const neo4jResult = await session.run(cypher);
 
+            expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data).toEqual({
                 [actorType.operations.update]: {
                     [actorType.plural]: [
@@ -373,6 +394,8 @@ describe("interface relationships", () => {
                     ],
                 },
             });
+
+            expect(neo4jResult.records).toHaveLength(4);
         } finally {
             await session.close();
         }
@@ -443,8 +466,13 @@ describe("interface relationships", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeFalsy();
+            const cypher = `
+                MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
+                RETURN r
+            `;
+            const neo4jResult = await session.run(cypher);
 
+            expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data).toEqual({
                 [actorType.operations.update]: {
                     [actorType.plural]: [
@@ -467,6 +495,8 @@ describe("interface relationships", () => {
                     ],
                 },
             });
+
+            expect(neo4jResult.records).toHaveLength(3);
         } finally {
             await session.close();
         }
@@ -517,8 +547,14 @@ describe("interface relationships", () => {
                 variableValues: { name: actorName1, title: seriesTitle, screenTime: screenTime1 },
             });
 
-            expect(gqlResult.errors).toBeFalsy();
+            const cypher = `
+                MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
+                RETURN r
+            `;
 
+            const neo4jResult = await session.run(cypher);
+
+            expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data).toEqual({
                 [actorType.operations.update]: {
                     [actorType.plural]: [
@@ -544,6 +580,8 @@ describe("interface relationships", () => {
                     ],
                 },
             });
+
+            expect(neo4jResult.records).toHaveLength(2);
         } finally {
             await session.close();
         }
@@ -605,6 +643,13 @@ describe("interface relationships", () => {
                 variableValues: { name: actorName1, screenTime2, movieTitle, seriesTitle, screenTime3 },
             });
 
+            const cypher = `
+                MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
+                RETURN r
+            `;
+
+            const neo4jResult = await session.run(cypher);
+
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data).toEqual({
                 [actorType.operations.update]: {
@@ -638,6 +683,8 @@ describe("interface relationships", () => {
                     ],
                 },
             });
+
+            expect(neo4jResult.records).toHaveLength(3);
         } finally {
             await session.close();
         }
@@ -699,6 +746,13 @@ describe("interface relationships", () => {
                 variableValues: { name: actorName1, screenTime2, movieTitle, seriesTitle, screenTime3 },
             });
 
+            const cypher = `
+                MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
+                RETURN r
+            `;
+
+            const neo4jResult = await session.run(cypher);
+
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data).toEqual({
                 [actorType.operations.update]: {
@@ -732,6 +786,8 @@ describe("interface relationships", () => {
                     ],
                 },
             });
+
+            expect(neo4jResult.records).toHaveLength(3);
         } finally {
             await session.close();
         }
@@ -741,19 +797,19 @@ describe("interface relationships", () => {
         const session = await neo4j.getSession();
 
         const query = `
-            mutation ConnectMovie($name: String, $title: String, $screenTime: Int!) {
+            mutation ConnectMovie($name: String, $title: String, $screenTime1: Int!, $screenTime2: Int!) {
                 ${actorType.operations.update}(
                     where: { name: $name }
                     connect: { 
                         actedIn: [
                             {
                                 createAsDuplicate: false
-                                edge: { screenTime: $screenTime }
+                                edge: { screenTime: $screenTime2 }
                                 where: { node: { title: $title } }
                             },
                             {
                                 createAsDuplicate: false
-                                edge: { screenTime: $screenTime }
+                                edge: { screenTime: $screenTime1 }
                                 where: { node: { title: $title } }
                             },
                         ]
@@ -789,11 +845,17 @@ describe("interface relationships", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                variableValues: { name: actorName1, title: seriesTitle, screenTime: screenTime2 },
+                variableValues: { name: actorName1, title: seriesTitle, screenTime1, screenTime2 },
             });
 
-            expect(gqlResult.errors).toBeFalsy();
+            const cypher = `
+                MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
+                RETURN r
+            `;
 
+            const neo4jResult = await session.run(cypher);
+
+            expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data).toEqual({
                 [actorType.operations.update]: {
                     [actorType.plural]: [
@@ -802,7 +864,7 @@ describe("interface relationships", () => {
                             actedInConnection: {
                                 edges: [
                                     {
-                                        screenTime: screenTime2,
+                                        screenTime: screenTime1,
                                         node: {
                                             title: seriesTitle,
                                         },
@@ -813,6 +875,159 @@ describe("interface relationships", () => {
                     ],
                 },
             });
+
+            expect(neo4jResult.records).toHaveLength(1);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should not relationships when start node does not exist", async () => {
+        const session = await neo4j.getSession();
+
+        const query = `
+            mutation ConnectMovie($name: String, $title: String, $screenTime2: Int!) {
+                ${actorType.operations.update}(
+                    where: { name: $name }
+                    connect: { 
+                        actedIn: [
+                            {
+                                createAsDuplicate: false
+                                edge: { screenTime: $screenTime2 }
+                                where: { node: { title: $title } }
+                            },
+                        ]
+                    }
+                ) {
+                    ${actorType.plural} {
+                        name
+                        actedInConnection {
+                            edges {
+                                screenTime
+                                node {
+                                    title
+                                    ... on ${movieType.name} {
+                                        runtime
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (a:${actorType.name} { name: $actorName })-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${seriesType.name} { title: $seriesTitle })
+            `,
+                { actorName: actorName1, seriesTitle, seriesScreenTime: screenTime1 }
+            );
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                variableValues: { name: nonExistantActorName, title: seriesTitle, screenTime2 },
+            });
+
+            const cypher = `
+                MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
+                RETURN r
+            `;
+
+            const neo4jResult = await session.run(cypher);
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data).toEqual({
+                [actorType.operations.update]: {
+                    [actorType.plural]: [],
+                },
+            });
+
+            expect(neo4jResult.records).toHaveLength(1);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should not relationships when end node does not exist", async () => {
+        const session = await neo4j.getSession();
+
+        const query = `
+            mutation ConnectMovie($name: String, $title: String, $screenTime2: Int!) {
+                ${actorType.operations.update}(
+                    where: { name: $name }
+                    connect: { 
+                        actedIn: {
+                            createAsDuplicate: false
+                            edge: { screenTime: $screenTime2 }
+                            where: { node: { title: $title } }
+                        }
+                    }
+                ) {
+                    ${actorType.plural} {
+                        name
+                        actedInConnection {
+                            edges {
+                                screenTime
+                                node {
+                                    title
+                                    ... on ${movieType.name} {
+                                        runtime
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (a:${actorType.name} { name: $actorName })-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${seriesType.name} { title: $seriesTitle })
+            `,
+                { actorName: actorName1, seriesTitle, seriesScreenTime: screenTime1 }
+            );
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                variableValues: { name: actorName1, title: nonExistantMovieTitle, screenTime2 },
+            });
+
+            const cypher = `
+                MATCH ()<-[r:ACTED_IN]-(:${actorType.name})
+                RETURN r
+            `;
+
+            const neo4jResult = await session.run(cypher);
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data).toEqual({
+                [actorType.operations.update]: {
+                    [actorType.plural]: [
+                        {
+                            name: actorName1,
+                            actedInConnection: {
+                                edges: [
+                                    {
+                                        screenTime: screenTime1,
+                                        node: {
+                                            title: seriesTitle,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            });
+            expect(neo4jResult.records).toHaveLength(1);
         } finally {
             await session.close();
         }
