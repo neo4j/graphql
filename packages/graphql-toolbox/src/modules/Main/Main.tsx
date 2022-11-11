@@ -67,7 +67,7 @@ export const Main = () => {
                 role="button"
                 tabIndex={0}
             >
-                Interested in a managed <strong>Neo4j GraphQL API</strong>? Click here!
+                Want us to manage your <strong>Neo4j GraphQL API</strong>? Register your interest here!
             </div>
         );
     };
