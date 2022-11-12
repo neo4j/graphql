@@ -133,11 +133,11 @@ class Model {
         ];
 
         let selection = "";
-        if (selectionSet) {
+        if (select) {
+            selection = this.buildSelectionSetFromSelection(select);
+        } else {
             const validSelectionSet = this.getSelectionSetOrDefault(selectionSet);
             selection = printSelectionSet(validSelectionSet);
-        } else if (select) {
-            selection = this.buildSelectionSetFromSelection(select);
         }
 
         const query = `
