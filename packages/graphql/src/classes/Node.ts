@@ -121,10 +121,6 @@ export type AggregateTypeNames = {
     input: string;
 };
 
-export type SelectTypeNames = {
-    find: string;
-};
-
 export type MutationResponseTypeNames = {
     create: string;
     update: string;
