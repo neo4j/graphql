@@ -95,6 +95,7 @@ class Model {
         args = {},
         context = {},
         rootValue = null,
+        select,
     }: {
         where?: GraphQLWhereArg;
         fulltext?: any;
@@ -103,9 +104,14 @@ class Model {
         args?: any;
         context?: any;
         rootValue?: any;
+        select?: Record<string, any>;
     } = {}): Promise<T> {
         if (!this.schema) {
             throw new Error("Must execute `OGM.init()` method before using Model instances");
+        }
+
+        if (select && selectionSet) {
+            throw new Error("Cannot use arguments 'select' and 'selectionSet' at the same time");
         }
 
         const argWorthy = Boolean(where || options || fulltext);
@@ -126,8 +132,13 @@ class Model {
             `${argWorthy ? ")" : ""}`,
         ];
 
-        const validSelectionSet = this.getSelectionSetOrDefault(selectionSet);
-        const selection = printSelectionSet(validSelectionSet);
+        let selection = "";
+        if (selectionSet) {
+            const validSelectionSet = this.getSelectionSetOrDefault(selectionSet);
+            selection = printSelectionSet(validSelectionSet);
+        } else if (select) {
+            selection = this.buildSelectionSetFromSelection(select);
+        }
 
         const query = `
             query ${argDefinitions.join(" ")}{
@@ -158,15 +169,21 @@ class Model {
         args = {},
         context = {},
         rootValue = null,
+        select,
     }: {
         input?: any;
         selectionSet?: string | DocumentNode | SelectionSetNode;
         args?: any;
         context?: any;
         rootValue?: any;
+        select?: Record<string, any>;
     } = {}): Promise<T> {
         if (!this.schema) {
             throw new Error("Must execute `OGM.init()` method before using Model instances");
+        }
+
+        if (select && selectionSet) {
+            throw new Error("Cannot use arguments 'select' and 'selectionSet' at the same time");
         }
 
         const mutationName = this.rootTypeFieldNames.create;
@@ -174,6 +191,13 @@ class Model {
         let selection = "";
         if (selectionSet) {
             selection = printSelectionSet(selectionSet);
+        } else if (select) {
+            selection = `
+                {
+                    ${this.namePluralized}
+                    ${this.buildSelectionSetFromSelection(select)}
+                }
+            `;
         } else {
             const validSelectionSet = this.getSelectionSetOrDefault(selectionSet);
             selection = `
@@ -218,6 +242,7 @@ class Model {
         args = {},
         context = {},
         rootValue = null,
+        select,
     }: {
         where?: GraphQLWhereArg;
         update?: any;
@@ -229,9 +254,14 @@ class Model {
         args?: any;
         context?: any;
         rootValue?: any;
+        select?: Record<string, any>;
     } = {}): Promise<T> {
         if (!this.schema) {
             throw new Error("Must execute `OGM.init()` method before using Model instances");
+        }
+
+        if (select && selectionSet) {
+            throw new Error("Cannot use arguments 'select' and 'selectionSet' at the same time");
         }
 
         const mutationName = this.rootTypeFieldNames.update;
@@ -240,6 +270,13 @@ class Model {
         let selection = "";
         if (selectionSet) {
             selection = printSelectionSet(selectionSet);
+        } else if (select) {
+            selection = `
+                {
+                    ${this.namePluralized}
+                    ${this.buildSelectionSetFromSelection(select)}
+                }
+            `;
         } else {
             const validSelectionSet = this.getSelectionSetOrDefault(selectionSet);
             selection = `
@@ -445,6 +482,22 @@ class Model {
             throw new Error("Non defined selectionSet in ogm model");
         }
         return result;
+    }
+
+    private buildSelectionSetFromSelection(selection: Record<string, any>) {
+        const selectionSet = [`{`];
+
+        Object.entries(selection).forEach(([key, value]) => {
+            if (!value) {
+                return;
+            }
+
+            selectionSet.push(key);
+        });
+
+        selectionSet.push("}");
+
+        return selectionSet.join("\n").replace(",", "");
     }
 }
 

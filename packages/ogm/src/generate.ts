@@ -121,6 +121,33 @@ function createAggregationInput({
     return [interfaceStrs.join("\n"), aggregateSelections];
 }
 
+function createSelectInput({
+    basedOnSearch,
+    typeName,
+    input,
+    selects,
+}: {
+    basedOnSearch: string;
+    typeName: string;
+    input: string;
+    selects: Record<string, string>;
+}) {
+    const interfaceStrs = [`export interface ${typeName} {`];
+
+    const [, start] = input.split(basedOnSearch);
+    const [body] = start.split(`}`);
+    const lines = body.split("\n").filter(Boolean);
+
+    lines.forEach((line) => {
+        const [fieldName] = line.split(": ").map((x) => x.trim().replace(";", ""));
+        interfaceStrs.push(`${removeOptional(fieldName)}?: boolean;`);
+    });
+
+    interfaceStrs.push("}");
+
+    return [interfaceStrs.join("\n"), selects];
+}
+
 function hasConnectOrCreate(node: any, ogm: OGM): boolean {
     for (const relation of node.relationFields) {
         const refNode = getReferenceNode(ogm, relation);
@@ -155,7 +182,6 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
 
     const content: string[] = [`import type { SelectionSetNode, DocumentNode } from "graphql";`, output];
 
-    const aggregateSelections: any = {};
     const modeMap: Record<string, string> = {};
 
     options.ogm.nodes.forEach((node) => {
@@ -167,14 +193,22 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
         const aggregationInput = createAggregationInput({
             basedOnSearch: `__typename?: '${node.aggregateTypeNames.selection}';`,
             typeName: node.aggregateTypeNames.input,
-            aggregateSelections,
+            aggregateSelections: {},
             input: output,
+        });
+
+        const selectInput = createSelectInput({
+            basedOnSearch: `__typename?: '${node.name}';`,
+            typeName: node.selectTypeName,
+            input: output,
+            selects: {},
         });
 
         const nodeHasConnectOrCreate = hasConnectOrCreate(node, options.ogm);
         const model = `
             ${Object.values(aggregationInput[1]).join("\n")}
             ${aggregationInput[0]}
+            ${selectInput[0]}
 
             export declare class ${modelName} {
                 public find(args?: {
@@ -185,6 +219,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     args?: any;
                     context?: any;
                     rootValue?: any;
+                    select?: ${node.name}Select
                 }): Promise<${node.name}[]>
                 public create(args: {
                     input: ${node.name}CreateInput[];
@@ -192,6 +227,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     args?: any;
                     context?: any;
                     rootValue?: any;
+                    select?: ${node.name}Select
                 }): Promise<Create${upperFirst(node.plural as string)}MutationResponse>
                 public update(args: {
                     where?: ${node.name}Where;
@@ -204,6 +240,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     args?: any;
                     context?: any;
                     rootValue?: any;
+                    select?: ${node.name}Select
                 }): Promise<Update${upperFirst(node.plural as string)}MutationResponse>
                 public delete(args: {
                     where?: ${node.name}Where;

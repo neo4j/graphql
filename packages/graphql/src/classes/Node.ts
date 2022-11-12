@@ -121,6 +121,10 @@ export type AggregateTypeNames = {
     input: string;
 };
 
+export type SelectTypeNames = {
+    find: string;
+};
+
 export type MutationResponseTypeNames = {
     create: string;
     update: string;
@@ -260,6 +264,10 @@ class Node extends GraphElement {
             selection: `${this.name}AggregateSelection`,
             input: `${this.name}AggregateSelectionInput`,
         };
+    }
+
+    public get selectTypeName(): string {
+        return `${this.name}Select`;
     }
 
     public get mutationResponseTypeNames(): MutationResponseTypeNames {
