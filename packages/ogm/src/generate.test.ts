@@ -240,6 +240,9 @@ describe("generate", () => {
               count?: boolean;
               name?: StringAggregateInputNullable;
             }
+            export interface UserSelect {
+              name?: boolean;
+            }
 
             export declare class UserModel {
               public find(args?: {
@@ -250,6 +253,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
+                select?: UserSelect;
               }): Promise<User[]>;
               public create(args: {
                 input: UserCreateInput[];
@@ -257,6 +261,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
+                select?: UserSelect;
               }): Promise<CreateUsersMutationResponse>;
               public update(args: {
                 where?: UserWhere;
@@ -266,6 +271,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
+                select?: UserSelect;
               }): Promise<UpdateUsersMutationResponse>;
               public delete(args: {
                 where?: UserWhere;
@@ -547,6 +553,9 @@ describe("generate", () => {
               count?: boolean;
               name?: StringAggregateInputNullable;
             }
+            export interface UserSelect {
+              name?: boolean;
+            }
 
             export declare class UserModel {
               public find(args?: {
@@ -557,6 +566,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
+                select?: UserSelect;
               }): Promise<User[]>;
               public create(args: {
                 input: UserCreateInput[];
@@ -564,6 +574,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
+                select?: UserSelect;
               }): Promise<CreateUsersMutationResponse>;
               public update(args: {
                 where?: UserWhere;
@@ -573,6 +584,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
+                select?: UserSelect;
               }): Promise<UpdateUsersMutationResponse>;
               public delete(args: {
                 where?: UserWhere;
@@ -817,6 +829,9 @@ describe("generate", () => {
               count?: boolean;
               name?: StringAggregateInputNullable;
             }
+            export interface UserSelect {
+              name?: boolean;
+            }
 
             export declare class UserModel {
               public find(args?: {
@@ -827,6 +842,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
+                select?: UserSelect;
               }): Promise<User[]>;
               public create(args: {
                 input: UserCreateInput[];
@@ -834,6 +850,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
+                select?: UserSelect;
               }): Promise<CreateUsersMutationResponse>;
               public update(args: {
                 where?: UserWhere;
@@ -843,6 +860,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
+                select?: UserSelect;
               }): Promise<UpdateUsersMutationResponse>;
               public delete(args: {
                 where?: UserWhere;
@@ -1448,6 +1466,12 @@ describe("generate", () => {
               count?: boolean;
               title?: StringAggregateInputNonNullable;
             }
+            export interface MovieSelect {
+              title?: boolean;
+              actors?: boolean;
+              actorsAggregate?: boolean;
+              actorsConnection?: boolean;
+            }
 
             export declare class MovieModel {
               public find(args?: {
@@ -1458,6 +1482,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
+                select?: MovieSelect;
               }): Promise<Movie[]>;
               public create(args: {
                 input: MovieCreateInput[];
@@ -1465,6 +1490,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
+                select?: MovieSelect;
               }): Promise<CreateMoviesMutationResponse>;
               public update(args: {
                 where?: MovieWhere;
@@ -1477,6 +1503,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
+                select?: MovieSelect;
               }): Promise<UpdateMoviesMutationResponse>;
               public delete(args: {
                 where?: MovieWhere;
@@ -1501,6 +1528,9 @@ describe("generate", () => {
               count?: boolean;
               name?: StringAggregateInputNonNullable;
             }
+            export interface PersonSelect {
+              name?: boolean;
+            }
 
             export declare class PersonModel {
               public find(args?: {
@@ -1511,6 +1541,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
+                select?: PersonSelect;
               }): Promise<Person[]>;
               public create(args: {
                 input: PersonCreateInput[];
@@ -1518,6 +1549,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
+                select?: PersonSelect;
               }): Promise<CreatePeopleMutationResponse>;
               public update(args: {
                 where?: PersonWhere;
@@ -1527,6 +1559,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
+                select?: PersonSelect;
               }): Promise<UpdatePeopleMutationResponse>;
               public delete(args: {
                 where?: PersonWhere;
