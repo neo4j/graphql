@@ -1468,9 +1468,12 @@ describe("generate", () => {
             }
             export interface MovieSelect {
               title?: boolean;
-              actors?: boolean;
-              actorsAggregate?: boolean;
-              actorsConnection?: boolean;
+              actors?: MovieSelectactorsSelect;
+            }
+            export interface MovieSelectactorsSelect {
+              select: PersonSelect;
+              where?: PersonWhere;
+              options?: PersonOptions;
             }
 
             export declare class MovieModel {

@@ -107,7 +107,6 @@ describe("select", () => {
                 await session.close();
             }
 
-            // Select id and title
             const moviesIdTitle = await Movie.find({
                 where: {
                     id,
@@ -125,7 +124,6 @@ describe("select", () => {
                 },
             ]);
 
-            // Select only id
             const moviesId = await Movie.find({
                 where: {
                     id,
@@ -203,7 +201,322 @@ describe("select", () => {
         });
     });
 
-    // test.skip("should select simple properties on a relationship", () => {});
+    describe("relationships", () => {
+        const typeDefs = gql`
+            type Movie {
+                id: ID!
+                title: String!
+                genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
+            }
 
-    // test.skip("should inject where inside relationship select", () => {});
+            type Genre {
+                id: ID!
+                name: String!
+                movies: [Movie!]! @relationship(type: "IN_GENRE", direction: IN)
+            }
+        `;
+
+        test("should select fields on a simple relationship", async () => {
+            const session = driver.session();
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+
+            const movieTitle = generate({
+                charset: "alphabetic",
+            });
+
+            const genreName = generate({
+                charset: "alphabetic",
+            });
+
+            const ogm = new OGM({ typeDefs, driver });
+            await ogm.init();
+            const Movie = ogm.model("Movie");
+
+            try {
+                await session.run(`
+                    CREATE (:Movie {id: "${movieId}", title: "${movieTitle}"})
+                            -[:IN_GENRE]->(:Genre {id: "${genreId}", name: "${genreName}"})
+                `);
+            } finally {
+                await session.close();
+            }
+
+            const moviesWithGenreIdName = await Movie.find({
+                where: {
+                    id: movieId,
+                },
+                select: {
+                    id: true,
+                    title: true,
+                    genres: {
+                        select: {
+                            id: true,
+                            name: true,
+                        },
+                    },
+                },
+            });
+
+            expect(moviesWithGenreIdName).toMatchObject([
+                {
+                    id: movieId,
+                    title: movieTitle,
+                    genres: [{ id: genreId }],
+                },
+            ]);
+
+            const moviesWithGenreId = await Movie.find({
+                where: {
+                    id: movieId,
+                },
+                select: {
+                    id: true,
+                    title: true,
+                    genres: {
+                        select: {
+                            id: true,
+                        },
+                    },
+                },
+            });
+
+            expect(moviesWithGenreId).toMatchObject([
+                {
+                    id: movieId,
+                    title: movieTitle,
+                    genres: [{ id: genreId }],
+                },
+            ]);
+        });
+
+        test("should select recursive fields on a simple relationship", async () => {
+            const session = driver.session();
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+
+            const movieTitle = generate({
+                charset: "alphabetic",
+            });
+
+            const genreName = generate({
+                charset: "alphabetic",
+            });
+
+            const ogm = new OGM({ typeDefs, driver });
+            await ogm.init();
+            const Movie = ogm.model("Movie");
+
+            try {
+                await session.run(`
+                    CREATE (:Movie {id: "${movieId}", title: "${movieTitle}"})
+                            -[:IN_GENRE]->(:Genre {id: "${genreId}", name: "${genreName}"})
+                `);
+            } finally {
+                await session.close();
+            }
+
+            const moviesWithGenreIdName = await Movie.find({
+                where: {
+                    id: movieId,
+                },
+                select: {
+                    id: true,
+                    title: true,
+                    genres: {
+                        select: {
+                            id: true,
+                            name: true,
+                            movies: {
+                                select: {
+                                    id: true,
+                                    title: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+
+            expect(moviesWithGenreIdName).toMatchObject([
+                {
+                    id: movieId,
+                    title: movieTitle,
+                    genres: [{ id: genreId, movies: [{ id: movieId, title: movieTitle }] }],
+                },
+            ]);
+
+            const moviesWithGenreId = await Movie.find({
+                where: {
+                    id: movieId,
+                },
+                select: {
+                    id: true,
+                    title: true,
+                    genres: {
+                        select: {
+                            id: true,
+                            movies: {
+                                select: {
+                                    id: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+
+            expect(moviesWithGenreId).toMatchObject([
+                {
+                    id: movieId,
+                    title: movieTitle,
+                    genres: [{ id: genreId, movies: [{ id: movieId }] }],
+                },
+            ]);
+        });
+
+        test("should use where argument when selecting fields on a relationship", async () => {
+            const session = driver.session();
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const genreId1 = generate({
+                charset: "alphabetic",
+            });
+
+            const genreId2 = generate({
+                charset: "alphabetic",
+            });
+
+            const movieTitle = generate({
+                charset: "alphabetic",
+            });
+
+            const genreName1 = generate({
+                charset: "alphabetic",
+            });
+
+            const genreName2 = generate({
+                charset: "alphabetic",
+            });
+
+            const ogm = new OGM({ typeDefs, driver });
+            await ogm.init();
+            const Movie = ogm.model("Movie");
+
+            try {
+                await session.run(`
+                    CREATE (m:Movie {id: "${movieId}", title: "${movieTitle}"})
+                    MERGE (m)-[:IN_GENRE]->(:Genre {id: "${genreId1}", name: "${genreName1}"})
+                    MERGE (m)-[:IN_GENRE]->(:Genre {id: "${genreId2}", name: "${genreName2}"})
+                `);
+            } finally {
+                await session.close();
+            }
+
+            const moviesWithGenreIdName = await Movie.find({
+                where: {
+                    id: movieId,
+                },
+                select: {
+                    id: true,
+                    title: true,
+                    genres: {
+                        where: {
+                            name: genreName1,
+                        },
+                        select: {
+                            id: true,
+                            name: true,
+                        },
+                    },
+                },
+            });
+
+            expect(moviesWithGenreIdName).toMatchObject([
+                {
+                    id: movieId,
+                    title: movieTitle,
+                    genres: [{ id: genreId1, name: genreName1 }],
+                },
+            ]);
+        });
+
+        test("should use options argument when selecting fields on a relationship", async () => {
+            const session = driver.session();
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const genreId1 = generate({
+                charset: "alphabetic",
+            });
+
+            const genreId2 = generate({
+                charset: "alphabetic",
+            });
+
+            const movieTitle = generate({
+                charset: "alphabetic",
+            });
+
+            const genreName1 = generate({
+                charset: "alphabetic",
+            });
+
+            const genreName2 = generate({
+                charset: "alphabetic",
+            });
+
+            const ogm = new OGM({ typeDefs, driver });
+            await ogm.init();
+            const Movie = ogm.model("Movie");
+
+            try {
+                await session.run(`
+                    CREATE (m:Movie {id: "${movieId}", title: "${movieTitle}"})
+                    MERGE (m)-[:IN_GENRE]->(:Genre {id: "${genreId1}", name: "${genreName1}"})
+                    MERGE (m)-[:IN_GENRE]->(:Genre {id: "${genreId2}", name: "${genreName2}"})
+                `);
+            } finally {
+                await session.close();
+            }
+
+            const moviesWithGenreIdName = await Movie.find({
+                where: {
+                    id: movieId,
+                },
+                select: {
+                    id: true,
+                    title: true,
+                    genres: {
+                        options: {
+                            limit: 1,
+                        },
+                        select: {
+                            id: true,
+                            name: true,
+                        },
+                    },
+                },
+            });
+
+            expect(moviesWithGenreIdName[0].genres as any[]).toHaveLength(1);
+        });
+    });
 });

@@ -17,8 +17,10 @@
  * limitations under the License.
  */
 
+import type { Node } from "@neo4j/graphql";
 import type { DocumentNode, GraphQLSchema, SelectionSetNode } from "graphql";
 import { graphql, parse, print } from "graphql";
+import { buildSelectionSetFromSelect } from "../utils/build-selection-set-from-select";
 import type { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
 
 function printSelectionSet(selectionSet: string | DocumentNode | SelectionSetNode): string {
@@ -46,8 +48,27 @@ class Model {
 
     private _rootTypeFieldNames?: RootTypeFieldNames;
 
-    constructor(name: string) {
+    private getNode: () => Node;
+
+    private models: Model[];
+
+    private getNodes: () => Node[];
+
+    constructor({
+        name,
+        getNode,
+        models,
+        getNodes,
+    }: {
+        name: string;
+        getNode: () => Node;
+        models: Model[];
+        getNodes: () => Node[];
+    }) {
         this.name = name;
+        this.getNode = getNode;
+        this.models = models;
+        this.getNodes = getNodes;
     }
 
     public set selectionSet(selectionSet: string | DocumentNode) {
@@ -134,7 +155,13 @@ class Model {
 
         let selection = "";
         if (select) {
-            selection = this.buildSelectionSetFromSelection(select);
+            selection = buildSelectionSetFromSelect({
+                select,
+                model: this,
+                models: this.models,
+                node: this.getNode(),
+                nodes: this.getNodes(),
+            });
         } else {
             const validSelectionSet = this.getSelectionSetOrDefault(selectionSet);
             selection = printSelectionSet(validSelectionSet);
@@ -195,7 +222,13 @@ class Model {
             selection = `
                 {
                     ${this.namePluralized}
-                    ${this.buildSelectionSetFromSelection(select)}
+                    ${buildSelectionSetFromSelect({
+                        select,
+                        model: this,
+                        models: this.models,
+                        node: this.getNode(),
+                        nodes: this.getNodes(),
+                    })}
                 }
             `;
         } else {
@@ -274,7 +307,13 @@ class Model {
             selection = `
                 {
                     ${this.namePluralized}
-                    ${this.buildSelectionSetFromSelection(select)}
+                    ${buildSelectionSetFromSelect({
+                        select,
+                        model: this,
+                        models: this.models,
+                        node: this.getNode(),
+                        nodes: this.getNodes(),
+                    })}
                 }
             `;
         } else {
@@ -482,22 +521,6 @@ class Model {
             throw new Error("Non defined selectionSet in ogm model");
         }
         return result;
-    }
-
-    private buildSelectionSetFromSelection(selection: Record<string, any>) {
-        const selectionSet = [`{`];
-
-        Object.entries(selection).forEach(([key, value]) => {
-            if (!value) {
-                return;
-            }
-
-            selectionSet.push(key);
-        });
-
-        selectionSet.push("}");
-
-        return selectionSet.join("\n").replace(",", "");
     }
 }
 

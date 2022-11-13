@@ -83,7 +83,11 @@ class OGM<ModelMap = unknown> {
             return model as M;
         }
 
-        model = new Model(name as string);
+        // You must await `.getSchema()` before accessing `nodes`
+        const getNode = () => this.neoSchema.nodes.find((n) => n.name === name) as Node;
+        const getNodes = () => this.nodes;
+
+        model = new Model({ name: name as string, getNode, models: this.models, getNodes });
 
         if (this._schema) {
             this.initModel(model);

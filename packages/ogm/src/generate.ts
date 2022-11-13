@@ -26,6 +26,7 @@ import prettier from "prettier";
 import type { OGM } from "./index";
 import { getReferenceNode } from "./utils";
 import { upperFirst } from "./utils/upper-first";
+import type { Node } from "@neo4j/graphql";
 
 export interface IGenerateOptions {
     /**
@@ -80,7 +81,7 @@ function createAggregationInput({
     typeName: string;
     aggregateSelections?: Record<string, any>;
     input: string;
-}) {
+}): [string, Record<string, string>] {
     const interfaceStrs = [`export interface ${typeName} {`];
 
     const [, start] = input.split(basedOnSearch);
@@ -125,13 +126,15 @@ function createSelectInput({
     basedOnSearch,
     typeName,
     input,
-    selects,
+    relationshipSelectInputs,
+    node,
 }: {
     basedOnSearch: string;
     typeName: string;
     input: string;
-    selects: Record<string, string>;
-}) {
+    relationshipSelectInputs: Record<string, string>;
+    node: Node;
+}): [string, Record<string, string>] {
     const interfaceStrs = [`export interface ${typeName} {`];
 
     const [, start] = input.split(basedOnSearch);
@@ -140,12 +143,33 @@ function createSelectInput({
 
     lines.forEach((line) => {
         const [fieldName] = line.split(": ").map((x) => x.trim().replace(";", ""));
-        interfaceStrs.push(`${removeOptional(fieldName)}?: boolean;`);
+        const relationFeild = node.relationFields.find((rel) => rel.fieldName === fieldName);
+
+        if (relationFeild) {
+            const relationshipInterfaceStrs: string[] = [];
+            const interfaceName = `${typeName}${fieldName}Select`;
+
+            relationshipInterfaceStrs.push(`export interface ${interfaceName} {`);
+            relationshipInterfaceStrs.push(`select: ${relationFeild.typeMeta.name}Select`);
+            relationshipInterfaceStrs.push(`where?: ${relationFeild.typeMeta.name}Where`);
+            relationshipInterfaceStrs.push(`options?: ${relationFeild.typeMeta.name}Options`);
+            relationshipInterfaceStrs.push("}");
+
+            relationshipSelectInputs[fieldName] = relationshipInterfaceStrs.join("\n");
+
+            interfaceStrs.push(`${removeOptional(fieldName)}?: ${interfaceName};`);
+        } else if (fieldName.endsWith("Aggregate?") || fieldName.endsWith("Connection")) {
+            // TODO
+        } else {
+            interfaceStrs.push(`${removeOptional(fieldName)}?: boolean;`);
+        }
     });
 
     interfaceStrs.push("}");
 
-    return [interfaceStrs.join("\n"), selects];
+    const selectInput = interfaceStrs.join("\n");
+
+    return [selectInput, relationshipSelectInputs];
 }
 
 function hasConnectOrCreate(node: any, ogm: OGM): boolean {
@@ -201,7 +225,8 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
             basedOnSearch: `__typename?: '${node.name}';`,
             typeName: node.selectTypeName,
             input: output,
-            selects: {},
+            relationshipSelectInputs: {},
+            node,
         });
 
         const nodeHasConnectOrCreate = hasConnectOrCreate(node, options.ogm);
@@ -209,6 +234,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
             ${Object.values(aggregationInput[1]).join("\n")}
             ${aggregationInput[0]}
             ${selectInput[0]}
+            ${Object.values(selectInput[1]).join("\n")}
 
             export declare class ${modelName} {
                 public find(args?: {
