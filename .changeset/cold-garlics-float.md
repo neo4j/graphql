@@ -2,4 +2,4 @@
 "@neo4j/cypher-builder": patch
 ---
 
-Apoc.util.validate is not invocable from CallProcedure
+Apoc.util.validate is now invocable from CallProcedure
