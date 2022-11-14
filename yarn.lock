@@ -2643,7 +2643,7 @@ __metadata:
     react-dom: 18.2.0
     react-resizable: 3.0.4
     style-loader: 3.3.1
-    tailwindcss: 3.2.3
+    tailwindcss: 3.2.4
     terser-webpack-plugin: 5.3.6
     ts-jest: 29.0.3
     ts-loader: 9.4.1
@@ -19090,9 +19090,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:3.2.3":
-  version: 3.2.3
-  resolution: "tailwindcss@npm:3.2.3"
+"tailwindcss@npm:3.2.4":
+  version: 3.2.4
+  resolution: "tailwindcss@npm:3.2.4"
   dependencies:
     arg: ^5.0.2
     chokidar: ^3.5.3
@@ -19122,7 +19122,7 @@ __metadata:
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: 5a31815c69d3ecfb6ed4882942d6e0dc3b79e5dbbadd758ccebe99d66d403b29d80b7b73dec0a81ee21ada4ec8e9d467dd1bc14b559726c5a19425030f29aea9
+  checksum: ec187d180c722ec4f57537f2216c7b21269b525f12aaf353cea464d939c3e6286a1221eb3e1206e45d1f015f296171309ad4d9952899b0245cd07d9500a9401f
   languageName: node
   linkType: hard
 
