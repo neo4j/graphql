@@ -98,7 +98,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               edge: ActedInCreateInput!
               where: ProductionConnectWhere
             }
@@ -633,7 +633,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: ProductionConnectInput
               edge: ActedInCreateInput!
               where: ProductionConnectWhere
@@ -880,7 +880,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: SeriesConnectInput
               where: SeriesConnectWhere
             }
@@ -1282,7 +1282,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
               where: ActorConnectWhere
@@ -1679,7 +1679,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [EpisodeConnectInput!]
               where: EpisodeConnectWhere
             }
@@ -2038,7 +2038,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               where: Interface2ConnectWhere
             }
 
@@ -2298,7 +2298,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: Interface1ConnectInput
               where: Interface1ConnectWhere
             }
@@ -2365,7 +2365,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               where: Interface2ConnectWhere
             }
 
@@ -2612,7 +2612,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               where: Interface2ConnectWhere
             }
 
@@ -2939,7 +2939,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: PostConnectInput
               where: PostConnectWhere
             }
@@ -3141,7 +3141,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: UserConnectInput
               where: UserConnectWhere
             }
@@ -3408,7 +3408,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [CommentConnectInput!]
               where: CommentConnectWhere
             }
@@ -3725,7 +3725,7 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: ContentConnectInput
               where: ContentConnectWhere
             }

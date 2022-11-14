@@ -564,7 +564,7 @@ describe("String Comparators", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [MovieConnectInput!]
               edge: ActedInCreateInput
               where: MovieConnectWhere
@@ -851,7 +851,7 @@ describe("String Comparators", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput
               where: ActorConnectWhere

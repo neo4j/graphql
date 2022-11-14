@@ -141,7 +141,7 @@ describe("Connect Or Create", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               edge: ActedInCreateInput!
               where: MovieConnectWhere
             }
@@ -209,7 +209,7 @@ describe("Connect Or Create", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               edge: ActedInCreateInput!
               where: SeriesConnectWhere
             }

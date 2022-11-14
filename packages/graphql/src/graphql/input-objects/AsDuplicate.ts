@@ -17,11 +17,10 @@
  * limitations under the License.
  */
 
-import { GraphQLBoolean, GraphQLNonNull } from "graphql";
+import { GraphQLBoolean } from "graphql";
 
 export const AsDuplicate = {
-    type: new GraphQLNonNull(GraphQLBoolean),
-    defaultValue: false,
+    type: GraphQLBoolean,
     description:
         "Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.",
 };

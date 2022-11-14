@@ -736,7 +736,7 @@ describe("Aggregations", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               edge: LikesCreateInput
               where: UserConnectWhere
             }

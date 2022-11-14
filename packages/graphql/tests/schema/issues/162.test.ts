@@ -218,7 +218,7 @@ describe("162", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: TigerJawLevel2Part1ConnectInput
               where: TigerJawLevel2Part1ConnectWhere
             }
@@ -331,7 +331,7 @@ describe("162", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               where: TigerConnectWhere
             }
 

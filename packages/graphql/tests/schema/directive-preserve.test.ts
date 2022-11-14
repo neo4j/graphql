@@ -284,7 +284,7 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [MovieConnectInput!]
               where: MovieConnectWhere
             }
@@ -556,7 +556,7 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [GenreConnectInput!]
               where: GenreConnectWhere
             }
@@ -867,7 +867,7 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: ProductionConnectInput
               edge: ActedInCreateInput!
               where: ProductionConnectWhere
@@ -1267,7 +1267,7 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
               where: ActorConnectWhere
@@ -1729,7 +1729,7 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: ProductionConnectInput
               edge: ActedInCreateInput!
               where: ProductionConnectWhere
@@ -2129,7 +2129,7 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
               where: ActorConnectWhere
@@ -2613,7 +2613,7 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               where: PostConnectWhere
             }
 
@@ -2936,7 +2936,7 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [BlogConnectInput!]
               where: BlogConnectWhere
             }
@@ -3020,7 +3020,7 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               where: PostConnectWhere
             }
 

@@ -105,7 +105,7 @@ describe("Unions", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [BookConnectInput!]
               edge: WroteCreateInput!
               where: BookConnectWhere
@@ -198,7 +198,7 @@ describe("Unions", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [JournalConnectInput!]
               edge: WroteCreateInput!
               where: JournalConnectWhere
@@ -343,7 +343,7 @@ describe("Unions", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [AuthorConnectInput!]
               edge: WroteCreateInput!
               where: AuthorConnectWhere
@@ -629,7 +629,7 @@ describe("Unions", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [AuthorConnectInput!]
               edge: WroteCreateInput!
               where: AuthorConnectWhere

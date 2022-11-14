@@ -232,7 +232,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               where: ActorConnectWhere
             }
 

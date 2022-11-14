@@ -598,7 +598,7 @@ describe("Algebraic", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [MovieConnectInput!]
               where: MovieConnectWhere
             }
@@ -829,7 +829,7 @@ describe("Algebraic", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: DirectorConnectInput
               where: DirectorConnectWhere
             }
@@ -1241,7 +1241,7 @@ describe("Algebraic", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [PersonConnectInput!]
               where: PersonConnectWhere
             }
@@ -1441,7 +1441,7 @@ describe("Algebraic", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: ProductionConnectInput
               where: ProductionConnectWhere
             }
@@ -1741,7 +1741,7 @@ describe("Algebraic", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [PersonConnectInput!]
               edge: ActedInCreateInput
               where: PersonConnectWhere
@@ -2017,7 +2017,7 @@ describe("Algebraic", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [MovieConnectInput!]
               edge: ActedInCreateInput
               where: MovieConnectWhere

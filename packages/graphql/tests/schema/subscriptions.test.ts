@@ -243,7 +243,7 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               where: ActorConnectWhere
             }
 
@@ -677,7 +677,7 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [MovieConnectInput!]
               where: MovieConnectWhere
             }
@@ -917,7 +917,7 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [ActorConnectInput!]
               where: ActorConnectWhere
             }
@@ -1368,7 +1368,7 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [PersonConnectInput!]
               where: PersonConnectWhere
             }
@@ -1421,7 +1421,7 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [StarConnectInput!]
               where: StarConnectWhere
             }
@@ -1744,7 +1744,7 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [MovieConnectInput!]
               where: MovieConnectWhere
             }
@@ -1996,7 +1996,7 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [MovieConnectInput!]
               where: MovieConnectWhere
             }
@@ -2333,7 +2333,7 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [MovieConnectInput!]
               where: MovieConnectWhere
             }
@@ -2586,7 +2586,7 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
               where: ActorConnectWhere
@@ -3144,7 +3144,7 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              asDuplicate: Boolean! = false
+              asDuplicate: Boolean
               where: ActorConnectWhere
             }
 
