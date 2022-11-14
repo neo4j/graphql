@@ -194,6 +194,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             input ResourceContainedByConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
+              \\"\\"\\"
+              asDuplicate: Boolean! = false
               connect: [ResourceConnectInput!]
               where: ResourceConnectWhere
             }
