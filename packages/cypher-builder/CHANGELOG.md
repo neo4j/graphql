@@ -1,5 +1,11 @@
 # @neo4j/cypher-builder
 
+## 0.1.4
+
+### Patch Changes
+
+-   [#2345](https://github.com/neo4j/graphql/pull/2345) [`94b6cea4f`](https://github.com/neo4j/graphql/commit/94b6cea4f26b90523fed59d0b22cbac25461a71c) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove dependencies on nodejs utils
+
 ## 0.1.3
 
 ### Patch Changes

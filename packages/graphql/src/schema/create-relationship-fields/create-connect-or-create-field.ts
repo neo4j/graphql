@@ -123,6 +123,7 @@ function getOnCreateFields({
         const nodeFields = objectFieldsToCreateInputFields([
             ...node.primitiveFields,
             ...node.scalarFields,
+            ...node.enumFields,
             ...node.pointFields,
             ...node.temporalFields,
         ]);

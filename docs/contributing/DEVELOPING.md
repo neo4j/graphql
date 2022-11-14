@@ -87,7 +87,7 @@ You can execute tests with a different database, user and password with the
 following command:
 
 ```bash
-NEO_URL=neo4j://localhost:7687 NEO_USER=admin NEO_PASSWORD=password yarn test
+NEO_URL=neo4j://localhost:7687 NEO_USER=neo4j NEO_PASSWORD=password yarn test
 ```
 
 The above command can additionally be run from `packages/graphql`, `packages/ogm`,
@@ -98,7 +98,7 @@ root of the repo which will automatically get picked up:
 
 ```env
 NEO_URL=neo4j://localhost:7687
-NEO_USER=admin
+NEO_USER=neo4j
 NEO_PASSWORD=password
 ```
 
