@@ -1,4 +1,4 @@
-mutation BatchCreateInterface {
+mutation BatchCreateInterface_skip {
     createPeople(
         input: [
             { name: "s0", born: 0, likes: { Person: { create: [{ node: { name: "a0", born: 10000 } }] } } }

@@ -29,6 +29,7 @@ import { ResultsWriter } from "./utils/ResultsWriter";
 import { ResultsDisplay } from "./utils/ResultsDisplay";
 import { TestRunner } from "./utils/TestRunner";
 import type * as Performance from "./types";
+import { schemaPerformance } from "./schema-performance";
 
 let driver: Driver;
 
@@ -45,7 +46,12 @@ const typeDefs = gql`
         likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
     }
 
-    type Movie @fulltext(indexes: [{ queryName: "movieTaglineFulltextQuery", name: "MovieTaglineFulltextIndex", fields: ["tagline"] }]) {
+    type Movie
+        @fulltext(
+            indexes: [
+                { queryName: "movieTaglineFulltextQuery", name: "MovieTaglineFulltextIndex", fields: ["tagline"] }
+            ]
+        ) {
         id: ID!
         title: String!
         tagline: String
@@ -95,6 +101,14 @@ async function afterAll() {
 }
 
 async function main() {
+    if (process.argv.includes("--schema")) {
+        await schemaPerformance();
+    } else {
+        await queryPerformance();
+    }
+}
+
+async function queryPerformance() {
     try {
         await beforeAll();
         const resultsWriter = new ResultsWriter(path.join(__dirname, "/performance.json"));
