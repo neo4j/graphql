@@ -3,9 +3,9 @@ module.exports = {
   theme: {
     extend: {
       height: {
-        "content-container": "calc(100vh - 4rem)",
-        "content-container-extended": "calc(100vh - 7rem)",
-        "content-docs-container": "calc(100vh - 7rem - 10px)",
+        "content-container": "calc(100vh - 6rem)",
+        "content-container-extended": "calc(100vh - 9rem)",
+        "content-docs-container": "calc(100vh - 9rem - 10px)",
         "favorite": "35rem",
       },
       width: {
