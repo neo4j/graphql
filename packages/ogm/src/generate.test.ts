@@ -1223,7 +1223,7 @@ describe("generate", () => {
 
             export type MovieActorsConnectFieldInput = {
               /** Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties. */
-              createAsDuplicate?: Scalars[\\"Boolean\\"];
+              asDuplicate?: Scalars[\\"Boolean\\"];
               where?: InputMaybe<PersonConnectWhere>;
               edge: ActedInCreateInput;
             };

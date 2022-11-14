@@ -136,11 +136,11 @@ describe("Sort", () => {
             }
 
             input Node1RelatedToConnectFieldInput {
-              connect: [Node2ConnectInput!]
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createAsDuplicate: Boolean! = false
+              asDuplicate: Boolean! = false
+              connect: [Node2ConnectInput!]
               where: Node2ConnectWhere
             }
 
@@ -309,11 +309,11 @@ describe("Sort", () => {
             }
 
             input Node2RelatedToConnectFieldInput {
-              connect: [Node1ConnectInput!]
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createAsDuplicate: Boolean! = false
+              asDuplicate: Boolean! = false
+              connect: [Node1ConnectInput!]
               where: Node1ConnectWhere
             }
 

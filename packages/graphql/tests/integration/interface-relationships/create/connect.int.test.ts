@@ -347,7 +347,7 @@ describe("interface relationships", () => {
         }
     });
 
-    test("should not create duplicate connections when createAsDuplicates false", async () => {
+    test("should not create duplicate connections when asDuplicates false", async () => {
         const session = await neo4j.getSession();
 
         const query = `
@@ -359,12 +359,12 @@ describe("interface relationships", () => {
                             actedIn: {
                                 connect: [
                                     {
-                                        createAsDuplicate: true
+                                        asDuplicate: true
                                         edge: { screenTime: $screenTime }
                                         where: { node: { _on: { ${movieType.name}: { title: $title } } } }
                                     },
                                     {
-                                        createAsDuplicate: false
+                                        asDuplicate: false
                                         edge: { screenTime: $screenTime }
                                         where: { node: { _on: { ${movieType.name}: { title: $title } } } }
                                     }
@@ -427,7 +427,7 @@ describe("interface relationships", () => {
         }
     });
 
-    test("should create duplicate connections when createAsDuplicates true", async () => {
+    test("should create duplicate connections when asDuplicates true", async () => {
         const session = await neo4j.getSession();
 
         const query = `
@@ -439,12 +439,12 @@ describe("interface relationships", () => {
                             actedIn: {
                                 connect: [
                                     {
-                                        createAsDuplicate: true
+                                        asDuplicate: true
                                         edge: { screenTime: $screenTime }
                                         where: { node: { _on: { ${movieType.name}: { title: $title } } } }
                                     },
                                     {
-                                        createAsDuplicate: true
+                                        asDuplicate: true
                                         edge: { screenTime: $screenTime }
                                         where: { node: { _on: { ${movieType.name}: { title: $title } } } }
                                     }

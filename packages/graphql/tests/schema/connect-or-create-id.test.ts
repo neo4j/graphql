@@ -107,7 +107,7 @@ describe("connect or create with id", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createAsDuplicate: Boolean! = false
+              asDuplicate: Boolean! = false
               where: MovieConnectWhere
             }
 
@@ -563,11 +563,11 @@ describe("connect or create with id", () => {
             }
 
             input PostCreatorConnectFieldInput {
-              connect: UserConnectInput
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createAsDuplicate: Boolean! = false
+              asDuplicate: Boolean! = false
+              connect: UserConnectInput
               where: UserConnectWhere
             }
 
@@ -891,11 +891,11 @@ describe("connect or create with id", () => {
             }
 
             input UserPostsConnectFieldInput {
-              connect: [PostConnectInput!]
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createAsDuplicate: Boolean! = false
+              asDuplicate: Boolean! = false
+              connect: [PostConnectInput!]
               where: PostConnectWhere
             }
 

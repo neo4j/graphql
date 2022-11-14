@@ -166,7 +166,7 @@ describe("Relationship properties - connect", () => {
                 }
             });
 
-            test("should not create duplicate relationships when createAsDuplicate false", async () => {
+            test("should not create duplicate relationships when asDuplicate false", async () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                 });
@@ -186,7 +186,7 @@ describe("Relationship properties - connect", () => {
                                                 edge: { screenTime: $screenTime1 },
                                             },
                                             {
-                                                createAsDuplicate: false,
+                                                asDuplicate: false,
                                                 where: { node: { name: $actorName } },
                                                 edge: { screenTime: $screenTime2 },
                                             }
@@ -262,7 +262,7 @@ describe("Relationship properties - connect", () => {
                 }
             });
 
-            test("should create duplicate relationships when createAsDuplicate true", async () => {
+            test("should create duplicate relationships when asDuplicate true", async () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                 });
@@ -278,12 +278,12 @@ describe("Relationship properties - connect", () => {
                                     actors: {
                                         connect: [
                                             {
-                                                createAsDuplicate: false,
+                                                asDuplicate: false,
                                                 where: { node: { name: $actorName } },
                                                 edge: { screenTime: $screenTime1 },
                                             },
                                             {
-                                                createAsDuplicate: true,
+                                                asDuplicate: true,
                                                 where: { node: { name: $actorName } },
                                                 edge: { screenTime: $screenTime2 },
                                             }
@@ -442,7 +442,7 @@ describe("Relationship properties - connect", () => {
                 }
             });
 
-            test("should create duplicate relationships with a single connect when createAsDuplicate true", async () => {
+            test("should create duplicate relationships with a single connect when asDuplicate true", async () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                 });
@@ -455,7 +455,7 @@ describe("Relationship properties - connect", () => {
                             where: { title: $movieTitle }
                             connect: {
                                 actors: {
-                                    createAsDuplicate: true
+                                    asDuplicate: true
                                     where: { node: { name: $actorName } }
                                     edge: { screenTime: $screenTime }
                                 }
@@ -534,7 +534,7 @@ describe("Relationship properties - connect", () => {
                 }
             });
 
-            test("should create duplicate relationships when createAsDuplicate true on one of multiple connects", async () => {
+            test("should create duplicate relationships when asDuplicate true on one of multiple connects", async () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                 });
@@ -548,12 +548,12 @@ describe("Relationship properties - connect", () => {
                             connect: {
                                 actors: [
                                     {
-                                        createAsDuplicate: true
+                                        asDuplicate: true
                                         where: { node: { name: $actorName1 } }
                                         edge: { screenTime: $screenTime2 }
                                     },
                                     {
-                                        createAsDuplicate: false
+                                        asDuplicate: false
                                         where: { node: { name: $actorName2 } }
                                         edge: { screenTime: $screenTime2 }
                                     }
@@ -640,7 +640,7 @@ describe("Relationship properties - connect", () => {
                 }
             });
 
-            test("should create a single relationship with no existing relationships when createAsDuplicate true", async () => {
+            test("should create a single relationship with no existing relationships when asDuplicate true", async () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                 });
@@ -653,7 +653,7 @@ describe("Relationship properties - connect", () => {
                             where: { title: $movieTitle }
                             connect: {
                                 actors: {
-                                    createAsDuplicate: true
+                                    asDuplicate: true
                                     where: { node: { name: $actorName } }
                                     edge: { screenTime: $screenTime }
                                 }
@@ -727,7 +727,7 @@ describe("Relationship properties - connect", () => {
                 }
             });
 
-            test("should create duplicate relationships when createAsDuplicate true on all of multiple connects", async () => {
+            test("should create duplicate relationships when asDuplicate true on all of multiple connects", async () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                 });
@@ -741,17 +741,17 @@ describe("Relationship properties - connect", () => {
                             connect: {
                                 actors: [
                                     {
-                                        createAsDuplicate: true
+                                        asDuplicate: true
                                         where: { node: { name: $actorName1 } }
                                         edge: { screenTime: $screenTime2 }
                                     },
                                     {
-                                        createAsDuplicate: true
+                                        asDuplicate: true
                                         where: { node: { name: $actorName2 } }
                                         edge: { screenTime: $screenTime2 }
                                     },
                                     {
-                                        createAsDuplicate: true
+                                        asDuplicate: true
                                         where: { node: { name: $actorName2 } }
                                         edge: { screenTime: $screenTime2 }
                                     }
@@ -857,7 +857,7 @@ describe("Relationship properties - connect", () => {
                             where: { title: $movieTitle }
                             connect: {
                                 actors: {
-                                    createAsDuplicate: true
+                                    asDuplicate: true
                                     where: { node: { name: $actorName } }
                                     edge: { screenTime: $screenTime }
                                 }
@@ -934,7 +934,7 @@ describe("Relationship properties - connect", () => {
                             where: { title: $movieTitle }
                             connect: {
                                 actors: {
-                                    createAsDuplicate: true
+                                    asDuplicate: true
                                     where: { node: { name: $actorName } }
                                     edge: { screenTime: $screenTime }
                                 }
@@ -1128,7 +1128,7 @@ describe("Relationship properties - connect", () => {
                 }
             });
 
-            test("should not create duplicate relationships when createAsDuplicate false", async () => {
+            test("should not create duplicate relationships when asDuplicate false", async () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                 });
@@ -1151,7 +1151,7 @@ describe("Relationship properties - connect", () => {
                                             }
                                         },
                                         {
-                                            createAsDuplicate: false
+                                            asDuplicate: false
                                             where: {
                                                 node: { title: $movieTitle }
                                             },
@@ -1240,7 +1240,7 @@ describe("Relationship properties - connect", () => {
                 }
             });
 
-            test("should create duplicate relationships when createAsDuplicate true", async () => {
+            test("should create duplicate relationships when asDuplicate true", async () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                 });
@@ -1263,7 +1263,7 @@ describe("Relationship properties - connect", () => {
                                             }
                                         },
                                         {
-                                            createAsDuplicate: true
+                                            asDuplicate: true
                                             where: {
                                                 node: { title: $movieTitle }
                                             },
@@ -1272,7 +1272,7 @@ describe("Relationship properties - connect", () => {
                                             }
                                         },
                                         {
-                                            createAsDuplicate: true
+                                            asDuplicate: true
                                             where: {
                                                 node: { title: $movieTitle }
                                             },
@@ -1435,7 +1435,7 @@ describe("Relationship properties - connect", () => {
                 }
             });
 
-            test("should create duplicate relationships with a single connect when createAsDuplicate true", async () => {
+            test("should create duplicate relationships with a single connect when asDuplicate true", async () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                 });
@@ -1449,7 +1449,7 @@ describe("Relationship properties - connect", () => {
                             connect: {
                                 actedIn: {
                                     ${movieType.name}: {
-                                        createAsDuplicate: true
+                                        asDuplicate: true
                                         where: { node: { title: $movieTitle } }
                                         edge: { screenTime: $screenTime }
                                     }
@@ -1531,7 +1531,7 @@ describe("Relationship properties - connect", () => {
                 }
             });
 
-            test("should create duplicate relationships when createAsDuplicate true on one of multiple connects", async () => {
+            test("should create duplicate relationships when asDuplicate true on one of multiple connects", async () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                 });
@@ -1545,12 +1545,12 @@ describe("Relationship properties - connect", () => {
                             connect: {
                                 actedIn: {
                                     ${movieType.name}: {
-                                        createAsDuplicate: false
+                                        asDuplicate: false
                                         where: { node: { title: $movieTitle } }
                                         edge: { screenTime: $screenTime }
                                     }
                                     ${showType.name}: {
-                                        createAsDuplicate: true
+                                        asDuplicate: true
                                         where: { node: { name: $showTitle } }
                                         edge: { screenTime: $screenTime }
                                     }
@@ -1638,7 +1638,7 @@ describe("Relationship properties - connect", () => {
                 }
             });
 
-            test("should create a single relationship with no existing relationships when createAsDuplicate true", async () => {
+            test("should create a single relationship with no existing relationships when asDuplicate true", async () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                 });
@@ -1652,7 +1652,7 @@ describe("Relationship properties - connect", () => {
                             connect: {
                                 actedIn: {
                                     ${movieType.name}: {
-                                        createAsDuplicate: true
+                                        asDuplicate: true
                                         where: { node: { title: $movieTitle } }
                                         edge: { screenTime: $screenTime }
                                     }
@@ -1725,7 +1725,7 @@ describe("Relationship properties - connect", () => {
                 }
             });
 
-            test("should create duplicate relationships when createAsDuplicate true on all of multiple connects", async () => {
+            test("should create duplicate relationships when asDuplicate true on all of multiple connects", async () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                 });
@@ -1740,18 +1740,18 @@ describe("Relationship properties - connect", () => {
                                 actedIn: {
                                     ${movieType.name}: [
                                         {
-                                            createAsDuplicate: true
+                                            asDuplicate: true
                                             where: { node: { title: $movieTitle } }
                                             edge: { screenTime: $screenTime }
                                         },
                                         {
-                                            createAsDuplicate: true
+                                            asDuplicate: true
                                             where: { node: { title: $movieTitle } }
                                             edge: { screenTime: $screenTime }
                                         }
                                     ]
                                     ${showType.name}: {
-                                        createAsDuplicate: true
+                                        asDuplicate: true
                                         where: { node: { name: $showTitle } }
                                         edge: { screenTime: $screenTime }
                                     }
@@ -1867,7 +1867,7 @@ describe("Relationship properties - connect", () => {
                                 actedIn: {
                                     ${movieType.name}: [
                                         {
-                                            createAsDuplicate: true
+                                            asDuplicate: true
                                             where: { node: { title: $movieTitle } }
                                             edge: { screenTime: $screenTime }
                                         },
@@ -1946,7 +1946,7 @@ describe("Relationship properties - connect", () => {
                                 actedIn: {
                                     ${movieType.name}: [
                                         {
-                                            createAsDuplicate: true
+                                            asDuplicate: true
                                             where: { node: { title: $movieTitle } }
                                             edge: { screenTime: $screenTime }
                                         },

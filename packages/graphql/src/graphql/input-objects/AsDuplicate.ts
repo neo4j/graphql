@@ -19,7 +19,7 @@
 
 import { GraphQLBoolean, GraphQLNonNull } from "graphql";
 
-export const CreateAsDuplicate = {
+export const AsDuplicate = {
     type: new GraphQLNonNull(GraphQLBoolean),
     defaultValue: false,
     description:

@@ -502,7 +502,7 @@ describe("interface relationships", () => {
         }
     });
 
-    test("should create duplicate relationships when using createAsDuplicate on a single connect value", async () => {
+    test("should create duplicate relationships when using asDuplicate on a single connect value", async () => {
         const session = await neo4j.getSession();
 
         const query = `
@@ -511,7 +511,7 @@ describe("interface relationships", () => {
                     where: { name: $name }
                     connect: { 
                         actedIn: {
-                            createAsDuplicate: true
+                            asDuplicate: true
                             edge: { screenTime: $screenTime }
                             where: { node: { title: $title } }
                         },
@@ -587,7 +587,7 @@ describe("interface relationships", () => {
         }
     });
 
-    test("should create duplicate relationships when createAsDuplicate true in all values in array of connect values", async () => {
+    test("should create duplicate relationships when asDuplicate true in all values in array of connect values", async () => {
         const session = await neo4j.getSession();
 
         const query = `
@@ -597,12 +597,12 @@ describe("interface relationships", () => {
                     connect: {
                         actedIn: [
                             {
-                                createAsDuplicate: true
+                                asDuplicate: true
                                 edge: { screenTime: $screenTime3 }
                                 where: { node: { title: $seriesTitle } }
                             },
                             {
-                                createAsDuplicate: true
+                                asDuplicate: true
                                 edge: { screenTime: $screenTime2 }
                                 where: { node: { title: $movieTitle } }
                             },
@@ -690,7 +690,7 @@ describe("interface relationships", () => {
         }
     });
 
-    test("should create duplicate relationships when createAsDuplicate true in some values in array of connect values", async () => {
+    test("should create duplicate relationships when asDuplicate true in some values in array of connect values", async () => {
         const session = await neo4j.getSession();
 
         const query = `
@@ -700,12 +700,12 @@ describe("interface relationships", () => {
                     connect: {
                         actedIn: [
                             {
-                                createAsDuplicate: true
+                                asDuplicate: true
                                 edge: { screenTime: $screenTime3 }
                                 where: { node: { title: $seriesTitle } }
                             },
                             {
-                                createAsDuplicate: false
+                                asDuplicate: false
                                 edge: { screenTime: $screenTime2 }
                                 where: { node: { title: $movieTitle } }
                             },
@@ -793,7 +793,7 @@ describe("interface relationships", () => {
         }
     });
 
-    test("should not create duplicate relationships when createAsDuplicate false on multiple of the same connect values", async () => {
+    test("should not create duplicate relationships when asDuplicate false on multiple of the same connect values", async () => {
         const session = await neo4j.getSession();
 
         const query = `
@@ -803,12 +803,12 @@ describe("interface relationships", () => {
                     connect: { 
                         actedIn: [
                             {
-                                createAsDuplicate: false
+                                asDuplicate: false
                                 edge: { screenTime: $screenTime2 }
                                 where: { node: { title: $title } }
                             },
                             {
-                                createAsDuplicate: false
+                                asDuplicate: false
                                 edge: { screenTime: $screenTime1 }
                                 where: { node: { title: $title } }
                             },
@@ -892,7 +892,7 @@ describe("interface relationships", () => {
                     connect: { 
                         actedIn: [
                             {
-                                createAsDuplicate: false
+                                asDuplicate: false
                                 edge: { screenTime: $screenTime2 }
                                 where: { node: { title: $title } }
                             },
@@ -961,7 +961,7 @@ describe("interface relationships", () => {
                     where: { name: $name }
                     connect: { 
                         actedIn: {
-                            createAsDuplicate: false
+                            asDuplicate: false
                             edge: { screenTime: $screenTime2 }
                             where: { node: { title: $title } }
                         }

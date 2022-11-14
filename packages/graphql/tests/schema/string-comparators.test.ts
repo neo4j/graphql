@@ -561,11 +561,11 @@ describe("String Comparators", () => {
             }
 
             input ActorActedInConnectFieldInput {
-              connect: [MovieConnectInput!]
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createAsDuplicate: Boolean! = false
+              asDuplicate: Boolean! = false
+              connect: [MovieConnectInput!]
               edge: ActedInCreateInput
               where: MovieConnectWhere
             }
@@ -848,11 +848,11 @@ describe("String Comparators", () => {
             }
 
             input MovieActorsConnectFieldInput {
-              connect: [ActorConnectInput!]
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createAsDuplicate: Boolean! = false
+              asDuplicate: Boolean! = false
+              connect: [ActorConnectInput!]
               edge: ActedInCreateInput
               where: ActorConnectWhere
             }

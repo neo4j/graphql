@@ -378,7 +378,7 @@ describe("Cypher Create Pringles", () => {
                                             \\"description\\": \\"Light Green Photo\\",
                                             \\"color\\": {
                                                 \\"connect\\": {
-                                                    \\"createAsDuplicate\\": false,
+                                                    \\"asDuplicate\\": false,
                                                     \\"where\\": {
                                                         \\"node\\": {
                                                             \\"name\\": \\"Light Green\\"

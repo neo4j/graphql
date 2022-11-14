@@ -304,7 +304,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createAsDuplicate: Boolean! = false
+              asDuplicate: Boolean! = false
               edge: RelPropertiesCreateInput!
               where: GenreConnectWhere
             }
@@ -841,7 +841,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createAsDuplicate: Boolean! = false
+              asDuplicate: Boolean! = false
               edge: RelPropertiesCreateInput!
               where: GenreConnectWhere
             }

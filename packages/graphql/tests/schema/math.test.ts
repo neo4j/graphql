@@ -595,11 +595,11 @@ describe("Algebraic", () => {
             }
 
             input DirectorDirectsConnectFieldInput {
-              connect: [MovieConnectInput!]
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createAsDuplicate: Boolean! = false
+              asDuplicate: Boolean! = false
+              connect: [MovieConnectInput!]
               where: MovieConnectWhere
             }
 
@@ -826,11 +826,11 @@ describe("Algebraic", () => {
             }
 
             input MovieDirectedByConnectFieldInput {
-              connect: DirectorConnectInput
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createAsDuplicate: Boolean! = false
+              asDuplicate: Boolean! = false
+              connect: DirectorConnectInput
               where: DirectorConnectWhere
             }
 
@@ -1238,11 +1238,11 @@ describe("Algebraic", () => {
             }
 
             input MovieWorkersConnectFieldInput {
-              connect: [PersonConnectInput!]
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createAsDuplicate: Boolean! = false
+              asDuplicate: Boolean! = false
+              connect: [PersonConnectInput!]
               where: PersonConnectWhere
             }
 
@@ -1438,11 +1438,11 @@ describe("Algebraic", () => {
             }
 
             input PersonWorksInProductionConnectFieldInput {
-              connect: ProductionConnectInput
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createAsDuplicate: Boolean! = false
+              asDuplicate: Boolean! = false
+              connect: ProductionConnectInput
               where: ProductionConnectWhere
             }
 
@@ -1738,11 +1738,11 @@ describe("Algebraic", () => {
             }
 
             input MovieActorsConnectFieldInput {
-              connect: [PersonConnectInput!]
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createAsDuplicate: Boolean! = false
+              asDuplicate: Boolean! = false
+              connect: [PersonConnectInput!]
               edge: ActedInCreateInput
               where: PersonConnectWhere
             }
@@ -2014,11 +2014,11 @@ describe("Algebraic", () => {
             }
 
             input PersonActedInMoviesConnectFieldInput {
-              connect: [MovieConnectInput!]
               \\"\\"\\"
               Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
               \\"\\"\\"
-              createAsDuplicate: Boolean! = false
+              asDuplicate: Boolean! = false
+              connect: [MovieConnectInput!]
               edge: ActedInCreateInput
               where: MovieConnectWhere
             }

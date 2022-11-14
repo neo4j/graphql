@@ -418,7 +418,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
                   \\"\\"\\"
-                  createAsDuplicate: Boolean! = false
+                  asDuplicate: Boolean! = false
                   where: ActorConnectWhere
                 }
 
@@ -724,7 +724,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
                   \\"\\"\\"
-                  createAsDuplicate: Boolean! = false
+                  asDuplicate: Boolean! = false
                   edge: ActedInCreateInput!
                   where: ProductionConnectWhere
                 }
@@ -1379,7 +1379,7 @@ describe("Comments", () => {
                   \\"\\"\\"
                   Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
                   \\"\\"\\"
-                  createAsDuplicate: Boolean! = false
+                  asDuplicate: Boolean! = false
                   where: GenreConnectWhere
                 }
 
@@ -1421,11 +1421,11 @@ describe("Comments", () => {
                 }
 
                 input MovieSearchMovieConnectFieldInput {
-                  connect: [MovieConnectInput!]
                   \\"\\"\\"
                   Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.
                   \\"\\"\\"
-                  createAsDuplicate: Boolean! = false
+                  asDuplicate: Boolean! = false
+                  connect: [MovieConnectInput!]
                   where: MovieConnectWhere
                 }
 
