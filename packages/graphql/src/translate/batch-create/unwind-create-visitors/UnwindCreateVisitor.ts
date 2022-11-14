@@ -349,5 +349,3 @@ function fieldToSetParam(
     }
     return [cypherNodeRef.property(dbName), value];
 }
-
-
