@@ -58,16 +58,20 @@ export class UnwindCreateVisitor implements Visitor {
         this.environment = {};
     }
 
-    visitChildren(currentASTNode: IAST, unwindVar: Cypher.Variable, parentVar: Cypher.Variable): (Cypher.Clause | undefined)[] {
+    visitChildren(
+        currentASTNode: IAST,
+        unwindVar: Cypher.Variable,
+        parentVar: Cypher.Variable
+    ): (Cypher.Clause | undefined)[] {
         if (currentASTNode.children) {
             const childrenRefs = currentASTNode.children.map((children) => {
-                this.environment[children.id] = { unwindVar, parentVar};
+                this.environment[children.id] = { unwindVar, parentVar };
                 children.accept(this);
                 return children.id;
             });
             return childrenRefs.map((childrenRef) => this.environment[childrenRef].clause);
         }
-        return []
+        return [];
     }
 
     visitCreate(create: ICreateAST): void {
@@ -75,7 +79,7 @@ export class UnwindCreateVisitor implements Visitor {
         const currentNode = new Cypher.Node({
             labels,
         });
-        
+
         const nestedClauses = this.visitChildren(create, this.unwindVar, currentNode);
 
         const setProperties = create.nodeProperties.map((property: string) =>
@@ -99,9 +103,9 @@ export class UnwindCreateVisitor implements Visitor {
             }
             return cypher.join("\n");
         });
-   
-        const authNodeClause = getAuthNodeClause(create.node, this.context, currentNode);
-        const authFieldsClause = getAuthFieldClause(create, this.context, currentNode, this.unwindVar);
+
+        const authNodeClause = this.getAuthNodeClause(create.node, this.context, currentNode);
+        const authFieldsClause = this.getAuthFieldClause(create, this.context, currentNode, this.unwindVar);
         const clause = Cypher.concat(
             ...filterTruthy([
                 createClause,
@@ -138,7 +142,7 @@ export class UnwindCreateVisitor implements Visitor {
             [createUnwindVar.property("edge"), edgeVar],
             parentVar
         );
-        
+
         const nestedClauses = this.visitChildren(nestedCreate, nodeVar, currentNode);
 
         const createClause = new Cypher.Create(currentNode);
@@ -192,8 +196,8 @@ export class UnwindCreateVisitor implements Visitor {
             return cypher.join("\n");
         });
 
-        const authNodeClause = getAuthNodeClause(nestedCreate.node, this.context, currentNode);
-        const authFieldsClause = getAuthFieldClause(nestedCreate, this.context, currentNode, nodeVar);
+        const authNodeClause = this.getAuthNodeClause(nestedCreate.node, this.context, currentNode);
+        const authFieldsClause = this.getAuthFieldClause(nestedCreate, this.context, currentNode, nodeVar);
         subQueryStatements.push(...nestedClauses);
         subQueryStatements.push(authNodeClause);
         subQueryStatements.push(authFieldsClause);
@@ -203,6 +207,92 @@ export class UnwindCreateVisitor implements Visitor {
         const callClause = new Cypher.Call(subQuery);
         const outsideWith = new Cypher.With(parentVar, unwindVar);
         this.environment[nestedCreate.id].clause = Cypher.concat(outsideWith, callClause);
+    }
+
+    private getAuthNodeClause(node: Node, context: Context, nodeRef: Cypher.Node): Cypher.RawCypher | undefined {
+        if (node.auth) {
+            return new Cypher.RawCypher((env: Cypher.Environment) => {
+                const [authCypher, authParams] = createAuthAndParams({
+                    entity: node,
+                    operations: "CREATE",
+                    context,
+                    bind: { parentNode: node, varName: env.getReferenceId(nodeRef) },
+                    escapeQuotes: true,
+                });
+                if (authCypher) {
+                    const predicate = Cypher.concat(
+                        new Cypher.With("*"),
+                        new Cypher.CallProcedure(
+                            new Cypher.apoc.Validate(
+                                Cypher.not(new Cypher.RawCypher(() => authCypher)),
+                                AUTH_FORBIDDEN_ERROR
+                            )
+                        )
+                    ).getCypher(env);
+                    return [predicate, authParams];
+                }
+            });
+        }
+    }
+    
+    private getAuthFieldClause(
+        astNode: CreateAST | NestedCreateAST,
+        context: Context,
+        nodeRef: Cypher.Node,
+        unwindVar: Cypher.Variable
+    ): Cypher.RawCypher | undefined {
+        const authFields = astNode.node.primitiveFields.filter((field) => field.auth);
+        const usedAuthFields = astNode.nodeProperties
+            .flatMap((property) => {
+                return authFields.filter((authField) => authField.fieldName === property);
+            })
+            .filter((n) => n);
+        if (usedAuthFields.length) {
+            return new Cypher.RawCypher((env: Cypher.Environment) => {
+                const authClauses = usedAuthFields
+                    .map((authField) => {
+                        const dbPropertyName = authField.dbPropertyName;
+                        const [authCypher, authParams] = createAuthAndParams({
+                            entity: authField,
+                            operations: "CREATE",
+                            context,
+                            bind: {
+                                parentNode: astNode.node,
+                                varName: env.getReferenceId(nodeRef),
+                                chainStr: `${env.getReferenceId(nodeRef)}_${dbPropertyName}`,
+                            },
+                            escapeQuotes: true,
+                        });
+                        return [authCypher, authParams];
+                    })
+                    .reduce((accumulator, current) => {
+                        const [accumulatedCypher, accumulatedParams] = accumulator as [string, Record<string, any>];
+                        const [currentCypher, currentParams] = current as [string, Record<string, any>];
+                        const cypher = currentCypher ? `${accumulatedCypher} AND ${currentCypher}` : accumulatedCypher;
+                        const params = {
+                            ...accumulatedParams,
+                            ...currentParams,
+                        };
+                        return [cypher, params];
+                    }) as [string, Record<string, any>];
+    
+                // The next line is needed to avoid to apply auth to a field that is not present for a particular input node.
+                const ignoreFieldClause = usedAuthFields.map((field) =>
+                    Cypher.isNotNull(unwindVar.property(field.fieldName))
+                );
+                const [authCyher, authParams] = authClauses;
+    
+                const predicate = Cypher.and(...ignoreFieldClause, Cypher.not(new Cypher.RawCypher(() => authCyher)));
+                const fieldAuth = Cypher.concat(
+                    new Cypher.With("*"),
+                    new Cypher.CallProcedure(new Cypher.apoc.Validate(predicate, AUTH_FORBIDDEN_ERROR))
+                ).getCypher(env);
+    
+                if (authCyher) {
+                    return [fieldAuth, authParams as [string, Record<string, any>]];
+                }
+            });
+        }
     }
 
     /*
@@ -260,73 +350,4 @@ function fieldToSetParam(
     return [cypherNodeRef.property(dbName), value];
 }
 
-function getAuthNodeClause(node: Node, context: Context, nodeRef: Cypher.Node): Cypher.RawCypher | undefined {
-    if (node.auth) {
-        return new Cypher.RawCypher((env: Cypher.Environment) => {
-            const [authCypher, authParams] = createAuthAndParams({
-                entity: node,
-                operations: "CREATE",
-                context,
-                bind: { parentNode: node, varName: env.getReferenceId(nodeRef) },
-                escapeQuotes: true,
-            });
-            if (authCypher) {
-                const creates: string[] = [];
-                creates.push(`WITH *`);
-                creates.push(`CALL apoc.util.validate(NOT (${authCypher}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-                return [creates.join("\n"), authParams];
-            }
-        });
-    }
-}
 
-function getAuthFieldClause(
-    astNode: CreateAST | NestedCreateAST,
-    context: Context,
-    nodeRef: Cypher.Node,
-    unwindVar: Cypher.Variable
-): Cypher.RawCypher | undefined {
-    const authFields = astNode.node.primitiveFields.filter((field) => field.auth);
-    const usedAuthFields = astNode.nodeProperties
-        .flatMap((property) => {
-            return authFields.filter((authField) => authField.fieldName === property);
-        })
-        .filter((n) => n);
-    if (usedAuthFields.length) {
-        return new Cypher.RawCypher((env: Cypher.Environment) => {
-            const creates: string[] = [];
-            const clauses = usedAuthFields
-                .map((authField) => {
-                    const dbPropertyName = authField.dbPropertyName;
-                    const [authCypher, authParams] = createAuthAndParams({
-                        entity: authField,
-                        operations: "CREATE",
-                        context,
-                        bind: {
-                            parentNode: astNode.node,
-                            varName: env.getReferenceId(nodeRef),
-                            chainStr: `${env.getReferenceId(nodeRef)}_${dbPropertyName}`,
-                        },
-                        escapeQuotes: true,
-                    });
-                    return [authCypher, authParams];
-                })
-                .reduce((accumulator, current) => {
-                    const [accumulatedCypher, accumulatedParams] = accumulator as [string, Record<string, any>];
-                    const [currentCypher, currentParams] = current as [string, Record<string, any>];
-                    const cypher = currentCypher ? `${accumulatedCypher} AND ${currentCypher}` : accumulatedCypher;
-                    const params = {
-                        ...accumulatedParams,
-                        ...currentParams,
-                    };
-                    return [cypher, params];
-                });
-
-            creates.push(`WITH *`);
-            // The next line is needed to avoid to apply auth to a field that is not present in the input.
-            const unwindFields = usedAuthFields.map((field) => Cypher.isNotNull(unwindVar.property(field.fieldName)).getCypher(env));
-            creates.push(`CALL apoc.util.validate(${unwindFields.join(" AND ")} AND NOT (${clauses[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-            return [creates.join("\n"), clauses[1]] as [string, Record<string, any>];
-        });
-    }
-}

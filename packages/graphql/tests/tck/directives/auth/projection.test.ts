@@ -110,8 +110,6 @@ describe("Cypher Auth Projection", () => {
                 CREATE (create_this0:\`User\`)
                 SET
                     create_this0.id = create_var1.id
-                WITH *
-                CALL apoc.util.validate(create_var1.id IS NOT NULL AND NOT (), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this0
             }
             RETURN collect(create_this0 { .id }) AS data"

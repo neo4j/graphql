@@ -289,7 +289,7 @@ describe("Cypher Auth Roles", () => {
                 WITH *
                 CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH *
-                CALL apoc.util.validate(create_var1.password IS NOT NULL AND NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate((create_var1.password IS NOT NULL AND NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this0
             }
             RETURN collect(create_this0 { .id }) AS data"
