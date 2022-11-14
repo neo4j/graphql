@@ -51,7 +51,7 @@ jobs:
 
       - name: Create release PR or release
         id: changesets
-        uses: changesets/action@2a025e8ab1cfa4312c2868cb6aa3cd3b473b84bf # renovate: tag=v1.3.0
+        uses: changesets/action@e9cc34b540dd3ad1b030c57fd97269e8f6ad905a # v1.4.1
         with:
           title: changesets for branch `dev`
           version: yarn changeset-version

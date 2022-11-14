@@ -1,5 +1,16 @@
 # @neo4j/graphql-toolbox
 
+## 1.4.1
+
+### Patch Changes
+
+-   [#2358](https://github.com/neo4j/graphql/pull/2358) [`e50eff933`](https://github.com/neo4j/graphql/commit/e50eff93369e6835b27aa11d17b93de88503720e) Thanks [@tbwiss](https://github.com/tbwiss)! - boyscouting: Use the window.neo4jDesktopAPI to fetch dbms information when the Neo4j GraphQL Toolbox is executed on Neo4j Desktop
+
+-   [#2404](https://github.com/neo4j/graphql/pull/2404) [`305649c18`](https://github.com/neo4j/graphql/commit/305649c180047e8f931f2190dcd4939043342189) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Banner in Toolbox for GraphQLaaS interest redirect
+
+-   Updated dependencies [[`d71ddb54d`](https://github.com/neo4j/graphql/commit/d71ddb54d811e280357bd37270b9f5cae0c600aa), [`35bbf3197`](https://github.com/neo4j/graphql/commit/35bbf3197ecd3ad576567189242036ac3ee07b57), [`f2a56c738`](https://github.com/neo4j/graphql/commit/f2a56c73854c60144ec2809b855cd52eb1288a43), [`d04699b50`](https://github.com/neo4j/graphql/commit/d04699b50f0dd50984ab6688743f4fe027d797a0), [`27dd34de7`](https://github.com/neo4j/graphql/commit/27dd34de7815824afa490667ce2484f017c823a3), [`f2799750a`](https://github.com/neo4j/graphql/commit/f2799750a0a1aeaecaf9ead5295483e5205ada62), [`9d0859b59`](https://github.com/neo4j/graphql/commit/9d0859b596be29d0e64f6531e2bf0c17325b9a34)]:
+    -   @neo4j/graphql@3.12.1
+
 ## 1.4.0
 
 ### Minor Changes

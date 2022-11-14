@@ -28,6 +28,7 @@ export function generateEventPayloadType(node: Node, schemaComposer: SchemaCompo
         ...node.scalarFields,
         ...node.temporalFields,
         ...node.pointFields,
+        ...node.cypherFields,
     ]);
 
     return schemaComposer.createObjectTC({

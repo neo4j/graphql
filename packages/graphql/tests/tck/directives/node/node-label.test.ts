@@ -221,7 +221,7 @@ describe("Label in Node directive", () => {
                     SET
                         create_this5.name = create_var3.name
                     MERGE (create_this5)-[create_this6:ACTED_IN]->(create_this0)
-                    RETURN collect(NULL)
+                    RETURN collect(NULL) AS create_var7
                 }
                 RETURN create_this0
             }
@@ -392,11 +392,16 @@ describe("Label in Node directive", () => {
             	CALL {
             		WITH *
             		WITH collect(this_connect_actors0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_connect_actors0_node
-            		MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_actors0_node
+            			MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_connect_actors0_node
             	RETURN count(*) AS connect_this_connect_actors_Actor
             }
             WITH *

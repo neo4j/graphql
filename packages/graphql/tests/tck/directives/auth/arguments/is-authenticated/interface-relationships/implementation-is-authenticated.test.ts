@@ -267,26 +267,36 @@ describe("Cypher Auth isAuthenticated", () => {
             	CALL {
             		WITH *
             		WITH collect(this_connect_content0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_connect_content0_node
-            		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_content0_node
+            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_connect_content0_node
             	RETURN count(*) AS connect_this_connect_content_Comment
             }
             CALL {
             		WITH this
-            	OPTIONAL MATCH (this_connect_content0_node:Post)
-            	WITH this, this_connect_content0_node
+            	OPTIONAL MATCH (this_connect_content1_node:Post)
+            	WITH this, this_connect_content1_node
             	CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	CALL {
             		WITH *
-            		WITH collect(this_connect_content0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_connect_content0_node
-            		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		WITH collect(this_connect_content1_node) as connectedNodes, collect(this) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_content1_node
+            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content1_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_connect_content1_node
             	RETURN count(*) AS connect_this_connect_content_Post
             }
             WITH *

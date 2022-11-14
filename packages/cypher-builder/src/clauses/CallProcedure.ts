@@ -21,6 +21,7 @@ import type { CypherEnvironment } from "../Environment";
 import { Clause } from "./Clause";
 import type { Procedure } from "../types";
 
+// ADD yield, where and return
 export class CallProcedure extends Clause {
     private procedure: Procedure;
 

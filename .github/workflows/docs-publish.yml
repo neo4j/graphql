@@ -38,7 +38,7 @@ jobs:
         run: |
           number=$(<prnumber)
           case "$number" in ''|*[!0-9]*) echo "Provided PR number is not an integer"; exit 1 ;; esac
-          echo "::set-output name=pr-number::$number"
+          echo "pr-number=$number" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*

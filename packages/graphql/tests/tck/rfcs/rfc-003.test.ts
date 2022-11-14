@@ -210,7 +210,7 @@ describe("tck/rfs/003", () => {
                                 	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
                                 	RETURN c AS create_this5_address_Address_unique_ignored
                                 }
-                                RETURN collect(NULL)
+                                RETURN collect(NULL) AS create_var7
                             }
                             WITH create_this0
                             CALL {
@@ -304,7 +304,7 @@ describe("tck/rfs/003", () => {
                                 	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
                                 	RETURN c AS create_this5_address_Address_unique_ignored
                                 }
-                                RETURN collect(NULL)
+                                RETURN collect(NULL) AS create_var7
                             }
                             WITH create_this0
                             CALL {
@@ -1007,11 +1007,16 @@ describe("tck/rfs/003", () => {
                         	CALL {
                         		WITH *
                         		WITH collect(this0_director_connect0_node) as connectedNodes, collect(this0) as parentNodes
-                        		UNWIND parentNodes as this0
-                        		UNWIND connectedNodes as this0_director_connect0_node
-                        		MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
+                        		CALL {
+                        			WITH connectedNodes, parentNodes
+                        			UNWIND parentNodes as this0
+                        			UNWIND connectedNodes as this0_director_connect0_node
+                        			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
+                        			RETURN count(*) AS _
+                        		}
                         		RETURN count(*) AS _
                         	}
+                        WITH this0, this0_director_connect0_node
                         	RETURN count(*) AS connect_this0_director_connect_Director
                         }
                         WITH this0
@@ -1079,11 +1084,16 @@ describe("tck/rfs/003", () => {
                         	CALL {
                         		WITH *
                         		WITH collect(this0_director_connect0_node) as connectedNodes, collect(this0) as parentNodes
-                        		UNWIND parentNodes as this0
-                        		UNWIND connectedNodes as this0_director_connect0_node
-                        		MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
+                        		CALL {
+                        			WITH connectedNodes, parentNodes
+                        			UNWIND parentNodes as this0
+                        			UNWIND connectedNodes as this0_director_connect0_node
+                        			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
+                        			RETURN count(*) AS _
+                        		}
                         		RETURN count(*) AS _
                         	}
+                        WITH this0, this0_director_connect0_node
                         	RETURN count(*) AS connect_this0_director_connect_Director
                         }
                         WITH this0
@@ -1169,9 +1179,13 @@ describe("tck/rfs/003", () => {
                             	CALL {
                             		WITH *
                             		WITH collect(this0_director_connect0_node) as connectedNodes, collect(this0) as parentNodes
-                            		UNWIND parentNodes as this0
-                            		UNWIND connectedNodes as this0_director_connect0_node
-                            		MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
+                            		CALL {
+                            			WITH connectedNodes, parentNodes
+                            			UNWIND parentNodes as this0
+                            			UNWIND connectedNodes as this0_director_connect0_node
+                            			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
+                            			RETURN count(*) AS _
+                            		}
                             		RETURN count(*) AS _
                             	}
                             WITH this0, this0_director_connect0_node
@@ -1182,9 +1196,13 @@ describe("tck/rfs/003", () => {
                             	CALL {
                             		WITH *
                             		WITH this0, collect(this0_director_connect0_node_address0_node) as connectedNodes, collect(this0_director_connect0_node) as parentNodes
-                            		UNWIND parentNodes as this0_director_connect0_node
-                            		UNWIND connectedNodes as this0_director_connect0_node_address0_node
-                            		MERGE (this0_director_connect0_node)-[:HAS_ADDRESS]->(this0_director_connect0_node_address0_node)
+                            		CALL {
+                            			WITH connectedNodes, parentNodes
+                            			UNWIND parentNodes as this0_director_connect0_node
+                            			UNWIND connectedNodes as this0_director_connect0_node_address0_node
+                            			MERGE (this0_director_connect0_node)-[:HAS_ADDRESS]->(this0_director_connect0_node_address0_node)
+                            			RETURN count(*) AS _
+                            		}
                             		RETURN count(*) AS _
                             	}
                             	WITH this0, this0_director_connect0_node, this0_director_connect0_node_address0_node
@@ -1195,6 +1213,7 @@ describe("tck/rfs/003", () => {
                             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
                             	RETURN c AS this0_director_connect0_node_address_Address_unique_ignored
                             }
+                            WITH this0, this0_director_connect0_node, this0_director_connect0_node_address0_node
                             	RETURN count(*) AS connect_this0_director_connect0_node_address_Address
                             }
                             	RETURN count(*) AS connect_this0_director_connect_Director
@@ -1363,11 +1382,16 @@ describe("tck/rfs/003", () => {
                         	CALL {
                         		WITH *
                         		WITH collect(this_connect_director0_node) as connectedNodes, collect(this) as parentNodes
-                        		UNWIND parentNodes as this
-                        		UNWIND connectedNodes as this_connect_director0_node
-                        		MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
+                        		CALL {
+                        			WITH connectedNodes, parentNodes
+                        			UNWIND parentNodes as this
+                        			UNWIND connectedNodes as this_connect_director0_node
+                        			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
+                        			RETURN count(*) AS _
+                        		}
                         		RETURN count(*) AS _
                         	}
+                        WITH this, this_connect_director0_node
                         	RETURN count(*) AS connect_this_connect_director_Director
                         }
                         WITH this
@@ -1479,11 +1503,16 @@ describe("tck/rfs/003", () => {
                         	CALL {
                         		WITH *
                         		WITH collect(this_connect_director0_node) as connectedNodes, collect(this) as parentNodes
-                        		UNWIND parentNodes as this
-                        		UNWIND connectedNodes as this_connect_director0_node
-                        		MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
+                        		CALL {
+                        			WITH connectedNodes, parentNodes
+                        			UNWIND parentNodes as this
+                        			UNWIND connectedNodes as this_connect_director0_node
+                        			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
+                        			RETURN count(*) AS _
+                        		}
                         		RETURN count(*) AS _
                         	}
+                        WITH this, this_connect_director0_node
                         	RETURN count(*) AS connect_this_connect_director_Director
                         }
                         WITH this
