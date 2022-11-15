@@ -66,5 +66,3 @@ ogm.model("Movie").findMany({
     },
 });
 ```
-
-### Usage Examples
