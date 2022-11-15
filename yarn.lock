@@ -2573,7 +2573,7 @@ __metadata:
   resolution: "@neo4j/graphql-plugin-subscriptions-amqp@workspace:packages/plugins/graphql-plugin-subscriptions-amqp"
   dependencies:
     "@neo4j/graphql": ^3.12.0
-    "@types/amqplib": 0.8.2
+    "@types/amqplib": 0.10.0
     "@types/debug": 4.1.7
     "@types/jest": 29.2.2
     "@types/node": 16.18.3
@@ -2609,7 +2609,7 @@ __metadata:
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 12.2.3
     "@types/prettier": 2.7.1
-    "@types/react-dom": 18.0.8
+    "@types/react-dom": 18.0.9
     "@types/webpack": 5.28.0
     autoprefixer: 10.4.13
     codemirror: 5.65.9
@@ -3110,13 +3110,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/amqplib@npm:0.8.2":
-  version: 0.8.2
-  resolution: "@types/amqplib@npm:0.8.2"
+"@types/amqplib@npm:0.10.0":
+  version: 0.10.0
+  resolution: "@types/amqplib@npm:0.10.0"
   dependencies:
-    "@types/bluebird": "*"
     "@types/node": "*"
-  checksum: 8b30e22cf890631637ad40fa8eda3323d3ca156c18f23a59c10befd96beab0c046f3f7c2c0a196fc36a669d848b09999ca1f5a0fa2620009656f028667e2bdb8
+  checksum: 68615a9477e226cde4bf41f4135bc9b55fc60d36f47c94edb3ca22788c5cb00fbd23286523e2549b3c747455eaf53377b25f91b00e58336fa1bece540319cd4e
   languageName: node
   linkType: hard
 
@@ -3167,13 +3166,6 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: 063c32c7a519d64768dfc0169a319b8244d6a6cb50a355c93992b3c5fee1dbc236526a1111f0e7bb25abc8b0473e5f40a5edfeb8b33cad2a6ea35aa2d7d7db14
-  languageName: node
-  linkType: hard
-
-"@types/bluebird@npm:*":
-  version: 3.5.37
-  resolution: "@types/bluebird@npm:3.5.37"
-  checksum: 851a2eca0ae2daa422d4bcea5f8f659a673fcff5f51d18997ffb19bb9e54b64800301b167613d9cbbebaa8fdfd2433f0f9f8bb39267efd7b6898011aedcc944d
   languageName: node
   linkType: hard
 
@@ -3649,12 +3641,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.0.8":
-  version: 18.0.8
-  resolution: "@types/react-dom@npm:18.0.8"
+"@types/react-dom@npm:18.0.9":
+  version: 18.0.9
+  resolution: "@types/react-dom@npm:18.0.9"
   dependencies:
     "@types/react": "*"
-  checksum: 522e5e949d05f35c6037a2290838c9c7ff92a9d06f7d96b993c7c3f5a86d8f3a6337e059c94e6fb0920227f445e5d1ce10fbfe3d9bbd95fb82a5539249d90646
+  checksum: e744e3feba25fc43733289d4df4d9c0e59fcca7f34e8c89d75f81a339accb2bd70236d69382d47d2c0ad06a1529b2e56aa6171fe175854d60e07156ddceedfcb
   languageName: node
   linkType: hard
 
@@ -14317,7 +14309,7 @@ __metadata:
     "@fortawesome/free-solid-svg-icons": 6.2.0
     "@fortawesome/react-fontawesome": 0.2.0
     "@tsconfig/create-react-app": 1.0.3
-    "@types/react-dom": 18.0.8
+    "@types/react-dom": 18.0.9
     "@types/react-router-dom": 5.3.3
     "@types/showdown": 2.0.0
     "@webpack-cli/serve": 1.7.0
