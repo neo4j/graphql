@@ -25,7 +25,7 @@
 <text text-anchor="middle" x="148" y="-46.3" font-family="Times,serif" font-size="14.00">Movie</text>
 <polyline fill="none" stroke="black" points="80,-38.5 216,-38.5 "/>
 <text text-anchor="start" x="88" y="-23.3" font-family="Times,serif" font-size="12.00">title = &#39;The Polar Express&#39;</text>
-<text text-anchor="start" x="88" y="-8.3" font-family="Times,serif" font-size="12.00">released = 1994</text>
+<text text-anchor="start" x="88" y="-8.3" font-family="Times,serif" font-size="12.00">released = 2004</text>
 </g>
 <!-- N2&#45;&gt;N3 -->
 <g id="edge1" class="edge">
