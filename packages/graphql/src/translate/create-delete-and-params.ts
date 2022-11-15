@@ -41,6 +41,7 @@ function createDeleteAndParams({
     insideDoWhen,
     parameterPrefix,
     recursing,
+    isInner = false,
 }: {
     parentVar: string;
     deleteInput: any;
@@ -52,6 +53,7 @@ function createDeleteAndParams({
     insideDoWhen?: boolean;
     parameterPrefix: string;
     recursing?: boolean;
+    isInner?: boolean;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]) {
         const relationField = node.relationFields.find((x) => key === x.fieldName);
@@ -113,8 +115,22 @@ function createDeleteAndParams({
                         }
                     }
 
+                    if (!isInner) {
+                        res.strs.push("WITH *");
+                    }
+                    res.strs.push("CALL {");
+
                     if (withVars) {
-                        res.strs.push(`WITH ${withVars.join(", ")}`);
+                        if (context.subscriptionsEnabled) {
+                            if (!isInner) {
+                                res.strs.push(`WITH ${withVars.join(", ")}`);
+                                res.strs.push(`WITH ${withVars.join(", ")}, [] as inner_meta`);
+                            } else {
+                                res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, inner_meta`);
+                            }
+                        } else {
+                            res.strs.push(`WITH ${withVars.join(", ")}`);
+                        }
                     }
 
                     const labels = refNode.getLabelString(context);
@@ -145,7 +161,9 @@ function createDeleteAndParams({
                     });
                     if (allowAuth[0]) {
                         const quote = insideDoWhen ? `\\"` : `"`;
-                        res.strs.push(`WITH ${[...withVars, variableName].join(", ")}`);
+                        res.strs.push(
+                            `WITH ${[...filterMetaVariable(withVars), variableName, relationshipVariable].join(", ")}`
+                        );
                         res.strs.push(
                             `CALL apoc.util.validate(NOT (${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
                         );
@@ -177,12 +195,13 @@ function createDeleteAndParams({
                             node: refNode,
                             deleteInput: nestedDeleteInput,
                             varName: variableName,
-                            withVars: [...withVars, variableName],
+                            withVars: [...withVars, variableName, relationshipVariable],
                             parentVar: variableName,
                             parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
                                 relationField.union ? `.${refNode.name}` : ""
                             }${relationField.typeMeta.array ? `[${index}]` : ""}.delete`,
                             recursing: false,
+                            isInner: true,
                         });
                         res.strs.push(deleteAndParams[0]);
                         res.params = { ...res.params, ...deleteAndParams[1] };
@@ -198,7 +217,7 @@ function createDeleteAndParams({
                                     node: refNode,
                                     deleteInput: onDelete,
                                     varName: variableName,
-                                    withVars: [...withVars, variableName],
+                                    withVars: [...withVars, variableName, relationshipVariable],
                                     parentVar: variableName,
                                     parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
                                         relationField.union ? `.${refNode.name}` : ""
@@ -206,6 +225,7 @@ function createDeleteAndParams({
                                         refNode.name
                                     }[${onDeleteIndex}]`,
                                     recursing: false,
+                                    isInner: true,
                                 });
                                 res.strs.push(onDeleteAndParams[0]);
                                 res.params = { ...res.params, ...onDeleteAndParams[1] };
@@ -214,34 +234,30 @@ function createDeleteAndParams({
                     }
 
                     const nodeToDelete = `${variableName}_to_delete`;
-                    res.strs.push(
-                        `WITH ${[...withVars, `collect(DISTINCT ${variableName}) as ${nodeToDelete}`].join(", ")}`
-                    );
-
                     if (context.subscriptionsEnabled) {
-                        const metaObjectStr = createEventMetaObject({
-                            event: "delete",
-                            nodeVariable: "n",
-                            typename: refNode.name,
-                        });
-                        const reduceStr = `REDUCE(m=${META_CYPHER_VARIABLE}, n IN ${nodeToDelete} | m + ${metaObjectStr}) AS ${META_CYPHER_VARIABLE}`;
+                        //  need relationshipVariable for disconnect meta
                         res.strs.push(
-                            `WITH ${[...filterMetaVariable(withVars), nodeToDelete].join(", ")}, ${reduceStr}`
+                            `WITH ${[
+                                ...filterMetaVariable(withVars),
+                                "inner_meta",
+                                relationshipVariable,
+                                `collect(DISTINCT ${variableName}) as ${nodeToDelete}`,
+                            ].join(", ")}`
+                        );
+                    } else {
+                        res.strs.push(
+                            `WITH ${[
+                                ...filterMetaVariable(withVars),
+                                relationshipVariable,
+                                `collect(DISTINCT ${variableName}) as ${nodeToDelete}`,
+                            ].join(", ")}`
                         );
                     }
 
                     res.strs.push("CALL {");
-                    res.strs.push(`\tWITH ${variableName}_to_delete`);
-                    res.strs.push(`\tUNWIND ${variableName}_to_delete AS x`);
-                    res.strs.push(`\tDETACH DELETE x`);
-                    res.strs.push("\tRETURN count(*) AS _"); // Avoids CANNOT END WITH DETACH DELETE ERROR
-                    res.strs.push("}");
-                    // TODO - relationship validation
-
-                    // ============================
-                    /*
-                    res.strs.push("CALL {");
-                    res.strs.push(`\tWITH ${relationshipVariable}, ${nodeToDelete}, ${withVars.join(", ")}`);
+                    res.strs.push(
+                        `\tWITH ${relationshipVariable}, ${nodeToDelete}, ${filterMetaVariable(withVars).join(", ")}`
+                    );
                     res.strs.push(`\tUNWIND ${nodeToDelete} as x`);
 
                     if (context.subscriptionsEnabled) {
@@ -255,23 +271,8 @@ function createDeleteAndParams({
                                 withVars
                             ).join(", ")}`
                         );
-
-                        const [fromVariable, toVariable] =
-                            relationField.direction === "IN" ? ["x", parentVar] : [parentVar, "x"];
-                        const [fromTypename, toTypename] =
-                            relationField.direction === "IN" ? [refNode.name, node.name] : [node.name, refNode.name];
-                        const eventWithMetaStr = createConnectionEventMetaObject({
-                            event: "disconnect",
-                            relVariable: relationshipVariable,
-                            fromVariable,
-                            toVariable,
-                            typename: relationField.type,
-                            fromTypename,
-                            toTypename,
-                        });
-                        res.strs.push(`\tWITH ${eventWithMetaStr} as rel_meta, x, node_meta`);
                         res.strs.push(`\tDETACH DELETE x`);
-                        res.strs.push(`\tRETURN collect(node_meta) + collect(rel_meta) as delete_meta`);
+                        res.strs.push(`\tRETURN collect(node_meta) as delete_meta`);
                     } else {
                         res.strs.push(`\tDETACH DELETE x`);
                         res.strs.push(`\tRETURN count(*) AS _`); // Avoids CANNOT END WITH DETACH DELETE ERROR
@@ -280,17 +281,26 @@ function createDeleteAndParams({
                     res.strs.push(`}`);
 
                     if (context.subscriptionsEnabled) {
-                        res.strs.push(
-                            `WITH ${filterMetaVariable(withVars).join(", ")}, meta, collect(delete_meta) as delete_meta`
-                        );
-                        res.strs.push(
-                            `WITH ${filterMetaVariable(withVars).join(
-                                ", "
-                            )}, REDUCE(m=meta, n IN delete_meta | m + n) as meta`
-                        );
+                        const varsWithoutMeta = filterMetaVariable(withVars).join(", ");
+                        if (!isInner) {
+                            res.strs.push(`WITH inner_meta, collect(delete_meta) as delete_meta`);
+                            res.strs.push(`RETURN  REDUCE(m=inner_meta, n IN delete_meta | m + n) as inner_meta`);
+                            res.strs.push("}");
+
+                            res.strs.push(`WITH ${varsWithoutMeta}, meta, collect(inner_meta) as inner_meta`);
+                            res.strs.push(`WITH ${varsWithoutMeta}, REDUCE(m=meta, n IN inner_meta | m + n) as meta`);
+                        } else {
+                            res.strs.push(`WITH collect(delete_meta) as delete_meta, inner_meta`);
+                            res.strs.push(`RETURN REDUCE(m=inner_meta, n IN delete_meta | m + n) as delete_meta`);
+                            res.strs.push("}");
+                            res.strs.push(
+                                `WITH ${varsWithoutMeta}, REDUCE(m=inner_meta, n IN delete_meta | m + n) as inner_meta`
+                            );
+                        }
+                    } else {
+                        res.strs.push(`RETURN count(*) AS _${relationshipVariable}`);
+                        res.strs.push("}");
                     }
-*/
-                    // ============================
                 });
             });
 
