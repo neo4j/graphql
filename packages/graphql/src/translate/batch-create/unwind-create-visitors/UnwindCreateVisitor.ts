@@ -234,7 +234,7 @@ export class UnwindCreateVisitor implements Visitor {
             });
         }
     }
-    
+
     private getAuthFieldClause(
         astNode: CreateAST | NestedCreateAST,
         context: Context,
@@ -275,19 +275,19 @@ export class UnwindCreateVisitor implements Visitor {
                         };
                         return [cypher, params];
                     }) as [string, Record<string, any>];
-    
+
                 // The next line is needed to avoid to apply auth to a field that is not present for a particular input node.
                 const ignoreFieldClause = usedAuthFields.map((field) =>
                     Cypher.isNotNull(unwindVar.property(field.fieldName))
                 );
                 const [authCyher, authParams] = authClauses;
-    
+
                 const predicate = Cypher.and(...ignoreFieldClause, Cypher.not(new Cypher.RawCypher(() => authCyher)));
                 const fieldAuth = Cypher.concat(
                     new Cypher.With("*"),
                     new Cypher.CallProcedure(new Cypher.apoc.Validate(predicate, AUTH_FORBIDDEN_ERROR))
                 ).getCypher(env);
-    
+
                 if (authCyher) {
                     return [fieldAuth, authParams as [string, Record<string, any>]];
                 }

@@ -152,7 +152,9 @@ export function getTreeDescriptor(
                 const innerNode = relationField ? relatedNodes[0] : node;
                 if (Array.isArray(value)) {
                     previous.children[key] = mergeTreeDescriptors(
-                        value.map((el) => getTreeDescriptor(el as GraphQLCreateInput, innerNode, context, key, relationship))
+                        value.map((el) =>
+                            getTreeDescriptor(el as GraphQLCreateInput, innerNode, context, key, relationship)
+                        )
                     );
                     return previous;
                 }
