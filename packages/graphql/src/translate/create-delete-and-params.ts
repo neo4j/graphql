@@ -226,60 +226,59 @@ function createDeleteAndParams({
 
                     const nodeToDelete = `${variableName}_to_delete`;
                     if (context.subscriptionsEnabled) {
-                        //  need relationshipVariable for disconnect meta
-                        res.strs.push(
-                            `WITH ${[
-                                ...filterMetaVariable(withVars),
-                                "meta",
-                                relationshipVariable,
-                                `collect(DISTINCT ${variableName}) as ${nodeToDelete}`,
-                            ].join(", ")}`
-                        );
-                    } else {
-                        res.strs.push(
-                            `WITH ${[
-                                ...filterMetaVariable(withVars),
-                                relationshipVariable,
-                                `collect(DISTINCT ${variableName}) as ${nodeToDelete}`,
-                            ].join(", ")}`
-                        );
-                    }
-
-                    res.strs.push("CALL {");
-                    res.strs.push(
-                        `\tWITH ${relationshipVariable}, ${nodeToDelete}, ${filterMetaVariable(withVars).join(", ")}`
-                    );
-                    res.strs.push(`\tUNWIND ${nodeToDelete} as x`);
-
-                    if (context.subscriptionsEnabled) {
                         const metaObjectStr = createEventMetaObject({
                             event: "delete",
                             nodeVariable: "x",
                             typename: refNode.name,
                         });
-                        res.strs.push(
+                        const varsWithoutMeta = filterMetaVariable(withVars).join(", ");
+
+                        //  need relationshipVariable for disconnect meta
+                        const statements = [
+                            `WITH ${[
+                                ...filterMetaVariable(withVars),
+                                "meta",
+                                relationshipVariable,
+                                `collect(DISTINCT ${variableName}) as ${nodeToDelete}`,
+                            ].join(", ")}`,
+                            "CALL {",
+                            `\tWITH ${relationshipVariable}, ${nodeToDelete}, ${filterMetaVariable(withVars).join(
+                                ", "
+                            )}`,
+                            `\tUNWIND ${nodeToDelete} as x`,
                             `\tWITH ${metaObjectStr} as node_meta, x, ${relationshipVariable}, ${filterMetaVariable(
                                 withVars
-                            ).join(", ")}`
-                        );
-                        res.strs.push(`\tDETACH DELETE x`);
-                        res.strs.push(`\tRETURN collect(node_meta) as delete_meta`);
-                    } else {
-                        res.strs.push(`\tDETACH DELETE x`);
-                        res.strs.push(`\tRETURN count(*) AS _`); // Avoids CANNOT END WITH DETACH DELETE ERROR
-                    }
+                            ).join(", ")}`,
+                            `\tDETACH DELETE x`,
+                            `\tRETURN collect(node_meta) as delete_meta`,
+                            `}`,
+                            `WITH collect(delete_meta) as delete_meta, meta`,
+                            `RETURN REDUCE(m=meta, n IN delete_meta | m + n) as delete_meta`,
+                            `}`,
+                            `WITH ${varsWithoutMeta}, meta, collect(delete_meta) AS delete_meta`,
+                            `WITH ${varsWithoutMeta}, REDUCE(m=meta, n IN delete_meta | m + n) as meta`,
+                        ];
 
-                    res.strs.push(`}`);
-
-                    if (context.subscriptionsEnabled) {
-                        res.strs.push(`WITH collect(delete_meta) as delete_meta, meta`);
-                        res.strs.push(`RETURN REDUCE(m=meta, n IN delete_meta | m + n) as delete_meta`);
-                        res.strs.push("}");
-                        const varsWithoutMeta = filterMetaVariable(withVars).join(", ");
-                        res.strs.push(`WITH ${varsWithoutMeta}, REDUCE(m=meta, n IN delete_meta | m + n) as meta`);
+                        res.strs.push(...statements);
                     } else {
-                        res.strs.push(`RETURN count(*) AS _${relationshipVariable}`);
-                        res.strs.push("}");
+                        const statements = [
+                            `WITH ${[
+                                ...filterMetaVariable(withVars),
+                                relationshipVariable,
+                                `collect(DISTINCT ${variableName}) as ${nodeToDelete}`,
+                            ].join(", ")}`,
+                            "CALL {",
+                            `\tWITH ${relationshipVariable}, ${nodeToDelete}, ${filterMetaVariable(withVars).join(
+                                ", "
+                            )}`,
+                            `\tUNWIND ${nodeToDelete} as x`,
+                            `\tDETACH DELETE x`,
+                            `\tRETURN count(*) AS _`,
+                            `}`,
+                            `RETURN count(*) AS _${relationshipVariable}`,
+                            `}`,
+                        ];
+                        res.strs.push(...statements);
                     }
                 });
             });
