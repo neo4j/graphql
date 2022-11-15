@@ -18,11 +18,12 @@
  */
 
 import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
-import type { Node } from "../classes";
+import type { Relationship, Node } from "../classes";
 import { createAuthAndParams } from "./create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
+import { whereRegEx, WhereRegexGroups } from "./where/utils";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -80,6 +81,7 @@ export function createMatchClause({
         matchQuery = new Cypher.Match(matchNode);
     }
 
+    preComputedWhereFields(whereInput, node, context, matchNode);
     if (whereInput) {
         const whereOp = createWherePredicate({
             targetElement: matchNode,
@@ -141,4 +143,60 @@ function createFulltextMatchClause(
     if (labelsChecks) matchQuery.where(labelsChecks);
 
     return matchQuery;
+}
+
+function preComputedWhereFields(whereInput: any, node: Node, context: Context, matchNode: Cypher.Node) {
+    /*     const cyphers: string[] = [];
+    const inStr = field.direction === "IN" ? "<-" : "-";
+    const outStr = field.direction === "OUT" ? "->" : "-";
+    const nodeVariable = `${chainStr}_node`;
+    const edgeVariable = `${chainStr}_edge`;
+    const relTypeStr = `[${edgeVariable}:${field.type}]`;
+    const labels = node.getLabelString(context);
+    const matchStr = `MATCH (${varName})${inStr}${relTypeStr}${outStr}(${nodeVariable}${labels})`; */
+
+    // rfcd
+    Object.entries(whereInput).map(([key, value]) => {
+        const match = whereRegEx.exec(key);
+        if (!match) {
+            throw new Error(`Failed to match key in filter: ${key}`);
+        }
+
+        const { prefix, fieldName, isAggregate, operator } = match?.groups as WhereRegexGroups;
+        const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
+
+        if (isAggregate) {
+            if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
+            const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const direction = relationField.direction;
+            const aggregationTarget = new Cypher.Node({ labels: refNode.getLabels(context) });
+            const cypherRelation = new Cypher.Relationship({
+                source: matchNode,
+                target: aggregationTarget,
+                type: relationField.type,
+            });
+            if (direction === "IN") {
+                cypherRelation.reverse();
+            }
+            const match = new Cypher.Match(cypherRelation);
+
+            const relationship = context.relationships.find(
+                (x) => x.properties === relationField.properties
+            ) as Relationship;
+
+            ["count", "count_LT", "count_LTE", "count_GT", "count_GTE"].forEach((countType) => {
+                if (key === countType) {
+                    const paramName = new Cypher.Param(value);
+                    const operator = createBaseOperation(countType.split("_")[1]); 
+                    const count = Cypher.count(aggregationTarget);
+                    
+                    aggregations.push(`count(${nodeVariable}) ${operator} $${paramName}`);
+                }
+            });
+
+            return [];
+        }
+        return [key, value];
+    });
+    // eofrfcd
 }
