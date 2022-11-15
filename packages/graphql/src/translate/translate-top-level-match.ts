@@ -24,6 +24,8 @@ import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { whereRegEx, WhereRegexGroups } from "./where/utils";
+import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
+import { RawCypher } from "@neo4j/cypher-builder";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -183,15 +185,27 @@ function preComputedWhereFields(whereInput: any, node: Node, context: Context, m
             const relationship = context.relationships.find(
                 (x) => x.properties === relationField.properties
             ) as Relationship;
+            Object.entries(value as any).map(([key, value]) => {
+                ["count", "count_LT", "count_LTE", "count_GT", "count_GTE"].forEach((countType) => {
+                    if (key === countType) {
+                        const paramName = new Cypher.Param(value);
+                        const _match = whereRegEx.exec(key);
+                        if (!_match) {
+                            throw new Error(`Failed to match key in filter: ${key}`);
+                        }
+                        const [, _operator] = countType.split("_");
 
-            ["count", "count_LT", "count_LTE", "count_GT", "count_GTE"].forEach((countType) => {
-                if (key === countType) {
-                    const paramName = new Cypher.Param(value);
-                    const operator = createBaseOperation(countType.split("_")[1]); 
-                    const count = Cypher.count(aggregationTarget);
-                    
-                    aggregations.push(`count(${nodeVariable}) ${operator} $${paramName}`);
-                }
+                        const count = Cypher.count(aggregationTarget);
+                        new Cypher.RawCypher((env) => {
+                            const returnedBoolean = createBaseOperation({
+                                operator: _operator,
+                                property: count,
+                                param: paramName,
+                            });
+                            return returnedBoolean.getCypher(env);
+                        });
+                    }
+                });
             });
 
             return [];

@@ -80,7 +80,7 @@ function createDurationOperation({
     });
 }
 
-function createBaseOperation({
+export function createBaseOperation({
     operator,
     property,
     param,
