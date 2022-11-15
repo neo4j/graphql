@@ -29,7 +29,7 @@ This is cumbersome because:
 
 ## Proposed Solution
 
-Intorucing the `select` object:
+Introducing the `select` object:
 
 ```js
 ogm.model("Movie").findMany({
