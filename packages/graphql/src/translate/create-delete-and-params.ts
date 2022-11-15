@@ -41,7 +41,6 @@ function createDeleteAndParams({
     insideDoWhen,
     parameterPrefix,
     recursing,
-    isInner = false,
 }: {
     parentVar: string;
     deleteInput: any;
@@ -53,7 +52,6 @@ function createDeleteAndParams({
     insideDoWhen?: boolean;
     parameterPrefix: string;
     recursing?: boolean;
-    isInner?: boolean;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]) {
         const relationField = node.relationFields.find((x) => key === x.fieldName);
@@ -122,7 +120,7 @@ function createDeleteAndParams({
                         //TODO
                         if (context.subscriptionsEnabled) {
                             res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}`);
-                            res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, [] as inner_meta`);
+                            res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, [] as meta`);
                         } else {
                             res.strs.push(`WITH ${withVars.join(", ")}`);
                         }
@@ -190,13 +188,12 @@ function createDeleteAndParams({
                             node: refNode,
                             deleteInput: nestedDeleteInput,
                             varName: variableName,
-                            withVars: [...withVars, variableName, relationshipVariable],
+                            withVars: [...filterMetaVariable(withVars), variableName, relationshipVariable],
                             parentVar: variableName,
                             parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
                                 relationField.union ? `.${refNode.name}` : ""
                             }${relationField.typeMeta.array ? `[${index}]` : ""}.delete`,
                             recursing: false,
-                            isInner: true,
                         });
                         res.strs.push(deleteAndParams[0]);
                         res.params = { ...res.params, ...deleteAndParams[1] };
@@ -212,7 +209,7 @@ function createDeleteAndParams({
                                     node: refNode,
                                     deleteInput: onDelete,
                                     varName: variableName,
-                                    withVars: [...withVars, variableName, relationshipVariable],
+                                    withVars: [...filterMetaVariable(withVars), variableName, relationshipVariable],
                                     parentVar: variableName,
                                     parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
                                         relationField.union ? `.${refNode.name}` : ""
@@ -220,7 +217,6 @@ function createDeleteAndParams({
                                         refNode.name
                                     }[${onDeleteIndex}]`,
                                     recursing: false,
-                                    isInner: true,
                                 });
                                 res.strs.push(onDeleteAndParams[0]);
                                 res.params = { ...res.params, ...onDeleteAndParams[1] };
@@ -234,7 +230,7 @@ function createDeleteAndParams({
                         res.strs.push(
                             `WITH ${[
                                 ...filterMetaVariable(withVars),
-                                "inner_meta",
+                                "meta",
                                 relationshipVariable,
                                 `collect(DISTINCT ${variableName}) as ${nodeToDelete}`,
                             ].join(", ")}`
@@ -276,19 +272,11 @@ function createDeleteAndParams({
                     res.strs.push(`}`);
 
                     if (context.subscriptionsEnabled) {
-                        res.strs.push(`WITH collect(delete_meta) as delete_meta, inner_meta`);
-                        res.strs.push(`RETURN REDUCE(m=inner_meta, n IN delete_meta | m + n) as delete_meta`);
+                        res.strs.push(`WITH collect(delete_meta) as delete_meta, meta`);
+                        res.strs.push(`RETURN REDUCE(m=meta, n IN delete_meta | m + n) as delete_meta`);
                         res.strs.push("}");
                         const varsWithoutMeta = filterMetaVariable(withVars).join(", ");
-                        if (!isInner) {
-                            // res.strs.push(`WITH ${varsWithoutMeta}, meta, collect(delete_meta) as inner_meta`);
-                            res.strs.push(`WITH ${varsWithoutMeta}, meta, delete_meta as inner_meta`);
-                            res.strs.push(`WITH ${varsWithoutMeta}, REDUCE(m=meta, n IN inner_meta | m + n) as meta`);
-                        } else {
-                            res.strs.push(
-                                `WITH ${varsWithoutMeta}, REDUCE(m=inner_meta, n IN delete_meta | m + n) as inner_meta`
-                            );
-                        }
+                        res.strs.push(`WITH ${varsWithoutMeta}, REDUCE(m=meta, n IN delete_meta | m + n) as meta`);
                     } else {
                         res.strs.push(`RETURN count(*) AS _${relationshipVariable}`);
                         res.strs.push("}");
