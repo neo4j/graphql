@@ -556,7 +556,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
         ]);
     });
 
-    test("disconnect via delete nested - with relationships - union type", async () => {
+    test.only("disconnect via delete nested - with relationships - union type", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -3347,7 +3347,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             },
         ]);
     });
-    test.only("disconnect via delete nested - with relationships: interface to union type", async () => {
+    test.skip("disconnect via delete nested - with relationships: interface to union type", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
