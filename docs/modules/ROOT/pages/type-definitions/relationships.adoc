@@ -179,7 +179,7 @@ mutation CreateActor {
 
 Note the selection of the `actedInMoviesConnection` field in order to query the `role` relationship property.
 
-It is also possible update nodes and to create duplicates of the same connection by specifying `createAsDuplicate: true` on connections that should not override existing ones.
+It is also possible update nodes and to create duplicates of the same connection by specifying `asDuplicate: true` on connections that should not override existing ones.
 In this case, Tom Hanks also played Scrooge in the Polar Express:
 
 [source, graphql, indent=0]
@@ -190,7 +190,7 @@ mutation UpdateActor {
         connect: {
             actedInMovies: [
                 {
-                    createAsDuplicate: true
+                    asDuplicate: true
                     where: { node: { title: "The Polar Express" } }
                     edge: { role: "Scrooge" }
                 }
@@ -249,7 +249,7 @@ mutation CreateMovieDirectorAndActor {
                 ]
                 connect: [
                     {
-                        createAsDuplicate: true
+                        asDuplicate: true
                         where: { node: { name: "Tom Hanks" } }
                         edge: { role: "Scrooge" }
                     }
