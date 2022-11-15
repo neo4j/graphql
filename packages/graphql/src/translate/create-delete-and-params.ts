@@ -115,19 +115,14 @@ function createDeleteAndParams({
                         }
                     }
 
-                    if (!isInner) {
-                        res.strs.push("WITH *");
-                    }
+                    res.strs.push("WITH *");
                     res.strs.push("CALL {");
 
                     if (withVars) {
+                        //TODO
                         if (context.subscriptionsEnabled) {
-                            if (!isInner) {
-                                res.strs.push(`WITH ${withVars.join(", ")}`);
-                                res.strs.push(`WITH ${withVars.join(", ")}, [] as inner_meta`);
-                            } else {
-                                res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, inner_meta`);
-                            }
+                            res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}`);
+                            res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, [] as inner_meta`);
                         } else {
                             res.strs.push(`WITH ${withVars.join(", ")}`);
                         }
@@ -281,18 +276,15 @@ function createDeleteAndParams({
                     res.strs.push(`}`);
 
                     if (context.subscriptionsEnabled) {
+                        res.strs.push(`WITH collect(delete_meta) as delete_meta, inner_meta`);
+                        res.strs.push(`RETURN REDUCE(m=inner_meta, n IN delete_meta | m + n) as delete_meta`);
+                        res.strs.push("}");
                         const varsWithoutMeta = filterMetaVariable(withVars).join(", ");
                         if (!isInner) {
-                            res.strs.push(`WITH inner_meta, collect(delete_meta) as delete_meta`);
-                            res.strs.push(`RETURN  REDUCE(m=inner_meta, n IN delete_meta | m + n) as inner_meta`);
-                            res.strs.push("}");
-
-                            res.strs.push(`WITH ${varsWithoutMeta}, meta, collect(inner_meta) as inner_meta`);
+                            // res.strs.push(`WITH ${varsWithoutMeta}, meta, collect(delete_meta) as inner_meta`);
+                            res.strs.push(`WITH ${varsWithoutMeta}, meta, delete_meta as inner_meta`);
                             res.strs.push(`WITH ${varsWithoutMeta}, REDUCE(m=meta, n IN inner_meta | m + n) as meta`);
                         } else {
-                            res.strs.push(`WITH collect(delete_meta) as delete_meta, inner_meta`);
-                            res.strs.push(`RETURN REDUCE(m=inner_meta, n IN delete_meta | m + n) as delete_meta`);
-                            res.strs.push("}");
                             res.strs.push(
                                 `WITH ${varsWithoutMeta}, REDUCE(m=inner_meta, n IN delete_meta | m + n) as inner_meta`
                             );
