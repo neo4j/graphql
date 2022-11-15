@@ -19,7 +19,7 @@
 
 import { GraphQLBoolean } from "graphql";
 
-export const AsDuplicate = {
+export const asDuplicate = {
     type: GraphQLBoolean,
     description:
         "Whether or not to create a duplicate of relationship if it already exists, instead of just updating any properties.",
