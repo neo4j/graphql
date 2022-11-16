@@ -75,6 +75,8 @@ export {
 export { plus, minus } from "./expressions/operations/math";
 
 // --Functions
+export { CypherFunction as Function } from "./expressions/functions/CypherFunction";
+
 export {
     coalesce,
     point,
@@ -93,6 +95,9 @@ export {
     sum,
     randomUUID,
 } from "./expressions/functions/CypherFunction";
+
+export * from "./expressions/functions/StringFunctions";
+
 export * from "./expressions/functions/ListFunctions";
 export { any, all, exists, single } from "./expressions/functions/PredicateFunctions";
 
