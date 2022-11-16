@@ -57,7 +57,6 @@ CALL {
     RETURN count(u) = 10 as thisLikesAggregateCount
 }
 WITH *
-WHERE thisLikesAggregateCount
 RETURN this { .content } AS this
 ```
 

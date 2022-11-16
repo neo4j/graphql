@@ -47,7 +47,7 @@ export function translateRead(
 
     let projAuth: Cypher.Clause | undefined;
 
-    const topLevelMatch = createMatchClause({
+    const [topLevelMatch, topLevelWith] = createMatchClause({
         matchNode,
         node,
         context,
@@ -80,7 +80,7 @@ export function translateRead(
     });
 
     if (authPredicates) {
-        topLevelMatch.where(new Cypher.apoc.ValidatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR));
+        topLevelWith.where(new Cypher.apoc.ValidatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR));
     }
 
     const projectionSubqueries = Cypher.concat(...projection.subqueries);
@@ -178,15 +178,20 @@ export function translateRead(
                 fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
             });
         }
-
         projectionClause = Cypher.concat(withTotalCount, connectionClause, returnClause);
     }
 
-    const preComputedWhereClause = preComputedWhereFields(resolveTree.args.where as GraphQLWhereArg | undefined, node, context, matchNode);
+    const preComputedWhereClause = preComputedWhereFields(
+        resolveTree.args.where as GraphQLWhereArg | undefined,
+        node,
+        context,
+        matchNode
+    );
 
     const readQuery = Cypher.concat(
         topLevelMatch,
         preComputedWhereClause,
+        topLevelWith,
         projAuth,
         connectionPreClauses,
         projectionSubqueriesBeforeSort,
