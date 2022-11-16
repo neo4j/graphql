@@ -196,13 +196,27 @@ export function preComputedWhereFields(
                     topLevelWith.where(Cypher.eq(operationVar, new Cypher.Param(true))); // TODO: not just and
                 }
                 if (["node", "edge"].includes(key)) {
+                    let target: Cypher.Relationship | Cypher.Node;
+                    if (key === "edge") {
+                        target = cypherRelation;
+                    } else {
+                        target = aggregationTarget;
+                    }
                     Object.entries(value as any).forEach(([innerKey, innerValue]) => {
                         const paramName = new Cypher.Param(innerValue);
-                        const { fieldName, logicalOperator } = aggregationFieldRegEx.exec(innerKey)
+                        const { fieldName, aggregationOperator, logicalOperator } = aggregationFieldRegEx.exec(innerKey)
                             ?.groups as AggregationFieldRegexGroups;
+                        const fieldType = refNode.primitiveFields.find((name) => name.fieldName === fieldName)?.typeMeta
+                            .name;
+                        let property =
+                            fieldType === "String"
+                                ? Cypher.size(target.property(fieldName))
+                                : target.property(fieldName);
+                        property = aggregationOperator ? createAggregateOperation(property, aggregationOperator) : property
+
                         operation = createBaseOperation({
                             operator: logicalOperator || "EQ",
-                            property: aggregationTarget.property(fieldName),
+                            property,
                             param: paramName,
                         });
                         const operationVar = new Cypher.Variable();
@@ -212,24 +226,35 @@ export function preComputedWhereFields(
 
                     // TODO edges
 
-                    // AVERAGE
-                    // SIZE - only when string type??
-                    // SUM
-                    // SHORTEST
-                    // LONGEST
-                    // MIN
-                    // MAX
-
-                    // const logicalOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
                     // const aggregationOperators = ["SHORTEST", "LONGEST", "MIN", "MAX", "SUM"];
                 }
             });
             returnClause = Cypher.concat(
                 returnClause,
-                new Cypher.Call(match).innerWith(matchNode),
+                new Cypher.Call(match).innerWith(matchNode)
                 // new Cypher.With("*")
             );
         }
     });
     return returnClause;
+}
+
+function createAggregateOperation(
+    property: Cypher.PropertyRef | Cypher.Function,
+    aggregationOperator: string
+): Cypher.Function {
+    switch (aggregationOperator) {
+        case "AVERAGE":
+            return Cypher.avg(property);
+        case "MIN":
+        case "SHORTEST":
+            return Cypher.min(property);
+        case "MAX":
+        case "LONGEST":
+            return Cypher.max(property);
+        case "SUM":
+            return Cypher.sum(property);
+        default:
+            throw new Error(`Invalid operator ${aggregationOperator}`);
+    }
 }
