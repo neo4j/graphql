@@ -245,12 +245,87 @@ function createDeleteAndParams({
                     }
 
                     const nodeToDelete = `${variableName}_to_delete`;
+
                     if (context.subscriptionsEnabled) {
                         const metaObjectStr = createEventMetaObject({
                             event: "delete",
                             nodeVariable: "x",
                             typename: refNode.name,
                         });
+
+                        const eventMetaWithClause = new Cypher.RawCypher((env: Cypher.Environment) => {
+                            const metaObjectStr = createEventMetaObject({
+                                event: "delete",
+                                nodeVariable: "x",
+                                typename: refNode.name,
+                            });
+                            return `${metaObjectStr} AS node_meta, x, ${relationshipVariable}, ${varsWithoutMeta}`;
+                        });
+
+                        // --------------------------------------
+                        const withVarsWithoutMetaStatement = filterMetaVariable(withVars).map(
+                            (v) => new Cypher.NamedVariable(v)
+                        );
+                        const metaVar = new Cypher.NamedVariable("meta");
+                        const listAsMeta = [new Cypher.Literal([]), metaVar];
+
+                        const relationshipVar = new Cypher.NamedVariable(relationshipVariable);
+                        const nodeMetaVar = new Cypher.NamedVariable("node_meta");
+                        const deleteMetaVar = new Cypher.NamedVariable("delete_meta");
+
+                        const unwindVar = new Cypher.NamedVariable("x");
+                        const nodeToDeleteVar = new Cypher.NamedNode(nodeToDelete);
+                        const aliasedNodeToDelete = [nodeToDeleteVar, unwindVar] as WithProjection;
+
+                        const unwindNode = new Cypher.NamedNode("x", {
+                            labels: refNode.getLabels(context),
+                        });
+                        const node1 = new Cypher.NamedNode(variableName, {
+                            labels: refNode.getLabels(context),
+                        });
+                        const node2 = new Cypher.NamedNode(parentVar);
+                        const optionalMatchSt = new Cypher.OptionalMatch(
+                            new Cypher.Relationship({
+                                source: relationField.direction === "IN" ? node1 : node2,
+                                target: relationField.direction === "IN" ? node2 : node1,
+                                type: relationField.type,
+                            })
+                        );
+
+                        const innerSubqueryEnabled = new Cypher.Call(
+                            new Cypher.Unwind(aliasedNodeToDelete)
+                                .with(eventMetaWithClause as unknown as WithProjection)
+                                .detachDelete(unwindNode)
+                                .return([Cypher.collect(nodeMetaVar), deleteMetaVar])
+                        ).innerWith(...withVarsWithoutMetaStatement, relationshipVar, nodeToDeleteVar);
+
+                        const outerSubqueryEnabled = Cypher.concat(
+                            new Cypher.With(...withVarsWithoutMetaStatement).addColumns(listAsMeta as WithProjection),
+                            optionalMatchSt,
+                            whereStatements,
+                            authStatements, //recursive call
+                            new Cypher.With(...withVarsWithoutMetaStatement)
+                                .addColumns(metaVar)
+                                .addColumns(relationshipVar)
+                                .addColumns([Cypher.collect(node1), nodeToDeleteVar]), //distinct!!
+                            innerSubqueryEnabled,
+                            new Cypher.With([Cypher.collect(deleteMetaVar), deleteMetaVar], metaVar), // `WITH collect(delete_meta) AS delete_meta, meta`,
+                            new Cypher.Return([, deleteMetaVar]) // `RETURN REDUCE(m=meta, n IN delete_meta | m + n) AS delete_meta`,
+                        );
+
+                        // const outerSubqueryDisabled = Cypher.concat(
+                        //     new Cypher.With(...withVarsWithoutMetaStatement).addColumns(metaVar),
+                        //     optionalMatchSt
+                        // );
+                        const startStatements = Cypher.concat(
+                            new Cypher.With("*"),
+                            new Cypher.Call(outerSubqueryEnabled).innerWith(...withVarsWithoutMetaStatement),
+                            new Cypher.With(), //   `WITH ${varsWithoutMeta}, meta, collect(delete_meta) AS delete_meta`,
+                            new Cypher.With() //    `WITH ${varsWithoutMeta}, REDUCE(m=meta, n IN delete_meta | m + n) AS meta`,
+                        );
+                        console.log("start", startStatements);
+                        const {} = startStatements.build();
+                        // --------------------------------------
 
                         //  need relationshipVariable for disconnect meta
                         const statements = [
