@@ -82,7 +82,7 @@ class Neo4jGraphQL {
     private _relationships?: Relationship[];
     private plugins?: Neo4jGraphQLPlugins;
 
-    private schemaModel: Neo4jGraphQLSchemaModel | undefined;
+    private schemaModel?: Neo4jGraphQLSchemaModel;
 
     private schema?: Promise<GraphQLSchema>;
 
