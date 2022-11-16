@@ -18,14 +18,13 @@
  */
 
 import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
-import type { Relationship, Node } from "../classes";
+import type { Node } from "../classes";
 import { createAuthAndParams } from "./create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { whereRegEx, WhereRegexGroups } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
-import { RawCypher } from "@neo4j/cypher-builder";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -83,7 +82,6 @@ export function createMatchClause({
         matchQuery = new Cypher.Match(matchNode);
     }
 
-    preComputedWhereFields(whereInput, node, context, matchNode);
     if (whereInput) {
         const whereOp = createWherePredicate({
             targetElement: matchNode,
@@ -147,24 +145,15 @@ function createFulltextMatchClause(
     return matchQuery;
 }
 
-function preComputedWhereFields(whereInput: any, node: Node, context: Context, matchNode: Cypher.Node) {
-    /*     const cyphers: string[] = [];
-    const inStr = field.direction === "IN" ? "<-" : "-";
-    const outStr = field.direction === "OUT" ? "->" : "-";
-    const nodeVariable = `${chainStr}_node`;
-    const edgeVariable = `${chainStr}_edge`;
-    const relTypeStr = `[${edgeVariable}:${field.type}]`;
-    const labels = node.getLabelString(context);
-    const matchStr = `MATCH (${varName})${inStr}${relTypeStr}${outStr}(${nodeVariable}${labels})`; */
-
-    // rfcd
-    Object.entries(whereInput).map(([key, value]) => {
+export function preComputedWhereFields(whereInput: any, node: Node, context: Context, matchNode: Cypher.Node): Cypher.CompositeClause {
+    let returnClause: Cypher.CompositeClause | undefined;
+    const endWith = new Cypher.With("*");
+    Object.entries(whereInput).forEach(([key, value]) => {
         const match = whereRegEx.exec(key);
         if (!match) {
             throw new Error(`Failed to match key in filter: ${key}`);
         }
-
-        const { prefix, fieldName, isAggregate, operator } = match?.groups as WhereRegexGroups;
+        const { fieldName, isAggregate } = match?.groups as WhereRegexGroups;
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
 
         if (isAggregate) {
@@ -182,35 +171,23 @@ function preComputedWhereFields(whereInput: any, node: Node, context: Context, m
             }
             const match = new Cypher.Match(cypherRelation);
 
-            const relationship = context.relationships.find(
-                (x) => x.properties === relationField.properties
-            ) as Relationship;
-            Object.entries(value as any).map(([key, value]) => {
-                ["count", "count_LT", "count_LTE", "count_GT", "count_GTE"].forEach((countType) => {
-                    if (key === countType) {
-                        const paramName = new Cypher.Param(value);
-                        const _match = whereRegEx.exec(key);
-                        if (!_match) {
-                            throw new Error(`Failed to match key in filter: ${key}`);
-                        }
-                        const [, _operator] = countType.split("_");
-
-                        const count = Cypher.count(aggregationTarget);
-                        new Cypher.RawCypher((env) => {
-                            const returnedBoolean = createBaseOperation({
-                                operator: _operator,
-                                property: count,
-                                param: paramName,
-                            });
-                            return returnedBoolean.getCypher(env);
-                        });
-                    }
-                });
+            Object.entries(value as any).forEach(([key, value]) => {
+                if (["count", "count_LT", "count_LTE", "count_GT", "count_GTE"].includes(key)) {
+                    const paramName = new Cypher.Param(value);
+                    const count = Cypher.count(aggregationTarget);
+                    const operator = whereRegEx.exec(key)?.groups?.operator || "EQ";
+                    const operation = createBaseOperation({
+                        operator,
+                        property: count,
+                        param: paramName,
+                    });
+                    const operationVar = new Cypher.Variable();
+                    match.return([operation, operationVar]);
+                    endWith.where(Cypher.eq(operationVar, new Cypher.Param(true)));
+                }
             });
-
-            return [];
+            returnClause = Cypher.concat(returnClause, new Cypher.Call(match).innerWith(matchNode))
         }
-        return [key, value];
     });
-    // eofrfcd
+    return Cypher.concat(returnClause, endWith);
 }
