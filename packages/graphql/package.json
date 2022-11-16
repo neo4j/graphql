@@ -97,7 +97,8 @@
         "graphql-parse-resolve-info": "^4.12.3",
         "graphql-relay": "^0.10.0",
         "pluralize": "^8.0.0",
-        "semver": "^7.3.7"
+        "semver": "^7.3.7",
+        "uuid": "^9.0.0"
     },
     "peerDependencies": {
         "graphql": "^16.0.0",
