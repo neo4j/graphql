@@ -24,6 +24,8 @@ import createConnectionWhereAndParams from "./where/create-connection-where-and-
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import { createEventMetaObject } from "./subscriptions/create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import Cypher from "@neo4j/cypher-builder";
+import type { WithProjection } from "@neo4j/cypher-builder/src/clauses/With";
 
 interface Res {
     strs: string[];
@@ -113,14 +115,15 @@ function createDeleteAndParams({
                         }
                     }
 
+                    const varsWithoutMeta = filterMetaVariable(withVars).join(", ");
                     res.strs.push("WITH *");
                     res.strs.push("CALL {");
 
                     if (withVars) {
                         //TODO
                         if (context.subscriptionsEnabled) {
-                            res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}`);
-                            res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, [] as meta`);
+                            res.strs.push(`WITH ${varsWithoutMeta}`);
+                            res.strs.push(`WITH ${varsWithoutMeta}, []  AS meta`);
                         } else {
                             res.strs.push(`WITH ${withVars.join(", ")}`);
                         }
@@ -145,6 +148,13 @@ function createDeleteAndParams({
                         res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
                     }
 
+                    let whereStatements, authStatements;
+                    if (whereStrs.length) {
+                        whereStatements = new Cypher.RawCypher(() => {
+                            return `WHERE ${whereStrs.join(" AND ")}`;
+                        });
+                    }
+
                     const allowAuth = createAuthAndParams({
                         entity: refNode,
                         operations: "DELETE",
@@ -155,12 +165,22 @@ function createDeleteAndParams({
                     if (allowAuth[0]) {
                         const quote = insideDoWhen ? `\\"` : `"`;
                         res.strs.push(
-                            `WITH ${[...filterMetaVariable(withVars), variableName, relationshipVariable].join(", ")}`
+                            // `WITH ${[...filterMetaVariable(withVars), variableName, relationshipVariable].join(", ")}`
+                            `WITH ${varsWithoutMeta}, ${variableName}, ${relationshipVariable}`
                         );
                         res.strs.push(
                             `CALL apoc.util.validate(NOT (${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
                         );
                         res.params = { ...res.params, ...allowAuth[1] };
+
+                        authStatements = new Cypher.RawCypher(() => {
+                            return [
+                                `WITH ${[...filterMetaVariable(withVars), variableName, relationshipVariable].join(
+                                    ", "
+                                )}`,
+                                `CALL apoc.util.validate(NOT (${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`,
+                            ].join("/n");
+                        });
                     }
 
                     if (d.delete) {
@@ -231,47 +251,31 @@ function createDeleteAndParams({
                             nodeVariable: "x",
                             typename: refNode.name,
                         });
-                        const varsWithoutMeta = filterMetaVariable(withVars).join(", ");
 
                         //  need relationshipVariable for disconnect meta
                         const statements = [
-                            `WITH ${[
-                                ...filterMetaVariable(withVars),
-                                "meta",
-                                relationshipVariable,
-                                `collect(DISTINCT ${variableName}) as ${nodeToDelete}`,
-                            ].join(", ")}`,
+                            `WITH ${varsWithoutMeta}, meta, ${relationshipVariable}, collect(DISTINCT ${variableName}) AS ${nodeToDelete}`,
                             "CALL {",
-                            `\tWITH ${relationshipVariable}, ${nodeToDelete}, ${filterMetaVariable(withVars).join(
-                                ", "
-                            )}`,
-                            `\tUNWIND ${nodeToDelete} as x`,
-                            `\tWITH ${metaObjectStr} as node_meta, x, ${relationshipVariable}, ${filterMetaVariable(
-                                withVars
-                            ).join(", ")}`,
+                            `\tWITH ${relationshipVariable}, ${nodeToDelete}, ${varsWithoutMeta}`,
+                            `\tUNWIND ${nodeToDelete} AS x`,
+                            `\tWITH ${metaObjectStr} AS node_meta, x, ${relationshipVariable}, ${varsWithoutMeta}`,
                             `\tDETACH DELETE x`,
-                            `\tRETURN collect(node_meta) as delete_meta`,
+                            `\tRETURN collect(node_meta) AS delete_meta`,
                             `}`,
-                            `WITH collect(delete_meta) as delete_meta, meta`,
-                            `RETURN REDUCE(m=meta, n IN delete_meta | m + n) as delete_meta`,
+                            `WITH collect(delete_meta) AS delete_meta, meta`,
+                            `RETURN REDUCE(m=meta, n IN delete_meta | m + n) AS delete_meta`,
                             `}`,
                             `WITH ${varsWithoutMeta}, meta, collect(delete_meta) AS delete_meta`,
-                            `WITH ${varsWithoutMeta}, REDUCE(m=meta, n IN delete_meta | m + n) as meta`,
+                            `WITH ${varsWithoutMeta}, REDUCE(m=meta, n IN delete_meta | m + n) AS meta`,
                         ];
 
                         res.strs.push(...statements);
                     } else {
                         const statements = [
-                            `WITH ${[
-                                ...filterMetaVariable(withVars),
-                                relationshipVariable,
-                                `collect(DISTINCT ${variableName}) as ${nodeToDelete}`,
-                            ].join(", ")}`,
+                            `WITH ${relationshipVariable}, collect(DISTINCT ${variableName}) AS ${nodeToDelete}`,
                             "CALL {",
-                            `\tWITH ${relationshipVariable}, ${nodeToDelete}, ${filterMetaVariable(withVars).join(
-                                ", "
-                            )}`,
-                            `\tUNWIND ${nodeToDelete} as x`,
+                            `\tWITH ${nodeToDelete}`,
+                            `\tUNWIND ${nodeToDelete} AS x`,
                             `\tDETACH DELETE x`,
                             `\tRETURN count(*) AS _`,
                             `}`,
