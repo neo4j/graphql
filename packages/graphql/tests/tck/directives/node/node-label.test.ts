@@ -522,15 +522,19 @@ describe("Label in Node directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
             WHERE this.id = $param0
+            WITH *
+            CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
             WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
-            WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
+            WITH this_actors0_relationship, collect(DISTINCT this_actors0) AS this_actors0_to_delete
             CALL {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
             	RETURN count(*) AS _
+            }
+            RETURN count(*) AS _this_actors0_relationship
             }
             DETACH DELETE this"
         `);

@@ -24,8 +24,6 @@ import createConnectionWhereAndParams from "./where/create-connection-where-and-
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import { createEventMetaObject } from "./subscriptions/create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
-import Cypher from "@neo4j/cypher-builder";
-import type { WithProjection } from "@neo4j/cypher-builder/src/clauses/With";
 
 interface Res {
     strs: string[];
@@ -120,7 +118,6 @@ function createDeleteAndParams({
                     res.strs.push("CALL {");
 
                     if (withVars) {
-                        //TODO
                         if (context.subscriptionsEnabled) {
                             res.strs.push(`WITH ${varsWithoutMeta}`);
                             res.strs.push(`WITH ${varsWithoutMeta}, []  AS meta`);
@@ -147,14 +144,7 @@ function createDeleteAndParams({
                     if (whereStrs.length) {
                         res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
                     }
-
-                    let whereStatements, authStatements;
-                    if (whereStrs.length) {
-                        whereStatements = new Cypher.RawCypher(() => {
-                            return `WHERE ${whereStrs.join(" AND ")}`;
-                        });
-                    }
-
+                    å;
                     const allowAuth = createAuthAndParams({
                         entity: refNode,
                         operations: "DELETE",
@@ -164,23 +154,11 @@ function createDeleteAndParams({
                     });
                     if (allowAuth[0]) {
                         const quote = insideDoWhen ? `\\"` : `"`;
-                        res.strs.push(
-                            // `WITH ${[...filterMetaVariable(withVars), variableName, relationshipVariable].join(", ")}`
-                            `WITH ${varsWithoutMeta}, ${variableName}, ${relationshipVariable}`
-                        );
+                        res.strs.push(`WITH ${varsWithoutMeta}, ${variableName}, ${relationshipVariable}`);
                         res.strs.push(
                             `CALL apoc.util.validate(NOT (${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
                         );
                         res.params = { ...res.params, ...allowAuth[1] };
-
-                        authStatements = new Cypher.RawCypher(() => {
-                            return [
-                                `WITH ${[...filterMetaVariable(withVars), variableName, relationshipVariable].join(
-                                    ", "
-                                )}`,
-                                `CALL apoc.util.validate(NOT (${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`,
-                            ].join("/n");
-                        });
                     }
 
                     if (d.delete) {
