@@ -146,9 +146,13 @@ query SimpleUnionQuery_only {
 
 To update the file `performance.json`, with the results of the performance test, run `yarn performance -u`
 
-## Running with Cypher
+#### Running with Cypher
 
 The performance tests can also run raw Cypher, to enable it, run `yarn performance --cypher`. Cypher queries must be located at `tests/performance/cypher`
+
+#### Schema Generation
+
+Running `yarn performance --schema` will run instead the schema generation performance test.
 
 ## Linting/formatting
 
