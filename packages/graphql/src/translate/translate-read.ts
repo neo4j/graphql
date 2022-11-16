@@ -185,7 +185,8 @@ export function translateRead(
         resolveTree.args.where as GraphQLWhereArg | undefined,
         node,
         context,
-        matchNode
+        matchNode,
+        topLevelWith,
     );
 
     const readQuery = Cypher.concat(

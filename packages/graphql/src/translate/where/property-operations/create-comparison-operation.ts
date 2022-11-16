@@ -116,6 +116,7 @@ export function createBaseOperation({
         case "NOT_INCLUDES":
             return Cypher.in(param, property);
         case "EQ":
+        case "EQUAL":
         case "NOT":
             return Cypher.eq(property, param);
         default:

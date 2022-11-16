@@ -23,7 +23,7 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
-import { whereRegEx, WhereRegexGroups } from "./where/utils";
+import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx, WhereRegexGroups } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
 
 export function translateTopLevelMatch({
@@ -146,12 +146,17 @@ function createFulltextMatchClause(
     return matchQuery;
 }
 
-export function preComputedWhereFields(whereInput: any, node: Node, context: Context, matchNode: Cypher.Node): Cypher.CompositeClause | undefined {
+export function preComputedWhereFields(
+    whereInput: any,
+    node: Node,
+    context: Context,
+    matchNode: Cypher.Node,
+    topLevelWith: Cypher.With
+): Cypher.CompositeClause | undefined {
     if (!whereInput) {
         return;
     }
     let returnClause: Cypher.CompositeClause | undefined;
-    const endWith = new Cypher.With("*");
     Object.entries(whereInput).forEach(([key, value]) => {
         const match = whereRegEx.exec(key);
         if (!match) {
@@ -176,22 +181,55 @@ export function preComputedWhereFields(whereInput: any, node: Node, context: Con
             const match = new Cypher.Match(cypherRelation);
 
             Object.entries(value as any).forEach(([key, value]) => {
+                let operation: Cypher.ComparisonOp | undefined;
                 if (["count", "count_LT", "count_LTE", "count_GT", "count_GTE"].includes(key)) {
                     const paramName = new Cypher.Param(value);
                     const count = Cypher.count(aggregationTarget);
                     const operator = whereRegEx.exec(key)?.groups?.operator || "EQ";
-                    const operation = createBaseOperation({
+                    operation = createBaseOperation({
                         operator,
                         property: count,
                         param: paramName,
                     });
                     const operationVar = new Cypher.Variable();
                     match.return([operation, operationVar]);
-                    endWith.where(Cypher.eq(operationVar, new Cypher.Param(true)));
+                    topLevelWith.where(Cypher.eq(operationVar, new Cypher.Param(true))); // TODO: not just and
+                }
+                if (["node", "edge"].includes(key)) {
+                    Object.entries(value as any).forEach(([innerKey, innerValue]) => {
+                        const paramName = new Cypher.Param(innerValue);
+                        const { fieldName, logicalOperator } = aggregationFieldRegEx.exec(innerKey)
+                            ?.groups as AggregationFieldRegexGroups;
+                        operation = createBaseOperation({
+                            operator: logicalOperator || "EQ",
+                            property: aggregationTarget.property(fieldName),
+                            param: paramName,
+                        });
+                        const operationVar = new Cypher.Variable();
+                        match.return([operation, operationVar]);
+                        topLevelWith.where(Cypher.eq(operationVar, new Cypher.Param(true))); // TODO: not just and
+                    });
+
+                    // TODO edges
+
+                    // AVERAGE
+                    // SIZE - only when string type??
+                    // SUM
+                    // SHORTEST
+                    // LONGEST
+                    // MIN
+                    // MAX
+
+                    // const logicalOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+                    // const aggregationOperators = ["SHORTEST", "LONGEST", "MIN", "MAX", "SUM"];
                 }
             });
-            returnClause = Cypher.concat(returnClause, new Cypher.Call(match).innerWith(matchNode))
+            returnClause = Cypher.concat(
+                returnClause,
+                new Cypher.Call(match).innerWith(matchNode),
+                // new Cypher.With("*")
+            );
         }
     });
-    return Cypher.concat(returnClause, endWith);
+    return returnClause;
 }

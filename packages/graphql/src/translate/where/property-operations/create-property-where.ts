@@ -93,12 +93,13 @@ export function createPropertyWhere({
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
 
-            return createAggregateOperation({
-                relationField,
-                context,
-                value,
-                parentNode: targetElement as Cypher.Node,
-            });
+            // return createAggregateOperation({
+            //     relationField,
+            //     context,
+            //     value,
+            //     parentNode: targetElement as Cypher.Node,
+            // });
+            return;
         }
 
         if (relationField) {
