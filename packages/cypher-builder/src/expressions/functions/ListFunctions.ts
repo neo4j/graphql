@@ -38,9 +38,6 @@ export function last(expr: Expr): CypherFunction {
     return new CypherFunction("last", [expr]);
 }
 
-// reduce(accumulator = initial, variable IN list | expression)
-
-/** Predicate function that uses a list comprehension "var IN list WHERE .." */
 class ReducerFunction extends CypherFunction {
     private accVariable: Variable;
     private defaultValue: Expr;
@@ -80,6 +77,7 @@ class ReducerFunction extends CypherFunction {
     }
 }
 
+/** Reduce a list by executing given expression <https://neo4j.com/docs/cypher-manual/current/functions/list/#functions-reduce> */
 export function reduce(
     accVariable: Variable,
     defaultValue: Expr,
