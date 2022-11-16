@@ -1647,8 +1647,6 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
         ]);
     });
 
-    // ============= combinations ==============
-
     test("disconnect via delete nested - with relationships -  union type + interface type, by common type", async () => {
         // 1. create
         await supertest(server.path)
@@ -3030,8 +3028,6 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             },
         ]);
     });
-
-    // ================ chained combos =========================
 
     test("disconnect via delete nested - with relationships: union to interface type", async () => {
         // 1. create

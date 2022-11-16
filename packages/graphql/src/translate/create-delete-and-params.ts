@@ -125,6 +125,10 @@ function createDeleteAndParams({
                             res.strs.push(`WITH ${withVars.join(", ")}`);
                         }
                     }
+                    if (!withVars && context.subscriptionsEnabled) {
+                        res.strs.push(`WITH *`);
+                        res.strs.push(`WITH *, []  AS meta`);
+                    }
 
                     const labels = refNode.getLabelString(context);
                     res.strs.push(
@@ -144,7 +148,7 @@ function createDeleteAndParams({
                     if (whereStrs.length) {
                         res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
                     }
-                    å;
+
                     const allowAuth = createAuthAndParams({
                         entity: refNode,
                         operations: "DELETE",
@@ -154,7 +158,11 @@ function createDeleteAndParams({
                     });
                     if (allowAuth[0]) {
                         const quote = insideDoWhen ? `\\"` : `"`;
-                        res.strs.push(`WITH ${varsWithoutMeta}, ${variableName}, ${relationshipVariable}`);
+                        res.strs.push(
+                            `WITH ${varsWithoutMeta}, ${variableName}, ${relationshipVariable}${
+                                context.subscriptionsEnabled ? ", meta" : ""
+                            }`
+                        );
                         res.strs.push(
                             `CALL apoc.util.validate(NOT (${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
                         );
