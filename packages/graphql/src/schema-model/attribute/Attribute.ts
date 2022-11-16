@@ -17,25 +17,14 @@
  * limitations under the License.
  */
 
-import type { Attribute } from "../attribute/Attribute";
-import type { Entity } from "./Entity";
+import type { Annotation } from "../annotation/Annotation";
 
-export class ConcreteEntity implements Entity {
+export class Attribute {
     public readonly name: string;
+    public readonly annotations: Annotation[];
 
-    public readonly attributes: Map<string, Attribute> = new Map();
-
-    constructor({ name, attributes = [] }: { name: string; attributes?: Attribute[] }) {
+    constructor({ name, annotations }: { name: string; annotations: Annotation[] }) {
         this.name = name;
-        for (const attribute of attributes) {
-            this.addAttribute(attribute);
-        }
-    }
-
-    private addAttribute(attribute: Attribute): void {
-        if (this.attributes.has(attribute.name)) {
-            throw new Error(`Attribute ${attribute.name} already exists in ${this.name}`);
-        }
-        this.attributes.set(attribute.name, attribute);
+        this.annotations = annotations;
     }
 }

@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-export class Attribute {
-    public readonly name: string;
+export class CypherAnnotation {
+    public statement: string;
 
-    constructor({ name }: { name: string }) {
-        this.name = name;
+    constructor({ statement }: { statement: string }) {
+        this.statement = statement;
     }
 }

@@ -17,13 +17,6 @@
  * limitations under the License.
  */
 
-import type { Entity } from "./entity/Entity";
+import type { CypherAnnotation } from "./CypherAnnotation";
 
-/** Represents the internal model for the Neo4jGraphQL schema */
-export class Neo4jGraphQLSchemaModel {
-    public entities: Map<string, Entity>;
-
-    constructor(entities: Map<string, Entity>) {
-        this.entities = entities;
-    }
-}
+export type Annotation = CypherAnnotation;
