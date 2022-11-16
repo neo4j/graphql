@@ -230,11 +230,6 @@ class Neo4jGraphQL {
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
-    private addWrappedResolversToSchema(resolverlessSchema: GraphQLSchema, resolvers: IResolvers): GraphQLSchema {
-        const schema = addResolversToSchema({ schema: resolverlessSchema, resolvers });
-        return this.addDefaultFieldResolvers(schema);
-    }
-
     private generateSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
             const document = getDocument(this.schemaDefinition.typeDefs);
@@ -255,17 +250,16 @@ class Neo4jGraphQL {
 
             this.schemaModel = schemaModel;
 
-            const resolverlessSchema = makeExecutableSchema({
-                ...this.schemaDefinition,
-                typeDefs,
-            });
-
-            // Wrap the generated resolvers, which adds a context including the schema to every request
+            // Wrap the generated and custom resolvers, which adds a context including the schema to every request
             const wrappedResolvers = this.wrapResolvers(resolvers);
 
-            const schema = this.addWrappedResolversToSchema(resolverlessSchema, wrappedResolvers);
+            const schema = makeExecutableSchema({
+                ...this.schemaDefinition,
+                typeDefs,
+                resolvers: wrappedResolvers,
+            });
 
-            resolve(schema);
+            resolve(this.addDefaultFieldResolvers(schema));
         });
     }
 

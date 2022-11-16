@@ -174,6 +174,7 @@ function makeAugmentedSchema(
     );
 
     const relationshipFields = new Map<string, ObjectFields>();
+    const interfaceCommonFields = new Map<string, ObjectFields>();
 
     relationshipProperties.forEach((relationship) => {
         const authDirective = (relationship.directives || []).find((x) => x.name.value === "auth");
@@ -312,6 +313,8 @@ function makeAugmentedSchema(
             fields: objectComposeFields,
         });
 
+        interfaceCommonFields.set(interfaceRelationship.name.value, interfaceFields);
+
         const interfaceOptionsInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Options`, (tc) => {
             tc.addFields({
                 limit: "Int",
@@ -322,7 +325,12 @@ function makeAugmentedSchema(
         const interfaceSortableFields = getSortableFields(interfaceFields).reduce(
             (res, f) => ({
                 ...res,
-                [f.fieldName]: sortDirection.getTypeName(),
+                [f.fieldName]: {
+                    type: sortDirection.getTypeName(),
+                    directives: graphqlDirectivesToCompose(
+                        f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                    ),
+                },
             }),
             {}
         );
@@ -560,7 +568,12 @@ function makeAugmentedSchema(
         const sortFields = getSortableFields(node).reduce(
             (res, f) => ({
                 ...res,
-                [f.fieldName]: sortDirection.getTypeName(),
+                [f.fieldName]: {
+                    type: sortDirection.getTypeName(),
+                    directives: graphqlDirectivesToCompose(
+                        f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                    ),
+                },
             }),
             {}
         );
@@ -772,7 +785,7 @@ function makeAugmentedSchema(
     });
 
     if (generateSubscriptions) {
-        generateSubscriptionTypes({ schemaComposer: composer, nodes });
+        generateSubscriptionTypes({ schemaComposer: composer, nodes, relationshipFields, interfaceCommonFields });
     }
 
     ["Mutation", "Query"].forEach((type) => {
@@ -867,17 +880,19 @@ function makeAugmentedSchema(
         );
     }
 
-    const documentNames = parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value);
-
+    const documentNames = new Set(parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value));
     const resolveMethods = getResolveAndSubscriptionMethods(composer);
-    const generatedResolvers = {
-        ...Object.entries(resolveMethods).reduce((res, [key, value]) => {
-            if (!documentNames.includes(key)) {
-                return res;
-            }
 
-            return { ...res, [key]: value };
-        }, {}),
+    const generatedResolveMethods: Record<string, any> = {};
+
+    for (const [key, value] of Object.entries(resolveMethods)) {
+        if (documentNames.has(key)) {
+            generatedResolveMethods[key] = value;
+        }
+    }
+
+    const generatedResolvers = {
+        ...generatedResolveMethods,
         ...Object.values(Scalars).reduce((res, scalar: GraphQLScalarType) => {
             if (generatedTypeDefs.includes(`scalar ${scalar.name}\n`)) {
                 res[scalar.name] = scalar;

@@ -87,7 +87,7 @@ You can execute tests with a different database, user and password with the
 following command:
 
 ```bash
-NEO_URL=neo4j://localhost:7687 NEO_USER=admin NEO_PASSWORD=password yarn test
+NEO_URL=neo4j://localhost:7687 NEO_USER=neo4j NEO_PASSWORD=password yarn test
 ```
 
 The above command can additionally be run from `packages/graphql`, `packages/ogm`,
@@ -98,7 +98,7 @@ root of the repo which will automatically get picked up:
 
 ```env
 NEO_URL=neo4j://localhost:7687
-NEO_USER=admin
+NEO_USER=neo4j
 NEO_PASSWORD=password
 ```
 
@@ -146,9 +146,13 @@ query SimpleUnionQuery_only {
 
 To update the file `performance.json`, with the results of the performance test, run `yarn performance -u`
 
-## Running with Cypher
+#### Running with Cypher
 
 The performance tests can also run raw Cypher, to enable it, run `yarn performance --cypher`. Cypher queries must be located at `tests/performance/cypher`
+
+#### Schema Generation
+
+Running `yarn performance --schema` will run instead the schema generation performance test.
 
 ## Linting/formatting
 

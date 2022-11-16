@@ -25,5 +25,7 @@ export const EventType = new GraphQLEnumType({
         CREATE: {},
         DELETE: {},
         UPDATE: {},
+        CONNECT: {},
+        DISCONNECT: {},
     },
 });
