@@ -1,0 +1,5 @@
+curl -sSL https://router.apollo.dev/download/nix/latest | sh
+rover supergraph compose --config supergraph.yaml > supergraph.graphql
+ts-node -r tsconfig-paths/register examples/nodes-2022/src/products.ts
+ts-node -r tsconfig-paths/register examples/nodes-2022/src/reviews.ts
+./router --dev --supergraph supergraph.graphql

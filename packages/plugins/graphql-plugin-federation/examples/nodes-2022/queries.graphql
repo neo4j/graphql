@@ -1,0 +1,19 @@
+{
+    products {
+        id
+        name
+        price
+    }
+}
+
+{
+    reviews {
+        description
+        score
+        product {
+            id
+            name
+            price
+        }
+    }
+}

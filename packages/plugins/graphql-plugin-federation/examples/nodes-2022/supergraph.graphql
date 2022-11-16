@@ -1,0 +1,517 @@
+schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(url: "https://specs.apollo.dev/join/v0.2", for: EXECUTION)
+{
+  query: Query
+  mutation: Mutation
+}
+
+directive @join__field(graph: join__Graph!, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean, override: String, usedOverridden: Boolean) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+
+directive @join__implements(graph: join__Graph!, interface: String!) repeatable on OBJECT | INTERFACE
+
+directive @join__type(graph: join__Graph!, key: join__FieldSet, extension: Boolean! = false, resolvable: Boolean! = true) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+
+directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
+
+type CreateInfo
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  bookmark: String
+  nodesCreated: Int!
+  relationshipsCreated: Int!
+}
+
+type CreateProductsMutationResponse
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  info: CreateInfo!
+  products: [Product!]!
+}
+
+type CreateReviewsMutationResponse
+  @join__type(graph: REVIEWS)
+{
+  info: CreateInfo!
+  reviews: [Review!]!
+}
+
+type DeleteInfo
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  bookmark: String
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
+
+type IDAggregateSelectionNonNullable
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  shortest: ID!
+  longest: ID!
+}
+
+type IntAggregateSelectionNonNullable
+  @join__type(graph: REVIEWS)
+{
+  max: Int!
+  min: Int!
+  average: Float!
+  sum: Int!
+}
+
+type IntAggregateSelectionNullable
+  @join__type(graph: LOCATIONS)
+{
+  max: Int
+  min: Int
+  average: Float
+  sum: Int
+}
+
+scalar join__FieldSet
+
+enum join__Graph {
+  LOCATIONS @join__graph(name: "locations", url: "http://localhost:4001/")
+  REVIEWS @join__graph(name: "reviews", url: "http://localhost:4002/")
+}
+
+scalar link__Import
+
+enum link__Purpose {
+  """
+  `SECURITY` features provide metadata necessary to securely resolve fields.
+  """
+  SECURITY
+
+  """
+  `EXECUTION` features provide metadata necessary for operation execution.
+  """
+  EXECUTION
+}
+
+type Mutation
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  createProducts(input: [ProductCreateInput!]!): CreateProductsMutationResponse!
+  deleteProducts(where: ProductWhere): DeleteInfo!
+  updateProducts(where: ProductWhere, update: ProductUpdateInput): UpdateProductsMutationResponse!
+  createReviews(input: [ReviewCreateInput!]!): CreateReviewsMutationResponse! @join__field(graph: REVIEWS)
+  deleteReviews(where: ReviewWhere, delete: ReviewDeleteInput): DeleteInfo! @join__field(graph: REVIEWS)
+  updateReviews(where: ReviewWhere, update: ReviewUpdateInput, connect: ReviewConnectInput, disconnect: ReviewDisconnectInput, create: ReviewRelationInput, delete: ReviewDeleteInput): UpdateReviewsMutationResponse! @join__field(graph: REVIEWS)
+}
+
+"""Pagination information (Relay)"""
+type PageInfo
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Product
+  @join__type(graph: LOCATIONS, key: "id")
+  @join__type(graph: REVIEWS, key: "id", resolvable: false)
+{
+  id: ID!
+  name: String @join__field(graph: LOCATIONS)
+  price: Int @join__field(graph: LOCATIONS)
+}
+
+type ProductAggregateSelection
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  count: Int!
+  id: IDAggregateSelectionNonNullable!
+  name: StringAggregateSelectionNullable! @join__field(graph: LOCATIONS)
+  price: IntAggregateSelectionNullable! @join__field(graph: LOCATIONS)
+}
+
+input ProductConnectWhere
+  @join__type(graph: REVIEWS)
+{
+  node: ProductWhere!
+}
+
+input ProductCreateInput
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  id: ID!
+}
+
+type ProductEdge
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  cursor: String!
+  node: Product!
+}
+
+input ProductOptions
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  """
+  Specify one or more ProductSort objects to sort Products by. The sorts will be applied in the order in which they are arranged in the array.
+  """
+  sort: [ProductSort!]
+  limit: Int
+  offset: Int
+}
+
+type ProductsConnection
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [ProductEdge!]!
+}
+
+"""
+Fields to sort Products by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductSort object.
+"""
+input ProductSort
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  id: SortDirection
+}
+
+input ProductUpdateInput
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  id: ID
+}
+
+input ProductWhere
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  OR: [ProductWhere!]
+  AND: [ProductWhere!]
+  id: ID
+  id_NOT: ID
+  id_IN: [ID!]
+  id_NOT_IN: [ID!]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+}
+
+type Query
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  products(where: ProductWhere, options: ProductOptions): [Product!]!
+  productsAggregate(where: ProductWhere): ProductAggregateSelection!
+  productsConnection(first: Int, after: String, where: ProductWhere, sort: [ProductSort]): ProductsConnection!
+  reviews(where: ReviewWhere, options: ReviewOptions): [Review!]! @join__field(graph: REVIEWS)
+  reviewsAggregate(where: ReviewWhere): ReviewAggregateSelection! @join__field(graph: REVIEWS)
+  reviewsConnection(first: Int, after: String, where: ReviewWhere, sort: [ReviewSort]): ReviewsConnection! @join__field(graph: REVIEWS)
+}
+
+type Review
+  @join__type(graph: REVIEWS)
+{
+  score: Int!
+  description: String!
+  product(where: ProductWhere, options: ProductOptions, directed: Boolean = true): Product!
+  productAggregate(where: ProductWhere, directed: Boolean = true): ReviewProductProductAggregationSelection
+  productConnection(where: ReviewProductConnectionWhere, first: Int, after: String, directed: Boolean = true, sort: [ReviewProductConnectionSort!]): ReviewProductConnection!
+}
+
+type ReviewAggregateSelection
+  @join__type(graph: REVIEWS)
+{
+  count: Int!
+  score: IntAggregateSelectionNonNullable!
+  description: StringAggregateSelectionNonNullable!
+}
+
+input ReviewConnectInput
+  @join__type(graph: REVIEWS)
+{
+  product: ReviewProductConnectFieldInput
+}
+
+input ReviewCreateInput
+  @join__type(graph: REVIEWS)
+{
+  score: Int!
+  description: String!
+  product: ReviewProductFieldInput
+}
+
+input ReviewDeleteInput
+  @join__type(graph: REVIEWS)
+{
+  product: ReviewProductDeleteFieldInput
+}
+
+input ReviewDisconnectInput
+  @join__type(graph: REVIEWS)
+{
+  product: ReviewProductDisconnectFieldInput
+}
+
+type ReviewEdge
+  @join__type(graph: REVIEWS)
+{
+  cursor: String!
+  node: Review!
+}
+
+input ReviewOptions
+  @join__type(graph: REVIEWS)
+{
+  """
+  Specify one or more ReviewSort objects to sort Reviews by. The sorts will be applied in the order in which they are arranged in the array.
+  """
+  sort: [ReviewSort!]
+  limit: Int
+  offset: Int
+}
+
+input ReviewProductAggregateInput
+  @join__type(graph: REVIEWS)
+{
+  count: Int
+  count_LT: Int
+  count_LTE: Int
+  count_GT: Int
+  count_GTE: Int
+  AND: [ReviewProductAggregateInput!]
+  OR: [ReviewProductAggregateInput!]
+  node: ReviewProductNodeAggregationWhereInput
+}
+
+input ReviewProductConnectFieldInput
+  @join__type(graph: REVIEWS)
+{
+  where: ProductConnectWhere
+}
+
+type ReviewProductConnection
+  @join__type(graph: REVIEWS)
+{
+  edges: [ReviewProductRelationship!]!
+  totalCount: Int!
+  pageInfo: PageInfo!
+}
+
+input ReviewProductConnectionSort
+  @join__type(graph: REVIEWS)
+{
+  node: ProductSort
+}
+
+input ReviewProductConnectionWhere
+  @join__type(graph: REVIEWS)
+{
+  AND: [ReviewProductConnectionWhere!]
+  OR: [ReviewProductConnectionWhere!]
+  node: ProductWhere
+  node_NOT: ProductWhere
+}
+
+input ReviewProductCreateFieldInput
+  @join__type(graph: REVIEWS)
+{
+  node: ProductCreateInput!
+}
+
+input ReviewProductDeleteFieldInput
+  @join__type(graph: REVIEWS)
+{
+  where: ReviewProductConnectionWhere
+}
+
+input ReviewProductDisconnectFieldInput
+  @join__type(graph: REVIEWS)
+{
+  where: ReviewProductConnectionWhere
+}
+
+input ReviewProductFieldInput
+  @join__type(graph: REVIEWS)
+{
+  create: ReviewProductCreateFieldInput
+  connect: ReviewProductConnectFieldInput
+}
+
+input ReviewProductNodeAggregationWhereInput
+  @join__type(graph: REVIEWS)
+{
+  AND: [ReviewProductNodeAggregationWhereInput!]
+  OR: [ReviewProductNodeAggregationWhereInput!]
+  id_EQUAL: ID
+}
+
+type ReviewProductProductAggregationSelection
+  @join__type(graph: REVIEWS)
+{
+  count: Int!
+  node: ReviewProductProductNodeAggregateSelection
+}
+
+type ReviewProductProductNodeAggregateSelection
+  @join__type(graph: REVIEWS)
+{
+  id: IDAggregateSelectionNonNullable!
+}
+
+type ReviewProductRelationship
+  @join__type(graph: REVIEWS)
+{
+  cursor: String!
+  node: Product!
+}
+
+input ReviewProductUpdateConnectionInput
+  @join__type(graph: REVIEWS)
+{
+  node: ProductUpdateInput
+}
+
+input ReviewProductUpdateFieldInput
+  @join__type(graph: REVIEWS)
+{
+  where: ReviewProductConnectionWhere
+  update: ReviewProductUpdateConnectionInput
+  connect: ReviewProductConnectFieldInput
+  disconnect: ReviewProductDisconnectFieldInput
+  create: ReviewProductCreateFieldInput
+  delete: ReviewProductDeleteFieldInput
+}
+
+input ReviewRelationInput
+  @join__type(graph: REVIEWS)
+{
+  product: ReviewProductCreateFieldInput
+}
+
+type ReviewsConnection
+  @join__type(graph: REVIEWS)
+{
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [ReviewEdge!]!
+}
+
+"""
+Fields to sort Reviews by. The order in which sorts are applied is not guaranteed when specifying many fields in one ReviewSort object.
+"""
+input ReviewSort
+  @join__type(graph: REVIEWS)
+{
+  score: SortDirection
+  description: SortDirection
+}
+
+input ReviewUpdateInput
+  @join__type(graph: REVIEWS)
+{
+  score: Int
+  description: String
+  score_INCREMENT: Int
+  score_DECREMENT: Int
+  product: ReviewProductUpdateFieldInput
+}
+
+input ReviewWhere
+  @join__type(graph: REVIEWS)
+{
+  OR: [ReviewWhere!]
+  AND: [ReviewWhere!]
+  score: Int
+  score_NOT: Int
+  score_IN: [Int!]
+  score_NOT_IN: [Int!]
+  score_LT: Int
+  score_LTE: Int
+  score_GT: Int
+  score_GTE: Int
+  description: String
+  description_NOT: String
+  description_IN: [String!]
+  description_NOT_IN: [String!]
+  description_CONTAINS: String
+  description_NOT_CONTAINS: String
+  description_STARTS_WITH: String
+  description_NOT_STARTS_WITH: String
+  description_ENDS_WITH: String
+  description_NOT_ENDS_WITH: String
+  product: ProductWhere
+  product_NOT: ProductWhere
+  productAggregate: ReviewProductAggregateInput
+  productConnection: ReviewProductConnectionWhere
+  productConnection_NOT: ReviewProductConnectionWhere
+}
+
+enum SortDirection
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  """Sort by field values in ascending order."""
+  ASC
+
+  """Sort by field values in descending order."""
+  DESC
+}
+
+type StringAggregateSelectionNonNullable
+  @join__type(graph: REVIEWS)
+{
+  shortest: String!
+  longest: String!
+}
+
+type StringAggregateSelectionNullable
+  @join__type(graph: LOCATIONS)
+{
+  shortest: String
+  longest: String
+}
+
+type UpdateInfo
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  bookmark: String
+  nodesCreated: Int!
+  nodesDeleted: Int!
+  relationshipsCreated: Int!
+  relationshipsDeleted: Int!
+}
+
+type UpdateProductsMutationResponse
+  @join__type(graph: LOCATIONS)
+  @join__type(graph: REVIEWS)
+{
+  info: UpdateInfo!
+  products: [Product!]!
+}
+
+type UpdateReviewsMutationResponse
+  @join__type(graph: REVIEWS)
+{
+  info: UpdateInfo!
+  reviews: [Review!]!
+}

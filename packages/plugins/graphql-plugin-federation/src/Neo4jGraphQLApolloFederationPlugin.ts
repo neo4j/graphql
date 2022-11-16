@@ -25,6 +25,7 @@ import { OGM } from "@neo4j/graphql-ogm";
 import type { SchemaDefinition } from "@neo4j/graphql";
 import { ConstDirectiveNode, DefinitionNode, DocumentNode, FieldDefinitionNode, GraphQLSchema, Kind } from "graphql";
 import type * as neo4j from "neo4j-driver";
+import type { Neo4jGraphQLConstructor } from "@neo4j/graphql";
 
 type FederationDirective =
     | "@key"
@@ -48,7 +49,7 @@ export class Neo4jGraphQLApolloFederationPlugin {
     >;
     private ogm: OGM;
 
-    constructor(typeDefs: TypeSource, driver: neo4j.Driver) {
+    constructor(typeDefs: TypeSource, driver: neo4j.Driver, database?: string) {
         this.importArgument = new Map([
             ["@key", "@federation__key"],
             ["@shareable", "@federation__shareable"],
@@ -68,7 +69,16 @@ export class Neo4jGraphQLApolloFederationPlugin {
 
         const filteredTypeDefs = this.filterFederationDirectives(typeDefs);
 
-        this.ogm = new OGM({ typeDefs: filteredTypeDefs, driver });
+        const ogmOptions: Record<string, any> = { typeDefs: filteredTypeDefs, driver };
+        if (database) {
+            ogmOptions.config = {
+                driverConfig: {
+                    database,
+                },
+            };
+        }
+
+        this.ogm = new OGM(ogmOptions as Neo4jGraphQLConstructor);
     }
 
     public init(): Promise<void> {
