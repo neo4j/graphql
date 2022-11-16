@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import type { Variable } from "../..";
+import type { CypherEnvironment } from "../../Environment";
 import type { Expr } from "../../types";
 import { CypherFunction } from "./CypherFunction";
 
@@ -34,4 +36,62 @@ export function head(expr: Expr): CypherFunction {
 
 export function last(expr: Expr): CypherFunction {
     return new CypherFunction("last", [expr]);
+}
+
+// reduce(accumulator = initial, variable IN list | expression)
+
+/** Predicate function that uses a list comprehension "var IN list WHERE .." */
+class ReducerFunction extends CypherFunction {
+    private accVariable: Variable;
+    private defaultValue: Expr;
+    private variable: Variable;
+    private listExpr: Expr;
+    private mapExpr: Expr;
+
+    constructor({
+        accVariable,
+        defaultValue,
+        variable,
+        listExpr,
+        mapExpr,
+    }: {
+        accVariable: Variable;
+        defaultValue: Expr;
+        variable: Variable;
+        listExpr: Expr;
+        mapExpr: Expr;
+    }) {
+        super("reduce");
+        this.accVariable = accVariable;
+        this.defaultValue = defaultValue;
+        this.variable = variable;
+        this.listExpr = listExpr;
+        this.mapExpr = mapExpr;
+    }
+
+    getCypher(env: CypherEnvironment): string {
+        const accStr = `${this.accVariable.getCypher(env)} = ${this.defaultValue.getCypher(env)}`;
+
+        const variableStr = this.variable.getCypher(env);
+        const listExprStr = this.listExpr.getCypher(env);
+        const mapExprStr = this.mapExpr.getCypher(env);
+
+        return `${this.name}(${accStr}, ${variableStr} IN ${listExprStr} | ${mapExprStr})`;
+    }
+}
+
+export function reduce(
+    accVariable: Variable,
+    defaultValue: Expr,
+    variable: Variable,
+    listExpr: Expr,
+    mapExpr: Expr
+): CypherFunction {
+    return new ReducerFunction({
+        accVariable,
+        defaultValue,
+        variable,
+        listExpr,
+        mapExpr,
+    });
 }
