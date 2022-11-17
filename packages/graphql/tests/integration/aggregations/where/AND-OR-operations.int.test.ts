@@ -202,7 +202,33 @@ describe("Nested within AND/OR", () => {
     });
 
     test("AND within an AND", async () => {
-        const query = ``;
+        const query = `
+            query {
+                ${postType.plural}(where: { 
+                    likesAggregate: {
+                        AND: [
+                            { count_LTE: 2 }
+                            {
+                                AND: [
+                                    {
+                                        node: {
+                                            testString_SHORTEST_LT: 4
+                                        }
+                                    }
+                                    {
+                                        node: {
+                                            testString_EQUAL: "${testString5}"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }) {
+                    content
+                }
+            }
+        `;
 
         const result = await graphql({
             schema: await neoSchema.getSchema(),
@@ -211,10 +237,43 @@ describe("Nested within AND/OR", () => {
         });
 
         expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [postType.plural]: expect.toIncludeSameMembers([
+                {
+                    content: content5,
+                },
+            ]),
+        });
     });
 
     test("OR within an OR", async () => {
-        const query = ``;
+        const query = `
+            query {
+                ${postType.plural}(where: { 
+                    likesAggregate: {
+                        OR: [
+                            { count_LTE: 2 }
+                            {
+                                OR: [
+                                    {
+                                        node: {
+                                            testString_SHORTEST_LT: 4
+                                        }
+                                    }
+                                    {
+                                        node: {
+                                            testString_EQUAL: "${testString5}"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }) {
+                    content
+                }
+            }
+        `;
 
         const result = await graphql({
             schema: await neoSchema.getSchema(),
@@ -223,10 +282,49 @@ describe("Nested within AND/OR", () => {
         });
 
         expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [postType.plural]: expect.toIncludeSameMembers([
+                {
+                    content: content3,
+                },
+                {
+                    content: content4,
+                },
+                {
+                    content: content5,
+                },
+            ]),
+        });
     });
 
     test("OR within an AND", async () => {
-        const query = ``;
+        const query = `
+            query {
+                ${postType.plural}(where: { 
+                    likesAggregate: {
+                        AND: [
+                            { count_LTE: 2 }
+                            {
+                                OR: [
+                                    {
+                                        node: {
+                                            testString_SHORTEST_LT: 4
+                                        }
+                                    }
+                                    {
+                                        node: {
+                                            testString_EQUAL: "${testString5}"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }) {
+                    content
+                }
+            }
+        `;
 
         const result = await graphql({
             schema: await neoSchema.getSchema(),
@@ -235,10 +333,46 @@ describe("Nested within AND/OR", () => {
         });
 
         expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [postType.plural]: expect.toIncludeSameMembers([
+                {
+                    content: content4,
+                },
+                {
+                    content: content5,
+                },
+            ]),
+        });
     });
 
     test("AND within an OR", async () => {
-        const query = ``;
+        const query = `
+            query {
+                ${postType.plural}(where: { 
+                    likesAggregate: {
+                        OR: [
+                            { count_GTE: 2 }
+                            {
+                                AND: [
+                                    {
+                                        node: {
+                                            testString_SHORTEST_LT: 4
+                                        }
+                                    }
+                                    {
+                                        node: {
+                                            testString_EQUAL: "${testString5}"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }) {
+                    content
+                }
+            }
+        `;
 
         const result = await graphql({
             schema: await neoSchema.getSchema(),
@@ -247,5 +381,21 @@ describe("Nested within AND/OR", () => {
         });
 
         expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [postType.plural]: expect.toIncludeSameMembers([
+                {
+                    content: content1,
+                },
+                {
+                    content: content2,
+                },
+                {
+                    content: content3,
+                },
+                {
+                    content: content5,
+                },
+            ]),
+        });
     });
 });
