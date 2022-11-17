@@ -101,14 +101,6 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
 }
 
 function getDeleteReturn(context: Context): Array<string> {
-    // return context.subscriptionsEnabled
-    //     ? [
-    //           `WITH ${META_CYPHER_VARIABLE}`,
-    //           `UNWIND ${META_CYPHER_VARIABLE} AS m`,
-    //           `RETURN collect(DISTINCT m) AS ${META_CYPHER_VARIABLE}`,
-    //       ]
-    //     : [];
-
     return context.subscriptionsEnabled
         ? [
               `WITH collect(${META_CYPHER_VARIABLE}) as ${META_CYPHER_VARIABLE}`,
