@@ -103,9 +103,9 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
 function getDeleteReturn(context: Context): Array<string> {
     return context.subscriptionsEnabled
         ? [
-              `WITH ${META_CYPHER_VARIABLE}`,
-              `UNWIND ${META_CYPHER_VARIABLE} AS m`,
-              `RETURN collect(DISTINCT m) AS ${META_CYPHER_VARIABLE}`,
+              `WITH collect(${META_CYPHER_VARIABLE}) as ${META_CYPHER_VARIABLE}`,
+              `WITH REDUCE(m=[], n IN ${META_CYPHER_VARIABLE} | m + n) as ${META_CYPHER_VARIABLE}`,
+              `RETURN ${META_CYPHER_VARIABLE}`,
           ]
         : [];
 }
