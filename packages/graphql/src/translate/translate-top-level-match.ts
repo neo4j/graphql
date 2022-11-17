@@ -209,7 +209,7 @@ export function preComputedWhereFields(
                         const fieldType = refNode.primitiveFields.find((name) => name.fieldName === fieldName)?.typeMeta
                             .name;
                         let property =
-                            fieldType === "String"
+                            (fieldType === "String" && logicalOperator !== "EQUAL") || (["AVERAGE", "LONGEST", "SHORTEST"].includes(aggregationOperator || "") && fieldType === "String")
                                 ? Cypher.size(target.property(fieldName))
                                 : target.property(fieldName);
                         property = aggregationOperator ? createAggregateOperation(property, aggregationOperator) : property
