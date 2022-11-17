@@ -4218,7 +4218,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@webpack-cli/serve@npm:1.7.0, @webpack-cli/serve@npm:^1.7.0":
+"@webpack-cli/serve@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@webpack-cli/serve@npm:2.0.0"
+  peerDependencies:
+    webpack: 5.x.x
+    webpack-cli: 5.x.x
+  peerDependenciesMeta:
+    webpack-dev-server:
+      optional: true
+  checksum: d5cd72589d3563e21dedbd9e05102ef87f7e325a1de15fb7db0906132440556920719ce012e0f052efd1bc4c1fbaf3fb123552c5f3476339657ebf29c5c81732
+  languageName: node
+  linkType: hard
+
+"@webpack-cli/serve@npm:^1.7.0":
   version: 1.7.0
   resolution: "@webpack-cli/serve@npm:1.7.0"
   peerDependencies:
@@ -14313,7 +14326,7 @@ __metadata:
     "@types/react-dom": 18.0.9
     "@types/react-router-dom": 5.3.3
     "@types/showdown": 2.0.0
-    "@webpack-cli/serve": 1.7.0
+    "@webpack-cli/serve": 2.0.0
     css-loader: 6.7.2
     dotenv-webpack: 7.1.1
     file-loader: 6.2.0
