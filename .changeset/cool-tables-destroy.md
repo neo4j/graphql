@@ -1,5 +1,4 @@
 ---
-"graphql-manual": patch
 "@neo4j/graphql": patch
 ---
 
