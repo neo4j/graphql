@@ -1,5 +1,14 @@
 # @neo4j/graphql
 
+## 3.12.2
+
+### Patch Changes
+
+-   [#2431](https://github.com/neo4j/graphql/pull/2431) [`82846ef0a`](https://github.com/neo4j/graphql/commit/82846ef0a5ac0c778d295970405626bed829cff3) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - remove dependency from crypto
+
+-   Updated dependencies [[`e23691152`](https://github.com/neo4j/graphql/commit/e23691152db927d03891c592a716ca41e58d5f47), [`4c79ec3cf`](https://github.com/neo4j/graphql/commit/4c79ec3cf29ea7f0cd0e5fc18f98e65c221af8e5)]:
+    -   @neo4j/cypher-builder@0.1.5
+
 ## 3.12.1
 
 ### Patch Changes
