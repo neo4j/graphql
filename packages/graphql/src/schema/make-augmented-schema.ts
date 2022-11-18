@@ -332,7 +332,12 @@ function makeAugmentedSchema(
         const interfaceSortableFields = getSortableFields(interfaceFields).reduce(
             (res, f) => ({
                 ...res,
-                [f.fieldName]: sortDirection.getTypeName(),
+                [f.fieldName]: {
+                    type: sortDirection.getTypeName(),
+                    directives: graphqlDirectivesToCompose(
+                        f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                    ),
+                },
             }),
             {}
         );
@@ -578,7 +583,12 @@ function makeAugmentedSchema(
         const sortFields = getSortableFields(node).reduce(
             (res, f) => ({
                 ...res,
-                [f.fieldName]: sortDirection.getTypeName(),
+                [f.fieldName]: {
+                    type: sortDirection.getTypeName(),
+                    directives: graphqlDirectivesToCompose(
+                        f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                    ),
+                },
             }),
             {}
         );

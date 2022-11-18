@@ -26,6 +26,7 @@ import type { ObjectFields } from "./get-obj-field-meta";
 import getSortableFields from "./get-sortable-fields";
 import { addDirectedArgument } from "./directed-argument";
 import { connectionFieldResolver } from "./pagination";
+import { graphqlDirectivesToCompose } from "./to-compose";
 
 function createConnectionFields({
     connectionFields,
@@ -51,6 +52,9 @@ function createConnectionFields({
                 node: `${connectionField.relationship.typeMeta.name}!`,
             });
         });
+        const deprecatedDirectives = graphqlDirectivesToCompose(
+            connectionField.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+        );
 
         const connectionWhereName = `${connectionField.typeMeta.name}Where`;
 
@@ -94,7 +98,10 @@ function createConnectionFields({
                 (["ALL", "NONE", "SINGLE", "SOME"] as const).reduce(
                     (acc, filter) => ({
                         ...acc,
-                        [`${connectionField.fieldName}_${filter}`]: connectionWhere,
+                        [`${connectionField.fieldName}_${filter}`]: {
+                            type: connectionWhere,
+                            directives: deprecatedDirectives,
+                        },
                     }),
                     {}
                 )
@@ -221,10 +228,14 @@ function createConnectionFields({
         }
 
         if (!connectionField.relationship.writeonly) {
+            const deprecatedDirectives = graphqlDirectivesToCompose(
+                connectionField.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+            );
             composeNode.addFields({
                 [connectionField.fieldName]: {
                     type: connection.NonNull,
                     args: composeNodeArgs,
+                    directives: deprecatedDirectives,
                     resolve: (source, args: ConnectionQueryArgs, _ctx, info: GraphQLResolveInfo) => {
                         return connectionFieldResolver({
                             connectionField,

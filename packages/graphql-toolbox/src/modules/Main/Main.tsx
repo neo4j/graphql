@@ -26,6 +26,7 @@ import { Editor } from "../EditorView/Editor";
 import { AuthContext } from "../../contexts/auth";
 import { ScreenContext, Screen } from "../../contexts/screen";
 import { invokeSegmentAnalytics } from "../../analytics/segment-snippet";
+import { tracking } from "../../analytics/tracking";
 
 export const Main = () => {
     const auth = useContext(AuthContext);
@@ -52,8 +53,28 @@ export const Main = () => {
         );
     }
 
+    const Banner = () => {
+        const handleInterestedInGraphQLaaSClick = () => {
+            window.open("https://forms.gle/uQgai8zaemJz6X4B6", "GraphQLaaSInterestForm");
+            tracking.trackExploreGraphQLaaSLink({ screen: screen.view });
+        };
+
+        return (
+            <div
+                className="h-8 w-full n-bg-primary-70 text-white text-center cursor-pointer leading-8"
+                onClick={handleInterestedInGraphQLaaSClick}
+                onKeyDown={handleInterestedInGraphQLaaSClick}
+                role="button"
+                tabIndex={0}
+            >
+                Want us to manage your <strong>Neo4j GraphQL API</strong>? Register your interest here!
+            </div>
+        );
+    };
+
     return (
         <div className="flex w-full h-full flex-col">
+            <Banner />
             <TopBar />
             <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
                 {screen.view === Screen.TYPEDEFS ? (
