@@ -22,10 +22,9 @@ import { mergeTypeDefs } from "@graphql-tools/merge";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { IResolvers, makeDirectiveNode, TypeSource } from "@graphql-tools/utils";
 import { OGM } from "@neo4j/graphql-ogm";
-import type { SchemaDefinition } from "@neo4j/graphql";
+import type { SchemaDefinition, Neo4jGraphQLConstructor } from "@neo4j/graphql";
 import { ConstDirectiveNode, DefinitionNode, DocumentNode, FieldDefinitionNode, GraphQLSchema, Kind } from "graphql";
 import type * as neo4j from "neo4j-driver";
-import type { Neo4jGraphQLConstructor } from "@neo4j/graphql";
 
 type FederationDirective =
     | "@key"
