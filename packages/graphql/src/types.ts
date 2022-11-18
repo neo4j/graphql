@@ -356,7 +356,7 @@ export interface CypherQueryOptions {
 }
 
 /** Input field for graphql-compose */
-export type InputField = { type: string; defaultValue?: string, directives?: Directive[] } | string;
+export type InputField = { type: string; defaultValue?: string; directives?: Directive[] } | string;
 
 export interface Neo4jGraphQLAuthPlugin {
     rolesPath?: string;
@@ -383,6 +383,9 @@ export type RelationshipSubscriptionMeta = {
     id_to: Integer | string | number;
     fromTypename: string;
     toTypename: string;
+    // TODO: temporary
+    fromLabels: string;
+    toLabels: string;
     properties: {
         from: Record<string, any>;
         to: Record<string, any>;

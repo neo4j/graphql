@@ -105,6 +105,9 @@ function serializeEvent(event: EventMeta): SubscriptionsEvent | undefined {
             fromTypename: serializeNeo4jValue(event.fromTypename),
             toTypename: serializeNeo4jValue(event.toTypename),
             relationshipName: event.relationshipName,
+            // TODO: temporary
+            fromLabels: serializeNeo4jValue(event.fromLabels),
+            toLabels: serializeNeo4jValue(event.toLabels),
         };
     } else {
         return undefined;

@@ -29,6 +29,8 @@ type EventMetaParameters = {
     toVariable: string;
     fromTypename: string;
     toTypename: string;
+    fromLabels?: string;
+    toLabels?: string;
 };
 
 export function createConnectionEventMeta(params: EventMetaParameters): string {
@@ -43,9 +45,11 @@ export function createConnectionEventMetaObject({
     typename,
     fromTypename,
     toTypename,
+    fromLabels,
+    toLabels,
 }: EventMetaParameters): string {
     const idsAndProperties = createEventMetaIdsAndProperties({ relVariable, fromVariable, toVariable });
-    return `{ event: "${event}", ${idsAndProperties}, timestamp: timestamp(), relationshipName: "${typename}", fromTypename: "${fromTypename}", toTypename: "${toTypename}" }`;
+    return `{ event: "${event}", ${idsAndProperties}, timestamp: timestamp(), relationshipName: "${typename}", fromTypename: "${fromTypename}", toTypename: "${toTypename}", fromLabels: "${fromLabels}", toLabels: "${toLabels}" }`;
 }
 
 function createEventMetaIdsAndProperties({
