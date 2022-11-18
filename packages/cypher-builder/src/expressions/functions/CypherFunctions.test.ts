@@ -46,4 +46,17 @@ describe("Functions", () => {
 
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
     });
+
+    test("custom function", () => {
+        const myFunction = new Cypher.Function("myFunction", [new Cypher.Literal("test"), new Cypher.Param("test2")]);
+        const queryResult = new TestClause(myFunction).build();
+
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"myFunction(\\"test\\", $param0)"`);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "test2",
+            }
+        `);
+    });
 });

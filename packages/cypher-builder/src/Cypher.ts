@@ -75,6 +75,8 @@ export {
 export { plus, minus } from "./expressions/operations/math";
 
 // --Functions
+export { CypherFunction as Function } from "./expressions/functions/CypherFunction";
+
 export {
     coalesce,
     point,
@@ -93,6 +95,9 @@ export {
     sum,
     randomUUID,
 } from "./expressions/functions/CypherFunction";
+
+export * from "./expressions/functions/StringFunctions";
+
 export * from "./expressions/functions/ListFunctions";
 export { any, all, exists, single } from "./expressions/functions/PredicateFunctions";
 
@@ -104,7 +109,6 @@ export type { CypherEnvironment as Environment } from "./Environment";
 export type { ComparisonOp } from "./expressions/operations/comparison";
 export type { BooleanOp } from "./expressions/operations/boolean";
 export type { Expr, Predicate, Operation } from "./types";
-export type { CypherFunction as Function } from "./expressions/functions/CypherFunction";
 export type { ProjectionColumn } from "./clauses/sub-clauses/Projection";
 export type { SetParam } from "./clauses/sub-clauses/Set";
 export type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
