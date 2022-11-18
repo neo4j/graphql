@@ -178,8 +178,10 @@ export function preComputedWhereFields(
             if (direction === "IN") {
                 cypherRelation.reverse();
             }
-            const match = new Cypher.Match(cypherRelation);
 
+            const matchQuery = new Cypher.Match(cypherRelation);
+            const returnVariables = [] as Array<"*" | Cypher.ProjectionColumn>;
+            const predicates = [] as Cypher.Predicate[];
             Object.entries(value as any).forEach(([key, value]) => {
                 let operation: Cypher.ComparisonOp | undefined;
                 if (["count", "count_LT", "count_LTE", "count_GT", "count_GTE"].includes(key)) {
@@ -192,51 +194,72 @@ export function preComputedWhereFields(
                         param: paramName,
                     });
                     const operationVar = new Cypher.Variable();
-                    match.return([operation, operationVar]);
-                    topLevelWith.where(Cypher.eq(operationVar, new Cypher.Param(true))); // TODO: not just and
+                    returnVariables.push([operation, operationVar]);
+                    predicates.push(Cypher.eq(operationVar, new Cypher.Param(true)));
+                    return;
                 }
                 if (["node", "edge"].includes(key)) {
-                    let target: Cypher.Relationship | Cypher.Node;
-                    if (key === "edge") {
-                        target = cypherRelation;
-                    } else {
-                        target = aggregationTarget;
-                    }
-                    Object.entries(value as any).forEach(([innerKey, innerValue]) => {
-                        const paramName = new Cypher.Param(innerValue);
-                        const { fieldName, aggregationOperator, logicalOperator } = aggregationFieldRegEx.exec(innerKey)
-                            ?.groups as AggregationFieldRegexGroups;
-                        const fieldType = refNode.primitiveFields.find((name) => name.fieldName === fieldName)?.typeMeta
-                            .name;
-                        let property =
-                            (fieldType === "String" && logicalOperator !== "EQUAL") || (["AVERAGE", "LONGEST", "SHORTEST"].includes(aggregationOperator || "") && fieldType === "String")
-                                ? Cypher.size(target.property(fieldName))
-                                : target.property(fieldName);
-                        property = aggregationOperator ? createAggregateOperation(property, aggregationOperator) : property
-
-                        operation = createBaseOperation({
-                            operator: logicalOperator || "EQ",
-                            property,
-                            param: paramName,
-                        });
-                        const operationVar = new Cypher.Variable();
-                        match.return([operation, operationVar]);
-                        topLevelWith.where(Cypher.eq(operationVar, new Cypher.Param(true))); // TODO: not just and
-                    });
-
-                    // TODO edges
-
+                    const target = key === "edge" ? cypherRelation : aggregationTarget;
+                    const [_returnVariables, _predicates] = r(value, refNode, target);
+                    returnVariables.push(..._returnVariables);
+                    predicates.push(..._predicates);
                     // const aggregationOperators = ["SHORTEST", "LONGEST", "MIN", "MAX", "SUM"];
                 }
             });
+            console.log(predicates);
+            topLevelWith.where(Cypher.and(...predicates));
+            matchQuery.return(...returnVariables);
             returnClause = Cypher.concat(
                 returnClause,
-                new Cypher.Call(match).innerWith(matchNode)
+                new Cypher.Call(matchQuery).innerWith(matchNode)
                 // new Cypher.With("*")
             );
         }
     });
     return returnClause;
+}
+
+function r(
+    value: any,
+    refNode: Node,
+    target: Cypher.Node | Cypher.Relationship
+): [Array<"*" | Cypher.ProjectionColumn>, Cypher.Predicate[]] {
+    const returnVariables = [] as Array<"*" | Cypher.ProjectionColumn>;
+    const predicates = [] as Cypher.Predicate[];
+
+    Object.entries(value).forEach(([innerKey, innerValue]) => {
+        if (["AND", "OR"].includes(innerKey)) {
+            const binaryOp = innerKey === "AND" ? Cypher.and : Cypher.or;
+            const [a,b] =(innerValue as Array<any>).reduce((prev, elementValue) => {
+                const [_returnVariables, _predicates] = r(elementValue, refNode, target);
+                prev[0].push(_returnVariables)
+                prev[1].push(_predicates)
+            }, [[], []]);
+            returnVariables.push(...a);
+            predicates.push(binaryOp(...b));
+        } else {
+            const paramName = new Cypher.Param(innerValue);
+            const { fieldName, aggregationOperator, logicalOperator } = aggregationFieldRegEx.exec(innerKey)
+                ?.groups as AggregationFieldRegexGroups;
+            const fieldType = refNode.primitiveFields.find((name) => name.fieldName === fieldName)?.typeMeta.name;
+            let property =
+                (fieldType === "String" && logicalOperator !== "EQUAL") ||
+                (["AVERAGE", "LONGEST", "SHORTEST"].includes(aggregationOperator || "") && fieldType === "String")
+                    ? Cypher.size(target.property(fieldName))
+                    : target.property(fieldName);
+            property = aggregationOperator ? createAggregateOperation(property, aggregationOperator) : property;
+
+            const operation = createBaseOperation({
+                operator: logicalOperator || "EQ",
+                property,
+                param: paramName,
+            });
+            const operationVar = new Cypher.Variable();
+            returnVariables.push([operation, operationVar]);
+            predicates.push(Cypher.eq(operationVar, new Cypher.Param(true)));
+        }
+    });
+    return [returnVariables, predicates];
 }
 
 function createAggregateOperation(
