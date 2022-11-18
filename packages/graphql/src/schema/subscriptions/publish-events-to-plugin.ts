@@ -36,9 +36,14 @@ export function publishEventsToPlugin(
         const metadata: EventMeta[] = executeResult.records[0]?.meta || [];
         const serializedEvents = filterTruthy(metadata.map(serializeEvent));
 
-        const serializedEventsWithoutDuplicates = removeDuplicateEvents("delete", serializedEvents);
+        const serializedEventsWithoutDuplicatesDelete = removeDuplicateEvents("delete", serializedEvents);
+        const serializedEventsWithoutDuplicates = removeDuplicateEvents(
+            "disconnect",
+            serializedEventsWithoutDuplicatesDelete
+        );
         for (const subscriptionsEvent of serializedEventsWithoutDuplicates) {
             try {
+                console.log("publish!", subscriptionsEvent);
                 const publishPromise = plugin.publish(subscriptionsEvent); // Not using await to avoid blocking
                 if (publishPromise) {
                     publishPromise.catch((error) => {
@@ -53,7 +58,7 @@ export function publishEventsToPlugin(
 }
 
 function removeDuplicateEvents(
-    eventType: "create" | "update" | "delete",
+    eventType: "create" | "update" | "delete" | "connect" | "disconnect",
     events: SubscriptionsEvent[]
 ): SubscriptionsEvent[] {
     const result = [] as SubscriptionsEvent[];

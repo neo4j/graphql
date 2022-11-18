@@ -214,3298 +214,7 @@ subscription SubscriptionPerson {
 }
 `;
 
-    // test("disconnect via update - disconnect subscription sends events both ways", async () => {
-    //     // 1. create
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             actors: {
-    //                             create: [
-    //                                 {
-    //                                 node: {
-    //                                     name: "Keanu Reeves"
-    //                                 },
-    //                                 edge: {
-    //                                     screenTime: 42
-    //                                 }
-    //                                 }
-    //                             ]
-    //                             },
-    //                             title: "John Wick",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-
-    //     // 2. subscribe both ways
-    //     await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-    //     await wsClient.subscribe(actorSubscriptionQuery(typeActor));
-
-    //     // 3. perform update on created node
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //                 mutation {
-    //                     ${typeMovie.operations.update}(
-    //                             where: {
-    //                               title: "John Wick"
-    //                             },
-    //                             disconnect: {
-    //                                 actors:  [
-    //                                     {
-    //                                       where: {
-    //                                             node: {
-    //                                                 name: "Keanu Reeves"
-    //                                             }
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             }
-    //                     ) {
-    //                         ${typeMovie.plural} {
-    //                             title
-    //                         }
-    //                     }
-    //                 }
-    //             `,
-    //         })
-    //         .expect(200);
-
-    //     expect(wsClient.errors).toEqual([]);
-    //     expect(wsClient2.errors).toEqual([]);
-
-    //     expect(wsClient2.events).toHaveLength(1);
-    //     expect(wsClient.events).toHaveLength(1);
-
-    //     expect(wsClient2.events).toIncludeSameMembers([
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "actors",
-    //                 deletedRelationship: {
-    //                     actors: {
-    //                         screenTime: 42,
-    //                         node: {
-    //                             name: "Keanu Reeves",
-    //                         },
-    //                     },
-    //                     directors: null,
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    //     expect(wsClient.events).toIncludeSameMembers([
-    //         {
-    //             [typeActor.operations.subscribe.disconnected]: {
-    //                 [typeActor.operations.subscribe.payload.disconnected]: {
-    //                     name: "Keanu Reeves",
-    //                 },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "movies",
-    //                 deletedRelationship: {
-    //                     movies: {
-    //                         screenTime: 42,
-    //                         node: {
-    //                             title: "John Wick",
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    // });
-
-    // test("disconnect via update - disconnect subscription sends events one way: union type", async () => {
-    //     // 1. create
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             directors: {
-    //                                 ${typeActor.name}: {
-    //                                     create: [
-    //                                         {
-    //                                             node: {
-    //                                                 name: "Keanu Reeves"
-    //                                             },
-    //                                             edge: {
-    //                                                 year: 2019
-    //                                             }
-    //                                         }
-    //                                     ]
-    //                                 },
-    //                                 ${typePerson.name}: {
-    //                                     create: [
-    //                                         {
-    //                                             node: {
-    //                                                 name: "Jim",
-    //                                                 reputation: 10
-    //                                             },
-    //                                             edge: {
-    //                                                 year: 2020
-    //                                             }
-    //                                         }
-    //                                     ]
-    //                                 }
-    //                             },
-    //                             title: "John Wick",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-
-    //     // 2. subscribe both ways
-    //     await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-    //     await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-    //     // 3. perform update on created node
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //                 mutation {
-    //                     ${typeMovie.operations.update}(
-    //                             where: {
-    //                               title: "John Wick"
-    //                             },
-    //                             disconnect: {
-    //                                 directors: {
-    //                                     ${typeActor.name}: [
-    //                                       {
-    //                                         where: {
-    //                                           node: {
-    //                                             name: "Keanu Reeves"
-    //                                           }
-    //                                         }
-    //                                       }
-    //                                     ],
-    //                                     ${typePerson.name}: [
-    //                                       {
-    //                                         where: {
-    //                                           edge: {
-    //                                             year: 2020
-    //                                           }
-    //                                         }
-    //                                       }
-    //                                     ]
-    //                                   }
-    //                             }
-    //                     ) {
-    //                         ${typeMovie.plural} {
-    //                             title
-    //                         }
-    //                     }
-    //                 }
-    //             `,
-    //         })
-    //         .expect(200);
-
-    //     expect(wsClient.errors).toEqual([]);
-    //     expect(wsClient2.errors).toEqual([]);
-
-    //     expect(wsClient2.events).toHaveLength(2);
-    //     expect(wsClient.events).toHaveLength(0);
-
-    //     expect(wsClient2.events).toIncludeSameMembers([
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "directors",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: {
-    //                         year: 2019,
-    //                         node: {
-    //                             name: "Keanu Reeves",
-    //                         },
-    //                     },
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "directors",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: {
-    //                         year: 2020,
-    //                         node: {
-    //                             name: "Jim",
-    //                             reputation: 10,
-    //                         },
-    //                     },
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    // });
-
-    // test("disconnect via update - disconnect subscription sends events one way: interface type, by common field", async () => {
-    //     // 1. create
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             reviewers: {
-    //                             create: [
-    //                                 {
-    //                                 node: {
-    //                                     ${typePerson.name}: {
-    //                                         name: "Ana",
-    //                                         reputation: 10
-    //                                     },
-    //                                     ${typeInfluencer.name}: {
-    //                                         url: "/bob",
-    //                                         reputation: 10
-    //                                     }
-    //                                 },
-    //                                 edge: {
-    //                                     score: 100
-    //                                 }
-    //                                 }
-    //                             ]
-    //                             },
-    //                             title: "John Wick",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-
-    //     // 2. subscribe both ways
-    //     await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-    //     await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-    //     // 3. perform update on created node
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //                 mutation {
-    //                     ${typeMovie.operations.update}(
-    //                             where: {
-    //                               title: "John Wick"
-    //                             },
-    //                             disconnect: {
-    //                                 reviewers:  [
-    //                                     {
-    //                                       where: {
-    //                                             node: {
-    //                                                 reputation: 10
-    //                                             }
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             }
-    //                     ) {
-    //                         ${typeMovie.plural} {
-    //                             title
-    //                         }
-    //                     }
-    //                 }
-    //             `,
-    //         })
-    //         .expect(200);
-
-    //     expect(wsClient.errors).toEqual([]);
-    //     expect(wsClient2.errors).toEqual([]);
-
-    //     expect(wsClient2.events).toHaveLength(2);
-    //     expect(wsClient.events).toHaveLength(1);
-
-    //     expect(wsClient2.events).toIncludeSameMembers([
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 100,
-    //                         node: {
-    //                             name: "Ana",
-    //                             reputation: 10,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 100,
-    //                         node: {
-    //                             url: "/bob",
-    //                             reputation: 10,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    //     expect(wsClient.events).toIncludeSameMembers([
-    //         {
-    //             [typePerson.operations.subscribe.disconnected]: {
-    //                 [typePerson.operations.subscribe.payload.disconnected]: {
-    //                     name: "Ana",
-    //                 },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "movies",
-    //                 deletedRelationship: {
-    //                     movies: {
-    //                         score: 100,
-    //                         node: {
-    //                             title: "John Wick",
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    // });
-
-    // test("disconnect via update - disconnect subscription sends events one way: interface type, by specific fields", async () => {
-    //     // 1. create
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             reviewers: {
-    //                             create: [
-    //                                 {
-    //                                 node: {
-    //                                     ${typePerson.name}: {
-    //                                         name: "Ana",
-    //                                         reputation: 100
-    //                                     },
-    //                                     ${typeInfluencer.name}: {
-    //                                         url: "/bob",
-    //                                         reputation: 1
-    //                                     }
-    //                                 },
-    //                                 edge: {
-    //                                     score: 10
-    //                                 }
-    //                                 }
-    //                             ]
-    //                             },
-    //                             title: "John Wick",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-
-    //     // 2. subscribe both ways
-    //     await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-    //     await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-    //     // 3. perform update on created node
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //                 mutation {
-    //                     ${typeMovie.operations.update}(
-    //                             where: {
-    //                               title: "John Wick"
-    //                             },
-    //                             disconnect: {
-    //                                 reviewers:  [
-    //                                     {
-    //                                       where: {
-    //                                             node: {
-    //                                                 _on: {
-    //                                                     ${typePerson}: {
-    //                                                         name: "Ana"
-    //                                                     },
-    //                                                     ${typeInfluencer}: {
-    //                                                         reputation: 1
-    //                                                     }
-    //                                                 }
-    //                                             }
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             }
-    //                     ) {
-    //                         ${typeMovie.plural} {
-    //                             title
-    //                         }
-    //                     }
-    //                 }
-    //             `,
-    //         })
-    //         .expect(200);
-
-    //     expect(wsClient.errors).toEqual([]);
-    //     expect(wsClient2.errors).toEqual([]);
-
-    //     expect(wsClient2.events).toHaveLength(2);
-    //     expect(wsClient.events).toHaveLength(1);
-
-    //     expect(wsClient2.events).toIncludeSameMembers([
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 10,
-    //                         node: {
-    //                             name: "Ana",
-    //                             reputation: 100,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 10,
-    //                         node: {
-    //                             url: "/bob",
-    //                             reputation: 1,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    //     expect(wsClient.events).toIncludeSameMembers([
-    //         {
-    //             [typePerson.operations.subscribe.disconnected]: {
-    //                 [typePerson.operations.subscribe.payload.disconnected]: {
-    //                     name: "Ana",
-    //                 },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "movies",
-    //                 deletedRelationship: {
-    //                     movies: {
-    //                         score: 10,
-    //                         node: {
-    //                             title: "John Wick",
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    // });
-
-    // test("disconnect via update - nested disconnect subscription sends events one way: interface type, by common field", async () => {
-    //     // 1. create
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             reviewers: {
-    //                             create: [
-    //                                     {
-    //                                     node: {
-    //                                         ${typePerson.name}: {
-    //                                             name: "Ana",
-    //                                             reputation: 10
-    //                                         },
-    //                                         ${typeInfluencer.name}: {
-    //                                             url: "/bob",
-    //                                             reputation: 10
-    //                                         }
-    //                                     },
-    //                                     edge: {
-    //                                         score: 100
-    //                                     }
-    //                                 }
-    //                             ]
-    //                             },
-    //                             title: "John Wick",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             reviewers: {
-    //                                 connect: [
-    //                                     {
-    //                                         where: {
-    //                                             node: {
-    //                                                 reputation: 10
-    //                                             }
-    //                                         },
-    //                                         edge: {
-    //                                             score: 42
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             },
-    //                             title: "Constantine",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-
-    //     // 2. subscribe both ways
-    //     await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-    //     await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-    //     // 3. perform update on created node
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //                 mutation {
-    //                     ${typeMovie.operations.update}(
-    //                             where: {
-    //                               title: "John Wick"
-    //                             },
-    //                             disconnect: {
-    //                                 reviewers:  [
-    //                                     {
-    //                                       where: {
-    //                                             node: {
-    //                                                 reputation: 10
-    //                                             }
-    //                                         },
-    //                                         disconnect: {
-    //                                             _on: {
-    //                                                 ${typePerson}: [
-    //                                                     {
-    //                                                         movies: [
-    //                                                             {
-    //                                                                 where: {
-    //                                                                     node: {
-    //                                                                         title: "Constantine"
-    //                                                                     }
-    //                                                                 }
-    //                                                             }
-    //                                                         ]
-    //                                                     }
-    //                                                 ]
-    //                                             }
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             }
-    //                     ) {
-    //                         ${typeMovie.plural} {
-    //                             title
-    //                         }
-    //                     }
-    //                 }
-    //             `,
-    //         })
-    //         .expect(200);
-
-    //     expect(wsClient.errors).toEqual([]);
-    //     expect(wsClient2.errors).toEqual([]);
-
-    //     expect(wsClient2.events).toHaveLength(3);
-    //     expect(wsClient.events).toHaveLength(2);
-
-    //     expect(wsClient2.events).toIncludeSameMembers([
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 100,
-    //                         node: {
-    //                             name: "Ana",
-    //                             reputation: 10,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 42,
-    //                         node: {
-    //                             name: "Ana",
-    //                             reputation: 10,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 100,
-    //                         node: {
-    //                             url: "/bob",
-    //                             reputation: 10,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    //     expect(wsClient.events).toIncludeSameMembers([
-    //         {
-    //             [typePerson.operations.subscribe.disconnected]: {
-    //                 [typePerson.operations.subscribe.payload.disconnected]: {
-    //                     name: "Ana",
-    //                 },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "movies",
-    //                 deletedRelationship: {
-    //                     movies: {
-    //                         score: 100,
-    //                         node: {
-    //                             title: "John Wick",
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typePerson.operations.subscribe.disconnected]: {
-    //                 [typePerson.operations.subscribe.payload.disconnected]: {
-    //                     name: "Ana",
-    //                 },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "movies",
-    //                 deletedRelationship: {
-    //                     movies: {
-    //                         score: 42,
-    //                         node: {
-    //                             title: "Constantine",
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    // });
-
-    // test("disconnect via update - nested disconnect subscription sends events one way: interface type, by specific field", async () => {
-    //     // 1. create
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             reviewers: {
-    //                             create: [
-    //                                     {
-    //                                     node: {
-    //                                         ${typePerson.name}: {
-    //                                             name: "Ana",
-    //                                             reputation: 100
-    //                                         },
-    //                                         ${typeInfluencer.name}: {
-    //                                             url: "/bob",
-    //                                             reputation: 100
-    //                                         }
-    //                                     },
-    //                                     edge: {
-    //                                         score: 10
-    //                                     }
-    //                                 }
-    //                             ]
-    //                             },
-    //                             title: "John Wick",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             reviewers: {
-    //                                 connect: [
-    //                                     {
-    //                                         where: {
-    //                                             node: {
-    //                                                 _on: {
-    //                                                     ${typePerson.name}: {
-    //                                                         name: "Ana"
-    //                                                     },
-    //                                                     ${typeInfluencer.name}: {
-    //                                                         url: "/bob"
-    //                                                     }
-    //                                                 }
-    //                                             }
-    //                                         },
-    //                                         edge: {
-    //                                             score: 42
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             },
-    //                             title: "Constantine",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-
-    //     // 2. subscribe both ways
-    //     await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-    //     await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-    //     // 3. perform update on created node
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //                 mutation {
-    //                     ${typeMovie.operations.update}(
-    //                             where: {
-    //                               title: "John Wick"
-    //                             },
-    //                             disconnect: {
-    //                                 reviewers:  [
-    //                                     {
-    //                                       where: {
-    //                                             node: {
-    //                                                 reputation: 100
-    //                                             }
-    //                                         },
-    //                                         disconnect: {
-    //                                             _on: {
-    //                                                 ${typePerson}: [
-    //                                                     {
-    //                                                         movies: [
-    //                                                             {
-    //                                                                 where: {
-    //                                                                     edge: {
-    //                                                                         score: 42
-    //                                                                     }
-    //                                                                 }
-    //                                                             }
-    //                                                         ]
-    //                                                     }
-    //                                                 ]
-    //                                             }
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             }
-    //                     ) {
-    //                         ${typeMovie.plural} {
-    //                             title
-    //                         }
-    //                     }
-    //                 }
-    //             `,
-    //         })
-    //         .expect(200);
-
-    //     expect(wsClient.errors).toEqual([]);
-    //     expect(wsClient2.errors).toEqual([]);
-
-    //     expect(wsClient2.events).toHaveLength(3);
-    //     expect(wsClient.events).toHaveLength(2);
-
-    //     expect(wsClient2.events).toIncludeSameMembers([
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 42,
-    //                         node: {
-    //                             name: "Ana",
-    //                             reputation: 100,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 10,
-    //                         node: {
-    //                             name: "Ana",
-    //                             reputation: 100,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 10,
-    //                         node: {
-    //                             url: "/bob",
-    //                             reputation: 100,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    //     expect(wsClient.events).toIncludeSameMembers([
-    //         {
-    //             [typePerson.operations.subscribe.disconnected]: {
-    //                 [typePerson.operations.subscribe.payload.disconnected]: {
-    //                     name: "Ana",
-    //                 },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "movies",
-    //                 deletedRelationship: {
-    //                     movies: {
-    //                         score: 42,
-    //                         node: {
-    //                             title: "Constantine",
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typePerson.operations.subscribe.disconnected]: {
-    //                 [typePerson.operations.subscribe.payload.disconnected]: {
-    //                     name: "Ana",
-    //                 },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "movies",
-    //                 deletedRelationship: {
-    //                     movies: {
-    //                         score: 10,
-    //                         node: {
-    //                             title: "John Wick",
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    // });
-
-    // test("disconnect via nested update - disconnect subscription sends events one way: union type", async () => {
-    //     // 1. create
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             actors: {
-    //                                 create: [
-    //                                     {
-    //                                     node: {
-    //                                         name: "Keanu"
-    //                                     },
-    //                                     edge: {
-    //                                         screenTime: 42
-    //                                     }
-    //                                     }
-    //                                 ]
-    //                             },
-    //                             directors: {
-    //                                 ${typeActor.name}: {
-    //                                     create: [
-    //                                         {
-    //                                             node: {
-    //                                                 name: "Jill"
-    //                                             },
-    //                                             edge: {
-    //                                                 year: 2020
-    //                                             }
-    //                                         }
-    //                                     ]
-    //                                 },
-    //                                 ${typePerson.name}: {
-    //                                     create: [
-    //                                         {
-    //                                             node: {
-    //                                                 name: "Jim",
-    //                                                 reputation: 10
-    //                                             },
-    //                                             edge: {
-    //                                                 year: 2020
-    //                                             }
-    //                                         }
-    //                                     ]
-    //                                 }
-    //                             },
-    //                             title: "John Wick",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-
-    //     // 2. subscribe both ways
-    //     await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-    //     await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-    //     // 3. perform update on created node
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //                 mutation {
-    //                     ${typeMovie.operations.update}(
-    //                             where: {
-    //                               title: "John Wick"
-    //                             },
-    //                             update: {
-    //                                 title: "John WICK",
-    //                                 directors: {
-    //                                   ${typeActor.name}: [
-    //                                     {
-    //                                       disconnect: [
-    //                                         {
-    //                                           where: {
-    //                                             edge: {
-    //                                               year: 2020
-    //                                             }
-    //                                           }
-    //                                         }
-    //                                       ]
-    //                                     }
-    //                                   ],
-    //                                   ${typePerson.name}: [
-    //                                     {
-    //                                       disconnect: [
-    //                                         {
-    //                                           where: {
-    //                                             node: {
-    //                                               name: "Jim"
-    //                                             }
-    //                                           }
-    //                                         }
-    //                                       ]
-    //                                     }
-    //                                   ]
-    //                                 },
-    //                                 actors: [
-    //                                   {
-    //                                     disconnect: [
-    //                                       {
-    //                                         where: {
-    //                                           node: {
-    //                                             name: "Keanu"
-    //                                           }
-    //                                         }
-    //                                       }
-    //                                     ]
-    //                                   }
-    //                                 ]
-    //                               }
-    //                     ) {
-    //                         ${typeMovie.plural} {
-    //                             title
-    //                         }
-    //                     }
-    //                 }
-    //             `,
-    //         })
-    //         .expect(200);
-
-    //     expect(wsClient.errors).toEqual([]);
-    //     expect(wsClient2.errors).toEqual([]);
-
-    //     expect(wsClient2.events).toHaveLength(3);
-    //     expect(wsClient.events).toHaveLength(0);
-
-    //     expect(wsClient2.events).toIncludeSameMembers([
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "John WICK" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "directors",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: {
-    //                         year: 2020,
-    //                         node: {
-    //                             name: "Jill",
-    //                         },
-    //                     },
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "John WICK" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "directors",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: {
-    //                         year: 2020,
-    //                         node: {
-    //                             name: "Jim",
-    //                             reputation: 10,
-    //                         },
-    //                     },
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "John WICK" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "actors",
-    //                 deletedRelationship: {
-    //                     actors: {
-    //                         screenTime: 42,
-    //                         node: {
-    //                             name: "Keanu",
-    //                         },
-    //                     },
-    //                     directors: null,
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    // });
-
-    // test("disconnect via nested update - disconnect subscription sends events one way: interface type", async () => {
-    //     // 1. create
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             actors: {
-    //                                 create: [
-    //                                     {
-    //                                     node: {
-    //                                         name: "Keanu"
-    //                                     },
-    //                                     edge: {
-    //                                         screenTime: 42
-    //                                     }
-    //                                     }
-    //                                 ]
-    //                             },
-    //                             reviewers: {
-    //                                 create: [
-    //                                         {
-    //                                         node: {
-    //                                             ${typePerson.name}: {
-    //                                                 name: "Ana",
-    //                                                 reputation: 10
-    //                                             },
-    //                                             ${typeInfluencer.name}: {
-    //                                                 url: "/bob",
-    //                                                 reputation: 10
-    //                                             }
-    //                                         },
-    //                                         edge: {
-    //                                             score: 100
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             },
-    //                             title: "John Wick",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             reviewers: {
-    //                                 connect: [
-    //                                     {
-    //                                         where: {
-    //                                             node: {
-    //                                                 _on: {
-    //                                                     ${typePerson.name}: {
-    //                                                         name: "Ana"
-    //                                                     },
-    //                                                     ${typeInfluencer.name}: {
-    //                                                         url: "/bob"
-    //                                                     }
-    //                                                 }
-    //                                             }
-    //                                         },
-    //                                         edge: {
-    //                                             score: 42
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             },
-    //                             title: "Constantine",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-
-    //     // 2. subscribe both ways
-    //     await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-    //     await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-    //     // 3. perform update on created node
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //                 mutation {
-    //                     ${typeMovie.operations.update}(
-    //                             where: {
-    //                               title: "John Wick"
-    //                             },
-    //                             update: {
-    //                                 title: "John WICK",
-    //                                 reviewers: [
-    //                                     {
-    //                                       update: {
-    //                                         node: {
-    //                                           _on: {
-    //                                             ${typePerson.name}: {
-    //                                               movies: [
-    //                                                 {
-    //                                                   disconnect: [
-    //                                                     {
-    //                                                       where: {
-    //                                                         edge: {
-    //                                                           score: 42
-    //                                                         }
-    //                                                       }
-    //                                                     }
-    //                                                   ]
-    //                                                 }
-    //                                               ]
-    //                                             }
-    //                                           }
-    //                                         }
-    //                                       }
-    //                                     }
-    //                                   ],
-    //                                 actors: [
-    //                                   {
-    //                                     disconnect: [
-    //                                       {
-    //                                         where: {
-    //                                           node: {
-    //                                             name: "Keanu"
-    //                                           }
-    //                                         }
-    //                                       }
-    //                                     ]
-    //                                   }
-    //                                 ]
-    //                               }
-    //                     ) {
-    //                         ${typeMovie.plural} {
-    //                             title
-    //                         }
-    //                     }
-    //                 }
-    //             `,
-    //         })
-    //         .expect(200);
-
-    //     expect(wsClient.errors).toEqual([]);
-    //     expect(wsClient2.errors).toEqual([]);
-
-    //     expect(wsClient2.events).toHaveLength(2);
-    //     expect(wsClient.events).toHaveLength(1);
-
-    //     expect(wsClient2.events).toIncludeSameMembers([
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 42,
-    //                         node: {
-    //                             name: "Ana",
-    //                             reputation: 10,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "John WICK" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "actors",
-    //                 deletedRelationship: {
-    //                     actors: {
-    //                         screenTime: 42,
-    //                         node: {
-    //                             name: "Keanu",
-    //                         },
-    //                     },
-    //                     directors: null,
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    // });
-
-    // test("disconnect via nested update - disconnect subscription sends events one way: interface to union type", async () => {
-    //     // 1. create
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //         mutation {
-    //             ${typeMovie.operations.create}(
-    //                 input: [
-    //                     {
-    //                         reviewers: {
-    //                             create: [
-    //                                     {
-    //                                     node: {
-    //                                         ${typePerson.name}: {
-    //                                             name: "Ana",
-    //                                             reputation: 10
-    //                                         },
-    //                                         ${typeInfluencer.name}: {
-    //                                             url: "/bob",
-    //                                             reputation: 10
-    //                                         }
-    //                                     },
-    //                                     edge: {
-    //                                         score: 100
-    //                                     }
-    //                                 }
-    //                             ]
-    //                         },
-    //                         title: "John Wick",
-    //                     }
-    //                 ]
-    //             ) {
-    //                 ${typeMovie.plural} {
-    //                     title
-    //                 }
-    //             }
-    //         }
-    //     `,
-    //         })
-    //         .expect(200);
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //         mutation {
-    //             ${typeMovie.operations.create}(
-    //                 input: [
-    //                     {
-    //                         reviewers: {
-    //                             connect: [
-    //                                 {
-    //                                     where: {
-    //                                         node: {
-    //                                             _on: {
-    //                                                 ${typePerson.name}: {
-    //                                                     name: "Ana"
-    //                                                 },
-    //                                                 ${typeInfluencer.name}: {
-    //                                                     url: "/bob"
-    //                                                 }
-    //                                             }
-    //                                         }
-    //                                     },
-    //                                     edge: {
-    //                                         score: 42
-    //                                     }
-    //                                 }
-    //                             ]
-    //                         },
-    //                         directors: {
-    //                             ${typeActor.name}: {
-    //                                 create: [
-    //                                     {
-    //                                         node: {
-    //                                             name: "Jill"
-    //                                         },
-    //                                         edge: {
-    //                                             year: 2018
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             },
-    //                             ${typePerson.name}: {
-    //                                 create: [
-    //                                     {
-    //                                         node: {
-    //                                             name: "Jim",
-    //                                             reputation: 10
-    //                                         },
-    //                                         edge: {
-    //                                             year: 2019
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             }
-    //                         },
-    //                         title: "Constantine",
-    //                     }
-    //                 ]
-    //             ) {
-    //                 ${typeMovie.plural} {
-    //                     title
-    //                 }
-    //             }
-    //         }
-    //     `,
-    //         })
-    //         .expect(200);
-
-    //     // 2. subscribe both ways
-    //     await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-    //     await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-    //     // 3. perform update on created node
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //                 mutation {
-    //                     ${typeMovie.operations.update}(
-    //                             where: {
-    //                               title: "John Wick"
-    //                             },
-    //                             update: {
-    //                                 title: "John WICK",
-    //                                 reviewers: [
-    //                                     {
-    //                                       update: {
-    //                                         node: {
-    //                                           _on: {
-    //                                             ${typePerson.name}: {
-    //                                               movies: [
-    //                                                 {
-    //                                                   disconnect: [
-    //                                                     {
-    //                                                       where: {
-    //                                                         node: {
-    //                                                           title: "Constantine"
-    //                                                         }
-    //                                                       },
-    //                                                       disconnect: {
-    //                                                         directors: {
-    //                                                           ${typePerson.name}: [
-    //                                                             {
-    //                                                               where: {
-    //                                                                 edge: {
-    //                                                                   year: 2019
-    //                                                                 }
-    //                                                               }
-    //                                                             }
-    //                                                           ],
-    //                                                           ${typeActor.name}: [
-    //                                                             {
-    //                                                               where: {
-    //                                                                 node: {
-    //                                                                   name: "Jill"
-    //                                                                 }
-    //                                                               }
-    //                                                             }
-    //                                                           ]
-    //                                                         }
-    //                                                       }
-    //                                                     }
-    //                                                   ]
-    //                                                 }
-    //                                               ]
-    //                                             },
-    //                                             ${typeInfluencer.name}: {
-    //                                               url: "/bob"
-    //                                             }
-    //                                           }
-    //                                         }
-    //                                       }
-    //                                     }
-    //                                 ]
-    //                               }
-    //                     ) {
-    //                         ${typeMovie.plural} {
-    //                             title
-    //                         }
-    //                     }
-    //                 }
-    //             `,
-    //         })
-    //         .expect(200);
-
-    //     expect(wsClient.errors).toEqual([]);
-    //     expect(wsClient2.errors).toEqual([]);
-
-    //     expect(wsClient2.events).toHaveLength(3);
-    //     expect(wsClient.events).toHaveLength(1);
-
-    //     expect(wsClient2.events).toIncludeSameMembers([
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 42,
-    //                         node: {
-    //                             name: "Ana",
-    //                             reputation: 10,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "directors",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: {
-    //                         year: 2018,
-    //                         node: {
-    //                             name: "Jill",
-    //                         },
-    //                     },
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "directors",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: {
-    //                         year: 2019,
-    //                         node: {
-    //                             name: "Jim",
-    //                             reputation: 10,
-    //                         },
-    //                     },
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    //     expect(wsClient.events).toIncludeSameMembers([
-    //         {
-    //             [typePerson.operations.subscribe.disconnected]: {
-    //                 [typePerson.operations.subscribe.payload.disconnected]: {
-    //                     name: "Ana",
-    //                 },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "movies",
-    //                 deletedRelationship: {
-    //                     movies: {
-    //                         score: 42,
-    //                         node: {
-    //                             title: "Constantine",
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    // });
-
-    // test("disconnect via nested update - disconnect subscription sends events one way: interface to union type - duplicate union nodes", async () => {
-    //     // 1. create
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //         mutation {
-    //             ${typeMovie.operations.create}(
-    //                 input: [
-    //                     {
-    //                         reviewers: {
-    //                             create: [
-    //                                     {
-    //                                     node: {
-    //                                         ${typePerson.name}: {
-    //                                             name: "Ana",
-    //                                             reputation: 10
-    //                                         },
-    //                                         ${typeInfluencer.name}: {
-    //                                             url: "/bob",
-    //                                             reputation: 10
-    //                                         }
-    //                                     },
-    //                                     edge: {
-    //                                         score: 100
-    //                                     }
-    //                                 }
-    //                             ]
-    //                         },
-    //                         title: "John Wick",
-    //                     }
-    //                 ]
-    //             ) {
-    //                 ${typeMovie.plural} {
-    //                     title
-    //                 }
-    //             }
-    //         }
-    //     `,
-    //         })
-    //         .expect(200);
-
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //         mutation {
-    //             ${typeMovie.operations.create}(
-    //                 input: [
-    //                     {
-    //                         reviewers: {
-    //                             connect: [
-    //                                 {
-    //                                     where: {
-    //                                         node: {
-    //                                             _on: {
-    //                                                 ${typePerson.name}: {
-    //                                                     name: "Ana"
-    //                                                 },
-    //                                                 ${typeInfluencer.name}: {
-    //                                                     url: "/bob"
-    //                                                 }
-    //                                             }
-    //                                         }
-    //                                     },
-    //                                     edge: {
-    //                                         score: 42
-    //                                     }
-    //                                 }
-    //                             ]
-    //                         },
-    //                         directors: {
-    //                             ${typeActor.name}: {
-    //                                 create: [
-    //                                     {
-    //                                         node: {
-    //                                             name: "Jill"
-    //                                         },
-    //                                         edge: {
-    //                                             year: 2018
-    //                                         }
-    //                                     },
-    //                                     {
-    //                                         node: {
-    //                                             name: "Jill"
-    //                                         },
-    //                                         edge: {
-    //                                             year: 2018
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             },
-    //                             ${typePerson.name}: {
-    //                                 create: [
-    //                                     {
-    //                                         node: {
-    //                                             name: "Jim",
-    //                                             reputation: 10
-    //                                         },
-    //                                         edge: {
-    //                                             year: 2019
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             }
-    //                         },
-    //                         title: "Constantine",
-    //                     }
-    //                 ]
-    //             ) {
-    //                 ${typeMovie.plural} {
-    //                     title
-    //                 }
-    //             }
-    //         }
-    //     `,
-    //         })
-    //         .expect(200);
-
-    //     // 2. subscribe both ways
-    //     await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-    //     await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-    //     // 3. perform update on created node
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //                 mutation {
-    //                     ${typeMovie.operations.update}(
-    //                             where: {
-    //                               title: "John Wick"
-    //                             },
-    //                             update: {
-    //                                 title: "John WICK",
-    //                                 reviewers: [
-    //                                     {
-    //                                       update: {
-    //                                         node: {
-    //                                           _on: {
-    //                                             ${typePerson.name}: {
-    //                                               movies: [
-    //                                                 {
-    //                                                   disconnect: [
-    //                                                     {
-    //                                                       where: {
-    //                                                         node: {
-    //                                                           title: "Constantine"
-    //                                                         }
-    //                                                       },
-    //                                                       disconnect: {
-    //                                                         directors: {
-    //                                                           ${typePerson.name}: [
-    //                                                             {
-    //                                                               where: {
-    //                                                                 edge: {
-    //                                                                   year: 2019
-    //                                                                 }
-    //                                                               }
-    //                                                             }
-    //                                                           ],
-    //                                                           ${typeActor.name}: [
-    //                                                             {
-    //                                                               where: {
-    //                                                                 node: {
-    //                                                                   name: "Jill"
-    //                                                                 }
-    //                                                               }
-    //                                                             }
-    //                                                           ]
-    //                                                         }
-    //                                                       }
-    //                                                     }
-    //                                                   ]
-    //                                                 }
-    //                                               ]
-    //                                             },
-    //                                             ${typeInfluencer.name}: {
-    //                                               url: "/bob"
-    //                                             }
-    //                                           }
-    //                                         }
-    //                                       }
-    //                                     }
-    //                                 ]
-    //                               }
-    //                     ) {
-    //                         ${typeMovie.plural} {
-    //                             title
-    //                         }
-    //                     }
-    //                 }
-    //             `,
-    //         })
-    //         .expect(200);
-
-    //     expect(wsClient.errors).toEqual([]);
-    //     expect(wsClient2.errors).toEqual([]);
-
-    //     expect(wsClient2.events).toHaveLength(4);
-    //     expect(wsClient.events).toHaveLength(1);
-
-    //     expect(wsClient2.events).toIncludeSameMembers([
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 42,
-    //                         node: {
-    //                             name: "Ana",
-    //                             reputation: 10,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "directors",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: {
-    //                         year: 2018,
-    //                         node: {
-    //                             name: "Jill",
-    //                         },
-    //                     },
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "directors",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: {
-    //                         year: 2018,
-    //                         node: {
-    //                             name: "Jill",
-    //                         },
-    //                     },
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "directors",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: {
-    //                         year: 2019,
-    //                         node: {
-    //                             name: "Jim",
-    //                             reputation: 10,
-    //                         },
-    //                     },
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    //     expect(wsClient.events).toIncludeSameMembers([
-    //         {
-    //             [typePerson.operations.subscribe.disconnected]: {
-    //                 [typePerson.operations.subscribe.payload.disconnected]: {
-    //                     name: "Ana",
-    //                 },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "movies",
-    //                 deletedRelationship: {
-    //                     movies: {
-    //                         score: 42,
-    //                         node: {
-    //                             title: "Constantine",
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    // });
-
-    // test("disconnect via nested update - disconnect subscription sends events one way: interface to union type - duplicate interface nodes", async () => {
-    //     // 1. create
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //         mutation {
-    //             ${typeMovie.operations.create}(
-    //                 input: [
-    //                     {
-    //                         reviewers: {
-    //                             create: [
-    //                                     {
-    //                                     node: {
-    //                                         ${typePerson.name}: {
-    //                                             name: "Ana",
-    //                                             reputation: 10
-    //                                         },
-    //                                         ${typeInfluencer.name}: {
-    //                                             url: "/bob",
-    //                                             reputation: 10
-    //                                         }
-    //                                     },
-    //                                     edge: {
-    //                                         score: 100
-    //                                     }
-    //                                 }
-    //                             ]
-    //                         },
-    //                         title: "John Wick",
-    //                     }
-    //                 ]
-    //             ) {
-    //                 ${typeMovie.plural} {
-    //                     title
-    //                 }
-    //             }
-    //         }
-    //     `,
-    //         })
-    //         .expect(200);
-    //     // duplicate node
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //         mutation {
-    //             ${typePerson.operations.create}(
-    //                 input: [
-    //                     {
-    //                         name: "Ana",
-    //                         reputation: 10,
-    //                         movies: {
-    //                             connect: [
-    //                                 {
-    //                                     where: {
-    //                                         node: {
-    //                                             title: "John Wick"
-    //                                         }
-    //                                     },
-    //                                     edge: {
-    //                                         score: 110
-    //                                     }
-    //                                 }
-    //                             ]
-    //                         }
-    //                     }
-    //                 ]
-    //             ) {
-    //                 ${typePerson.plural} {
-    //                     name
-    //                 }
-    //             }
-    //         }
-    //     `,
-    //         })
-    //         .expect(200);
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //         mutation {
-    //             ${typeMovie.operations.create}(
-    //                 input: [
-    //                     {
-    //                         reviewers: {
-    //                             connect: [
-    //                                 {
-    //                                     where: {
-    //                                         node: {
-    //                                             _on: {
-    //                                                 ${typePerson.name}: {
-    //                                                     name: "Ana"
-    //                                                 },
-    //                                                 ${typeInfluencer.name}: {
-    //                                                     url: "/bob"
-    //                                                 }
-    //                                             }
-    //                                         }
-    //                                     },
-    //                                     edge: {
-    //                                         score: 42
-    //                                     }
-    //                                 }
-    //                             ]
-    //                         },
-    //                         directors: {
-    //                             ${typeActor.name}: {
-    //                                 create: [
-    //                                     {
-    //                                         node: {
-    //                                             name: "Jill"
-    //                                         },
-    //                                         edge: {
-    //                                             year: 2018
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             },
-    //                             ${typePerson.name}: {
-    //                                 create: [
-    //                                     {
-    //                                         node: {
-    //                                             name: "Jim",
-    //                                             reputation: 10
-    //                                         },
-    //                                         edge: {
-    //                                             year: 2019
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             }
-    //                         },
-    //                         title: "Constantine",
-    //                     }
-    //                 ]
-    //             ) {
-    //                 ${typeMovie.plural} {
-    //                     title
-    //                 }
-    //             }
-    //         }
-    //     `,
-    //         })
-    //         .expect(200);
-
-    //     // 2. subscribe both ways
-    //     await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-    //     await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-    //     // 3. perform update on created node
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //                 mutation {
-    //                     ${typeMovie.operations.update}(
-    //                             where: {
-    //                               title: "John Wick"
-    //                             },
-    //                             update: {
-    //                                 title: "John WICK",
-    //                                 reviewers: [
-    //                                     {
-    //                                       update: {
-    //                                         node: {
-    //                                           _on: {
-    //                                             ${typePerson.name}: {
-    //                                               movies: [
-    //                                                 {
-    //                                                   disconnect: [
-    //                                                     {
-    //                                                       where: {
-    //                                                         node: {
-    //                                                           title: "Constantine"
-    //                                                         }
-    //                                                       },
-    //                                                       disconnect: {
-    //                                                         directors: {
-    //                                                           ${typePerson.name}: [
-    //                                                             {
-    //                                                               where: {
-    //                                                                 edge: {
-    //                                                                   year: 2019
-    //                                                                 }
-    //                                                               }
-    //                                                             }
-    //                                                           ],
-    //                                                           ${typeActor.name}: [
-    //                                                             {
-    //                                                               where: {
-    //                                                                 node: {
-    //                                                                   name: "Jill"
-    //                                                                 }
-    //                                                               }
-    //                                                             }
-    //                                                           ]
-    //                                                         }
-    //                                                       }
-    //                                                     }
-    //                                                   ]
-    //                                                 }
-    //                                               ]
-    //                                             },
-    //                                             ${typeInfluencer.name}: {
-    //                                               url: "/bob"
-    //                                             }
-    //                                           }
-    //                                         }
-    //                                       }
-    //                                     }
-    //                                 ]
-    //                               }
-    //                     ) {
-    //                         ${typeMovie.plural} {
-    //                             title
-    //                         }
-    //                     }
-    //                 }
-    //             `,
-    //         })
-    //         .expect(200);
-
-    //     expect(wsClient.errors).toEqual([]);
-    //     expect(wsClient2.errors).toEqual([]);
-
-    //     expect(wsClient2.events).toHaveLength(4);
-    //     expect(wsClient.events).toHaveLength(2);
-
-    //     expect(wsClient2.events).toIncludeSameMembers([
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 42,
-    //                         node: {
-    //                             name: "Ana",
-    //                             reputation: 10,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 42,
-    //                         node: {
-    //                             name: "Ana",
-    //                             reputation: 10,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "directors",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: {
-    //                         year: 2018,
-    //                         node: {
-    //                             name: "Jill",
-    //                         },
-    //                     },
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "directors",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: {
-    //                         year: 2019,
-    //                         node: {
-    //                             name: "Jim",
-    //                             reputation: 10,
-    //                         },
-    //                     },
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    //     expect(wsClient.events).toIncludeSameMembers([
-    //         {
-    //             [typePerson.operations.subscribe.disconnected]: {
-    //                 [typePerson.operations.subscribe.payload.disconnected]: {
-    //                     name: "Ana",
-    //                 },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "movies",
-    //                 deletedRelationship: {
-    //                     movies: {
-    //                         score: 42,
-    //                         node: {
-    //                             title: "Constantine",
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typePerson.operations.subscribe.disconnected]: {
-    //                 [typePerson.operations.subscribe.payload.disconnected]: {
-    //                     name: "Ana",
-    //                 },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "movies",
-    //                 deletedRelationship: {
-    //                     movies: {
-    //                         score: 42,
-    //                         node: {
-    //                             title: "Constantine",
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    // });
-
-    // test("disconnect via nested update - disconnect subscription sends events one way: union to interface type", async () => {
-    //     // 1. create
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             actors: {
-    //                                 create: [
-    //                                     {
-    //                                     node: {
-    //                                         name: "Jim",
-    //                                     },
-    //                                     edge: {
-    //                                         screenTime: 234
-    //                                     }
-    //                                     }
-    //                                 ]
-    //                             },
-    //                             reviewers: {
-    //                                 create: [
-    //                                         {
-    //                                         node: {
-    //                                             ${typePerson.name}: {
-    //                                                 name: "Ana",
-    //                                                 reputation: 100
-    //                                             },
-    //                                             ${typeInfluencer.name}: {
-    //                                                 url: "/bob",
-    //                                                 reputation: 100
-    //                                             }
-    //                                         },
-    //                                         edge: {
-    //                                             score: 10
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             },
-    //                             title: "Constantine",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             directors: {
-    //                                 ${typeActor.name}: {
-    //                                     create: [
-    //                                         {
-    //                                             node: {
-    //                                                 name: "Jim",
-    //                                                 movies: {
-    //                                                     connect: {
-    //                                                       where: {
-    //                                                         node: {
-    //                                                           title: "Constantine"
-    //                                                         }
-    //                                                       },
-    //                                                       edge: {
-    //                                                         screenTime: 234
-    //                                                       }
-    //                                                     }
-    //                                                   }
-    //                                             },
-    //                                             edge: {
-    //                                                 year: 2020
-    //                                             }
-    //                                         }
-    //                                     ]
-    //                                 },
-    //                                 ${typePerson.name}: {
-    //                                     create: [
-    //                                         {
-    //                                             node: {
-    //                                                 name: "Jill",
-    //                                                 reputation: 10
-    //                                             },
-    //                                             edge: {
-    //                                                 year: 2020
-    //                                             }
-    //                                         }
-    //                                     ]
-    //                                 }
-    //                             },
-    //                             title: "John Wick",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-
-    //     // 2. subscribe both ways
-    //     await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-    //     await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-    //     // 3. perform update on created node
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //                 mutation {
-    //                     ${typeMovie.operations.update}(
-    //                             where: {
-    //                               title: "John Wick"
-    //                             },
-    //                             update: {
-    //                                 title: "John WICK",
-    //                                 directors: {
-    //                                     ${typeActor.name}: [
-    //                                       {
-    //                                         update: {
-    //                                           node: {
-    //                                             movies: [
-    //                                               {
-    //                                                 disconnect: [
-    //                                                   {
-    //                                                     where: {
-    //                                                       edge: {
-    //                                                         screenTime: 234
-    //                                                       }
-    //                                                     },
-    //                                                     disconnect: {
-    //                                                       reviewers: [
-    //                                                         {
-    //                                                           where: {
-    //                                                             node: {
-    //                                                               reputation: 100
-    //                                                             }
-    //                                                           }
-    //                                                         }
-    //                                                       ]
-    //                                                     }
-    //                                                   }
-    //                                                 ]
-    //                                               }
-    //                                             ]
-    //                                           }
-    //                                         }
-    //                                       }
-    //                                     ]
-    //                                   }
-    //                               }
-    //                     ) {
-    //                         ${typeMovie.plural} {
-    //                             title
-    //                         }
-    //                     }
-    //                 }
-    //             `,
-    //         })
-    //         .expect(200);
-
-    //     expect(wsClient.errors).toEqual([]);
-    //     expect(wsClient2.errors).toEqual([]);
-
-    //     expect(wsClient2.events).toHaveLength(3);
-    //     expect(wsClient.events).toHaveLength(1);
-
-    //     expect(wsClient2.events).toIncludeSameMembers([
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 10,
-    //                         node: {
-    //                             name: "Ana",
-    //                             reputation: 100,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 10,
-    //                         node: {
-    //                             url: "/bob",
-    //                             reputation: 100,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "actors",
-    //                 deletedRelationship: {
-    //                     actors: {
-    //                         screenTime: 234,
-    //                         node: {
-    //                             name: "Jim",
-    //                         },
-    //                     },
-    //                     directors: null,
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    //     expect(wsClient.events).toIncludeSameMembers([
-    //         {
-    //             [typePerson.operations.subscribe.disconnected]: {
-    //                 [typePerson.operations.subscribe.payload.disconnected]: {
-    //                     name: "Ana",
-    //                 },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "movies",
-    //                 deletedRelationship: {
-    //                     movies: {
-    //                         score: 10,
-    //                         node: {
-    //                             title: "Constantine",
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    // });
-    // test("disconnect via nested update - disconnect subscription sends events one way: union to interface type - duplicate nodes in outer match", async () => {
-    //     // 1. create
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             actors: {
-    //                                 create: [
-    //                                     {
-    //                                     node: {
-    //                                         name: "Jim",
-    //                                     },
-    //                                     edge: {
-    //                                         screenTime: 234
-    //                                     }
-    //                                     },
-    //                                     {
-    //                                         node: {
-    //                                             name: "Jim",
-    //                                         },
-    //                                         edge: {
-    //                                             screenTime: 234
-    //                                         }
-    //                                         }
-    //                                 ]
-    //                             },
-    //                             reviewers: {
-    //                                 create: [
-    //                                         {
-    //                                         node: {
-    //                                             ${typePerson.name}: {
-    //                                                 name: "Ana",
-    //                                                 reputation: 100
-    //                                             },
-    //                                             ${typeInfluencer.name}: {
-    //                                                 url: "/bob",
-    //                                                 reputation: 100
-    //                                             }
-    //                                         },
-    //                                         edge: {
-    //                                             score: 10
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             },
-    //                             title: "Constantine",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             directors: {
-    //                                 ${typeActor.name}: {
-    //                                     create: [
-    //                                         {
-    //                                             node: {
-    //                                                 name: "Jim",
-    //                                                 movies: {
-    //                                                     connect: {
-    //                                                       where: {
-    //                                                         node: {
-    //                                                           title: "Constantine"
-    //                                                         }
-    //                                                       },
-    //                                                       edge: {
-    //                                                         screenTime: 234
-    //                                                       }
-    //                                                     }
-    //                                                   }
-    //                                             },
-    //                                             edge: {
-    //                                                 year: 2020
-    //                                             }
-    //                                         },
-    //                                         {
-    //                                             node: {
-    //                                                 name: "Jim",
-    //                                                 movies: {
-    //                                                     connect: {
-    //                                                       where: {
-    //                                                         node: {
-    //                                                           title: "Constantine"
-    //                                                         }
-    //                                                       },
-    //                                                       edge: {
-    //                                                         screenTime: 234
-    //                                                       }
-    //                                                     }
-    //                                                   }
-    //                                             },
-    //                                             edge: {
-    //                                                 year: 2020
-    //                                             }
-    //                                         }
-    //                                     ]
-    //                                 },
-    //                                 ${typePerson.name}: {
-    //                                     create: [
-    //                                         {
-    //                                             node: {
-    //                                                 name: "Jill",
-    //                                                 reputation: 10
-    //                                             },
-    //                                             edge: {
-    //                                                 year: 2020
-    //                                             }
-    //                                         }
-    //                                     ]
-    //                                 }
-    //                             },
-    //                             title: "John Wick",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-
-    //     // 2. subscribe both ways
-    //     await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-    //     await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-    //     // 3. perform update on created node
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //                 mutation {
-    //                     ${typeMovie.operations.update}(
-    //                             where: {
-    //                               title: "John Wick"
-    //                             },
-    //                             update: {
-    //                                 title: "John WICK",
-    //                                 directors: {
-    //                                     ${typeActor.name}: [
-    //                                       {
-    //                                         update: {
-    //                                           node: {
-    //                                             movies: [
-    //                                               {
-    //                                                 disconnect: [
-    //                                                   {
-    //                                                     where: {
-    //                                                       edge: {
-    //                                                         screenTime: 234
-    //                                                       }
-    //                                                     },
-    //                                                     disconnect: {
-    //                                                       reviewers: [
-    //                                                         {
-    //                                                           where: {
-    //                                                             node: {
-    //                                                               reputation: 100
-    //                                                             }
-    //                                                           }
-    //                                                         }
-    //                                                       ]
-    //                                                     }
-    //                                                   }
-    //                                                 ]
-    //                                               }
-    //                                             ]
-    //                                           }
-    //                                         }
-    //                                       }
-    //                                     ]
-    //                                   }
-    //                               }
-    //                     ) {
-    //                         ${typeMovie.plural} {
-    //                             title
-    //                         }
-    //                     }
-    //                 }
-    //             `,
-    //         })
-    //         .expect(200);
-
-    //     expect(wsClient.errors).toEqual([]);
-    //     expect(wsClient2.errors).toEqual([]);
-
-    //     expect(wsClient2.events).toHaveLength(4);
-    //     expect(wsClient.events).toHaveLength(1);
-
-    //     expect(wsClient2.events).toIncludeSameMembers([
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 10,
-    //                         node: {
-    //                             name: "Ana",
-    //                             reputation: 100,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 10,
-    //                         node: {
-    //                             url: "/bob",
-    //                             reputation: 100,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "actors",
-    //                 deletedRelationship: {
-    //                     actors: {
-    //                         screenTime: 234,
-    //                         node: {
-    //                             name: "Jim",
-    //                         },
-    //                     },
-    //                     directors: null,
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "actors",
-    //                 deletedRelationship: {
-    //                     actors: {
-    //                         screenTime: 234,
-    //                         node: {
-    //                             name: "Jim",
-    //                         },
-    //                     },
-    //                     directors: null,
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    //     expect(wsClient.events).toIncludeSameMembers([
-    //         {
-    //             [typePerson.operations.subscribe.disconnected]: {
-    //                 [typePerson.operations.subscribe.payload.disconnected]: {
-    //                     name: "Ana",
-    //                 },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "movies",
-    //                 deletedRelationship: {
-    //                     movies: {
-    //                         score: 10,
-    //                         node: {
-    //                             title: "Constantine",
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    // });
-    // test("disconnect via nested update - disconnect subscription sends events one way: union to interface type - duplicate nodes in inner match", async () => {
-    //     // 1. create
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             actors: {
-    //                                 create: [
-    //                                     {
-    //                                     node: {
-    //                                         name: "Jim",
-    //                                     },
-    //                                     edge: {
-    //                                         screenTime: 234
-    //                                     }
-    //                                     },
-    //                                 ]
-    //                             },
-    //                             reviewers: {
-    //                                 create: [
-    //                                         {
-    //                                         node: {
-    //                                             ${typePerson.name}: {
-    //                                                 name: "Ana",
-    //                                                 reputation: 100
-    //                                             },
-    //                                             ${typeInfluencer.name}: {
-    //                                                 url: "/bob",
-    //                                                 reputation: 100
-    //                                             }
-    //                                         },
-    //                                         edge: {
-    //                                             score: 10
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             },
-    //                             title: "Constantine",
-    //                         },
-    //                         {
-    //                             title: "Other Movie",
-    //                             actors: {
-    //                                 create: [
-    //                                     {
-    //                                     node: {
-    //                                         name: "Jim",
-    //                                     },
-    //                                     edge: {
-    //                                         screenTime: 234
-    //                                     }
-    //                                     },
-    //                                 ]
-    //                             }
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //             mutation {
-    //                 ${typeMovie.operations.create}(
-    //                     input: [
-    //                         {
-    //                             directors: {
-    //                                 ${typeActor.name}: {
-    //                                     connect: [
-    //                                         {
-    //                                            where: {
-    //                                                 node: {
-    //                                                     name: "Jim"
-    //                                                 }
-    //                                            },
-    //                                             connect: [
-    //                                                 {
-    //                                                     movies: [
-    //                                                         {
-    //                                                             where: {
-    //                                                                 node: {
-    //                                                                   title: "Other Movie"
-    //                                                                 }
-    //                                                               },
-    //                                                               edge: {
-    //                                                                 screenTime: 234
-    //                                                               }
-    //                                                         }
-    //                                                     ]
-    //                                                 }
-    //                                             ],
-    //                                             edge: {
-    //                                                 year: 1999
-    //                                             }
-    //                                         }
-    //                                     ],
-    //                                     create: [
-    //                                         {
-    //                                             node: {
-    //                                                 name: "Jim",
-    //                                                 movies: {
-    //                                                     connect: {
-    //                                                       where: {
-    //                                                         node: {
-    //                                                           title: "Constantine"
-    //                                                         }
-    //                                                       },
-    //                                                       edge: {
-    //                                                         screenTime: 23
-    //                                                       }
-    //                                                     }
-    //                                                   }
-    //                                             },
-    //                                             edge: {
-    //                                                 year: 2020
-    //                                             }
-    //                                         }
-    //                                     ]
-    //                                 },
-    //                                 ${typePerson.name}: {
-    //                                     create: [
-    //                                         {
-    //                                             node: {
-    //                                                 name: "Jill",
-    //                                                 reputation: 10
-    //                                             },
-    //                                             edge: {
-    //                                                 year: 2020
-    //                                             }
-    //                                         }
-    //                                     ]
-    //                                 }
-    //                             },
-    //                             title: "John Wick",
-    //                         }
-    //                     ]
-    //                 ) {
-    //                     ${typeMovie.plural} {
-    //                         title
-    //                     }
-    //                 }
-    //             }
-    //         `,
-    //         })
-    //         .expect(200);
-
-    //     // 2. subscribe both ways
-    //     await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-    //     await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-    //     // 3. perform update on created node
-    //     await supertest(server.path)
-    //         .post("")
-    //         .send({
-    //             query: `
-    //                 mutation {
-    //                     ${typeMovie.operations.update}(
-    //                             where: {
-    //                               title: "John Wick"
-    //                             },
-    //                             update: {
-    //                                 title: "John WICK",
-    //                                 directors: {
-    //                                     ${typeActor.name}: [
-    //                                       {
-    //                                         update: {
-    //                                           node: {
-    //                                             movies: [
-    //                                               {
-    //                                                 disconnect: [
-    //                                                   {
-    //                                                     where: {
-    //                                                       edge: {
-    //                                                         screenTime: 234
-    //                                                       }
-    //                                                     },
-    //                                                     disconnect: {
-    //                                                       reviewers: [
-    //                                                         {
-    //                                                           where: {
-    //                                                             node: {
-    //                                                               reputation: 100
-    //                                                             }
-    //                                                           }
-    //                                                         }
-    //                                                       ]
-    //                                                     }
-    //                                                   }
-    //                                                 ]
-    //                                               }
-    //                                             ]
-    //                                           }
-    //                                         }
-    //                                       }
-    //                                     ]
-    //                                   }
-    //                               }
-    //                     ) {
-    //                         ${typeMovie.plural} {
-    //                             title
-    //                         }
-    //                     }
-    //                 }
-    //             `,
-    //         })
-    //         .expect(200);
-
-    //     await delay(2);
-    //     expect(wsClient.errors).toEqual([]);
-    //     expect(wsClient2.errors).toEqual([]);
-
-    //     expect(wsClient2.events).toHaveLength(6);
-    //     expect(wsClient.events).toHaveLength(1);
-
-    //     expect(wsClient2.events).toIncludeSameMembers([
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 10,
-    //                         node: {
-    //                             name: "Ana",
-    //                             reputation: 100,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "reviewers",
-    //                 deletedRelationship: {
-    //                     actors: null,
-    //                     directors: null,
-    //                     reviewers: {
-    //                         score: 10,
-    //                         node: {
-    //                             url: "/bob",
-    //                             reputation: 100,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "actors",
-    //                 deletedRelationship: {
-    //                     actors: {
-    //                         screenTime: 234,
-    //                         node: {
-    //                             name: "Jim",
-    //                         },
-    //                     },
-    //                     directors: null,
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Other Movie" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "actors",
-    //                 deletedRelationship: {
-    //                     actors: {
-    //                         screenTime: 234,
-    //                         node: {
-    //                             name: "Jim",
-    //                         },
-    //                     },
-    //                     directors: null,
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Other Movie" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "actors",
-    //                 deletedRelationship: {
-    //                     actors: {
-    //                         screenTime: 234,
-    //                         node: {
-    //                             name: "Jim",
-    //                         },
-    //                     },
-    //                     directors: null,
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             [typeMovie.operations.subscribe.disconnected]: {
-    //                 [typeMovie.operations.subscribe.payload.disconnected]: { title: "Other Movie" },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "actors",
-    //                 deletedRelationship: {
-    //                     actors: {
-    //                         screenTime: 234,
-    //                         node: {
-    //                             name: "Jim",
-    //                         },
-    //                     },
-    //                     directors: null,
-    //                     reviewers: null,
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    //     expect(wsClient.events).toIncludeSameMembers([
-    //         {
-    //             [typePerson.operations.subscribe.disconnected]: {
-    //                 [typePerson.operations.subscribe.payload.disconnected]: {
-    //                     name: "Ana",
-    //                 },
-    //                 event: "DISCONNECT",
-
-    //                 relationshipFieldName: "movies",
-    //                 deletedRelationship: {
-    //                     movies: {
-    //                         score: 10,
-    //                         node: {
-    //                             title: "Constantine",
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ]);
-    // });
-
-    // =======================================
-    //
-
-    test("disconnect via delete - with relationships - standard type", async () => {
+    test("disconnect via update - disconnect subscription sends events both ways", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -3551,11 +260,11 @@ subscription SubscriptionPerson {
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.delete}(
+                        ${typeMovie.operations.update}(
                                 where: {
                                   title: "John Wick"
                                 },
-                                delete: {
+                                disconnect: {
                                     actors:  [
                                         {
                                           where: {
@@ -3567,14 +276,16 @@ subscription SubscriptionPerson {
                                     ]
                                 }
                         ) {
-                            nodesDeleted
-                            relationshipsDeleted
+                            ${typeMovie.plural} {
+                                title
+                            }
                         }
                     }
                 `,
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -3623,184 +334,7 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    test("disconnect via delete nested - with relationships - standard type", async () => {
-        // 1. create
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                mutation {
-                    ${typeMovie.operations.create}(
-                        input: [
-                            {
-                                actors: {
-                                create: [
-                                    {
-                                    node: {
-                                        name: "Keanu Reeves",
-                                        movies: {
-                                            create: [
-                                                {
-                                                    node: {
-                                                        title: "Matrix"
-                                                    },
-                                                    edge: {
-                                                        screenTime: 1000
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    edge: {
-                                        screenTime: 42
-                                    }
-                                    }
-                                ]
-                                },
-                                title: "John Wick",
-                            }
-                        ]
-                    ) {
-                        ${typeMovie.plural} {
-                            title
-                        }
-                    }
-                }
-            `,
-            })
-            .expect(200);
-
-        // 2. subscribe both ways
-        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-        await wsClient.subscribe(actorSubscriptionQuery(typeActor));
-
-        // 3. perform update on created node
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeMovie.operations.delete}(
-                                where: {
-                                  title: "John Wick"
-                                },
-                                delete: {
-                                    actors:  [
-                                        {
-                                          where: {
-                                                node: {
-                                                    name: "Keanu Reeves"
-                                                }
-                                            },
-                                            delete: {
-                                                movies:  [
-                                                    {
-                                                      where: {
-                                                            node: {
-                                                                title: "Matrix"
-                                                            }
-                                                        }
-                                                    }
-                                                ]
-                                            }
-                                        }
-                                    ]
-                                }
-                        ) {
-                            nodesDeleted
-                            relationshipsDeleted
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient2.errors).toEqual([]);
-
-        expect(wsClient2.events).toHaveLength(2);
-        expect(wsClient.events).toHaveLength(2);
-
-        expect(wsClient2.events).toIncludeSameMembers([
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "actors",
-                    deletedRelationship: {
-                        actors: {
-                            screenTime: 42,
-                            node: {
-                                name: "Keanu Reeves",
-                            },
-                        },
-                        directors: null,
-                        reviewers: null,
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "actors",
-                    deletedRelationship: {
-                        actors: {
-                            screenTime: 1000,
-                            node: {
-                                name: "Keanu Reeves",
-                            },
-                        },
-                        directors: null,
-                        reviewers: null,
-                    },
-                },
-            },
-        ]);
-        expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            screenTime: 42,
-                            node: {
-                                title: "John Wick",
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            screenTime: 1000,
-                            node: {
-                                title: "Matrix",
-                            },
-                        },
-                    },
-                },
-            },
-        ]);
-    });
-
-    test("disconnect via delete - with relationships - union type", async () => {
+    test("disconnect via update - disconnect subscription sends events one way: union type", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -3813,14 +347,6 @@ subscription SubscriptionPerson {
                                 directors: {
                                     ${typeActor.name}: {
                                         create: [
-                                            {
-                                                node: {
-                                                    name: "Keanu Reeves"
-                                                },
-                                                edge: {
-                                                    year: 2019
-                                                }
-                                            },
                                             {
                                                 node: {
                                                     name: "Keanu Reeves"
@@ -3841,18 +367,9 @@ subscription SubscriptionPerson {
                                                 edge: {
                                                     year: 2020
                                                 }
-                                            },
-                                            {
-                                                node: {
-                                                    name: "Jill",
-                                                    reputation: 10
-                                                },
-                                                edge: {
-                                                    year: 2020
-                                                }
                                             }
                                         ]
-                                    }   
+                                    }
                                 },
                                 title: "John Wick",
                             }
@@ -3878,66 +395,51 @@ subscription SubscriptionPerson {
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.delete}(
+                        ${typeMovie.operations.update}(
                                 where: {
                                   title: "John Wick"
                                 },
-                                delete: {
+                                disconnect: {
                                     directors: {
-                                      ${typeActor.name}: [
-                                        {
-                                          where: {
-                                            node: {
-                                              name: "Keanu Reeves"
+                                        ${typeActor.name}: [
+                                          {
+                                            where: {
+                                              node: {
+                                                name: "Keanu Reeves"
+                                              }
                                             }
                                           }
-                                        }
-                                      ],
-                                      ${typePerson.name}: [
-                                        {
-                                          where: {
-                                            node: {
-                                              reputation: 10
+                                        ],
+                                        ${typePerson.name}: [
+                                          {
+                                            where: {
+                                              edge: {
+                                                year: 2020
+                                              }
                                             }
                                           }
-                                        }
-                                      ]
-                                    }
-                                  }
+                                        ]
+                                      }
+                                }
                         ) {
-                            nodesDeleted
-                            relationshipsDeleted
+                            ${typeMovie.plural} {
+                                title
+                            }
                         }
                     }
                 `,
             })
             .expect(200);
 
+        await delay(2);
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
-        expect(wsClient2.events).toHaveLength(4);
+        expect(wsClient2.events).toHaveLength(2);
         expect(wsClient.events).toHaveLength(0);
 
         expect(wsClient2.events).toIncludeSameMembers([
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "directors",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: {
-                            year: 2019,
-                            node: {
-                                name: "Keanu Reeves",
-                            },
-                        },
-                        reviewers: null,
-                    },
-                },
-            },
             {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
@@ -3975,236 +477,10 @@ subscription SubscriptionPerson {
                     },
                 },
             },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "directors",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: {
-                            year: 2020,
-                            node: {
-                                name: "Jill",
-                                reputation: 10,
-                            },
-                        },
-                        reviewers: null,
-                    },
-                },
-            },
         ]);
     });
 
-    test.only("disconnect via delete nested - with relationships - union type", async () => {
-        // 1. create
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                mutation {
-                    ${typeMovie.operations.create}(
-                        input: [
-                            {
-                                directors: {
-                                    ${typeActor.name}: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    name: "Keanu Reeves",
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix"
-                                                                },
-                                                                edge: {
-                                                                    screenTime: 1000
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                edge: {
-                                                    year: 2019
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    name: "Keanu Reeves"
-                                                },
-                                                edge: {
-                                                    year: 2019
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    ${typePerson.name}: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    name: "Jim",
-                                                    reputation: 10,
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix2"
-                                                                },
-                                                                edge: {
-                                                                    score: 42
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                edge: {
-                                                    year: 2020
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    name: "Jill",
-                                                    reputation: 10
-                                                },
-                                                edge: {
-                                                    year: 2020
-                                                }
-                                            }
-                                        ]
-                                    }   
-                                },
-                                title: "John Wick",
-                            }
-                        ]
-                    ) {
-                        ${typeMovie.plural} {
-                            title
-                        }
-                    }
-                }
-            `,
-            })
-            .expect(200);
-
-        // 2. subscribe both ways
-        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-        await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-        // 3. perform update on created node
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeMovie.operations.delete}(
-                                where: {
-                                  title: "John Wick"
-                                },
-                                delete: {
-                                    directors: {
-                                      ${typeActor.name}: [
-                                        {
-                                          where: {
-                                            node: {
-                                              name: "Keanu Reeves"
-                                            }
-                                          },
-                                          delete: {
-                                            movies: [
-                                                {
-                                                    where: {
-                                                        node: {
-                                                            title_STARTS_WITH: "Matrix"
-                                                        }
-                                                    }
-                                                }
-                                            ]
-                                          }
-                                        }
-                                      ],
-                                      ${typePerson.name}: [
-                                        {
-                                          where: {
-                                            node: {
-                                              reputation: 10
-                                            }
-                                          },
-                                          delete: {
-                                            movies: [
-                                                {
-                                                    where: {
-                                                        node: {
-                                                            title_STARTS_WITH: "Matrix"
-                                                        }
-                                                    }
-                                                }
-                                            ]
-                                          }
-                                        }
-                                      ]
-                                    }
-                                  }
-                        ) {
-                            nodesDeleted
-                            relationshipsDeleted
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient2.errors).toEqual([]);
-
-        expect(wsClient2.events).toHaveLength(6);
-        expect(wsClient.events).toHaveLength(3);
-
-        expect(wsClient2.events).toIncludeSameMembers([
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "actors",
-                    deletedRelationship: {
-                        actors: {
-                            screenTime: 42,
-                            node: {
-                                name: "Keanu Reeves",
-                            },
-                        },
-                        directors: null,
-                        reviewers: null,
-                    },
-                },
-            },
-        ]);
-        expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            screenTime: 42,
-                            node: {
-                                title: "John Wick",
-                            },
-                        },
-                    },
-                },
-            },
-        ]);
-    });
-
-    test("disconnect via delete - with relationships - interface type, by common type", async () => {
+    test("disconnect via update - disconnect subscription sends events one way: interface type, by common field", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -4215,23 +491,23 @@ subscription SubscriptionPerson {
                         input: [
                             {
                                 reviewers: {
-                                    create: [
-                                            {
-                                            node: {
-                                                ${typePerson.name}: {
-                                                    name: "Ana",
-                                                    reputation: 10
-                                                },
-                                                ${typeInfluencer.name}: {
-                                                    url: "/bob",
-                                                    reputation: 10
-                                                }
-                                            },
-                                            edge: {
-                                                score: 100
-                                            }
+                                create: [
+                                    {
+                                    node: {
+                                        ${typePerson.name}: {
+                                            name: "Ana",
+                                            reputation: 10
+                                        },
+                                        ${typeInfluencer.name}: {
+                                            url: "/bob",
+                                            reputation: 10
                                         }
-                                    ]
+                                    },
+                                    edge: {
+                                        score: 100
+                                    }
+                                    }
+                                ]
                                 },
                                 title: "John Wick",
                             }
@@ -4257,30 +533,32 @@ subscription SubscriptionPerson {
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.delete}(
+                        ${typeMovie.operations.update}(
                                 where: {
                                   title: "John Wick"
                                 },
-                                delete: {
-                                    reviewers: [
+                                disconnect: {
+                                    reviewers:  [
                                         {
-                                            where: {
+                                          where: {
                                                 node: {
                                                     reputation: 10
                                                 }
                                             }
                                         }
                                     ]
-                                  }
+                                }
                         ) {
-                            nodesDeleted
-                            relationshipsDeleted
+                            ${typeMovie.plural} {
+                                title
+                            }
                         }
                     }
                 `,
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -4293,32 +571,52 @@ subscription SubscriptionPerson {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
 
-                    relationshipFieldName: "actors",
+                    relationshipFieldName: "reviewers",
                     deletedRelationship: {
-                        actors: {
-                            screenTime: 42,
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 100,
                             node: {
-                                name: "Keanu Reeves",
+                                name: "Ana",
+                                reputation: 10,
                             },
                         },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
                         directors: null,
-                        reviewers: null,
+                        reviewers: {
+                            score: 100,
+                            node: {
+                                url: "/bob",
+                                reputation: 10,
+                            },
+                        },
                     },
                 },
             },
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Ana",
                     },
                     event: "DISCONNECT",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
                         movies: {
-                            screenTime: 42,
+                            score: 100,
                             node: {
                                 title: "John Wick",
                             },
@@ -4329,7 +627,7 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    test("disconnect via delete nested - with relationships - interface type, by common type", async () => {
+    test("disconnect via update - disconnect subscription sends events one way: interface type, by specific fields", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -4340,43 +638,23 @@ subscription SubscriptionPerson {
                         input: [
                             {
                                 reviewers: {
-                                    create: [
-                                            {
-                                            node: {
-                                                ${typePerson.name}: {
-                                                    name: "Ana",
-                                                    reputation: 10,
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix2"
-                                                                },
-                                                                edge: {
-                                                                    score: 420
-                                                                }
-                                                            },
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix3"
-                                                                },
-                                                                edge: {
-                                                                    score: 420
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                ${typeInfluencer.name}: {
-                                                    url: "/bob",
-                                                    reputation: 10
-                                                }
-                                            },
-                                            edge: {
-                                                score: 100
-                                            }
+                                create: [
+                                    {
+                                    node: {
+                                        ${typePerson.name}: {
+                                            name: "Ana",
+                                            reputation: 100
+                                        },
+                                        ${typeInfluencer.name}: {
+                                            url: "/bob",
+                                            reputation: 1
                                         }
-                                    ]
+                                    },
+                                    edge: {
+                                        score: 10
+                                    }
+                                    }
+                                ]
                                 },
                                 title: "John Wick",
                             }
@@ -4402,52 +680,44 @@ subscription SubscriptionPerson {
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.delete}(
+                        ${typeMovie.operations.update}(
                                 where: {
                                   title: "John Wick"
                                 },
-                                delete: {
-                                    reviewers: [
+                                disconnect: {
+                                    reviewers:  [
                                         {
-                                            where: {
+                                          where: {
                                                 node: {
-                                                    reputation: 10
-                                                }
-                                            },
-                                            delete: {
-                                                _on: {
-                                                    ${typePerson.name}: [
-                                                        {
-                                                            movies: [
-                                                                {
-                                                                    where: {
-                                                                        edge: {
-                                                                            score: 420
-                                                                        }
-                                                                    }
-                                                                }
-                                                            ]
+                                                    _on: {
+                                                        ${typePerson}: {
+                                                            name: "Ana"
+                                                        },
+                                                        ${typeInfluencer}: {
+                                                            reputation: 1
                                                         }
-                                                    ]
-                                                } 
+                                                    }
+                                                }
                                             }
                                         }
                                     ]
-                                  }
+                                }
                         ) {
-                            nodesDeleted
-                            relationshipsDeleted
+                            ${typeMovie.plural} {
+                                title
+                            }
                         }
                     }
                 `,
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
-        expect(wsClient2.events).toHaveLength(4);
-        expect(wsClient.events).toHaveLength(3);
+        expect(wsClient2.events).toHaveLength(2);
+        expect(wsClient.events).toHaveLength(1);
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
@@ -4455,32 +725,52 @@ subscription SubscriptionPerson {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
 
-                    relationshipFieldName: "actors",
+                    relationshipFieldName: "reviewers",
                     deletedRelationship: {
-                        actors: {
-                            screenTime: 42,
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 10,
                             node: {
-                                name: "Keanu Reeves",
+                                name: "Ana",
+                                reputation: 100,
                             },
                         },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
                         directors: null,
-                        reviewers: null,
+                        reviewers: {
+                            score: 10,
+                            node: {
+                                url: "/bob",
+                                reputation: 1,
+                            },
+                        },
                     },
                 },
             },
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Ana",
                     },
                     event: "DISCONNECT",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
                         movies: {
-                            screenTime: 42,
+                            score: 10,
                             node: {
                                 title: "John Wick",
                             },
@@ -4491,7 +781,7 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    test("disconnect via delete - with relationships - interface type, by specific type", async () => {
+    test("disconnect via update - nested disconnect subscription sends events one way: interface type, by common field", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -4502,36 +792,59 @@ subscription SubscriptionPerson {
                         input: [
                             {
                                 reviewers: {
-                                    create: [
-                                            {
-                                                node: {
-                                                    ${typePerson.name}: {
-                                                        name: "Ana",
-                                                        reputation: 10
-                                                    },
-                                                    ${typeInfluencer.name}: {
-                                                        url: "/bob",
-                                                        reputation: 10
-                                                    }
-                                                },
-                                                edge: {
-                                                    score: 100
-                                                }
+                                create: [
+                                        {
+                                        node: {
+                                            ${typePerson.name}: {
+                                                name: "Ana",
+                                                reputation: 10
                                             },
-                                            {
-                                                node: {
-                                                    ${typePerson.name}: {
-                                                        name: "Ana",
-                                                        reputation: 10
-                                                    }
-                                                },
-                                                edge: {
-                                                    score: 42
-                                                }
+                                            ${typeInfluencer.name}: {
+                                                url: "/bob",
+                                                reputation: 10
                                             }
-                                    ]
+                                        },
+                                        edge: {
+                                            score: 100
+                                        }
+                                    }
+                                ]
                                 },
                                 title: "John Wick",
+                            }
+                        ]
+                    ) {
+                        ${typeMovie.plural} {
+                            title
+                        }
+                    }
+                }
+            `,
+            })
+            .expect(200);
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                mutation {
+                    ${typeMovie.operations.create}(
+                        input: [
+                            {
+                                reviewers: {
+                                    connect: [
+                                        {
+                                            where: {
+                                                node: {
+                                                    reputation: 10
+                                                }
+                                            },
+                                            edge: {
+                                                score: 42
+                                            }
+                                        }
+                                    ]
+                                },
+                                title: "Constantine",
                             }
                         ]
                     ) {
@@ -4555,37 +868,49 @@ subscription SubscriptionPerson {
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.delete}(
+                        ${typeMovie.operations.update}(
                                 where: {
                                   title: "John Wick"
                                 },
-                                delete: {
-                                    reviewers: [
+                                disconnect: {
+                                    reviewers:  [
                                         {
-                                            where: {
+                                          where: {
                                                 node: {
-                                                    _on: {
-                                                        ${typePerson.name}: {
-                                                            name: "Ana"
-                                                        },
-                                                        ${typeInfluencer.name}: {
-                                                            url: "/bob"
+                                                    reputation: 10
+                                                }
+                                            },
+                                            disconnect: {
+                                                _on: {
+                                                    ${typePerson}: [
+                                                        {
+                                                            movies: [
+                                                                {
+                                                                    where: {
+                                                                        node: {
+                                                                            title: "Constantine"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ]
                                                         }
-                                                    }
+                                                    ]
                                                 }
                                             }
                                         }
                                     ]
-                                  }
+                                }
                         ) {
-                            nodesDeleted
-                            relationshipsDeleted
+                            ${typeMovie.plural} {
+                                title
+                            }
                         }
                     }
                 `,
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -4598,34 +923,91 @@ subscription SubscriptionPerson {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
 
-                    relationshipFieldName: "actors",
+                    relationshipFieldName: "reviewers",
                     deletedRelationship: {
-                        actors: {
-                            screenTime: 42,
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 100,
                             node: {
-                                name: "Keanu Reeves",
+                                name: "Ana",
+                                reputation: 10,
                             },
                         },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
                         directors: null,
-                        reviewers: null,
+                        reviewers: {
+                            score: 42,
+                            node: {
+                                name: "Ana",
+                                reputation: 10,
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 100,
+                            node: {
+                                url: "/bob",
+                                reputation: 10,
+                            },
+                        },
                     },
                 },
             },
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Ana",
                     },
                     event: "DISCONNECT",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
                         movies: {
-                            screenTime: 42,
+                            score: 100,
                             node: {
                                 title: "John Wick",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Ana",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
+                        movies: {
+                            score: 42,
+                            node: {
+                                title: "Constantine",
                             },
                         },
                     },
@@ -4634,7 +1016,7 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    test("disconnect via delete nested - with relationships - interface type, by specific type", async () => {
+    test("disconnect via update - nested disconnect subscription sends events one way: interface type, by specific field", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -4645,66 +1027,23 @@ subscription SubscriptionPerson {
                         input: [
                             {
                                 reviewers: {
-                                    create: [
-                                            {
-                                                node: {
-                                                    ${typePerson.name}: {
-                                                        name: "Ana",
-                                                        reputation: 10,
-                                                        movies: {
-                                                            create: [
-                                                                {
-                                                                    node: {
-                                                                        title: "Matrix2"
-                                                                    },
-                                                                    edge: {
-                                                                        score: 420
-                                                                    }
-                                                                },
-                                                                {
-                                                                    node: {
-                                                                        title: "Matrix3"
-                                                                    },
-                                                                    edge: {
-                                                                        score: 420
-                                                                    }
-                                                                }
-                                                            ]
-                                                        }
-                                                    },
-                                                    ${typeInfluencer.name}: {
-                                                        url: "/bob",
-                                                        reputation: 10
-                                                    }
-                                                },
-                                                edge: {
-                                                    score: 100
-                                                }
+                                create: [
+                                        {
+                                        node: {
+                                            ${typePerson.name}: {
+                                                name: "Ana",
+                                                reputation: 100
                                             },
-                                            {
-                                                node: {
-                                                    ${typePerson.name}: {
-                                                        name: "Ana",
-                                                        reputation: 10,
-                                                        movies: {
-                                                            create: [
-                                                                {
-                                                                    node: {
-                                                                        title: "Other Movie"
-                                                                    },
-                                                                    edge: {
-                                                                        score: 420
-                                                                    }
-                                                                }
-                                                            ]
-                                                        }
-                                                    }
-                                                },
-                                                edge: {
-                                                    score: 42
-                                                }
+                                            ${typeInfluencer.name}: {
+                                                url: "/bob",
+                                                reputation: 100
                                             }
-                                    ]
+                                        },
+                                        edge: {
+                                            score: 10
+                                        }
+                                    }
+                                ]
                                 },
                                 title: "John Wick",
                             }
@@ -4718,24 +1057,16 @@ subscription SubscriptionPerson {
             `,
             })
             .expect(200);
-
-        // 2. subscribe both ways
-        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-        await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-        // 3. perform update on created node
         await supertest(server.path)
             .post("")
             .send({
                 query: `
-                    mutation {
-                        ${typeMovie.operations.delete}(
-                                where: {
-                                  title: "John Wick"
-                                },
-                                delete: {
-                                    reviewers: [
+                mutation {
+                    ${typeMovie.operations.create}(
+                        input: [
+                            {
+                                reviewers: {
+                                    connect: [
                                         {
                                             where: {
                                                 node: {
@@ -4746,172 +1077,6 @@ subscription SubscriptionPerson {
                                                         ${typeInfluencer.name}: {
                                                             url: "/bob"
                                                         }
-                                                    }
-                                                }
-                                            },
-                                            delete: {
-                                                _on: {
-                                                    ${typePerson.name}: [
-                                                        {
-                                                            movies: [
-                                                                {
-                                                                    where: {
-                                                                        edge: {
-                                                                            score: 420
-                                                                        }
-                                                                    }
-                                                                }
-                                                            ]
-                                                        }
-                                                    ]
-                                                } 
-                                            }
-                                        }
-                                    ]
-                                  }
-                        ) {
-                            nodesDeleted
-                            relationshipsDeleted
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient2.errors).toEqual([]);
-
-        expect(wsClient2.events).toHaveLength(6);
-        expect(wsClient.events).toHaveLength(5);
-
-        expect(wsClient2.events).toIncludeSameMembers([
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "actors",
-                    deletedRelationship: {
-                        actors: {
-                            screenTime: 42,
-                            node: {
-                                name: "Keanu Reeves",
-                            },
-                        },
-                        directors: null,
-                        reviewers: null,
-                    },
-                },
-            },
-        ]);
-        expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            screenTime: 42,
-                            node: {
-                                title: "John Wick",
-                            },
-                        },
-                    },
-                },
-            },
-        ]);
-    });
-
-    test("disconnect via delete nested - with relationships - interface type", async () => {
-        // 1. create
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                mutation {
-                    ${typeMovie.operations.create}(
-                        input: [
-                            {
-                                reviewers: {
-                                    create: [
-                                            {
-                                                node: {
-                                                    ${typePerson.name}: {
-                                                        name: "Ana",
-                                                        reputation: 10,
-                                                        movies: {
-                                                            create: [
-                                                                {
-                                                                    node: {
-                                                                        title: "Matrix2"
-                                                                    },
-                                                                    edge: {
-                                                                        score: 420
-                                                                    }
-                                                                },
-                                                                {
-                                                                    node: {
-                                                                        title: "Matrix3"
-                                                                    },
-                                                                    edge: {
-                                                                        score: 420
-                                                                    }
-                                                                }
-                                                            ]
-                                                        }
-                                                    },
-                                                    ${typeInfluencer.name}: {
-                                                        url: "/bob",
-                                                        reputation: 10
-                                                    }
-                                                },
-                                                edge: {
-                                                    score: 100
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    ${typePerson.name}: {
-                                                        name: "Ana",
-                                                        reputation: 10,
-                                                        movies: {
-                                                            create: [
-                                                                {
-                                                                    node: {
-                                                                        title: "Other Movie"
-                                                                    },
-                                                                    edge: {
-                                                                        score: 420
-                                                                    }
-                                                                }
-                                                            ]
-                                                        }
-                                                    }
-                                                },
-                                                edge: {
-                                                    score: 42
-                                                }
-                                        },
-                                        {
-                                            node: {
-                                                ${typePerson.name}: {
-                                                    name: "Julie",
-                                                    reputation: 20,
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Other Movie"
-                                                                },
-                                                                edge: {
-                                                                    score: 420
-                                                                }
-                                                            }
-                                                        ]
                                                     }
                                                 }
                                             },
@@ -4921,7 +1086,7 @@ subscription SubscriptionPerson {
                                         }
                                     ]
                                 },
-                                title: "John Wick",
+                                title: "Constantine",
                             }
                         ]
                     ) {
@@ -4945,93 +1110,144 @@ subscription SubscriptionPerson {
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.delete}(
+                        ${typeMovie.operations.update}(
                                 where: {
                                   title: "John Wick"
                                 },
-                                delete: {
-                                    reviewers: [
+                                disconnect: {
+                                    reviewers:  [
                                         {
-                                            where: {
+                                          where: {
                                                 node: {
-                                                    reputation: 10,
-                                                    _on: {
-                                                        ${typePerson.name}: {
-                                                            name: "Julie"
-                                                        },
-                                                        ${typeInfluencer.name}: {
-                                                            url: "/john"
-                                                        }
-                                                    }
+                                                    reputation: 100
                                                 }
                                             },
-                                            delete: {
+                                            disconnect: {
                                                 _on: {
-                                                    ${typePerson.name}: [
+                                                    ${typePerson}: [
                                                         {
                                                             movies: [
                                                                 {
                                                                     where: {
                                                                         edge: {
-                                                                            score: 420
+                                                                            score: 42
                                                                         }
                                                                     }
                                                                 }
                                                             ]
                                                         }
                                                     ]
-                                                } 
+                                                }
                                             }
                                         }
                                     ]
-                                  }
+                                }
                         ) {
-                            nodesDeleted
-                            relationshipsDeleted
+                            ${typeMovie.plural} {
+                                title
+                            }
                         }
                     }
                 `,
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
-        expect(wsClient2.events).toHaveLength(8);
-        expect(wsClient.events).toHaveLength(7);
+        expect(wsClient2.events).toHaveLength(3);
+        expect(wsClient.events).toHaveLength(2);
 
         expect(wsClient2.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 42,
+                            node: {
+                                name: "Ana",
+                                reputation: 100,
+                            },
+                        },
+                    },
+                },
+            },
             {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
 
-                    relationshipFieldName: "actors",
+                    relationshipFieldName: "reviewers",
                     deletedRelationship: {
-                        actors: {
-                            screenTime: 42,
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 10,
                             node: {
-                                name: "Keanu Reeves",
+                                name: "Ana",
+                                reputation: 100,
                             },
                         },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
                         directors: null,
-                        reviewers: null,
+                        reviewers: {
+                            score: 10,
+                            node: {
+                                url: "/bob",
+                                reputation: 100,
+                            },
+                        },
                     },
                 },
             },
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Ana",
                     },
                     event: "DISCONNECT",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
                         movies: {
-                            screenTime: 42,
+                            score: 42,
+                            node: {
+                                title: "Constantine",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Ana",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
+                        movies: {
+                            score: 10,
                             node: {
                                 title: "John Wick",
                             },
@@ -5042,9 +1258,7 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    // ============= combinations ==============
-
-    test("disconnect via delete nested - with relationships -  union type + interface type, by common type", async () => {
+    test("disconnect via nested update - disconnect subscription sends events one way: union type", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -5054,35 +1268,27 @@ subscription SubscriptionPerson {
                     ${typeMovie.operations.create}(
                         input: [
                             {
+                                actors: {
+                                    create: [
+                                        {
+                                        node: {
+                                            name: "Keanu"
+                                        },
+                                        edge: {
+                                            screenTime: 42
+                                        }
+                                        }
+                                    ]
+                                },
                                 directors: {
                                     ${typeActor.name}: {
                                         create: [
                                             {
                                                 node: {
-                                                    name: "Keanu Reeves",
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix"
-                                                                },
-                                                                edge: {
-                                                                    screenTime: 1000
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
+                                                    name: "Jill"
                                                 },
                                                 edge: {
-                                                    year: 2019
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    name: "Keanu Reeves"
-                                                },
-                                                edge: {
-                                                    year: 2019
+                                                    year: 2020
                                                 }
                                             }
                                         ]
@@ -5092,27 +1298,6 @@ subscription SubscriptionPerson {
                                             {
                                                 node: {
                                                     name: "Jim",
-                                                    reputation: 10,
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix2"
-                                                                },
-                                                                edge: {
-                                                                    score: 42
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                edge: {
-                                                    year: 2020
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    name: "Jill",
                                                     reputation: 10
                                                 },
                                                 edge: {
@@ -5120,69 +1305,7 @@ subscription SubscriptionPerson {
                                                 }
                                             }
                                         ]
-                                    }   
-                                },
-                                reviewers: {
-                                    create: [
-                                            {
-                                            node: {
-                                                ${typePerson.name}: {
-                                                    name: "Ana",
-                                                    reputation: 10,
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix2"
-                                                                },
-                                                                edge: {
-                                                                    score: 420
-                                                                }
-                                                            },
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix3"
-                                                                },
-                                                                edge: {
-                                                                    score: 420
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                ${typeInfluencer.name}: {
-                                                    url: "/bob",
-                                                    reputation: 10
-                                                }
-                                            },
-                                            edge: {
-                                                score: 100
-                                            }
-                                        },
-                                        {
-                                            node: {
-                                                ${typePerson.name}: {
-                                                    name: "Julia",
-                                                    reputation: 10,
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Other Matrix"
-                                                                },
-                                                                edge: {
-                                                                    score: 420
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                }
-                                            },
-                                            edge: {
-                                                score: 100
-                                            }
-                                        }
-                                    ]
+                                    }
                                 },
                                 title: "John Wick",
                             }
@@ -5208,99 +1331,112 @@ subscription SubscriptionPerson {
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.delete}(
+                        ${typeMovie.operations.update}(
                                 where: {
                                   title: "John Wick"
                                 },
-                                delete: {
+                                update: {
+                                    title: "John WICK",
                                     directors: {
-                                        ${typeActor.name}: [
-                                          {
-                                            where: {
-                                              node: {
-                                                name: "Keanu Reeves"
+                                      ${typeActor.name}: [
+                                        {
+                                          disconnect: [
+                                            {
+                                              where: {
+                                                edge: {
+                                                  year: 2020
+                                                }
                                               }
-                                            },
-                                            delete: {
-                                              movies: [
-                                                  {
-                                                      where: {
-                                                          node: {
-                                                              title_STARTS_WITH: "Matrix"
-                                                          }
-                                                      }
-                                                  }
-                                              ]
                                             }
-                                          }
-                                        ],
-                                        ${typePerson.name}: [
+                                          ]
+                                        }
+                                      ],
+                                      ${typePerson.name}: [
+                                        {
+                                          disconnect: [
+                                            {
+                                              where: {
+                                                node: {
+                                                  name: "Jim"
+                                                }
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    actors: [
+                                      {
+                                        disconnect: [
                                           {
                                             where: {
                                               node: {
-                                                reputation: 10
+                                                name: "Keanu"
                                               }
-                                            },
-                                            delete: {
-                                              movies: [
-                                                  {
-                                                      where: {
-                                                          node: {
-                                                              title_STARTS_WITH: "Matrix"
-                                                          }
-                                                      }
-                                                  }
-                                              ]
                                             }
                                           }
                                         ]
-                                      },
-                                    reviewers: [
-                                        {
-                                            where: {
-                                                node: {
-                                                    reputation: 10
-                                                }
-                                            },
-                                            delete: {
-                                                _on: {
-                                                    ${typePerson.name}: [
-                                                        {
-                                                            movies: [
-                                                                {
-                                                                    where: {
-                                                                        edge: {
-                                                                            score: 420
-                                                                        }
-                                                                    }
-                                                                }
-                                                            ]
-                                                        }
-                                                    ]
-                                                } 
-                                            }
-                                        }
+                                      }
                                     ]
                                   }
                         ) {
-                            nodesDeleted
-                            relationshipsDeleted
+                            ${typeMovie.plural} {
+                                title
+                            }
                         }
                     }
                 `,
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
-        expect(wsClient2.events).toHaveLength(12);
-        expect(wsClient.events).toHaveLength(5);
+        expect(wsClient2.events).toHaveLength(3);
+        expect(wsClient.events).toHaveLength(0);
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John WICK" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: {
+                            year: 2020,
+                            node: {
+                                name: "Jill",
+                            },
+                        },
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John WICK" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: {
+                            year: 2020,
+                            node: {
+                                name: "Jim",
+                                reputation: 10,
+                            },
+                        },
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John WICK" },
                     event: "DISCONNECT",
 
                     relationshipFieldName: "actors",
@@ -5308,7 +1444,7 @@ subscription SubscriptionPerson {
                         actors: {
                             screenTime: 42,
                             node: {
-                                name: "Keanu Reeves",
+                                name: "Keanu",
                             },
                         },
                         directors: null,
@@ -5317,29 +1453,9 @@ subscription SubscriptionPerson {
                 },
             },
         ]);
-        expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            screenTime: 42,
-                            node: {
-                                title: "John Wick",
-                            },
-                        },
-                    },
-                },
-            },
-        ]);
     });
 
-    test("disconnect via delete - with relationships - standard type + interface type, by common type", async () => {
+    test("disconnect via nested update - disconnect subscription sends events one way: interface type", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -5392,6 +1508,47 @@ subscription SubscriptionPerson {
             `,
             })
             .expect(200);
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                mutation {
+                    ${typeMovie.operations.create}(
+                        input: [
+                            {
+                                reviewers: {
+                                    connect: [
+                                        {
+                                            where: {
+                                                node: {
+                                                    _on: {
+                                                        ${typePerson.name}: {
+                                                            name: "Ana"
+                                                        },
+                                                        ${typeInfluencer.name}: {
+                                                            url: "/bob"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            edge: {
+                                                score: 42
+                                            }
+                                        }
+                                    ]
+                                },
+                                title: "Constantine",
+                            }
+                        ]
+                    ) {
+                        ${typeMovie.plural} {
+                            title
+                        }
+                    }
+                }
+            `,
+            })
+            .expect(200);
 
         // 2. subscribe both ways
         await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
@@ -5404,238 +1561,91 @@ subscription SubscriptionPerson {
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.delete}(
+                        ${typeMovie.operations.update}(
                                 where: {
                                   title: "John Wick"
                                 },
-                                delete: {
-                                    actors:  [
-                                        {
-                                          where: {
-                                                node: {
-                                                    name: "Keanu Reeves"
-                                                }
-                                            }
-                                        }
-                                    ],
+                                update: {
+                                    title: "John WICK",
                                     reviewers: [
                                         {
-                                            where: {
-                                                node: {
-                                                    reputation: 10
+                                          update: {
+                                            node: {
+                                              _on: {
+                                                ${typePerson.name}: {
+                                                  movies: [
+                                                    {
+                                                      disconnect: [
+                                                        {
+                                                          where: {
+                                                            edge: {
+                                                              score: 42
+                                                            }
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
                                                 }
+                                              }
                                             }
+                                          }
                                         }
+                                      ],
+                                    actors: [
+                                      {
+                                        disconnect: [
+                                          {
+                                            where: {
+                                              node: {
+                                                name: "Keanu"
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      }
                                     ]
                                   }
                         ) {
-                            nodesDeleted
-                            relationshipsDeleted
+                            ${typeMovie.plural} {
+                                title
+                            }
                         }
                     }
                 `,
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
-        expect(wsClient2.events).toHaveLength(3);
+        expect(wsClient2.events).toHaveLength(2);
         expect(wsClient.events).toHaveLength(1);
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
                     event: "DISCONNECT",
 
-                    relationshipFieldName: "actors",
+                    relationshipFieldName: "reviewers",
                     deletedRelationship: {
-                        actors: {
-                            screenTime: 42,
-                            node: {
-                                name: "Keanu Reeves",
-                            },
-                        },
+                        actors: null,
                         directors: null,
-                        reviewers: null,
-                    },
-                },
-            },
-        ]);
-        expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            screenTime: 42,
+                        reviewers: {
+                            score: 42,
                             node: {
-                                title: "John Wick",
+                                name: "Ana",
+                                reputation: 10,
                             },
                         },
                     },
                 },
             },
-        ]);
-    });
-    test("disconnect via delete nested - with relationships -  standard type + interface type, by specific type", async () => {
-        // 1. create
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                mutation {
-                    ${typeMovie.operations.create}(
-                        input: [
-                            {
-                                actors: {
-                                    create: [
-                                        {
-                                        node: {
-                                            name: "Keanu"
-                                        },
-                                        edge: {
-                                            screenTime: 42
-                                        }
-                                        }
-                                    ]
-                                },
-                                reviewers: {
-                                    create: [
-                                            {
-                                            node: {
-                                                ${typePerson.name}: {
-                                                    name: "Ana",
-                                                    reputation: 10,
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix2"
-                                                                },
-                                                                edge: {
-                                                                    score: 420
-                                                                }
-                                                            },
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix3"
-                                                                },
-                                                                edge: {
-                                                                    score: 420
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                ${typeInfluencer.name}: {
-                                                    url: "/bob",
-                                                    reputation: 10
-                                                }
-                                            },
-                                            edge: {
-                                                score: 100
-                                            }
-                                        }
-                                    ]
-                                },
-                                title: "John Wick",
-                            }
-                        ]
-                    ) {
-                        ${typeMovie.plural} {
-                            title
-                        }
-                    }
-                }
-            `,
-            })
-            .expect(200);
-
-        // 2. subscribe both ways
-        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-        await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-        // 3. perform update on created node
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeMovie.operations.delete}(
-                                where: {
-                                  title: "John Wick"
-                                },
-                                delete: {
-                                    actors:  [
-                                        {
-                                          where: {
-                                                node: {
-                                                    name: "Keanu Reeves"
-                                                }
-                                            }
-                                        }
-                                    ],
-                                    reviewers: [
-                                        {
-                                            where: {
-                                                node: {
-                                                    _on: {
-                                                        ${typePerson.name}: {
-                                                            name: "Ana"
-                                                        },
-                                                        ${typeInfluencer.name}: {
-                                                            url: "/bob"
-                                                        }
-                                                    }
-                                                }
-                                            },
-                                            delete: {
-                                                _on: {
-                                                    ${typePerson.name}: [
-                                                        {
-                                                            movies: [
-                                                                {
-                                                                    where: {
-                                                                        edge: {
-                                                                            score: 420
-                                                                        }
-                                                                    }
-                                                                }
-                                                            ]
-                                                        }
-                                                    ]
-                                                } 
-                                            }
-                                        }
-                                    ]
-                                  }
-                        ) {
-                            nodesDeleted
-                            relationshipsDeleted
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient2.errors).toEqual([]);
-
-        expect(wsClient2.events).toHaveLength(5);
-        expect(wsClient.events).toHaveLength(3);
-
-        expect(wsClient2.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John WICK" },
                     event: "DISCONNECT",
 
                     relationshipFieldName: "actors",
@@ -5643,7 +1653,7 @@ subscription SubscriptionPerson {
                         actors: {
                             screenTime: 42,
                             node: {
-                                name: "Keanu Reeves",
+                                name: "Keanu",
                             },
                         },
                         directors: null,
@@ -5652,623 +1662,9 @@ subscription SubscriptionPerson {
                 },
             },
         ]);
-        expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            screenTime: 42,
-                            node: {
-                                title: "John Wick",
-                            },
-                        },
-                    },
-                },
-            },
-        ]);
     });
 
-    test("disconnect via delete nested - with relationships -  standard type + union type + interface type, by specific type", async () => {
-        // 1. create
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                mutation {
-                    ${typeMovie.operations.create}(
-                        input: [
-                            {
-                                actors: {
-                                    create: [
-                                        {
-                                        node: {
-                                            name: "Keanu"
-                                        },
-                                        edge: {
-                                            screenTime: 42
-                                        }
-                                        }
-                                    ]
-                                },
-                                directors: {
-                                    ${typeActor.name}: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    name: "Keanu Reeves",
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix"
-                                                                },
-                                                                edge: {
-                                                                    screenTime: 1000
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                edge: {
-                                                    year: 2019
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    name: "Keanu Reeves"
-                                                },
-                                                edge: {
-                                                    year: 2019
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    ${typePerson.name}: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    name: "Jim",
-                                                    reputation: 10,
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix2"
-                                                                },
-                                                                edge: {
-                                                                    score: 42
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                edge: {
-                                                    year: 2020
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    name: "Jill",
-                                                    reputation: 10
-                                                },
-                                                edge: {
-                                                    year: 2020
-                                                }
-                                            }
-                                        ]
-                                    }   
-                                },
-                                reviewers: {
-                                    create: [
-                                            {
-                                            node: {
-                                                ${typePerson.name}: {
-                                                    name: "Ana",
-                                                    reputation: 10,
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix2"
-                                                                },
-                                                                edge: {
-                                                                    score: 420
-                                                                }
-                                                            },
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix3"
-                                                                },
-                                                                edge: {
-                                                                    score: 420
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                ${typeInfluencer.name}: {
-                                                    url: "/bob",
-                                                    reputation: 10
-                                                }
-                                            },
-                                            edge: {
-                                                score: 100
-                                            }
-                                        }
-                                    ]
-                                },
-                                title: "John Wick",
-                            }
-                        ]
-                    ) {
-                        ${typeMovie.plural} {
-                            title
-                        }
-                    }
-                }
-            `,
-            })
-            .expect(200);
-
-        // 2. subscribe both ways
-        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-        await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-        // 3. perform update on created node
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeMovie.operations.delete}(
-                                where: {
-                                  title: "John Wick"
-                                },
-                                delete: {
-                                    actors:  [
-                                        {
-                                          where: {
-                                                node: {
-                                                    name: "Keanu Reeves"
-                                                }
-                                            }
-                                        }
-                                    ],
-                                    directors: {
-                                        ${typeActor.name}: [
-                                          {
-                                            where: {
-                                              node: {
-                                                name: "Keanu Reeves"
-                                              }
-                                            },
-                                            delete: {
-                                              movies: [
-                                                  {
-                                                      where: {
-                                                          node: {
-                                                              title_STARTS_WITH: "Matrix"
-                                                          }
-                                                      }
-                                                  }
-                                              ]
-                                            }
-                                          }
-                                        ],
-                                        ${typePerson.name}: [
-                                          {
-                                            where: {
-                                              node: {
-                                                reputation: 10
-                                              }
-                                            },
-                                            delete: {
-                                              movies: [
-                                                  {
-                                                      where: {
-                                                          node: {
-                                                              title_STARTS_WITH: "Matrix"
-                                                          }
-                                                      }
-                                                  }
-                                              ]
-                                            }
-                                          }
-                                        ]
-                                      },
-                                    reviewers: [
-                                        {
-                                            where: {
-                                                node: {
-                                                    _on: {
-                                                        ${typePerson.name}: {
-                                                            name: "Ana"
-                                                        },
-                                                        ${typeInfluencer.name}: {
-                                                            url: "/bob"
-                                                        }
-                                                    }
-                                                }
-                                            },
-                                            delete: {
-                                                _on: {
-                                                    ${typePerson.name}: [
-                                                        {
-                                                            movies: [
-                                                                {
-                                                                    where: {
-                                                                        edge: {
-                                                                            score: 420
-                                                                        }
-                                                                    }
-                                                                }
-                                                            ]
-                                                        }
-                                                    ]
-                                                } 
-                                            }
-                                        }
-                                    ]
-                                  }
-                        ) {
-                            nodesDeleted
-                            relationshipsDeleted
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient2.errors).toEqual([]);
-
-        expect(wsClient2.events).toHaveLength(10);
-        expect(wsClient.events).toHaveLength(4);
-
-        expect(wsClient2.events).toIncludeSameMembers([
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "actors",
-                    deletedRelationship: {
-                        actors: {
-                            screenTime: 42,
-                            node: {
-                                name: "Keanu Reeves",
-                            },
-                        },
-                        directors: null,
-                        reviewers: null,
-                    },
-                },
-            },
-        ]);
-        expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            screenTime: 42,
-                            node: {
-                                title: "John Wick",
-                            },
-                        },
-                    },
-                },
-            },
-        ]);
-    });
-    test("disconnect via delete nested - with relationships -  standard type + union type + interface type, by common type", async () => {
-        // 1. create
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                mutation {
-                    ${typeMovie.operations.create}(
-                        input: [
-                            {
-                                actors: {
-                                    create: [
-                                        {
-                                        node: {
-                                            name: "Keanu"
-                                        },
-                                        edge: {
-                                            screenTime: 42
-                                        }
-                                        }
-                                    ]
-                                },
-                                directors: {
-                                    ${typeActor.name}: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    name: "Keanu Reeves",
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix"
-                                                                },
-                                                                edge: {
-                                                                    screenTime: 1000
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                edge: {
-                                                    year: 2019
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    name: "Keanu Reeves"
-                                                },
-                                                edge: {
-                                                    year: 2019
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    ${typePerson.name}: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    name: "Jim",
-                                                    reputation: 10,
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix2"
-                                                                },
-                                                                edge: {
-                                                                    score: 42
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                edge: {
-                                                    year: 2020
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    name: "Jill",
-                                                    reputation: 10
-                                                },
-                                                edge: {
-                                                    year: 2020
-                                                }
-                                            }
-                                        ]
-                                    }   
-                                },
-                                reviewers: {
-                                    create: [
-                                            {
-                                            node: {
-                                                ${typePerson.name}: {
-                                                    name: "Ana",
-                                                    reputation: 10,
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix2"
-                                                                },
-                                                                edge: {
-                                                                    score: 420
-                                                                }
-                                                            },
-                                                            {
-                                                                node: {
-                                                                    title: "Matrix3"
-                                                                },
-                                                                edge: {
-                                                                    score: 420
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                ${typeInfluencer.name}: {
-                                                    url: "/bob",
-                                                    reputation: 10
-                                                }
-                                            },
-                                            edge: {
-                                                score: 100
-                                            }
-                                        }
-                                    ]
-                                },
-                                title: "John Wick",
-                            }
-                        ]
-                    ) {
-                        ${typeMovie.plural} {
-                            title
-                        }
-                    }
-                }
-            `,
-            })
-            .expect(200);
-
-        // 2. subscribe both ways
-        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-        await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-        // 3. perform update on created node
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeMovie.operations.delete}(
-                                where: {
-                                  title: "John Wick"
-                                },
-                                delete: {
-                                    actors:  [
-                                        {
-                                          where: {
-                                                node: {
-                                                    name: "Keanu Reeves"
-                                                }
-                                            }
-                                        }
-                                    ],
-                                    directors: {
-                                        ${typeActor.name}: [
-                                          {
-                                            where: {
-                                              node: {
-                                                name: "Keanu Reeves"
-                                              }
-                                            },
-                                            delete: {
-                                              movies: [
-                                                  {
-                                                      where: {
-                                                          node: {
-                                                              title_STARTS_WITH: "Matrix"
-                                                          }
-                                                      }
-                                                  }
-                                              ]
-                                            }
-                                          }
-                                        ],
-                                        ${typePerson.name}: [
-                                          {
-                                            where: {
-                                              node: {
-                                                reputation: 10
-                                              }
-                                            },
-                                            delete: {
-                                              movies: [
-                                                  {
-                                                      where: {
-                                                          node: {
-                                                              title_STARTS_WITH: "Matrix"
-                                                          }
-                                                      }
-                                                  }
-                                              ]
-                                            }
-                                          }
-                                        ]
-                                      },
-                                    reviewers: [
-                                        {
-                                            where: {
-                                                node: {
-                                                    reputation: 10
-                                                }
-                                            },
-                                            delete: {
-                                                _on: {
-                                                    ${typePerson.name}: [
-                                                        {
-                                                            movies: [
-                                                                {
-                                                                    where: {
-                                                                        edge: {
-                                                                            score: 420
-                                                                        }
-                                                                    }
-                                                                }
-                                                            ]
-                                                        }
-                                                    ]
-                                                } 
-                                            }
-                                        }
-                                    ]
-                                  }
-                        ) {
-                            nodesDeleted
-                            relationshipsDeleted
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient2.errors).toEqual([]);
-
-        expect(wsClient2.events).toHaveLength(10);
-        expect(wsClient.events).toHaveLength(4);
-
-        expect(wsClient2.events).toIncludeSameMembers([
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "actors",
-                    deletedRelationship: {
-                        actors: {
-                            screenTime: 42,
-                            node: {
-                                name: "Keanu Reeves",
-                            },
-                        },
-                        directors: null,
-                        reviewers: null,
-                    },
-                },
-            },
-        ]);
-        expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            screenTime: 42,
-                            node: {
-                                title: "John Wick",
-                            },
-                        },
-                    },
-                },
-            },
-        ]);
-    });
-
-    // ================ chained combos =========================
-
-    test("disconnect via delete nested - with relationships: union to interface type", async () => {
+    test("disconnect via nested update - disconnect subscription sends events one way: interface to union type", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -6294,21 +1690,10 @@ subscription SubscriptionPerson {
                                         edge: {
                                             score: 100
                                         }
-                                    },
-                                    {
-                                        node: {
-                                            ${typePerson.name}: {
-                                                name: "Julia",
-                                                reputation: 10
-                                            }
-                                        },
-                                        edge: {
-                                            score: 100
-                                        }
                                     }
                                 ]
                             },
-                            title: "Constantine",
+                            title: "John Wick",
                         }
                     ]
                 ) {
@@ -6324,92 +1709,68 @@ subscription SubscriptionPerson {
             .post("")
             .send({
                 query: `
-                mutation {
-                    ${typeMovie.operations.create}(
-                        input: [
-                            {
-                                directors: {
-                                    ${typeActor.name}: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    name: "Keanu Reeves",
-                                                    movies: {
-                                                        connect: [
-                                                            {
-                                                                where: {
-                                                                    node: {
-                                                                        title: "Constantine"
-                                                                    }
-                                                                },
-                                                                edge: {
-                                                                    screenTime: 420
-                                                                }
-                                                            }
-                                                        ]
+            mutation {
+                ${typeMovie.operations.create}(
+                    input: [
+                        {
+                            reviewers: {
+                                connect: [
+                                    {
+                                        where: {
+                                            node: {
+                                                _on: {
+                                                    ${typePerson.name}: {
+                                                        name: "Ana"
+                                                    },
+                                                    ${typeInfluencer.name}: {
+                                                        url: "/bob"
                                                     }
-                                                },
-                                                edge: {
-                                                    year: 2019
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    name: "Keanu Reeves"
-                                                },
-                                                edge: {
-                                                    year: 2019
                                                 }
                                             }
-                                        ]
-                                    },
-                                    ${typePerson.name}: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    name: "Jim",
-                                                    reputation: 10,
-                                                    movies: {
-                                                        connect: [
-                                                            {
-                                                                where: {
-                                                                    node: {
-                                                                        title: "Constantine"
-                                                                    }
-                                                                },
-                                                                edge: {
-                                                                    score: 10
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                edge: {
-                                                    year: 2020
-                                                }
+                                        },
+                                        edge: {
+                                            score: 42
+                                        }
+                                    }
+                                ]
+                            },
+                            directors: {
+                                ${typeActor.name}: {
+                                    create: [
+                                        {
+                                            node: {
+                                                name: "Jill"
                                             },
-                                            {
-                                                node: {
-                                                    name: "Jill",
-                                                    reputation: 10
-                                                },
-                                                edge: {
-                                                    year: 2020
-                                                }
+                                            edge: {
+                                                year: 2018
                                             }
-                                        ]
-                                    }   
+                                        }
+                                    ]
                                 },
-                                title: "John Wick",
-                            }
-                        ]
-                    ) {
-                        ${typeMovie.plural} {
-                            title
+                                ${typePerson.name}: {
+                                    create: [
+                                        {
+                                            node: {
+                                                name: "Jim",
+                                                reputation: 10
+                                            },
+                                            edge: {
+                                                year: 2019
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            title: "Constantine",
                         }
+                    ]
+                ) {
+                    ${typeMovie.plural} {
+                        title
                     }
                 }
-            `,
+            }
+        `,
             })
             .expect(200);
 
@@ -6424,113 +1785,133 @@ subscription SubscriptionPerson {
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.delete}(
+                        ${typeMovie.operations.update}(
                                 where: {
                                   title: "John Wick"
                                 },
-                                delete: {
-                                    directors: {
-                                        ${typeActor.name}: [
-                                          {
-                                            where: {
-                                              node: {
-                                                name: "Keanu Reeves"
-                                              }
-                                            },
-                                            delete: {
-                                              movies: [
-                                                  {
-                                                      where: {
-                                                          node: {
-                                                              title_STARTS_WITH: "Constantine"
-                                                          }
-                                                      },
-                                                      delete: {
-                                                        reviewers: [
-                                                            {
-                                                                where: {
+                                update: {
+                                    title: "John WICK",
+                                    reviewers: [
+                                        {
+                                          update: {
+                                            node: {
+                                              _on: {
+                                                ${typePerson.name}: {
+                                                  movies: [
+                                                    {
+                                                      disconnect: [
+                                                        {
+                                                          where: {
+                                                            node: {
+                                                              title: "Constantine"
+                                                            }
+                                                          },
+                                                          disconnect: {
+                                                            directors: {
+                                                              ${typePerson.name}: [
+                                                                {
+                                                                  where: {
+                                                                    edge: {
+                                                                      year: 2019
+                                                                    }
+                                                                  }
+                                                                }
+                                                              ],
+                                                              ${typeActor.name}: [
+                                                                {
+                                                                  where: {
                                                                     node: {
-                                                                        reputation: 10
+                                                                      name: "Jill"
                                                                     }
+                                                                  }
                                                                 }
+                                                              ]
                                                             }
-                                                        ]
-                                                      }
-                                                  }
-                                              ]
-                                            }
-                                          }
-                                        ],
-                                        ${typePerson.name}: [
-                                          {
-                                            where: {
-                                              node: {
-                                                reputation: 10
-                                              }
-                                            },
-                                            delete: {
-                                              movies: [
-                                                  {
-                                                      where: {
-                                                          node: {
-                                                              title_STARTS_WITH: "Constantine"
                                                           }
-                                                      },
-                                                      delete: {
-                                                        reviewers: [
-                                                            {
-                                                                where: {
-                                                                    node: {  
-                                                                        _on: {
-                                                                            ${typePerson.name}: {
-                                                                                name: "Ana"
-                                                                            },
-                                                                            ${typeInfluencer.name}: {
-                                                                                url: "/bob"
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        ]
-                                                      }
-                                                  }
-                                              ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                ${typeInfluencer.name}: {
+                                                  url: "/bob"
+                                                }
+                                              }
                                             }
                                           }
-                                        ]
-                                    }
-                                }
+                                        }
+                                    ]
+                                  }
                         ) {
-                            nodesDeleted
-                            relationshipsDeleted
+                            ${typeMovie.plural} {
+                                title
+                            }
                         }
                     }
                 `,
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
-        expect(wsClient2.events).toHaveLength(10);
-        expect(wsClient.events).toHaveLength(3);
+        expect(wsClient2.events).toHaveLength(3);
+        expect(wsClient.events).toHaveLength(1);
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
                     event: "DISCONNECT",
 
-                    relationshipFieldName: "actors",
+                    relationshipFieldName: "reviewers",
                     deletedRelationship: {
-                        actors: {
-                            screenTime: 42,
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 42,
                             node: {
-                                name: "Keanu Reeves",
+                                name: "Ana",
+                                reputation: 10,
                             },
                         },
-                        directors: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: {
+                            year: 2018,
+                            node: {
+                                name: "Jill",
+                            },
+                        },
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: {
+                            year: 2019,
+                            node: {
+                                name: "Jim",
+                                reputation: 10,
+                            },
+                        },
                         reviewers: null,
                     },
                 },
@@ -6538,18 +1919,18 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Ana",
                     },
                     event: "DISCONNECT",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
                         movies: {
-                            screenTime: 42,
+                            score: 42,
                             node: {
-                                title: "John Wick",
+                                title: "Constantine",
                             },
                         },
                     },
@@ -6557,7 +1938,658 @@ subscription SubscriptionPerson {
             },
         ]);
     });
-    test("disconnect via delete nested - with relationships: interface to union type", async () => {
+
+    test("disconnect via nested update - disconnect subscription sends events one way: interface to union type - duplicate union nodes", async () => {
+        // 1. create
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+            mutation {
+                ${typeMovie.operations.create}(
+                    input: [
+                        {
+                            reviewers: {
+                                create: [
+                                        {
+                                        node: {
+                                            ${typePerson.name}: {
+                                                name: "Ana",
+                                                reputation: 10
+                                            },
+                                            ${typeInfluencer.name}: {
+                                                url: "/bob",
+                                                reputation: 10
+                                            }
+                                        },
+                                        edge: {
+                                            score: 100
+                                        }
+                                    }
+                                ]
+                            },
+                            title: "John Wick",
+                        }
+                    ]
+                ) {
+                    ${typeMovie.plural} {
+                        title
+                    }
+                }
+            }
+        `,
+            })
+            .expect(200);
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+            mutation {
+                ${typeMovie.operations.create}(
+                    input: [
+                        {
+                            reviewers: {
+                                connect: [
+                                    {
+                                        where: {
+                                            node: {
+                                                _on: {
+                                                    ${typePerson.name}: {
+                                                        name: "Ana"
+                                                    },
+                                                    ${typeInfluencer.name}: {
+                                                        url: "/bob"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        edge: {
+                                            score: 42
+                                        }
+                                    }
+                                ]
+                            },
+                            directors: {
+                                ${typeActor.name}: {
+                                    create: [
+                                        {
+                                            node: {
+                                                name: "Jill"
+                                            },
+                                            edge: {
+                                                year: 2018
+                                            }
+                                        },
+                                        {
+                                            node: {
+                                                name: "Jill"
+                                            },
+                                            edge: {
+                                                year: 2018
+                                            }
+                                        }
+                                    ]
+                                },
+                                ${typePerson.name}: {
+                                    create: [
+                                        {
+                                            node: {
+                                                name: "Jim",
+                                                reputation: 10
+                                            },
+                                            edge: {
+                                                year: 2019
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            title: "Constantine",
+                        }
+                    ]
+                ) {
+                    ${typeMovie.plural} {
+                        title
+                    }
+                }
+            }
+        `,
+            })
+            .expect(200);
+
+        // 2. subscribe both ways
+        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
+
+        await wsClient.subscribe(personSubscriptionQuery(typePerson));
+
+        // 3. perform update on created node
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.update}(
+                                where: {
+                                  title: "John Wick"
+                                },
+                                update: {
+                                    title: "John WICK",
+                                    reviewers: [
+                                        {
+                                          update: {
+                                            node: {
+                                              _on: {
+                                                ${typePerson.name}: {
+                                                  movies: [
+                                                    {
+                                                      disconnect: [
+                                                        {
+                                                          where: {
+                                                            node: {
+                                                              title: "Constantine"
+                                                            }
+                                                          },
+                                                          disconnect: {
+                                                            directors: {
+                                                              ${typePerson.name}: [
+                                                                {
+                                                                  where: {
+                                                                    edge: {
+                                                                      year: 2019
+                                                                    }
+                                                                  }
+                                                                }
+                                                              ],
+                                                              ${typeActor.name}: [
+                                                                {
+                                                                  where: {
+                                                                    node: {
+                                                                      name: "Jill"
+                                                                    }
+                                                                  }
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                ${typeInfluencer.name}: {
+                                                  url: "/bob"
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                    ]
+                                  }
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        await delay(2);
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient2.errors).toEqual([]);
+
+        expect(wsClient2.events).toHaveLength(4);
+        expect(wsClient.events).toHaveLength(1);
+
+        expect(wsClient2.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 42,
+                            node: {
+                                name: "Ana",
+                                reputation: 10,
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: {
+                            year: 2018,
+                            node: {
+                                name: "Jill",
+                            },
+                        },
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: {
+                            year: 2018,
+                            node: {
+                                name: "Jill",
+                            },
+                        },
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: {
+                            year: 2019,
+                            node: {
+                                name: "Jim",
+                                reputation: 10,
+                            },
+                        },
+                        reviewers: null,
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Ana",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
+                        movies: {
+                            score: 42,
+                            node: {
+                                title: "Constantine",
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+
+    test("disconnect via nested update - disconnect subscription sends events one way: interface to union type - duplicate interface nodes", async () => {
+        // 1. create
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+            mutation {
+                ${typeMovie.operations.create}(
+                    input: [
+                        {
+                            reviewers: {
+                                create: [
+                                        {
+                                        node: {
+                                            ${typePerson.name}: {
+                                                name: "Ana",
+                                                reputation: 10
+                                            },
+                                            ${typeInfluencer.name}: {
+                                                url: "/bob",
+                                                reputation: 10
+                                            }
+                                        },
+                                        edge: {
+                                            score: 100
+                                        }
+                                    }
+                                ]
+                            },
+                            title: "John Wick",
+                        }
+                    ]
+                ) {
+                    ${typeMovie.plural} {
+                        title
+                    }
+                }
+            }
+        `,
+            })
+            .expect(200);
+        // duplicate node
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+            mutation {
+                ${typePerson.operations.create}(
+                    input: [
+                        {
+                            name: "Ana",
+                            reputation: 10,
+                            movies: {
+                                connect: [
+                                    {
+                                        where: {
+                                            node: {
+                                                title: "John Wick"
+                                            }
+                                        },
+                                        edge: {
+                                            score: 110
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                ) {
+                    ${typePerson.plural} {
+                        name
+                    }
+                }
+            }
+        `,
+            })
+            .expect(200);
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+            mutation {
+                ${typeMovie.operations.create}(
+                    input: [
+                        {
+                            reviewers: {
+                                connect: [
+                                    {
+                                        where: {
+                                            node: {
+                                                _on: {
+                                                    ${typePerson.name}: {
+                                                        name: "Ana"
+                                                    },
+                                                    ${typeInfluencer.name}: {
+                                                        url: "/bob"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        edge: {
+                                            score: 42
+                                        }
+                                    }
+                                ]
+                            },
+                            directors: {
+                                ${typeActor.name}: {
+                                    create: [
+                                        {
+                                            node: {
+                                                name: "Jill"
+                                            },
+                                            edge: {
+                                                year: 2018
+                                            }
+                                        }
+                                    ]
+                                },
+                                ${typePerson.name}: {
+                                    create: [
+                                        {
+                                            node: {
+                                                name: "Jim",
+                                                reputation: 10
+                                            },
+                                            edge: {
+                                                year: 2019
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            title: "Constantine",
+                        }
+                    ]
+                ) {
+                    ${typeMovie.plural} {
+                        title
+                    }
+                }
+            }
+        `,
+            })
+            .expect(200);
+
+        // 2. subscribe both ways
+        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
+
+        await wsClient.subscribe(personSubscriptionQuery(typePerson));
+
+        // 3. perform update on created node
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.update}(
+                                where: {
+                                  title: "John Wick"
+                                },
+                                update: {
+                                    title: "John WICK",
+                                    reviewers: [
+                                        {
+                                          update: {
+                                            node: {
+                                              _on: {
+                                                ${typePerson.name}: {
+                                                  movies: [
+                                                    {
+                                                      disconnect: [
+                                                        {
+                                                          where: {
+                                                            node: {
+                                                              title: "Constantine"
+                                                            }
+                                                          },
+                                                          disconnect: {
+                                                            directors: {
+                                                              ${typePerson.name}: [
+                                                                {
+                                                                  where: {
+                                                                    edge: {
+                                                                      year: 2019
+                                                                    }
+                                                                  }
+                                                                }
+                                                              ],
+                                                              ${typeActor.name}: [
+                                                                {
+                                                                  where: {
+                                                                    node: {
+                                                                      name: "Jill"
+                                                                    }
+                                                                  }
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                ${typeInfluencer.name}: {
+                                                  url: "/bob"
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                    ]
+                                  }
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        await delay(2);
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient2.errors).toEqual([]);
+
+        expect(wsClient2.events).toHaveLength(4);
+        expect(wsClient.events).toHaveLength(2);
+
+        expect(wsClient2.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 42,
+                            node: {
+                                name: "Ana",
+                                reputation: 10,
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 42,
+                            node: {
+                                name: "Ana",
+                                reputation: 10,
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: {
+                            year: 2018,
+                            node: {
+                                name: "Jill",
+                            },
+                        },
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: {
+                            year: 2019,
+                            node: {
+                                name: "Jim",
+                                reputation: 10,
+                            },
+                        },
+                        reviewers: null,
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Ana",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
+                        movies: {
+                            score: 42,
+                            node: {
+                                title: "Constantine",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Ana",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
+                        movies: {
+                            score: 42,
+                            node: {
+                                title: "Constantine",
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+
+    test("disconnect via nested update - disconnect subscription sends events one way: union to interface type", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -6567,247 +2599,95 @@ subscription SubscriptionPerson {
                     ${typeMovie.operations.create}(
                         input: [
                             {
-                                directors: {
-                                    ${typeActor.name}: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    name: "Keanu Reeves",
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Constantine"
-                                                                },
-                                                                edge: {
-                                                                    screenTime: 1000
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                edge: {
-                                                    year: 2019
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    name: "Keanu Reeves"
-                                                },
-                                                edge: {
-                                                    year: 2019
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    ${typePerson.name}: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    name: "Jim",
-                                                    reputation: 10,
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Constantine2"
-                                                                },
-                                                                edge: {
-                                                                    score: 42
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                edge: {
-                                                    year: 2020
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    name: "Jill",
-                                                    reputation: 10
-                                                },
-                                                edge: {
-                                                    year: 2020
-                                                }
-                                            }
-                                        ]
-                                    }   
+                                actors: {
+                                    create: [
+                                        {
+                                        node: {
+                                            name: "Jim",
+                                        },
+                                        edge: {
+                                            screenTime: 234
+                                        }
+                                        }
+                                    ]
                                 },
-                                title: "Matrix2",
-                            }
-                        ]
-                    ) {
-                        ${typeMovie.plural} {
-                            title
-                        }
-                    }
-                }
-            `,
-            })
-            .expect(200);
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                mutation {
-                    ${typeMovie.operations.create}(
-                        input: [
-                            {
-                                directors: {
-                                    ${typeActor.name}: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    name: "Keanu Reeves",
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Constantine"
-                                                                },
-                                                                edge: {
-                                                                    screenTime: 1000
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                edge: {
-                                                    year: 2019
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    name: "Keanu Reeves"
-                                                },
-                                                edge: {
-                                                    year: 2019
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    ${typePerson.name}: {
-                                        create: [
-                                            {
-                                                node: {
-                                                    name: "Jim",
-                                                    reputation: 10,
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Constantine2"
-                                                                },
-                                                                edge: {
-                                                                    score: 42
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                edge: {
-                                                    year: 2020
-                                                }
-                                            },
-                                            {
-                                                node: {
-                                                    name: "Jill",
-                                                    reputation: 10
-                                                },
-                                                edge: {
-                                                    year: 2020
-                                                }
-                                            }
-                                        ]
-                                    }   
-                                },
-                                title: "Matrix3",
-                            }
-                        ]
-                    ) {
-                        ${typeMovie.plural} {
-                            title
-                        }
-                    }
-                }
-            `,
-            })
-            .expect(200);
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                mutation {
-                    ${typeMovie.operations.create}(
-                        input: [
-                            {
                                 reviewers: {
                                     create: [
                                             {
                                             node: {
                                                 ${typePerson.name}: {
                                                     name: "Ana",
-                                                    reputation: 10,
-                                                    movies: {
-                                                        connect: [
-                                                            {
-                                                                where: {
-                                                                    node: {
-                                                                        title: "Matrix2"
-                                                                    }
-                                                                },
-                                                                edge: {
-                                                                    score: 420
-                                                                }
-                                                            },
-                                                            {
-                                                                where: {
-                                                                    node: {
-                                                                        title: "Matrix3"
-                                                                    }
-                                                                },
-                                                                edge: {
-                                                                    score: 420
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
+                                                    reputation: 100
                                                 },
                                                 ${typeInfluencer.name}: {
                                                     url: "/bob",
-                                                    reputation: 10
+                                                    reputation: 100
                                                 }
                                             },
                                             edge: {
-                                                score: 100
-                                            }
-                                        },
-                                        {
-                                            node: {
-                                                ${typePerson.name}: {
-                                                    name: "Julia",
-                                                    reputation: 10,
-                                                    movies: {
-                                                        create: [
-                                                            {
-                                                                node: {
-                                                                    title: "Other Matrix"
-                                                                },
-                                                                edge: {
-                                                                    score: 420
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                }
-                                            },
-                                            edge: {
-                                                score: 100
+                                                score: 10
                                             }
                                         }
                                     ]
+                                },
+                                title: "Constantine",
+                            }
+                        ]
+                    ) {
+                        ${typeMovie.plural} {
+                            title
+                        }
+                    }
+                }
+            `,
+            })
+            .expect(200);
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                mutation {
+                    ${typeMovie.operations.create}(
+                        input: [
+                            {
+                                directors: {
+                                    ${typeActor.name}: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    name: "Jim",
+                                                    movies: {
+                                                        connect: {
+                                                          where: {
+                                                            node: {
+                                                              title: "Constantine"
+                                                            }
+                                                          },
+                                                          edge: {
+                                                            screenTime: 234
+                                                          }
+                                                        }
+                                                      }
+                                                },
+                                                edge: {
+                                                    year: 2020
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    ${typePerson.name}: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    name: "Jill",
+                                                    reputation: 10
+                                                },
+                                                edge: {
+                                                    year: 2020
+                                                }
+                                            }
+                                        ]
+                                    }
                                 },
                                 title: "John Wick",
                             }
@@ -6833,119 +2713,114 @@ subscription SubscriptionPerson {
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.delete}(
+                        ${typeMovie.operations.update}(
                                 where: {
                                   title: "John Wick"
                                 },
-                                delete: {
-                                    reviewers: [
-                                        {
-                                            where: {
-                                                node: {
-                                                    reputation: 10,
-                                                    _on: {
-                                                        ${typePerson.name}: {
-                                                            name: "Ana"
+                                update: {
+                                    title: "John WICK",
+                                    directors: {
+                                        ${typeActor.name}: [
+                                          {
+                                            update: {
+                                              node: {
+                                                movies: [
+                                                  {
+                                                    disconnect: [
+                                                      {
+                                                        where: {
+                                                          edge: {
+                                                            screenTime: 234
+                                                          }
                                                         },
-                                                        ${typeInfluencer.name}: {
-                                                            url: "/bob"
-                                                        }
-                                                    }
-                                                }
-                                            },
-                                            delete: {
-                                                _on: {
-                                                    ${typePerson.name}: [
-                                                        {
-                                                            movies: [
-                                                                {
-                                                                    where: {
-                                                                        edge: {
-                                                                            score: 420
-                                                                        }
-                                                                    },
-                                                                    delete: {
-                                                                        directors: {
-                                                                            ${typeActor.name}: [
-                                                                              {
-                                                                                where: {
-                                                                                  node: {
-                                                                                    name: "Keanu Reeves"
-                                                                                  }
-                                                                                },
-                                                                                delete: {
-                                                                                  movies: [
-                                                                                      {
-                                                                                          where: {
-                                                                                              node: {
-                                                                                                  title_STARTS_WITH: "Constantine"
-                                                                                              }
-                                                                                          }
-                                                                                      }
-                                                                                  ]
-                                                                                }
-                                                                              }
-                                                                            ],
-                                                                            ${typePerson.name}: [
-                                                                              {
-                                                                                where: {
-                                                                                  node: {
-                                                                                    reputation: 10
-                                                                                  }
-                                                                                },
-                                                                                delete: {
-                                                                                  movies: [
-                                                                                      {
-                                                                                          where: {
-                                                                                              node: {
-                                                                                                  title_STARTS_WITH: "Constantine"
-                                                                                              }
-                                                                                          }
-                                                                                      }
-                                                                                  ]
-                                                                                }
-                                                                              }
-                                                                            ]
-                                                                        }
-                                                                    }
+                                                        disconnect: {
+                                                          reviewers: [
+                                                            {
+                                                              where: {
+                                                                node: {
+                                                                  reputation: 100
                                                                 }
-                                                            ]
+                                                              }
+                                                            }
+                                                          ]
                                                         }
+                                                      }
                                                     ]
-                                                } 
+                                                  }
+                                                ]
+                                              }
                                             }
-                                        }
-                                    ]
+                                          }
+                                        ]
+                                      }
                                   }
                         ) {
-                            nodesDeleted
-                            relationshipsDeleted
+                            ${typeMovie.plural} {
+                                title
+                            }
                         }
                     }
                 `,
             })
             .expect(200);
 
-        // console.log("HERE", r.error);
-
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
-        expect(wsClient2.events).toHaveLength(10);
-        expect(wsClient.events).toHaveLength(3);
+        expect(wsClient2.events).toHaveLength(3);
+        expect(wsClient.events).toHaveLength(1);
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 10,
+                            node: {
+                                name: "Ana",
+                                reputation: 100,
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 10,
+                            node: {
+                                url: "/bob",
+                                reputation: 100,
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
                     event: "DISCONNECT",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
                         actors: {
-                            screenTime: 42,
+                            screenTime: 234,
                             node: {
-                                name: "Keanu Reeves",
+                                name: "Jim",
                             },
                         },
                         directors: null,
@@ -6956,18 +2831,684 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Ana",
                     },
                     event: "DISCONNECT",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
                         movies: {
-                            screenTime: 42,
+                            score: 10,
                             node: {
+                                title: "Constantine",
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+    test("disconnect via nested update - disconnect subscription sends events one way: union to interface type - duplicate nodes in outer match", async () => {
+        // 1. create
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                mutation {
+                    ${typeMovie.operations.create}(
+                        input: [
+                            {
+                                actors: {
+                                    create: [
+                                        {
+                                        node: {
+                                            name: "Jim",
+                                        },
+                                        edge: {
+                                            screenTime: 234
+                                        }
+                                        },
+                                        {
+                                            node: {
+                                                name: "Jim",
+                                            },
+                                            edge: {
+                                                screenTime: 234
+                                            }
+                                            }
+                                    ]
+                                },
+                                reviewers: {
+                                    create: [
+                                            {
+                                            node: {
+                                                ${typePerson.name}: {
+                                                    name: "Ana",
+                                                    reputation: 100
+                                                },
+                                                ${typeInfluencer.name}: {
+                                                    url: "/bob",
+                                                    reputation: 100
+                                                }
+                                            },
+                                            edge: {
+                                                score: 10
+                                            }
+                                        }
+                                    ]
+                                },
+                                title: "Constantine",
+                            }
+                        ]
+                    ) {
+                        ${typeMovie.plural} {
+                            title
+                        }
+                    }
+                }
+            `,
+            })
+            .expect(200);
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                mutation {
+                    ${typeMovie.operations.create}(
+                        input: [
+                            {
+                                directors: {
+                                    ${typeActor.name}: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    name: "Jim",
+                                                    movies: {
+                                                        connect: {
+                                                          where: {
+                                                            node: {
+                                                              title: "Constantine"
+                                                            }
+                                                          },
+                                                          edge: {
+                                                            screenTime: 234
+                                                          }
+                                                        }
+                                                      }
+                                                },
+                                                edge: {
+                                                    year: 2020
+                                                }
+                                            },
+                                            {
+                                                node: {
+                                                    name: "Jim",
+                                                    movies: {
+                                                        connect: {
+                                                          where: {
+                                                            node: {
+                                                              title: "Constantine"
+                                                            }
+                                                          },
+                                                          edge: {
+                                                            screenTime: 234
+                                                          }
+                                                        }
+                                                      }
+                                                },
+                                                edge: {
+                                                    year: 2020
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    ${typePerson.name}: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    name: "Jill",
+                                                    reputation: 10
+                                                },
+                                                edge: {
+                                                    year: 2020
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
                                 title: "John Wick",
+                            }
+                        ]
+                    ) {
+                        ${typeMovie.plural} {
+                            title
+                        }
+                    }
+                }
+            `,
+            })
+            .expect(200);
+
+        // 2. subscribe both ways
+        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
+
+        await wsClient.subscribe(personSubscriptionQuery(typePerson));
+
+        // 3. perform update on created node
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.update}(
+                                where: {
+                                  title: "John Wick"
+                                },
+                                update: {
+                                    title: "John WICK",
+                                    directors: {
+                                        ${typeActor.name}: [
+                                          {
+                                            update: {
+                                              node: {
+                                                movies: [
+                                                  {
+                                                    disconnect: [
+                                                      {
+                                                        where: {
+                                                          edge: {
+                                                            screenTime: 234
+                                                          }
+                                                        },
+                                                        disconnect: {
+                                                          reviewers: [
+                                                            {
+                                                              where: {
+                                                                node: {
+                                                                  reputation: 100
+                                                                }
+                                                              }
+                                                            }
+                                                          ]
+                                                        }
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      }
+                                  }
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        await delay(2);
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient2.errors).toEqual([]);
+
+        expect(wsClient2.events).toHaveLength(4);
+        expect(wsClient.events).toHaveLength(1);
+
+        expect(wsClient2.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 10,
+                            node: {
+                                name: "Ana",
+                                reputation: 100,
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 10,
+                            node: {
+                                url: "/bob",
+                                reputation: 100,
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
+                        actors: {
+                            screenTime: 234,
+                            node: {
+                                name: "Jim",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
+                        actors: {
+                            screenTime: 234,
+                            node: {
+                                name: "Jim",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Ana",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
+                        movies: {
+                            score: 10,
+                            node: {
+                                title: "Constantine",
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+    test("disconnect via nested update - disconnect subscription sends events one way: union to interface type - duplicate nodes in inner match", async () => {
+        // 1. create
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                mutation {
+                    ${typeMovie.operations.create}(
+                        input: [
+                            {
+                                actors: {
+                                    create: [
+                                        {
+                                        node: {
+                                            name: "Jim",
+                                        },
+                                        edge: {
+                                            screenTime: 234
+                                        }
+                                        },
+                                    ]
+                                },
+                                reviewers: {
+                                    create: [
+                                            {
+                                            node: {
+                                                ${typePerson.name}: {
+                                                    name: "Ana",
+                                                    reputation: 100
+                                                },
+                                                ${typeInfluencer.name}: {
+                                                    url: "/bob",
+                                                    reputation: 100
+                                                }
+                                            },
+                                            edge: {
+                                                score: 10
+                                            }
+                                        }
+                                    ]
+                                },
+                                title: "Constantine",
+                            },
+                            {
+                                title: "Other Movie",
+                                actors: {
+                                    create: [
+                                        {
+                                        node: {
+                                            name: "Jim",
+                                        },
+                                        edge: {
+                                            screenTime: 234
+                                        }
+                                        },
+                                    ]
+                                }
+                            }
+                        ]
+                    ) {
+                        ${typeMovie.plural} {
+                            title
+                        }
+                    }
+                }
+            `,
+            })
+            .expect(200);
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                mutation {
+                    ${typeMovie.operations.create}(
+                        input: [
+                            {
+                                directors: {
+                                    ${typeActor.name}: {
+                                        connect: [
+                                            {
+                                               where: {
+                                                    node: {
+                                                        name: "Jim"
+                                                    }
+                                               },
+                                                connect: [
+                                                    {
+                                                        movies: [
+                                                            {
+                                                                where: {
+                                                                    node: {
+                                                                      title: "Other Movie"
+                                                                    }
+                                                                  },
+                                                                  edge: {
+                                                                    screenTime: 234
+                                                                  }
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                edge: {
+                                                    year: 1999
+                                                }
+                                            }
+                                        ],
+                                        create: [
+                                            {
+                                                node: {
+                                                    name: "Jim",
+                                                    movies: {
+                                                        connect: {
+                                                          where: {
+                                                            node: {
+                                                              title: "Constantine"
+                                                            }
+                                                          },
+                                                          edge: {
+                                                            screenTime: 23
+                                                          }
+                                                        }
+                                                      }
+                                                },
+                                                edge: {
+                                                    year: 2020
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    ${typePerson.name}: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    name: "Jill",
+                                                    reputation: 10
+                                                },
+                                                edge: {
+                                                    year: 2020
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                                title: "John Wick",
+                            }
+                        ]
+                    ) {
+                        ${typeMovie.plural} {
+                            title
+                        }
+                    }
+                }
+            `,
+            })
+            .expect(200);
+
+        // 2. subscribe both ways
+        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
+
+        await wsClient.subscribe(personSubscriptionQuery(typePerson));
+
+        // 3. perform update on created node
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.update}(
+                                where: {
+                                  title: "John Wick"
+                                },
+                                update: {
+                                    title: "John WICK",
+                                    directors: {
+                                        ${typeActor.name}: [
+                                          {
+                                            update: {
+                                              node: {
+                                                movies: [
+                                                  {
+                                                    disconnect: [
+                                                      {
+                                                        where: {
+                                                          edge: {
+                                                            screenTime: 234
+                                                          }
+                                                        },
+                                                        disconnect: {
+                                                          reviewers: [
+                                                            {
+                                                              where: {
+                                                                node: {
+                                                                  reputation: 100
+                                                                }
+                                                              }
+                                                            }
+                                                          ]
+                                                        }
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      }
+                                  }
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        await delay(2);
+        await delay(2);
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient2.errors).toEqual([]);
+
+        expect(wsClient2.events).toHaveLength(6);
+        expect(wsClient.events).toHaveLength(1);
+
+        expect(wsClient2.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 10,
+                            node: {
+                                name: "Ana",
+                                reputation: 100,
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "reviewers",
+                    deletedRelationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 10,
+                            node: {
+                                url: "/bob",
+                                reputation: 100,
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
+                        actors: {
+                            screenTime: 234,
+                            node: {
+                                name: "Jim",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Other Movie" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
+                        actors: {
+                            screenTime: 234,
+                            node: {
+                                name: "Jim",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Other Movie" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
+                        actors: {
+                            screenTime: 234,
+                            node: {
+                                name: "Jim",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Other Movie" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
+                        actors: {
+                            screenTime: 234,
+                            node: {
+                                name: "Jim",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Ana",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
+                        movies: {
+                            score: 10,
+                            node: {
+                                title: "Constantine",
                             },
                         },
                     },
