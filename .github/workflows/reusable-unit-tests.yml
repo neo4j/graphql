@@ -18,6 +18,7 @@ jobs:
           - graphql
           - ogm
           - introspector
+          - plugins/graphql-plugin-apollo-federation
           - plugins/graphql-plugin-auth
           - plugins/graphql-plugin-subscriptions-amqp
         graphql-version:

@@ -1,0 +1,43 @@
+name: "@neo4j/graphql-plugin-apollo-federation E2E tests"
+
+on:
+  workflow_call:
+
+jobs:
+  e2e-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
+
+    services:
+      neo4j:
+        image: neo4j:latest
+        env:
+          NEO4J_AUTH: neo4j/password
+          NEO4J_PLUGINS: '["apoc"]'
+        ports:
+          - 7687:7687
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
+      - name: Run packages/plugins/graphql-plugin-apollo-federation e2e tests
+        run: yarn run test --coverage tests/e2e
+        working-directory: packages/plugins/graphql-plugin-apollo-federation
+      - name: Archive coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: e2e-coverage-graphql-plugin-apollo-federation
+          path: packages/plugins/graphql-plugin-apollo-federation/coverage/

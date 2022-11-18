@@ -1,11 +1,14 @@
 {
-    "name": "@neo4j/graphql-plugin-federation",
-    "version": "1.1.0",
-    "description": "Auth decode plugins for @neo4j/graphql",
+    "name": "@neo4j/graphql-plugin-apollo-federation",
+    "version": "0.0.1",
+    "private": true,
+    "description": "Apollo Federation plugin for @neo4j/graphql",
     "keywords": [
         "neo4j",
         "graphql",
-        "federation"
+        "apollo",
+        "federation",
+        "subgraph"
     ],
     "license": "Apache-2.0",
     "bugs": {

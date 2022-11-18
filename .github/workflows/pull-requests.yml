@@ -78,8 +78,11 @@ jobs:
   cypher-builder-tests:
     uses: ./.github/workflows/reusable-cypher-builder-tests.yml
 
-  e2e-tests-plugins:
+  e2e-tests-subscriptions-amqp:
     uses: ./.github/workflows/reusable-subscriptions-plugin-amqp-e2e-test.yml
+
+  e2e-tests-federation:
+    uses: ./.github/workflows/reusable-federation-e2e-test.yml
 
   api-library-tests:
     uses: ./.github/workflows/reusable-api-library-tests.yml

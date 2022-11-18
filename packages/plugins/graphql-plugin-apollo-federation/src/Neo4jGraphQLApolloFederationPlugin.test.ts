@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { mergeTypeDefs } from "@graphql-tools/merge";
 import { print } from "graphql";
 import gql from "graphql-tag";
 import { Neo4jGraphQLApolloFederationPlugin } from "./Neo4jGraphQLApolloFederationPlugin";
@@ -138,10 +137,9 @@ describe("Neo4jGraphQLApolloFederationPlugin", () => {
                 }
             `;
 
+            // findFederationLinkDirective called in constructor
             // @ts-ignore
-            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined);
-
-            expect(() => plugin["findFederationLinkDirective"](typeDefs)).toThrow(
+            expect(() => new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined)).toThrow(
                 "typeDefs must contain `@link` schema extension to be used with Apollo Federation"
             );
         });
@@ -166,10 +164,9 @@ describe("Neo4jGraphQLApolloFederationPlugin", () => {
                 }
             `;
 
+            // findFederationLinkDirective called in constructor
             // @ts-ignore
-            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined);
-
-            expect(() => plugin["findFederationLinkDirective"](typeDefs)).toThrow(
+            expect(() => new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined)).toThrow(
                 "typeDefs must contain `@link` schema extension to be used with Apollo Federation"
             );
         });
@@ -259,12 +256,9 @@ describe("Neo4jGraphQLApolloFederationPlugin", () => {
                 }
             `;
 
+            // parseLinkImportArgument called in constructor
             // @ts-ignore
-            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined);
-
-            const directive = plugin["findFederationLinkDirective"](typeDefs);
-
-            expect(() => plugin["parseLinkImportArgument"](directive!)).toThrow(
+            expect(() => new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined)).toThrow(
                 "Encountered unknown Apollo Federation directive @banana"
             );
         });
@@ -300,12 +294,9 @@ describe("Neo4jGraphQLApolloFederationPlugin", () => {
                 }
             `;
 
+            // parseLinkImportArgument called in constructor
             // @ts-ignore
-            const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined);
-
-            const directive = plugin["findFederationLinkDirective"](typeDefs);
-
-            expect(() => plugin["parseLinkImportArgument"](directive!)).toThrow(
+            expect(() => new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined)).toThrow(
                 "Alias for directive @external is not of type string"
             );
         });
