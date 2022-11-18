@@ -104,22 +104,28 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Post)
-            SET this0.id = $this0_id
-            SET this0.content = $this0_content
-            WITH this0
-            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this0
+            "UNWIND $create_param0 AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Post\`)
+                SET
+                    create_this0.id = create_var1.id,
+                    create_this0.content = create_var1.content
+                WITH *
+                CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .id }] AS data"
+            RETURN collect(create_this0 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\",
-                \\"this0_content\\": \\"content\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\",
+                        \\"content\\": \\"content\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,

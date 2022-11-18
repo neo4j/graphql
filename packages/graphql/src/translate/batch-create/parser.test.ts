@@ -112,7 +112,9 @@ describe("TreeDescriptor Parser", () => {
             schema,
         }).instance();
         const treeDescriptor = Array.isArray(graphQLInput)
-            ? mergeTreeDescriptors(graphQLInput.map((el: GraphQLCreateInput) => getTreeDescriptor(el, movieNode, context)))
+            ? mergeTreeDescriptors(
+                  graphQLInput.map((el: GraphQLCreateInput) => getTreeDescriptor(el, movieNode, context))
+              )
             : getTreeDescriptor(graphQLInput, movieNode, context);
 
         expect(treeDescriptor).toEqual({
@@ -214,7 +216,9 @@ describe("TreeDescriptor Parser", () => {
         };
 
         const treeDescriptor = Array.isArray(graphQLInput)
-            ? mergeTreeDescriptors(graphQLInput.map((el: GraphQLCreateInput) => getTreeDescriptor(el, movieNode, context)))
+            ? mergeTreeDescriptors(
+                  graphQLInput.map((el: GraphQLCreateInput) => getTreeDescriptor(el, movieNode, context))
+              )
             : getTreeDescriptor(graphQLInput, movieNode, context);
 
         expect(treeDescriptor).toEqual({
@@ -329,7 +333,9 @@ describe("TreeDescriptor Parser", () => {
             schema,
         }).instance();
         const treeDescriptor = Array.isArray(graphQLInput)
-            ? mergeTreeDescriptors(graphQLInput.map((el: GraphQLCreateInput) => getTreeDescriptor(el, movieNode, context)))
+            ? mergeTreeDescriptors(
+                  graphQLInput.map((el: GraphQLCreateInput) => getTreeDescriptor(el, movieNode, context))
+              )
             : getTreeDescriptor(graphQLInput, movieNode, context);
 
         expect(treeDescriptor).toEqual({

@@ -48,7 +48,7 @@ export default async function unwindCreate({
     const createNodeAST = parseCreate(treeDescriptor, node, context);
     const callbackBucket = new CallbackBucket(context);
     const unwindVar = new Cypher.Variable();
-    const unwind = new Cypher.Param(input); 
+    const unwind = new Cypher.Param(input);
     const unwindQuery = new Cypher.Unwind([unwind, unwindVar]);
     const unwindCreateVisitor = new UnwindCreateVisitor(unwindVar, callbackBucket, context);
     createNodeAST.accept(unwindCreateVisitor);
