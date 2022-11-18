@@ -62,6 +62,7 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
         }), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
+    console.log("DEL IN", deleteInput, resolveTree.name);
     if (deleteInput) {
         const deleteAndParams = createDeleteAndParams({
             context,
@@ -80,6 +81,8 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
                 : {}),
             ...deleteAndParams[1],
         };
+    } else {
+        deleteStr = findNodesThatDisconnect({ varName });
     }
 
     const deleteQuery = new Cypher.RawCypher(() => {
@@ -108,4 +111,22 @@ function getDeleteReturn(context: Context): Array<string> {
               `RETURN ${META_CYPHER_VARIABLE}`,
           ]
         : [];
+}
+
+function findNodesThatDisconnect({ varName }: { varName: string }): string {
+    const str = [
+        `CALL {`,
+        `\tWITH ${varName}`,
+        `\tOPTIONAL MATCH (${varName})-[r]-(target)`,
+        `\tWITH ${varName}, collect(DISTINCT r) as relationships_to_delete`,
+        `\tUNWIND relationships_to_delete AS x`,
+        `\tWITH case`,
+        `\twhen id(${varName})=id(startNode(x)) then { event: "disconnect", id_from: id(${varName}), id_to: id(endNode(x)), id: id(x), properties: { from: ${varName} { .* }, to: properties(endNode(x)), relationship: x { .* } }, timestamp: timestamp(), relationshipName: "DIRECTED", fromLabels: labels(${varName}), toLabels: labels(endNode(x)) }`,
+        `\twhen id(${varName})=id(endNode(x)) then { event: "disconnect", id_from: id(startNode(x)), id_to: id(${varName}), id: id(x), properties: { from: properties(startNode(x)), to: ${varName} { .* }, relationship: x { .* } }, timestamp: timestamp(), relationshipName: "DIRECTED", fromLabels: labels(startNode(x)), toLabels: labels(${varName}) }`,
+        `\tend as meta`,
+        `\tRETURN collect(DISTINCT meta) AS relationship_meta`,
+        `}`,
+        `WITH REDUCE(m=meta, r in relationship_meta | m + r) as meta, ${varName}`,
+    ];
+    return str.join("\n");
 }
