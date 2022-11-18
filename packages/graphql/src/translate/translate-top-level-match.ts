@@ -180,32 +180,10 @@ export function preComputedWhereFields(
             }
 
             const matchQuery = new Cypher.Match(cypherRelation);
-            const returnVariables = [] as Array<"*" | Cypher.ProjectionColumn>;
-            const predicates = [] as Cypher.Predicate[];
-            Object.entries(value as any).forEach(([key, value]) => {
-                let operation: Cypher.ComparisonOp | undefined;
-                if (["count", "count_LT", "count_LTE", "count_GT", "count_GTE"].includes(key)) {
-                    const paramName = new Cypher.Param(value);
-                    const count = Cypher.count(aggregationTarget);
-                    const operator = whereRegEx.exec(key)?.groups?.operator || "EQ";
-                    operation = createBaseOperation({
-                        operator,
-                        property: count,
-                        param: paramName,
-                    });
-                    const operationVar = new Cypher.Variable();
-                    returnVariables.push([operation, operationVar]);
-                    predicates.push(Cypher.eq(operationVar, new Cypher.Param(true)));
-                    return;
-                }
-                if (["node", "edge"].includes(key)) {
-                    const target = key === "edge" ? cypherRelation : aggregationTarget;
-                    const [_returnVariables, _predicates] = r(value, refNode, target);
-                    returnVariables.push(..._returnVariables);
-                    predicates.push(..._predicates);
-                    // const aggregationOperators = ["SHORTEST", "LONGEST", "MIN", "MAX", "SUM"];
-                }
-            });
+         /*    const returnVariables = [] as Array<"*" | Cypher.ProjectionColumn>;
+            const predicates = [] as Cypher.Predicate[]; */
+            const [returnVariables, predicates] = r0(value, refNode, aggregationTarget, cypherRelation);
+           
             console.log(predicates);
             topLevelWith.where(Cypher.and(...predicates));
             matchQuery.return(...returnVariables);
@@ -219,6 +197,52 @@ export function preComputedWhereFields(
     return returnClause;
 }
 
+function r0(
+    value: any,
+    refNode: Node,
+    aggregationTarget: Cypher.Node,
+    cypherRelation: Cypher.Relationship
+): [Array<"*" | Cypher.ProjectionColumn>, Cypher.Predicate[]]  {
+    const returnVariables = [] as Array<"*" | Cypher.ProjectionColumn>;
+    const predicates = [] as Cypher.Predicate[];
+    Object.entries(value).forEach(([key, value]) => {
+        let operation: Cypher.ComparisonOp | undefined;
+        if (["count", "count_LT", "count_LTE", "count_GT", "count_GTE"].includes(key)) {
+            const paramName = new Cypher.Param(value);
+            const count = Cypher.count(aggregationTarget);
+            const operator = whereRegEx.exec(key)?.groups?.operator || "EQ";
+            operation = createBaseOperation({
+                operator,
+                property: count,
+                param: paramName,
+            });
+            const operationVar = new Cypher.Variable();
+            returnVariables.push([operation, operationVar]);
+            predicates.push(Cypher.eq(operationVar, new Cypher.Param(true)));
+        } else if (["node", "edge"].includes(key)) {
+            const target = key === "edge" ? cypherRelation : aggregationTarget;
+            const [_returnVariables, _predicates] = r(value, refNode, target);
+            returnVariables.push(..._returnVariables);
+            predicates.push(..._predicates);
+            // const aggregationOperators = ["SHORTEST", "LONGEST", "MIN", "MAX", "SUM"];
+        } else if (["AND", "OR"].includes(key)) {
+            const binaryOp = key === "AND" ? Cypher.and : Cypher.or;
+            const [a, b] = (value as Array<any>).reduce(
+                (prev, elementValue) => {
+                    const [_returnVariables, _predicates] = r0(elementValue, refNode, aggregationTarget, cypherRelation);
+                    prev[0].push(..._returnVariables);
+                    prev[1].push(..._predicates);
+                    return prev;
+                },
+                [[], []]
+            );
+            returnVariables.push(...a);
+            predicates.push(binaryOp(...b));
+        }
+    });
+    return [returnVariables, predicates];
+}
+
 function r(
     value: any,
     refNode: Node,
@@ -230,12 +254,15 @@ function r(
     Object.entries(value).forEach(([innerKey, innerValue]) => {
         if (["AND", "OR"].includes(innerKey)) {
             const binaryOp = innerKey === "AND" ? Cypher.and : Cypher.or;
-            const [a, b] =(innerValue as Array<any>).reduce((prev, elementValue) => {
-                const [_returnVariables, _predicates] = r(elementValue, refNode, target);
-                prev[0].push(..._returnVariables)
-                prev[1].push(..._predicates)
-                return prev;
-            }, [[], []]);
+            const [a, b] = (innerValue as Array<any>).reduce(
+                (prev, elementValue) => {
+                    const [_returnVariables, _predicates] = r(elementValue, refNode, target);
+                    prev[0].push(..._returnVariables);
+                    prev[1].push(..._predicates);
+                    return prev;
+                },
+                [[], []]
+            );
             returnVariables.push(...a);
             predicates.push(binaryOp(...b));
         } else {
