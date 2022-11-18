@@ -104,7 +104,8 @@ jobs:
       - neo-push-tests
       - license-header-check
       - unit-tests
-      - e2e-tests-plugins
+      - e2e-tests-subscriptions-amqp
+      - e2e-tests-federation
       - api-library-tests
       - toolbox-tests
       - integration-tests-on-prem
