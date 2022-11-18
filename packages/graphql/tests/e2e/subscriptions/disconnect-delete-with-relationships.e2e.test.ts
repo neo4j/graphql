@@ -29,7 +29,7 @@ import Neo4j from "../setup/neo4j";
 import { cleanNodes } from "../../utils/clean-nodes";
 import { delay } from "../../../src/utils/utils";
 
-describe("Delete Subscriptions - with interfaces, unions and nested operations", () => {
+describe("Delete Subscriptions when relationships are targeted- with interfaces, unions and nested operations", () => {
     let neo4j: Neo4j;
     let driver: Driver;
     let server: TestGraphQLServer;
@@ -214,7 +214,116 @@ subscription SubscriptionPerson {
 }
 `;
 
-    /*
+    test("disconnect via delete - standard type - single relationship - 2 matching nodes", async () => {
+        // 1. create
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                mutation {
+                    ${typeMovie.operations.create}(
+                        input: [
+                            {
+                                actors: {
+                                create: [
+                                    {
+                                    node: {
+                                        name: "Keanu Reeves"
+                                    },
+                                    edge: {
+                                        screenTime: 42
+                                    }
+                                    }
+                                ]
+                                },
+                                title: "John Wick",
+                            },
+                            {
+                                title: "John Wick",
+                            }
+                        ]
+                    ) {
+                        ${typeMovie.plural} {
+                            title
+                        }
+                    }
+                }
+            `,
+            })
+            .expect(200);
+
+        // 2. subscribe both ways
+        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
+
+        await wsClient.subscribe(actorSubscriptionQuery(typeActor));
+
+        // 3. perform update on created node
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.delete}(
+                                where: {
+                                  title: "John Wick"
+                                }
+                        ) {
+                            nodesDeleted
+                            relationshipsDeleted
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient2.errors).toEqual([]);
+
+        expect(wsClient2.events).toHaveLength(1);
+        expect(wsClient.events).toHaveLength(1);
+
+        expect(wsClient2.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
+                        actors: {
+                            screenTime: 42,
+                            node: {
+                                name: "Keanu Reeves",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeActor.operations.subscribe.disconnected]: {
+                    [typeActor.operations.subscribe.payload.disconnected]: {
+                        name: "Keanu Reeves",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
+                        movies: {
+                            screenTime: 42,
+                            node: {
+                                title: "John Wick",
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+
     test("disconnect via delete - standard type - single relationship", async () => {
         // 1. create
         await supertest(server.path)
@@ -321,6 +430,7 @@ subscription SubscriptionPerson {
             },
         ]);
     });
+
     test("disconnect via delete nested - standard type - double relationship", async () => {
         // 1. create
         await supertest(server.path)
@@ -2762,8 +2872,9 @@ subscription SubscriptionPerson {
             },
         ]);
     });
-*/
+
     // -----------------------
+    /*
 
     test("disconnect via delete - with relationships - standard type", async () => {
         // 1. create
@@ -8451,4 +8562,5 @@ subscription SubscriptionPerson {
             },
         ]);
     });
+*/
 });
