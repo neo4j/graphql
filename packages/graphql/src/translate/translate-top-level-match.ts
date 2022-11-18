@@ -230,10 +230,11 @@ function r(
     Object.entries(value).forEach(([innerKey, innerValue]) => {
         if (["AND", "OR"].includes(innerKey)) {
             const binaryOp = innerKey === "AND" ? Cypher.and : Cypher.or;
-            const [a,b] =(innerValue as Array<any>).reduce((prev, elementValue) => {
+            const [a, b] =(innerValue as Array<any>).reduce((prev, elementValue) => {
                 const [_returnVariables, _predicates] = r(elementValue, refNode, target);
-                prev[0].push(_returnVariables)
-                prev[1].push(_predicates)
+                prev[0].push(..._returnVariables)
+                prev[1].push(..._predicates)
+                return prev;
             }, [[], []]);
             returnVariables.push(...a);
             predicates.push(binaryOp(...b));
