@@ -17,16 +17,20 @@
  * limitations under the License.
  */
 
-import type { IAST, Visitor } from "./types";
-import { v4 as uuidv4 } from 'uuid';
+import { TestClause } from "../../utils/TestClause";
+import Cypher from "../..";
 
-export abstract class AST implements IAST {
-    id = uuidv4()
-    children: IAST[] = [];
+describe("String Functions", () => {
+    test("toLower", () => {
+        const toLowerFunction = Cypher.toLower(new Cypher.Param("Hello"));
+        const queryResult = new TestClause(toLowerFunction).build();
 
-    addChildren(node: IAST): void {
-        this.children.push(node);
-    }
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"toLower($param0)"`);
 
-    abstract accept(visitor: Visitor): void
-}
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "Hello",
+            }
+        `);
+    });
+});
