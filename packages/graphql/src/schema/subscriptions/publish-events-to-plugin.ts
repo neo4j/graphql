@@ -26,6 +26,7 @@ import type {
     RelationshipSubscriptionMeta,
     SubscriptionsEvent,
 } from "../../types";
+import { filterTruthy } from "../../utils/utils";
 
 export function publishEventsToPlugin(
     executeResult: ExecuteResult,
@@ -33,13 +34,10 @@ export function publishEventsToPlugin(
 ): void {
     if (plugin) {
         const metadata: EventMeta[] = executeResult.records[0]?.meta || [];
+        const serializedEvents = filterTruthy(metadata.map(serializeEvent));
 
-        for (const rawEvent of metadata) {
-            const subscriptionsEvent = serializeEvent(rawEvent);
-            if (!subscriptionsEvent) {
-                // unsupported event type
-                return;
-            }
+        const serializedEventsWithoutDuplicates = removeDuplicateEvents("delete", serializedEvents);
+        for (const subscriptionsEvent of serializedEventsWithoutDuplicates) {
             try {
                 const publishPromise = plugin.publish(subscriptionsEvent); // Not using await to avoid blocking
                 if (publishPromise) {
@@ -52,6 +50,25 @@ export function publishEventsToPlugin(
             }
         }
     }
+}
+
+function removeDuplicateEvents(
+    eventType: "create" | "update" | "delete",
+    events: SubscriptionsEvent[]
+): SubscriptionsEvent[] {
+    const result = [] as SubscriptionsEvent[];
+    const resultIds = new Set<number>();
+    for (const event of events) {
+        if (event.event != eventType) {
+            result.push(event);
+        } else {
+            if (!resultIds.has(event.id)) {
+                resultIds.add(event.id);
+                result.push(event);
+            }
+        }
+    }
+    return result;
 }
 
 function isNodeSubscriptionMeta(event: EventMeta): event is NodeSubscriptionMeta {
