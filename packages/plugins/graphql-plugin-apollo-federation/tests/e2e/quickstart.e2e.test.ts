@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type * as neo4j from "neo4j-driver";
 import supertest from "supertest";
 import { generateUniqueType, UniqueType } from "../utils/graphql-types";
 import { GatewayServer } from "./setup/gateway-server";

@@ -208,7 +208,9 @@ describe("Neo4jGraphQLApolloFederationPlugin", () => {
             const plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, undefined);
 
             const directive = plugin["findFederationLinkDirective"](typeDefs);
+            expect(directive).toBeDefined();
 
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             plugin["parseLinkImportArgument"](directive!);
 
             expect(plugin["importArgument"]).toEqual(
