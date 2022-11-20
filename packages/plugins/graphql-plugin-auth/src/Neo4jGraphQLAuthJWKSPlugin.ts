@@ -65,8 +65,6 @@ class Neo4jGraphQLAuthJWKSPlugin {
     }
 
     tryToResolveKeys(req: RequestLike): void {
-        //Since we will always run this method, we don't want to over run it and if the client is initiated once then it doesn't need to be initiated again.
-        if (this.client) return;
         if (typeof this.input.jwksEndpoint === 'string') return;
 
         //The url will be computed based on the jwksEndpoint implementation

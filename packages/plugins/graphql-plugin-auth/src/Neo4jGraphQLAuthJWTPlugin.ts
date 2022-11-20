@@ -53,8 +53,6 @@ class Neo4jGraphQLAuthJWTPlugin {
     }
 
     tryToResolveKeys(req: RequestLike): void {
-        //If the secret is set, we don't need to fetch it again.
-        if (this.secret) return;
         if (typeof this.input.secret !== 'function') return;
 
         this.secret = this.input.secret(req);
