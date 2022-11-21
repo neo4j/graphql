@@ -18,7 +18,7 @@
  */
 
 import Debug from "debug";
-import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
+import type { GraphQLResolveInfo } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
 import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
@@ -31,7 +31,7 @@ import type { Context, Neo4jGraphQLPlugins } from "../../types";
 import { getToken, parseBearerToken } from "../../utils/get-token";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
-import type { Entity } from "../../schema-model/Entity";
+import type { Entity } from "../../schema-model/entity/Entity";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
