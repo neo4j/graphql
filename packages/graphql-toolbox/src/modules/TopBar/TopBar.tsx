@@ -18,7 +18,7 @@
  */
 
 import { Button, HeroIcon, IconButton, Label } from "@neo4j-ndl/react";
-import { Fragment, useContext } from "react";
+import { Fragment, useContext, useEffect } from "react";
 import { DEFAULT_BOLT_URL } from "../../constants";
 // @ts-ignore - SVG Import
 import Neo4jLogoIcon from "../../assets/neo4j-logo-color.svg";
@@ -34,6 +34,22 @@ export const TopBar = () => {
     const screen = useContext(ScreenContext);
     const greenDot = <span className="ml-1 mr-1 h-2 w-2 bg-green-400 rounded-full inline-block" />;
     const redDot = <span className="ml-1 mr-1 h-2 w-2 bg-red-400 rounded-full inline-block" />;
+
+    useEffect(() => {
+        if (window.Canny && window.CannyIsLoaded) {
+            window.Canny("initChangelog", {
+                appID: process.env.CANNY_GRAPHQL_TOOLBOX_APP_ID,
+                position: "bottom",
+                align: "right",
+                labelIDs: ["637b589ef463447c410200e6"],
+            });
+        }
+        return () => {
+            if (window.Canny && window.CannyIsLoaded) {
+                window.Canny("closeChangelog");
+            }
+        };
+    }, []);
 
     const handleHelpClick = () => {
         settings.setIsShowHelpDrawer(!settings.isShowHelpDrawer);
@@ -127,6 +143,17 @@ export const TopBar = () => {
                         </div>
                     ) : null}
                     <div className="flex items-center mr-6">
+                        <IconButton
+                            aria-label="Canny changelog widget"
+                            onClick={() => {
+                                console.log("add tracking");
+                            }}
+                            buttonSize="large"
+                            clean
+                            data-canny-changelog
+                        >
+                            <HeroIcon iconName="SpeakerphoneIcon" type="outline" />
+                        </IconButton>
                         <IconButton
                             data-test-topbar-help-button
                             aria-label="Help and learn drawer"

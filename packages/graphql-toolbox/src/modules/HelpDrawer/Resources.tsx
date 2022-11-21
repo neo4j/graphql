@@ -96,8 +96,11 @@ const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBloc
                                     })
                                 }
                             >
-                                {/* @ts-ignore - iconName is a string */}
-                                <HeroIcon className="h-6 w-6 mr-2 stroke-1" type="outline" iconName={link.iconName} />
+                                <HeroIcon
+                                    className="h-6 w-6 mr-2 stroke-1"
+                                    type="outline"
+                                    iconName={link.iconName as any}
+                                />
                                 <p className="p-0 m-0">{link.label}</p>
                             </a>
                         </li>
