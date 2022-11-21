@@ -37,8 +37,9 @@ export function translateTopLevelMatch({
     node: Node;
     operation: AuthOperations;
 }): Cypher.CypherResult {
-    const clauses = createMatchClause({ matchNode, node, context, operation });
-    const result = Cypher.concat(...clauses).build();
+    const [topLevelMatch, withClause] = createMatchClause({ matchNode, node, context, operation });
+    const aggregateWhereCall = preComputedWhereFields(context.resolveTree.args.where, node, context, matchNode, withClause);
+    const result = Cypher.concat(topLevelMatch, aggregateWhereCall, withClause).build();
     return result;
 }
 
@@ -181,8 +182,12 @@ export function preComputedWhereFields(
 
             const matchQuery = new Cypher.Match(cypherRelation);
 
-            const [returnVariables, predicates] = computeRootWhereAggregate(value, refNode, aggregationTarget, cypherRelation);
-           
+            const [returnVariables, predicates] = computeRootWhereAggregate(
+                value,
+                refNode,
+                aggregationTarget,
+                cypherRelation
+            );
             topLevelWith.where(Cypher.and(...predicates));
             matchQuery.return(...returnVariables);
             returnClause = Cypher.concat(
@@ -200,7 +205,7 @@ function computeRootWhereAggregate(
     refNode: Node,
     aggregationTarget: Cypher.Node,
     cypherRelation: Cypher.Relationship
-): [Array<"*" | Cypher.ProjectionColumn>, Cypher.Predicate[]]  {
+): [Array<"*" | Cypher.ProjectionColumn>, Cypher.Predicate[]] {
     const returnVariables = [] as Array<"*" | Cypher.ProjectionColumn>;
     const predicates = [] as Cypher.Predicate[];
     Object.entries(value).forEach(([key, value]) => {
@@ -227,7 +232,12 @@ function computeRootWhereAggregate(
             const binaryOp = key === "AND" ? Cypher.and : Cypher.or;
             const [a, b] = (value as Array<any>).reduce(
                 (prev, elementValue) => {
-                    const [_returnVariables, _predicates] = computeRootWhereAggregate(elementValue, refNode, aggregationTarget, cypherRelation);
+                    const [_returnVariables, _predicates] = computeRootWhereAggregate(
+                        elementValue,
+                        refNode,
+                        aggregationTarget,
+                        cypherRelation
+                    );
                     prev[0].push(..._returnVariables);
                     prev[1].push(..._predicates);
                     return prev;
@@ -265,14 +275,19 @@ function computeFieldAggregateWhere(
             predicates.push(binaryOp(...b));
         } else {
             const paramName = new Cypher.Param(innerValue);
-            const { fieldName, aggregationOperator, logicalOperator } = aggregationFieldRegEx.exec(innerKey)
-                ?.groups as AggregationFieldRegexGroups;
+            const regexResult = aggregationFieldRegEx.exec(innerKey)?.groups as AggregationFieldRegexGroups;
+            let { logicalOperator } = regexResult;
+            const { fieldName, aggregationOperator } = regexResult;
             const fieldType = refNode.primitiveFields.find((name) => name.fieldName === fieldName)?.typeMeta.name;
             let property =
                 (fieldType === "String" && logicalOperator !== "EQUAL") ||
                 (["AVERAGE", "LONGEST", "SHORTEST"].includes(aggregationOperator || "") && fieldType === "String")
                     ? Cypher.size(target.property(fieldName))
                     : target.property(fieldName);
+            if (fieldType === "String" && logicalOperator === "EQUAL" && !aggregationOperator) {
+                property = Cypher.collect(target.property(fieldName));
+                logicalOperator = "INCLUDES";
+            }
             property = aggregationOperator ? createAggregateOperation(property, aggregationOperator) : property;
 
             const operation = createBaseOperation({

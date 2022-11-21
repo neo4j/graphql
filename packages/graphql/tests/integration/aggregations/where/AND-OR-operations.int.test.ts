@@ -291,6 +291,9 @@ describe("Nested within AND/OR", () => {
         expect(result.data).toEqual({
             [postType.plural]: expect.toIncludeSameMembers([
                 {
+                    content: content2,
+                },
+                {
                     content: content3,
                 },
                 {

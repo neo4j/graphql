@@ -119,7 +119,7 @@ describe("Delete using top level aggregate where", () => {
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [postType.operations.delete]: {
-                nodesDeleted: 3,
+                nodesDeleted: 1,
             },
         });
     });
@@ -153,7 +153,7 @@ describe("Delete using top level aggregate where", () => {
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [postType.operations.delete]: {
-                nodesDeleted: 2,
+                nodesDeleted: 4,
             },
         });
     });
@@ -187,7 +187,7 @@ describe("Delete using top level aggregate where", () => {
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [postType.operations.delete]: {
-                nodesDeleted: 2,
+                nodesDeleted: 1,
             },
         });
     });
@@ -273,7 +273,7 @@ describe("Delete using top level aggregate where", () => {
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [postType.operations.delete]: {
-                nodesDeleted: 3,
+                nodesDeleted: 4,
             },
         });
     });
