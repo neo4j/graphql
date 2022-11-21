@@ -37,8 +37,9 @@ export function translateTopLevelMatch({
     node: Node;
     operation: AuthOperations;
 }): Cypher.CypherResult {
-    const clauses = createMatchClause({ matchNode, node, context, operation });
-    const result = Cypher.concat(...clauses).build();
+    const [topLevelMatch, withClause] = createMatchClause({ matchNode, node, context, operation });
+    const aggregateWhereCall = preComputedWhereFields(context.resolveTree.args.where, node, context, matchNode, withClause);
+    const result = Cypher.concat(topLevelMatch, aggregateWhereCall, withClause).build();
     return result;
 }
 
