@@ -26,7 +26,6 @@ import type {
     RelationshipSubscriptionMeta,
     SubscriptionsEvent,
 } from "../../types";
-import { filterTruthy } from "../../utils/utils";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 
 export function publishEventsToPlugin(
@@ -36,13 +35,15 @@ export function publishEventsToPlugin(
 ): void {
     if (plugin) {
         const metadata: EventMeta[] = executeResult.records[0]?.meta || [];
-        const serializedEvents = filterTruthy(metadata.map((event) => serializeEvent(event, schemaModel)));
 
-        const serializedEventsWithoutDuplicatesDelete = removeDuplicateEvents("delete", serializedEvents);
-        const serializedEventsWithoutDuplicates = removeDuplicateEvents(
-            "disconnect",
-            serializedEventsWithoutDuplicatesDelete
-        );
+        const serializedEvents = metadata.reduce((events: SubscriptionsEvent[], event) => {
+            const serializedEvent = serializeEvent(event, schemaModel);
+            if (serializedEvent) {
+                events.push(serializedEvent);
+            }
+            return events;
+        }, []);
+        const serializedEventsWithoutDuplicates = removeDuplicateEvents(serializedEvents, "disconnect", "delete");
         for (const subscriptionsEvent of serializedEventsWithoutDuplicates) {
             try {
                 console.log("publish!", subscriptionsEvent);
@@ -60,17 +61,22 @@ export function publishEventsToPlugin(
 }
 
 function removeDuplicateEvents(
-    eventType: "create" | "update" | "delete" | "connect" | "disconnect",
-    events: SubscriptionsEvent[]
+    events: SubscriptionsEvent[],
+    ...eventTypes: ("create" | "update" | "delete" | "connect" | "disconnect")[]
 ): SubscriptionsEvent[] {
     const result = [] as SubscriptionsEvent[];
-    const resultIds = new Set<number>();
+    const resultIdsByEventType = eventTypes.reduce((acc, eventType) => {
+        acc.set(eventType, new Set<number>());
+        return acc;
+    }, new Map<string, Set<number>>());
+
     for (const event of events) {
-        if (event.event != eventType) {
+        if (!eventTypes.includes(event.event)) {
             result.push(event);
         } else {
-            if (!resultIds.has(event.id)) {
-                resultIds.add(event.id);
+            const resultsIds = resultIdsByEventType.get(event.event) as Set<number>;
+            if (!resultsIds.has(event.id)) {
+                resultsIds.add(event.id);
                 result.push(event);
             }
         }

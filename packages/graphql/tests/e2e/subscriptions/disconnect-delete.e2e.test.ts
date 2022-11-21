@@ -55,12 +55,10 @@ describe("Delete Subscriptions when only nodes are targeted - with interfaces, u
                 actors: [${typeActor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
                 reviewers: [Reviewer!]! @relationship(type: "REVIEWED", properties: "Review", direction: IN)
-                imdbId: Int @unique
             }
             
             type ${typeActor} {
                 name: String!
-                id: Int @unique
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
             
@@ -79,22 +77,18 @@ describe("Delete Subscriptions when only nodes are targeted - with interfaces, u
             type ${typePerson} implements Reviewer {
                 name: String!
                 reputation: Int!
-                id: Int @unique
-                reviewerId: Int @unique
                 movies: [${typeMovie}!]! @relationship(type: "REVIEWED", direction: OUT, properties: "Review")
             }
             
             type ${typeInfluencer} implements Reviewer {
                 reputation: Int!
                 url: String!
-                reviewerId: Int
             }
             
             union Director = ${typePerson} | ${typeActor}
             
             interface Reviewer {
                 reputation: Int!
-                reviewerId: Int
 
             }
         `;
