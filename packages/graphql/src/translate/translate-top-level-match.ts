@@ -183,7 +183,6 @@ export function preComputedWhereFields(
 
             const [returnVariables, predicates] = computeRootWhereAggregate(value, refNode, aggregationTarget, cypherRelation);
            
-            console.log(predicates);
             topLevelWith.where(Cypher.and(...predicates));
             matchQuery.return(...returnVariables);
             returnClause = Cypher.concat(

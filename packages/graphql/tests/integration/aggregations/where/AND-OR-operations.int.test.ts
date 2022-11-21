@@ -145,7 +145,7 @@ describe("Nested within AND/OR", () => {
                 }
             }
         `;
-
+        
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
@@ -160,6 +160,12 @@ describe("Nested within AND/OR", () => {
                 },
                 {
                     content: content2,
+                },
+                {
+                    content: content4,
+                },
+                {
+                    content: content5,
                 },
             ]),
         });
@@ -201,7 +207,7 @@ describe("Nested within AND/OR", () => {
         });
     });
 
-    test("AND within an AND", async () => {
+    test.only("AND within an AND", async () => {
         const query = `
             query {
                 ${postType.plural}(where: { 
