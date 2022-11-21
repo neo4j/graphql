@@ -301,22 +301,19 @@ function computeFieldAggregateWhere(
                     param: paramName,
                 });
             } else {
-                operation = createBaseOperation({
-                    operator: "INCLUDES",
-                    property: Cypher.collect(target.property(fieldName)),
+                const innerVar = new Cypher.Variable();
+                const innerOperation = createBaseOperation({
+                    operator: logicalOperator || "EQ",
+                    property: innerVar,
                     param: paramName,
                 });
+                
+                const collectedProperty =
+                    fieldType === "String" && logicalOperator !== "EQUAL"
+                        ? Cypher.collect(Cypher.size(target.property(fieldName)))
+                        : Cypher.collect(target.property(fieldName));
+                operation = Cypher.any(innerVar, collectedProperty, innerOperation);
             }
-
-            /*  fieldType === "String" && ["AVERAGE", "LONGEST", "SHORTEST"].includes(aggregationOperator || "")
-                    ? Cypher.size(target.property(fieldName))
-                    : target.property(fieldName);
-            if (fieldType === "String" && logicalOperator === "EQUAL" && !aggregationOperator) {
-                property = Cypher.collect(target.property(fieldName));
-                logicalOperator = "INCLUDES";
-            } */
-
-          
             const operationVar = new Cypher.Variable();
             returnVariables.push([operation, operationVar]);
             predicates.push(Cypher.eq(operationVar, new Cypher.Param(true)));
