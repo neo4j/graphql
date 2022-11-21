@@ -26,7 +26,7 @@ import type { Neo4jDatabaseInfo } from "./classes/Neo4jDatabaseInfo";
 import type { RelationshipQueryDirectionOption } from "./constants";
 import type { Executor } from "./classes/Executor";
 import type { Directive } from "graphql-compose";
-import type { Entity } from "./schema-model/entity/Entity";
+import type { Neo4jGraphQLSchemaModel } from "./schema-model/Neo4jGraphQLSchemaModel";
 
 export { Node } from "./classes";
 
@@ -48,7 +48,7 @@ export interface Context {
     neo4jDatabaseInfo: Neo4jDatabaseInfo;
     nodes: Node[];
     relationships: Relationship[];
-    entities: Map<string, Entity>;
+    schemaModel: Neo4jGraphQLSchemaModel;
     schema: GraphQLSchema;
     auth?: AuthContext;
     callbacks?: Neo4jGraphQLCallbacks;
@@ -381,10 +381,10 @@ export type RelationshipSubscriptionMeta = {
     relationshipName: string;
     id_from: Integer | string | number;
     id_to: Integer | string | number;
-    fromTypename: string;
-    toTypename: string;
-    fromLabels: string[];
-    toLabels: string[];
+    fromTypename?: string;
+    toTypename?: string;
+    fromLabels?: string[];
+    toLabels?: string[];
     properties: {
         from: Record<string, any>;
         to: Record<string, any>;

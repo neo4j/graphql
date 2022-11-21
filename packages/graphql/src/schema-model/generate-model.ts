@@ -34,12 +34,12 @@ import { CypherAnnotation } from "./annotation/CypherAnnotation";
 import { Attribute } from "./attribute/Attribute";
 import { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
-import type { Entity } from "./entity/Entity";
 import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionNodes = getDefinitionNodes(document);
-    const concreteEntities = definitionNodes.objectTypes.map(generateConcreteEntity).reduce((acc, entity) => {
+    const concreteEntities = definitionNodes.objectTypes.map(generateConcreteEntity);
+    const concreteEntitiesMap = concreteEntities.reduce((acc, entity) => {
         if (acc.has(entity.name)) {
             throw new Error(`Duplicate node ${entity.name}`);
         }
@@ -47,17 +47,12 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         return acc;
     }, new Map<string, ConcreteEntity>());
 
-    const compositeEntities = definitionNodes.unionTypes
-        .map((entity) => {
-            return generateCompositeEntity(entity, concreteEntities);
-        })
-        .reduce((acc, entity) => {
-            acc.set(entity.name, entity);
-            return acc;
-        }, new Map<string, CompositeEntity>());
+    // TODO: add interfaces as well
+    const compositeEntities = definitionNodes.unionTypes.map((entity) => {
+        return generateCompositeEntity(entity, concreteEntitiesMap);
+    });
 
-    const entities = new Map<string, Entity>([...concreteEntities, ...compositeEntities]);
-    return new Neo4jGraphQLSchemaModel(entities);
+    return new Neo4jGraphQLSchemaModel({ compositeEntities, concreteEntities });
 }
 
 function generateCompositeEntity(
@@ -83,11 +78,24 @@ function generateCompositeEntity(
 
 function generateConcreteEntity(definition: ObjectTypeDefinitionNode): ConcreteEntity {
     const fields = (definition.fields || []).map(generateField);
+    const directives = (definition.directives || []).reduce((acc, directive) => {
+        acc[directive.name.value] = parseArguments(directive);
+        return acc;
+    }, new Map<string, Record<string, unknown>>());
+    const labels = getLabels(definition, directives.get("node") || {});
 
     return new ConcreteEntity({
         name: definition.name.value,
+        labels,
         attributes: filterTruthy(fields),
     });
+}
+
+function getLabels(definition: ObjectTypeDefinitionNode, nodeDirectiveArguments: Record<string, unknown>): string[] {
+    const nodeLabel = nodeDirectiveArguments.label as string | undefined;
+    const additionalLabels = (nodeDirectiveArguments.additionalLabels || []) as string[];
+    const label = nodeLabel || definition.name.value;
+    return [label, ...additionalLabels];
 }
 
 function generateField(field: FieldDefinitionNode): Attribute | undefined {

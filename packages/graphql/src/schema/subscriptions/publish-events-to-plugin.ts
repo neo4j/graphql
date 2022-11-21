@@ -27,14 +27,16 @@ import type {
     SubscriptionsEvent,
 } from "../../types";
 import { filterTruthy } from "../../utils/utils";
+import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 
 export function publishEventsToPlugin(
     executeResult: ExecuteResult,
-    plugin: Neo4jGraphQLSubscriptionsPlugin | undefined
+    plugin: Neo4jGraphQLSubscriptionsPlugin | undefined,
+    schemaModel: Neo4jGraphQLSchemaModel
 ): void {
     if (plugin) {
         const metadata: EventMeta[] = executeResult.records[0]?.meta || [];
-        const serializedEvents = filterTruthy(metadata.map(serializeEvent));
+        const serializedEvents = filterTruthy(metadata.map((event) => serializeEvent(event, schemaModel)));
 
         const serializedEventsWithoutDuplicatesDelete = removeDuplicateEvents("delete", serializedEvents);
         const serializedEventsWithoutDuplicates = removeDuplicateEvents(
@@ -91,11 +93,6 @@ function serializeNodeSubscriptionEvent(event: NodeSubscriptionMeta) {
     };
 }
 function serializeRelationshipSubscriptionEvent(event: RelationshipSubscriptionMeta) {
-    // TODO: replace with proper logic
-    const getTypenameByLabels = (labels: string[]) => labels[0];
-    const fromTypename = event.fromTypename || getTypenameByLabels(event.fromLabels);
-    const toTypename = event.toTypename || getTypenameByLabels(event.toLabels);
-
     return {
         properties: {
             from: serializeProperties(event.properties.from),
@@ -106,12 +103,12 @@ function serializeRelationshipSubscriptionEvent(event: RelationshipSubscriptionM
             id_from: serializeNeo4jValue(event.id_from),
             id_to: serializeNeo4jValue(event.id_to),
             relationshipName: event.relationshipName,
-            fromTypename: serializeNeo4jValue(fromTypename),
-            toTypename: serializeNeo4jValue(toTypename),
+            fromTypename: serializeNeo4jValue(event.fromTypename),
+            toTypename: serializeNeo4jValue(event.toTypename),
         },
     };
 }
-function serializeEvent(event: EventMeta): SubscriptionsEvent | undefined {
+function serializeEvent(event: EventMeta, schemaModel: Neo4jGraphQLSchemaModel): SubscriptionsEvent | undefined {
     if (isNodeSubscriptionMeta(event)) {
         return {
             id: serializeNeo4jValue(event.id),
@@ -122,6 +119,11 @@ function serializeEvent(event: EventMeta): SubscriptionsEvent | undefined {
         } as SubscriptionsEvent;
     }
     if (isRelationshipSubscriptionMeta(event)) {
+        event.fromTypename ??= schemaModel.getEntityByLabels(event.fromLabels || [])?.name;
+        event.toTypename ??= schemaModel.getEntityByLabels(event.toLabels || [])?.name;
+        if (!event.fromTypename || !event.toTypename) {
+            return undefined;
+        }
         const { properties, extraFields } = serializeRelationshipSubscriptionEvent(event);
         return {
             id: serializeNeo4jValue(event.id),

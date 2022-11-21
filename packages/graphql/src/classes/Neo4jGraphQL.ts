@@ -215,7 +215,7 @@ class Neo4jGraphQL {
             config: this.config,
             nodes: this.nodes,
             relationships: this.relationships,
-            entities: this.schemaModel?.entities,
+            schemaModel: this.schemaModel,
             plugins: this.plugins,
         };
 
