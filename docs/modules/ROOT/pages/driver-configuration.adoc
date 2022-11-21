@@ -231,7 +231,7 @@ const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 neoSchema.getSchema().then((schema) => {
     const server = new ApolloServer({
         schema,
-        context: { neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.4") },
+        context: { neo4jDatabaseInfo: { version: "4.4" } },
     });
 });
 ----
