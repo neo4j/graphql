@@ -25,6 +25,7 @@ import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx, WhereRegexGroups } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
+import { WHERE_AGGREGATION_FUNCTIONS } from "../constants";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -38,7 +39,13 @@ export function translateTopLevelMatch({
     operation: AuthOperations;
 }): Cypher.CypherResult {
     const [topLevelMatch, withClause] = createMatchClause({ matchNode, node, context, operation });
-    const aggregateWhereCall = preComputedWhereFields(context.resolveTree.args.where, node, context, matchNode, withClause);
+    const aggregateWhereCall = preComputedWhereFields(
+        context.resolveTree.args.where,
+        node,
+        context,
+        matchNode,
+        withClause
+    );
     const result = Cypher.concat(topLevelMatch, aggregateWhereCall, withClause).build();
     return result;
 }
@@ -276,25 +283,40 @@ function computeFieldAggregateWhere(
         } else {
             const paramName = new Cypher.Param(innerValue);
             const regexResult = aggregationFieldRegEx.exec(innerKey)?.groups as AggregationFieldRegexGroups;
-            let { logicalOperator } = regexResult;
+            const { logicalOperator } = regexResult;
             const { fieldName, aggregationOperator } = regexResult;
             const fieldType = refNode.primitiveFields.find((name) => name.fieldName === fieldName)?.typeMeta.name;
-            let property =
-                (fieldType === "String" && logicalOperator !== "EQUAL") ||
-                (["AVERAGE", "LONGEST", "SHORTEST"].includes(aggregationOperator || "") && fieldType === "String")
+
+            let operation; 
+            if (fieldType === "String" && aggregationOperator) {
+                operation = createBaseOperation({
+                    operator: logicalOperator || "EQ",
+                    property: createAggregateOperation(Cypher.size(target.property(fieldName)), aggregationOperator),
+                    param: paramName,
+                });
+            } else if (aggregationOperator) {
+                operation = createBaseOperation({
+                    operator: logicalOperator || "EQ",
+                    property: createAggregateOperation(target.property(fieldName), aggregationOperator),
+                    param: paramName,
+                });
+            } else {
+                operation = createBaseOperation({
+                    operator: "INCLUDES",
+                    property: Cypher.collect(target.property(fieldName)),
+                    param: paramName,
+                });
+            }
+
+            /*  fieldType === "String" && ["AVERAGE", "LONGEST", "SHORTEST"].includes(aggregationOperator || "")
                     ? Cypher.size(target.property(fieldName))
                     : target.property(fieldName);
             if (fieldType === "String" && logicalOperator === "EQUAL" && !aggregationOperator) {
                 property = Cypher.collect(target.property(fieldName));
                 logicalOperator = "INCLUDES";
-            }
-            property = aggregationOperator ? createAggregateOperation(property, aggregationOperator) : property;
+            } */
 
-            const operation = createBaseOperation({
-                operator: logicalOperator || "EQ",
-                property,
-                param: paramName,
-            });
+          
             const operationVar = new Cypher.Variable();
             returnVariables.push([operation, operationVar]);
             predicates.push(Cypher.eq(operationVar, new Cypher.Param(true)));

@@ -207,7 +207,7 @@ describe("Nested within AND/OR", () => {
         });
     });
 
-    test.only("AND within an AND", async () => {
+    test("AND within an AND", async () => {
         const query = `
             query {
                 ${postType.plural}(where: { 

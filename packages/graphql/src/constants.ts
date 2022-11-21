@@ -74,6 +74,8 @@ export const SCALAR_TYPES = [
 
 export const WHERE_AGGREGATION_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];
 
+export const WHERE_AGGREGATION_FUNCTIONS = ["AVERAGE", "SUM", "MIN", "MAX", "SHORTEST", "LONGEST"];
+
 // Types that you can average
 // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg
 // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg-duration
