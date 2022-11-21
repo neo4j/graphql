@@ -25,7 +25,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import Cypher from "@neo4j/cypher-builder";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "./create-auth-param";
-import { CompositeEntity } from "../schema-model/CompositeEntity";
+import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
 
 export function translateTopLevelCypher({
     context,

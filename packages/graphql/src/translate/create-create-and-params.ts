@@ -327,7 +327,7 @@ function createCreateAndParams({
         const bindAndParams = createAuthAndParams({
             entity: node,
             operations: "CREATE",
-            context,
+            context, 
             bind: { parentNode: node, varName },
             escapeQuotes: Boolean(insideDoWhen),
         });
