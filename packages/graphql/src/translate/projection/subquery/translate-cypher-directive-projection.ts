@@ -23,7 +23,7 @@ import type { GraphQLSortArg, Context, CypherField } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 
 import createProjectionAndParams, { ProjectionMeta } from "../../create-projection-and-params";
-import { CompositeEntity } from "../../../schema-model/CompositeEntity";
+import { CompositeEntity } from "../../../schema-model/entity/CompositeEntity";
 
 interface Res {
     projection: string[];

@@ -19,4 +19,8 @@
 
 export interface Entity {
     readonly name: string;
+
+    // attributes
+    // relationships
+    // annotations
 }

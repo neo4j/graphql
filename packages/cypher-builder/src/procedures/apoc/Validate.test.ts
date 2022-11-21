@@ -22,31 +22,26 @@ import Cypher from "../..";
 import { expectTypeOf } from "expect-type";
 import type { CypherASTNode } from "../../CypherASTNode";
 
-describe("ValidatePredicate", () => {
+describe("Validate", () => {
     let env: CypherEnvironment;
 
     beforeEach(() => {
         env = new CypherEnvironment();
     });
 
-    test("ValidatePredicate types", () => {
-        expectTypeOf<Cypher.apoc.ValidatePredicate>().toMatchTypeOf<CypherASTNode>();
-        expectTypeOf<Cypher.apoc.ValidatePredicate>().toMatchTypeOf<Cypher.Predicate>();
+    test("Validate types", () => {
+        expectTypeOf<Cypher.apoc.Validate>().toMatchTypeOf<CypherASTNode>();
+        expectTypeOf<Cypher.apoc.Validate>().toMatchTypeOf<Cypher.Procedure>();
     });
 
-    test("Simple validatePredicate", () => {
-        const node = new Cypher.Node({ labels: ["Movie"] });
-        const validatePredicate = new Cypher.apoc.ValidatePredicate(
+    test("Simple Validate", () => {
+        const validate = new Cypher.apoc.Validate(
             Cypher.eq(new Cypher.Literal(1), new Cypher.Literal(2)),
             "That's not how math works"
         );
-        const query = new Cypher.Match(node);
-        query.where(validatePredicate).return(node);
-
-        expect(query.getCypher(env)).toMatchInlineSnapshot(`
-            "MATCH (this0:\`Movie\`)
-            WHERE apoc.util.validatePredicate(1 = 2, \\"That's not how math works\\", [0])
-            RETURN this0"
-        `);
+        const callableProceedure = new Cypher.CallProcedure(validate);
+        expect(callableProceedure.getCypher(env)).toMatchInlineSnapshot(
+            `"CALL apoc.util.validate(1 = 2, \\"That's not how math works\\", [0])"`
+        );
     });
 });

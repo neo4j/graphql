@@ -17,17 +17,14 @@
  * limitations under the License.
  */
 
-import { convertFormat, ConvertFormat } from "./date";
-import type { RunFirstColumn } from "./RunFirstColumn";
-import type { ValidatePredicate } from "./ValidatePredicate";
+import type { Annotation } from "../annotation/Annotation";
 
-export type ApocPredicate = ValidatePredicate;
-export type ApocExpr = RunFirstColumn | ConvertFormat;
+export class Attribute {
+    public readonly name: string;
+    public readonly annotations: Annotation[];
 
-export { RunFirstColumn } from "./RunFirstColumn";
-export { ValidatePredicate } from "./ValidatePredicate";
-export { Validate } from "./Validate";
-
-export const date = {
-    convertFormat,
-};
+    constructor({ name, annotations }: { name: string; annotations: Annotation[] }) {
+        this.name = name;
+        this.annotations = annotations;
+    }
+}

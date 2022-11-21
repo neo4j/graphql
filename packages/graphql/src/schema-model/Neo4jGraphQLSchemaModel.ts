@@ -17,17 +17,13 @@
  * limitations under the License.
  */
 
-import { convertFormat, ConvertFormat } from "./date";
-import type { RunFirstColumn } from "./RunFirstColumn";
-import type { ValidatePredicate } from "./ValidatePredicate";
+import type { Entity } from "./entity/Entity";
 
-export type ApocPredicate = ValidatePredicate;
-export type ApocExpr = RunFirstColumn | ConvertFormat;
+/** Represents the internal model for the Neo4jGraphQL schema */
+export class Neo4jGraphQLSchemaModel {
+    public entities: Map<string, Entity>;
 
-export { RunFirstColumn } from "./RunFirstColumn";
-export { ValidatePredicate } from "./ValidatePredicate";
-export { Validate } from "./Validate";
-
-export const date = {
-    convertFormat,
-};
+    constructor(entities: Map<string, Entity>) {
+        this.entities = entities;
+    }
+}

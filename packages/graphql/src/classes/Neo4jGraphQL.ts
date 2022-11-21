@@ -45,7 +45,9 @@ import { asArray } from "../utils/utils";
 import { DEBUG_ALL } from "../constants";
 import { getNeo4jDatabaseInfo, Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
 import { Executor, ExecutorConstructorParam } from "./Executor";
-import type { Entity } from "../schema-model/Entity";
+import { getDocument } from "../schema/get-document";
+import { generateModel } from "../schema-model/generate-model";
+import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 
 export interface Neo4jGraphQLJWT {
     jwksEndpoint?: string;
@@ -80,7 +82,7 @@ class Neo4jGraphQL {
     private _relationships?: Relationship[];
     private plugins?: Neo4jGraphQLPlugins;
 
-    private entities?: Map<string, Entity>;
+    private schemaModel?: Neo4jGraphQLSchemaModel;
 
     private schema?: Promise<GraphQLSchema>;
 
@@ -204,7 +206,7 @@ class Neo4jGraphQL {
     }
 
     private wrapResolvers(resolvers: IResolvers) {
-        if (!this.entities) {
+        if (!this.schemaModel?.entities) {
             throw new Error("this.entities is undefined");
         }
 
@@ -213,7 +215,7 @@ class Neo4jGraphQL {
             config: this.config,
             nodes: this.nodes,
             relationships: this.relationships,
-            entities: this.entities,
+            entities: this.schemaModel?.entities,
             plugins: this.plugins,
         };
 
@@ -230,22 +232,23 @@ class Neo4jGraphQL {
 
     private generateSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
-            const { nodes, relationships, entities, typeDefs, resolvers } = makeAugmentedSchema(
-                this.schemaDefinition.typeDefs,
-                {
-                    features: this.features,
-                    enableRegex: this.config?.enableRegex,
-                    skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
-                    generateSubscriptions: Boolean(this.plugins?.subscriptions),
-                    callbacks: this.config.callbacks,
-                    userCustomResolvers: this.schemaDefinition.resolvers,
-                }
-            );
+            const document = getDocument(this.schemaDefinition.typeDefs);
+
+            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
+                features: this.features,
+                enableRegex: this.config?.enableRegex,
+                skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
+                generateSubscriptions: Boolean(this.plugins?.subscriptions),
+                callbacks: this.config.callbacks,
+                userCustomResolvers: this.schemaDefinition.resolvers,
+            });
+
+            const schemaModel = generateModel(document);
 
             this._nodes = nodes;
             this._relationships = relationships;
 
-            this.entities = entities;
+            this.schemaModel = schemaModel;
 
             // Wrap the generated and custom resolvers, which adds a context including the schema to every request
             const wrappedResolvers = this.wrapResolvers(resolvers);

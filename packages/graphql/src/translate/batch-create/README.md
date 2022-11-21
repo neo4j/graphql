@@ -8,7 +8,7 @@ More details at: https://github.com/neo4j/graphql/blob/dev/docs/rfcs/rfc-024-unw
 
 ### Not optimized query
 
-```
+```cypher
 CALL {
 CREATE (this0:Movie)
 SET this0.id = $this0_id
@@ -42,7 +42,7 @@ RETURN [ this0 { .id }, this1 { .id }] AS data
 
 ### Optimised query
 
-```
+```cypher
 UNWIND [ { id: $create_param0 }, { id: $create_param1 } ] AS create_var1
 CALL {
     WITH create_var1
@@ -64,28 +64,106 @@ RETURN collect(create_this0 { .id }) AS data
 
 ## Implementation
 
-The unwind-create optimization is built on top of different phases.
+The unwind-create optimization is built on top of different phases and components.
 
-### Parse the GraphQLCreateInput to obtain the unique TreeDescriptor
+### Components
 
-This phase consists in parsing the GraphQLCreateInput to obtain a TreeDescriptor that holds all the operations and the properties impacted by the operation.
+**GraphQLCreateInput**
+
+With `GraphQLCreateInput` is referred to the object parsed from the `input` argument of a create mutation.
+For instance, the mutation:
+
+```graphql
+createMovies(input: [{ title: "the Matrix" }, { title: "the Matrix 2" }]) {
+    title
+}
+```
+
+`GraphQLCreateInput` will be an object in the form of:
+
+```typescript
+[
+    {
+        title: "The Matrix",
+    },
+    {
+        title: "The Matrix 2",
+    },
+];
+```
+
+**TreeDescriptor**
+
+`TreeDescriptor` is a data structure parsed from `GraphQLCreateInput` that holds as properties the primitive values of the mutation and as children any nested level object.
+For instance, the `GraphQLCreateInput`:
+
+```typescript
+[
+    {
+        title: "The Matrix",
+    },
+    {
+        title: "The Matrix 2",
+    },
+];
+```
+
+could be parsed to obtain a `TreeDescriptor`:
+
+```typescript
+{
+    properties: ["title"],
+    children: {}
+}
+```
+
+**GraphQLInputAST**
+
+The `GraphQLInputAST` is a visitable AST obtained parsing a `TreeDescriptor` and a `GraphQL Context`.
+For instance, the input of the mutation:
+
+```graphql
+createMovies(input: [
+    { 
+        title: "the Matrix",
+        website: { create: { node: { address: "www.matrix.com" } } } 
+    }, { 
+        title: "the Matrix 2" 
+    }
+]) {
+    title
+}
+```
+could be parsed to obtain a `GraphQLInputAST` similar to:
+```typescript
+const createMovieAST = new CreateAST(["title"]);
+const createWebsiteAST = new NestedCreateAST(["address"]);
+createMovieAST.addChildren(createWebsiteAST);
+```
+
+**UnwindCreateVisitor**
+
+The `UnwindCreateVisitor` is the component that traverses the `GraphQLInputAST` and obtains the optimized Cypher query.
+
+### Phases
+
+**Parse the GraphQLCreateInput to obtain the unique TreeDescriptor**
+
+This phase consists in parsing the `GraphQLCreateInput` to obtain a `TreeDescriptor` that holds all the operations and the properties impacted by the operation.
 This phase provides an early mechanism to identify operations not yet supported by the optimization.
-The TreeDescriptor keeps a clear separation between scalar properties and nested operations.
+The `TreeDescriptor` keeps a clear separation between scalar properties and nested operations.
 
-### Parse the TreeDescriptor to obtain an GraphQLInputAST
+**Parse the TreeDescriptor to obtain an GraphQLInputAST**
 
-With the TreeDescriptor already obtained, it's built a very simple Intermediate Representation named GraphQLInputAST.
+With the `TreeDescriptor` already obtained, it's built a very simple Intermediate Representation named `GraphQLInputAST`.
 
-### Parse the GraphQLCreateInput to obtain the UNWIND statement
+**Parse the GraphQLCreateInput to obtain the UNWIND statement**
 
-At this phase, GraphQLCreateInput is translated into the UNWIND Cypher statement using the CypherBuilder.
+At this phase, `GraphQLCreateInput` is translated into the UNWIND Cypher statement using the CypherBuilder.
 
-### Visit the GraphQLInputAST with the UnwindCrateVisitor
+**Visit the GraphQLInputAST with the UnwindCrateVisitor**
 
-The UnwindCreateVisitor traverses the GraphQLInputAST and generates all the nodes and edges described in the GraphQLInputAST.
+The `UnwindCreateVisitor` traverses the `GraphQLInputAST` and generates all the nodes and edges described in the `GraphQLInputAST`.
 The final output obtained from the UnwindCreateVisitor generates a single Cypher variable rather than one for any Nodes created in the Mutation, this means that the client needs to translate the SelectionSet accordingly.
 
-
 If at any phase the optimization is no longer achievable an `UnsupportedUnwindOptimization` is raised.
-
-
