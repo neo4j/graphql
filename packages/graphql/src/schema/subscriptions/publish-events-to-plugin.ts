@@ -82,43 +82,56 @@ function isNodeSubscriptionMeta(event: EventMeta): event is NodeSubscriptionMeta
 function isRelationshipSubscriptionMeta(event: EventMeta): event is RelationshipSubscriptionMeta {
     return ["connect", "disconnect"].includes(event.event);
 }
-function serializeEvent(event: EventMeta): SubscriptionsEvent | undefined {
-    let properties = {},
-        extraFields = {};
-    if (isNodeSubscriptionMeta(event)) {
-        extraFields = {
-            typename: event.typename,
-        };
-        properties = {
+function serializeNodeSubscriptionEvent(event: NodeSubscriptionMeta) {
+    return {
+        properties: {
             old: serializeProperties(event.properties.old),
             new: serializeProperties(event.properties.new),
-        };
-    } else if (isRelationshipSubscriptionMeta(event)) {
-        properties = {
+        },
+    };
+}
+function serializeRelationshipSubscriptionEvent(event: RelationshipSubscriptionMeta) {
+    // TODO: replace with proper logic
+    const getTypenameByLabels = (labels: string[]) => labels[0];
+    const fromTypename = event.fromTypename || getTypenameByLabels(event.fromLabels);
+    const toTypename = event.toTypename || getTypenameByLabels(event.toLabels);
+
+    return {
+        properties: {
             from: serializeProperties(event.properties.from),
             to: serializeProperties(event.properties.to),
             relationship: serializeProperties(event.properties.relationship),
-        };
-        extraFields = {
+        },
+        extraFields: {
             id_from: serializeNeo4jValue(event.id_from),
             id_to: serializeNeo4jValue(event.id_to),
-            fromTypename: serializeNeo4jValue(event.fromTypename),
-            toTypename: serializeNeo4jValue(event.toTypename),
             relationshipName: event.relationshipName,
-            // TODO: temporary
-            fromLabels: serializeNeo4jValue(event.fromLabels),
-            toLabels: serializeNeo4jValue(event.toLabels),
-        };
-    } else {
-        return undefined;
+            fromTypename: serializeNeo4jValue(fromTypename),
+            toTypename: serializeNeo4jValue(toTypename),
+        },
+    };
+}
+function serializeEvent(event: EventMeta): SubscriptionsEvent | undefined {
+    if (isNodeSubscriptionMeta(event)) {
+        return {
+            id: serializeNeo4jValue(event.id),
+            typename: event.typename,
+            timestamp: serializeNeo4jValue(event.timestamp),
+            event: event.event,
+            properties: serializeNodeSubscriptionEvent(event).properties,
+        } as SubscriptionsEvent;
     }
-    return {
-        id: serializeNeo4jValue(event.id),
-        ...extraFields,
-        timestamp: serializeNeo4jValue(event.timestamp),
-        event: event.event,
-        properties,
-    } as SubscriptionsEvent; // Casting here because ts is not smart enough to get the difference between create|update|delete
+    if (isRelationshipSubscriptionMeta(event)) {
+        const { properties, extraFields } = serializeRelationshipSubscriptionEvent(event);
+        return {
+            id: serializeNeo4jValue(event.id),
+            ...extraFields,
+            timestamp: serializeNeo4jValue(event.timestamp),
+            event: event.event,
+            properties,
+        } as SubscriptionsEvent;
+    }
+    return undefined;
 }
 
 function serializeProperties(properties: Record<string, any> | undefined): Record<string, any> | undefined {

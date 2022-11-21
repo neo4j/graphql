@@ -25,6 +25,7 @@ import createDeleteAndParams from "./create-delete-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createEventMeta } from "./subscriptions/create-event-meta";
 import Cypher from "@neo4j/cypher-builder";
+import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 
 export function translateDelete({ context, node }: { context: Context; node: Node }): Cypher.CypherResult {
     const { resolveTree } = context;
@@ -62,7 +63,6 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
         }), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
-    console.log("DEL IN", deleteInput, resolveTree.name);
     if (deleteInput) {
         const deleteAndParams = createDeleteAndParams({
             context,
@@ -81,8 +81,10 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
                 : {}),
             ...deleteAndParams[1],
         };
-    } else {
-        deleteStr = findNodesThatDisconnect({ varName });
+    }
+
+    if (context.subscriptionsEnabled && !deleteInput) {
+        deleteStr = findNodesThatDisconnect(varName);
     }
 
     const deleteQuery = new Cypher.RawCypher(() => {
@@ -113,20 +115,39 @@ function getDeleteReturn(context: Context): Array<string> {
         : [];
 }
 
-function findNodesThatDisconnect({ varName }: { varName: string }): string {
-    const str = [
+function findNodesThatDisconnect(varName: string): string {
+    const makeEventWithMetaStr = ({ relVariable, fromVariable, toVariable }) =>
+        createConnectionEventMetaObject({
+            event: "disconnect",
+            relVariable,
+            fromVariable,
+            toVariable,
+            typename: `type(${relVariable})`,
+            fromLabels: `labels(${fromVariable})`,
+            toLabels: `labels(${toVariable})`,
+            toProperties: `properties(${toVariable})`,
+            fromProperties: `properties(${fromVariable})`,
+        });
+    return [
         `CALL {`,
         `\tWITH ${varName}`,
-        `\tOPTIONAL MATCH (${varName})-[r]-(target)`,
+        `\tOPTIONAL MATCH (${varName})-[r]-()`,
         `\tWITH ${varName}, collect(DISTINCT r) as relationships_to_delete`,
         `\tUNWIND relationships_to_delete AS x`,
         `\tWITH case`,
-        `\twhen id(${varName})=id(startNode(x)) then { event: "disconnect", id_from: id(${varName}), id_to: id(endNode(x)), id: id(x), properties: { from: ${varName} { .* }, to: properties(endNode(x)), relationship: x { .* } }, timestamp: timestamp(), relationshipName: "DIRECTED", fromLabels: labels(${varName}), toLabels: labels(endNode(x)) }`,
-        `\twhen id(${varName})=id(endNode(x)) then { event: "disconnect", id_from: id(startNode(x)), id_to: id(${varName}), id: id(x), properties: { from: properties(startNode(x)), to: ${varName} { .* }, relationship: x { .* } }, timestamp: timestamp(), relationshipName: "DIRECTED", fromLabels: labels(startNode(x)), toLabels: labels(${varName}) }`,
+        `\t\twhen id(${varName})=id(startNode(x)) then ${makeEventWithMetaStr({
+            relVariable: "x",
+            fromVariable: varName,
+            toVariable: "endNode(x)",
+        })}`,
+        `\t\twhen id(${varName})=id(endNode(x)) then ${makeEventWithMetaStr({
+            relVariable: "x",
+            fromVariable: "startNode(x)",
+            toVariable: varName,
+        })}`,
         `\tend as meta`,
         `\tRETURN collect(DISTINCT meta) AS relationship_meta`,
         `}`,
         `WITH REDUCE(m=meta, r in relationship_meta | m + r) as meta, ${varName}`,
-    ];
-    return str.join("\n");
+    ].join("\n");
 }

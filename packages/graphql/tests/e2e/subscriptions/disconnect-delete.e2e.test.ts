@@ -41,7 +41,7 @@ describe("Delete Subscriptions when only nodes are targeted - with interfaces, u
     let typeInfluencer: UniqueType;
     let typeDefs: string;
 
-    // TODO: add tests for additional labels!
+    // TODO: add tests for specifying @node label + additional labels!
 
     beforeEach(async () => {
         typeActor = generateUniqueType("Actor");
@@ -527,13 +527,13 @@ subscription SubscriptionPerson {
             },
             {
                 [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix" },
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
                         actors: {
-                            screenTime: 1000,
+                            screenTime: 42,
                             node: {
                                 name: "Keanu Reeves",
                             },
@@ -573,9 +573,9 @@ subscription SubscriptionPerson {
                     relationshipFieldName: "movies",
                     deletedRelationship: {
                         movies: {
-                            screenTime: 1000,
+                            screenTime: 42,
                             node: {
-                                title: "Matrix",
+                                title: "John Wick",
                             },
                         },
                     },
@@ -664,62 +664,6 @@ subscription SubscriptionPerson {
                             year: 2019,
                             node: {
                                 name: "Keanu Reeves",
-                            },
-                        },
-                        reviewers: null,
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "directors",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: {
-                            year: 2019,
-                            node: {
-                                name: "Keanu Reeves",
-                            },
-                        },
-                        reviewers: null,
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "directors",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: {
-                            year: 2020,
-                            node: {
-                                name: "Jim",
-                                reputation: 10,
-                            },
-                        },
-                        reviewers: null,
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "directors",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: {
-                            year: 2020,
-                            node: {
-                                name: "Jill",
-                                reputation: 10,
                             },
                         },
                         reviewers: null,
@@ -837,46 +781,9 @@ subscription SubscriptionPerson {
                     deletedRelationship: {
                         actors: null,
                         directors: {
-                            year: 2019,
-                            node: {
-                                name: "Keanu Reeves",
-                            },
-                        },
-                        reviewers: null,
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "directors",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: {
                             year: 2020,
                             node: {
                                 name: "Jim",
-                                reputation: 10,
-                            },
-                        },
-                        reviewers: null,
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "directors",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: {
-                            year: 2020,
-                            node: {
-                                name: "Jill",
                                 reputation: 10,
                             },
                         },
@@ -1024,25 +931,6 @@ subscription SubscriptionPerson {
                             year: 2020,
                             node: {
                                 name: "Jim",
-                                reputation: 10,
-                            },
-                        },
-                        reviewers: null,
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "directors",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: {
-                            year: 2020,
-                            node: {
-                                name: "Jill",
                                 reputation: 10,
                             },
                         },
@@ -1339,82 +1227,8 @@ subscription SubscriptionPerson {
                     },
                 },
             },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "reviewers",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 420,
-                            node: {
-                                name: "Ana",
-                                reputation: 10,
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "reviewers",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 420,
-                            node: {
-                                name: "Ana",
-                                reputation: 10,
-                            },
-                        },
-                    },
-                },
-            },
         ]);
         expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
-                        name: "Ana",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            score: 420,
-                            node: {
-                                title: "Matrix3",
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
-                        name: "Ana",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            score: 420,
-                            node: {
-                                title: "Matrix2",
-                            },
-                        },
-                    },
-                },
-            },
             {
                 [typePerson.operations.subscribe.disconnected]: {
                     [typePerson.operations.subscribe.payload.disconnected]: {
@@ -1580,7 +1394,7 @@ subscription SubscriptionPerson {
             },
             {
                 [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
 
                     relationshipFieldName: "reviewers",
@@ -1588,28 +1402,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 420,
+                            score: 100,
                             node: {
-                                name: "Ana",
-                                reputation: 10,
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "reviewers",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 420,
-                            node: {
-                                name: "Ana",
+                                url: "/bob",
                                 reputation: 10,
                             },
                         },
@@ -1618,42 +1413,6 @@ subscription SubscriptionPerson {
             },
         ]);
         expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
-                        name: "Ana",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            score: 420,
-                            node: {
-                                title: "Matrix3",
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
-                        name: "Ana",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            score: 420,
-                            node: {
-                                title: "Matrix2",
-                            },
-                        },
-                    },
-                },
-            },
             {
                 [typePerson.operations.subscribe.disconnected]: {
                     [typePerson.operations.subscribe.payload.disconnected]: {
@@ -1803,7 +1562,7 @@ subscription SubscriptionPerson {
             },
             {
                 [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
 
                     relationshipFieldName: "reviewers",
@@ -1811,7 +1570,7 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 420,
+                            score: 100,
                             node: {
                                 name: "Ana",
                                 reputation: 10,
@@ -1822,7 +1581,7 @@ subscription SubscriptionPerson {
             },
             {
                 [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
 
                     relationshipFieldName: "reviewers",
@@ -1830,9 +1589,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 420,
+                            score: 100,
                             node: {
-                                name: "Ana",
+                                url: "/bob",
                                 reputation: 10,
                             },
                         },
@@ -1851,27 +1610,9 @@ subscription SubscriptionPerson {
                     relationshipFieldName: "movies",
                     deletedRelationship: {
                         movies: {
-                            score: 420,
+                            score: 100,
                             node: {
-                                title: "Matrix3",
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
-                        name: "Ana",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            score: 420,
-                            node: {
-                                title: "Matrix2",
+                                title: "John Wick",
                             },
                         },
                     },
@@ -2118,24 +1859,7 @@ subscription SubscriptionPerson {
                     },
                 },
             },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix" },
-                    event: "DISCONNECT",
 
-                    relationshipFieldName: "actors",
-                    deletedRelationship: {
-                        actors: {
-                            screenTime: 1000,
-                            node: {
-                                name: "Keanu Reeves",
-                            },
-                        },
-                        directors: null,
-                        reviewers: null,
-                    },
-                },
-            },
             {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
@@ -2174,25 +1898,7 @@ subscription SubscriptionPerson {
                     },
                 },
             },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
 
-                    relationshipFieldName: "reviewers",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 42,
-                            node: {
-                                name: "Jim",
-                                reputation: 10,
-                            },
-                        },
-                    },
-                },
-            },
             {
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
@@ -2250,137 +1956,8 @@ subscription SubscriptionPerson {
                     },
                 },
             },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "reviewers",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 420,
-                            node: {
-                                name: "Ana",
-                                reputation: 10,
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "reviewers",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 420,
-                            node: {
-                                name: "Ana",
-                                reputation: 10,
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Other Matrix" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "reviewers",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 420,
-                            node: {
-                                name: "Julia",
-                                reputation: 10,
-                            },
-                        },
-                    },
-                },
-            },
         ]);
         expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
-                        name: "Ana",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            score: 420,
-                            node: {
-                                title: "Matrix3",
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
-                        name: "Ana",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            score: 420,
-                            node: {
-                                title: "Matrix2",
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
-                        name: "Jim",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            score: 42,
-                            node: {
-                                title: "Matrix2",
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
-                        name: "Julia",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            score: 420,
-                            node: {
-                                title: "Other Matrix",
-                            },
-                        },
-                    },
-                },
-            },
             {
                 [typePerson.operations.subscribe.disconnected]: {
                     [typePerson.operations.subscribe.payload.disconnected]: {
@@ -2631,24 +2208,6 @@ subscription SubscriptionPerson {
             },
             {
                 [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "actors",
-                    deletedRelationship: {
-                        actors: {
-                            screenTime: 1000,
-                            node: {
-                                name: "Keanu Reeves",
-                            },
-                        },
-                        directors: null,
-                        reviewers: null,
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
 
@@ -2705,25 +2264,6 @@ subscription SubscriptionPerson {
             },
             {
                 [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "reviewers",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 42,
-                            node: {
-                                name: "Jim",
-                                reputation: 10,
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
                     event: "DISCONNECT",
 
@@ -2760,100 +2300,8 @@ subscription SubscriptionPerson {
                     },
                 },
             },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "reviewers",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 420,
-                            node: {
-                                name: "Ana",
-                                reputation: 10,
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "reviewers",
-                    deletedRelationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 420,
-                            node: {
-                                name: "Ana",
-                                reputation: 10,
-                            },
-                        },
-                    },
-                },
-            },
         ]);
         expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
-                        name: "Ana",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            score: 420,
-                            node: {
-                                title: "Matrix3",
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
-                        name: "Ana",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            score: 420,
-                            node: {
-                                title: "Matrix2",
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
-                        name: "Jim",
-                    },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "movies",
-                    deletedRelationship: {
-                        movies: {
-                            score: 42,
-                            node: {
-                                title: "Matrix2",
-                            },
-                        },
-                    },
-                },
-            },
             {
                 [typePerson.operations.subscribe.disconnected]: {
                     [typePerson.operations.subscribe.payload.disconnected]: {

@@ -27,10 +27,12 @@ type EventMetaParameters = {
     typename: string;
     fromVariable: string;
     toVariable: string;
-    fromTypename: string;
-    toTypename: string;
+    fromTypename?: string;
+    toTypename?: string;
     fromLabels?: string;
     toLabels?: string;
+    toProperties?: string;
+    fromProperties?: string;
 };
 
 export function createConnectionEventMeta(params: EventMetaParameters): string {
@@ -47,24 +49,21 @@ export function createConnectionEventMetaObject({
     toTypename,
     fromLabels,
     toLabels,
+    toProperties,
+    fromProperties,
 }: EventMetaParameters): string {
-    const idsAndProperties = createEventMetaIdsAndProperties({ relVariable, fromVariable, toVariable });
-    return `{ event: "${event}", ${idsAndProperties}, timestamp: timestamp(), relationshipName: "${typename}", fromTypename: "${fromTypename}", toTypename: "${toTypename}", fromLabels: "${fromLabels}", toLabels: "${toLabels}" }`;
-}
-
-function createEventMetaIdsAndProperties({
-    relVariable,
-    fromVariable,
-    toVariable,
-}: {
-    relVariable: string;
-    fromVariable: string;
-    toVariable: string;
-}): string {
     const projectAllProperties = (varName: string): string => `${varName} { .* }`;
-    const idsStr = `id_from: id(${fromVariable}), id_to: id(${toVariable}), id: id(${relVariable})`;
-    const propertiesStr = `properties: { from: ${projectAllProperties(fromVariable)}, to: ${projectAllProperties(
-        toVariable
-    )}, relationship: ${projectAllProperties(relVariable)} }`;
-    return [idsStr, propertiesStr].join(", ");
+
+    const commonFieldsStr = `event: "${event}", timestamp: timestamp()`;
+    const identifiersStr = `id_from: id(${fromVariable}), id_to: id(${toVariable}), id: id(${relVariable})`;
+    const propertiesStr = `properties: { from: ${fromProperties || projectAllProperties(fromVariable)}, to: ${
+        toProperties || projectAllProperties(toVariable)
+    }, relationship: ${projectAllProperties(relVariable)} }`;
+
+    const useTypenames = !!fromTypename;
+    const typeIdentifiersStr = useTypenames
+        ? `relationshipName: "${typename}", fromTypename: "${fromTypename}", toTypename: "${toTypename}"`
+        : `relationshipName: ${typename}, fromLabels: ${fromLabels}, toLabels: ${toLabels}`;
+
+    return `{ ${[commonFieldsStr, identifiersStr, typeIdentifiersStr, propertiesStr].join(", ")} }`;
 }

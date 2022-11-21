@@ -383,9 +383,8 @@ export type RelationshipSubscriptionMeta = {
     id_to: Integer | string | number;
     fromTypename: string;
     toTypename: string;
-    // TODO: temporary
-    fromLabels: string;
-    toLabels: string;
+    fromLabels: string[];
+    toLabels: string[];
     properties: {
         from: Record<string, any>;
         to: Record<string, any>;

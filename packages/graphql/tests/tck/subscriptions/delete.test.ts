@@ -71,6 +71,18 @@ describe("Subscriptions metadata on delete", () => {
             MATCH (this:\`Movie\`)
             WHERE this.id = $param0
             WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this)-[r]-()
+            	WITH this, collect(DISTINCT r) as relationships_to_delete
+            	UNWIND relationships_to_delete AS x
+            	WITH case
+            		when id(this)=id(startNode(x)) then { event: \\"disconnect\\", timestamp: timestamp(), id_from: id(this), id_to: id(endNode(x)), id: id(x), relationshipName: type(x), fromLabels: labels(this), toLabels: labels(endNode(x)), properties: { from: properties(this), to: properties(endNode(x)), relationship: x { .* } } }
+            		when id(this)=id(endNode(x)) then { event: \\"disconnect\\", timestamp: timestamp(), id_from: id(startNode(x)), id_to: id(this), id: id(x), relationshipName: type(x), fromLabels: labels(startNode(x)), toLabels: labels(this), properties: { from: properties(startNode(x)), to: properties(this), relationship: x { .* } } }
+            	end as meta
+            	RETURN collect(DISTINCT meta) AS relationship_meta
+            }
+            WITH REDUCE(m=meta, r in relationship_meta | m + r) as meta, this
             DETACH DELETE this
             WITH collect(meta) as meta
             WITH REDUCE(m=[], n IN meta | m + n) as meta
@@ -107,7 +119,7 @@ describe("Subscriptions metadata on delete", () => {
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
             WITH this, meta, collect(DISTINCT this_actors0) as this_actors0_to_delete, this_actors0_relationship
-            WITH this, this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Actor\\" } + { event: \\"disconnect\\", id_from: id(n), id_to: id(this), id: id(this_actors0_relationship), properties: { from: n { .* }, to: this { .* }, relationship: this_actors0_relationship { .* } }, timestamp: timestamp(), relationshipName: \\"ACTED_IN\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\" }) AS meta
+            WITH this, this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Actor\\" } + { event: \\"disconnect\\", timestamp: timestamp(), id_from: id(n), id_to: id(this), id: id(this_actors0_relationship), relationshipName: \\"ACTED_IN\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\", properties: { from: n { .* }, to: this { .* }, relationship: this_actors0_relationship { .* } } }) AS meta
             CALL {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
@@ -186,7 +198,7 @@ describe("Subscriptions metadata on delete", () => {
             OPTIONAL MATCH (this_actors0_movies0)<-[this_actors0_movies0_actors0_relationship:ACTED_IN]-(this_actors0_movies0_actors0:Actor)
             WHERE this_actors0_movies0_actors0.name = $this_deleteMovies_args_delete_actors0_delete_movies0_delete_actors0_where_Actorparam0
             WITH this, meta, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, collect(DISTINCT this_actors0_movies0_actors0) as this_actors0_movies0_actors0_to_delete, this_actors0_movies0_actors0_relationship
-            WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, this_actors0_movies0_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Actor\\" } + { event: \\"disconnect\\", id_from: id(n), id_to: id(this_actors0_movies0), id: id(this_actors0_movies0_actors0_relationship), properties: { from: n { .* }, to: this_actors0_movies0 { .* }, relationship: this_actors0_movies0_actors0_relationship { .* } }, timestamp: timestamp(), relationshipName: \\"ACTED_IN\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\" }) AS meta
+            WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, this_actors0_movies0_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Actor\\" } + { event: \\"disconnect\\", timestamp: timestamp(), id_from: id(n), id_to: id(this_actors0_movies0), id: id(this_actors0_movies0_actors0_relationship), relationshipName: \\"ACTED_IN\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\", properties: { from: n { .* }, to: this_actors0_movies0 { .* }, relationship: this_actors0_movies0_actors0_relationship { .* } } }) AS meta
             CALL {
             	WITH this_actors0_movies0_actors0_to_delete
             	UNWIND this_actors0_movies0_actors0_to_delete AS x
@@ -196,7 +208,7 @@ describe("Subscriptions metadata on delete", () => {
             WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, collect(distinct meta) as update_meta
             WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, REDUCE(m=[], n in update_meta | m+n) as meta
             WITH this, meta, this_actors0, this_actors0_relationship, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete, this_actors0_movies0_relationship
-            WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } + { event: \\"disconnect\\", id_from: id(this_actors0), id_to: id(n), id: id(this_actors0_movies0_relationship), properties: { from: this_actors0 { .* }, to: n { .* }, relationship: this_actors0_movies0_relationship { .* } }, timestamp: timestamp(), relationshipName: \\"ACTED_IN\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\" }) AS meta
+            WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } + { event: \\"disconnect\\", timestamp: timestamp(), id_from: id(this_actors0), id_to: id(n), id: id(this_actors0_movies0_relationship), relationshipName: \\"ACTED_IN\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\", properties: { from: this_actors0 { .* }, to: n { .* }, relationship: this_actors0_movies0_relationship { .* } } }) AS meta
             CALL {
             	WITH this_actors0_movies0_to_delete
             	UNWIND this_actors0_movies0_to_delete AS x
@@ -206,7 +218,7 @@ describe("Subscriptions metadata on delete", () => {
             WITH this, this_actors0, this_actors0_relationship, collect(distinct meta) as update_meta
             WITH this, this_actors0, this_actors0_relationship, REDUCE(m=[], n in update_meta | m+n) as meta
             WITH this, meta, collect(DISTINCT this_actors0) as this_actors0_to_delete, this_actors0_relationship
-            WITH this, this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Actor\\" } + { event: \\"disconnect\\", id_from: id(n), id_to: id(this), id: id(this_actors0_relationship), properties: { from: n { .* }, to: this { .* }, relationship: this_actors0_relationship { .* } }, timestamp: timestamp(), relationshipName: \\"ACTED_IN\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\" }) AS meta
+            WITH this, this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Actor\\" } + { event: \\"disconnect\\", timestamp: timestamp(), id_from: id(n), id_to: id(this), id: id(this_actors0_relationship), relationshipName: \\"ACTED_IN\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\", properties: { from: n { .* }, to: this { .* }, relationship: this_actors0_relationship { .* } } }) AS meta
             CALL {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x

@@ -80,7 +80,6 @@ export function generateSubscribeMethod({
                 const relationEventPayload = data[0] as RelationshipSubscriptionsEvent;
                 const isOfRelevantType =
                     relationEventPayload.toTypename === node.name || relationEventPayload.fromTypename === node.name;
-                // TODO: if(!.toTypename) .. then toTypename = typenameFromLabels(.toLabels)
                 if (!isOfRelevantType) {
                     return false;
                 }
