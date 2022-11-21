@@ -53,7 +53,7 @@ export function translateCypherDirectiveProjection({
     res: Res;
 }): Res {
     const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
-    const entity = context.entities.get(cypherField.typeMeta.name);
+    const entity = context.schemaModel.entities.get(cypherField.typeMeta.name);
 
     const isArray = Boolean(cypherField.typeMeta.array);
     const expectMultipleValues = Boolean((referenceNode || entity instanceof CompositeEntity) && isArray);
@@ -186,6 +186,7 @@ export function translateCypherDirectiveProjection({
     return res;
 }
 
+// TODO: change this
 function createCypherDirectiveApocProcedure({
     cypherField,
     field,

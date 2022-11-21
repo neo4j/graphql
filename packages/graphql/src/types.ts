@@ -27,6 +27,7 @@ import type { RelationshipQueryDirectionOption } from "./constants";
 import type { Executor } from "./classes/Executor";
 import type { Directive } from "graphql-compose";
 import type { Entity } from "./schema-model/entity/Entity";
+import type { Neo4jGraphQLSchemaModel } from "./schema-model/Neo4jGraphQLSchemaModel";
 
 export { Node } from "./classes";
 
@@ -48,7 +49,7 @@ export interface Context {
     neo4jDatabaseInfo: Neo4jDatabaseInfo;
     nodes: Node[];
     relationships: Relationship[];
-    entities: Map<string, Entity>;
+    schemaModel: Neo4jGraphQLSchemaModel;
     schema: GraphQLSchema;
     auth?: AuthContext;
     callbacks?: Neo4jGraphQLCallbacks;
@@ -356,7 +357,7 @@ export interface CypherQueryOptions {
 }
 
 /** Input field for graphql-compose */
-export type InputField = { type: string; defaultValue?: string, directives?: Directive[] } | string;
+export type InputField = { type: string; defaultValue?: string; directives?: Directive[] } | string;
 
 export interface Neo4jGraphQLAuthPlugin {
     rolesPath?: string;

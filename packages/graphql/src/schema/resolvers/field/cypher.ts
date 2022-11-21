@@ -23,6 +23,7 @@ import type { Context, CypherField } from "../../../types";
 import { graphqlArgsToCompose } from "../../to-compose";
 import { isNeoInt } from "../../../utils/utils";
 import { translateTopLevelCypher } from "../../../translate";
+import { getCypherResultVariables } from "./get-cypher-result-variables";
 
 export function cypherResolver({
     field,
@@ -33,8 +34,14 @@ export function cypherResolver({
     statement: string;
     type: "Query" | "Mutation";
 }) {
+    let cypherResultVariables: string[] | undefined; // Represent the memoized result variables of a @cypher query
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
+
+        if (!cypherResultVariables) {
+            cypherResultVariables = await getCypherResultVariables(statement, context.executor);
+        }
+
         const { cypher, params } = translateTopLevelCypher({ context, info, field, args, type, statement });
         const executeResult = await execute({
             cypher,
