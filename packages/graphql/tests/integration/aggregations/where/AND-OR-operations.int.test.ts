@@ -161,6 +161,12 @@ describe("Nested within AND/OR", () => {
                 {
                     content: content2,
                 },
+                {
+                    content: content4,
+                },
+                {
+                    content: content5,
+                },
             ]),
         });
     });
@@ -284,6 +290,9 @@ describe("Nested within AND/OR", () => {
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [postType.plural]: expect.toIncludeSameMembers([
+                {
+                    content: content2,
+                },
                 {
                     content: content3,
                 },
