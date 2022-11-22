@@ -86,8 +86,15 @@ const linksDocumentation: Links[] = [
 ];
 
 const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBlockProps): JSX.Element => {
-    const handleTrackingCannyChangelogLink = () => {
+    const handleTrackCannyChangelogLink = () => {
         tracking.trackCannyChangelogLink({ screen });
+    };
+
+    const handleTrackHelpLearnFeatureLinks = (label: string) => {
+        tracking.trackHelpLearnFeatureLinks({
+            screen,
+            actionLabel: label,
+        });
     };
 
     return (
@@ -104,8 +111,8 @@ const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBloc
                                 <div
                                     data-canny-changelog
                                     className="flex justify-start items-center"
-                                    onClick={handleTrackingCannyChangelogLink}
-                                    onKeyDown={handleTrackingCannyChangelogLink}
+                                    onClick={handleTrackCannyChangelogLink}
+                                    onKeyDown={handleTrackCannyChangelogLink}
                                     role="link"
                                     tabIndex={0}
                                 >
@@ -122,12 +129,7 @@ const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBloc
                                     href={link.href}
                                     target="_blank"
                                     rel="noreferrer"
-                                    onClick={() =>
-                                        tracking.trackHelpLearnFeatureLinks({
-                                            screen,
-                                            actionLabel: link.label,
-                                        })
-                                    }
+                                    onClick={() => handleTrackHelpLearnFeatureLinks(link.label)}
                                 >
                                     <HeroIcon
                                         className="h-6 w-6 mr-2 stroke-1"
