@@ -38,15 +38,15 @@ export function translateTopLevelMatch({
     node: Node;
     operation: AuthOperations;
 }): Cypher.CypherResult {
-    const [topLevelMatch, withClause] = createMatchClause({ matchNode, node, context, operation });
-    const aggregateWhereCall = preComputedWhereFields(
+    const matchQuery = createMatchClause({ matchNode, node, context, operation });
+/*     const aggregateWhereCall = preComputedWhereFields(
         context.resolveTree.args.where,
         node,
         context,
         matchNode,
         withClause
-    );
-    const result = Cypher.concat(topLevelMatch, aggregateWhereCall, withClause).build();
+    ); */
+    const result = matchQuery.build();
     return result;
 }
 
@@ -60,10 +60,9 @@ export function createMatchClause({
     context: Context;
     node: Node;
     operation: AuthOperations;
-}): [Cypher.Match | Cypher.db.FullTextQueryNodes, Cypher.With] {
+}): Cypher.Match | Cypher.db.FullTextQueryNodes {
     const { resolveTree } = context;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
-    const topLevelWith = new Cypher.With("*");
     let matchQuery: Cypher.Match<Cypher.Node> | Cypher.db.FullTextQueryNodes;
     let whereInput = resolveTree.args.where as GraphQLWhereArg | undefined;
 
@@ -82,9 +81,9 @@ export function createMatchClause({
         });
 
         const andChecks = Cypher.and(...labelsChecks);
-        if (andChecks) topLevelWith.where(andChecks);
+        if (andChecks) matchQuery.where(andChecks);
     } else if (context.fulltextIndex) {
-        matchQuery = createFulltextMatchClause(matchNode, whereInput, node, context, topLevelWith);
+        matchQuery = createFulltextMatchClause(matchNode, whereInput, node, context);
         whereInput = whereInput?.[node.singular];
     } else {
         matchQuery = new Cypher.Match(matchNode);
@@ -98,7 +97,7 @@ export function createMatchClause({
             element: node,
         });
 
-        if (whereOp) topLevelWith.where(whereOp);
+        if (whereOp) matchQuery.where(whereOp);
     }
 
     const whereAuth = createAuthAndParams({
@@ -112,18 +111,17 @@ export function createMatchClause({
             return whereAuth;
         });
 
-        topLevelWith.where(authQuery);
+        matchQuery.where(authQuery);
     }
 
-    return [matchQuery, topLevelWith];
+    return matchQuery;
 }
 
 function createFulltextMatchClause(
     matchNode: Cypher.Node,
     whereInput: GraphQLWhereArg | undefined,
     node: Node,
-    context: Context,
-    topLevelWith: Cypher.With
+    context: Context
 ): Cypher.db.FullTextQueryNodes {
     // TODO: remove indexName assignment and undefined check once the name argument has been removed.
     const indexName = context.fulltextIndex.indexName || context.fulltextIndex.name;
@@ -141,15 +139,15 @@ function createFulltextMatchClause(
     if (whereInput?.[SCORE_FIELD]) {
         if (whereInput[SCORE_FIELD].min || whereInput[SCORE_FIELD].min === 0) {
             const scoreMinOp = Cypher.gte(scoreVar, new Cypher.Param(whereInput[SCORE_FIELD].min));
-            if (scoreMinOp) topLevelWith.where(scoreMinOp);
+            if (scoreMinOp) matchQuery.where(scoreMinOp);
         }
         if (whereInput[SCORE_FIELD].max || whereInput[SCORE_FIELD].max === 0) {
             const scoreMaxOp = Cypher.lte(scoreVar, new Cypher.Param(whereInput[SCORE_FIELD].max));
-            if (scoreMaxOp) topLevelWith.where(scoreMaxOp);
+            if (scoreMaxOp) matchQuery.where(scoreMaxOp);
         }
     }
 
-    if (labelsChecks) topLevelWith.where(labelsChecks);
+    if (labelsChecks) matchQuery.where(labelsChecks);
 
     return matchQuery;
 }
