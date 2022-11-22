@@ -151,7 +151,7 @@ function createFulltextMatchClause(
 
     return matchQuery;
 }
-
+/* 
 export function preComputedWhereFields(
     whereInput: any,
     node: Node,
@@ -339,3 +339,4 @@ function createAggregateOperation(
             throw new Error(`Invalid operator ${aggregationOperator}`);
     }
 }
+ */
