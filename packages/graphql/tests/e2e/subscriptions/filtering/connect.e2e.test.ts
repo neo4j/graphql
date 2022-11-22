@@ -706,8 +706,8 @@ subscription SubscriptionMovie {
                 `,
             })
             .expect(200);
+
         await delay(3);
-        console.log(wsClient.events);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([

@@ -21,7 +21,7 @@ import type { SubscriptionsEvent } from "../../../types";
 import type Node from "../../../classes/Node";
 import {
     filterByProperties,
-    filterRelationshipConnectionsByProperties,
+    filterByRelationshipProperties,
     RecordType,
     RelationshipType,
 } from "./utils/compare-properties";
@@ -51,10 +51,9 @@ export function subscriptionWhere({
     }
     if (event.event === "connect") {
         if (!nodes || !relationshipFields) {
-            // throw?
             return false;
         }
-        return filterRelationshipConnectionsByProperties({
+        return filterByRelationshipProperties({
             node,
             whereProperties: where,
             receivedEvent: event,
