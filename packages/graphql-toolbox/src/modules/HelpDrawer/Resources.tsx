@@ -2,6 +2,7 @@ import { Fragment, useContext, useEffect } from "react";
 import { HeroIcon } from "@neo4j-ndl/react";
 import { tracking } from "../../analytics/tracking";
 import { Screen, ScreenContext } from "../../contexts/screen";
+import { cannySettings } from "../../common/canny";
 
 interface Props {
     showSchemaView: boolean;
@@ -139,12 +140,7 @@ export const Resources = ({ showSchemaView }: Props): JSX.Element => {
 
     useEffect(() => {
         if (window.Canny && window.CannyIsLoaded) {
-            window.Canny("initChangelog", {
-                appID: process.env.CANNY_GRAPHQL_TOOLBOX_APP_ID,
-                position: "top",
-                align: "left",
-                // labelIDs: ["637b589ef463447c410200e6"],
-            });
+            window.Canny("initChangelog", cannySettings);
         }
         return () => {
             if (window.Canny && window.CannyIsLoaded) {

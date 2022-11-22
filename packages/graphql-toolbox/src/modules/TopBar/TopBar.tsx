@@ -27,6 +27,7 @@ import { AuthContext } from "../../contexts/auth";
 import { Screen, ScreenContext } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
 import { tracking } from "../../analytics/tracking";
+import { cannySettings } from "../../common/canny";
 
 export const TopBar = () => {
     const auth = useContext(AuthContext);
@@ -37,12 +38,7 @@ export const TopBar = () => {
 
     useEffect(() => {
         if (window.Canny && window.CannyIsLoaded) {
-            window.Canny("initChangelog", {
-                appID: process.env.CANNY_GRAPHQL_TOOLBOX_APP_ID,
-                position: "bottom",
-                align: "right",
-                // labelIDs: ["637b589ef463447c410200e6"],
-            });
+            window.Canny("initChangelog", cannySettings);
         }
         return () => {
             if (window.Canny && window.CannyIsLoaded) {
@@ -143,7 +139,7 @@ export const TopBar = () => {
                         </div>
                     ) : null}
                     <div className="flex items-center mr-6">
-                        <div className="pb-8 pl-10 pointer-events-none absolute">
+                        <div className="canny-indication-wrapper pb-8 pl-10 pointer-events-none absolute">
                             {/* This element is not clickable as we do not want to show the changelog here */}
                             <span data-canny-changelog></span>
                         </div>

@@ -1,3 +1,10 @@
+export const cannySettings = {
+    appID: process.env.CANNY_GRAPHQL_TOOLBOX_APP_ID,
+    position: "top",
+    align: "left",
+    labelIDs: ["637b589ef463447c410200e6"],
+};
+
 export const CannySDK = {
     init: () =>
         // Note: Code obtained from Canny.io

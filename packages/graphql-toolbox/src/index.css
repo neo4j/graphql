@@ -55,7 +55,6 @@ li.CodeMirror-hint-active {
     display: none !important;
 }
 
-
 .Canny_BadgeContainer {
     pointer-events: none;
     right: unset !important;
@@ -65,6 +64,12 @@ li.CodeMirror-hint-active {
     pointer-events: none;
     border-radius: 10px;
     background-color: rgb(var(--colors-primary-40));
-    padding: 4px;
+    padding: 0.25rem;
     border: 1px solid rgb(var(--colors-primary-40));
+}
+
+@-moz-document url-prefix() { 
+    .canny-indication-wrapper {
+       padding-bottom: 0.25rem;
+    }
 }

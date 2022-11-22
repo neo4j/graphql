@@ -27,7 +27,7 @@ import { AuthContext } from "../../contexts/auth";
 import { ScreenContext, Screen } from "../../contexts/screen";
 import { invokeSegmentAnalytics } from "../../analytics/segment-snippet";
 import { tracking } from "../../analytics/tracking";
-import { CannySDK } from "../../shared/canny";
+import { CannySDK } from "../../common/canny";
 
 export const Main = () => {
     const auth = useContext(AuthContext);
