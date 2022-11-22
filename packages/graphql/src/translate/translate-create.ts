@@ -142,7 +142,7 @@ export default async function translateCreate({
                         .replace(/REPLACE_ME/g, `this${i}`)}`
             )
             .join(", ");
-
+        
         authCalls = createStrs
             .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
             .join("\n");
