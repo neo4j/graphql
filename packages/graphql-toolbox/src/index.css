@@ -58,11 +58,13 @@ li.CodeMirror-hint-active {
 
 .Canny_BadgeContainer {
     pointer-events: none;
+    right: unset !important;
 }
+
 .Canny_BadgeContainer .Canny_Badge {
-  pointer-events: none;
-  border-radius: 10px;
-  background-color: rgb(var(--colors-primary-40));
-  padding: 4px;
-  border: 1px solid rgb(var(--colors-primary-40));
+    pointer-events: none;
+    border-radius: 10px;
+    background-color: rgb(var(--colors-primary-40));
+    padding: 4px;
+    border: 1px solid rgb(var(--colors-primary-40));
 }

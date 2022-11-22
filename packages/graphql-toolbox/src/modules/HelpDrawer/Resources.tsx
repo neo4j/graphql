@@ -1,4 +1,4 @@
-import { Fragment, useContext } from "react";
+import { Fragment, useContext, useEffect } from "react";
 import { HeroIcon } from "@neo4j-ndl/react";
 import { tracking } from "../../analytics/tracking";
 import { Screen, ScreenContext } from "../../contexts/screen";
@@ -17,6 +17,9 @@ interface Links {
     href: string;
     iconName: string;
     label: string;
+    options?: {
+        isCannyChangelog?: boolean;
+    };
 }
 
 const linksResources: Links[] = [
@@ -24,6 +27,14 @@ const linksResources: Links[] = [
         href: "https://neo4j.com/docs/graphql-manual/current/",
         iconName: "DocumentTextIcon",
         label: "Documentation",
+    },
+    {
+        href: "empty",
+        iconName: "SpeakerphoneIcon",
+        label: "What's new",
+        options: {
+            isCannyChangelog: true,
+        },
     },
     {
         href: "https://neo4j.com/graphacademy/training-graphql-apis/enrollment/",
@@ -84,25 +95,36 @@ const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBloc
                 {links.map((link) => {
                     return (
                         <li key={link.href} className="mt-6 cursor-pointer">
-                            <a
-                                className="flex justify-start items-center"
-                                href={link.href}
-                                target="_blank"
-                                rel="noreferrer"
-                                onClick={() =>
-                                    tracking.trackHelpLearnFeatureLinks({
-                                        screen,
-                                        actionLabel: link.label,
-                                    })
-                                }
-                            >
-                                <HeroIcon
-                                    className="h-6 w-6 mr-2 stroke-1"
-                                    type="outline"
-                                    iconName={link.iconName as any}
-                                />
-                                <p className="p-0 m-0">{link.label}</p>
-                            </a>
+                            {link.options?.isCannyChangelog ? (
+                                <div data-canny-changelog className="flex justify-start items-center">
+                                    <HeroIcon
+                                        className="h-6 w-6 mr-2 stroke-1"
+                                        type="outline"
+                                        iconName={link.iconName as any}
+                                    />
+                                    <p className="p-0 m-0">{link.label}</p>
+                                </div>
+                            ) : (
+                                <a
+                                    className="flex justify-start items-center"
+                                    href={link.href}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    onClick={() =>
+                                        tracking.trackHelpLearnFeatureLinks({
+                                            screen,
+                                            actionLabel: link.label,
+                                        })
+                                    }
+                                >
+                                    <HeroIcon
+                                        className="h-6 w-6 mr-2 stroke-1"
+                                        type="outline"
+                                        iconName={link.iconName as any}
+                                    />
+                                    <p className="p-0 m-0">{link.label}</p>
+                                </a>
+                            )}
                         </li>
                     );
                 })}
@@ -114,6 +136,22 @@ const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBloc
 export const Resources = ({ showSchemaView }: Props): JSX.Element => {
     const screen = useContext(ScreenContext);
     const linksForResources = showSchemaView ? linksResources.slice(1) : linksResources;
+
+    useEffect(() => {
+        if (window.Canny && window.CannyIsLoaded) {
+            window.Canny("initChangelog", {
+                appID: process.env.CANNY_GRAPHQL_TOOLBOX_APP_ID,
+                position: "top",
+                align: "left",
+                // labelIDs: ["637b589ef463447c410200e6"],
+            });
+        }
+        return () => {
+            if (window.Canny && window.CannyIsLoaded) {
+                window.Canny("closeChangelog");
+            }
+        };
+    }, []);
 
     return (
         <div data-test-help-drawer-resources-list>

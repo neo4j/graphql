@@ -41,7 +41,7 @@ export const TopBar = () => {
                 appID: process.env.CANNY_GRAPHQL_TOOLBOX_APP_ID,
                 position: "bottom",
                 align: "right",
-                labelIDs: ["637b589ef463447c410200e6"],
+                // labelIDs: ["637b589ef463447c410200e6"],
             });
         }
         return () => {
@@ -143,17 +143,10 @@ export const TopBar = () => {
                         </div>
                     ) : null}
                     <div className="flex items-center mr-6">
-                        <IconButton
-                            aria-label="Canny changelog widget"
-                            onClick={() => {
-                                console.log("add tracking");
-                            }}
-                            buttonSize="large"
-                            clean
-                            data-canny-changelog
-                        >
-                            <HeroIcon iconName="SpeakerphoneIcon" type="outline" />
-                        </IconButton>
+                        <div className="pb-8 pl-10 pointer-events-none absolute">
+                            {/* This element is not clickable as we do not want to show the changelog here */}
+                            <span data-canny-changelog></span>
+                        </div>
                         <IconButton
                             data-test-topbar-help-button
                             aria-label="Help and learn drawer"
