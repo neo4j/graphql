@@ -45,7 +45,9 @@ export function createPropertyWhere({
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
-}): Cypher.Predicate | undefined {
+}): [Cypher.Clause, Cypher.Predicate | undefined] {
+   
+    const fakePrecomputedClause = new Cypher.Call(new Cypher.Return([new Cypher.Literal("1"), "b"]));
     const match = whereRegEx.exec(key);
     if (!match) {
         throw new Error(`Failed to match key in filter: ${key}`);
@@ -73,12 +75,13 @@ export function createPropertyWhere({
     if (element instanceof Node) {
         const node = element;
         if (node.isGlobalNode && key === "id") {
-            return createGlobalNodeOperation({
+            return [fakePrecomputedClause, createGlobalNodeOperation({
                 node,
                 value,
                 targetElement,
                 coalesceValue,
-            });
+            })];
+            
         }
 
         if (coalesceValue) {
@@ -99,36 +102,36 @@ export function createPropertyWhere({
             //     value,
             //     parentNode: targetElement as Cypher.Node,
             // });
-            return;
+            return [fakePrecomputedClause, undefined];
         }
 
         if (relationField) {
-            return createRelationshipOperation({
+            return [fakePrecomputedClause, createRelationshipOperation({
                 relationField,
                 context,
                 parentNode: targetElement as Cypher.Node,
                 operator,
                 value,
                 isNot,
-            });
+            })];
         }
 
         const connectionField = node.connectionFields.find((x) => x.fieldName === fieldName);
         if (connectionField) {
-            return createConnectionOperation({
+            return [fakePrecomputedClause, createConnectionOperation({
                 value,
                 connectionField,
                 context,
                 parentNode: targetElement as Cypher.Node,
                 operator,
-            });
+            })];
         }
 
         if (value === null) {
             if (isNot) {
-                return Cypher.isNotNull(propertyRef);
+                return [fakePrecomputedClause, Cypher.isNotNull(propertyRef)];
             }
-            return Cypher.isNull(propertyRef);
+            return [fakePrecomputedClause, Cypher.isNull(propertyRef)];
         }
     }
     const pointField = element.pointFields.find((x) => x.fieldName === fieldName);
@@ -145,7 +148,7 @@ export function createPropertyWhere({
         neo4jDatabaseInfo: context.neo4jDatabaseInfo,
     });
     if (isNot) {
-        return Cypher.not(comparisonOp);
+        return [fakePrecomputedClause, Cypher.not(comparisonOp)];
     }
-    return comparisonOp;
+    return [fakePrecomputedClause, comparisonOp];
 }
