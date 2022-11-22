@@ -73,9 +73,14 @@ export function createEdgeSubquery({
     });
 
     const matchClause = new Cypher.Match(relPattern);
+    const withWhereClause = new Cypher.With("*");
+
+    let preComputedWhereFields: Cypher.Clause | undefined;
+    let wherePredicate: Cypher.Predicate | undefined;
+
     if (whereInput) {
         const relationship = context.relationships.find((r) => r.name === field.relationshipTypeName) as Relationship;
-        const wherePredicate = createConnectionWherePropertyOperation({
+        [preComputedWhereFields, wherePredicate] = createConnectionWherePropertyOperation({
             context,
             whereInput,
             edgeRef: relationshipRef,
@@ -84,7 +89,7 @@ export function createEdgeSubquery({
             edge: relationship,
         });
 
-        if (wherePredicate) matchClause.where(wherePredicate);
+        if (wherePredicate) withWhereClause.where(wherePredicate);
     }
     const authPredicate = createAuthPredicates({
         operations: "READ",
@@ -93,7 +98,7 @@ export function createEdgeSubquery({
         where: { varName: relatedNodeRef, node: relatedNode },
     });
     if (authPredicate) {
-        matchClause.where(authPredicate);
+        withWhereClause.where(authPredicate);
     }
 
     const authAllowPredicate = createAuthPredicates({
@@ -107,7 +112,7 @@ export function createEdgeSubquery({
     });
 
     if (authAllowPredicate) {
-        matchClause.where(new Cypher.apoc.ValidatePredicate(Cypher.not(authAllowPredicate), AUTH_FORBIDDEN_ERROR));
+        withWhereClause.where(new Cypher.apoc.ValidatePredicate(Cypher.not(authAllowPredicate), AUTH_FORBIDDEN_ERROR));
     }
 
     const projection = createEdgeProjection({
@@ -135,5 +140,5 @@ export function createEdgeSubquery({
         });
     }
 
-    return Cypher.concat(matchClause, withSortClause, ...projection.subqueries, withReturn);
+    return Cypher.concat(matchClause, preComputedWhereFields, withWhereClause, withSortClause, ...projection.subqueries, withReturn);
 }

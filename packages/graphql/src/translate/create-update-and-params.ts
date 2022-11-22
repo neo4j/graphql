@@ -140,10 +140,13 @@ export default function createUpdateAndParams({
 
                     if (update.update) {
                         const whereStrs: string[] = [];
+                        let preComputedWhereFields = "";
+                        let whereClause = "";
+                        let whereParams = {};
 
                         if (update.where) {
                             try {
-                                const where = createConnectionWhereAndParams({
+                                [preComputedWhereFields, whereClause, whereParams] = createConnectionWhereAndParams({
                                     whereInput: update.where,
                                     node: refNode,
                                     nodeVariable: variableName,
@@ -154,7 +157,6 @@ export default function createUpdateAndParams({
                                         relationField.union ? `.${refNode.name}` : ""
                                     }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
                                 });
-                                const [whereClause, whereParams] = where;
                                 if (whereClause) {
                                     whereStrs.push(whereClause);
                                     res.params = { ...res.params, ...whereParams };
@@ -172,6 +174,8 @@ export default function createUpdateAndParams({
                         subquery.push(
                             `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
                         );
+                        subquery.push(preComputedWhereFields);
+                        subquery.push("WITH *");
 
                         if (node.auth) {
                             const whereAuth = createAuthAndParams({

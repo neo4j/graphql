@@ -80,7 +80,7 @@ function createDisconnectAndParams({
 
         if (disconnect.where) {
             try {
-                const whereAndParams = createConnectionWhereAndParams({
+                const [preComputedWhereFields, whereClause, whereParams] = createConnectionWhereAndParams({
                     nodeVariable: variableName,
                     whereInput: disconnect.where,
                     node: relatedNode,
@@ -89,9 +89,11 @@ function createDisconnectAndParams({
                     relationship,
                     parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
                 });
-                if (whereAndParams[0]) {
-                    whereStrs.push(whereAndParams[0]);
-                    params = { ...params, ...whereAndParams[1] };
+                if (whereClause) {
+                    subquery.push(preComputedWhereFields);
+                    subquery.push("WITH *");
+                    whereStrs.push(whereClause);
+                    params = { ...params, ...whereParams };
                 }
             } catch {
                 return { subquery: "", params: {} };

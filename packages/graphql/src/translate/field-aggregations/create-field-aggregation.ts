@@ -60,7 +60,7 @@ export function createFieldAggregation({
     nodeLabel: string;
     node: Node;
     field: ResolveTree;
-}): { query: string; params: Record<string, any> } | undefined {
+}): { query: string; params: Record<string, any>; preComputedWhereFields?: string } | undefined {
     const relationAggregationField = node.relationFields.find((x) => {
         return `${x.fieldName}Aggregate` === field.name;
     });
@@ -84,7 +84,7 @@ export function createFieldAggregation({
         nodeFields: aggregationFields.node,
     });
 
-    const [whereQuery, whereParams] = createWhereAndParams({
+    const [wherePreComputedWhereFields, whereQuery, whereParams] = createWhereAndParams({
         whereInput: (field.args.where as GraphQLWhereArg) || {},
         varName: subqueryNodeAlias,
         node: referenceNode,
@@ -100,7 +100,7 @@ export function createFieldAggregation({
         context,
         directed: field.args.directed as boolean | undefined,
     });
-    const matchWherePattern = createMatchWherePattern(targetPattern, authData, whereQuery);
+    const matchWherePattern = createMatchWherePattern(targetPattern, wherePreComputedWhereFields, authData, whereQuery);
     const apocRunParams = {
         ...serializeParamsForApocRun(whereParams as Record<string, any>),
         ...serializeAuthParamsForApocRun(authData),
@@ -124,8 +124,11 @@ export function createFieldAggregation({
     const cypherParams = { ...authData.params, ...whereParams };
     const projectionMap = new Cypher.Map();
 
+    let preComputedWhereFields: (Cypher.Clause | undefined)[] = [];
+    let countProjection: Cypher.Expr;
+
     if (aggregationFields.count) {
-        const countProjection = createCountExpression({
+        [preComputedWhereFields, countProjection] = createCountExpression({
             sourceNode,
             relationAggregationField,
             referenceNode,
@@ -180,9 +183,14 @@ export function createFieldAggregation({
         return projectionMap.getCypher(env);
     });
 
+    const preComputedWhereFieldsResult = Cypher.concat(...preComputedWhereFields).build();
     const result = rawProjection.build(`${nodeLabel}_${field.alias}_`);
 
-    return { query: result.cypher, params: { ...result.params } };
+    return {
+        query: result.cypher,
+        params: { ...result.params, ...preComputedWhereFieldsResult.params },
+        preComputedWhereFields: preComputedWhereFieldsResult.cypher,
+    };
 }
 
 function getAggregationFields(fieldPathBase: string, field: ResolveTree): AggregationFields {

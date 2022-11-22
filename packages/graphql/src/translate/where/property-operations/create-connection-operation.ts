@@ -40,7 +40,7 @@ export function createConnectionOperation({
     context: Context;
     parentNode: Cypher.Node;
     operator: string | undefined;
-}): Cypher.BooleanOp | Cypher.RawCypher | undefined {
+}): [(Cypher.Clause | undefined)[], Cypher.BooleanOp | Cypher.RawCypher | undefined] {
     let nodeEntries: Record<string, any>;
 
     if (!connectionField?.relationship.union) {
@@ -49,7 +49,10 @@ export function createConnectionOperation({
         nodeEntries = value;
     }
 
-    const operations = Object.entries(nodeEntries).map((entry) => {
+    let subqueries: (Cypher.Clause | undefined)[] = [];
+    const operations: (Cypher.BooleanOp | Cypher.RawCypher | undefined)[] = [];
+
+    Object.entries(nodeEntries).forEach((entry) => {
         const refNode = context.nodes.find(
             (x) => x.name === entry[0] || x.interfaces.some((i) => i.name.value === entry[0])
         ) as Node;
@@ -74,7 +77,7 @@ export function createConnectionOperation({
         const contextRelationship = context.relationships.find(
             (x) => x.name === connectionField.relationshipTypeName
         ) as Relationship;
-        const whereOperator = createConnectionWherePropertyOperation({
+        const [preComputedWhereFields, whereOperator] = createConnectionWherePropertyOperation({
             context,
             whereInput: entry[1],
             edgeRef: relationship,
@@ -93,10 +96,11 @@ export function createConnectionOperation({
             return [clause, {}];
         });
 
-        return subquery;
+        subqueries = [...subqueries, preComputedWhereFields];
+        operations.push(subquery);
     });
 
-    return Cypher.and(...operations) as Cypher.BooleanOp | undefined;
+    return [subqueries, Cypher.and(...operations) as Cypher.BooleanOp | undefined];
 }
 
 export function createConnectionWherePropertyOperation({
@@ -113,11 +117,14 @@ export function createConnectionWherePropertyOperation({
     edge: Relationship;
     edgeRef: Cypher.Variable;
     targetNode: Cypher.Node;
-}): Cypher.Predicate | undefined {
-    const params = Object.entries(whereInput).map(([key, value]) => {
+}): [Cypher.Clause | undefined, Cypher.Predicate | undefined] {
+    const params: Cypher.Predicate[] = [];
+    let subqueries: Cypher.CompositeClause | undefined;
+    Object.entries(whereInput).forEach(([key, value]) => {
         if (key === "AND" || key === "OR") {
-            const subOperations = (value as Array<any>).map((input) => {
-                return createConnectionWherePropertyOperation({
+            const subOperations: Cypher.Predicate[] = [];
+            (value as Array<any>).forEach((input) => {
+                const [preComputedWhereFields, predicates] = createConnectionWherePropertyOperation({
                     context,
                     whereInput: input,
                     edgeRef,
@@ -125,25 +132,31 @@ export function createConnectionWherePropertyOperation({
                     node,
                     edge,
                 });
+                subqueries = Cypher.concat(subqueries, preComputedWhereFields);
+                if (predicates) {
+                    subOperations.push(predicates);
+                }
             });
             if (key === "AND") {
-                return Cypher.and(...filterTruthy(subOperations));
+                params.push(Cypher.and(...filterTruthy(subOperations)));
             }
             if (key === "OR") {
-                return Cypher.or(...filterTruthy(subOperations));
+                params.push(Cypher.or(...filterTruthy(subOperations)));
             }
         }
 
         if (key.startsWith("edge")) {
             const nestedProperties: Record<string, any> = value;
-            const result = createWherePredicate({
+            const [preComputedWhereFields, predicates] = createWherePredicate({
                 targetElement: edgeRef,
                 whereInput: nestedProperties,
                 context,
                 element: edge,
             });
-
-            return result;
+            subqueries = Cypher.concat(subqueries, ...preComputedWhereFields);
+            if (predicates) {
+                params.push(predicates);
+            }
         }
 
         if (key.startsWith("node") || key.startsWith(node.name)) {
@@ -160,19 +173,20 @@ export function createConnectionWherePropertyOperation({
                 throw new Error("_on is used as the only argument and node is not present within");
             }
 
-            const result = createWherePredicate({
+            const [preComputedWhereFields, predicates] = createWherePredicate({
                 targetElement: targetNode,
                 whereInput: nestedProperties,
                 context,
                 element: node,
             });
-
-            // NOTE: _NOT is handled by the size()=0
-            return result;
+            subqueries = Cypher.concat(subqueries, ...preComputedWhereFields);
+            if (predicates) {
+                params.push(predicates);
+            }
         }
         return undefined;
     });
-    return Cypher.and(...filterTruthy(params));
+    return [subqueries, Cypher.and(...filterTruthy(params))];
 }
 
 /** Checks if a where property has an explicit interface inside _on */

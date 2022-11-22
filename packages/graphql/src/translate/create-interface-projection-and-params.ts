@@ -140,8 +140,9 @@ function createInterfaceSubquery({
 
     if (direction === "IN") pattern.reverse();
 
-    const withClause = new Cypher.With(...fullWithVars.map((f) => new Cypher.NamedVariable(f)));
+    const topLevelWithClause = new Cypher.With(...fullWithVars.map((f) => new Cypher.NamedVariable(f)));
     const matchQuery = new Cypher.Match(pattern);
+    const postSubqueryWith = new Cypher.With("*");
 
     const authAllowPredicate = createAuthPredicates({
         entity: refNode,
@@ -157,8 +158,11 @@ function createInterfaceSubquery({
             Cypher.not(authAllowPredicate),
             AUTH_FORBIDDEN_ERROR
         );
-        matchQuery.where(apocValidateClause);
+        postSubqueryWith.where(apocValidateClause);
     }
+
+    let preComputedWhereFields: (Cypher.Clause | undefined)[] = [];
+    let wherePredicate: Cypher.Predicate | undefined;
 
     if (resolveTree.args.where) {
         const whereInput2 = {
@@ -172,7 +176,7 @@ function createInterfaceSubquery({
             ...(whereInput?._on?.[refNode.name] || {}),
         };
 
-        const wherePredicate = createWherePredicate({
+        [preComputedWhereFields, wherePredicate] = createWherePredicate({
             whereInput: whereInput2,
             context,
             targetElement: relatedNode,
@@ -180,7 +184,7 @@ function createInterfaceSubquery({
         });
 
         if (wherePredicate) {
-            matchQuery.where(wherePredicate);
+            postSubqueryWith.where(wherePredicate);
         }
     }
 
@@ -194,7 +198,7 @@ function createInterfaceSubquery({
         context,
     });
     if (whereAuthPredicate) {
-        matchQuery.where(whereAuthPredicate);
+        postSubqueryWith.where(whereAuthPredicate);
     }
 
     const {
@@ -214,5 +218,5 @@ function createInterfaceSubquery({
 
     const returnClause = new Cypher.Return([new Cypher.RawCypher(projectionStr), `${nodeVariable}_${field.fieldName}`]);
 
-    return Cypher.concat(withClause, matchQuery, projectionSubqueryClause, returnClause);
+    return Cypher.concat(topLevelWithClause, matchQuery, ...preComputedWhereFields, postSubqueryWith, projectionSubqueryClause, returnClause);
 }

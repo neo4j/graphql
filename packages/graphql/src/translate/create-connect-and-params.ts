@@ -101,7 +101,7 @@ function createConnectAndParams({
                 return { subquery: "", params: {} };
             }
 
-            const rootNodeWhereAndParams = createWhereAndParams({
+            const [preComputedWhereFields, rootNodeWhere, rootNodeParams] = createWhereAndParams({
                 whereInput: {
                     ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
                         if (k !== "_on") {
@@ -120,14 +120,18 @@ function createConnectAndParams({
                 varName: nodeName,
                 recursing: true,
             });
-            if (rootNodeWhereAndParams[0]) {
-                whereStrs.push(rootNodeWhereAndParams[0]);
-                params = { ...params, ...rootNodeWhereAndParams[1] };
+            if (rootNodeWhere) {
+                whereStrs.push(rootNodeWhere);
+                if (preComputedWhereFields) {
+                    subquery.push(preComputedWhereFields);
+                    subquery.push("WITH *");
+                }
+                params = { ...params, ...rootNodeParams };
             }
 
             // For _on filters
             if (connect.where.node?._on?.[relatedNode.name]) {
-                const onTypeNodeWhereAndParams = createWhereAndParams({
+                const [preComputedWhereFields, onTypeNodeWhere, onTypeNodeParams] = createWhereAndParams({
                     whereInput: {
                         ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
                             if (k !== "_on") {
@@ -147,9 +151,13 @@ function createConnectAndParams({
                     chainStr: `${nodeName}_on_${relatedNode.name}`,
                     recursing: true,
                 });
-                if (onTypeNodeWhereAndParams[0]) {
-                    whereStrs.push(onTypeNodeWhereAndParams[0]);
-                    params = { ...params, ...onTypeNodeWhereAndParams[1] };
+                if (onTypeNodeWhere) {
+                    whereStrs.push(onTypeNodeWhere);
+                    if (preComputedWhereFields) {
+                        subquery.push(preComputedWhereFields);
+                        subquery.push("WITH *");
+                    }
+                    params = { ...params, ...onTypeNodeParams };
                 }
             }
         }

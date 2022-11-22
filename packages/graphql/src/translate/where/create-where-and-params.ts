@@ -38,10 +38,10 @@ export default function createWhereAndParams({
     varName: string;
     chainStr?: string;
     recursing?: boolean;
-}): [string, any] {
+}): [string, string, any] {
     const nodeRef = new Cypher.NamedNode(varName);
 
-    const wherePredicate = createWherePredicate({
+    const [preComputedWhereFields, wherePredicate] = createWherePredicate({
         element: node,
         context,
         whereInput,
@@ -54,8 +54,13 @@ export default function createWhereAndParams({
         return [cypher, {}];
     });
 
+    const preComputedWhereFieldsResult = Cypher.concat(...preComputedWhereFields).build();
     const result = whereCypher.build(`${chainStr || ""}${varName}_`);
     const whereStr = `${!recursing ? "WHERE " : ""}`;
 
-    return [`${whereStr}${result.cypher}`, result.params];
+    return [
+        preComputedWhereFieldsResult.cypher,
+        `${whereStr}${result.cypher}`,
+        { ...result.params, ...preComputedWhereFieldsResult.params },
+    ];
 }
