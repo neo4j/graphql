@@ -31,7 +31,7 @@ export function createMatchWherePattern(
     const andQuery = whereInput && auth.whereQuery ? "AND" : "";
     preComputedWhereFields = preComputedWhereFields ? `${preComputedWhereFields}\nWITH*` : "";
     const matchClauses = [matchPattern, preComputedWhereFields, whereQuery, whereInput, andQuery, auth.whereQuery];
-    return `MATCH ${matchClauses.join("\n")}`;
+    return `OPTIONAL MATCH ${matchClauses.join("\n")}`;
 }
 
 export function stringAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {

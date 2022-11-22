@@ -60,7 +60,7 @@ export function createFieldAggregation({
     nodeLabel: string;
     node: Node;
     field: ResolveTree;
-}): { query: string; params: Record<string, any>; preComputedWhereFields?: string } | undefined {
+}): { matchVar: string; cypher: string, params: Record<string, any> } | undefined {
     const relationAggregationField = node.relationFields.find((x) => {
         return `${x.fieldName}Aggregate` === field.name;
     });
@@ -121,25 +121,15 @@ export function createFieldAggregation({
         // TODO: refactor auth into cypherBuilder
         return [authDataResult.whereQuery, authDataResult.params];
     });
-    const cypherParams = { ...authData.params, ...whereParams };
+    const cypherParams = { ...apocRunParams, ...authData.params, ...whereParams };
     const projectionMap = new Cypher.Map();
 
     let preComputedWhereFields: Cypher.Clause | undefined;
     let countProjection: Cypher.Expr;
 
     if (aggregationFields.count) {
-        [preComputedWhereFields, countProjection] = createCountExpression({
-            sourceNode,
-            relationAggregationField,
-            referenceNode,
-            context,
-            field,
-            authCallWhere,
-            targetNode,
-        });
-
         projectionMap.set({
-            count: countProjection,
+            count: Cypher.count(new Cypher.NamedNode(subqueryNodeAlias)),
         });
     }
     const nodeFields = aggregationFields.node;
@@ -153,7 +143,7 @@ export function createFieldAggregation({
                         fields: nodeFields,
                         fieldAlias: subqueryNodeAlias,
                         graphElement: referenceNode,
-                        params: apocRunParams,
+                        params: cypherParams,
                     }),
                     cypherParams,
                 ];
@@ -171,7 +161,7 @@ export function createFieldAggregation({
                         fields: edgeFields,
                         fieldAlias: subqueryRelationAlias,
                         graphElement: referenceRelation,
-                        params: apocRunParams,
+                        params: cypherParams,
                     }),
                     cypherParams,
                 ];
@@ -182,15 +172,15 @@ export function createFieldAggregation({
     let preComputedWhereFieldsResult = "";
     const rawProjection = new Cypher.RawCypher((env) => {
         preComputedWhereFieldsResult = preComputedWhereFields?.getCypher(env) || "";
-        return projectionMap.getCypher(env);
+        return [projectionMap.getCypher(env), cypherParams];
     });
 
     const result = rawProjection.build(`${nodeLabel}_${field.alias}_`);
 
     return {
-        query: result.cypher,
+        matchVar: result.cypher,
+        cypher: matchWherePattern,
         params: result.params,
-        preComputedWhereFields: preComputedWhereFieldsResult,
     };
 }
 
