@@ -21,6 +21,7 @@ import { LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING } from "../constants";
 import { Storage } from "../utils/storage";
 import {
     TrackingTBBuildSchemaClick,
+    TrackingTBCannyChangelogClick,
     TrackingTBChangeDatabase,
     TrackingTBEditorThemeToggle,
     TrackingTBExecuteQuery,
@@ -88,7 +89,12 @@ class Tracking {
 
     public trackExploreGraphQLaaSLink = (properties: TrackingTBExploreGraphQLaaSLinkClick) => {
         const screenValue = properties.screen === Screen.EDITOR ? "query editor" : "type definitions";
-        this.fireTrackingEvent("TB", "TB_EXPLORE_GRAPHQLAAS_LINK_CLICK", { ...properties, screen: screenValue });
+        this.fireTrackingEvent("TB", "EXPLORE_GRAPHQLAAS_LINK_CLICK", { ...properties, screen: screenValue });
+    };
+
+    public trackCannyChangelogLink = (properties: TrackingTBCannyChangelogClick) => {
+        const screenValue = properties.screen === Screen.EDITOR ? "query editor" : "type definitions";
+        this.fireTrackingEvent("TB", "CANNY_CHANGELOG_CLICK", { ...properties, screen: screenValue });
     };
 
     private fireTrackingEvent = (eventCategory: string, eventLabel: string, eventProperties = {}) => {

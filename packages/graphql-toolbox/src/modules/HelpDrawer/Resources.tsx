@@ -86,6 +86,10 @@ const linksDocumentation: Links[] = [
 ];
 
 const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBlockProps): JSX.Element => {
+    const handleTrackingCannyChangelogLink = () => {
+        tracking.trackCannyChangelogLink({ screen });
+    };
+
     return (
         <Fragment>
             <div className="flex items-center">
@@ -97,7 +101,14 @@ const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBloc
                     return (
                         <li key={link.href} className="mt-6 cursor-pointer">
                             {link.options?.isCannyChangelog ? (
-                                <div data-canny-changelog className="flex justify-start items-center">
+                                <div
+                                    data-canny-changelog
+                                    className="flex justify-start items-center"
+                                    onClick={handleTrackingCannyChangelogLink}
+                                    onKeyDown={handleTrackingCannyChangelogLink}
+                                    role="link"
+                                    tabIndex={0}
+                                >
                                     <HeroIcon
                                         className="h-6 w-6 mr-2 stroke-1"
                                         type="outline"
