@@ -53,8 +53,7 @@ jobs:
           message: |
             Made some changes to the GraphQL Toolbox? Or made some changes to the core library perhaps?
 
-            Check out your changes at
-             https://neo4j-graphql-toolbox-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh
+            Check out your changes at https://neo4j-graphql-toolbox-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh
 
             Use for instance a local dbms hosted on [Neo4j Desktop](https://neo4j.com/download/) or a cloud-hosted [Aura Free](https://neo4j.com/cloud/aura-free/) dbms.
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
