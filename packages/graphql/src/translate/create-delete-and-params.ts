@@ -91,9 +91,13 @@ function createDeleteAndParams({
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
 
                     const whereStrs: string[] = [];
+                    let preComputedWhereFields = "";
+                    let whereClause = "";
+                    let whereParams = {};
+
                     if (d.where) {
                         try {
-                            const whereAndParams = createConnectionWhereAndParams({
+                            [preComputedWhereFields, whereClause, whereParams] = createConnectionWhereAndParams({
                                 nodeVariable: variableName,
                                 whereInput: d.where,
                                 node: refNode,
@@ -104,9 +108,9 @@ function createDeleteAndParams({
                                     relationField.union ? `.${refNode.name}` : ""
                                 }${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
                             });
-                            if (whereAndParams[0]) {
-                                whereStrs.push(whereAndParams[0]);
-                                res.params = { ...res.params, ...whereAndParams[1] };
+                            if (whereClause) {
+                                whereStrs.push(whereClause);
+                                res.params = { ...res.params, ...whereParams };
                             }
                         } catch {
                             return;
@@ -121,6 +125,8 @@ function createDeleteAndParams({
                     res.strs.push(
                         `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
                     );
+                    res.strs.push(preComputedWhereFields);
+                    res.strs.push("WITH *")
 
                     const whereAuth = createAuthAndParams({
                         operations: "DELETE",

@@ -25,7 +25,6 @@ import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx, WhereRegexGroups } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
-import { WHERE_AGGREGATION_FUNCTIONS } from "../constants";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -38,15 +37,8 @@ export function translateTopLevelMatch({
     node: Node;
     operation: AuthOperations;
 }): Cypher.CypherResult {
-    const matchQuery = createMatchClause({ matchNode, node, context, operation });
-/*     const aggregateWhereCall = preComputedWhereFields(
-        context.resolveTree.args.where,
-        node,
-        context,
-        matchNode,
-        withClause
-    ); */
-    const result = matchQuery.build();
+    const topLevelMatchClauses = createMatchClause({ matchNode, node, context, operation });
+    const result = Cypher.concat(...topLevelMatchClauses).build();
     return result;
 }
 
@@ -60,9 +52,10 @@ export function createMatchClause({
     context: Context;
     node: Node;
     operation: AuthOperations;
-}): Cypher.Match | Cypher.db.FullTextQueryNodes {
+}): [Cypher.CompositeClause, Cypher.With] {
     const { resolveTree } = context;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
+    const withClause = new Cypher.With("*");
     let matchQuery: Cypher.Match<Cypher.Node> | Cypher.db.FullTextQueryNodes;
     let whereInput = resolveTree.args.where as GraphQLWhereArg | undefined;
 
@@ -81,23 +74,26 @@ export function createMatchClause({
         });
 
         const andChecks = Cypher.and(...labelsChecks);
-        if (andChecks) matchQuery.where(andChecks);
+        if (andChecks) withClause.where(andChecks);
     } else if (context.fulltextIndex) {
-        matchQuery = createFulltextMatchClause(matchNode, whereInput, node, context);
+        matchQuery = createFulltextMatchClause(matchNode, withClause, whereInput, node, context);
         whereInput = whereInput?.[node.singular];
     } else {
         matchQuery = new Cypher.Match(matchNode);
     }
 
+    let preComputedWhereFields: (Cypher.Clause | undefined)[] = [];
+    let whereOp: Cypher.Predicate | undefined;
+
     if (whereInput) {
-        const whereOp = createWherePredicate({
+        [preComputedWhereFields, whereOp] = createWherePredicate({
             targetElement: matchNode,
             whereInput,
             context,
             element: node,
         });
 
-        if (whereOp) matchQuery.where(whereOp);
+        if (whereOp) withClause.where(whereOp);
     }
 
     const whereAuth = createAuthAndParams({
@@ -111,14 +107,15 @@ export function createMatchClause({
             return whereAuth;
         });
 
-        matchQuery.where(authQuery);
+        withClause.where(authQuery);
     }
 
-    return matchQuery;
+    return [Cypher.concat(matchQuery, ...preComputedWhereFields), withClause];
 }
 
 function createFulltextMatchClause(
     matchNode: Cypher.Node,
+    withClause: Cypher.With,
     whereInput: GraphQLWhereArg | undefined,
     node: Node,
     context: Context
@@ -139,15 +136,15 @@ function createFulltextMatchClause(
     if (whereInput?.[SCORE_FIELD]) {
         if (whereInput[SCORE_FIELD].min || whereInput[SCORE_FIELD].min === 0) {
             const scoreMinOp = Cypher.gte(scoreVar, new Cypher.Param(whereInput[SCORE_FIELD].min));
-            if (scoreMinOp) matchQuery.where(scoreMinOp);
+            if (scoreMinOp) withClause.where(scoreMinOp);
         }
         if (whereInput[SCORE_FIELD].max || whereInput[SCORE_FIELD].max === 0) {
             const scoreMaxOp = Cypher.lte(scoreVar, new Cypher.Param(whereInput[SCORE_FIELD].max));
-            if (scoreMaxOp) matchQuery.where(scoreMaxOp);
+            if (scoreMaxOp) withClause.where(scoreMaxOp);
         }
     }
 
-    if (labelsChecks) matchQuery.where(labelsChecks);
+    if (labelsChecks) withClause.where(labelsChecks);
 
     return matchQuery;
 }

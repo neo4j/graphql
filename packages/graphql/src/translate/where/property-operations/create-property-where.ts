@@ -23,7 +23,6 @@ import { GraphElement, Node } from "../../../classes";
 import { whereRegEx, WhereRegexGroups } from "../utils";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createGlobalNodeOperation } from "./create-global-node-operation";
-import { createAggregateOperation } from "./create-aggregate-operation";
 // Recursive function
 
 import { createConnectionOperation } from "./create-connection-operation";
@@ -106,25 +105,25 @@ export function createPropertyWhere({
         }
 
         if (relationField) {
-            return [fakePrecomputedClause, createRelationshipOperation({
+            return createRelationshipOperation({
                 relationField,
                 context,
                 parentNode: targetElement as Cypher.Node,
                 operator,
                 value,
                 isNot,
-            })];
+            });
         }
 
         const connectionField = node.connectionFields.find((x) => x.fieldName === fieldName);
         if (connectionField) {
-            return [fakePrecomputedClause, createConnectionOperation({
+            return createConnectionOperation({
                 value,
                 connectionField,
                 context,
                 parentNode: targetElement as Cypher.Node,
                 operator,
-            })];
+            });
         }
 
         if (value === null) {

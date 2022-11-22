@@ -41,21 +41,30 @@ export default function createWhereAndParams({
 }): [string, any] {
     const nodeRef = new Cypher.NamedNode(varName);
 
-    const wherePredicate = createWherePredicate({
+    const [preComputedWhereFields, wherePredicate] = createWherePredicate({
         element: node,
         context,
         whereInput,
         targetElement: nodeRef,
     });
 
-    const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
-        const cypher = wherePredicate?.getCypher(env) || "";
+    const withClause = new Cypher.With("*");
+    
+    if (wherePredicate) {
+        withClause.where(wherePredicate);
+    }
 
-        return [cypher, {}];
-    });
+    const result = Cypher.concat(...preComputedWhereFields, withClause).build();
+    return [result.cypher, result.params];
 
-    const result = whereCypher.build(`${chainStr || ""}${varName}_`);
-    const whereStr = `${!recursing ? "WHERE " : ""}`;
+    // const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
+    //     const cypher = wherePredicate?.getCypher(env) || "";
 
-    return [`${whereStr}${result.cypher}`, result.params];
+    //     return [cypher, {}];
+    // });
+
+    // const result = whereCypher.build(`${chainStr || ""}${varName}_`);
+    // const whereStr = `${!recursing ? "WHERE " : ""}`;
+
+    // return [`${whereStr}${result.cypher}`, result.params];
 }

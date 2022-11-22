@@ -22,10 +22,10 @@ import { int } from "neo4j-driver";
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams, { ProjectionResult } from "./create-projection-and-params";
-import type { GraphQLOptionsArg, GraphQLSortArg, Context, GraphQLWhereArg } from "../types";
+import type { GraphQLOptionsArg, GraphQLSortArg, Context } from "../types";
 import { createAuthPredicates } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import { createMatchClause, preComputedWhereFields } from "./translate-top-level-match";
+import { createMatchClause } from "./translate-top-level-match";
 import Cypher from "@neo4j/cypher-builder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
@@ -181,17 +181,8 @@ export function translateRead(
         projectionClause = Cypher.concat(withTotalCount, connectionClause, returnClause);
     }
 
-    const preComputedWhereClause = preComputedWhereFields(
-        resolveTree.args.where as GraphQLWhereArg | undefined,
-        node,
-        context,
-        matchNode,
-        topLevelWith,
-    );
-
     const readQuery = Cypher.concat(
         topLevelMatch,
-        preComputedWhereClause,
         topLevelWith,
         projAuth,
         connectionPreClauses,
