@@ -45,9 +45,9 @@ export function createPropertyWhere({
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
-}): [Cypher.Clause, Cypher.Predicate | undefined] {
+}): [(Cypher.Clause | undefined)[], Cypher.Predicate | undefined] {
    
-    const fakePrecomputedClause = new Cypher.Call(new Cypher.Return([new Cypher.Literal("1"), "b"]));
+    const fakePrecomputedClause = [new Cypher.Call(new Cypher.Return([new Cypher.Literal("1"), "b"]))];
     const match = whereRegEx.exec(key);
     if (!match) {
         throw new Error(`Failed to match key in filter: ${key}`);

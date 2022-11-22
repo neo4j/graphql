@@ -41,10 +41,10 @@ export function createWherePredicate({
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
-}): Cypher.Predicate | undefined {
+}): [(Cypher.Clause | undefined)[], Cypher.Predicate | undefined] {
     const whereFields = Object.entries(whereInput);
 
-    const predicates = whereFields.map(([key, value]): Cypher.Predicate | undefined => {
+    const {precomuptedClauses, predicates} = whereFields.map(([key, value]): [(Cypher.Clause | undefined)[], Cypher.Predicate | undefined] => {
         if (isWhereOperator(key)) {
             return createNestedPredicate({
                 key,
@@ -56,10 +56,20 @@ export function createWherePredicate({
         }
 
         return createPropertyWhere({ key, value, element, targetElement, context });
-    });
-
+    }).reduce(
+        (accumulator, current) => {
+            accumulator.precomuptedClauses.push(...current[0]);
+            accumulator.predicates.push(current[1]);
+            return accumulator;
+        },
+        { precomuptedClauses: [], predicates: [] } as {
+            precomuptedClauses: (Cypher.Clause | undefined)[];
+            predicates: (Cypher.Predicate | undefined)[];
+        }
+    );
+    
     // Implicit AND
-    return Cypher.and(...predicates);
+    return [precomuptedClauses, Cypher.and(...predicates)];
 }
 
 function createNestedPredicate({
@@ -74,12 +84,24 @@ function createNestedPredicate({
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
-}): Cypher.Predicate | undefined {
-    const nested = value.map((v) => {
-        return createWherePredicate({ whereInput: v, element, targetElement, context });
-    });
+}): [(Cypher.Clause | undefined)[], Cypher.Predicate | undefined] {
+    const {precomuptedClauses, predicates} = value
+        .map((v) => {
+            return createWherePredicate({ whereInput: v, element, targetElement, context });
+        })
+        .reduce(
+            (accumulator, current) => {
+                accumulator.precomuptedClauses.push(...current[0]);
+                accumulator.predicates.push(current[1]);
+                return accumulator;
+            },
+            { precomuptedClauses: [], predicates: [] } as {
+                precomuptedClauses: (Cypher.Clause | undefined)[];
+                predicates: (Cypher.Predicate | undefined)[];
+            }
+        ); 
     if (key === "OR") {
-        return Cypher.or(...nested);
+        return [precomuptedClauses, Cypher.or(...predicates)];
     }
-    return Cypher.and(...nested);
+    return [precomuptedClauses, Cypher.and(...predicates)];
 }
