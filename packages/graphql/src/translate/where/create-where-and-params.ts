@@ -48,19 +48,15 @@ export default function createWhereAndParams({
         targetElement: nodeRef,
     });
 
+    let preComputedWhereFieldsResult = "";
     const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
         const cypher = wherePredicate?.getCypher(env) || "";
-
+        preComputedWhereFieldsResult = preComputedWhereFields?.getCypher(env) || "";
         return [cypher, {}];
     });
 
-    const preComputedWhereFieldsResult = preComputedWhereFields?.build() || { cypher: "", params: {} };
     const result = whereCypher.build(`${chainStr || ""}${varName}_`);
     const whereStr = `${!recursing ? "WHERE " : ""}`;
 
-    return [
-        preComputedWhereFieldsResult.cypher,
-        `${whereStr}${result.cypher}`,
-        { ...result.params, ...preComputedWhereFieldsResult.params },
-    ];
+    return [preComputedWhereFieldsResult, `${whereStr}${result.cypher}`, result.params];
 }

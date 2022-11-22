@@ -179,17 +179,18 @@ export function createFieldAggregation({
         });
     }
 
+    let preComputedWhereFieldsResult = "";
     const rawProjection = new Cypher.RawCypher((env) => {
+        preComputedWhereFieldsResult = preComputedWhereFields?.getCypher(env) || "";
         return projectionMap.getCypher(env);
     });
 
-    const preComputedWhereFieldsResult = preComputedWhereFields?.build() || { cypher: "", params: {} };
     const result = rawProjection.build(`${nodeLabel}_${field.alias}_`);
 
     return {
         query: result.cypher,
-        params: { ...result.params, ...preComputedWhereFieldsResult.params },
-        preComputedWhereFields: preComputedWhereFieldsResult.cypher,
+        params: result.params,
+        preComputedWhereFields: preComputedWhereFieldsResult,
     };
 }
 

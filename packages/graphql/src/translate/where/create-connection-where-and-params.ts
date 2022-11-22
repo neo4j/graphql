@@ -51,14 +51,14 @@ export default function createConnectionWhereAndParams({
         edge: relationship,
     });
 
+    let preComputedWhereFieldsResult = "";
     const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
         const cypher = andOp?.getCypher(env) || "";
-
+        preComputedWhereFieldsResult = preComputedWhereFields?.getCypher(env) || "";
         return [cypher, {}];
     });
 
-    const preComputedWhereFieldsResult = preComputedWhereFields?.build()
     // NOTE: the following prefix is just to avoid collision until this is refactored into a single cypher ast
     const result = whereCypher.build(`${parameterPrefix.replace(/\./g, "_").replace(/\[|\]/g, "")}_${node.name}`);
-    return [preComputedWhereFieldsResult?.cypher || "", result.cypher, { ...result.params, ...preComputedWhereFieldsResult?.params}];
+    return [preComputedWhereFieldsResult, result.cypher, result.params];
 }
