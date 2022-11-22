@@ -40,8 +40,8 @@ describe("createWhereAndParams", () => {
 
         const result = createWhereAndParams({ whereInput, varName, node, context });
 
-        expect(result[0]).toBe(`WHERE this.title = $this_param0`);
-        expect(result[1]).toMatchObject({ this_param0: whereInput.title });
+        expect(result[1]).toBe(`WHERE this.title = $this_param0`);
+        expect(result[2]).toMatchObject({ this_param0: whereInput.title });
     });
 
     test("should return a clause with the correct idField when using the `id` where argument on a global node", () => {
@@ -63,7 +63,7 @@ describe("createWhereAndParams", () => {
 
         const result = createWhereAndParams({ whereInput, varName, node, context });
 
-        expect(result[0]).toBe(`WHERE this.title = $this_param0`);
-        expect(result[1]).toMatchObject({ this_param0: "some title" });
+        expect(result[1]).toBe(`WHERE this.title = $this_param0`);
+        expect(result[2]).toMatchObject({ this_param0: "some title" });
     });
 });

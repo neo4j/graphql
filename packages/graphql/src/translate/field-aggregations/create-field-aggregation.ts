@@ -84,7 +84,7 @@ export function createFieldAggregation({
         nodeFields: aggregationFields.node,
     });
 
-    const [whereQuery, whereParams] = createWhereAndParams({
+    const [wherePreComputedWhereFields, whereQuery, whereParams] = createWhereAndParams({
         whereInput: (field.args.where as GraphQLWhereArg) || {},
         varName: subqueryNodeAlias,
         node: referenceNode,
@@ -100,7 +100,7 @@ export function createFieldAggregation({
         context,
         directed: field.args.directed as boolean | undefined,
     });
-    const matchWherePattern = createMatchWherePattern(targetPattern, authData, whereQuery);
+    const matchWherePattern = createMatchWherePattern(targetPattern, wherePreComputedWhereFields, authData, whereQuery);
     const apocRunParams = {
         ...serializeParamsForApocRun(whereParams as Record<string, any>),
         ...serializeAuthParamsForApocRun(authData),

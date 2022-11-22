@@ -38,7 +38,7 @@ export default function createWhereAndParams({
     varName: string;
     chainStr?: string;
     recursing?: boolean;
-}): [string, any] {
+}): [string, string, any] {
     const nodeRef = new Cypher.NamedNode(varName);
 
     const [preComputedWhereFields, wherePredicate] = createWherePredicate({
@@ -48,23 +48,19 @@ export default function createWhereAndParams({
         targetElement: nodeRef,
     });
 
-    const withClause = new Cypher.With("*");
-    
-    if (wherePredicate) {
-        withClause.where(wherePredicate);
-    }
+    const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
+        const cypher = wherePredicate?.getCypher(env) || "";
 
-    const result = Cypher.concat(...preComputedWhereFields, withClause).build();
-    return [result.cypher, result.params];
+        return [cypher, {}];
+    });
 
-    // const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
-    //     const cypher = wherePredicate?.getCypher(env) || "";
+    const preComputedWhereFieldsResult = Cypher.concat(...preComputedWhereFields).build();
+    const result = whereCypher.build(`${chainStr || ""}${varName}_`);
+    const whereStr = `${!recursing ? "WHERE " : ""}`;
 
-    //     return [cypher, {}];
-    // });
-
-    // const result = whereCypher.build(`${chainStr || ""}${varName}_`);
-    // const whereStr = `${!recursing ? "WHERE " : ""}`;
-
-    // return [`${whereStr}${result.cypher}`, result.params];
+    return [
+        preComputedWhereFieldsResult.cypher,
+        `${whereStr}${result.cypher}`,
+        { ...result.params, ...preComputedWhereFieldsResult.params },
+    ];
 }
