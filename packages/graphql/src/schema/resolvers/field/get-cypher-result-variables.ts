@@ -24,14 +24,14 @@ export async function getCypherResultVariables(statement: string, executor: Exec
     const explainStatement = wrapInExplain(statement);
     const result = await executor.execute(explainStatement, {}, "READ"); // TODO: WRITE in mutations
     if (!result.summary.plan) throw new Error("Failed to get the plan of @cypher");
-    return result.summary.plan.identifiers.filter((v) => !variableIsLiteralValue(v));
+
+    const plan = result.summary.plan;
+    if (!plan.operatorType.match(/ProduceResults@.*/)) {
+        return [];
+    }
+    return [plan.arguments["Details"]];
 }
 
 function wrapInExplain(statement: string): string {
     return `EXPLAIN ${unescapeQuery(statement)}`;
-}
-
-/** Checks if a returned variable is a literal value (e.g. RETURN "hello") */
-function variableIsLiteralValue(value: string): boolean {
-    return value[0] === "`";
 }

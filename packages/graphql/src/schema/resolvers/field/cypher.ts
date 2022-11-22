@@ -42,7 +42,15 @@ export function cypherResolver({
             cypherResultVariables = await getCypherResultVariables(statement, context.executor);
         }
 
-        const { cypher, params } = translateTopLevelCypher({ context, info, field, args, type, statement });
+        const { cypher, params } = translateTopLevelCypher({
+            context,
+            info,
+            field,
+            args,
+            type,
+            statement,
+            cypherResultVariables,
+        });
         const executeResult = await execute({
             cypher,
             params,

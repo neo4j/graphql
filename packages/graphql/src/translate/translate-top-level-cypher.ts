@@ -26,6 +26,7 @@ import Cypher from "@neo4j/cypher-builder";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "./create-auth-param";
 import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
+import { unescapeQuery } from "./utils/escape-query";
 
 export function translateTopLevelCypher({
     context,
@@ -34,6 +35,7 @@ export function translateTopLevelCypher({
     args,
     type,
     statement,
+    cypherResultVariables,
 }: {
     context: Context;
     info: GraphQLResolveInfo;
@@ -41,6 +43,7 @@ export function translateTopLevelCypher({
     args: any;
     statement: string;
     type: "Query" | "Mutation";
+    cypherResultVariables: string[];
 }): Cypher.CypherResult {
     context.resolveTree = getNeo4jResolveTree(info);
     const { resolveTree } = context;
@@ -157,17 +160,20 @@ export function translateTopLevelCypher({
 
     const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
-    // TODO: change this
     if (type === "Query") {
-        const isArray = field.typeMeta.array;
-        const expectMultipleValues = !field.isScalar && !field.isEnum && isArray;
-        if (expectMultipleValues) {
-            cypherStrs.push(`WITH apoc.cypher.runFirstColumnMany("${statement}", ${apocParamsStr}) as x`);
-        } else {
-            cypherStrs.push(`WITH apoc.cypher.runFirstColumnSingle("${statement}", ${apocParamsStr}) as x`);
-        }
+        cypherStrs.push(
+            "CALL {",
+            unescapeQuery(statement), // NOTE: Deprecated
+            "}"
+        );
 
-        cypherStrs.push("UNWIND x as this\nWITH this");
+        if (cypherResultVariables.length > 0) {
+            if (field.isScalar || field.isEnum) {
+                cypherStrs.push(`UNWIND ${cypherResultVariables[0]} as this`);
+            } else {
+                cypherStrs.push(`WITH ${cypherResultVariables[0]} as this`);
+            }
+        }
     } else {
         cypherStrs.push(`
             CALL apoc.cypher.doIt("${statement}", ${apocParamsStr}) YIELD value
