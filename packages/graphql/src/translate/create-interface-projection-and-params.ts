@@ -161,7 +161,7 @@ function createInterfaceSubquery({
         postSubqueryWith.where(apocValidateClause);
     }
 
-    let preComputedWhereFields: (Cypher.Clause | undefined)[] = [];
+    let preComputedWhereFields: Cypher.Clause | undefined;
     let wherePredicate: Cypher.Predicate | undefined;
 
     if (resolveTree.args.where) {
@@ -218,5 +218,5 @@ function createInterfaceSubquery({
 
     const returnClause = new Cypher.Return([new Cypher.RawCypher(projectionStr), `${nodeVariable}_${field.fieldName}`]);
 
-    return Cypher.concat(topLevelWithClause, matchQuery, ...preComputedWhereFields, postSubqueryWith, projectionSubqueryClause, returnClause);
+    return Cypher.concat(topLevelWithClause, matchQuery, preComputedWhereFields, postSubqueryWith, projectionSubqueryClause, returnClause);
 }

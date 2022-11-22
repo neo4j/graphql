@@ -124,7 +124,7 @@ export function createFieldAggregation({
     const cypherParams = { ...authData.params, ...whereParams };
     const projectionMap = new Cypher.Map();
 
-    let preComputedWhereFields: (Cypher.Clause | undefined)[] = [];
+    let preComputedWhereFields: Cypher.Clause | undefined;
     let countProjection: Cypher.Expr;
 
     if (aggregationFields.count) {
@@ -183,7 +183,7 @@ export function createFieldAggregation({
         return projectionMap.getCypher(env);
     });
 
-    const preComputedWhereFieldsResult = Cypher.concat(...preComputedWhereFields).build();
+    const preComputedWhereFieldsResult = preComputedWhereFields?.build() || { cypher: "", params: {} };
     const result = rawProjection.build(`${nodeLabel}_${field.alias}_`);
 
     return {

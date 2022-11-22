@@ -54,7 +54,7 @@ export default function createWhereAndParams({
         return [cypher, {}];
     });
 
-    const preComputedWhereFieldsResult = Cypher.concat(...preComputedWhereFields).build();
+    const preComputedWhereFieldsResult = preComputedWhereFields?.build() || { cypher: "", params: {} };
     const result = whereCypher.build(`${chainStr || ""}${varName}_`);
     const whereStr = `${!recursing ? "WHERE " : ""}`;
 

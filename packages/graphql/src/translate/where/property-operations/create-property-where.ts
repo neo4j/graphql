@@ -32,7 +32,7 @@ import { createBaseOperation, createComparisonOperation } from "./create-compari
 import { createRelationshipOperation } from "./create-relationship-operation";
 
 /** Translates a property into its predicate filter */
-export function createPropertyWhere({
+export function  createPropertyWhere({
     key,
     value,
     element,
@@ -46,7 +46,7 @@ export function createPropertyWhere({
     context: Context;
 }): [Cypher.Clause | undefined, Cypher.Predicate | undefined] {
    
-    const fakePrecomputedClause = new Cypher.Call(new Cypher.Return([new Cypher.Literal("1"), "b"]));
+    const fakePrecomputedClause = new Cypher.Call(new Cypher.Return([new Cypher.Literal("1"), new Cypher.Variable()]));
     const match = whereRegEx.exec(key);
     if (!match) {
         throw new Error(`Failed to match key in filter: ${key}`);

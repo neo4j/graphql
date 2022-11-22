@@ -23,8 +23,6 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
-import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx, WhereRegexGroups } from "./where/utils";
-import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -82,7 +80,7 @@ export function createMatchClause({
         matchQuery = new Cypher.Match(matchNode);
     }
 
-    let preComputedWhereFields: (Cypher.Clause | undefined)[] = [];
+    let preComputedWhereFields: Cypher.Clause | undefined;
     let whereOp: Cypher.Predicate | undefined;
 
     if (whereInput) {
@@ -110,7 +108,7 @@ export function createMatchClause({
         withClause.where(authQuery);
     }
 
-    return [Cypher.concat(matchQuery, ...preComputedWhereFields), withClause];
+    return [Cypher.concat(matchQuery, preComputedWhereFields), withClause];
 }
 
 function createFulltextMatchClause(

@@ -37,7 +37,7 @@ export function createRelationshipOperation({
     operator: string | undefined;
     value: GraphQLWhereArg;
     isNot: boolean;
-}): [(Cypher.Clause | undefined)[], Cypher.Predicate | undefined] {
+}): [Cypher.Clause | undefined, Cypher.Predicate | undefined] {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
 
@@ -61,9 +61,9 @@ export function createRelationshipOperation({
         const exists = new Cypher.Exists(existsSubquery);
         if (!isNot) {
             // Bit confusing, but basically checking for not null is the same as checking for relationship exists
-            return [[], Cypher.not(exists)];
+            return [undefined, Cypher.not(exists)];
         }
-        return [[], exists];
+        return [undefined, exists];
     }
 
     const [preComputedWhereFields, relationOperator] = createWherePredicate({
@@ -75,7 +75,7 @@ export function createRelationshipOperation({
     });
 
     if (!relationOperator) {
-        return [[], undefined];
+        return [undefined, undefined];
     }
 
     // TODO: use EXISTS in top-level where

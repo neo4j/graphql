@@ -80,7 +80,7 @@ export function createProjectionSubquery({
         return `${targetNode.getCypher(env)} ${nestedProjection}`;
     });
 
-    let preComputedWhereFields: (Cypher.Clause | undefined)[] = [];
+    let preComputedWhereFields: Cypher.Clause | undefined;
     let wherePredicate: Cypher.Predicate | undefined;
 
     if (whereInput) {
@@ -154,7 +154,7 @@ export function createProjectionSubquery({
 
     const returnStatement = new Cypher.Return([returnProjection, returnVariable]);
 
-    const subquery = Cypher.concat(subqueryMatch, ...preComputedWhereFields, subqueryWith, ...nestedSubqueries, withStatement, returnStatement);
+    const subquery = Cypher.concat(subqueryMatch, preComputedWhereFields, subqueryWith, ...nestedSubqueries, withStatement, returnStatement);
 
     return subquery;
 }

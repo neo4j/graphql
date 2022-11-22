@@ -41,7 +41,7 @@ export function createCountExpression({
     field: ResolveTree;
     authCallWhere: Cypher.Predicate | undefined;
     targetNode: Cypher.Node;
-}): [(Cypher.Clause | undefined)[], Cypher.Expr] {
+}): [Cypher.Clause | undefined, Cypher.Expr] {
     const relationship = new Cypher.Relationship({
         source: sourceNode,
         target: targetNode,

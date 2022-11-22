@@ -40,7 +40,7 @@ export function createConnectionOperation({
     context: Context;
     parentNode: Cypher.Node;
     operator: string | undefined;
-}): [(Cypher.Clause | undefined)[], Cypher.BooleanOp | Cypher.RawCypher | undefined] {
+}): [Cypher.Clause | undefined, Cypher.BooleanOp | Cypher.RawCypher | undefined] {
     let nodeEntries: Record<string, any>;
 
     if (!connectionField?.relationship.union) {
@@ -49,7 +49,7 @@ export function createConnectionOperation({
         nodeEntries = value;
     }
 
-    let subqueries: (Cypher.Clause | undefined)[] = [];
+    let subqueries: Cypher.Clause | undefined;
     const operations: (Cypher.BooleanOp | Cypher.RawCypher | undefined)[] = [];
 
     Object.entries(nodeEntries).forEach((entry) => {
@@ -96,7 +96,7 @@ export function createConnectionOperation({
             return [clause, {}];
         });
 
-        subqueries = [...subqueries, preComputedWhereFields];
+        subqueries = Cypher.concat(subqueries, preComputedWhereFields);
         operations.push(subquery);
     });
 
@@ -153,7 +153,7 @@ export function createConnectionWherePropertyOperation({
                 context,
                 element: edge,
             });
-            subqueries = Cypher.concat(subqueries, ...preComputedWhereFields);
+            subqueries = Cypher.concat(subqueries, preComputedWhereFields);
             if (predicates) {
                 params.push(predicates);
             }
@@ -179,7 +179,7 @@ export function createConnectionWherePropertyOperation({
                 context,
                 element: node,
             });
-            subqueries = Cypher.concat(subqueries, ...preComputedWhereFields);
+            subqueries = Cypher.concat(subqueries, preComputedWhereFields);
             if (predicates) {
                 params.push(predicates);
             }
