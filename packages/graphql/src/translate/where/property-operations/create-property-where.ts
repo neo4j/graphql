@@ -164,7 +164,6 @@ export function preComputedWhereFields(
     if (!value) {
         return [undefined, undefined];
     }
-    const predicates = [] as Cypher.Predicate[];
     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
     const direction = relationField.direction;
     const aggregationTarget = new Cypher.Node({ labels: refNode.getLabels(context) });
@@ -179,13 +178,12 @@ export function preComputedWhereFields(
 
     const matchQuery = new Cypher.Match(cypherRelation);
 
-    const [returnVariables, currentPredicates] = computeRootWhereAggregate(
+    const [returnVariables, predicates] = computeRootWhereAggregate(
         value,
         refNode,
         aggregationTarget,
         cypherRelation
     );
-    predicates.push(Cypher.and(...currentPredicates));
     matchQuery.return(...returnVariables);
 
     return [new Cypher.Call(matchQuery).innerWith(matchNode), Cypher.and(...predicates)];
