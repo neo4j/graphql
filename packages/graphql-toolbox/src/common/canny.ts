@@ -2,12 +2,12 @@ export const cannySettings = {
     appID: process.env.CANNY_GRAPHQL_TOOLBOX_APP_ID,
     position: "top",
     align: "left",
-    labelIDs: ["637b589ef463447c410200e6"],
+    labelIDs: ["637b589ef463447c410200e6"], // INFO: Show only GraphQL Toolbox entries
 };
 
 export const CannySDK = {
     init: () =>
-        // Note: Code obtained from Canny.io
+        // Note: Code directly obtained from Canny.io
         new Promise(function (resolve, reject) {
             (function (w, d, i, s) {
                 if (typeof w.Canny === "function") {

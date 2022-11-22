@@ -70,6 +70,6 @@ li.CodeMirror-hint-active {
 
 @-moz-document url-prefix() { 
     .canny-indication-wrapper {
-       padding-bottom: 0.25rem;
+        padding-bottom: 0.25rem;
     }
 }

@@ -47,7 +47,7 @@ export const Main = () => {
     useEffect(() => {
         const cannyAppId = process.env.CANNY_GRAPHQL_TOOLBOX_APP_ID;
         if (!cannyAppId) {
-            console.log("Did not find Canny App ID, will not init Canny");
+            console.log("Did not find Canny App ID, will not initialize Canny");
             window.CannyIsLoaded = false;
             return;
         }
