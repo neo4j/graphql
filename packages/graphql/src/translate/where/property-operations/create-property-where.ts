@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Context } from "../../../types";
+import type { Context, RelationField } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 import { GraphElement, Node } from "../../../classes";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx, WhereRegexGroups } from "../utils";
@@ -32,7 +32,7 @@ import { createBaseOperation, createComparisonOperation } from "./create-compari
 import { createRelationshipOperation } from "./create-relationship-operation";
 
 /** Translates a property into its predicate filter */
-export function  createPropertyWhere({
+export function createPropertyWhere({
     key,
     value,
     element,
@@ -45,7 +45,6 @@ export function  createPropertyWhere({
     targetElement: Cypher.Variable;
     context: Context;
 }): [Cypher.Clause | undefined, Cypher.Predicate | undefined] {
-   
     const fakePrecomputedClause = new Cypher.Call(new Cypher.Return([new Cypher.Literal("1"), new Cypher.Variable()]));
     const match = whereRegEx.exec(key);
     if (!match) {
@@ -74,13 +73,15 @@ export function  createPropertyWhere({
     if (element instanceof Node) {
         const node = element;
         if (node.isGlobalNode && key === "id") {
-            return [fakePrecomputedClause, createGlobalNodeOperation({
-                node,
-                value,
-                targetElement,
-                coalesceValue,
-            })];
-            
+            return [
+                fakePrecomputedClause,
+                createGlobalNodeOperation({
+                    node,
+                    value,
+                    targetElement,
+                    coalesceValue,
+                }),
+            ];
         }
 
         if (coalesceValue) {
@@ -102,8 +103,7 @@ export function  createPropertyWhere({
                  parentNode: targetElement as Cypher.Node,
              }); */
 
-            return preComputedWhereFields(value, element, context, targetElement);
-        
+            return preComputedWhereFields(value, element, context, targetElement, relationField);
         }
 
         if (relationField) {
@@ -154,57 +154,41 @@ export function  createPropertyWhere({
     return [fakePrecomputedClause, comparisonOp];
 }
 
-
 export function preComputedWhereFields(
-    whereInput: any,
+    value: any,
     node: Node,
     context: Context,
-    matchNode: Cypher.Variable
-): [Cypher.CompositeClause | undefined, Cypher.Predicate | undefined] {
-    if (!whereInput) {
+    matchNode: Cypher.Variable,
+    relationField: RelationField
+): [Cypher.Clause | undefined, Cypher.Predicate | undefined] {
+    if (!value) {
         return [undefined, undefined];
     }
-    let accoumulator: Cypher.CompositeClause | undefined;
     const predicates = [] as Cypher.Predicate[];
-    Object.entries(whereInput).forEach(([key, value]) => {
-        const match = whereRegEx.exec(key);
-        if (!match) {
-            throw new Error(`Failed to match key in filter: ${key}`);
-        }
-        const { fieldName, isAggregate } = match?.groups as WhereRegexGroups;
-        const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
-
-        if (isAggregate) {
-            if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
-            const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-            const direction = relationField.direction;
-            const aggregationTarget = new Cypher.Node({ labels: refNode.getLabels(context) });
-            const cypherRelation = new Cypher.Relationship({
-                source: matchNode as Cypher.Node,
-                target: aggregationTarget,
-                type: relationField.type,
-            });
-            if (direction === "IN") {
-                cypherRelation.reverse();
-            }
-
-            const matchQuery = new Cypher.Match(cypherRelation);
-
-            const [returnVariables, currentPredicates] = computeRootWhereAggregate(
-                value,
-                refNode,
-                aggregationTarget,
-                cypherRelation
-            );
-            predicates.push(Cypher.and(...currentPredicates));
-            matchQuery.return(...returnVariables);
-            accoumulator = Cypher.concat(
-                accoumulator,
-                new Cypher.Call(matchQuery).innerWith(matchNode)
-            );
-        }
+    const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+    const direction = relationField.direction;
+    const aggregationTarget = new Cypher.Node({ labels: refNode.getLabels(context) });
+    const cypherRelation = new Cypher.Relationship({
+        source: matchNode as Cypher.Node,
+        target: aggregationTarget,
+        type: relationField.type,
     });
-    return [accoumulator, Cypher.and(...predicates)];
+    if (direction === "IN") {
+        cypherRelation.reverse();
+    }
+
+    const matchQuery = new Cypher.Match(cypherRelation);
+
+    const [returnVariables, currentPredicates] = computeRootWhereAggregate(
+        value,
+        refNode,
+        aggregationTarget,
+        cypherRelation
+    );
+    predicates.push(Cypher.and(...currentPredicates));
+    matchQuery.return(...returnVariables);
+
+    return [new Cypher.Call(matchQuery).innerWith(matchNode), Cypher.and(...predicates)];
 }
 
 function computeRootWhereAggregate(
@@ -287,7 +271,7 @@ function computeFieldAggregateWhere(
             const { fieldName, aggregationOperator } = regexResult;
             const fieldType = refNode.primitiveFields.find((name) => name.fieldName === fieldName)?.typeMeta.name;
 
-            let operation; 
+            let operation;
             if (fieldType === "String" && aggregationOperator) {
                 operation = createBaseOperation({
                     operator: logicalOperator || "EQ",
@@ -307,7 +291,7 @@ function computeFieldAggregateWhere(
                     property: innerVar,
                     param: paramName,
                 });
-                
+
                 const collectedProperty =
                     fieldType === "String" && logicalOperator !== "EQUAL"
                         ? Cypher.collect(Cypher.size(target.property(fieldName)))
