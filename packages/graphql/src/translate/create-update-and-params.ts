@@ -283,8 +283,8 @@ export default function createUpdateAndParams({
                             subquery.push(updateStr);
 
                             if (context.subscriptionsEnabled) {
-                                returnMetaStatement = `meta as update${idx}_meta`;
-                                intermediateWithMetaStatements.push(`WITH *, update${idx}_meta as meta`);
+                                returnMetaStatement = `meta AS update${idx}_meta`;
+                                intermediateWithMetaStatements.push(`WITH *, update${idx}_meta AS meta`);
                             }
                         }
 
@@ -316,8 +316,8 @@ export default function createUpdateAndParams({
                             subquery.push(updateStrs.join("\n"));
 
                             if (context.subscriptionsEnabled) {
-                                returnMetaStatement = `meta as update${idx}_meta`;
-                                intermediateWithMetaStatements.push(`WITH *, update${idx}_meta as meta`);
+                                returnMetaStatement = `meta AS update${idx}_meta`;
+                                intermediateWithMetaStatements.push(`WITH *, update${idx}_meta AS meta`);
                             }
                         }
                     }
@@ -356,8 +356,8 @@ export default function createUpdateAndParams({
                         });
                         subquery.push(connectAndParams[0]);
                         if (context.subscriptionsEnabled) {
-                            returnMetaStatement = `meta as update${idx}_meta`;
-                            intermediateWithMetaStatements.push(`WITH *, update${idx}_meta as meta`);
+                            returnMetaStatement = `meta AS update${idx}_meta`;
+                            intermediateWithMetaStatements.push(`WITH *, update${idx}_meta AS meta`);
                         }
                         res.params = { ...res.params, ...connectAndParams[1] };
                     }
@@ -473,8 +473,8 @@ export default function createUpdateAndParams({
                                         ", "
                                     )}`
                                 );
-                                returnMetaStatement = `meta as update${idx}_meta`;
-                                intermediateWithMetaStatements.push(`WITH *, update${idx}_meta as meta`);
+                                returnMetaStatement = `meta AS update${idx}_meta`;
+                                intermediateWithMetaStatements.push(`WITH *, update${idx}_meta AS meta`);
                             }
 
                             const relationshipValidationStr = createRelationshipValidationStr({

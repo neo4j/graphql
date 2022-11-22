@@ -213,7 +213,7 @@ type EventProperties = {
     to: Record<string, unknown>;
     relationship: Record<string, unknown>;
 };
-export function filterRelationshipConnectionsByProperties({
+export function filterByRelationshipProperties({
     node,
     whereProperties,
     receivedEvent,
@@ -264,30 +264,25 @@ export function filterRelationshipConnectionsByProperties({
             }
             const relationshipPropertiesInterfaceName = receivedEventRelationship.properties || "";
 
-            const {
-                edge: receivedEventRelationshipDataEdgeProp,
-                node: receivedEventRelationshipDataNodeProp,
-                unionMap: receivedEventRelationshipDataUnionMapProp,
-            } = buildRelationshipDataPropertyMap(receivedEventRelationshipData);
-
+            const { edge: edgeProperty, node: nodeProperty, ...unionTypes } = receivedEventRelationshipData;
             if (
-                receivedEventRelationshipDataEdgeProp &&
+                edgeProperty &&
                 !filterRelationshipEdgeProperty({
                     relationshipFields,
                     relationshipPropertiesInterfaceName,
-                    receivedEventRelationshipDataEdgeProp,
+                    edgeProperty,
                     receivedEventProperties,
                 })
             ) {
                 return false;
             }
             const key = receivedEventRelationship.direction === "IN" ? "from" : "to";
-            if (receivedEventRelationshipDataNodeProp) {
-                if (isInterfaceType(receivedEventRelationshipDataNodeProp, receivedEventRelationship)) {
+            if (nodeProperty) {
+                if (isInterfaceType(nodeProperty, receivedEventRelationship)) {
                     const targetNodeTypename = receivedEvent[`${key}Typename`];
                     if (
                         !filterRelationshipInterfaceProperty({
-                            receivedEventRelationshipDataNodeProp,
+                            nodeProperty,
                             nodes,
                             receivedEventProperties,
                             targetNodeTypename,
@@ -296,20 +291,18 @@ export function filterRelationshipConnectionsByProperties({
                     ) {
                         return false;
                     }
-                } else if (isStandardType(receivedEventRelationshipDataNodeProp, receivedEventRelationship)) {
+                } else if (isStandardType(nodeProperty, receivedEventRelationship)) {
                     // standard type fields
                     const nodeTo = nodes.find((n) => n.name === receivedEventRelationship.typeMeta.name) as Node;
-                    if (
-                        !filterByProperties(nodeTo, receivedEventRelationshipDataNodeProp, receivedEventProperties[key])
-                    ) {
+                    if (!filterByProperties(nodeTo, nodeProperty, receivedEventProperties[key])) {
                         return false;
                     }
                 }
             }
-            if (receivedEventRelationshipDataUnionMapProp) {
+            if (Object.keys(unionTypes).length) {
                 // union types
                 const targetNodeTypename = receivedEvent[`${key}Typename`];
-                const targetNodePropsByTypename = receivedEventRelationshipDataUnionMapProp[targetNodeTypename];
+                const targetNodePropsByTypename = unionTypes[targetNodeTypename] as Record<string, UnionType>;
                 const isRelationshipOfReceivedTypeFilteredOut = !targetNodePropsByTypename;
                 if (isRelationshipOfReceivedTypeFilteredOut) {
                     return false;
@@ -349,32 +342,15 @@ function isInterfaceSpecificFieldType(node: unknown): node is InterfaceSpecificT
     return !!node;
 }
 
-function buildRelationshipDataPropertyMap(receivedEventRelationshipData: RelationshipType): {
-    edge?: StandardType;
-    node?: InterfaceType | StandardType;
-    unionMap?: Record<string, Record<string, UnionType>>;
-} {
-    return Object.entries(receivedEventRelationshipData).reduce((acc, [innerK, innerV]) => {
-        if (innerK === "edge") {
-            acc["edge"] = innerV;
-        } else if (innerK === "node") {
-            acc["node"] = innerV;
-        } else {
-            acc["unionMap"] = { ...acc["unionMap"], [innerK]: innerV };
-        }
-        return acc;
-    }, {});
-}
-
 function filterRelationshipEdgeProperty({
     relationshipFields,
     relationshipPropertiesInterfaceName,
-    receivedEventRelationshipDataEdgeProp,
+    edgeProperty,
     receivedEventProperties,
 }: {
     relationshipFields: Map<string, ObjectFields>;
     relationshipPropertiesInterfaceName: string;
-    receivedEventRelationshipDataEdgeProp: StandardType;
+    edgeProperty: StandardType;
     receivedEventProperties: EventProperties;
 }): boolean {
     const relationship = relationshipFields.get(relationshipPropertiesInterfaceName);
@@ -382,11 +358,7 @@ function filterRelationshipEdgeProperty({
     if (noRelationshipPropertiesFound) {
         return true;
     }
-    return filterByProperties(
-        relationship as Node,
-        receivedEventRelationshipDataEdgeProp,
-        receivedEventProperties.relationship
-    );
+    return filterByProperties(relationship as Node, edgeProperty, receivedEventProperties.relationship);
 }
 
 function filterRelationshipUnionProperties({
@@ -418,7 +390,7 @@ function filterRelationshipUnionProperties({
             !filterRelationshipEdgeProperty({
                 relationshipFields,
                 relationshipPropertiesInterfaceName,
-                receivedEventRelationshipDataEdgeProp: propertyValueAsUnionTypeData,
+                edgeProperty: propertyValueAsUnionTypeData,
                 receivedEventProperties,
             })
         ) {
@@ -429,19 +401,19 @@ function filterRelationshipUnionProperties({
 }
 
 function filterRelationshipInterfaceProperty({
-    receivedEventRelationshipDataNodeProp,
+    nodeProperty,
     nodes,
     receivedEventProperties,
     targetNodeTypename,
     key,
 }: {
-    receivedEventRelationshipDataNodeProp: InterfaceType;
+    nodeProperty: InterfaceType;
     nodes: Node[];
     receivedEventProperties: EventProperties;
     targetNodeTypename: string;
     key: string;
 }): boolean {
-    const { _on, ...commonFields } = receivedEventRelationshipDataNodeProp;
+    const { _on, ...commonFields } = nodeProperty;
     const targetNode = nodes.find((n) => n.name === targetNodeTypename) as Node;
     if (commonFields && !_on) {
         if (!filterByProperties(targetNode, commonFields, receivedEventProperties[key])) {
