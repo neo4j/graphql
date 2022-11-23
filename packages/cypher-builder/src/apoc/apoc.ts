@@ -17,16 +17,10 @@
  * limitations under the License.
  */
 
-import { convertFormat, ConvertFormat } from "./date";
-import type { RunFirstColumn } from "./RunFirstColumn";
-import type { ValidatePredicate } from "./ValidatePredicate";
-
-export type ApocPredicate = ValidatePredicate;
-export type ApocExpr = RunFirstColumn | ConvertFormat;
-
-export { RunFirstColumn } from "./RunFirstColumn";
-export { ValidatePredicate } from "./ValidatePredicate";
-export { Validate } from "./Validate";
+import { convertFormat } from "./functions/date";
+export { RunFirstColumn } from "./functions/RunFirstColumn";
+export { ValidatePredicate } from "./functions/ValidatePredicate";
+export { Validate } from "./procedures/Validate";
 
 export const date = {
     convertFormat,

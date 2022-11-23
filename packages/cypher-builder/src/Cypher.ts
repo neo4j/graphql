@@ -45,7 +45,9 @@ export { Case } from "./expressions/Case";
 
 // --Procedures
 export * as db from "./procedures/db";
-export * as apoc from "./procedures/apoc/apoc";
+
+// --Apoc
+export * as apoc from "./apoc/apoc";
 
 // --Lists
 export { ListComprehension } from "./expressions/list/ListComprehension";

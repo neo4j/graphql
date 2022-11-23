@@ -17,31 +17,36 @@
  * limitations under the License.
  */
 
+import { expectTypeOf } from "expect-type";
 import { CypherEnvironment } from "../../Environment";
 import Cypher from "../..";
-import { expectTypeOf } from "expect-type";
 import type { CypherASTNode } from "../../CypherASTNode";
 
-describe("Validate", () => {
+describe("ValidatePredicate", () => {
     let env: CypherEnvironment;
 
     beforeEach(() => {
         env = new CypherEnvironment();
     });
 
-    test("Validate types", () => {
-        expectTypeOf<Cypher.apoc.Validate>().toMatchTypeOf<CypherASTNode>();
-        expectTypeOf<Cypher.apoc.Validate>().toMatchTypeOf<Cypher.Procedure>();
+    test("ValidatePredicate types", () => {
+        expectTypeOf<Cypher.apoc.ValidatePredicate>().toMatchTypeOf<CypherASTNode>();
+        expectTypeOf<Cypher.apoc.ValidatePredicate>().toMatchTypeOf<Cypher.Predicate>();
     });
 
-    test("Simple Validate", () => {
-        const validate = new Cypher.apoc.Validate(
+    test("Simple validatePredicate", () => {
+        const node = new Cypher.Node({ labels: ["Movie"] });
+        const validatePredicate = new Cypher.apoc.ValidatePredicate(
             Cypher.eq(new Cypher.Literal(1), new Cypher.Literal(2)),
             "That's not how math works"
         );
-        const callableProceedure = new Cypher.CallProcedure(validate);
-        expect(callableProceedure.getCypher(env)).toMatchInlineSnapshot(
-            `"CALL apoc.util.validate(1 = 2, \\"That's not how math works\\", [0])"`
-        );
+        const query = new Cypher.Match(node);
+        query.where(validatePredicate).return(node);
+
+        expect(query.getCypher(env)).toMatchInlineSnapshot(`
+            "MATCH (this0:\`Movie\`)
+            WHERE apoc.util.validatePredicate(1 = 2, \\"That's not how math works\\", [0])
+            RETURN this0"
+        `);
     });
 });

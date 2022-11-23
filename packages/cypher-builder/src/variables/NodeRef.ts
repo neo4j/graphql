@@ -30,7 +30,7 @@ type NodeRefOptions = {
 export class NodeRef extends Reference {
     public labels: string[];
 
-    constructor(options: NodeRefOptions) {
+    constructor(options: NodeRefOptions = {}) {
         super("this");
         this.labels = options.labels || [];
     }
