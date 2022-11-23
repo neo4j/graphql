@@ -24,6 +24,7 @@ import {
     Kind,
     ObjectTypeDefinitionNode,
     UnionTypeDefinitionNode,
+    ValueNode,
 } from "graphql";
 import { SCALAR_TYPES } from "../constants";
 import { getDefinitionNodes } from "../schema/get-definition-nodes";
@@ -79,7 +80,7 @@ function generateCompositeEntity(
 function generateConcreteEntity(definition: ObjectTypeDefinitionNode): ConcreteEntity {
     const fields = (definition.fields || []).map(generateField);
     const directives = (definition.directives || []).reduce((acc, directive) => {
-        acc[directive.name.value] = parseArguments(directive);
+        acc.set(directive.name.value, parseArguments(directive));
         return acc;
     }, new Map<string, Record<string, unknown>>());
     const labels = getLabels(definition, directives.get("node") || {});
@@ -134,10 +135,17 @@ function parseCypherAnnotation(directive: DirectiveNode): CypherAnnotation {
 
 function parseArguments(directive: DirectiveNode): Record<string, unknown> {
     return (directive.arguments || [])?.reduce((acc, argument) => {
-        if (argument.value.kind === Kind.STRING) {
-            // TODO: parse other kinds
-            acc[argument.name.value] = argument.value.value;
-        }
+        acc[argument.name.value] = getArgumentValueByType(argument.value);
         return acc;
     }, {});
+}
+
+function getArgumentValueByType(argumentValue: ValueNode): unknown {
+    // TODO: parse other kinds
+    if (argumentValue.kind === Kind.STRING) {
+        return argumentValue.value;
+    }
+    if (argumentValue.kind === Kind.LIST) {
+        return argumentValue.values.map((v) => getArgumentValueByType(v));
+    }
 }
