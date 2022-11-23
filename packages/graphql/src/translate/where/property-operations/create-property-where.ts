@@ -45,7 +45,6 @@ export function createPropertyWhere({
     targetElement: Cypher.Variable;
     context: Context;
 }): [Cypher.Clause | undefined, Cypher.Predicate | undefined] {
-    const fakePrecomputedClause = new Cypher.Call(new Cypher.Return([new Cypher.Literal("1"), new Cypher.Variable()]));
     const match = whereRegEx.exec(key);
     if (!match) {
         throw new Error(`Failed to match key in filter: ${key}`);
@@ -74,7 +73,7 @@ export function createPropertyWhere({
         const node = element;
         if (node.isGlobalNode && key === "id") {
             return [
-                fakePrecomputedClause,
+                undefined,
                 createGlobalNodeOperation({
                     node,
                     value,
@@ -130,9 +129,9 @@ export function createPropertyWhere({
 
         if (value === null) {
             if (isNot) {
-                return [fakePrecomputedClause, Cypher.isNotNull(propertyRef)];
+                return [undefined, Cypher.isNotNull(propertyRef)];
             }
-            return [fakePrecomputedClause, Cypher.isNull(propertyRef)];
+            return [undefined, Cypher.isNull(propertyRef)];
         }
     }
     const pointField = element.pointFields.find((x) => x.fieldName === fieldName);
@@ -149,9 +148,9 @@ export function createPropertyWhere({
         neo4jDatabaseInfo: context.neo4jDatabaseInfo,
     });
     if (isNot) {
-        return [fakePrecomputedClause, Cypher.not(comparisonOp)];
+        return [undefined, Cypher.not(comparisonOp)];
     }
-    return [fakePrecomputedClause, comparisonOp];
+    return [undefined, comparisonOp];
 }
 
 export function preComputedWhereFields(
