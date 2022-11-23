@@ -41,8 +41,6 @@ describe("Delete Subscriptions when only nodes are targeted - with interfaces, u
     let typeInfluencer: UniqueType;
     let typeDefs: string;
 
-    // TODO: add tests for specifying @node label + additional labels!
-
     beforeEach(async () => {
         typeActor = generateUniqueType("Actor");
         typeMovie = generateUniqueType("Movie");
