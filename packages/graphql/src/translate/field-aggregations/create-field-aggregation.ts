@@ -39,10 +39,10 @@ import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-agg
 import { upperFirst } from "../../utils/upper-first";
 import { getRelationshipDirectionStr } from "../../utils/get-relationship-direction";
 import Cypher from "@neo4j/cypher-builder";
-import { createCountExpression } from "./create-count-expression";
 
-const subqueryNodeAlias = "n";
-const subqueryRelationAlias = "r";
+let counter = 0;
+let subqueryNodeAlias = "n";
+let subqueryRelationAlias = "r";
 
 type AggregationFields = {
     count?: ResolveTree;
@@ -60,7 +60,12 @@ export function createFieldAggregation({
     nodeLabel: string;
     node: Node;
     field: ResolveTree;
-}): { matchVar: string; cypher: string, params: Record<string, any> } | undefined {
+    }): { matchVar: string; cypher: string; params: Record<string, any> } | undefined {
+    // TODO use cypher builder nodes/vars
+    subqueryNodeAlias = `${subqueryNodeAlias}${counter}`;
+    subqueryRelationAlias = `${subqueryRelationAlias}${counter}`;
+    counter += 1;
+
     const relationAggregationField = node.relationFields.find((x) => {
         return `${x.fieldName}Aggregate` === field.name;
     });
