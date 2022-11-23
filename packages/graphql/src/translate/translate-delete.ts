@@ -84,7 +84,7 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
     }
 
     if (context.subscriptionsEnabled && !deleteInput) {
-        deleteStr = findNodesThatDisconnect(varName);
+        deleteStr = findConnectedNodesCypherQuery(varName);
     }
 
     const deleteQuery = new Cypher.RawCypher(() => {
@@ -108,46 +108,48 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
 function getDeleteReturn(context: Context): Array<string> {
     return context.subscriptionsEnabled
         ? [
-              `WITH collect(${META_CYPHER_VARIABLE}) as ${META_CYPHER_VARIABLE}`,
-              `WITH REDUCE(m=[], n IN ${META_CYPHER_VARIABLE} | m + n) as ${META_CYPHER_VARIABLE}`,
+              `WITH collect(${META_CYPHER_VARIABLE}) AS ${META_CYPHER_VARIABLE}`,
+              `WITH REDUCE(m=[], n IN ${META_CYPHER_VARIABLE} | m + n) AS ${META_CYPHER_VARIABLE}`,
               `RETURN ${META_CYPHER_VARIABLE}`,
           ]
         : [];
 }
 
-function findNodesThatDisconnect(varName: string): string {
-    const makeEventWithMetaStr = ({ relVariable, fromVariable, toVariable }) =>
-        createConnectionEventMetaObject({
-            event: "disconnect",
-            relVariable,
-            fromVariable,
-            toVariable,
-            typename: `type(${relVariable})`,
-            fromLabels: `labels(${fromVariable})`,
-            toLabels: `labels(${toVariable})`,
-            toProperties: `properties(${toVariable})`,
-            fromProperties: `properties(${fromVariable})`,
-        });
+function findConnectedNodesCypherQuery(varName: string): string {
     return [
         `CALL {`,
         `\tWITH ${varName}`,
         `\tOPTIONAL MATCH (${varName})-[r]-()`,
-        `\tWITH ${varName}, collect(DISTINCT r) as relationships_to_delete`,
+        `\tWITH ${varName}, collect(DISTINCT r) AS relationships_to_delete`,
         `\tUNWIND relationships_to_delete AS x`,
-        `\tWITH case`,
-        `\t\twhen id(${varName})=id(startNode(x)) then ${makeEventWithMetaStr({
+        `\tWITH CASE`,
+        `\t\tWHEN id(${varName})=id(startNode(x)) THEN ${createDisconnectEventMetaForDeletedNode({
             relVariable: "x",
             fromVariable: varName,
             toVariable: "endNode(x)",
         })}`,
-        `\t\twhen id(${varName})=id(endNode(x)) then ${makeEventWithMetaStr({
+        `\t\tWHEN id(${varName})=id(endNode(x)) THEN ${createDisconnectEventMetaForDeletedNode({
             relVariable: "x",
             fromVariable: "startNode(x)",
             toVariable: varName,
         })}`,
-        `\tend as meta`,
+        `\tEND AS meta`,
         `\tRETURN collect(DISTINCT meta) AS relationship_meta`,
         `}`,
-        `WITH REDUCE(m=meta, r in relationship_meta | m + r) as meta, ${varName}`,
+        `WITH REDUCE(m=meta, r IN relationship_meta | m + r) AS meta, ${varName}`,
     ].join("\n");
+}
+
+function createDisconnectEventMetaForDeletedNode({ relVariable, fromVariable, toVariable }) {
+    return createConnectionEventMetaObject({
+        event: "disconnect",
+        relVariable,
+        fromVariable,
+        toVariable,
+        typename: `type(${relVariable})`,
+        fromLabels: `labels(${fromVariable})`,
+        toLabels: `labels(${toVariable})`,
+        toProperties: `properties(${toVariable})`,
+        fromProperties: `properties(${fromVariable})`,
+    });
 }

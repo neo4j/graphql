@@ -221,68 +221,10 @@ function createDeleteAndParams({
                     const nodeToDelete = `${variableName}_to_delete`;
 
                     res.strs.push(
-                        `WITH ${[...withVars, `collect(DISTINCT ${variableName}) as ${nodeToDelete}`].join(
+                        `WITH ${[...withVars, `collect(DISTINCT ${variableName}) AS ${nodeToDelete}`].join(
                             ", "
                         )}${withRelationshipStr}`
                     );
-                    // ------------------------------------------
-                    /*
-                    res.strs.push("CALL {");
-                    res.strs.push(`\tWITH ${relationshipVariable}, ${nodeToDelete}, ${withVars.join(", ")}`);
-                    res.strs.push(`\tUNWIND ${nodeToDelete} as x`);
-
-                    if (context.subscriptionsEnabled) {
-                        const metaObjectStr = createEventMetaObject({
-                            event: "delete",
-                            nodeVariable: "x",
-                            typename: refNode.name,
-                        });
-                        // res.strs.push(
-                        //     `\tWITH ${metaObjectStr} as node_meta, x, ${relationshipVariable}, ${filterMetaVariable(
-                        //         withVars
-                        //     ).join(", ")}`
-                        // );
-
-                        const [fromVariable, toVariable] =
-                            relationField.direction === "IN" ? ["x", parentVar] : [parentVar, "x"];
-                        const [fromTypename, toTypename] =
-                            relationField.direction === "IN" ? [refNode.name, node.name] : [node.name, refNode.name];
-                        const eventWithMetaStr = createConnectionEventMetaObject({
-                            event: "disconnect",
-                            relVariable: relationshipVariable,
-                            fromVariable,
-                            toVariable,
-                            typename: relationField.type,
-                            fromTypename,
-                            toTypename,
-                        });
-                        // res.strs.push(`\tWITH ${eventWithMetaStr} as rel_meta, x, node_meta`);
-                        res.strs.push(
-                            `\tWITH collect(${metaObjectStr}) + collect(${eventWithMetaStr}) as delete_meta, x`
-                        );
-                        res.strs.push(`\tDETACH DELETE x`);
-                        res.strs.push(`\tRETURN delete_meta`);
-                    } else {
-                        res.strs.push(`\tDETACH DELETE x`);
-                        res.strs.push(`\tRETURN count(*) AS _`); // Avoids CANNOT END WITH DETACH DELETE ERROR
-                    }
-
-                    res.strs.push(`}`);
-
-                    if (context.subscriptionsEnabled) {
-                        // res.strs.push(
-                        //     `WITH ${filterMetaVariable(withVars).join(", ")}, meta, collect(delete_meta) as delete_meta`
-                        // );
-                        res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, meta + delete_meta as meta`);
-                        // res.strs.push(
-                        //     `WITH ${filterMetaVariable(withVars).join(
-                        //         ", "
-                        //     )}, REDUCE(m=meta, n IN delete_meta | m + n) as meta`
-                        // );
-                    }
-*/
-                    // ------------------------------------------
-                    // ------------------------------------------
 
                     if (context.subscriptionsEnabled) {
                         const metaObjectStr = createEventMetaObject({
@@ -320,16 +262,14 @@ function createDeleteAndParams({
                     if (context.subscriptionsEnabled) {
                         // Fixes https://github.com/neo4j/graphql/issues/440
                         res.strs.push(
-                            `WITH ${filterMetaVariable(withVars).join(", ")}, collect(distinct meta) as update_meta`
+                            `WITH ${filterMetaVariable(withVars).join(", ")}, collect(distinct meta) AS update_meta`
                         );
                         res.strs.push(
                             `WITH ${filterMetaVariable(withVars).join(
                                 ", "
-                            )}, REDUCE(m=[], n in update_meta | m+n) as meta`
+                            )}, REDUCE(m=[], n IN update_meta | m + n) AS meta`
                         );
                     }
-
-                    // ------------------------------------------
                 });
             });
 

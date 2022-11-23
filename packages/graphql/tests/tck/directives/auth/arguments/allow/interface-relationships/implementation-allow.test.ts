@@ -330,7 +330,7 @@ describe("@auth allow on specific interface implementation", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
             WHERE this_content_Comment0.id = $this_deleteUsers_args_delete_content0_where_Commentparam0
-            WITH this, collect(DISTINCT this_content_Comment0) as this_content_Comment0_to_delete
+            WITH this, collect(DISTINCT this_content_Comment0) AS this_content_Comment0_to_delete
             CALL {
             	WITH this_content_Comment0_to_delete
             	UNWIND this_content_Comment0_to_delete AS x
@@ -342,7 +342,7 @@ describe("@auth allow on specific interface implementation", () => {
             WHERE this_content_Post0.id = $this_deleteUsers_args_delete_content0_where_Postparam0
             WITH this, this_content_Post0
             CALL apoc.util.validate(NOT ((exists((this_content_Post0)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_content_Post0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content_Post0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this, collect(DISTINCT this_content_Post0) as this_content_Post0_to_delete
+            WITH this, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
             CALL {
             	WITH this_content_Post0_to_delete
             	UNWIND this_content_Post0_to_delete AS x
