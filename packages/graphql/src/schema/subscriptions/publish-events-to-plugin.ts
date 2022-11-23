@@ -125,8 +125,8 @@ function serializeEvent(event: EventMeta, schemaModel: Neo4jGraphQLSchemaModel):
         } as SubscriptionsEvent;
     }
     if (isRelationshipSubscriptionMeta(event)) {
-        event.fromTypename ??= schemaModel.getEntityByLabels(event.fromLabels || [])?.name;
-        event.toTypename ??= schemaModel.getEntityByLabels(event.toLabels || [])?.name;
+        event.fromTypename ??= getTypenameFromLabels({ labels: event.fromLabels, schemaModel });
+        event.toTypename ??= getTypenameFromLabels({ labels: event.toLabels, schemaModel });
         if (!event.fromTypename || !event.toTypename) {
             return undefined;
         }
@@ -140,6 +140,19 @@ function serializeEvent(event: EventMeta, schemaModel: Neo4jGraphQLSchemaModel):
         } as SubscriptionsEvent;
     }
     return undefined;
+}
+function getTypenameFromLabels({
+    labels,
+    schemaModel,
+}: {
+    labels: string[] | undefined;
+    schemaModel: Neo4jGraphQLSchemaModel;
+}): string | undefined {
+    if (!labels || !labels.length) {
+        // any node has at least one label
+        return undefined;
+    }
+    return schemaModel.getEntityByLabels(labels)?.name;
 }
 
 function serializeProperties(properties: Record<string, any> | undefined): Record<string, any> | undefined {
