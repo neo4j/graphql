@@ -459,10 +459,6 @@ export type RelationshipSubscriptionsEvent =
       };
 /** Serialized subscription event */
 export type SubscriptionsEvent = NodeSubscriptionsEvent | RelationshipSubscriptionsEvent;
-// export type SubscriptionsEvent = (NodeSubscriptionsEvent | RelationSubscriptionsEvent) & {
-//     id: number;
-//     timestamp: number;
-// };
 
 export interface Neo4jGraphQLSubscriptionsPlugin {
     events: EventEmitter;

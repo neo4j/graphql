@@ -37,9 +37,16 @@ export function publishEventsToPlugin(
         const metadata: EventMeta[] = executeResult.records[0]?.meta || [];
 
         const serializedEvents = metadata.reduce((events: SubscriptionsEvent[], event) => {
-            const serializedEvent = serializeEvent(event, schemaModel);
-            if (serializedEvent) {
-                events.push(serializedEvent);
+            if (isNodeSubscriptionMeta(event)) {
+                events.push(serializeNodeSubscriptionEvent(event));
+            }
+            if (isRelationshipSubscriptionMeta(event)) {
+                event.fromTypename ??= getTypenameFromLabels({ labels: event.fromLabels, schemaModel });
+                event.toTypename ??= getTypenameFromLabels({ labels: event.toLabels, schemaModel });
+                if (!event.fromTypename || !event.toTypename) {
+                    return events;
+                }
+                events.push(serializeRelationshipSubscriptionEvent(event));
             }
             return events;
         }, []);
@@ -90,56 +97,34 @@ function isNodeSubscriptionMeta(event: EventMeta): event is NodeSubscriptionMeta
 function isRelationshipSubscriptionMeta(event: EventMeta): event is RelationshipSubscriptionMeta {
     return ["connect", "disconnect"].includes(event.event);
 }
-function serializeNodeSubscriptionEvent(event: NodeSubscriptionMeta) {
+function serializeNodeSubscriptionEvent(event: NodeSubscriptionMeta): SubscriptionsEvent {
     return {
+        id: serializeNeo4jValue(event.id),
+        typename: event.typename,
+        timestamp: serializeNeo4jValue(event.timestamp),
+        event: event.event,
         properties: {
             old: serializeProperties(event.properties.old),
             new: serializeProperties(event.properties.new),
         },
-    };
+    } as SubscriptionsEvent;
 }
-function serializeRelationshipSubscriptionEvent(event: RelationshipSubscriptionMeta) {
+function serializeRelationshipSubscriptionEvent(event: RelationshipSubscriptionMeta): SubscriptionsEvent {
     return {
+        id: serializeNeo4jValue(event.id),
+        id_from: serializeNeo4jValue(event.id_from),
+        id_to: serializeNeo4jValue(event.id_to),
+        relationshipName: event.relationshipName,
+        fromTypename: serializeNeo4jValue(event.fromTypename),
+        toTypename: serializeNeo4jValue(event.toTypename),
+        timestamp: serializeNeo4jValue(event.timestamp),
+        event: event.event,
         properties: {
             from: serializeProperties(event.properties.from),
             to: serializeProperties(event.properties.to),
             relationship: serializeProperties(event.properties.relationship),
         },
-        extraFields: {
-            id_from: serializeNeo4jValue(event.id_from),
-            id_to: serializeNeo4jValue(event.id_to),
-            relationshipName: event.relationshipName,
-            fromTypename: serializeNeo4jValue(event.fromTypename),
-            toTypename: serializeNeo4jValue(event.toTypename),
-        },
-    };
-}
-function serializeEvent(event: EventMeta, schemaModel: Neo4jGraphQLSchemaModel): SubscriptionsEvent | undefined {
-    if (isNodeSubscriptionMeta(event)) {
-        return {
-            id: serializeNeo4jValue(event.id),
-            typename: event.typename,
-            timestamp: serializeNeo4jValue(event.timestamp),
-            event: event.event,
-            properties: serializeNodeSubscriptionEvent(event).properties,
-        } as SubscriptionsEvent;
-    }
-    if (isRelationshipSubscriptionMeta(event)) {
-        event.fromTypename ??= getTypenameFromLabels({ labels: event.fromLabels, schemaModel });
-        event.toTypename ??= getTypenameFromLabels({ labels: event.toLabels, schemaModel });
-        if (!event.fromTypename || !event.toTypename) {
-            return undefined;
-        }
-        const { properties, extraFields } = serializeRelationshipSubscriptionEvent(event);
-        return {
-            id: serializeNeo4jValue(event.id),
-            ...extraFields,
-            timestamp: serializeNeo4jValue(event.timestamp),
-            event: event.event,
-            properties,
-        } as SubscriptionsEvent;
-    }
-    return undefined;
+    } as SubscriptionsEvent;
 }
 function getTypenameFromLabels({
     labels,
