@@ -20,7 +20,7 @@
 import { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
 import { escapeLabel } from "../utils/escape-label";
-import type { NodeRef } from "../variables/NodeRef";
+import type { NodeRef } from "../references/NodeRef";
 
 export class HasLabel extends CypherASTNode {
     private node: NodeRef;

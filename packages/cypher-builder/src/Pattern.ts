@@ -20,10 +20,10 @@
 import { stringifyObject } from "./utils/stringify-object";
 import { escapeLabel } from "./utils/escape-label";
 import { padLeft } from "./utils/utils";
-import type { NodeRef } from "./variables/NodeRef";
-import type { RelationshipRef } from "./variables/RelationshipRef";
+import type { NodeRef } from "./references/NodeRef";
+import type { RelationshipRef } from "./references/RelationshipRef";
 import type { CypherEnvironment } from "./Environment";
-import type { Param } from "./variables/Param";
+import type { Param } from "./references/Param";
 import type { CypherCompilable } from "./types";
 
 export type MatchableElement = NodeRef | RelationshipRef;

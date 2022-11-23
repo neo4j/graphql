@@ -18,8 +18,8 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import type { RelationshipRef } from "../variables/RelationshipRef";
-import { NodeRef } from "../variables/NodeRef";
+import type { RelationshipRef } from "../references/RelationshipRef";
+import { NodeRef } from "../references/NodeRef";
 import { MatchParams, Pattern } from "../Pattern";
 import { Clause } from "./Clause";
 import { OnCreate, OnCreateParam } from "./sub-clauses/OnCreate";

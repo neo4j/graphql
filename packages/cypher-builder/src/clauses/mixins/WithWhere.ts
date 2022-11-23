@@ -20,13 +20,13 @@
 import { ClauseMixin } from "./ClauseMixin";
 import { Where } from "../sub-clauses/Where";
 import { and, BooleanOp } from "../../expressions/operations/boolean";
-import { PropertyRef } from "../../variables/PropertyRef";
+import { PropertyRef } from "../../references/PropertyRef";
 import { ComparisonOp, eq } from "../../expressions/operations/comparison";
 import type { Predicate, VariableLike } from "../../types";
-import { Reference } from "../../variables/Reference";
-import type { RelationshipRef } from "../../variables/RelationshipRef";
-import type { NodeRef } from "../../variables/NodeRef";
-import type { Variable } from "../../variables/Variable";
+import { Reference } from "../../references/Reference";
+import type { RelationshipRef } from "../../references/RelationshipRef";
+import type { NodeRef } from "../../references/NodeRef";
+import type { Variable } from "../../references/Variable";
 
 type VariableWithProperties = Variable | NodeRef | RelationshipRef | PropertyRef;
 

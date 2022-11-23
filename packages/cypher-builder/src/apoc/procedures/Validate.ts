@@ -21,7 +21,7 @@ import type { ListExpr as List } from "../../expressions/list/ListExpr";
 import type { MapExpr as Map } from "../../expressions/map/MapExpr";
 import type { CypherEnvironment } from "../../Environment";
 import type { Predicate } from "../../types";
-import { Literal } from "../../variables/Literal";
+import { Literal } from "../../references/Literal";
 import { CypherASTNode } from "../../CypherASTNode";
 
 export class Validate extends CypherASTNode {

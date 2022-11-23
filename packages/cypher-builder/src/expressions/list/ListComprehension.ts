@@ -23,7 +23,7 @@ import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import type { Expr } from "../../types";
 import { compileCypherIfExists } from "../../utils/compile-cypher-if-exists";
-import type { Variable } from "../../variables/Variable";
+import type { Variable } from "../../references/Variable";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ListComprehension extends WithWhere {}

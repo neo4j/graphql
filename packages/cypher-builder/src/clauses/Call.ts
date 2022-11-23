@@ -19,7 +19,7 @@
 
 import type { CypherEnvironment } from "../Environment";
 import type { CypherASTNode } from "../CypherASTNode";
-import type { Variable } from "../variables/Variable";
+import type { Variable } from "../references/Variable";
 import { Clause } from "./Clause";
 import { padBlock } from "../utils/utils";
 import { ImportWith } from "./sub-clauses/ImportWith";

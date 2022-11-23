@@ -33,11 +33,11 @@ export { Foreach } from "./clauses/Foreach";
 export { concat } from "./clauses/utils/concat";
 
 // Variables and references
-export { NodeRef as Node, NamedNode } from "./variables/NodeRef";
-export { RelationshipRef as Relationship } from "./variables/RelationshipRef";
-export { Param, NamedParam } from "./variables/Param";
-export { NamedVariable, Variable } from "./variables/Variable";
-export { Literal, CypherNull as Null } from "./variables/Literal";
+export { NodeRef as Node, NamedNode } from "./references/NodeRef";
+export { RelationshipRef as Relationship } from "./references/RelationshipRef";
+export { Param, NamedParam } from "./references/Param";
+export { NamedVariable, Variable } from "./references/Variable";
+export { Literal, CypherNull as Null } from "./references/Literal";
 
 // Expressions
 export { Exists } from "./expressions/Exists";
@@ -105,7 +105,7 @@ export { any, all, exists, single } from "./expressions/functions/PredicateFunct
 
 // Types
 export type { CypherResult } from "./types";
-export type { PropertyRef } from "./variables/PropertyRef";
+export type { PropertyRef } from "./references/PropertyRef";
 export type { Clause } from "./clauses/Clause";
 export type { CypherEnvironment as Environment } from "./Environment";
 export type { ComparisonOp } from "./expressions/operations/comparison";

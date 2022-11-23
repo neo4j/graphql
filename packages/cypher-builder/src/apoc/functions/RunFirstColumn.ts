@@ -19,7 +19,7 @@
 
 import { CypherASTNode } from "../../CypherASTNode";
 import type { Clause } from "../../clauses/Clause";
-import type { Variable } from "../../variables/Variable";
+import type { Variable } from "../../references/Variable";
 import type { CypherEnvironment } from "../../Environment";
 import type { MapExpr } from "../../expressions/map/MapExpr";
 

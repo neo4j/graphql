@@ -22,7 +22,7 @@ import type { Pattern } from "../../Pattern";
 import { Where } from "../../clauses/sub-clauses/Where";
 import type { Expr, Predicate } from "../../types";
 import { compileCypherIfExists } from "../../utils/compile-cypher-if-exists";
-import type { Variable } from "../../variables/Variable";
+import type { Variable } from "../../references/Variable";
 import { CypherFunction } from "./CypherFunction";
 
 export class PredicateFunction extends CypherFunction {}

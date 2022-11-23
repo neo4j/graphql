@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Variable } from "../../variables/Variable";
+import type { Variable } from "../../references/Variable";
 import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import type { Expr } from "../../types";
@@ -109,5 +109,3 @@ export function sum(expr: Expr): CypherFunction {
 export function randomUUID(): CypherFunction {
     return new CypherFunction("randomUUID");
 }
-
-

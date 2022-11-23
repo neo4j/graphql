@@ -28,7 +28,7 @@ import { padBlock } from "../utils/utils";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import type { Create } from "./Create";
 import type { Merge } from "./Merge";
-import type { Variable } from "../variables/Variable";
+import type { Variable } from "../references/Variable";
 import type { Expr } from "../types";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

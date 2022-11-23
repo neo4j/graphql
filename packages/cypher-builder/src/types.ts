@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import type { PropertyRef } from "./variables/PropertyRef";
+import type { PropertyRef } from "./references/PropertyRef";
 import type { CypherFunction } from "./expressions/functions/CypherFunction";
-import type { Literal } from "./variables/Literal";
+import type { Literal } from "./references/Literal";
 import type { Exists } from "./expressions/Exists";
 import type { CypherEnvironment } from "./Environment";
 import type { MapExpr } from "./expressions/map/MapExpr";
@@ -34,7 +34,7 @@ import type { PatternComprehension } from "./expressions/list/PatternComprehensi
 import type { ListExpr } from "./expressions/list/ListExpr";
 import type { MapProjection } from "./expressions/map/MapProjection";
 import type { HasLabel } from "./expressions/HasLabel";
-import type { Reference } from "./variables/Reference";
+import type { Reference } from "./references/Reference";
 import type { ApocFunction, ApocPredicate, ApocProcedure } from "./apoc/types";
 
 export type Operation = BooleanOp | ComparisonOp | MathOp;

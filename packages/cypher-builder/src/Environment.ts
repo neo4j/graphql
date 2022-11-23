@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { Param } from "./variables/Param";
-import type { NamedReference, Reference } from "./variables/Reference";
+import { Param } from "./references/Param";
+import type { NamedReference, Reference } from "./references/Reference";
 
 export type EnvPrefix = {
     params?: string;
