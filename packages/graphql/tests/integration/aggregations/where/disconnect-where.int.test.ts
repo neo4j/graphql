@@ -49,7 +49,7 @@ describe("Disconnect using aggregate where", () => {
         typeDefs = `
             type ${userType.name} {
                 name: String!
-                likes: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT)
+                likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT)
             }
     
             type ${postType.name} {
@@ -63,8 +63,8 @@ describe("Disconnect using aggregate where", () => {
             CREATE (u:${userType.name} {name: "${userName}"})
             CREATE (u2:${userType.name} {name: "${userName2}"})
             CREATE (u)-[:LIKES]->(:${postType.name} {id: "${postId1}"})
-            CREATE (u)-[:LIKES]->(:${postType.name} {id: "${postId2}"})
-            CREATE (u2)-[:LIKES]->(:${postType.name} {id: "${postId2}"})
+            CREATE (u)-[:LIKES]->(p:${postType.name} {id: "${postId2}"})
+            CREATE (u2)-[:LIKES]->(p)
          
         `);
 
@@ -89,7 +89,7 @@ describe("Disconnect using aggregate where", () => {
                 ${userType.operations.update}(
                     where: { name: "${userName}" }
                     update: { 
-                        likes: { 
+                        likedPosts: { 
                             disconnect: { 
                                 where: { 
                                     node: {
@@ -103,7 +103,7 @@ describe("Disconnect using aggregate where", () => {
                 }) {
                     ${userType.plural} {
                         name
-                        likes {
+                        likedPosts {
                             id
                         }
                     }
@@ -120,7 +120,7 @@ describe("Disconnect using aggregate where", () => {
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
         expect(users).toEqual([
-            { name: userName, likes: expect.toIncludeSameMembers([{ id: postId1 }])},
+            { name: userName, likedPosts: expect.toIncludeSameMembers([{ id: postId1 }])},
         ]);
         const storedValue = await session.run(
             `
@@ -130,6 +130,6 @@ describe("Disconnect using aggregate where", () => {
             `,
             {}
         );
-        expect(storedValue.records).toHaveLength(2);
+        expect(storedValue.records).toHaveLength(1);
     });
 });
