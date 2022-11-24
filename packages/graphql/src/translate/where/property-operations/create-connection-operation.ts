@@ -34,12 +34,14 @@ export function createConnectionOperation({
     context,
     parentNode,
     operator,
+    aggregateTargetElement,
 }: {
     connectionField: ConnectionField;
     value: any;
     context: Context;
     parentNode: Cypher.Node;
     operator: string | undefined;
+    aggregateTargetElement?: Cypher.Variable;
 }): [Cypher.Clause | undefined, Cypher.BooleanOp | Cypher.RawCypher | undefined] {
     let nodeEntries: Record<string, any>;
 
@@ -84,6 +86,7 @@ export function createConnectionOperation({
             targetNode: childNode,
             edge: contextRelationship,
             node: refNode,
+            aggregateNode: aggregateTargetElement as Cypher.Node,
         });
 
         if (listPredicateStr === "any" && !connectionField.relationship.typeMeta.array) {
@@ -110,6 +113,7 @@ export function createConnectionWherePropertyOperation({
     targetNode,
     node,
     edge,
+    aggregateNode,
 }: {
     whereInput: ConnectionWhereArg;
     context: Context;
@@ -117,6 +121,7 @@ export function createConnectionWherePropertyOperation({
     edge: Relationship;
     edgeRef: Cypher.Variable;
     targetNode: Cypher.Node;
+    aggregateNode?: Cypher.Node;
 }): [Cypher.Clause | undefined, Cypher.Predicate | undefined] {
     const params: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
@@ -131,6 +136,7 @@ export function createConnectionWherePropertyOperation({
                     targetNode,
                     node,
                     edge,
+                    aggregateNode,
                 });
                 subqueries = Cypher.concat(subqueries, preComputedWhereFields);
                 if (predicates) {
@@ -175,6 +181,7 @@ export function createConnectionWherePropertyOperation({
 
             const [preComputedWhereFields, predicates] = createWherePredicate({
                 targetElement: targetNode,
+                aggregateTargetElement: aggregateNode,
                 whereInput: nestedProperties,
                 context,
                 element: node,
