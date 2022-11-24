@@ -89,6 +89,8 @@ function createDeleteAndParams({
                           }${index}`;
                     const relationshipVariable = `${variableName}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
+                    const aggregateVariableName = `${variableName}_aggregate`;
+                    const labels = refNode.getLabelString(context);
 
                     const whereStrs: string[] = [];
                     let preComputedWhereFields = "";
@@ -99,6 +101,7 @@ function createDeleteAndParams({
                         try {
                             [preComputedWhereFields, whereClause, whereParams] = createConnectionWhereAndParams({
                                 nodeVariable: variableName,
+                                aggregateNodeVariable: aggregateVariableName,
                                 whereInput: d.where,
                                 node: refNode,
                                 context,
@@ -121,13 +124,6 @@ function createDeleteAndParams({
                         res.strs.push(`WITH ${withVars.join(", ")}`);
                     }
 
-                    const labels = refNode.getLabelString(context);
-                    res.strs.push(
-                        `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
-                    );
-                    res.strs.push(preComputedWhereFields);
-                    res.strs.push("WITH *")
-
                     const whereAuth = createAuthAndParams({
                         operations: "DELETE",
                         entity: refNode,
@@ -138,6 +134,18 @@ function createDeleteAndParams({
                         whereStrs.push(whereAuth[0]);
                         res.params = { ...res.params, ...whereAuth[1] };
                     }
+                    if (preComputedWhereFields) {
+                        res.strs.push(
+                            `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${aggregateVariableName}${labels})`
+                        );
+                        res.strs.push(preComputedWhereFields);
+                        res.strs.push("WITH *");
+                    }
+
+                    res.strs.push(
+                        `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
+                    );
+
                     if (whereStrs.length) {
                         res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
                     }

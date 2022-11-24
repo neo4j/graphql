@@ -87,7 +87,6 @@ export function createConnectionOperation({
             edge: contextRelationship,
             node: refNode,
             aggregateNode: aggregateTargetElement as Cypher.Node,
-            aggregateEdge: relationship,
         });
 
         if (listPredicateStr === "any" && !connectionField.relationship.typeMeta.array) {
@@ -115,7 +114,6 @@ export function createConnectionWherePropertyOperation({
     node,
     edge,
     aggregateNode,
-    aggregateEdge,
 }: {
     whereInput: ConnectionWhereArg;
     context: Context;
@@ -123,7 +121,6 @@ export function createConnectionWherePropertyOperation({
     edge: Relationship;
     edgeRef: Cypher.Variable;
     targetNode: Cypher.Node;
-    aggregateEdge?: Cypher.Variable;
     aggregateNode?: Cypher.Node;
 }): [Cypher.Clause | undefined, Cypher.Predicate | undefined] {
     const params: Cypher.Predicate[] = [];
@@ -140,7 +137,6 @@ export function createConnectionWherePropertyOperation({
                     node,
                     edge,
                     aggregateNode,
-                    aggregateEdge,
                 });
                 subqueries = Cypher.concat(subqueries, preComputedWhereFields);
                 if (predicates) {
@@ -159,7 +155,6 @@ export function createConnectionWherePropertyOperation({
             const nestedProperties: Record<string, any> = value;
             const [preComputedWhereFields, predicates] = createWherePredicate({
                 targetElement: edgeRef,
-                aggregateTargetElement: aggregateEdge,
                 whereInput: nestedProperties,
                 context,
                 element: edge,

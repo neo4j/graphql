@@ -64,8 +64,6 @@ function createDisconnectAndParams({
         const outStr = relationField.direction === "OUT" ? "->" : "-";
         const relVarName = `${variableName}_rel`;
         const relTypeStr = `[${relVarName}:${relationField.type}]`;
-        const aggregateVarName = `${aggregateVariableName}_rel`;
-        const aggregateRelTypeStr = `[${aggregateVarName}:${relationField.type}]`;
 
         const subquery: string[] = [];
         let params;
@@ -89,13 +87,12 @@ function createDisconnectAndParams({
                     node: relatedNode,
                     context,
                     relationshipVariable: relVarName,
-                    aggregateRelationshipVariable: aggregateVarName,
                     relationship,
                     parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
                 });
                 if (whereClause) {
                     subquery.push(
-                        `OPTIONAL MATCH (${parentVar})${inStr}${aggregateRelTypeStr}${outStr}(${aggregateVariableName}${label})`
+                        `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${aggregateVariableName}${label})`
                     );
                     subquery.push(preComputedWhereFields);
                     subquery.push("WITH *");
