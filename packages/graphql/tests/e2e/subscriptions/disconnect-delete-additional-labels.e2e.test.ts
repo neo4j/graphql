@@ -27,6 +27,7 @@ import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
 import { cleanNodes } from "../../utils/clean-nodes";
+import { delay } from "../../../src/utils/utils";
 
 describe("Delete Subscriptions when only nodes are targeted - when nodes employ @node directive to configure db label and additionalLabels", () => {
     let neo4j: Neo4j;
@@ -61,12 +62,12 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
 
             type ${typeDinosaur} @node(label: "${typePerson}") {
                 name: String
-                movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${typeMovie}!]! @relationship(type: "DIRECTED", direction: OUT)
             }
 
             type ${typePerson} {
                 name: String
-                movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${typeMovie}!]! @relationship(type: "DIRECTED", direction: OUT)
             }
 
             type ${typeMovie} @node(label: "${typeFilm}", additionalLabels: ["Multimedia"]) {
@@ -78,7 +79,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
 
              type ${typeSeries} @node(additionalLabels: ["${typeProduction}"]) {
                  title: String
-                 actors: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
+                 actors: [${typeActor}!]! @relationship(type: "PART_OF", direction: IN)
                  productions: [${typeProduction}!]! @relationship(type: "IS_A", direction: OUT)
              }
 
@@ -135,91 +136,82 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                             title
                         }
                     }
+                    productions {
+                        node {
+                            title
+                        }
+                    }
                 }
             }
         }
     `;
 
     const movieSubscriptionQuery = (typeMovie) => `
-subscription SubscriptionMovie {
-    ${typeMovie.operations.subscribe.disconnected} {
-        relationshipFieldName
-        event
-        ${typeMovie.operations.subscribe.payload.disconnected} {
-            title
-        }
-        deletedRelationship {
-            actors {
-                node {
-                    name
+        subscription SubscriptionMovie {
+            ${typeMovie.operations.subscribe.disconnected} {
+                relationshipFieldName
+                event
+                ${typeMovie.operations.subscribe.payload.disconnected} {
+                    title
+                }
+                deletedRelationship {
+                    actors {
+                        node {
+                            name
+                        }
+                    }
+                    directors {
+                        node {
+                            name
+                        }
+                    }
                 }
             }
         }
-    }
-}
-`;
+    `;
 
     const personSubscriptionQuery = (typePerson) => `
-subscription SubscriptionPerson {
-    ${typePerson.operations.subscribe.disconnected} {
-        relationshipFieldName
-        event
-        ${typePerson.operations.subscribe.payload.disconnected} {
-            name
-        }
-        deletedRelationship {
-            movies {
-                node {
-                    title
-                }
-            }
-        }
-    }
-}
-`;
-
-    const productionSubscriptionQuery = (typeProduction) => `
-subscription SubscriptionProduction {
-    ${typeProduction.operations.subscribe.disconnected} {
-        relationshipFieldName
-        event
-        ${typeProduction.operations.subscribe.payload.disconnected} {
-            title
-        }
-        deletedRelationship {
-            actors {
-                node {
+        subscription SubscriptionPerson {
+            ${typePerson.operations.subscribe.disconnected} {
+                relationshipFieldName
+                event
+                ${typePerson.operations.subscribe.payload.disconnected} {
                     name
                 }
+                deletedRelationship {
+                    movies {
+                        node {
+                            title
+                        }
+                    }
+                }
             }
         }
-    }
-}
-`;
+    `;
 
     const seriesSubscriptionQuery = (typeSeries) => `
-subscription SubscriptionSeries {
-    ${typeSeries.operations.subscribe.disconnected} {
-        relationshipFieldName
-        event
-        ${typeSeries.operations.subscribe.payload.disconnected} {
-            title
-        }
-        deletedRelationship {
-            actors {
-                node {
-                    name
-                }
-            }
-            productions {
-                node {
+        subscription SubscriptionSeries {
+            ${typeSeries.operations.subscribe.disconnected} {
+                relationshipFieldName
+                event
+                ${typeSeries.operations.subscribe.payload.disconnected} {
                     title
                 }
+                deletedRelationship {
+                    actors {
+                        node {
+                            name
+                        }
+                    }
+                    productions {
+                        node {
+                            title
+                        }
+                    }
+                }
             }
         }
-    }
-}
-`;
+    `;
 
     test("disconnect via delete - find by label returns correct type when label specified", async () => {
         // 1. create
@@ -288,8 +280,8 @@ subscription SubscriptionSeries {
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
-        expect(wsClient2.events).toHaveLength(1);
-        expect(wsClient.events).toHaveLength(1);
+        expect(wsClient2.events).toHaveLength(2);
+        expect(wsClient.events).toHaveLength(2);
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
@@ -300,13 +292,27 @@ subscription SubscriptionSeries {
                     relationshipFieldName: "actors",
                     deletedRelationship: {
                         actors: {
-                            screenTime: 42,
                             node: {
                                 name: "Keanu Reeves",
                             },
                         },
                         directors: null,
-                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
+                        actors: {
+                            node: {
+                                name: "Keanu Reeves",
+                            },
+                        },
+                        directors: null,
                     },
                 },
             },
@@ -322,11 +328,29 @@ subscription SubscriptionSeries {
                     relationshipFieldName: "movies",
                     deletedRelationship: {
                         movies: {
-                            screenTime: 42,
                             node: {
                                 title: "John Wick",
                             },
                         },
+                        productions: null,
+                    },
+                },
+            },
+            {
+                [typeActor.operations.subscribe.disconnected]: {
+                    [typeActor.operations.subscribe.payload.disconnected]: {
+                        name: "Keanu Reeves",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
+                        movies: {
+                            node: {
+                                title: "Constantine",
+                            },
+                        },
+                        productions: null,
                     },
                 },
             },
@@ -409,25 +433,55 @@ subscription SubscriptionSeries {
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
-        expect(wsClient2.events).toHaveLength(1);
-        expect(wsClient.events).toHaveLength(1);
+        expect(wsClient2.events).toHaveLength(3);
+        expect(wsClient.events).toHaveLength(3);
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine 3" },
                     event: "DISCONNECT",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
                         actors: {
-                            screenTime: 42,
                             node: {
-                                name: "Keanu Reeves",
+                                name: "Someone",
                             },
                         },
                         directors: null,
-                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine 3" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
+                        actors: {
+                            node: {
+                                name: "Someone else",
+                            },
+                        },
+                        directors: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine 2" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
+                        actors: {
+                            node: {
+                                name: "Someone",
+                            },
+                        },
+                        directors: null,
                     },
                 },
             },
@@ -436,45 +490,80 @@ subscription SubscriptionSeries {
             {
                 [typeActor.operations.subscribe.disconnected]: {
                     [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Keanu Reeves",
+                        name: "Someone",
                     },
                     event: "DISCONNECT",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
                         movies: {
-                            screenTime: 42,
                             node: {
-                                title: "John Wick",
+                                title: "Constantine 3",
                             },
                         },
+                        productions: null,
+                    },
+                },
+            },
+            {
+                [typeActor.operations.subscribe.disconnected]: {
+                    [typeActor.operations.subscribe.payload.disconnected]: {
+                        name: "Someone else",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
+                        movies: {
+                            node: {
+                                title: "Constantine 3",
+                            },
+                        },
+                        productions: null,
+                    },
+                },
+            },
+            {
+                [typeActor.operations.subscribe.disconnected]: {
+                    [typeActor.operations.subscribe.payload.disconnected]: {
+                        name: "Someone",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "movies",
+                    deletedRelationship: {
+                        movies: {
+                            node: {
+                                title: "Constantine 2",
+                            },
+                        },
+                        productions: null,
                     },
                 },
             },
         ]);
     });
 
-    // all are dinosaur
     test("disconnect via delete - relation to two types of same underlying db type", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
             .send({
                 query: `
-        mutation {
-            ${typePerson.operations.create}(
-                input: [
-                    {
-                        name: "Person someone",
+                    mutation {
+                        ${typePerson.operations.create}(
+                            input: [
+                                {
+                                    name: "Person someone",
+                                }
+                            ]
+                        ) {
+                            ${typePerson.plural} {
+                                name
+                            }
+                        }
                     }
-                ]
-            ) {
-                ${typePerson.plural} {
-                    name
-                }
-            }
-        }
-    `,
+                `,
             })
             .expect(200);
 
@@ -482,20 +571,20 @@ subscription SubscriptionSeries {
             .post("")
             .send({
                 query: `
-        mutation {
-            ${typeDinosaur.operations.create}(
-                input: [
-                    {
-                        name: "Dinosaur someone",
+                    mutation {
+                        ${typeDinosaur.operations.create}(
+                            input: [
+                                {
+                                    name: "Dinosaur someone",
+                                }
+                            ]
+                        ) {
+                            ${typeDinosaur.plural} {
+                                name
+                            }
+                        }
                     }
-                ]
-            ) {
-                ${typeDinosaur.plural} {
-                    name
-                }
-            }
-        }
-    `,
+                `,
             })
             .expect(200);
 
@@ -577,11 +666,12 @@ subscription SubscriptionSeries {
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
-        expect(wsClient2.events).toHaveLength(3);
+        expect(wsClient2.events).toHaveLength(6);
         expect(wsClient.events).toHaveLength(3);
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
+                // 1. movie + person
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine 3" },
                     event: "DISCONNECT",
@@ -593,10 +683,29 @@ subscription SubscriptionSeries {
                                 name: "Person someone",
                             },
                         },
+                        actors: null,
                     },
                 },
             },
             {
+                // 2. movie + dinosaur
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine 3" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
+                        directors: {
+                            node: {
+                                name: "Person someone",
+                            },
+                        },
+                        actors: null,
+                    },
+                },
+            },
+            {
+                // 1. movie + person
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine 3" },
                     event: "DISCONNECT",
@@ -608,10 +717,29 @@ subscription SubscriptionSeries {
                                 name: "Dinosaur someone",
                             },
                         },
+                        actors: null,
                     },
                 },
             },
             {
+                // 2. movie + dinosaur
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine 3" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
+                        directors: {
+                            node: {
+                                name: "Dinosaur someone",
+                            },
+                        },
+                        actors: null,
+                    },
+                },
+            },
+            {
+                // 1. movie + person
                 [typeMovie.operations.subscribe.disconnected]: {
                     [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine 2" },
                     event: "DISCONNECT",
@@ -623,15 +751,33 @@ subscription SubscriptionSeries {
                                 name: "Dinosaur or Person",
                             },
                         },
+                        actors: null,
+                    },
+                },
+            },
+            {
+                // 2. movie + dinosaur
+                [typeMovie.operations.subscribe.disconnected]: {
+                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine 2" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "directors",
+                    deletedRelationship: {
+                        directors: {
+                            node: {
+                                name: "Dinosaur or Person",
+                            },
+                        },
+                        actors: null,
                     },
                 },
             },
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Person someone 3",
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Person someone",
                     },
                     event: "DISCONNECT",
 
@@ -639,16 +785,16 @@ subscription SubscriptionSeries {
                     deletedRelationship: {
                         movies: {
                             node: {
-                                title: "Constantine",
+                                title: "Constantine 3",
                             },
                         },
                     },
                 },
             },
             {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Dinosaur someone 3",
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Dinosaur someone",
                     },
                     event: "DISCONNECT",
 
@@ -656,16 +802,16 @@ subscription SubscriptionSeries {
                     deletedRelationship: {
                         movies: {
                             node: {
-                                title: "Constantine",
+                                title: "Constantine 3",
                             },
                         },
                     },
                 },
             },
             {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
-                        name: "Dinosaur or Person 2",
+                [typePerson.operations.subscribe.disconnected]: {
+                    [typePerson.operations.subscribe.payload.disconnected]: {
+                        name: "Dinosaur or Person",
                     },
                     event: "DISCONNECT",
 
@@ -673,7 +819,7 @@ subscription SubscriptionSeries {
                     deletedRelationship: {
                         movies: {
                             node: {
-                                title: "Constantine",
+                                title: "Constantine 2",
                             },
                         },
                     },
@@ -682,47 +828,46 @@ subscription SubscriptionSeries {
         ]);
     });
 
-    // all are series
     test("disconnect via delete - relation to two types of matching with same labels", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
             .send({
                 query: `
-    mutation {
-        ${typeProduction.operations.create}(
-            input: [
-                {
-                    title: "A Production",
-                }
-            ]
-        ) {
-            ${typeProduction.plural} {
-                title
-            }
-        }
-    }
-`,
+                    mutation {
+                        ${typeProduction.operations.create}(
+                            input: [
+                                {
+                                    title: "A Production",
+                                }
+                            ]
+                        ) {
+                            ${typeProduction.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
             })
             .expect(200);
         await supertest(server.path)
             .post("")
             .send({
                 query: `
-    mutation {
-        ${typeSeries.operations.create}(
-            input: [
-                {
-                    title: "A Series",
-                }
-            ]
-        ) {
-            ${typeSeries.plural} {
-                title
-            }
-        }
-    }
-`,
+                    mutation {
+                        ${typeSeries.operations.create}(
+                            input: [
+                                {
+                                    title: "A Series",
+                                }
+                            ]
+                        ) {
+                            ${typeSeries.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
             })
             .expect(200);
 
@@ -774,12 +919,11 @@ subscription SubscriptionSeries {
         `,
             })
             .expect(200);
-        // console.log(r.error);
 
         // 2. subscribe both ways
         await wsClient2.subscribe(actorSubscriptionQuery(typeActor));
 
-        await wsClient.subscribe(productionSubscriptionQuery(typeProduction));
+        await wsClient.subscribe(seriesSubscriptionQuery(typeSeries));
 
         // 3. perform update on created node
         await supertest(server.path)
@@ -802,54 +946,178 @@ subscription SubscriptionSeries {
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
-
-        expect(wsClient2.events).toHaveLength(1);
-        expect(wsClient.events).toHaveLength(1);
+        expect(wsClient2.events).toHaveLength(6);
+        expect(wsClient.events).toHaveLength(3);
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "actors",
-                    deletedRelationship: {
-                        actors: {
-                            screenTime: 42,
-                            node: {
-                                name: "Keanu Reeves",
-                            },
-                        },
-                        directors: null,
-                        reviewers: null,
-                    },
-                },
-            },
-        ]);
-        expect(wsClient.events).toIncludeSameMembers([
-            {
+                // 1. actor + series
                 [typeActor.operations.subscribe.disconnected]: {
                     [typeActor.operations.subscribe.payload.disconnected]: {
                         name: "Keanu Reeves",
                     },
                     event: "DISCONNECT",
 
-                    relationshipFieldName: "movies",
+                    relationshipFieldName: "productions",
                     deletedRelationship: {
-                        movies: {
-                            screenTime: 42,
+                        productions: {
                             node: {
-                                title: "John Wick",
+                                title: "Constantine",
                             },
                         },
+                        movies: null,
+                    },
+                },
+            },
+            {
+                // 2. actor + production
+                [typeActor.operations.subscribe.disconnected]: {
+                    [typeActor.operations.subscribe.payload.disconnected]: {
+                        name: "Keanu Reeves",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "productions",
+                    deletedRelationship: {
+                        productions: {
+                            node: {
+                                title: "Constantine",
+                            },
+                        },
+                        movies: null,
+                    },
+                },
+            },
+            {
+                // 1. actor + series
+                [typeActor.operations.subscribe.disconnected]: {
+                    [typeActor.operations.subscribe.payload.disconnected]: {
+                        name: "Keanu Reeves",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "productions",
+                    deletedRelationship: {
+                        productions: {
+                            node: {
+                                title: "A Series",
+                            },
+                        },
+                        movies: null,
+                    },
+                },
+            },
+            {
+                // 2. actor + production
+                [typeActor.operations.subscribe.disconnected]: {
+                    [typeActor.operations.subscribe.payload.disconnected]: {
+                        name: "Keanu Reeves",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "productions",
+                    deletedRelationship: {
+                        productions: {
+                            node: {
+                                title: "A Series",
+                            },
+                        },
+                        movies: null,
+                    },
+                },
+            },
+            {
+                // 1. actor + series
+                [typeActor.operations.subscribe.disconnected]: {
+                    [typeActor.operations.subscribe.payload.disconnected]: {
+                        name: "Keanu Reeves",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "productions",
+                    deletedRelationship: {
+                        productions: {
+                            node: {
+                                title: "A Production",
+                            },
+                        },
+                        movies: null,
+                    },
+                },
+            },
+            {
+                // 2. actor + production
+                [typeActor.operations.subscribe.disconnected]: {
+                    [typeActor.operations.subscribe.payload.disconnected]: {
+                        name: "Keanu Reeves",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "productions",
+                    deletedRelationship: {
+                        productions: {
+                            node: {
+                                title: "A Production",
+                            },
+                        },
+                        movies: null,
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeSeries.operations.subscribe.disconnected]: {
+                    [typeSeries.operations.subscribe.payload.disconnected]: { title: "A Series" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
+                        actors: {
+                            node: {
+                                name: "Keanu Reeves",
+                            },
+                        },
+                        productions: null,
+                    },
+                },
+            },
+            {
+                [typeSeries.operations.subscribe.disconnected]: {
+                    [typeSeries.operations.subscribe.payload.disconnected]: { title: "Constantine" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
+                        actors: {
+                            node: {
+                                name: "Keanu Reeves",
+                            },
+                        },
+                        productions: null,
+                    },
+                },
+            },
+            {
+                [typeSeries.operations.subscribe.disconnected]: {
+                    [typeSeries.operations.subscribe.payload.disconnected]: { title: "A Production" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
+                        actors: {
+                            node: {
+                                name: "Keanu Reeves",
+                            },
+                        },
+                        productions: null,
                     },
                 },
             },
         ]);
     });
 
-    // all are series
-    test.only("disconnect via delete - relation to self via other type with same labels", async () => {
+    test("disconnect via delete - relation to self via other type with same labels", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -979,7 +1247,7 @@ subscription SubscriptionSeries {
         // 2. subscribe both ways
         await wsClient2.subscribe(actorSubscriptionQuery(typeActor));
 
-        await wsClient.subscribe(productionSubscriptionQuery(typeProduction));
+        await wsClient.subscribe(seriesSubscriptionQuery(typeSeries));
 
         // 3. perform update on created node
         await supertest(server.path)
@@ -1000,33 +1268,14 @@ subscription SubscriptionSeries {
             })
             .expect(200);
 
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
-        expect(wsClient2.events).toHaveLength(1);
-        expect(wsClient.events).toHaveLength(1);
+        expect(wsClient2.events).toHaveLength(2);
+        expect(wsClient.events).toHaveLength(10);
 
         expect(wsClient2.events).toIncludeSameMembers([
-            {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
-
-                    relationshipFieldName: "actors",
-                    deletedRelationship: {
-                        actors: {
-                            screenTime: 42,
-                            node: {
-                                name: "Keanu Reeves",
-                            },
-                        },
-                        directors: null,
-                        reviewers: null,
-                    },
-                },
-            },
-        ]);
-        expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeActor.operations.subscribe.disconnected]: {
                     [typeActor.operations.subscribe.payload.disconnected]: {
@@ -1034,14 +1283,204 @@ subscription SubscriptionSeries {
                     },
                     event: "DISCONNECT",
 
-                    relationshipFieldName: "movies",
+                    relationshipFieldName: "productions",
                     deletedRelationship: {
-                        movies: {
-                            screenTime: 42,
+                        productions: {
                             node: {
-                                title: "John Wick",
+                                title: "Another Series",
                             },
                         },
+                        movies: null,
+                    },
+                },
+            },
+            {
+                [typeActor.operations.subscribe.disconnected]: {
+                    [typeActor.operations.subscribe.payload.disconnected]: {
+                        name: "Keanu Reeves",
+                    },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "productions",
+                    deletedRelationship: {
+                        productions: {
+                            node: {
+                                title: "Another Series",
+                            },
+                        },
+                        movies: null,
+                    },
+                },
+            },
+        ]);
+
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeSeries.operations.subscribe.disconnected]: {
+                    [typeSeries.operations.subscribe.payload.disconnected]: { title: "Another Series" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "actors",
+                    deletedRelationship: {
+                        productions: null,
+                        actors: {
+                            node: {
+                                name: "Keanu Reeves",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                // 1. series + series
+                [typeSeries.operations.subscribe.disconnected]: {
+                    [typeSeries.operations.subscribe.payload.disconnected]: { title: "Another Series" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "productions",
+                    deletedRelationship: {
+                        productions: {
+                            node: {
+                                title: "A Series",
+                            },
+                        },
+                        actors: null,
+                    },
+                },
+            },
+            {
+                // 2. series + production
+                [typeSeries.operations.subscribe.disconnected]: {
+                    [typeSeries.operations.subscribe.payload.disconnected]: { title: "Another Series" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "productions",
+                    deletedRelationship: {
+                        productions: {
+                            node: {
+                                title: "A Series",
+                            },
+                        },
+                        actors: null,
+                    },
+                },
+            },
+            {
+                // 3. production + series
+                [typeSeries.operations.subscribe.disconnected]: {
+                    [typeSeries.operations.subscribe.payload.disconnected]: { title: "A Series" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "productions",
+                    deletedRelationship: {
+                        productions: {
+                            node: {
+                                title: "Another Series",
+                            },
+                        },
+                        actors: null,
+                    },
+                },
+            },
+            {
+                // 1. series + series
+                [typeSeries.operations.subscribe.disconnected]: {
+                    [typeSeries.operations.subscribe.payload.disconnected]: { title: "Another Series" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "productions",
+                    deletedRelationship: {
+                        productions: {
+                            node: {
+                                title: "A Production",
+                            },
+                        },
+                        actors: null,
+                    },
+                },
+            },
+            {
+                // 2. series + production
+                [typeSeries.operations.subscribe.disconnected]: {
+                    [typeSeries.operations.subscribe.payload.disconnected]: { title: "Another Series" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "productions",
+                    deletedRelationship: {
+                        productions: {
+                            node: {
+                                title: "A Production",
+                            },
+                        },
+                        actors: null,
+                    },
+                },
+            },
+            {
+                // 3. production + series
+                [typeSeries.operations.subscribe.disconnected]: {
+                    [typeSeries.operations.subscribe.payload.disconnected]: { title: "A Production" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "productions",
+                    deletedRelationship: {
+                        productions: {
+                            node: {
+                                title: "Another Series",
+                            },
+                        },
+                        actors: null,
+                    },
+                },
+            },
+            {
+                // 1. series + series
+                [typeSeries.operations.subscribe.disconnected]: {
+                    [typeSeries.operations.subscribe.payload.disconnected]: { title: "Another Series" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "productions",
+                    deletedRelationship: {
+                        productions: {
+                            node: {
+                                title: "Another Production",
+                            },
+                        },
+                        actors: null,
+                    },
+                },
+            },
+            {
+                // 2. series + production
+                [typeSeries.operations.subscribe.disconnected]: {
+                    [typeSeries.operations.subscribe.payload.disconnected]: { title: "Another Series" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "productions",
+                    deletedRelationship: {
+                        productions: {
+                            node: {
+                                title: "Another Production",
+                            },
+                        },
+                        actors: null,
+                    },
+                },
+            },
+            {
+                // 3. production + series
+                [typeSeries.operations.subscribe.disconnected]: {
+                    [typeSeries.operations.subscribe.payload.disconnected]: { title: "Another Production" },
+                    event: "DISCONNECT",
+
+                    relationshipFieldName: "productions",
+                    deletedRelationship: {
+                        productions: {
+                            node: {
+                                title: "Another Series",
+                            },
+                        },
+                        actors: null,
                     },
                 },
             },

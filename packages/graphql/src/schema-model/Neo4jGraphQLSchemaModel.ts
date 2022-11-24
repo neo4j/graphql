@@ -42,7 +42,7 @@ export class Neo4jGraphQLSchemaModel {
         this.compositeEntities = compositeEntities;
     }
 
-    public getEntityByLabels(labels: string[]): ConcreteEntity | undefined {
-        return this.concreteEntities.find((entity) => entity.matchLabels(labels));
+    public getEntitiesByLabels(labels: string[]): ConcreteEntity[] {
+        return this.concreteEntities.filter((entity) => entity.matchLabels(labels));
     }
 }

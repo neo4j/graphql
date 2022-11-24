@@ -376,15 +376,14 @@ export type NodeSubscriptionMeta = {
     id: Integer | string | number;
     timestamp: Integer | string | number;
 };
-export type RelationshipSubscriptionMeta = {
+export type RelationshipSubscriptionMeta =
+    | RelationshipSubscriptionMetaTypenameParameters
+    | RelationshipSubscriptionMetaLabelsParameters;
+type RelationshipSubscriptionMetaCommonParameters = {
     event: "connect" | "disconnect";
     relationshipName: string;
     id_from: Integer | string | number;
     id_to: Integer | string | number;
-    fromTypename?: string;
-    toTypename?: string;
-    fromLabels?: string[];
-    toLabels?: string[];
     properties: {
         from: Record<string, any>;
         to: Record<string, any>;
@@ -392,6 +391,14 @@ export type RelationshipSubscriptionMeta = {
     };
     id: Integer | string | number;
     timestamp: Integer | string | number;
+};
+export type RelationshipSubscriptionMetaTypenameParameters = RelationshipSubscriptionMetaCommonParameters & {
+    fromTypename: string;
+    toTypename: string;
+};
+export type RelationshipSubscriptionMetaLabelsParameters = RelationshipSubscriptionMetaCommonParameters & {
+    fromLabels: string[];
+    toLabels: string[];
 };
 export type EventMeta = NodeSubscriptionMeta | RelationshipSubscriptionMeta;
 
