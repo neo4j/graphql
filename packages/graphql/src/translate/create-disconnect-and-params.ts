@@ -59,10 +59,13 @@ function createDisconnectAndParams({
         index: number
     ): { subquery: string; params: Record<string, any> } {
         const variableName = `${varName}${index}`;
+        const aggregateVariableName = `${variableName}_aggregate_match`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
         const relVarName = `${variableName}_rel`;
         const relTypeStr = `[${relVarName}:${relationField.type}]`;
+        const aggregateVarName = `${aggregateVariableName}_rel`;
+        const aggregateRelTypeStr = `[${aggregateVarName}:${relationField.type}]`;
 
         const subquery: string[] = [];
         let params;
@@ -70,7 +73,6 @@ function createDisconnectAndParams({
         const label = labelOverride ? `:${labelOverride}` : labels;
 
         subquery.push(`WITH ${withVars.join(", ")}`);
-        subquery.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${label})`);
 
         const relationship = context.relationships.find(
             (x) => x.properties === relationField.properties
@@ -82,14 +84,19 @@ function createDisconnectAndParams({
             try {
                 const [preComputedWhereFields, whereClause, whereParams] = createConnectionWhereAndParams({
                     nodeVariable: variableName,
+                    aggregateNodeVariable: aggregateVariableName,
                     whereInput: disconnect.where,
                     node: relatedNode,
                     context,
                     relationshipVariable: relVarName,
+                    aggregateRelationshipVariable: aggregateVarName,
                     relationship,
                     parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
                 });
                 if (whereClause) {
+                    subquery.push(
+                        `OPTIONAL MATCH (${parentVar})${inStr}${aggregateRelTypeStr}${outStr}(${aggregateVariableName}${label})`
+                    );
                     subquery.push(preComputedWhereFields);
                     subquery.push("WITH *");
                     whereStrs.push(whereClause);
@@ -99,6 +106,7 @@ function createDisconnectAndParams({
                 return { subquery: "", params: {} };
             }
         }
+        subquery.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${label})`);
 
         if (relatedNode.auth) {
             const whereAuth = createAuthAndParams({

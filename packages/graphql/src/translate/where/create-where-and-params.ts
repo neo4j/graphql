@@ -46,6 +46,7 @@ export default function createWhereAndParams({
         context,
         whereInput,
         targetElement: nodeRef,
+        aggregateTargetElement: nodeRef,
     });
 
     let preComputedWhereFieldsResult = "";

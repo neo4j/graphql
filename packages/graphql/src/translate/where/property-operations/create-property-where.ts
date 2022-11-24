@@ -37,12 +37,14 @@ export function createPropertyWhere({
     value,
     element,
     targetElement,
+    aggregateTargetElement,
     context,
 }: {
     key: string;
     value: any;
     element: GraphElement;
     targetElement: Cypher.Variable;
+    aggregateTargetElement?: Cypher.Variable;
     context: Context;
 }): [Cypher.Clause | undefined, Cypher.Predicate | undefined] {
     const match = whereRegEx.exec(key);
@@ -94,7 +96,13 @@ export function createPropertyWhere({
 
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
-            return preComputedWhereFields(value, element, context, targetElement, relationField);
+            return preComputedWhereFields(
+                value,
+                element,
+                context,
+                aggregateTargetElement || targetElement,
+                relationField
+            );
         }
 
         if (relationField) {
@@ -115,6 +123,7 @@ export function createPropertyWhere({
                 connectionField,
                 context,
                 parentNode: targetElement as Cypher.Node,
+                aggregateTargetElement,
                 operator,
             });
         }

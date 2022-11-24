@@ -33,11 +33,13 @@ function isWhereOperator(key: string): key is WhereOperators {
 /** Translate a target node and GraphQL input into a Cypher operation o valid where expression */
 export function createWherePredicate({
     targetElement,
+    aggregateTargetElement,
     whereInput,
     context,
     element,
 }: {
     targetElement: Cypher.Variable;
+    aggregateTargetElement?: Cypher.Variable;
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
@@ -51,11 +53,12 @@ export function createWherePredicate({
                     key,
                     element,
                     targetElement,
+                    aggregateTargetElement,
                     context,
                     value,
                 });
             }
-            return createPropertyWhere({ key, value, element, targetElement, context });
+            return createPropertyWhere({ key, value, element, targetElement, context, aggregateTargetElement });
         })
         .reduce(
             (accumulator, current) => {
@@ -81,6 +84,7 @@ function createNestedPredicate({
     key,
     element,
     targetElement,
+    aggregateTargetElement,
     context,
     value,
 }: {
@@ -88,11 +92,12 @@ function createNestedPredicate({
     value: Array<GraphQLWhereArg>;
     element: GraphElement;
     targetElement: Cypher.Variable;
+    aggregateTargetElement?: Cypher.Variable;
     context: Context;
 }): [Cypher.Clause | undefined, Cypher.Predicate | undefined] {
     const { precomputedClauses, predicates } = value
         .map((v) => {
-            return createWherePredicate({ whereInput: v, element, targetElement, context });
+            return createWherePredicate({ whereInput: v, element, targetElement, context, aggregateTargetElement });
         })
         .reduce(
             (accumulator, current) => {

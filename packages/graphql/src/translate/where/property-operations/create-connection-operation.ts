@@ -34,12 +34,14 @@ export function createConnectionOperation({
     context,
     parentNode,
     operator,
+    aggregateTargetElement,
 }: {
     connectionField: ConnectionField;
     value: any;
     context: Context;
     parentNode: Cypher.Node;
     operator: string | undefined;
+    aggregateTargetElement?: Cypher.Variable;
 }): [Cypher.Clause | undefined, Cypher.BooleanOp | Cypher.RawCypher | undefined] {
     let nodeEntries: Record<string, any>;
 
@@ -84,6 +86,8 @@ export function createConnectionOperation({
             targetNode: childNode,
             edge: contextRelationship,
             node: refNode,
+            aggregateNode: aggregateTargetElement as Cypher.Node,
+            aggregateEdge: relationship,
         });
 
         if (listPredicateStr === "any" && !connectionField.relationship.typeMeta.array) {
@@ -110,6 +114,8 @@ export function createConnectionWherePropertyOperation({
     targetNode,
     node,
     edge,
+    aggregateNode,
+    aggregateEdge,
 }: {
     whereInput: ConnectionWhereArg;
     context: Context;
@@ -117,6 +123,8 @@ export function createConnectionWherePropertyOperation({
     edge: Relationship;
     edgeRef: Cypher.Variable;
     targetNode: Cypher.Node;
+    aggregateEdge?: Cypher.Variable;
+    aggregateNode?: Cypher.Node;
 }): [Cypher.Clause | undefined, Cypher.Predicate | undefined] {
     const params: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
@@ -131,6 +139,8 @@ export function createConnectionWherePropertyOperation({
                     targetNode,
                     node,
                     edge,
+                    aggregateNode,
+                    aggregateEdge,
                 });
                 subqueries = Cypher.concat(subqueries, preComputedWhereFields);
                 if (predicates) {
@@ -149,6 +159,7 @@ export function createConnectionWherePropertyOperation({
             const nestedProperties: Record<string, any> = value;
             const [preComputedWhereFields, predicates] = createWherePredicate({
                 targetElement: edgeRef,
+                aggregateTargetElement: aggregateEdge,
                 whereInput: nestedProperties,
                 context,
                 element: edge,
@@ -175,6 +186,7 @@ export function createConnectionWherePropertyOperation({
 
             const [preComputedWhereFields, predicates] = createWherePredicate({
                 targetElement: targetNode,
+                aggregateTargetElement: aggregateNode,
                 whereInput: nestedProperties,
                 context,
                 element: node,

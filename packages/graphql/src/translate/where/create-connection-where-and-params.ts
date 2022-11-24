@@ -27,26 +27,36 @@ export default function createConnectionWhereAndParams({
     context,
     node,
     nodeVariable,
+    aggregateNodeVariable,
     relationship,
     relationshipVariable,
+    aggregateRelationshipVariable,
     parameterPrefix,
 }: {
     whereInput: ConnectionWhereArg;
     context: Context;
     node: Node;
     nodeVariable: string;
+    aggregateNodeVariable?: string;
     relationship: Relationship;
     relationshipVariable: string;
+    aggregateRelationshipVariable?: string;
     parameterPrefix: string;
 }): [string, string, any] {
     const nodeRef = new Cypher.NamedNode(nodeVariable);
     const edgeRef = new Cypher.NamedVariable(relationshipVariable);
+    const aggregateNodeRef = aggregateNodeVariable ? new Cypher.NamedNode(aggregateNodeVariable) : undefined;
+    const aggregateEdgeRef = aggregateRelationshipVariable
+        ? new Cypher.NamedVariable(aggregateRelationshipVariable)
+        : undefined;
 
     const [preComputedWhereFields, andOp] = createConnectionWherePropertyOperation({
         context,
         whereInput,
         edgeRef,
         targetNode: nodeRef,
+        aggregateNode: aggregateNodeRef,
+        aggregateEdge: aggregateEdgeRef,
         node,
         edge: relationship,
     });
