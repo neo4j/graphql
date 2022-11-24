@@ -42,7 +42,7 @@ export function createConnectionOperation({
     parentNode: Cypher.Node;
     operator: string | undefined;
     aggregateTargetElement?: Cypher.Variable;
-}): [Cypher.Clause | undefined, Cypher.BooleanOp | Cypher.RawCypher | undefined] {
+}): [Cypher.Clause | undefined, Cypher.BooleanOp | Cypher.RawCypher | undefined, Cypher.Variable[] | undefined] {
     let nodeEntries: Record<string, any>;
 
     if (!connectionField?.relationship.union) {
@@ -53,6 +53,7 @@ export function createConnectionOperation({
 
     let subqueries: Cypher.Clause | undefined;
     const operations: (Cypher.BooleanOp | Cypher.RawCypher | undefined)[] = [];
+    const predicateVariables: Cypher.Variable[] = [];
 
     Object.entries(nodeEntries).forEach((entry) => {
         const refNode = context.nodes.find(
@@ -79,15 +80,17 @@ export function createConnectionOperation({
         const contextRelationship = context.relationships.find(
             (x) => x.name === connectionField.relationshipTypeName
         ) as Relationship;
-        const [preComputedWhereFields, whereOperator] = createConnectionWherePropertyOperation({
-            context,
-            whereInput: entry[1],
-            edgeRef: relationship,
-            targetNode: childNode,
-            edge: contextRelationship,
-            node: refNode,
-            aggregateNode: aggregateTargetElement as Cypher.Node,
-        });
+        const [preComputedWhereFields, whereOperator, innerPredicateVariables] = createConnectionWherePropertyOperation(
+            {
+                context,
+                whereInput: entry[1],
+                edgeRef: relationship,
+                targetNode: childNode,
+                edge: contextRelationship,
+                node: refNode,
+                aggregateNode: aggregateTargetElement as Cypher.Node,
+            }
+        );
 
         if (listPredicateStr === "any" && !connectionField.relationship.typeMeta.array) {
             listPredicateStr = "single";
@@ -100,10 +103,11 @@ export function createConnectionOperation({
         });
 
         subqueries = Cypher.concat(subqueries, preComputedWhereFields);
+        predicateVariables.push(...(innerPredicateVariables || []));
         operations.push(subquery);
     });
 
-    return [subqueries, Cypher.and(...operations) as Cypher.BooleanOp | undefined];
+    return [subqueries, Cypher.and(...operations) as Cypher.BooleanOp | undefined, predicateVariables];
 }
 
 export function createConnectionWherePropertyOperation({
@@ -122,26 +126,29 @@ export function createConnectionWherePropertyOperation({
     edgeRef: Cypher.Variable;
     targetNode: Cypher.Node;
     aggregateNode?: Cypher.Node;
-}): [Cypher.Clause | undefined, Cypher.Predicate | undefined] {
+}): [Cypher.Clause | undefined, Cypher.Predicate | undefined, Cypher.Variable[] | undefined] {
     const params: Cypher.Predicate[] = [];
+    const predicateVariables: Cypher.Variable[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
     Object.entries(whereInput).forEach(([key, value]) => {
         if (key === "AND" || key === "OR") {
             const subOperations: Cypher.Predicate[] = [];
             (value as Array<any>).forEach((input) => {
-                const [preComputedWhereFields, predicates] = createConnectionWherePropertyOperation({
-                    context,
-                    whereInput: input,
-                    edgeRef,
-                    targetNode,
-                    node,
-                    edge,
-                    aggregateNode,
-                });
+                const [preComputedWhereFields, predicates, innerPredicateVariables] =
+                    createConnectionWherePropertyOperation({
+                        context,
+                        whereInput: input,
+                        edgeRef,
+                        targetNode,
+                        node,
+                        edge,
+                        aggregateNode,
+                    });
                 subqueries = Cypher.concat(subqueries, preComputedWhereFields);
                 if (predicates) {
                     subOperations.push(predicates);
                 }
+                predicateVariables.push(...(innerPredicateVariables || []));
             });
             if (key === "AND") {
                 params.push(Cypher.and(...filterTruthy(subOperations)));
@@ -153,7 +160,7 @@ export function createConnectionWherePropertyOperation({
 
         if (key.startsWith("edge")) {
             const nestedProperties: Record<string, any> = value;
-            const [preComputedWhereFields, predicates] = createWherePredicate({
+            const [preComputedWhereFields, predicates, innerPredicateVariables] = createWherePredicate({
                 targetElement: edgeRef,
                 whereInput: nestedProperties,
                 context,
@@ -163,6 +170,7 @@ export function createConnectionWherePropertyOperation({
             if (predicates) {
                 params.push(predicates);
             }
+            predicateVariables.push(...(innerPredicateVariables || []));
         }
 
         if (key.startsWith("node") || key.startsWith(node.name)) {
@@ -179,7 +187,7 @@ export function createConnectionWherePropertyOperation({
                 throw new Error("_on is used as the only argument and node is not present within");
             }
 
-            const [preComputedWhereFields, predicates] = createWherePredicate({
+            const [preComputedWhereFields, predicates, innerPredicateVariables] = createWherePredicate({
                 targetElement: targetNode,
                 aggregateTargetElement: aggregateNode,
                 whereInput: nestedProperties,
@@ -190,10 +198,11 @@ export function createConnectionWherePropertyOperation({
             if (predicates) {
                 params.push(predicates);
             }
+            predicateVariables.push(...(innerPredicateVariables || []));
         }
         return undefined;
     });
-    return [subqueries, Cypher.and(...filterTruthy(params))];
+    return [subqueries, Cypher.and(...filterTruthy(params)), predicateVariables];
 }
 
 /** Checks if a where property has an explicit interface inside _on */

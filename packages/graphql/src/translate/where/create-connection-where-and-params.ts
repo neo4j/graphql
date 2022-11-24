@@ -40,12 +40,12 @@ export default function createConnectionWhereAndParams({
     relationship: Relationship;
     relationshipVariable: string;
     parameterPrefix: string;
-}): [string, string, any] {
+}): [string, string, any, string[]] {
     const nodeRef = new Cypher.NamedNode(nodeVariable);
     const edgeRef = new Cypher.NamedVariable(relationshipVariable);
     const aggregateNodeRef = aggregateNodeVariable ? new Cypher.NamedNode(aggregateNodeVariable) : undefined;
 
-    const [preComputedWhereFields, andOp] = createConnectionWherePropertyOperation({
+    const [preComputedWhereFields, andOp, predicateVariables] = createConnectionWherePropertyOperation({
         context,
         whereInput,
         edgeRef,
@@ -56,13 +56,17 @@ export default function createConnectionWhereAndParams({
     });
 
     let preComputedWhereFieldsResult = "";
+    let predicateVariableCypher: string[] | undefined;
     const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
         const cypher = andOp?.getCypher(env) || "";
+        predicateVariableCypher = predicateVariables?.map((variable) => {
+            return variable.getCypher(env);
+        });
         preComputedWhereFieldsResult = preComputedWhereFields?.getCypher(env) || "";
         return [cypher, {}];
     });
 
     // NOTE: the following prefix is just to avoid collision until this is refactored into a single cypher ast
     const result = whereCypher.build(`${parameterPrefix.replace(/\./g, "_").replace(/\[|\]/g, "")}_${node.name}`);
-    return [preComputedWhereFieldsResult, result.cypher, result.params];
+    return [preComputedWhereFieldsResult, result.cypher, result.params, predicateVariableCypher || []];
 }

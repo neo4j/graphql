@@ -135,29 +135,51 @@ export default function createUpdateAndParams({
 
                 updates.forEach((update, index) => {
                     const relationshipVariable = `${varName}_${relationField.type.toLowerCase()}${index}_relationship`;
+                    const aggregateRelationshipVariable = `${relationshipVariable}_aggregate`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
+                    const aggregateRelTypeStr = `[${aggregateRelationshipVariable}:${relationField.type}]`;
                     const variableName = `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
+                    const aggregateVariableName = `${variableName}_aggregate`;
+                    const labels = refNode.getLabelString(context);
 
                     if (update.update) {
                         const whereStrs: string[] = [];
+                        const delayedSubqueries: string[] = [];
+                        let predicateVariables: string[] = [];
                         let preComputedWhereFields = "";
                         let whereClause = "";
                         let whereParams = {};
 
                         if (update.where) {
                             try {
-                                [preComputedWhereFields, whereClause, whereParams] = createConnectionWhereAndParams({
-                                    whereInput: update.where,
-                                    node: refNode,
-                                    nodeVariable: variableName,
-                                    relationship,
-                                    relationshipVariable,
-                                    context,
-                                    parameterPrefix: `${parameterPrefix}.${key}${
-                                        relationField.union ? `.${refNode.name}` : ""
-                                    }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
-                                });
+                                [preComputedWhereFields, whereClause, whereParams, predicateVariables] =
+                                    createConnectionWhereAndParams({
+                                        whereInput: update.where,
+                                        node: refNode,
+                                        nodeVariable: variableName,
+                                        aggregateNodeVariable: aggregateVariableName,
+                                        // aggregateRelationshipVariable, TODO implement this
+                                        relationship,
+                                        relationshipVariable,
+                                        context,
+                                        parameterPrefix: `${parameterPrefix}.${key}${
+                                            relationField.union ? `.${refNode.name}` : ""
+                                        }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
+                                    });
                                 if (whereClause) {
+                                    // subquery.push("WITH *");
+                                    delayedSubqueries.push(
+                                        `OPTIONAL MATCH (${parentVar})${inStr}${aggregateRelTypeStr}${outStr}(${aggregateVariableName}${labels})`
+                                    );
+                                    delayedSubqueries.push(preComputedWhereFields);
+                                    if (predicateVariables && predicateVariables.length) {
+                                        delayedSubqueries.push(
+                                            `WITH DISTINCT ${withVars.join(", ")}, ${predicateVariables.join(", ")}`
+                                        );
+                                    } else {
+                                        delayedSubqueries.push(`WITH DISTINCT ${withVars.join(", ")}`);
+                                    }
+
                                     whereStrs.push(whereClause);
                                     res.params = { ...res.params, ...whereParams };
                                 }
@@ -166,16 +188,17 @@ export default function createUpdateAndParams({
                             }
                         }
 
+                        subquery.push("WITH *");
+
                         if (withVars) {
                             subquery.push(`WITH ${withVars.join(", ")}`);
                         }
 
-                        const labels = refNode.getLabelString(context);
+                        subquery.push(...delayedSubqueries);
+
                         subquery.push(
                             `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
                         );
-                        subquery.push(preComputedWhereFields);
-                        subquery.push("WITH *");
 
                         if (node.auth) {
                             const whereAuth = createAuthAndParams({

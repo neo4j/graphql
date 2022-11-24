@@ -101,7 +101,7 @@ function createConnectAndParams({
                 return { subquery: "", params: {} };
             }
 
-            const [preComputedWhereFields, rootNodeWhere, rootNodeParams] = createWhereAndParams({
+            const [preComputedWhereFields, rootNodeWhere, rootNodeParams, predicateVariables] = createWhereAndParams({
                 whereInput: {
                     ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
                         if (k !== "_on") {
@@ -124,38 +124,47 @@ function createConnectAndParams({
                 whereStrs.push(rootNodeWhere);
                 if (preComputedWhereFields) {
                     subquery.push(preComputedWhereFields);
-                    subquery.push("WITH *");
+                    if (predicateVariables && predicateVariables.length) {
+                        subquery.push(`WITH DISTINCT ${withVars.join(", ")}, ${predicateVariables.join(", ")}`);
+                    } else {
+                        subquery.push(`WITH DISTINCT ${withVars.join(", ")}`);
+                    }
                 }
                 params = { ...params, ...rootNodeParams };
             }
 
             // For _on filters
             if (connect.where.node?._on?.[relatedNode.name]) {
-                const [preComputedWhereFields, onTypeNodeWhere, onTypeNodeParams] = createWhereAndParams({
-                    whereInput: {
-                        ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
-                            if (k !== "_on") {
-                                return { ...args, [k]: v };
-                            }
+                const [preComputedWhereFields, onTypeNodeWhere, onTypeNodeParams, predicateVariables] =
+                    createWhereAndParams({
+                        whereInput: {
+                            ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
+                                if (k !== "_on") {
+                                    return { ...args, [k]: v };
+                                }
 
-                            if (Object.prototype.hasOwnProperty.call(v, relatedNode.name)) {
-                                return { ...args, ...(v as any)[relatedNode.name] };
-                            }
+                                if (Object.prototype.hasOwnProperty.call(v, relatedNode.name)) {
+                                    return { ...args, ...(v as any)[relatedNode.name] };
+                                }
 
-                            return args;
-                        }, {}),
-                    },
-                    context,
-                    node: relatedNode,
-                    varName: `${nodeName}`,
-                    chainStr: `${nodeName}_on_${relatedNode.name}`,
-                    recursing: true,
-                });
+                                return args;
+                            }, {}),
+                        },
+                        context,
+                        node: relatedNode,
+                        varName: `${nodeName}`,
+                        chainStr: `${nodeName}_on_${relatedNode.name}`,
+                        recursing: true,
+                    });
                 if (onTypeNodeWhere) {
                     whereStrs.push(onTypeNodeWhere);
                     if (preComputedWhereFields) {
                         subquery.push(preComputedWhereFields);
-                        subquery.push("WITH *");
+                        if (predicateVariables && predicateVariables.length) {
+                            subquery.push(`WITH DISTINCT ${withVars.join(", ")}, ${predicateVariables.join(", ")}`);
+                        } else {
+                            subquery.push(`WITH DISTINCT ${withVars.join(", ")}`);
+                        }
                     }
                     params = { ...params, ...onTypeNodeParams };
                 }

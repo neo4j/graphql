@@ -46,7 +46,7 @@ export function createPropertyWhere({
     targetElement: Cypher.Variable;
     aggregateTargetElement?: Cypher.Variable;
     context: Context;
-}): [Cypher.Clause | undefined, Cypher.Predicate | undefined] {
+}): [Cypher.Clause | undefined, Cypher.Predicate | undefined, Cypher.Variable[] | undefined] {
     const match = whereRegEx.exec(key);
     if (!match) {
         throw new Error(`Failed to match key in filter: ${key}`);
@@ -82,6 +82,7 @@ export function createPropertyWhere({
                     targetElement,
                     coalesceValue,
                 }),
+                undefined
             ];
         }
 
@@ -130,9 +131,9 @@ export function createPropertyWhere({
 
         if (value === null) {
             if (isNot) {
-                return [undefined, Cypher.isNotNull(propertyRef)];
+                return [undefined, Cypher.isNotNull(propertyRef), undefined];
             }
-            return [undefined, Cypher.isNull(propertyRef)];
+            return [undefined, Cypher.isNull(propertyRef), undefined];
         }
     }
     const pointField = element.pointFields.find((x) => x.fieldName === fieldName);
@@ -149,9 +150,9 @@ export function createPropertyWhere({
         neo4jDatabaseInfo: context.neo4jDatabaseInfo,
     });
     if (isNot) {
-        return [undefined, Cypher.not(comparisonOp)];
+        return [undefined, Cypher.not(comparisonOp), undefined];
     }
-    return [undefined, comparisonOp];
+    return [undefined, comparisonOp, undefined];
 }
 
 export function preComputedWhereFields(
@@ -160,9 +161,9 @@ export function preComputedWhereFields(
     context: Context,
     matchNode: Cypher.Variable,
     relationField: RelationField
-): [Cypher.Clause | undefined, Cypher.Predicate | undefined] {
+): [Cypher.Clause | undefined, Cypher.Predicate | undefined, Cypher.Variable[] | undefined] {
     if (!value) {
-        return [undefined, undefined];
+        return [undefined, undefined, undefined];
     }
     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
     const direction = relationField.direction;
@@ -178,7 +179,7 @@ export function preComputedWhereFields(
 
     const matchQuery = new Cypher.Match(cypherRelation);
 
-    const [returnVariables, predicates] = computeRootWhereAggregate(
+    const [returnVariables, predicates, predicateVariables] = computeRootWhereAggregate(
         value,
         refNode,
         aggregationTarget,
@@ -186,7 +187,7 @@ export function preComputedWhereFields(
     );
     matchQuery.return(...returnVariables);
 
-    return [new Cypher.Call(matchQuery).innerWith(matchNode), Cypher.and(...predicates)];
+    return [new Cypher.Call(matchQuery).innerWith(matchNode), Cypher.and(...predicates), predicateVariables];
 }
 
 function computeRootWhereAggregate(
@@ -194,8 +195,9 @@ function computeRootWhereAggregate(
     refNode: Node,
     aggregationTarget: Cypher.Node,
     cypherRelation: Cypher.Relationship
-): [Array<"*" | Cypher.ProjectionColumn>, Cypher.Predicate[]] {
+): [Array<"*" | Cypher.ProjectionColumn>, Cypher.Predicate[], Cypher.Variable[]] {
     const returnVariables = [] as Array<"*" | Cypher.ProjectionColumn>;
+    const predicateVariables = [] as Cypher.Variable[];
     const predicates = [] as Cypher.Predicate[];
     Object.entries(value).forEach(([key, value]) => {
         let operation: Cypher.ComparisonOp | undefined;
@@ -210,18 +212,24 @@ function computeRootWhereAggregate(
             });
             const operationVar = new Cypher.Variable();
             returnVariables.push([operation, operationVar]);
+            predicateVariables.push(operationVar);
             predicates.push(Cypher.eq(operationVar, new Cypher.Param(true)));
         } else if (["node", "edge"].includes(key)) {
             const target = key === "edge" ? cypherRelation : aggregationTarget;
-            const [_returnVariables, _predicates] = computeFieldAggregateWhere(value, refNode, target);
+            const [_returnVariables, _predicates, _predicateVariables] = computeFieldAggregateWhere(
+                value,
+                refNode,
+                target
+            );
             returnVariables.push(..._returnVariables);
+            predicateVariables.push(..._predicateVariables);
             predicates.push(..._predicates);
             // const aggregationOperators = ["SHORTEST", "LONGEST", "MIN", "MAX", "SUM"];
         } else if (["AND", "OR"].includes(key)) {
             const binaryOp = key === "AND" ? Cypher.and : Cypher.or;
-            const [a, b] = (value as Array<any>).reduce(
+            const [a, b, c] = (value as Array<any>).reduce(
                 (prev, elementValue) => {
-                    const [_returnVariables, _predicates] = computeRootWhereAggregate(
+                    const [_returnVariables, _predicates, _predicateVariables] = computeRootWhereAggregate(
                         elementValue,
                         refNode,
                         aggregationTarget,
@@ -229,39 +237,48 @@ function computeRootWhereAggregate(
                     );
                     prev[0].push(..._returnVariables);
                     prev[1].push(..._predicates);
+                    prev[2].push(..._predicateVariables);
                     return prev;
                 },
-                [[], []]
+                [[], [], []]
             );
             returnVariables.push(...a);
             predicates.push(binaryOp(...b));
+            predicateVariables.push(...c)
         }
     });
-    return [returnVariables, predicates];
+    return [returnVariables, predicates, predicateVariables];
 }
 
 function computeFieldAggregateWhere(
     value: any,
     refNode: Node,
     target: Cypher.Node | Cypher.Relationship
-): [Array<"*" | Cypher.ProjectionColumn>, Cypher.Predicate[]] {
+): [Array<"*" | Cypher.ProjectionColumn>, Cypher.Predicate[], Cypher.Variable[]] {
     const returnVariables = [] as Array<"*" | Cypher.ProjectionColumn>;
+    const predicateVariables = [] as Cypher.Variable[];
     const predicates = [] as Cypher.Predicate[];
 
     Object.entries(value).forEach(([innerKey, innerValue]) => {
         if (["AND", "OR"].includes(innerKey)) {
             const binaryOp = innerKey === "AND" ? Cypher.and : Cypher.or;
-            const [a, b] = (innerValue as Array<any>).reduce(
+            const [a, b, c] = (innerValue as Array<any>).reduce(
                 (prev, elementValue) => {
-                    const [_returnVariables, _predicates] = computeFieldAggregateWhere(elementValue, refNode, target);
+                    const [_returnVariables, _predicates, _predicateVariables] = computeFieldAggregateWhere(
+                        elementValue,
+                        refNode,
+                        target
+                    );
                     prev[0].push(..._returnVariables);
                     prev[1].push(..._predicates);
+                    prev[2].push(..._predicateVariables);
                     return prev;
                 },
-                [[], []]
+                [[], [], []]
             );
             returnVariables.push(...a);
             predicates.push(binaryOp(...b));
+            predicateVariables.push(...c);
         } else {
             const paramName = new Cypher.Param(innerValue);
             const regexResult = aggregationFieldRegEx.exec(innerKey)?.groups as AggregationFieldRegexGroups;
@@ -298,10 +315,11 @@ function computeFieldAggregateWhere(
             }
             const operationVar = new Cypher.Variable();
             returnVariables.push([operation, operationVar]);
+            predicateVariables.push(operationVar);
             predicates.push(Cypher.eq(operationVar, new Cypher.Param(true)));
         }
     });
-    return [returnVariables, predicates];
+    return [returnVariables, predicates, predicateVariables];
 }
 
 function createAggregateOperation(
