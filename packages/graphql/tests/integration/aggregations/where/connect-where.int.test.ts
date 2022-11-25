@@ -412,7 +412,11 @@ describe("Connect UNIONs using aggregate where", () => {
         expect(users).toEqual([{ id: postId3, likes: expect.toIncludeSameMembers([{ specialName: userName }]) }]);
         const storedValue = await session.run(
             `
-            MATCH (u:${specialUserType.name})-[r:LIKES]->(p:${postType.name}) 
+            MATCH (u:${specialUserType.name})-[r:LIKES]->(p:${postType.name})
+            WHERE p.id = "${postId3}"
+            RETURN u
+            UNION
+            MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name})
             WHERE p.id = "${postId3}" 
             RETURN u
             `,
