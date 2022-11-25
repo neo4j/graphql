@@ -256,8 +256,7 @@ describe("Subscription authentication", () => {
         });
     });
 
-    /* eslint-disable-next-line jest/no-disabled-tests */
-    describe.skip("auth with subscribe operations - connections", () => {
+    describe("auth with subscribe operations - connections", () => {
         let server: TestGraphQLServer;
         let wsClient: WebSocketTestClient;
         let typeDefs: string;
@@ -354,17 +353,14 @@ describe("Subscription authentication", () => {
         const movieSubscriptionQuery = ({ typeMovie, typePerson, typeInfluencer }) => `
         subscription SubscriptionMovie {
             ${typeMovie.operations.subscribe.connected} {
-                direction
-                relationshipName
+                relationshipFieldName
                 event
                 ${typeMovie.operations.subscribe.payload.connected} {
                     title
                 }
-                relationship {
+                createdRelationship {
                     reviewers {
-                        edge {
-                            score
-                        }
+                        score
                         node {
                             ... on ${typePerson.name}EventPayload {
                                 name
@@ -376,17 +372,13 @@ describe("Subscription authentication", () => {
                         }
                     }
                     actors {
-                        edge {
-                            screenTime
-                        }
+                        screenTime
                         node {
                             name
                         }
                     }
                     directors {
-                        edge {
-                            year
-                        }
+                        year
                         node {
                             ... on ${typePerson.name}EventPayload {
                                 name
@@ -445,13 +437,10 @@ describe("Subscription authentication", () => {
                     [typeMovie.operations.subscribe.connected]: {
                         [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                         event: "CONNECT",
-                        direction: "IN",
-                        relationshipName: "actors",
-                        relationship: {
+                        relationshipFieldName: "actors",
+                        createdRelationship: {
                             actors: {
-                                edge: {
-                                    screenTime: 1000,
-                                },
+                                screenTime: 1000,
                                 node: {
                                     name: "Keanu",
                                 },
@@ -575,13 +564,10 @@ describe("Subscription authentication", () => {
                     [typeMovie.operations.subscribe.connected]: {
                         [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                         event: "CONNECT",
-                        direction: "IN",
-                        relationshipName: "actors",
-                        relationship: {
+                        relationshipFieldName: "actors",
+                        createdRelationship: {
                             actors: {
-                                edge: {
-                                    screenTime: 250,
-                                },
+                                screenTime: 250,
                                 node: {
                                     name: "Keanu",
                                 },
