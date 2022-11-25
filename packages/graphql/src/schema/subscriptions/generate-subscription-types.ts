@@ -61,6 +61,7 @@ export function generateSubscriptionTypes({
         {}
     );
 
+    const nodeToRelationFieldMap: Map<Node, Map<string, RelationField | undefined>> = new Map();
     nodesWithSubscriptionOperation.forEach((node) => {
         const eventPayload = nodeNameToEventPayloadTypes[node.name];
         const where = generateSubscriptionWhereType(node, schemaComposer);
@@ -179,13 +180,17 @@ export function generateSubscriptionTypes({
                 [subscriptionEventPayloadFieldNames.connect]: {
                     type: eventPayload.NonNull,
                     resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationshipEventDataForNode(source, node).properties;
+                        return getRelationshipEventDataForNode(source, node, nodeToRelationFieldMap).properties;
                     },
                 },
                 relationshipFieldName: {
                     type: new GraphQLNonNull(GraphQLString),
                     resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationField({ node, relationshipName: source.relationshipName })?.fieldName;
+                        return getRelationField({
+                            node,
+                            relationshipName: source.relationshipName,
+                            nodeToRelationFieldMap,
+                        })?.fieldName;
                     },
                 },
             });
@@ -194,13 +199,17 @@ export function generateSubscriptionTypes({
                 [subscriptionEventPayloadFieldNames.disconnect]: {
                     type: eventPayload.NonNull,
                     resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationshipEventDataForNode(source, node).properties;
+                        return getRelationshipEventDataForNode(source, node, nodeToRelationFieldMap).properties;
                     },
                 },
                 relationshipFieldName: {
                     type: new GraphQLNonNull(GraphQLString),
                     resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationField({ node, relationshipName: source.relationshipName })?.fieldName;
+                        return getRelationField({
+                            node,
+                            relationshipName: source.relationshipName,
+                            nodeToRelationFieldMap,
+                        })?.fieldName;
                     },
                 },
             });
@@ -208,10 +217,15 @@ export function generateSubscriptionTypes({
 
         if (hasProperties(relationsEventPayload)) {
             const resolveRelationship = (source: RelationshipSubscriptionsEvent) => {
-                const thisRel = getRelationField({ node, relationshipName: source.relationshipName }) as RelationField;
+                const thisRel = getRelationField({
+                    node,
+                    relationshipName: source.relationshipName,
+                    nodeToRelationFieldMap,
+                }) as RelationField;
                 const { destinationProperties: props, destinationTypename: typename } = getRelationshipEventDataForNode(
                     source,
-                    node
+                    node,
+                    nodeToRelationFieldMap
                 );
 
                 return {
@@ -286,7 +300,8 @@ export function generateSubscriptionTypes({
 
 function getRelationshipEventDataForNode(
     event: RelationshipSubscriptionsEvent,
-    node: Node
+    node: Node,
+    nodeToRelationFieldMap: Map<Node, Map<string, RelationField | undefined>>
 ): {
     direction: string;
     properties: Record<string, any>;
@@ -296,7 +311,11 @@ function getRelationshipEventDataForNode(
     let condition = event.toTypename === node.name;
     if (event.toTypename === event.fromTypename) {
         // must check relationship direction from schema
-        const { direction } = getRelationField({ node, relationshipName: event.relationshipName }) as RelationField;
+        const { direction } = getRelationField({
+            node,
+            relationshipName: event.relationshipName,
+            nodeToRelationFieldMap,
+        }) as RelationField;
         condition = direction === "IN";
     }
     if (condition) {
@@ -315,13 +334,14 @@ function getRelationshipEventDataForNode(
     };
 }
 
-const nodeToRelationFieldMap: Map<Node, Map<string, RelationField | undefined>> = new Map();
 function getRelationField({
     node,
     relationshipName,
+    nodeToRelationFieldMap,
 }: {
     node: Node;
     relationshipName: string;
+    nodeToRelationFieldMap: Map<Node, Map<string, RelationField | undefined>>;
 }): RelationField | undefined {
     let relationshipNameToRelationField: Map<string, RelationField | undefined>;
     if (!nodeToRelationFieldMap.has(node)) {
