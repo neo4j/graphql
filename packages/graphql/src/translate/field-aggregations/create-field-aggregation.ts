@@ -111,28 +111,13 @@ export function createFieldAggregation({
         ...serializeAuthParamsForApocRun(authData),
     };
 
-    const sourceNode = new Cypher.NamedNode(nodeLabel);
-    const targetNode = new Cypher.Node({ labels: referenceNode.getLabels(context) });
-
-    const authCallWhere = new Cypher.RawCypher((env: Cypher.Environment) => {
-        const subqueryNodeName = targetNode.getCypher(env);
-        const authDataResult = createFieldAggregationAuth({
-            node: referenceNode,
-            context,
-            subqueryNodeAlias: subqueryNodeName,
-            nodeFields: aggregationFields.node,
-        });
-
-        // TODO: refactor auth into cypherBuilder
-        return [authDataResult.whereQuery, authDataResult.params];
-    });
     const cypherParams = { ...apocRunParams, ...authData.params, ...whereParams };
     const projectionMap = new Cypher.Map();
 
-    let preComputedWhereFields: Cypher.Clause | undefined;
-    let countProjection: Cypher.Expr;
+    let returnMatchPattern = "";
 
     if (aggregationFields.count) {
+        returnMatchPattern = matchWherePattern;
         projectionMap.set({
             count: Cypher.count(new Cypher.NamedNode(subqueryNodeAlias)),
         });
@@ -174,9 +159,7 @@ export function createFieldAggregation({
         });
     }
 
-    let preComputedWhereFieldsResult = "";
     const rawProjection = new Cypher.RawCypher((env) => {
-        preComputedWhereFieldsResult = preComputedWhereFields?.getCypher(env) || "";
         return [projectionMap.getCypher(env), cypherParams];
     });
 
@@ -184,7 +167,7 @@ export function createFieldAggregation({
 
     return {
         matchVar: result.cypher,
-        cypher: matchWherePattern,
+        cypher: returnMatchPattern,
         params: result.params,
     };
 }
