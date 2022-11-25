@@ -22,7 +22,7 @@ import { unescapeQuery } from "../../../translate/utils/escape-query";
 
 export async function getCypherResultVariables(statement: string, executor: Executor): Promise<string[]> {
     const explainStatement = wrapInExplain(statement);
-    const result = await executor.execute(explainStatement, {}, "READ"); // TODO: WRITE in mutations
+    const result = await executor.execute(explainStatement, {}, "READ");
     if (!result.summary.plan) throw new Error("Failed to get the plan of @cypher");
     return result.summary.plan.identifiers.filter((v) => !variableIsLiteralValue(v));
 }

@@ -157,7 +157,6 @@ export function translateTopLevelCypher({
 
     const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
-    // TODO: change this
     if (type === "Query") {
         const isArray = field.typeMeta.array;
         const expectMultipleValues = !field.isScalar && !field.isEnum && isArray;

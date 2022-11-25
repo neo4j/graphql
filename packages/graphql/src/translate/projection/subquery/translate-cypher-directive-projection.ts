@@ -186,7 +186,6 @@ export function translateCypherDirectiveProjection({
     return res;
 }
 
-// TODO: change this
 function createCypherDirectiveApocProcedure({
     cypherField,
     field,
