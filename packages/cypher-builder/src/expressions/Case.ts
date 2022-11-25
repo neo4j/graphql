@@ -19,7 +19,7 @@
 
 import type { CypherEnvironment } from "../Environment";
 import { CypherASTNode } from "../CypherASTNode";
-import { padBlock } from "../utils/utils";
+import { padBlock } from "../utils/pad-block";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import type { Expr, Predicate } from "../types";
 

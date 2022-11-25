@@ -119,8 +119,5 @@ export type { Pattern } from "./Pattern";
 export type { CompositeClause } from "./clauses/utils/concat";
 
 // utils
-import { escapeLabel } from "./utils/escape-label";
-
-export const utils = {
-    escapeLabel,
-};
+// --Procedures
+export * as utils from "./utils/utils";

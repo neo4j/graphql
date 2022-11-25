@@ -24,7 +24,7 @@ import { mixin } from "./utils/mixin";
 import type { DeleteClause } from "./sub-clauses/Delete";
 import type { SetClause } from "./sub-clauses/Set";
 import type { RemoveClause } from "./sub-clauses/Remove";
-import { padBlock } from "../utils/utils";
+import { padBlock } from "../utils/pad-block";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import type { Create } from "./Create";
 import type { Merge } from "./Merge";

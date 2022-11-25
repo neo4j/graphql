@@ -22,7 +22,7 @@ import type { CypherEnvironment } from "../../Environment";
 import type { MapExpr } from "../../expressions/map/MapExpr";
 import type { PropertyRef } from "../../references/PropertyRef";
 import type { Expr } from "../../types";
-import { padBlock } from "../../utils/utils";
+import { padBlock } from "../../utils/pad-block";
 import type { MapProjection } from "../../expressions/map/MapProjection";
 
 export type SetParam = [PropertyRef, Exclude<Expr, MapExpr | MapProjection>];

@@ -17,4 +17,8 @@
  * limitations under the License.
  */
 
-export { escapeLabel } from "./escape-label";
+export function padBlock(block: string, spaces = 4): string {
+    const paddingStr = " ".repeat(spaces);
+    const paddedNewLines = block.replace(/\n/g, `\n${paddingStr}`);
+    return `${paddingStr}${paddedNewLines}`;
+}

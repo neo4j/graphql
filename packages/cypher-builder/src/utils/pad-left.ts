@@ -17,4 +17,8 @@
  * limitations under the License.
  */
 
-export { escapeLabel } from "./escape-label";
+/** Adds spaces to the left of the string, returns empty string is variable is undefined or empty string */
+export function padLeft(str: string | undefined): string {
+    if (!str) return "";
+    return ` ${str}`;
+}
