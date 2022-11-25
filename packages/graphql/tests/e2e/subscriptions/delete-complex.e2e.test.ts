@@ -3732,8 +3732,6 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        // console.log("HERE", r.error);
-
         await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
