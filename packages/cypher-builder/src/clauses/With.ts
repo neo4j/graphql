@@ -34,6 +34,10 @@ export type WithProjection = Variable | [Expr, string | Variable | Literal];
 
 export interface With extends WithOrder, WithReturn, WithWhere {}
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/with/)
+ * @group Clauses
+ */
 @mixin(WithOrder, WithReturn, WithWhere)
 export class With extends Clause {
     private projection: Projection;
@@ -55,6 +59,9 @@ export class With extends Clause {
         return this;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const projectionStr = this.projection.getCypher(env);
         const orderByStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });

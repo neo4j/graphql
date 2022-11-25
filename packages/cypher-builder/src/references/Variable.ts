@@ -19,14 +19,18 @@
 
 import { NamedReference, Reference } from "./Reference";
 
-/** Represents a variable */
+/** Represents a variable
+ * @group Internal
+ */
 export class Variable extends Reference {
     constructor() {
         super("var");
     }
 }
 
-/** For compatibility reasons, represents a plain string variable */
+/** For compatibility reasons, represents a plain string variable
+ * @hidden
+ */
 export class NamedVariable extends Variable implements NamedReference {
     public readonly id: string;
 

@@ -21,7 +21,9 @@ import type { CypherCompilable } from "../types";
 
 type LiteralValue = string | number | boolean | null | Array<LiteralValue>;
 
-/** Represents a literal value, it is not a variable */
+/** Represents a literal value
+ * @group References
+ */
 export class Literal<T extends LiteralValue = any> implements CypherCompilable {
     public value: T;
 
@@ -48,4 +50,7 @@ export class Literal<T extends LiteralValue = any> implements CypherCompilable {
     }
 }
 
+/** Represents a NULL literal value
+ * @group References
+ */
 export const CypherNull = new Literal(null);

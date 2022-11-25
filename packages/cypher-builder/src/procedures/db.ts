@@ -31,6 +31,9 @@ import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 export interface FullTextQueryNodes extends WithReturn {}
 
 // TODO: remove yield and CALL and put them in CallProcedure
+/**
+ * @group Procedures
+ */
 @mixin(WithReturn)
 export class FullTextQueryNodes extends Clause {
     private targetNode: NodeRef;

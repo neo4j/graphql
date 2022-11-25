@@ -30,6 +30,10 @@ import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 
 export interface Call extends WithReturn, WithWith {}
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/call-subquery/)
+ * @group Clauses
+ */
 @mixin(WithReturn, WithWith)
 export class Call extends Clause {
     private subQuery: CypherASTNode;
@@ -49,6 +53,9 @@ export class Call extends Clause {
         return this;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const subQueryStr = this.subQuery.getCypher(env);
         const innerWithCypher = compileCypherIfExists(this.importWith, env, { suffix: "\n" });

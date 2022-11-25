@@ -26,7 +26,9 @@ type NodeRefOptions = {
     labels?: string[];
 };
 
-/** Represents a Node reference */
+/** Represents a node reference
+ * @group References
+ */
 export class NodeRef extends Reference {
     public labels: string[];
 
@@ -56,6 +58,9 @@ export class NodeRef extends Reference {
     }
 }
 
+/** Represents a node reference with a given name
+ * @group References
+ */
 export class NamedNode extends NodeRef implements NamedReference {
     public readonly id: string;
 

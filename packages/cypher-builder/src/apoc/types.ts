@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { ConvertFormat } from "./functions/date";
+import type { ConvertFormat } from "./functions/convert-format";
 import type { RunFirstColumn } from "./functions/RunFirstColumn";
 import type { ValidatePredicate } from "./functions/ValidatePredicate";
 import type { Validate } from "./procedures/Validate";

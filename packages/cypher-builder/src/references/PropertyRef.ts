@@ -22,7 +22,10 @@ import type { CypherCompilable } from "../types";
 import type { Reference } from "./Reference";
 import type { Variable } from "./Variable";
 
-/** Reference to a Variable property */
+/** Reference to a variable property
+ * @group References
+ * @example new Node({labels: ["Movie"]}).property("title")
+ */
 export class PropertyRef implements CypherCompilable {
     private _variable: Variable;
     private _property: string;

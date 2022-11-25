@@ -39,11 +39,14 @@ import type { ApocFunction, ApocPredicate, ApocProcedure } from "./apoc/types";
 
 export type Operation = BooleanOp | ComparisonOp | MathOp;
 
-export type VariableLike = Reference | Literal | PropertyRef;
-
+/** Represents a Cypher Expression
+ *  @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/expressions/)
+ */
 export type Expr =
     | Operation
-    | VariableLike
+    | Reference
+    | Literal
+    | PropertyRef
     | CypherFunction
     | Predicate
     | ListComprehension

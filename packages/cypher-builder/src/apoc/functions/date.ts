@@ -17,33 +17,4 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "../../Environment";
-import { CypherASTNode } from "../../CypherASTNode";
-import type { PropertyRef } from "../../references/PropertyRef";
-import type { Variable } from "../../references/Variable";
-
-export class ConvertFormat extends CypherASTNode {
-    private temporalParam: Variable | PropertyRef;
-    private currentFormat: string;
-    private convertTo: string;
-
-    constructor(temporalParam, currentFormat, convertTo) {
-        super();
-        this.temporalParam = temporalParam;
-        this.currentFormat = currentFormat;
-        this.convertTo = convertTo;
-    }
-
-    public getCypher(env: CypherEnvironment): string {
-        const valueStr = this.temporalParam.getCypher(env);
-        return `apoc.date.convertFormat(toString(${valueStr}), "${this.currentFormat}", "${this.convertTo}")`;
-    }
-}
-
-export function convertFormat(
-    temporalParam: Variable | PropertyRef,
-    currentFormat: string,
-    convertTo: string
-): ConvertFormat {
-    return new ConvertFormat(temporalParam, currentFormat, convertTo);
-}
+export { convertFormat } from "./convert-format";

@@ -29,6 +29,9 @@ export abstract class Reference implements CypherCompilable {
         this.prefix = prefix;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const id = env.getReferenceId(this);
         return `${id}`;

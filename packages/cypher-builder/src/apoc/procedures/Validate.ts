@@ -24,6 +24,9 @@ import type { Predicate } from "../../types";
 import { Literal } from "../../references/Literal";
 import { CypherASTNode } from "../../CypherASTNode";
 
+/**
+ * @group Procedures
+ */
 export class Validate extends CypherASTNode {
     private predicate: Predicate;
     private message: string;
@@ -36,6 +39,9 @@ export class Validate extends CypherASTNode {
         this.params = params;
     }
 
+    /**
+     * @ignore
+     */
     public getCypher(env: CypherEnvironment): string {
         const predicateCypher = this.predicate.getCypher(env);
         const paramsCypher = this.params.getCypher(env);

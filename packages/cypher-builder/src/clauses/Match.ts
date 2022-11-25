@@ -33,6 +33,10 @@ import type { CypherEnvironment } from "../Environment";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface Match<T extends MatchableElement = any> extends WithReturn, WithWhere, WithSet, WithWith {}
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/match/)
+ * @group Clauses
+ */
 @mixin(WithReturn, WithWhere, WithSet, WithWith)
 export class Match<T extends MatchableElement> extends Clause {
     private pattern: Pattern<T>;
@@ -49,11 +53,17 @@ export class Match<T extends MatchableElement> extends Clause {
         }
     }
 
+    /** Attach a DELETE subclause
+     * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/delete/)
+     */
     public delete(...deleteInput: DeleteInput): this {
         this.createDeleteClause(deleteInput);
         return this;
     }
 
+    /** Attach a DETACH DELETE subclause
+     * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/delete/)
+     */
     public detachDelete(...deleteInput: DeleteInput): this {
         const deleteClause = this.createDeleteClause(deleteInput);
         deleteClause.detach();
@@ -65,11 +75,25 @@ export class Match<T extends MatchableElement> extends Clause {
         return this;
     }
 
+    /** Makes the clause an OPTIONAL MATCH
+     * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/optional-match/)
+     * @example
+     * ```ts
+     * new Match(new Node({labels: ["Movie"]})).optional();
+     * ```
+     * _Cypher:_
+     * ```cypher
+     * OPTIONAL MATCH (this:Movie)
+     * ```
+     */
     public optional(): this {
         this._optional = true;
         return this;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const nodeCypher = this.pattern.getCypher(env);
 
@@ -90,6 +114,10 @@ export class Match<T extends MatchableElement> extends Clause {
     }
 }
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/optional-match/)
+ * @group Clauses
+ */
 export class OptionalMatch<T extends MatchableElement = any> extends Match<T> {
     constructor(variable: T | Pattern<T>, parameters: MatchParams<T> = {}) {
         super(variable, parameters);

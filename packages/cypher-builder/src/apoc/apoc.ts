@@ -17,11 +17,7 @@
  * limitations under the License.
  */
 
-import { convertFormat } from "./functions/date";
 export { RunFirstColumn } from "./functions/RunFirstColumn";
 export { ValidatePredicate } from "./functions/ValidatePredicate";
 export { Validate } from "./procedures/Validate";
-
-export const date = {
-    convertFormat,
-};
+export * as date from "./functions/date";

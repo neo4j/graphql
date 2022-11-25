@@ -37,6 +37,10 @@ export interface Foreach extends WithWith {}
 // TODO: Set, Remove and Delete cannot be used as they are not directly exposed
 type ForeachClauses = Foreach | SetClause | RemoveClause | Create | Merge | DeleteClause;
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/foreach/)
+ * @group Clauses
+ */
 @mixin(WithWith)
 export class Foreach extends Clause {
     private variable: Variable;
@@ -50,6 +54,9 @@ export class Foreach extends Clause {
         this.mapClause = mapClause;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const variableStr = this.variable.getCypher(env);
         const listExpr = this.listExpr.getCypher(env);

@@ -28,6 +28,10 @@ import type { Variable } from "../../references/Variable";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ListComprehension extends WithWhere {}
 
+/** Represents a List comprehension
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/lists/#cypher-list-comprehension)
+ * @group Expressions
+ */
 @mixin(WithWhere)
 export class ListComprehension extends CypherASTNode {
     private variable: Variable;

@@ -32,6 +32,10 @@ type Params = Record<string, Param<any>>;
 
 export interface Create extends WithReturn, WithSet {}
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/create/)
+ * @group Clauses
+ */
 @mixin(WithReturn, WithSet)
 export class Create extends Clause {
     private pattern: Pattern<NodeRef>;
@@ -42,6 +46,9 @@ export class Create extends Clause {
         this.setSubClause = new SetClause(this);
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const nodeCypher = this.pattern.getCypher(env);
 

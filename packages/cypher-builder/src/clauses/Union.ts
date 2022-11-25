@@ -21,6 +21,10 @@ import type { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
 import { Clause } from "./Clause";
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/union/)
+ * @group Clauses
+ */
 export class Union extends Clause {
     private subqueries: CypherASTNode[] = [];
     private includeAll = false;
@@ -36,6 +40,9 @@ export class Union extends Clause {
         return this;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const subqueriesStr = this.subqueries.map((s) => s.getCypher(env));
         const unionStr = this.includeAll ? "UNION ALL" : "UNION";

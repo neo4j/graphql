@@ -22,7 +22,10 @@ import type { CypherEnvironment } from "../../Environment";
 import type { Predicate } from "../../types";
 
 // Note, this is a procedure, but acts as a predicate expression
-
+/**
+ * @group Expressions
+ * @category Cypher Functions
+ */
 export class ValidatePredicate extends CypherASTNode {
     private predicate: Predicate;
     private message: string;
@@ -33,6 +36,9 @@ export class ValidatePredicate extends CypherASTNode {
         this.message = message;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const predicateCypher = this.predicate.getCypher(env);
         return `apoc.util.validatePredicate(${predicateCypher}, "${this.message}", [0])`;

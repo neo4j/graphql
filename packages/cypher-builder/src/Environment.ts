@@ -25,13 +25,18 @@ export type EnvPrefix = {
     variables?: string;
 };
 
-/** Hold the internal references of Cypher parameters and variables */
+/** Hold the internal references of Cypher parameters and variables
+ *  @group Internal
+ */
 export class CypherEnvironment {
     private readonly globalPrefix: EnvPrefix;
 
     private references: Map<Reference, string> = new Map();
     private params: Param[] = [];
 
+    /**
+     *  @hidden
+     */
     constructor(prefix?: string | EnvPrefix) {
         if (!prefix || typeof prefix === "string") {
             this.globalPrefix = {

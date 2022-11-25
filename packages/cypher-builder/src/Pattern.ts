@@ -50,6 +50,9 @@ type MatchRelationshipParams = {
 
 export type MatchParams<T extends MatchableElement> = T extends NodeRef ? ParamsRecord : MatchRelationshipParams;
 
+/** Represents a MATCH pattern
+ * @group Other
+ */
 export class Pattern<T extends MatchableElement = MatchableElement> implements CypherCompilable {
     public readonly matchElement: T;
     private parameters: MatchParams<T>;
@@ -89,6 +92,9 @@ export class Pattern<T extends MatchableElement = MatchableElement> implements C
         return this;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         if (this.isRelationship(this.matchElement)) {
             return this.getRelationshipCypher(env, this.matchElement);
