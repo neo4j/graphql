@@ -92,6 +92,10 @@ function createDisconnectAndParams({
                         parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
                     });
                 if (whereClause) {
+                    whereStrs.push(whereClause);
+                    params = { ...params, ...whereParams };
+                }
+                if (preComputedWhereFields) {
                     subquery.push(
                         `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${aggregateVariableName}${label})`
                     );
@@ -103,8 +107,6 @@ function createDisconnectAndParams({
                     } else {
                         subquery.push(`WITH DISTINCT ${withVars.join(", ")}`);
                     }
-                    whereStrs.push(whereClause);
-                    params = { ...params, ...whereParams };
                 }
             } catch {
                 return { subquery: "", params: {} };

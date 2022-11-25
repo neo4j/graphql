@@ -164,6 +164,10 @@ export default function createUpdateAndParams({
                                         }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
                                     });
                                 if (whereClause) {
+                                    whereStrs.push(whereClause);
+                                    res.params = { ...res.params, ...whereParams };
+                                }
+                                if (preComputedWhereFields) {
                                     delayedSubqueries.push(
                                         `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${aggregateVariableName}${labels})`
                                     );
@@ -175,13 +179,8 @@ export default function createUpdateAndParams({
                                             )}, ${relationshipVariable}`
                                         );
                                     } else {
-                                        delayedSubqueries.push(
-                                            `WITH DISTINCT ${withVars.join(", ")}`
-                                        );
+                                        delayedSubqueries.push(`WITH DISTINCT ${withVars.join(", ")}`);
                                     }
-
-                                    whereStrs.push(whereClause);
-                                    res.params = { ...res.params, ...whereParams };
                                 }
                             } catch {
                                 return;
