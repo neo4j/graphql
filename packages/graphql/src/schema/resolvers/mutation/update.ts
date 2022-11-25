@@ -38,7 +38,7 @@ export function updateResolver({ node, schemaComposer }: { node: Node; schemaCom
             context,
         });
 
-        publishEventsToPlugin(executeResult, context.plugins?.subscriptions);
+        publishEventsToPlugin(executeResult, context.plugins?.subscriptions, context.schemaModel);
 
         const nodeProjection = info.fieldNodes[0].selectionSet?.selections.find(
             (selection) => selection.kind === "Field" && selection.name.value === node.plural
