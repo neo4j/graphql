@@ -38,34 +38,11 @@ export function publishEventsToPlugin(
     if (plugin) {
         const metadata: EventMeta[] = executeResult.records[0]?.meta || [];
 
-        const serializedEvents = metadata.reduce((events: SubscriptionsEvent[], event) => {
-            if (isNodeSubscriptionMeta(event)) {
-                events.push(serializeNodeSubscriptionEvent(event));
-            }
-            if (isRelationshipSubscriptionMeta(event)) {
-                if (isRelationshipWithTypenameSubscriptionMeta(event)) {
-                    events.push(serializeRelationshipSubscriptionEvent(event));
-                }
-                if (isRelationshipWithLabelsSubscriptionMeta(event)) {
-                    const fromTypenames = getTypenamesFromLabels({ labels: event.fromLabels, schemaModel });
-                    const toTypenames = getTypenamesFromLabels({ labels: event.toLabels, schemaModel });
-                    if (!fromTypenames || !toTypenames) {
-                        return events;
-                    }
-                    for (const fromTypename of fromTypenames) {
-                        for (const toTypename of toTypenames) {
-                            events.push(serializeRelationshipSubscriptionEvent({ ...event, fromTypename, toTypename }));
-                        }
-                    }
-                }
-            }
-            return events;
-        }, []);
+        const serializedEvents = metadata.reduce(parseEvents(schemaModel), []);
         const serializedEventsWithoutDuplicates = removeDuplicateEvents(serializedEvents, "disconnect", "delete");
         for (const subscriptionsEvent of serializedEventsWithoutDuplicates) {
             try {
                 const publishPromise = plugin.publish(subscriptionsEvent); // Not using await to avoid blocking
-                console.log("publish!", subscriptionsEvent);
                 if (publishPromise) {
                     publishPromise.catch((error) => {
                         console.warn(error);
@@ -76,6 +53,32 @@ export function publishEventsToPlugin(
             }
         }
     }
+}
+
+function parseEvents(schemaModel: Neo4jGraphQLSchemaModel) {
+    return function (events: SubscriptionsEvent[], event: EventMeta): SubscriptionsEvent[] {
+        if (isNodeSubscriptionMeta(event)) {
+            events.push(serializeNodeSubscriptionEvent(event));
+        }
+        if (isRelationshipSubscriptionMeta(event)) {
+            if (isRelationshipWithTypenameSubscriptionMeta(event)) {
+                events.push(serializeRelationshipSubscriptionEvent(event));
+            }
+            if (isRelationshipWithLabelsSubscriptionMeta(event)) {
+                const fromTypenames = getTypenamesFromLabels({ labels: event.fromLabels, schemaModel });
+                const toTypenames = getTypenamesFromLabels({ labels: event.toLabels, schemaModel });
+                if (!fromTypenames || !toTypenames) {
+                    return events;
+                }
+                for (const fromTypename of fromTypenames) {
+                    for (const toTypename of toTypenames) {
+                        events.push(serializeRelationshipSubscriptionEvent({ ...event, fromTypename, toTypename }));
+                    }
+                }
+            }
+        }
+        return events;
+    };
 }
 
 type EventType = "create" | "update" | "delete" | "connect" | "disconnect";
@@ -94,12 +97,7 @@ function removeDuplicateEvents(events: SubscriptionsEvent[], ...eventTypes: Even
 
         const resultsIds = resultIdsByEventType.get(event.event) as MapIdToListOfTypenamesType;
         const publishedEventWithId = resultsIds.get(event.id);
-        const publishedEventWithIdAndTypenames = () =>
-            publishedEventWithId?.find(
-                (typenames) =>
-                    typenames.fromTypename === event["fromTypename"] && typenames.toTypename === event["toTypename"]
-            );
-        if (publishedEventWithId && (!event["fromTypename"] || publishedEventWithIdAndTypenames())) {
+        if (isEventAlreadyPublished(event, publishedEventWithId)) {
             return result;
         }
 
@@ -111,9 +109,28 @@ function removeDuplicateEvents(events: SubscriptionsEvent[], ...eventTypes: Even
             })
         );
         result.push(event);
-
         return result;
     }, [] as SubscriptionsEvent[]);
+}
+
+function isEventAlreadyPublished(
+    event: SubscriptionsEvent,
+    publishedEventWithId: { fromTypename: string; toTypename: string }[] | undefined
+): boolean {
+    if (!publishedEventWithId) {
+        return false;
+    }
+    const typenamesAreRelevant = !!event["fromTypename"];
+    if (!typenamesAreRelevant) {
+        return true;
+    }
+    const publishedEventWithTypenames = publishedEventWithId?.find(
+        (typenames) => typenames.fromTypename === event["fromTypename"] && typenames.toTypename === event["toTypename"]
+    );
+    if (publishedEventWithTypenames) {
+        return true;
+    }
+    return false;
 }
 
 function isNodeSubscriptionMeta(event: EventMeta): event is NodeSubscriptionMeta {
