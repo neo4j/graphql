@@ -25,6 +25,8 @@
 **** xref:subscriptions/events/create.adoc[Create]
 **** xref:subscriptions/events/update.adoc[Update]
 **** xref:subscriptions/events/delete.adoc[Delete]
+**** xref:subscriptions/events/connect.adoc[Connect]
+**** xref:subscriptions/events/disconnect.adoc[Disconnect]
 *** xref:subscriptions/filtering.adoc[]
 *** xref:subscriptions/scaling.adoc[]
 *** xref:subscriptions/plugins/index.adoc[Plugins]
