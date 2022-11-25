@@ -11,9 +11,9 @@ As relationship-specific information, the event will contain the relationship fi
 
 NOTE: A new event will be triggered for each new relationship.
 
-This means that, if the type targeted for the subscriptions defines two or more relationships in the schema and two or more relationships are created, there will be an equal number of events triggered as the number of created relationships. Each event will have the relationships object populated with the created relationship properties for one single relationship name only - all other relationship names will have a null value.
+This means that, if the type targeted for the subscriptions defines two or more relationships in the schema and two or more relationships are created, there will be an equal number of events triggered as the number of created relationships. 
 
-NOTE: A relationship is defined by its type, as well as the types on both ends. This is relevant if you have multiple GraphQL types mapped to the same Neo4j label. For more information, check out the xref:subscriptions/events/connect.adoc#connect-same-label[Using Same Label] section below.
+Each event will have the relationships object populated with the created relationship's properties for one single relationship name only - all other relationship names will have a null value.
 
 The event will also contain the properties of the nodes at both ends of the relationship, as well as the properties of the new relationship, if any.
 
@@ -25,14 +25,13 @@ A subscription to a type can be made with the top-level subscription `[type]Rela
 
 * `event`: The event triggering this subscription, in this case it will always be `"CONNECT"`.
 * `timestamp`: The timestamp in which the mutation was made. Note that multiple events may come with the same timestamp if triggered by the same query.
-* `<typename>`: The properties of the node target to the subscription. Only top-level properties, without relationships, are available.
+* `<typename>`: The properties of the node target to the subscription. Only top-level properties, without relationships, are available. Note these are the properties before the operation that trigger the connection took place.
 * `relationshipFieldName`: The field name of the newly created relationship, as part of the node target to the subscription.
-* `createdRelationship`: An object having as keys all field names of the node target to the subscription which represent its relationships. For any given event, all field names but the one corresponding to `relationshipFieldName` will be null. The field name equal to `relationshipFieldName` will contain the relationship properties, if defined, as well as a `node` key containing the properties of the node on the other side of the relationship. Only top-level properties, without relationships, are available.
+* `createdRelationship`: An object having as keys all field names of the node target to the subscription which represent its relationships. For any given event, all field names but the one corresponding to `relationshipFieldName` will be null. The field name equal to `relationshipFieldName` will contain the relationship properties, if defined, as well as a `node` key containing the properties of the node on the other side of the relationship. Only top-level properties, without relationships, are available. Note these are the properties before the operation that trigger the connection took place.
 
 NOTE: Irrespective of the relationship direction in the database, the `CONNECT` event is bound to the type targeted for the subscription. The consequence is that - given a relationship between types A and B that is not reciprocal (that is, in the GraphQL schema type A defines a relationship to B but B does **not** define a relationship to A) and a GraphQL operation that creates the relationship between them - even though the two nodes will be connected in the database, only a subscription to type A will catch the `CONNECT` event. Check out the xref:subscriptions/events/connect.adoc#non-reciprocal-relationships[Non-reciprocal Relationships] section below for more details.
 
-=== Example
-Considering the following type definitions:
+For example, considering the following type definitions:
 ```graphql
 type Movie {
     title: String
@@ -69,8 +68,9 @@ subscription {
 }
 ```
 
+== Examples
 
-=== Connections to Abstract Types
+=== Connect with Abstract Types
 
 When using Abstract Types with relationships, you will need to specify one or more of the corresponding Concrete Types when performing the subscription operation.
 
@@ -207,21 +207,13 @@ interface Directed @relationshipProperties {
 }
 ```
 
-Based on the type definitions, we can make some observations:
+The type definitions contain 2 relationships: types `ACTED_IN` and `DIRECTED`.
 
-1. A `Movie` defines a relationship to `Actor` of type `ACTED_IN`
-2. An `Actor` defines a relationship to `Movie` of type `ACTED_IN`
-3. A `Movie` defines a relationship to `Director` of type `DIRECTED`
-4. A `Director` is a union between an `Actor` and a `Person`
-5. An `Actor` does **not** define a relationship to `Movie` of type `DIRECTED`
-6. A `Person` does **not** define a relationship to `Movie` of type `DIRECTED`
+It can be observed that the `ACTED_IN` relationship has a corresponding field defined in both the `Movie` and `Actor` types. As such, we can say that `ACTED_IN` is a reciprocal relationship.
 
-These observations result in 2 very important conclusions:
+`DIRECTED` on the other hand is only defined in the `Movie` type. The `Director` type does not define a matching field. As such, we can say `DIRECTED` is **not** a reciprocal relationship.
 
-1. First, by looking at #1 and #2 we can conclude that the relationship of type `ACTED_IN` is reciprocal. 
-2. Second, from #3, #4, #5 and #6 we can conclude that the relationship of type `DIRECTED` is **not** reciprocal.
-
-Let us now take a look at how we can subscribe to connections:
+Let us now take a look at how we can subscribe to created relationships for the 3 types defined above:
 
 ==== Movie
 ```graphql
@@ -257,6 +249,10 @@ subscription {
 }
 ```
 
+==== Person
+
+As the `Person` type does not define any relationships, it is **not** possible to subscribe to `CONNECT` events for this type.
+
 ==== Actor
 ```graphql
 subscription {
@@ -280,9 +276,7 @@ subscription {
 }
 ```
 
-NOTE: As we know from Conclusion#1, the relationship of type `ACTED_IN` is reciprocal - hence the `movies` field. 
-
-NOTE: As we know from Conclusion#2, the relationship of type `DIRECTED` is **not** reciprocal - hence the absence of another field.
+The presence of the `movie` field inside of `createdRelationship` for the `actorRelationshipCreated` subscription reflects the fact that the `ACTED_IN` typed relationship is reciprocal.
 
 Therefore, when a new relationship of this type is made, such as by running a mutation as follows...
 ```graphql
@@ -315,11 +309,11 @@ mutation {
 }
 ```
 
-...two events will potentially be published, depending on whether we subscribed to `CONNECT` events on both types:
+...two events will be published (given that we subscribed to `CONNECT` events on both types):
 ```graphql
 { 
-    # 1 - movieRelationshipCreated
-    event: "DISCONNECT"
+    # from `movieRelationshipCreated`
+    event: "CONNECT"
     timestamp
     movie {
         title: "John Wick",
@@ -336,8 +330,8 @@ mutation {
     }
 },
 {
-    # 2 - actorRelationshipCreated
-    event: "DISCONNECT"
+    # from `actorRelationshipCreated`
+    event: "CONNECT"
     timestamp
     actor {
         name: "Keanu Reeves"
@@ -354,13 +348,7 @@ mutation {
 }
 ```
 
-==== Person
-
-As the `Person` type does not define any relationships, it is **not** possible to subscribe to `CONNECT` events for this type.
-
-NOTE: As we know from Conclusion#2, the relationship of type `DIRECTED` is **not** reciprocal. 
-
-Therefore, when relationships of this type are made, such as by running a mutation as follows...
+Since the `DIRECTED` relationship between types `Movie` and `Director` is **not** reciprocal, executing a mutation as follows...
 ```graphql
 mutation {
     createMovies(
@@ -406,11 +394,11 @@ mutation {
 }
 ```
 
-...two events will potentially be published, depending on whether we subscribed to `CONNECT` events on the `Movie` type:
+...results in the two events will potentially be published (given that we subscribed to `CONNECT` events on the `Movie` type):
 ```graphql
 { 
-    # relationship 1
-    event: "DISCONNECT"
+    # relationship 1 - from `movieRelationshipCreated`
+    event: "CONNECT"
     timestamp
     movie {
         title: "New York Stories",
@@ -427,8 +415,8 @@ mutation {
     }
 },
 { 
-    # relationship 2
-    event: "DISCONNECT"
+    # relationship 2 - from `movieRelationshipCreated`
+    event: "CONNECT"
     timestamp
     movie {
         title: "New York Stories",
@@ -447,11 +435,15 @@ mutation {
 }
 ```
 
+== Special Considerations
+
 [[connect-same-label]]
 === Types using the same Neo4j label
 
-One other case that deserves special consideration is overriding the label in Neo4j for a specific GraphQL type. 
+One case that deserves special consideration is overriding the label in Neo4j for a specific GraphQL type. 
 This can be achieved using the `@node` directive, by specifying the `label` argument.
+
+NOTE: While this section serves an informative purpose, it should be mentioned that, in the majority of cases, this is not the recommended approach of designing your API.
 
 Consider the following type definitions:
 ```graphql
@@ -561,7 +553,7 @@ mutation {
 ```graphql
 { 
     # relationship 1 `people` - for GraphQL types `Movie`, `Person`
-    event: "DISCONNECT"
+    event: "CONNECT"
     timestamp
     movie {
         title: "Sweeney Todd",
@@ -578,7 +570,7 @@ mutation {
 },
 { 
     # relationship 1 `people` - for GraphQL types `Movie`, `Actor`
-    event: "DISCONNECT"
+    event: "CONNECT"
     timestamp
     movie {
         title: "Sweeney Todd",
@@ -595,7 +587,7 @@ mutation {
 },
 { 
     # relationship 1 `movies` - for GraphQL types `Actor`, `Movie`
-    event: "DISCONNECT"
+    event: "CONNECT"
     timestamp
     actor {
         name: "John Logan"
@@ -611,7 +603,7 @@ mutation {
 },
 { 
     # relationship 2 `actors` - for GraphQL types `Movie`,`Person`
-    event: "DISCONNECT"
+    event: "CONNECT"
     timestamp
     movie {
         title: "Sweeney Todd",
@@ -628,7 +620,7 @@ mutation {
 },
 { 
     # relationship 2 `actors` - for GraphQL types `Movie`, `Actor`
-    event: "DISCONNECT"
+    event: "CONNECT"
     timestamp
     movie {
         title: "Sweeney Todd",
@@ -645,7 +637,7 @@ mutation {
 },
 { 
     # relationship 2 `movies` - for GraphQL types `Actor`, `Movie`
-    event: "DISCONNECT"
+    event: "CONNECT"
     timestamp
     actor {
         name: "Johnny Depp"
@@ -661,11 +653,11 @@ mutation {
 },
 ```
 
-Had we subscribed to `` as well, we would have received two more events:
+Had we subscribed to `Person` as well, we would have received two more events:
 ```graphql
 { 
     # relationship 1 `movies` - for GraphQL types `Person`, `Movie`
-    event: "DISCONNECT"
+    event: "CONNECT"
     timestamp
     actor {
         name: "John Logan"
@@ -681,7 +673,7 @@ Had we subscribed to `` as well, we would have received two more events:
 },
 { 
     # relationship 2 `movies` - for GraphQL types `Person`, `Movie`
-    event: "DISCONNECT"
+    event: "CONNECT"
     timestamp
     actor {
         name: "Johnny Depp"
