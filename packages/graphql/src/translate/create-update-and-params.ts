@@ -135,9 +135,7 @@ export default function createUpdateAndParams({
 
                 updates.forEach((update, index) => {
                     const relationshipVariable = `${varName}_${relationField.type.toLowerCase()}${index}_relationship`;
-                    const aggregateRelationshipVariable = `${relationshipVariable}_aggregate`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
-                    const aggregateRelTypeStr = `[${aggregateRelationshipVariable}:${relationField.type}]`;
                     const variableName = `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
                     const aggregateVariableName = `${variableName}_aggregate`;
                     const labels = refNode.getLabelString(context);
@@ -158,7 +156,6 @@ export default function createUpdateAndParams({
                                         node: refNode,
                                         nodeVariable: variableName,
                                         aggregateNodeVariable: aggregateVariableName,
-                                        // aggregateRelationshipVariable, TODO implement this
                                         relationship,
                                         relationshipVariable,
                                         context,
@@ -167,17 +164,20 @@ export default function createUpdateAndParams({
                                         }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
                                     });
                                 if (whereClause) {
-                                    // subquery.push("WITH *");
                                     delayedSubqueries.push(
-                                        `OPTIONAL MATCH (${parentVar})${inStr}${aggregateRelTypeStr}${outStr}(${aggregateVariableName}${labels})`
+                                        `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${aggregateVariableName}${labels})`
                                     );
                                     delayedSubqueries.push(preComputedWhereFields);
                                     if (predicateVariables && predicateVariables.length) {
                                         delayedSubqueries.push(
-                                            `WITH DISTINCT ${withVars.join(", ")}, ${predicateVariables.join(", ")}`
+                                            `WITH DISTINCT ${withVars.join(", ")}, ${predicateVariables.join(
+                                                ", "
+                                            )}, ${relationshipVariable}`
                                         );
                                     } else {
-                                        delayedSubqueries.push(`WITH DISTINCT ${withVars.join(", ")}`);
+                                        delayedSubqueries.push(
+                                            `WITH DISTINCT ${withVars.join(", ")}`
+                                        );
                                     }
 
                                     whereStrs.push(whereClause);

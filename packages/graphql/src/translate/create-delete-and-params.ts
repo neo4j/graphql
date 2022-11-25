@@ -96,21 +96,23 @@ function createDeleteAndParams({
                     let preComputedWhereFields = "";
                     let whereClause = "";
                     let whereParams = {};
+                    let predicateVariables: string[] | undefined;
 
                     if (d.where) {
                         try {
-                            [preComputedWhereFields, whereClause, whereParams] = createConnectionWhereAndParams({
-                                nodeVariable: variableName,
-                                aggregateNodeVariable: aggregateVariableName,
-                                whereInput: d.where,
-                                node: refNode,
-                                context,
-                                relationshipVariable,
-                                relationship,
-                                parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
-                                    relationField.union ? `.${refNode.name}` : ""
-                                }${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
-                            });
+                            [preComputedWhereFields, whereClause, whereParams, predicateVariables] =
+                                createConnectionWhereAndParams({
+                                    nodeVariable: variableName,
+                                    aggregateNodeVariable: aggregateVariableName,
+                                    whereInput: d.where,
+                                    node: refNode,
+                                    context,
+                                    relationshipVariable,
+                                    relationship,
+                                    parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
+                                        relationField.union ? `.${refNode.name}` : ""
+                                    }${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
+                                });
                             if (whereClause) {
                                 whereStrs.push(whereClause);
                                 res.params = { ...res.params, ...whereParams };
@@ -139,7 +141,15 @@ function createDeleteAndParams({
                             `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${aggregateVariableName}${labels})`
                         );
                         res.strs.push(preComputedWhereFields);
-                        res.strs.push("WITH *");
+                        if (predicateVariables && predicateVariables.length) {
+                            res.strs.push(
+                                `WITH DISTINCT ${withVars.join(", ")}, ${predicateVariables.join(
+                                    ", "
+                                )}, ${relationshipVariable}`
+                            );
+                        } else {
+                            res.strs.push(`WITH DISTINCT ${withVars.join(", ")}`);
+                        }
                     }
 
                     res.strs.push(
