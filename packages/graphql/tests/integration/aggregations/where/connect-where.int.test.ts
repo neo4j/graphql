@@ -502,6 +502,7 @@ describe("Connect UNIONs using aggregate where", () => {
         );
         expect(storedValue.records).toHaveLength(3);
     });
+    
     test("should connect when using count, edge and node filters", async () => {
         const query = `
             mutation {
