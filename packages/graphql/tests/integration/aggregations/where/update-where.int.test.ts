@@ -146,14 +146,14 @@ describe("Update using aggregate where", () => {
         expect(results).toEqual(
             expect.toIncludeSameMembers([
                 {
-                    post: {
+                    post: expect.objectContaining({
                         properties: { id: postId1, content: originalContent },
-                    },
+                    }),
                 },
                 {
-                    post: {
+                    post: expect.objectContaining({
                         properties: { id: postId2, content: expextedContent },
-                    },
+                    }),
                 },
             ])
         );
@@ -220,12 +220,27 @@ describe("Update using aggregate where", () => {
         ]);
         const storedValue = await session.run(
             `
-             MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
+             MATCH (u:${userType.name})-[r:LIKES]->(post:${postType.name}) 
              WHERE u.name = "${userName}" 
-             RETURN p
+             RETURN post
              `,
             {}
         );
         expect(storedValue.records).toHaveLength(2);
+        const results = storedValue.records.map((record) => record.toObject());
+        expect(results).toEqual(
+            expect.toIncludeSameMembers([
+                {
+                    post: expect.objectContaining({
+                        properties: { id: postId1, content: expextedContent },
+                    }),
+                },
+                {
+                    post: expect.objectContaining({
+                        properties: { id: postId2, content: expextedContent },
+                    }),
+                },
+            ])
+        );
     });
 });
