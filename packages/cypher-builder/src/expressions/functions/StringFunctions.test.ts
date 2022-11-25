@@ -17,12 +17,20 @@
  * limitations under the License.
  */
 
-import type { Entity } from "./Entity";
+import { TestClause } from "../../utils/TestClause";
+import Cypher from "../..";
 
-export class ConcreteEntity implements Entity {
-    public readonly name: string;
+describe("String Functions", () => {
+    test("toLower", () => {
+        const toLowerFunction = Cypher.toLower(new Cypher.Param("Hello"));
+        const queryResult = new TestClause(toLowerFunction).build();
 
-    constructor({ name }: { name: string }) {
-        this.name = name;
-    }
-}
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"toLower($param0)"`);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "Hello",
+            }
+        `);
+    });
+});

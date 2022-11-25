@@ -17,6 +17,10 @@
  * limitations under the License.
  */
 
-export interface Entity {
-    readonly name: string;
+export class CypherAnnotation {
+    public statement: string;
+
+    constructor({ statement }: { statement: string }) {
+        this.statement = statement;
+    }
 }
