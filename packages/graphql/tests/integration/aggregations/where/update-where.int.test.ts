@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
+import type { Driver,  Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
 import { cleanNodes } from "../../../utils/clean-nodes";
 
-describe("Disconnect using aggregate where", () => {
+describe("Update using aggregate where", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
@@ -36,6 +36,8 @@ describe("Disconnect using aggregate where", () => {
     const postId2 = "Post2";
     const userName = "Username1";
     const userName2 = "UsernameWithAVeryLongName";
+    const originalContent = "An old boring content";
+    const expextedContent = "A new wonderful content";
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -62,8 +64,8 @@ describe("Disconnect using aggregate where", () => {
         await session.run(`
             CREATE (u:${userType.name} {name: "${userName}"})
             CREATE (u2:${userType.name} {name: "${userName2}"})
-            CREATE (u)-[:LIKES]->(p:${postType.name} {id: "${postId1}"})
-            CREATE (u)-[:LIKES]->(p2:${postType.name} {id: "${postId2}"})
+            CREATE (u)-[:LIKES]->(p:${postType.name} {id: "${postId1}", content: "${originalContent}"})
+            CREATE (u)-[:LIKES]->(p2:${postType.name} {id: "${postId2}", content: "${originalContent}"})
             CREATE (u2)-[:LIKES]->(p2)
         `);
 
@@ -82,20 +84,23 @@ describe("Disconnect using aggregate where", () => {
         await driver.close();
     });
 
-    test("should disconnect by using an aggregation count", async () => {
+    test("should update by using an aggregation count", async () => {
         const query = `
             mutation {
                 ${userType.operations.update}(
                     where: { name: "${userName}" }
                     update: { 
-                        likedPosts: { 
-                            disconnect: { 
-                                where: { 
-                                    node: {
-                                        likesAggregate: {
-                                            count: 2
-                                        }
-                                    } 
+                        likedPosts: {
+                            where: { 
+                                node: {
+                                    likesAggregate: {
+                                        count: 2
+                                    }
+                                } 
+                            } 
+                            update: {
+                                node: {
+                                    content: "${expextedContent}"
                                 } 
                             } 
                         } 
@@ -104,6 +109,7 @@ describe("Disconnect using aggregate where", () => {
                         name
                         likedPosts {
                             id
+                            content
                         }
                     }
                 }
@@ -118,43 +124,69 @@ describe("Disconnect using aggregate where", () => {
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
-        expect(users).toEqual([{ name: userName, likedPosts: expect.toIncludeSameMembers([{ id: postId1 }]) }]);
+        expect(users).toEqual([
+            {
+                name: userName,
+                likedPosts: expect.toIncludeSameMembers([
+                    { id: postId1, content: originalContent },
+                    { id: postId2, content: expextedContent },
+                ]),
+            },
+        ]);
         const storedValue = await session.run(
             `
-            MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
+            MATCH (u:${userType.name})-[r:LIKES]->(post:${postType.name}) 
             WHERE u.name = "${userName}" 
-            RETURN p
+            RETURN post
             `,
             {}
         );
-        expect(storedValue.records).toHaveLength(1);
+        expect(storedValue.records).toHaveLength(2);
+        const results = storedValue.records.map((record) => record.toObject());
+        expect(results).toEqual(
+            expect.toIncludeSameMembers([
+                {
+                    post: {
+                        properties: { id: postId1, content: originalContent },
+                    },
+                },
+                {
+                    post: {
+                        properties: { id: postId2, content: expextedContent },
+                    },
+                },
+            ])
+        );
     });
 
-    test("should disconnect by using a nested aggregation", async () => {
+    test("should update by using a nested aggregation", async () => {
         const query = `
              mutation {
                  ${userType.operations.update}(
                      where: { name: "${userName}" }
                      update: { 
-                         likedPosts: { 
-                             disconnect: { 
-                                 where: { 
-                                     node: {
-                                         likesAggregate: {
-                                            OR: [
-                                            {
-                                                count: 2
-                                                
-                                            },
-                                            {
-                                                node: {
-                                                    name_SHORTEST_LT: 10 
-                                                }
-                                             }
-                                            ]
-                                         }
-                                     } 
-                                 } 
+                         likedPosts: {
+                            where: { 
+                                node: {
+                                    likesAggregate: {
+                                       OR: [
+                                       {
+                                           count: 2
+                                           
+                                       },
+                                       {
+                                           node: {
+                                               name_SHORTEST_LT: 10 
+                                           }
+                                        }
+                                       ]
+                                    }
+                                } 
+                            } 
+                             update: {
+                                node: {
+                                    content: "${expextedContent}"
+                                }
                              } 
                          } 
                  }) {
@@ -162,6 +194,7 @@ describe("Disconnect using aggregate where", () => {
                          name
                          likedPosts {
                              id
+                             content
                          }
                      }
                  }
@@ -176,7 +209,15 @@ describe("Disconnect using aggregate where", () => {
 
         expect(gqlResult.errors).toBeUndefined();
         const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
-        expect(users).toEqual([{ name: userName, likedPosts: [] }]);
+        expect(users).toEqual([
+            {
+                name: userName,
+                likedPosts: expect.toIncludeSameMembers([
+                    { id: postId1, content: expextedContent },
+                    { id: postId2, content: expextedContent },
+                ]),
+            },
+        ]);
         const storedValue = await session.run(
             `
              MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
@@ -185,6 +226,6 @@ describe("Disconnect using aggregate where", () => {
              `,
             {}
         );
-        expect(storedValue.records).toHaveLength(0);
+        expect(storedValue.records).toHaveLength(2);
     });
 });
