@@ -306,6 +306,7 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
@@ -557,6 +558,7 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([

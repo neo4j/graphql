@@ -17,13 +17,32 @@
  * limitations under the License.
  */
 
+import type { CompositeEntity } from "./entity/CompositeEntity";
+import type { ConcreteEntity } from "./entity/ConcreteEntity";
 import type { Entity } from "./entity/Entity";
 
 /** Represents the internal model for the Neo4jGraphQL schema */
 export class Neo4jGraphQLSchemaModel {
     public entities: Map<string, Entity>;
+    public concreteEntities: ConcreteEntity[];
+    public compositeEntities: CompositeEntity[];
 
-    constructor(entities: Map<string, Entity>) {
-        this.entities = entities;
+    constructor({
+        concreteEntities,
+        compositeEntities,
+    }: {
+        concreteEntities: ConcreteEntity[];
+        compositeEntities: CompositeEntity[];
+    }) {
+        this.entities = [...compositeEntities, ...concreteEntities].reduce((acc, entity) => {
+            acc.set(entity.name, entity);
+            return acc;
+        }, new Map<string, Entity>());
+        this.concreteEntities = concreteEntities;
+        this.compositeEntities = compositeEntities;
+    }
+
+    public getEntitiesByLabels(labels: string[]): ConcreteEntity[] {
+        return this.concreteEntities.filter((entity) => entity.matchLabels(labels));
     }
 }

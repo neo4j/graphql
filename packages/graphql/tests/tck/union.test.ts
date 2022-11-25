@@ -649,7 +649,7 @@ describe("Cypher Union", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_delete_search_Genre0_relationship:SEARCH]->(this_delete_search_Genre0:Genre)
             WHERE this_delete_search_Genre0.name = $updateMovies_args_delete_search_Genre0_where_Genreparam0
-            WITH this, collect(DISTINCT this_delete_search_Genre0) as this_delete_search_Genre0_to_delete
+            WITH this, collect(DISTINCT this_delete_search_Genre0) AS this_delete_search_Genre0_to_delete
             CALL {
             	WITH this_delete_search_Genre0_to_delete
             	UNWIND this_delete_search_Genre0_to_delete AS x

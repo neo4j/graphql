@@ -80,7 +80,7 @@ export function translateTopLevelCypher({
 
     const unionWhere: string[] = [];
 
-    const entity = context.entities.get(field.typeMeta.name);
+    const entity = context.schemaModel.entities.get(field.typeMeta.name);
 
     if (entity instanceof CompositeEntity) {
         const headStrs: string[] = [];

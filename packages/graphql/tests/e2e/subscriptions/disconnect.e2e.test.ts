@@ -285,6 +285,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -368,7 +369,7 @@ subscription SubscriptionPerson {
                                                 }
                                             }
                                         ]
-                                    }   
+                                    }
                                 },
                                 title: "John Wick",
                             }
@@ -430,6 +431,8 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(2);
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -555,6 +558,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -708,6 +712,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -905,6 +910,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1146,6 +1152,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1298,7 +1305,7 @@ subscription SubscriptionPerson {
                                                 }
                                             }
                                         ]
-                                    }   
+                                    }
                                 },
                                 title: "John Wick",
                             }
@@ -1382,6 +1389,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1608,6 +1616,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1750,7 +1759,7 @@ subscription SubscriptionPerson {
                                             }
                                         }
                                     ]
-                                }   
+                                }
                             },
                             title: "Constantine",
                         }
@@ -1843,6 +1852,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2033,7 +2043,7 @@ subscription SubscriptionPerson {
                                             }
                                         }
                                     ]
-                                }   
+                                }
                             },
                             title: "Constantine",
                         }
@@ -2126,6 +2136,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2361,7 +2372,7 @@ subscription SubscriptionPerson {
                                             }
                                         }
                                     ]
-                                }   
+                                }
                             },
                             title: "Constantine",
                         }
@@ -2454,6 +2465,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2637,7 +2649,7 @@ subscription SubscriptionPerson {
                 mutation {
                     ${typeMovie.operations.create}(
                         input: [
-                            {    
+                            {
                                 directors: {
                                     ${typeActor.name}: {
                                         create: [
@@ -2675,7 +2687,7 @@ subscription SubscriptionPerson {
                                                 }
                                             }
                                         ]
-                                    }   
+                                    }
                                 },
                                 title: "John Wick",
                             }
@@ -2752,6 +2764,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2905,7 +2918,7 @@ subscription SubscriptionPerson {
                 mutation {
                     ${typeMovie.operations.create}(
                         input: [
-                            {    
+                            {
                                 directors: {
                                     ${typeActor.name}: {
                                         create: [
@@ -2963,7 +2976,7 @@ subscription SubscriptionPerson {
                                                 }
                                             }
                                         ]
-                                    }   
+                                    }
                                 },
                                 title: "John Wick",
                             }
@@ -3040,6 +3053,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -3218,7 +3232,7 @@ subscription SubscriptionPerson {
                 mutation {
                     ${typeMovie.operations.create}(
                         input: [
-                            {    
+                            {
                                 directors: {
                                     ${typeActor.name}: {
                                         connect: [
@@ -3239,7 +3253,7 @@ subscription SubscriptionPerson {
                                                                   },
                                                                   edge: {
                                                                     screenTime: 234
-                                                                  } 
+                                                                  }
                                                             }
                                                         ]
                                                     }
@@ -3248,7 +3262,7 @@ subscription SubscriptionPerson {
                                                     year: 1999
                                                 }
                                             }
-                                        ], 
+                                        ],
                                         create: [
                                             {
                                                 node: {
@@ -3284,7 +3298,7 @@ subscription SubscriptionPerson {
                                                 }
                                             }
                                         ]
-                                    }   
+                                    }
                                 },
                                 title: "John Wick",
                             }
@@ -3361,6 +3375,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        await delay(2);
         await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
