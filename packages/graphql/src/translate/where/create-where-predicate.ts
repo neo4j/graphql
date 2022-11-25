@@ -30,6 +30,25 @@ function isWhereOperator(key: string): key is WhereOperators {
     return ["OR", "AND"].includes(key);
 }
 
+type WhereEntry = [Cypher.Clause | undefined, Cypher.Predicate | undefined, Cypher.Variable[] | undefined];
+
+type PrecomputedPredicates = {
+    precomputedClauses: Cypher.Clause | undefined;
+    predicates: (Cypher.Predicate | undefined)[];
+    predicateVariables: Cypher.Variable[] | undefined;
+}
+
+function whereEntriesReducer(accumulator: PrecomputedPredicates, current: WhereEntry): PrecomputedPredicates {
+    if (accumulator.precomputedClauses) {
+        accumulator.precomputedClauses = Cypher.concat(accumulator.precomputedClauses, current[0]);
+    } else {
+        accumulator.precomputedClauses = current[0];
+    }
+    accumulator.predicates.push(current[1]);
+    accumulator.predicateVariables?.push(...(current[2] || []))
+    return accumulator;
+}
+
 /** Translate a target node and GraphQL input into a Cypher operation o valid where expression */
 export function createWherePredicate({
     targetElement,
@@ -67,21 +86,8 @@ export function createWherePredicate({
             }
         )
         .reduce(
-            (accumulator, current) => {
-                if (accumulator.precomputedClauses) {
-                    accumulator.precomputedClauses = Cypher.concat(accumulator.precomputedClauses, current[0]);
-                } else {
-                    accumulator.precomputedClauses = current[0];
-                }
-                accumulator.predicates.push(current[1]);
-                accumulator.predicateVariables?.push(...(current[2] || []))
-                return accumulator;
-            },
-            { precomputedClauses: undefined, predicates: [], predicateVariables: [] } as {
-                precomputedClauses: Cypher.Clause | undefined;
-                predicates: (Cypher.Predicate | undefined)[];
-                predicateVariables: Cypher.Variable[] | undefined;
-            }
+            whereEntriesReducer,
+            { precomputedClauses: undefined, predicates: [], predicateVariables: [] } as PrecomputedPredicates
         );
 
     // Implicit AND
@@ -108,21 +114,8 @@ function createNestedPredicate({
             return createWherePredicate({ whereInput: v, element, targetElement, context, aggregateTargetElement });
         })
         .reduce(
-            (accumulator, current) => {
-                if (accumulator.precomputedClauses) {
-                    accumulator.precomputedClauses = Cypher.concat(accumulator.precomputedClauses, current[0]);
-                } else {
-                    accumulator.precomputedClauses = current[0];
-                }
-                accumulator.predicates.push(current[1]);
-                accumulator.predicateVariables?.push(...(current[2] || []));
-                return accumulator;
-            },
-            { precomputedClauses: undefined, predicates: [], predicateVariables: [] } as {
-                precomputedClauses: Cypher.Clause | undefined;
-                predicates: (Cypher.Predicate | undefined)[];
-                predicateVariables: Cypher.Variable[] | undefined;
-            }
+            whereEntriesReducer,
+            { precomputedClauses: undefined, predicates: [], predicateVariables: [] } as PrecomputedPredicates
         );
     if (key === "OR") {
         return [precomputedClauses, Cypher.or(...predicates), predicateVariables];

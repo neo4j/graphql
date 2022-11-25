@@ -174,9 +174,7 @@ export function preComputedWhereFields(
     if (direction === "IN") {
         cypherRelation.reverse();
     }
-
     const matchQuery = new Cypher.Match(cypherRelation);
-
     const [returnVariables, predicates, predicateVariables] = computeRootWhereAggregate(
         value,
         refNode,
@@ -184,7 +182,6 @@ export function preComputedWhereFields(
         cypherRelation
     );
     matchQuery.return(...returnVariables);
-
     return [new Cypher.Call(matchQuery).innerWith(matchNode), Cypher.and(...predicates), predicateVariables];
 }
 
