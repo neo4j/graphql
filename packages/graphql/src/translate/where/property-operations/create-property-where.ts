@@ -99,7 +99,6 @@ export function createPropertyWhere({
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
             return preComputedWhereFields(
                 value,
-                element,
                 context,
                 aggregateTargetElement || targetElement,
                 relationField
@@ -157,7 +156,6 @@ export function createPropertyWhere({
 
 export function preComputedWhereFields(
     value: any,
-    node: Node,
     context: Context,
     matchNode: Cypher.Variable,
     relationField: RelationField
@@ -224,7 +222,6 @@ function computeRootWhereAggregate(
             returnVariables.push(..._returnVariables);
             predicateVariables.push(..._predicateVariables);
             predicates.push(..._predicates);
-            // const aggregationOperators = ["SHORTEST", "LONGEST", "MIN", "MAX", "SUM"];
         } else if (["AND", "OR"].includes(key)) {
             const binaryOp = key === "AND" ? Cypher.and : Cypher.or;
             const [a, b, c] = (value as Array<any>).reduce(
@@ -262,7 +259,7 @@ function computeFieldAggregateWhere(
     Object.entries(value).forEach(([innerKey, innerValue]) => {
         if (["AND", "OR"].includes(innerKey)) {
             const binaryOp = innerKey === "AND" ? Cypher.and : Cypher.or;
-            const [a, b, c] = (innerValue as Array<any>).reduce(
+            const [nestedReturnVariables, nestedPredicates, nestedPredicateVariables] = (innerValue as Array<any>).reduce(
                 (prev, elementValue) => {
                     const [_returnVariables, _predicates, _predicateVariables] = computeFieldAggregateWhere(
                         elementValue,
@@ -276,9 +273,9 @@ function computeFieldAggregateWhere(
                 },
                 [[], [], []]
             );
-            returnVariables.push(...a);
-            predicates.push(binaryOp(...b));
-            predicateVariables.push(...c);
+            returnVariables.push(...nestedReturnVariables);
+            predicates.push(binaryOp(...nestedPredicates));
+            predicateVariables.push(...nestedPredicateVariables);
         } else {
             const paramName = new Cypher.Param(innerValue);
             const regexResult = aggregationFieldRegEx.exec(innerKey)?.groups as AggregationFieldRegexGroups;
