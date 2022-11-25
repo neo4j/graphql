@@ -26,7 +26,6 @@ import type { Neo4jDatabaseInfo } from "./classes/Neo4jDatabaseInfo";
 import type { RelationshipQueryDirectionOption } from "./constants";
 import type { Executor } from "./classes/Executor";
 import type { Directive } from "graphql-compose";
-import type { Entity } from "./schema-model/entity/Entity";
 import type { Neo4jGraphQLSchemaModel } from "./schema-model/Neo4jGraphQLSchemaModel";
 
 export { Node } from "./classes";
@@ -377,13 +376,14 @@ export type NodeSubscriptionMeta = {
     id: Integer | string | number;
     timestamp: Integer | string | number;
 };
-export type RelationshipSubscriptionMeta = {
+export type RelationshipSubscriptionMeta =
+    | RelationshipSubscriptionMetaTypenameParameters
+    | RelationshipSubscriptionMetaLabelsParameters;
+type RelationshipSubscriptionMetaCommonParameters = {
     event: "connect" | "disconnect";
     relationshipName: string;
     id_from: Integer | string | number;
     id_to: Integer | string | number;
-    fromTypename: string;
-    toTypename: string;
     properties: {
         from: Record<string, any>;
         to: Record<string, any>;
@@ -391,6 +391,14 @@ export type RelationshipSubscriptionMeta = {
     };
     id: Integer | string | number;
     timestamp: Integer | string | number;
+};
+export type RelationshipSubscriptionMetaTypenameParameters = RelationshipSubscriptionMetaCommonParameters & {
+    fromTypename: string;
+    toTypename: string;
+};
+export type RelationshipSubscriptionMetaLabelsParameters = RelationshipSubscriptionMetaCommonParameters & {
+    fromLabels: string[];
+    toLabels: string[];
 };
 export type EventMeta = NodeSubscriptionMeta | RelationshipSubscriptionMeta;
 
@@ -458,10 +466,6 @@ export type RelationshipSubscriptionsEvent =
       };
 /** Serialized subscription event */
 export type SubscriptionsEvent = NodeSubscriptionsEvent | RelationshipSubscriptionsEvent;
-// export type SubscriptionsEvent = (NodeSubscriptionsEvent | RelationSubscriptionsEvent) & {
-//     id: number;
-//     timestamp: number;
-// };
 
 export interface Neo4jGraphQLSubscriptionsPlugin {
     events: EventEmitter;

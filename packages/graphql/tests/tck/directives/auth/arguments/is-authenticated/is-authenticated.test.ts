@@ -493,8 +493,8 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
-            	WITH this_disconnect_posts0, this_disconnect_posts0_rel
-            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
+            	WITH this_disconnect_posts0, this_disconnect_posts0_rel, this
+            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel, this
             	UNWIND this_disconnect_posts0 as x
             	DELETE this_disconnect_posts0_rel
             	RETURN count(*) AS _
@@ -592,7 +592,7 @@ describe("Cypher Auth isAuthenticated", () => {
             OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
             WITH this, this_posts0
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this, collect(DISTINCT this_posts0) as this_posts0_to_delete
+            WITH this, collect(DISTINCT this_posts0) AS this_posts0_to_delete
             CALL {
             	WITH this_posts0_to_delete
             	UNWIND this_posts0_to_delete AS x
