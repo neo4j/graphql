@@ -343,6 +343,7 @@ function getRelationField({
     relationshipName: string;
     nodeToRelationFieldMap: Map<Node, Map<string, RelationField | undefined>>;
 }): RelationField | undefined {
+    // TODO: move to schemaModel intermediate representation
     let relationshipNameToRelationField: Map<string, RelationField | undefined>;
     if (!nodeToRelationFieldMap.has(node)) {
         relationshipNameToRelationField = new Map<string, RelationField | undefined>();
