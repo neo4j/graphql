@@ -415,8 +415,8 @@ describe("Cypher Update", () => {
             OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
             WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actorparam0
             CALL {
-            	WITH this_disconnect_actors0, this_disconnect_actors0_rel
-            	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel
+            	WITH this_disconnect_actors0, this_disconnect_actors0_rel, this
+            	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel, this
             	UNWIND this_disconnect_actors0 as x
             	DELETE this_disconnect_actors0_rel
             	RETURN count(*) AS _
@@ -481,8 +481,8 @@ describe("Cypher Update", () => {
             OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
             WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actorparam0
             CALL {
-            	WITH this_disconnect_actors0, this_disconnect_actors0_rel
-            	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel
+            	WITH this_disconnect_actors0, this_disconnect_actors0_rel, this
+            	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel, this
             	UNWIND this_disconnect_actors0 as x
             	DELETE this_disconnect_actors0_rel
             	RETURN count(*) AS _
@@ -495,8 +495,8 @@ describe("Cypher Update", () => {
             OPTIONAL MATCH (this)<-[this_disconnect_actors1_rel:ACTED_IN]-(this_disconnect_actors1:Actor)
             WHERE this_disconnect_actors1.name = $updateMovies_args_disconnect_actors1_where_Actorparam0
             CALL {
-            	WITH this_disconnect_actors1, this_disconnect_actors1_rel
-            	WITH collect(this_disconnect_actors1) as this_disconnect_actors1, this_disconnect_actors1_rel
+            	WITH this_disconnect_actors1, this_disconnect_actors1_rel, this
+            	WITH collect(this_disconnect_actors1) as this_disconnect_actors1, this_disconnect_actors1_rel, this
             	UNWIND this_disconnect_actors1 as x
             	DELETE this_disconnect_actors1_rel
             	RETURN count(*) AS _

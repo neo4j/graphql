@@ -29,8 +29,7 @@ import Neo4j from "../setup/neo4j";
 import { cleanNodes } from "../../utils/clean-nodes";
 import { delay } from "../../../src/utils/utils";
 
-/* eslint-disable-next-line jest/no-disabled-tests */
-describe.skip("Connect Subscription", () => {
+describe("Connect Subscription", () => {
     let neo4j: Neo4j;
     let driver: Driver;
     let server: TestGraphQLServer;
@@ -134,17 +133,14 @@ describe.skip("Connect Subscription", () => {
     const actorSubscriptionQuery = (typeActor) => `
     subscription SubscriptionActor {
         ${typeActor.operations.subscribe.connected} {
-            relationshipName
+            relationshipFieldName
             event
-            direction
             ${typeActor.operations.subscribe.payload.connected} {
                 name
             }
-            relationship {
+            createdRelationship {
                 movies {
-                    edge {
-                        screenTime
-                    }
+                    screenTime
                     node {
                         title
                     }
@@ -157,17 +153,14 @@ describe.skip("Connect Subscription", () => {
     const movieSubscriptionQuery = ({ typeMovie, typePerson, typeInfluencer }) => `
 subscription SubscriptionMovie {
     ${typeMovie.operations.subscribe.connected} {
-        direction
-        relationshipName
+        relationshipFieldName
         event
         ${typeMovie.operations.subscribe.payload.connected} {
             title
         }
-        relationship {
+        createdRelationship {
             reviewers {
-                edge {
-                    score
-                }
+                score
                 node {
                     ... on ${typePerson.name}EventPayload {
                         name
@@ -179,17 +172,13 @@ subscription SubscriptionMovie {
                 }
             }
             actors {
-                edge {
-                    screenTime
-                }
+                screenTime
                 node {
                     name
                 }
             }
             directors {
-                edge {
-                    year
-                }
+                year
                 node {
                     ... on ${typePerson.name}EventPayload {
                         name
@@ -208,17 +197,14 @@ subscription SubscriptionMovie {
     const personSubscriptionQuery = (typePerson) => `
 subscription SubscriptionPerson {
     ${typePerson.operations.subscribe.connected} {
-        relationshipName
+        relationshipFieldName
         event
-        direction
         ${typePerson.operations.subscribe.payload.connected} {
             name
         }
-        relationship {
+        createdRelationship {
             movies {
-                edge {
-                    score
-                }
+                score
                 node {
                     title
                 }
@@ -275,13 +261,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 1000,
-                            },
+                            screenTime: 1000,
                             node: {
                                 title: "Matrix",
                             },
@@ -295,13 +278,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 1000,
-                            },
+                            screenTime: 1000,
                             node: {
                                 name: "Keanu",
                             },
@@ -380,7 +360,7 @@ subscription SubscriptionPerson {
                                                 movies: {
                                                   create: [
                                                     {
-                                                      edge: {
+                                                      edge: { 
                                                         screenTime: 4200
                                                       },
                                                       node: {
@@ -417,13 +397,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 1200,
-                            },
+                            screenTime: 1200,
                             node: {
                                 name: "Keanu Reeves",
                             },
@@ -437,13 +414,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 4200,
-                            },
+                            screenTime: 4200,
                             node: {
                                 name: "Keanu Reeves",
                             },
@@ -459,13 +433,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Keanu Reeves" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 1200,
-                            },
+                            screenTime: 1200,
                             node: {
                                 title: "The Matrix",
                             },
@@ -477,13 +448,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Keanu Reeves" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 4200,
-                            },
+                            screenTime: 4200,
                             node: {
                                 title: "John Wick",
                             },
@@ -544,15 +512,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 9,
-                            },
+                            score: 9,
                             node: {
                                 name: "Valeria",
                                 reputation: 99,
@@ -565,15 +530,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 9,
-                            },
+                            score: 9,
                             node: {
                                 url: "cool.guy",
                                 reputation: 1,
@@ -630,15 +592,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         reviewers: null,
                         directors: {
-                            edge: {
-                                year: 2020,
-                            },
+                            year: 2020,
                             node: {
                                 name: "Tim",
                             },
@@ -762,13 +721,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 420,
-                            },
+                            screenTime: 420,
                             node: {
                                 name: "Keanu Reeves",
                             },
@@ -782,13 +738,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 12,
-                            },
+                            screenTime: 12,
                             node: {
                                 name: "Jose Molina",
                             },
@@ -804,13 +757,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Keanu Reeves" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 420,
-                            },
+                            screenTime: 420,
                             node: {
                                 title: "Constantine",
                             },
@@ -822,13 +772,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Jose Molina" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 12,
-                            },
+                            screenTime: 12,
                             node: {
                                 title: "Constantine",
                             },
@@ -947,13 +894,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Mulan" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 1234,
-                            },
+                            screenTime: 1234,
                             node: {
                                 name: "Donnie Yen",
                             },
@@ -967,14 +911,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 2014,
-                            },
+                            year: 2014,
                             node: {
                                 name: "Donnie Yen",
                             },
@@ -987,14 +928,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 2014,
-                            },
+                            year: 2014,
                             node: {
                                 name: "Chad",
                                 reputation: 120,
@@ -1079,7 +1017,7 @@ subscription SubscriptionPerson {
                                                         {
                                                             create: [
                                                                 {
-                                                                    edge: {
+                                                                    edge: { 
                                                                         screenTime: 2345
                                                                     },
                                                                     node: {
@@ -1115,13 +1053,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 2345,
-                            },
+                            screenTime: 2345,
                             node: {
                                 name: "KEANU Reeves",
                             },
@@ -1219,15 +1154,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -1302,7 +1234,7 @@ subscription SubscriptionPerson {
                                                 movies: {
                                                     create: [
                                                         {
-                                                            edge: {
+                                                            edge: {  
                                                                 score: 9
                                                             },
                                                             node: {
@@ -1336,15 +1268,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -1357,15 +1286,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 9,
-                            },
+                            score: 9,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -1381,13 +1307,10 @@ subscription SubscriptionPerson {
                 [typePerson.operations.subscribe.connected]: {
                     [typePerson.operations.subscribe.payload.connected]: { name: "Ana" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 title: "John Wick",
                             },
@@ -1399,13 +1322,10 @@ subscription SubscriptionPerson {
                 [typePerson.operations.subscribe.connected]: {
                     [typePerson.operations.subscribe.payload.connected]: { name: "Ana" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                score: 9,
-                            },
+                            score: 9,
                             node: {
                                 title: "Matrix",
                             },
@@ -1640,13 +1560,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 250,
-                            },
+                            screenTime: 250,
                             node: {
                                 title: "Matrix",
                             },
@@ -1658,13 +1575,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Marion" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 199,
-                            },
+                            screenTime: 199,
                             node: {
                                 title: "Matrix",
                             },
@@ -1678,13 +1592,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 250,
-                            },
+                            screenTime: 250,
                             node: {
                                 name: "Keanu",
                             },
@@ -1698,13 +1609,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 199,
-                            },
+                            screenTime: 199,
                             node: {
                                 name: "Marion",
                             },
@@ -1718,14 +1626,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 2015,
-                            },
+                            year: 2015,
                             node: {
                                 name: "Marion",
                             },
@@ -1738,15 +1643,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 8,
-                            },
+                            score: 8,
                             node: {
                                 name: "Bob",
                                 reputation: 98,
@@ -1759,15 +1661,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 9,
-                            },
+                            score: 9,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -1780,15 +1679,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Bob",
                                 reputation: 98,
@@ -1801,15 +1697,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2003,13 +1896,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 250,
-                            },
+                            screenTime: 250,
                             node: {
                                 title: "Matrix",
                             },
@@ -2021,13 +1911,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Marion" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 199,
-                            },
+                            screenTime: 199,
                             node: {
                                 title: "Matrix",
                             },
@@ -2041,13 +1928,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 250,
-                            },
+                            screenTime: 250,
                             node: {
                                 name: "Keanu",
                             },
@@ -2061,13 +1945,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 199,
-                            },
+                            screenTime: 199,
                             node: {
                                 name: "Marion",
                             },
@@ -2081,14 +1962,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 2015,
-                            },
+                            year: 2015,
                             node: {
                                 name: "Marion",
                             },
@@ -2101,15 +1979,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2122,15 +1997,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 9,
-                            },
+                            score: 9,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2215,13 +2087,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 250,
-                            },
+                            screenTime: 250,
                             node: {
                                 name: "Keanu",
                             },
@@ -2237,13 +2106,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 250,
-                            },
+                            screenTime: 250,
                             node: {
                                 title: "Matrix",
                             },
@@ -2332,15 +2198,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2426,15 +2289,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2528,15 +2388,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2549,15 +2406,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2651,15 +2505,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2797,15 +2648,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2818,15 +2666,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 9,
-                            },
+                            score: 9,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2839,13 +2684,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 205,
-                            },
+                            screenTime: 205,
                             node: {
                                 name: "Keanu",
                             },
@@ -2936,15 +2778,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2957,15 +2796,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Bob",
                                 reputation: 100,
@@ -3081,15 +2917,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -3102,15 +2935,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 url: "/bob",
                                 reputation: 98,
@@ -3236,13 +3066,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 250,
-                            },
+                            screenTime: 250,
                             node: {
                                 name: "Keanu",
                             },
@@ -3256,15 +3083,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -3279,13 +3103,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 250,
-                            },
+                            screenTime: 250,
                             node: {
                                 title: "Matrix",
                             },
@@ -3432,13 +3253,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 250,
-                            },
+                            screenTime: 250,
                             node: {
                                 name: "Keanu",
                             },
@@ -3452,15 +3270,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -3473,15 +3288,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 9,
-                            },
+                            score: 9,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -3496,13 +3308,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 250,
-                            },
+                            screenTime: 250,
                             node: {
                                 title: "Matrix",
                             },
@@ -3641,13 +3450,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 250,
-                            },
+                            screenTime: 250,
                             node: {
                                 name: "Keanu",
                             },
@@ -3661,13 +3467,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 199,
-                            },
+                            screenTime: 199,
                             node: {
                                 name: "Marion",
                             },
@@ -3681,14 +3484,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 2015,
-                            },
+                            year: 2015,
                             node: {
                                 name: "Marion",
                             },
@@ -3703,13 +3503,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 250,
-                            },
+                            screenTime: 250,
                             node: {
                                 title: "Matrix",
                             },
@@ -3721,13 +3518,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Marion" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 199,
-                            },
+                            screenTime: 199,
                             node: {
                                 title: "Matrix",
                             },
@@ -3932,13 +3726,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 250,
-                            },
+                            screenTime: 250,
                             node: {
                                 name: "Keanu",
                             },
@@ -3952,13 +3743,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 199,
-                            },
+                            screenTime: 199,
                             node: {
                                 name: "Marion",
                             },
@@ -3972,14 +3760,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 2015,
-                            },
+                            year: 2015,
                             node: {
                                 name: "Marion",
                             },
@@ -3992,15 +3777,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Bob",
                                 reputation: 98,
@@ -4013,15 +3795,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 8,
-                            },
+                            score: 8,
                             node: {
                                 name: "Bob",
                                 reputation: 98,
@@ -4036,13 +3815,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 250,
-                            },
+                            screenTime: 250,
                             node: {
                                 title: "Matrix",
                             },
@@ -4054,13 +3830,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Marion" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 199,
-                            },
+                            screenTime: 199,
                             node: {
                                 title: "Matrix",
                             },
@@ -4181,7 +3954,7 @@ subscription SubscriptionPerson {
                                             directors: {
                                               ${typeActor.name}: [
                                                 {
-                                                  edge: {
+                                                  edge: { 
                                                     year: 2019
                                                   },
                                                   where: {
@@ -4229,13 +4002,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 420,
-                            },
+                            screenTime: 420,
+
                             node: {
                                 name: "Keanu Reeves",
                             },
@@ -4249,14 +4020,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 2019,
-                            },
+                            year: 2019,
+
                             node: {
                                 name: "Tom",
                             },
@@ -4269,14 +4038,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 2020,
-                            },
+                            year: 2020,
+
                             node: {
                                 name: "John",
                                 reputation: 100,
@@ -4467,15 +4234,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -4488,15 +4252,12 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "reviewers",
-                    relationship: {
+                    relationshipFieldName: "reviewers",
+                    createdRelationship: {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 url: "/bob",
                                 reputation: 100,
@@ -4511,13 +4272,10 @@ subscription SubscriptionPerson {
                 [typePerson.operations.subscribe.connected]: {
                     [typePerson.operations.subscribe.payload.connected]: { name: "Ana" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                score: 10,
-                            },
+                            score: 10,
                             node: {
                                 title: "John Wick",
                             },
@@ -4583,13 +4341,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Keanu Reeves" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 1200,
-                            },
+                            screenTime: 1200,
                             node: {
                                 title: "The Matrix",
                             },
@@ -4603,13 +4358,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 1200,
-                            },
+                            screenTime: 1200,
                             node: {
                                 name: "Keanu Reeves",
                             },
@@ -4702,13 +4454,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 4200,
-                            },
+                            screenTime: 4200,
                             node: {
                                 title: "The Matrix",
                             },
@@ -4720,13 +4469,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Tom" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 200,
-                            },
+                            screenTime: 200,
                             node: {
                                 title: "The Matrix",
                             },
@@ -4738,13 +4484,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Tom" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 500,
-                            },
+                            screenTime: 500,
                             node: {
                                 title: "Constantine",
                             },
@@ -4758,13 +4501,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 4200,
-                            },
+                            screenTime: 4200,
                             node: {
                                 name: "Keanu",
                             },
@@ -4778,13 +4518,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 200,
-                            },
+                            screenTime: 200,
                             node: {
                                 name: "Tom",
                             },
@@ -4798,13 +4535,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 500,
-                            },
+                            screenTime: 500,
                             node: {
                                 name: "Tom",
                             },
@@ -4895,14 +4629,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 1990,
-                            },
+                            year: 1990,
                             node: {
                                 name: "Edgar",
                             },
@@ -4915,14 +4646,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 1990,
-                            },
+                            year: 1990,
                             node: {
                                 name: "Poe",
                                 reputation: 100,
@@ -5037,13 +4765,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Edgar" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 1234,
-                            },
+                            screenTime: 1234,
                             node: {
                                 title: "The Raven",
                             },
@@ -5055,13 +4780,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Allen" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 420,
-                            },
+                            screenTime: 420,
                             node: {
                                 title: "The House of Usher",
                             },
@@ -5075,13 +4797,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 1234,
-                            },
+                            screenTime: 1234,
                             node: {
                                 name: "Edgar",
                             },
@@ -5095,13 +4814,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The House of Usher" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 420,
-                            },
+                            screenTime: 420,
                             node: {
                                 name: "Allen",
                             },
@@ -5115,14 +4831,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 1980,
-                            },
+                            year: 1980,
                             node: {
                                 name: "Allen",
                             },
@@ -5135,14 +4848,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 1678,
-                            },
+                            year: 1678,
                             node: {
                                 name: "Poe",
                                 reputation: 100,
@@ -5281,13 +4991,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Lenore" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 100,
-                            },
+                            screenTime: 100,
                             node: {
                                 title: "The Raven",
                             },
@@ -5301,13 +5008,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 100,
-                            },
+                            screenTime: 100,
                             node: {
                                 name: "Lenore",
                             },
@@ -5321,14 +5025,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 1845,
-                            },
+                            year: 1845,
                             node: {
                                 name: "Nevermore",
                             },
@@ -5341,14 +5042,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 1845,
-                            },
+                            year: 1845,
                             node: {
                                 name: "Raven",
                                 reputation: 99,
@@ -5585,13 +5283,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Allen Poe" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 1254,
-                            },
+                            screenTime: 1254,
                             node: {
                                 title: "The Fall",
                             },
@@ -5605,13 +5300,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Fall" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 1254,
-                            },
+                            screenTime: 1254,
                             node: {
                                 name: "Allen Poe",
                             },
@@ -5625,14 +5317,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The House of Usher" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 1950,
-                            },
+                            year: 1950,
                             node: {
                                 name: "Edgar Allen Poe",
                                 reputation: 110,
@@ -5646,14 +5335,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The House of Usher" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 1951,
-                            },
+                            year: 1951,
                             node: {
                                 name: "Madeleine",
                             },
@@ -5742,13 +5428,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Keanu Reeves" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 1200,
-                            },
+                            screenTime: 1200,
                             node: {
                                 title: "The Matrix",
                             },
@@ -5762,13 +5445,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 1200,
-                            },
+                            screenTime: 1200,
                             node: {
                                 name: "Keanu Reeves",
                             },
@@ -5865,7 +5545,7 @@ subscription SubscriptionPerson {
                                                               }
                                                             },
                                                             onCreate: {
-                                                              edge: {
+                                                                edge: {
                                                                 screenTime: 420
                                                               },
                                                               node: {
@@ -5926,13 +5606,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Edgar" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 1234,
-                            },
+                            screenTime: 1234,
                             node: {
                                 title: "The Raven",
                             },
@@ -5944,13 +5621,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Allen" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 420,
-                            },
+                            screenTime: 420,
                             node: {
                                 title: "The House of Usher",
                             },
@@ -5964,13 +5638,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 1234,
-                            },
+                            screenTime: 1234,
                             node: {
                                 name: "Edgar",
                             },
@@ -5984,13 +5655,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The House of Usher" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 420,
-                            },
+                            screenTime: 420,
                             node: {
                                 name: "Allen",
                             },
@@ -6004,14 +5672,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 1980,
-                            },
+                            year: 1980,
                             node: {
                                 name: "Allen",
                             },
@@ -6024,14 +5689,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 1678,
-                            },
+                            year: 1678,
                             node: {
                                 name: "Poe",
                                 reputation: 100,
@@ -6170,13 +5832,10 @@ subscription SubscriptionPerson {
                 [typeActor.operations.subscribe.connected]: {
                     [typeActor.operations.subscribe.payload.connected]: { name: "Lenore" },
                     event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
+                    relationshipFieldName: "movies",
+                    createdRelationship: {
                         movies: {
-                            edge: {
-                                screenTime: 100,
-                            },
+                            screenTime: 100,
                             node: {
                                 title: "The Raven",
                             },
@@ -6190,13 +5849,10 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "actors",
-                    relationship: {
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
                         actors: {
-                            edge: {
-                                screenTime: 100,
-                            },
+                            screenTime: 100,
                             node: {
                                 name: "Lenore",
                             },
@@ -6210,14 +5866,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 1845,
-                            },
+                            year: 1845,
                             node: {
                                 name: "Nevermore",
                             },
@@ -6230,14 +5883,11 @@ subscription SubscriptionPerson {
                 [typeMovie.operations.subscribe.connected]: {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
                     event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
+                    relationshipFieldName: "directors",
+                    createdRelationship: {
                         actors: null,
                         directors: {
-                            edge: {
-                                year: 1845,
-                            },
+                            year: 1845,
                             node: {
                                 name: "Raven",
                                 reputation: 99,

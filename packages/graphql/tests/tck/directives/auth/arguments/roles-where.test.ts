@@ -1315,8 +1315,8 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this, this_posts0_disconnect0, this_posts0_disconnect0_rel
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3))) AND (any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
-            	WITH this_posts0_disconnect0, this_posts0_disconnect0_rel
-            	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel
+            	WITH this_posts0_disconnect0, this_posts0_disconnect0_rel, this
+            	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel, this
             	UNWIND this_posts0_disconnect0 as x
             	DELETE this_posts0_disconnect0_rel
             	RETURN count(*) AS _
@@ -1379,8 +1379,8 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this, this_posts0_disconnect0, this_posts0_disconnect0_rel
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3))) AND (any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
-            	WITH this_posts0_disconnect0, this_posts0_disconnect0_rel
-            	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel
+            	WITH this_posts0_disconnect0, this_posts0_disconnect0_rel, this
+            	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel, this
             	UNWIND this_posts0_disconnect0 as x
             	DELETE this_posts0_disconnect0_rel
             	RETURN count(*) AS _
@@ -1461,8 +1461,8 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3))) AND (any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
-            	WITH this_disconnect_posts0, this_disconnect_posts0_rel
-            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
+            	WITH this_disconnect_posts0, this_disconnect_posts0_rel, this
+            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel, this
             	UNWIND this_disconnect_posts0 as x
             	DELETE this_disconnect_posts0_rel
             	RETURN count(*) AS _
@@ -1535,8 +1535,8 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3))) AND (any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
-            	WITH this_disconnect_posts0, this_disconnect_posts0_rel
-            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
+            	WITH this_disconnect_posts0, this_disconnect_posts0_rel, this
+            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel, this
             	UNWIND this_disconnect_posts0 as x
             	DELETE this_disconnect_posts0_rel
             	RETURN count(*) AS _
