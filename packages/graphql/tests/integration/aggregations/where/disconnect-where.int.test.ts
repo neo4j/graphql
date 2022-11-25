@@ -31,11 +31,15 @@ describe("Disconnect using aggregate where", () => {
     let session: Session;
     let userType: UniqueType;
     let postType: UniqueType;
+    let likeInterface: UniqueType;
     let typeDefs: string;
     const postId1 = "Post1";
     const postId2 = "Post2";
     const userName = "Username1";
     const userName2 = "UsernameWithAVeryLongName";
+    const date1 = new Date("2022-01-09T18:46:40.000Z");
+    const date2 = new Date("2022-05-01T18:46:40.000Z");
+    const date3 = new Date("2022-08-11T10:06:25.000Z");
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -46,25 +50,30 @@ describe("Disconnect using aggregate where", () => {
         session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
         userType = generateUniqueType("User");
         postType = generateUniqueType("Post");
+        likeInterface = generateUniqueType("LikeEdge");
         typeDefs = `
             type ${userType.name} {
                 name: String!
-                likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT)
+                likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT, properties: "${likeInterface.name}")
             }
     
             type ${postType.name} {
                 id: ID
                 content: String!
-                likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN)
+                likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}")
+            }
+
+            interface ${likeInterface.name} {
+                likedAt: DateTime
             }
         `;
 
         await session.run(`
             CREATE (u:${userType.name} {name: "${userName}"})
             CREATE (u2:${userType.name} {name: "${userName2}"})
-            CREATE (u)-[:LIKES]->(p:${postType.name} {id: "${postId1}"})
-            CREATE (u)-[:LIKES]->(p2:${postType.name} {id: "${postId2}"})
-            CREATE (u2)-[:LIKES]->(p2)
+            CREATE (u)-[:LIKES { likedAt: dateTime("${date1.toISOString()}")}]->(p:${postType.name} {id: "${postId1}"})
+            CREATE (u)-[:LIKES { likedAt: dateTime("${date2.toISOString()}")}]->(p2:${postType.name} {id: "${postId2}"})
+            CREATE (u2)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p2)
         `);
 
         neoSchema = new Neo4jGraphQL({
@@ -186,5 +195,66 @@ describe("Disconnect using aggregate where", () => {
             {}
         );
         expect(storedValue.records).toHaveLength(0);
+    });
+
+    test("should disconnect when filtering using aggregate count, edge and node", async () => {
+        const query = `
+            mutation {
+                ${userType.operations.update}(
+                    where: { name: "${userName}" }
+                    update: { 
+                        likedPosts: {
+                            disconnect: {
+                                where: { 
+                                    node: {
+                                        likesAggregate: {
+                                            AND: [
+                                                {   
+                                                    edge: {
+                                                        likedAt_LTE: "${date2.toISOString()}" 
+                                                    }
+                                                },
+                                                {
+                                                    node: {
+                                                        name_SHORTEST_GT: 2 
+                                                    }
+                                                    count: 2
+                                                }
+                                            ]
+                                        }
+                                    }
+                                } 
+                            } 
+                        } 
+                    }
+                ) {
+                    ${userType.plural} {
+                        name
+                        likedPosts {
+                            id
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {}),
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
+        expect(users).toEqual([{ name: userName, likedPosts: [{ id: postId1 }] }]);
+        const storedValue = await session.run(
+            `
+             MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
+             WHERE u.name = "${userName2}" 
+             RETURN p
+             `,
+            {}
+        );
+        expect(storedValue.records).toHaveLength(1);
     });
 });

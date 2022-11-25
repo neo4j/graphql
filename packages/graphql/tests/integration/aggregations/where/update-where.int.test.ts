@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver,  Session } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
@@ -31,13 +31,17 @@ describe("Update using aggregate where", () => {
     let session: Session;
     let userType: UniqueType;
     let postType: UniqueType;
+    let likeInterface: UniqueType;
     let typeDefs: string;
     const postId1 = "Post1";
     const postId2 = "Post2";
     const userName = "Username1";
     const userName2 = "UsernameWithAVeryLongName";
     const originalContent = "An old boring content";
-    const expextedContent = "A new wonderful content";
+    const expectedContent = "A new wonderful content";
+    const date1 = new Date("2022-01-09T18:46:40.000Z");
+    const date2 = new Date("2022-05-01T18:46:40.000Z");
+    const date3 = new Date("2022-08-11T10:06:25.000Z");
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -48,25 +52,34 @@ describe("Update using aggregate where", () => {
         session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
         userType = generateUniqueType("User");
         postType = generateUniqueType("Post");
+        likeInterface = generateUniqueType("LikeEdge");
         typeDefs = `
             type ${userType.name} {
                 name: String!
-                likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT)
+                likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT, properties: "${likeInterface.name}")
             }
     
             type ${postType.name} {
                 id: ID
                 content: String!
-                likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN)
+                likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}")
+            }
+
+            interface ${likeInterface.name} {
+                likedAt: DateTime
             }
         `;
 
         await session.run(`
             CREATE (u:${userType.name} {name: "${userName}"})
             CREATE (u2:${userType.name} {name: "${userName2}"})
-            CREATE (u)-[:LIKES]->(p:${postType.name} {id: "${postId1}", content: "${originalContent}"})
-            CREATE (u)-[:LIKES]->(p2:${postType.name} {id: "${postId2}", content: "${originalContent}"})
-            CREATE (u2)-[:LIKES]->(p2)
+            CREATE (u)-[:LIKES { likedAt: dateTime("${date1.toISOString()}")}]->(p:${
+            postType.name
+        } {id: "${postId1}", content: "${originalContent}"})
+            CREATE (u)-[:LIKES { likedAt: dateTime("${date2.toISOString()}")}]->(p2:${
+            postType.name
+        } {id: "${postId2}", content: "${originalContent}"})
+            CREATE (u2)-[:LIKES { likedAt: dateTime("${date3.toISOString()}") }]->(p2)
         `);
 
         neoSchema = new Neo4jGraphQL({
@@ -100,7 +113,7 @@ describe("Update using aggregate where", () => {
                             } 
                             update: {
                                 node: {
-                                    content: "${expextedContent}"
+                                    content: "${expectedContent}"
                                 } 
                             } 
                         } 
@@ -129,7 +142,7 @@ describe("Update using aggregate where", () => {
                 name: userName,
                 likedPosts: expect.toIncludeSameMembers([
                     { id: postId1, content: originalContent },
-                    { id: postId2, content: expextedContent },
+                    { id: postId2, content: expectedContent },
                 ]),
             },
         ]);
@@ -152,7 +165,7 @@ describe("Update using aggregate where", () => {
                 },
                 {
                     post: expect.objectContaining({
-                        properties: { id: postId2, content: expextedContent },
+                        properties: { id: postId2, content: expectedContent },
                     }),
                 },
             ])
@@ -185,7 +198,7 @@ describe("Update using aggregate where", () => {
                             } 
                              update: {
                                 node: {
-                                    content: "${expextedContent}"
+                                    content: "${expectedContent}"
                                 }
                              } 
                          } 
@@ -213,8 +226,8 @@ describe("Update using aggregate where", () => {
             {
                 name: userName,
                 likedPosts: expect.toIncludeSameMembers([
-                    { id: postId1, content: expextedContent },
-                    { id: postId2, content: expextedContent },
+                    { id: postId1, content: expectedContent },
+                    { id: postId2, content: expectedContent },
                 ]),
             },
         ]);
@@ -232,12 +245,94 @@ describe("Update using aggregate where", () => {
             expect.toIncludeSameMembers([
                 {
                     post: expect.objectContaining({
-                        properties: { id: postId1, content: expextedContent },
+                        properties: { id: postId1, content: expectedContent },
                     }),
                 },
                 {
                     post: expect.objectContaining({
-                        properties: { id: postId2, content: expextedContent },
+                        properties: { id: postId2, content: expectedContent },
+                    }),
+                },
+            ])
+        );
+    });
+
+    test("should update when filtering using count, edge and node", async () => {
+        const query = `
+            mutation {
+                ${userType.operations.update}(
+                    where: { name: "${userName}" }
+                    update: { 
+                        likedPosts: {
+                            where: { 
+                                node: {
+                                    likesAggregate: {
+                                        edge: {
+                                            likedAt_LT: "${date2.toISOString()}" 
+                                        }
+                                        node: {
+                                            name_SHORTEST_LT: 10 
+                                        }
+                                        count: 1
+                                    }
+                                }
+                            } 
+                            update: {
+                                node: {
+                                    content: "${expectedContent}"
+                                }
+                            } 
+                        } 
+                    }
+                ) {
+                    ${userType.plural} {
+                        name
+                        likedPosts {
+                            id
+                            content
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {}),
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
+        expect(users).toEqual([
+            {
+                name: userName,
+                likedPosts: expect.toIncludeSameMembers([
+                    { id: postId1, content: expectedContent },
+                    { id: postId2, content: originalContent },
+                ]),
+            },
+        ]);
+        const storedValue = await session.run(
+            `
+             MATCH (u:${userType.name})-[r:LIKES]->(post:${postType.name}) 
+             WHERE u.name = "${userName}" 
+             RETURN post
+             `,
+            {}
+        );
+        expect(storedValue.records).toHaveLength(2);
+        const results = storedValue.records.map((record) => record.toObject());
+        expect(results).toEqual(
+            expect.toIncludeSameMembers([
+                {
+                    post: expect.objectContaining({
+                        properties: { id: postId1, content: expectedContent },
+                    }),
+                },
+                {
+                    post: expect.objectContaining({
+                        properties: { id: postId2, content: originalContent },
                     }),
                 },
             ])
