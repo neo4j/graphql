@@ -80,22 +80,29 @@ function createDisconnectAndParams({
 
         if (disconnect.where) {
             try {
-                const [preComputedWhereFields, whereClause, whereParams] = createConnectionWhereAndParams({
-                    nodeVariable: variableName,
-                    aggregateNodeVariable: aggregateVariableName,
-                    whereInput: disconnect.where,
-                    node: relatedNode,
-                    context,
-                    relationshipVariable: relVarName,
-                    relationship,
-                    parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
-                });
+                const [preComputedWhereFields, whereClause, whereParams, predicateVariables] =
+                    createConnectionWhereAndParams({
+                        nodeVariable: variableName,
+                        aggregateNodeVariable: aggregateVariableName,
+                        whereInput: disconnect.where,
+                        node: relatedNode,
+                        context,
+                        relationshipVariable: relVarName,
+                        relationship,
+                        parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
+                    });
                 if (whereClause) {
                     subquery.push(
                         `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${aggregateVariableName}${label})`
                     );
                     subquery.push(preComputedWhereFields);
-                    subquery.push("WITH *");
+                    if (predicateVariables && predicateVariables.length) {
+                        subquery.push(
+                            `WITH DISTINCT ${withVars.join(", ")}, ${predicateVariables.join(", ")}, ${relVarName}`
+                        );
+                    } else {
+                        subquery.push(`WITH DISTINCT ${withVars.join(", ")}`);
+                    }
                     whereStrs.push(whereClause);
                     params = { ...params, ...whereParams };
                 }

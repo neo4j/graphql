@@ -125,9 +125,9 @@ function createConnectAndParams({
                 if (preComputedWhereFields) {
                     subquery.push(preComputedWhereFields);
                     if (predicateVariables && predicateVariables.length) {
-                        subquery.push(`WITH DISTINCT ${withVars.join(", ")}, ${predicateVariables.join(", ")}`);
+                        subquery.push(`WITH DISTINCT ${withVars.join(", ")}, ${predicateVariables.join(", ")}, ${nodeName}`);
                     } else {
-                        subquery.push(`WITH DISTINCT ${withVars.join(", ")}`);
+                        subquery.push(`WITH DISTINCT ${withVars.join(", ")}, ${nodeName}`);
                     }
                 }
                 params = { ...params, ...rootNodeParams };
