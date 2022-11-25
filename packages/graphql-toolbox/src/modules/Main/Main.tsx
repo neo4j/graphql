@@ -27,6 +27,7 @@ import { AuthContext } from "../../contexts/auth";
 import { ScreenContext, Screen } from "../../contexts/screen";
 import { invokeSegmentAnalytics } from "../../analytics/segment-snippet";
 import { tracking } from "../../analytics/tracking";
+import { CannySDK } from "../../common/canny";
 
 export const Main = () => {
     const auth = useContext(AuthContext);
@@ -41,6 +42,25 @@ export const Main = () => {
         if (!segmentKey) return;
         invokeSegmentAnalytics(segmentKey);
         console.log("Initialized app.");
+    }, []);
+
+    useEffect(() => {
+        const cannyAppId = process.env.CANNY_GRAPHQL_TOOLBOX_APP_ID;
+        if (!cannyAppId) {
+            console.log("Did not find Canny App ID, will not initialize Canny");
+            window.CannyIsLoaded = false;
+            return;
+        }
+
+        CannySDK.init()
+            .then(() => {
+                console.log("Canny SDK loaded");
+                window.CannyIsLoaded = true;
+            })
+            .catch((err) => {
+                console.error("Canny SDK failed to load", err);
+                window.CannyIsLoaded = false;
+            });
     }, []);
 
     if (!auth.driver) {

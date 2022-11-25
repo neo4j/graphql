@@ -2481,19 +2481,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:0.9.2, @neo4j-ndl/base@npm:^0.9.2":
-  version: 0.9.2
-  resolution: "@neo4j-ndl/base@npm:0.9.2"
-  checksum: b0755f5230c2a7cad6cfa68eace6ec09c9899a1fbaa99806617d851b4f651773b2e2018023f1504e07b98b8fcace24c244720df45dc8776a7a18dbdef0b40f5d
+"@neo4j-ndl/base@npm:0.11.0, @neo4j-ndl/base@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "@neo4j-ndl/base@npm:0.11.0"
+  checksum: df7d51f81fcd8e7f062810a6da14599c84ebbfc151de2a70a376895bf7efd42eb90c516861a83dbd3046a40ab94e31c141b314f935445a955f5d0e72ec923137
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:0.9.5":
-  version: 0.9.5
-  resolution: "@neo4j-ndl/react@npm:0.9.5"
+"@neo4j-ndl/react@npm:0.11.1":
+  version: 0.11.1
+  resolution: "@neo4j-ndl/react@npm:0.11.1"
   dependencies:
     "@heroicons/react": ^1.0.5
-    "@neo4j-ndl/base": ^0.9.2
+    "@neo4j-ndl/base": ^0.11.0
     classnames: ^2.3.1
     detect-browser: ^5.3.0
     react-dropzone: ^14.0.0
@@ -2504,7 +2504,7 @@ __metadata:
     tinycolor2: ^1.4.2
   peerDependencies:
     react: 17.x
-  checksum: ba527f8026d16b120b6e5d9665664e83de64df3e9f09fa77284c2e488a2f429a62f8d90354d0af6b25f1aa833d818d3a0018c556e5efda34681993af20c388c6
+  checksum: 04e2ceae439d31cbf5d02a25dade3e085778b11143817a5ecf0230c6579c6a5d03d5cb79859194ae8d051cb3fed8e64d7860c24539cb755aabc71076d90a7d40
   languageName: node
   linkType: hard
 
@@ -2599,11 +2599,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@neo4j-ndl/base": 0.9.2
-    "@neo4j-ndl/react": 0.9.5
+    "@neo4j-ndl/base": 0.11.0
+    "@neo4j-ndl/react": 0.11.1
     "@neo4j/graphql": 3.12.2
     "@neo4j/introspector": 1.0.2
-    "@playwright/test": 1.28.0
+    "@playwright/test": 1.28.1
     "@tsconfig/create-react-app": 1.0.3
     "@types/codemirror": 5.60.5
     "@types/lodash.debounce": 4.0.7
@@ -2636,7 +2636,7 @@ __metadata:
     parse5: 5.1.1
     postcss: 8.4.19
     postcss-loader: 7.0.1
-    prettier: 2.7.1
+    prettier: 2.8.0
     process: 0.11.10
     randomstring: 1.2.3
     react: 18.2.0
@@ -2694,7 +2694,7 @@ __metadata:
     graphql-ws: 5.11.2
     is-uuid: 1.0.2
     jest: 29.3.1
-    jest-extended: 3.1.0
+    jest-extended: 3.2.0
     koa: 2.13.4
     koa-jwt: 4.0.3
     koa-router: 12.0.0
@@ -2827,15 +2827,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.28.0":
-  version: 1.28.0
-  resolution: "@playwright/test@npm:1.28.0"
+"@playwright/test@npm:1.28.1":
+  version: 1.28.1
+  resolution: "@playwright/test@npm:1.28.1"
   dependencies:
     "@types/node": "*"
-    playwright-core: 1.28.0
+    playwright-core: 1.28.1
   bin:
     playwright: cli.js
-  checksum: 5b90a4fd7a30e989f0b7ff97201eb3ab91d56b93ac5cd020ca6e36cd90a0f9386770214375b6c50471def75cbe0e7219f77f2c126d5d31655c5228bd16ab4f1a
+  checksum: dc39dfdf848171a6c65fc32a9dbc95162684a4a1e3401dd157d7d6822a065d8dcb96b2484fc3b223baea4da774450fddaeaa6d4d21546d17d45f01884fa8d7c5
   languageName: node
   linkType: hard
 
@@ -8460,9 +8460,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:27.1.5":
-  version: 27.1.5
-  resolution: "eslint-plugin-jest@npm:27.1.5"
+"eslint-plugin-jest@npm:27.1.6":
+  version: 27.1.6
+  resolution: "eslint-plugin-jest@npm:27.1.6"
   dependencies:
     "@typescript-eslint/utils": ^5.10.0
   peerDependencies:
@@ -8473,7 +8473,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: 7c9de765793f7161afa0bdcdce67f4d072944152880fa638b25d228188dcee47a4b4aada26c57db72bc10193c96a1979e17afb8a7c3e400e961d8adfbf23ddbe
+  checksum: 5b1640b5d575f0d5e27da8ef8cb3110a29f94ebd50ae51edc5ea34c1054f5dcf305416865b2919ac424bc02c4569848bbe7fd2c86e7e1aff23e77f1ff9ef7dfd
   languageName: node
   linkType: hard
 
@@ -11882,15 +11882,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-extended@npm:3.1.0":
-  version: 3.1.0
-  resolution: "jest-extended@npm:3.1.0"
+"jest-extended@npm:3.2.0":
+  version: 3.2.0
+  resolution: "jest-extended@npm:3.2.0"
   dependencies:
     jest-diff: ^29.0.0
     jest-get-type: ^29.0.0
   peerDependencies:
     jest: ">=27.2.5"
-  checksum: 1656670f7c58419f2ab1ff177db03b79e974faae88b4bdeaa4188fe962a623d77a78df0f9f06dc8a8a945c6e8d081fa48a8d3cf220434cc2ef7831dfa4ee9413
+  peerDependenciesMeta:
+    jest:
+      optional: true
+  checksum: 9b6299a4304b4833edbfdc716de8e0d22dc75df353b552f077ac4d46eaa310f4883821a203e95c619963e457307ecc38725a99a7136a0171552c80ccbfd3cb6e
   languageName: node
   linkType: hard
 
@@ -14445,7 +14448,7 @@ __metadata:
     eslint-import-resolver-typescript: 3.5.2
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.26.0
-    eslint-plugin-jest: 27.1.5
+    eslint-plugin-jest: 27.1.6
     eslint-plugin-jsx-a11y: 6.6.1
     eslint-plugin-react: 7.31.11
     graphql: 16.6.0
@@ -14454,7 +14457,7 @@ __metadata:
     lint-staged: 13.0.3
     neo4j-driver: 5.2.0
     npm-run-all: 4.1.5
-    prettier: 2.7.1
+    prettier: 2.8.0
     set-tz: 0.2.0
     ts-jest: 29.0.3
     typescript: 4.9.3
@@ -15920,12 +15923,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.28.0":
-  version: 1.28.0
-  resolution: "playwright-core@npm:1.28.0"
+"playwright-core@npm:1.28.1":
+  version: 1.28.1
+  resolution: "playwright-core@npm:1.28.1"
   bin:
     playwright: cli.js
-  checksum: 4bd13bf83bca37f239f1573fcad7f3b559b3b5e28925f57fa66055446b2aef90c4403f9dbb4a9c34f6bd03a2461e61c97eb7fe5faed6b88f027c0bc3727cd096
+  checksum: 8899e0d65de43ee10fadc171e0d48cd514bb574f3505478700094afa8a6e0dcd888a5c87af22acf31ebad455ada1327028909c42e20b8e25908b6255dc143bf0
   languageName: node
   linkType: hard
 
@@ -16433,7 +16436,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:2.7.1, prettier@npm:^2.7.1":
+"prettier@npm:2.8.0":
+  version: 2.8.0
+  resolution: "prettier@npm:2.8.0"
+  bin:
+    prettier: bin-prettier.js
+  checksum: 72004ce0cc9bb097daf3e3833f62495768724392c1d5b178dd47372337616e9e50ecbb0804f236596223f7b5eb1bbe69cefc8957dca21112c5777e77ef73a564
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^2.7.1":
   version: 2.7.1
   resolution: "prettier@npm:2.7.1"
   bin:
