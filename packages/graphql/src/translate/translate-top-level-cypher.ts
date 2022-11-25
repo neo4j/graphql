@@ -160,7 +160,6 @@ export function translateTopLevelCypher({
     if (type === "Query") {
         const isArray = field.typeMeta.array;
         const expectMultipleValues = !field.isScalar && !field.isEnum && isArray;
-
         if (expectMultipleValues) {
             cypherStrs.push(`WITH apoc.cypher.runFirstColumnMany("${statement}", ${apocParamsStr}) as x`);
         } else {
