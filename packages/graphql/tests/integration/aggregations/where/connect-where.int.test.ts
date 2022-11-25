@@ -150,8 +150,8 @@ describe("Connect using aggregate where", () => {
     test("should connect by using a nested aggregation", async () => {
         const query = `
             mutation {
-                ${postType.operations.update}(
-                    where: { id: "${postId1}" }
+                ${userType.operations.update}(
+                    where: { name: "${userName}" }
                     update: { 
                         likedPosts: { 
                             connect: { 
@@ -565,10 +565,7 @@ describe("Connect UNIONs using aggregate where", () => {
         expect(users).toEqual([
             {
                 id: postId1,
-                likes: expect.toIncludeSameMembers([
-                    { specialName: userName },
-                    { specialName: userName4 },
-                ]),
+                likes: expect.toIncludeSameMembers([{ specialName: userName }, { specialName: userName4 }]),
             },
         ]);
         const storedValue = await session.run(
