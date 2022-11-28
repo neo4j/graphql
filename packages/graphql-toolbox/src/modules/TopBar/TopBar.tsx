@@ -18,7 +18,7 @@
  */
 
 import { Button, HeroIcon, IconButton, Label } from "@neo4j-ndl/react";
-import { Fragment, useContext } from "react";
+import { Fragment, useContext, useEffect } from "react";
 import { DEFAULT_BOLT_URL } from "../../constants";
 // @ts-ignore - SVG Import
 import Neo4jLogoIcon from "../../assets/neo4j-logo-color.svg";
@@ -27,6 +27,7 @@ import { AuthContext } from "../../contexts/auth";
 import { Screen, ScreenContext } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
 import { tracking } from "../../analytics/tracking";
+import { cannySettings } from "../../common/canny";
 
 export const TopBar = () => {
     const auth = useContext(AuthContext);
@@ -34,6 +35,17 @@ export const TopBar = () => {
     const screen = useContext(ScreenContext);
     const greenDot = <span className="ml-1 mr-1 h-2 w-2 bg-green-400 rounded-full inline-block" />;
     const redDot = <span className="ml-1 mr-1 h-2 w-2 bg-red-400 rounded-full inline-block" />;
+
+    useEffect(() => {
+        if (window.Canny && window.CannyIsLoaded) {
+            window.Canny("initChangelog", cannySettings);
+        }
+        return () => {
+            if (window.Canny && window.CannyIsLoaded) {
+                window.Canny("closeChangelog");
+            }
+        };
+    }, []);
 
     const handleHelpClick = () => {
         settings.setIsShowHelpDrawer(!settings.isShowHelpDrawer);
@@ -127,6 +139,10 @@ export const TopBar = () => {
                         </div>
                     ) : null}
                     <div className="flex items-center mr-6">
+                        <div className="canny-indication-wrapper pb-8 pl-10 pointer-events-none absolute">
+                            {/* This element is not clickable as we do not want to show the changelog here */}
+                            <span data-canny-changelog></span>
+                        </div>
                         <IconButton
                             data-test-topbar-help-button
                             aria-label="Help and learn drawer"

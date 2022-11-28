@@ -21,46 +21,60 @@ import { META_CYPHER_VARIABLE } from "../../constants";
 
 export type SubscriptionsEventType = "connect" | "disconnect";
 
-type EventMetaParameters = {
+type EventMetaParameters = EventMetaTypenameParameters | EventMetaLabelsParameters;
+type EventMetaCommonParameters = {
     event: SubscriptionsEventType;
     relVariable: string;
     typename: string;
     fromVariable: string;
     toVariable: string;
+};
+type EventMetaTypenameParameters = EventMetaCommonParameters & {
     fromTypename: string;
     toTypename: string;
 };
+type EventMetaLabelsParameters = EventMetaCommonParameters & {
+    fromLabels: string;
+    toLabels: string;
+    toProperties: string;
+    fromProperties: string;
+};
+
+function isEventMetaWithTypenames(event: EventMetaParameters): event is EventMetaTypenameParameters {
+    return !!event["fromTypename"];
+}
+
+function projectAllProperties(varName: string): string {
+    return `${varName} { .* }`;
+}
 
 export function createConnectionEventMeta(params: EventMetaParameters): string {
     return `${META_CYPHER_VARIABLE} + ${createConnectionEventMetaObject(params)} AS ${META_CYPHER_VARIABLE}`;
 }
 
-export function createConnectionEventMetaObject({
-    event,
-    relVariable,
-    fromVariable,
-    toVariable,
-    typename,
-    fromTypename,
-    toTypename,
-}: EventMetaParameters): string {
-    const idsAndProperties = createEventMetaIdsAndProperties({ relVariable, fromVariable, toVariable });
-    return `{ event: "${event}", ${idsAndProperties}, timestamp: timestamp(), relationshipName: "${typename}", fromTypename: "${fromTypename}", toTypename: "${toTypename}" }`;
-}
+export function createConnectionEventMetaObject(eventMeta: EventMetaParameters): string {
+    const { event, relVariable, typename, fromVariable, toVariable } = eventMeta;
 
-function createEventMetaIdsAndProperties({
-    relVariable,
-    fromVariable,
-    toVariable,
-}: {
-    relVariable: string;
-    fromVariable: string;
-    toVariable: string;
-}): string {
-    const projectAllProperties = (varName: string): string => `${varName} { .* }`;
-    const idsStr = `id_from: id(${fromVariable}), id_to: id(${toVariable}), id: id(${relVariable})`;
-    const propertiesStr = `properties: { from: ${projectAllProperties(fromVariable)}, to: ${projectAllProperties(
-        toVariable
-    )}, relationship: ${projectAllProperties(relVariable)} }`;
-    return [idsStr, propertiesStr].join(", ");
+    const commonFieldsStr = `event: "${event}", timestamp: timestamp()`;
+    const identifiersStr = `id_from: id(${fromVariable}), id_to: id(${toVariable}), id: id(${relVariable})`;
+
+    if (isEventMetaWithTypenames(eventMeta)) {
+        return `{ ${[
+            commonFieldsStr,
+            identifiersStr,
+            `relationshipName: "${typename}", fromTypename: "${eventMeta.fromTypename}", toTypename: "${eventMeta.toTypename}"`,
+            `properties: { from: ${projectAllProperties(fromVariable)}, to: ${projectAllProperties(
+                toVariable
+            )}, relationship: ${projectAllProperties(relVariable)} }`,
+        ].join(", ")} }`;
+    } else {
+        return `{ ${[
+            commonFieldsStr,
+            identifiersStr,
+            `relationshipName: ${typename}, fromLabels: ${eventMeta.fromLabels}, toLabels: ${eventMeta.toLabels}`,
+            `properties: { from: ${eventMeta.fromProperties}, to: ${
+                eventMeta.toProperties
+            }, relationship: ${projectAllProperties(relVariable)} }`,
+        ].join(", ")} }`;
+    }
 }

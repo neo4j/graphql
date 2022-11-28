@@ -26,16 +26,14 @@ describe("CypherBuilder CallProcedure", () => {
     });
 
     test("Call validatePredicate", () => {
-        const validatePredicate = new Cypher.apoc.ValidatePredicate(
+        const validatePredicate = new Cypher.apoc.Validate(
             Cypher.eq(new Cypher.Literal(1), new Cypher.Literal(2)),
             "My Message"
         );
         const callClause = new Cypher.CallProcedure(validatePredicate);
 
         const queryResult = callClause.build();
-        expect(queryResult.cypher).toMatchInlineSnapshot(
-            `"CALL apoc.util.validatePredicate(1 = 2, \\"My Message\\", [0])"`
-        );
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"CALL apoc.util.validate(1 = 2, \\"My Message\\", [0])"`);
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
     });
 });

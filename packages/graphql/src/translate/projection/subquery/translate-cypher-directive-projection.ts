@@ -23,7 +23,7 @@ import type { GraphQLSortArg, Context, CypherField } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 
 import createProjectionAndParams, { ProjectionMeta } from "../../create-projection-and-params";
-import { CompositeEntity } from "../../../schema-model/CompositeEntity";
+import { CompositeEntity } from "../../../schema-model/entity/CompositeEntity";
 
 interface Res {
     projection: string[];
@@ -53,7 +53,7 @@ export function translateCypherDirectiveProjection({
     res: Res;
 }): Res {
     const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
-    const entity = context.entities.get(cypherField.typeMeta.name);
+    const entity = context.schemaModel.entities.get(cypherField.typeMeta.name);
 
     const isArray = Boolean(cypherField.typeMeta.array);
     const expectMultipleValues = Boolean((referenceNode || entity instanceof CompositeEntity) && isArray);

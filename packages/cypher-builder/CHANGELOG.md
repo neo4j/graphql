@@ -1,5 +1,13 @@
 # @neo4j/cypher-builder
 
+## 0.1.5
+
+### Patch Changes
+
+-   [#2427](https://github.com/neo4j/graphql/pull/2427) [`e23691152`](https://github.com/neo4j/graphql/commit/e23691152db927d03891c592a716ca41e58d5f47) Thanks [@angrykoala](https://github.com/angrykoala)! - Add string functions and expose Function class for arbitrary functions
+
+-   [#2429](https://github.com/neo4j/graphql/pull/2429) [`4c79ec3cf`](https://github.com/neo4j/graphql/commit/4c79ec3cf29ea7f0cd0e5fc18f98e65c221af8e5) Thanks [@angrykoala](https://github.com/angrykoala)! - Add reduce function
+
 ## 0.1.4
 
 ### Patch Changes

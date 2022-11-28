@@ -17,12 +17,10 @@
  * limitations under the License.
  */
 
-import { GraphQLEnumType } from "graphql";
+export interface Entity {
+    readonly name: string;
 
-export const RelationDirection = new GraphQLEnumType({
-    name: "RelationDirection",
-    values: {
-        IN: {},
-        OUT: {},
-    },
-});
+    // attributes
+    // relationships
+    // annotations
+}

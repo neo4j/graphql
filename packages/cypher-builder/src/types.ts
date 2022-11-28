@@ -35,7 +35,7 @@ import type { ListExpr } from "./expressions/list/ListExpr";
 import type { MapProjection } from "./expressions/map/MapProjection";
 import type { HasLabel } from "./expressions/HasLabel";
 import type { Reference } from "./variables/Reference";
-import type { ValidatePredicate } from "./procedures/apoc/ValidatePredicate";
+import type { Validate } from "./procedures/apoc/Validate";
 import type { ApocExpr, ApocPredicate } from "./procedures/apoc/apoc";
 
 export type Operation = BooleanOp | ComparisonOp | MathOp;
@@ -67,7 +67,7 @@ export type Predicate =
     | HasLabel;
 
 /** Represents a procedure, invocable with the CALL statement */
-export type Procedure = ValidatePredicate;
+export type Procedure = Validate;
 
 export type CypherResult = {
     cypher: string;

@@ -79,3 +79,7 @@ export interface TrackingTBExecuteQuery {
 export interface TrackingTBExploreGraphQLaaSLinkClick {
     screen: Screen;
 }
+
+export interface TrackingTBCannyChangelogClick {
+    screen: Screen;
+}
