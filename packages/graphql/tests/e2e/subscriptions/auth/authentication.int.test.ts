@@ -496,7 +496,7 @@ describe("Subscription authentication", () => {
             expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authenticated" })]);
         });
 
-        test("authentication pass - connect", async () => {
+        test("authentication pass - relationship_created", async () => {
             await supertest(server.path)
                 .post("")
                 .send({
