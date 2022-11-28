@@ -192,7 +192,7 @@ subscription SubscriptionMovie {
             {
                 [typeArticle.operations.subscribe.relationship_created]: {
                     [typeArticle.operations.subscribe.payload.relationship_created]: { title: "articol" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "references",
                     createdRelationship: {
                         references: {
@@ -313,7 +313,7 @@ subscription SubscriptionMovie {
             {
                 [typeArticle.operations.subscribe.relationship_created]: {
                     [typeArticle.operations.subscribe.payload.relationship_created]: { title: "articol" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "references",
                     createdRelationship: {
                         references: {
@@ -329,7 +329,7 @@ subscription SubscriptionMovie {
             {
                 [typeArticle.operations.subscribe.relationship_created]: {
                     [typeArticle.operations.subscribe.payload.relationship_created]: { title: "articol" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "references",
                     createdRelationship: {
                         references: {
@@ -448,7 +448,7 @@ subscription SubscriptionMovie {
             {
                 [typePerson.operations.subscribe.relationship_created]: {
                     [typePerson.operations.subscribe.payload.relationship_created]: { name: "Adam" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "knownBy",
                     createdRelationship: {
                         knownBy: {
@@ -565,7 +565,7 @@ subscription SubscriptionMovie {
             {
                 [typePerson.operations.subscribe.relationship_created]: {
                     [typePerson.operations.subscribe.payload.relationship_created]: { name: "Adam" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "knownBy",
                     createdRelationship: {
                         knownBy: {
@@ -580,7 +580,7 @@ subscription SubscriptionMovie {
             {
                 [typePerson.operations.subscribe.relationship_created]: {
                     [typePerson.operations.subscribe.payload.relationship_created]: { name: "Adam" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "knownBy",
                     createdRelationship: {
                         knownBy: {

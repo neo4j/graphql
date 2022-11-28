@@ -261,7 +261,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -278,7 +278,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -399,7 +399,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -416,7 +416,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -435,7 +435,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu Reeves" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -450,7 +450,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu Reeves" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -515,7 +515,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -533,7 +533,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -596,7 +596,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -726,7 +726,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -743,7 +743,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -762,7 +762,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu Reeves" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -777,7 +777,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Jose Molina" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -900,7 +900,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Mulan" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -917,7 +917,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -934,7 +934,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -1060,7 +1060,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -1162,7 +1162,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -1277,7 +1277,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -1295,7 +1295,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -1316,7 +1316,7 @@ subscription SubscriptionPerson {
             {
                 [typePerson.operations.subscribe.relationship_created]: {
                     [typePerson.operations.subscribe.payload.relationship_created]: { name: "Ana" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -1331,7 +1331,7 @@ subscription SubscriptionPerson {
             {
                 [typePerson.operations.subscribe.relationship_created]: {
                     [typePerson.operations.subscribe.payload.relationship_created]: { name: "Ana" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -1569,7 +1569,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -1584,7 +1584,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Marion" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -1601,7 +1601,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -1618,7 +1618,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -1635,7 +1635,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -1652,7 +1652,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -1670,7 +1670,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -1688,7 +1688,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -1706,7 +1706,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -1906,7 +1906,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -1921,7 +1921,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Marion" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -1938,7 +1938,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -1955,7 +1955,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -1972,7 +1972,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -1989,7 +1989,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2007,7 +2007,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2098,7 +2098,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -2117,7 +2117,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -2210,7 +2210,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2302,7 +2302,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2402,7 +2402,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2420,7 +2420,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2520,7 +2520,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2664,7 +2664,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2682,7 +2682,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2700,7 +2700,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -2795,7 +2795,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2813,7 +2813,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2935,7 +2935,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2953,7 +2953,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -3085,7 +3085,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -3102,7 +3102,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -3122,7 +3122,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -3273,7 +3273,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -3290,7 +3290,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -3308,7 +3308,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -3328,7 +3328,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -3471,7 +3471,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -3488,7 +3488,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -3505,7 +3505,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -3524,7 +3524,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -3539,7 +3539,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Marion" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -3748,7 +3748,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -3765,7 +3765,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -3782,7 +3782,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -3799,7 +3799,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -3817,7 +3817,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -3837,7 +3837,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -3852,7 +3852,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Marion" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4025,7 +4025,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -4043,7 +4043,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -4061,7 +4061,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -4258,7 +4258,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -4276,7 +4276,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -4296,7 +4296,7 @@ subscription SubscriptionPerson {
             {
                 [typePerson.operations.subscribe.relationship_created]: {
                     [typePerson.operations.subscribe.payload.relationship_created]: { name: "Ana" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4366,7 +4366,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu Reeves" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4383,7 +4383,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -4480,7 +4480,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4495,7 +4495,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Tom" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4510,7 +4510,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Tom" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4527,7 +4527,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -4544,7 +4544,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -4561,7 +4561,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -4656,7 +4656,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -4673,7 +4673,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -4793,7 +4793,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Edgar" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4808,7 +4808,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Allen" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4825,7 +4825,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -4842,7 +4842,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The House of Usher" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -4859,7 +4859,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -4876,7 +4876,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5020,7 +5020,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Lenore" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -5037,7 +5037,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -5054,7 +5054,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5071,7 +5071,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5313,7 +5313,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Allen Poe" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -5330,7 +5330,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Fall" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -5347,7 +5347,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The House of Usher" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5365,7 +5365,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The House of Usher" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5459,7 +5459,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu Reeves" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -5476,7 +5476,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -5638,7 +5638,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Edgar" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -5653,7 +5653,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Allen" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -5670,7 +5670,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -5687,7 +5687,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The House of Usher" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -5704,7 +5704,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5721,7 +5721,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5865,7 +5865,7 @@ subscription SubscriptionPerson {
             {
                 [typeActor.operations.subscribe.relationship_created]: {
                     [typeActor.operations.subscribe.payload.relationship_created]: { name: "Lenore" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -5882,7 +5882,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -5899,7 +5899,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5916,7 +5916,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_created]: {
                     [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
-                    event: "RELATIONSHIP_CREATED",
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,

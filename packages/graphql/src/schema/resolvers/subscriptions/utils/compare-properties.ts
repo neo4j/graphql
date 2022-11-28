@@ -237,7 +237,7 @@ export function filterByRelationshipProperties({
     for (const [wherePropertyKey, wherePropertyValue] of Object.entries(whereProperties)) {
         const { fieldName } = parseFilterProperty(wherePropertyKey);
 
-        const connectedNodeFieldName = node.subscriptionEventPayloadFieldNames.relationship_created;
+        const connectedNodeFieldName = node.subscriptionEventPayloadFieldNames.create_relationship;
         if (fieldName === connectedNodeFieldName) {
             const key = receivedEventRelationship.direction === "IN" ? "to" : "from";
             if (!filterByProperties(node, wherePropertyValue, receivedEventProperties[key])) {

@@ -289,7 +289,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -311,7 +311,7 @@ subscription SubscriptionPerson {
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -430,7 +430,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -448,7 +448,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -470,7 +470,7 @@ subscription SubscriptionPerson {
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -488,7 +488,7 @@ subscription SubscriptionPerson {
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -628,7 +628,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -646,7 +646,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -664,7 +664,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -683,7 +683,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -872,7 +872,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -890,7 +890,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -908,7 +908,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -926,7 +926,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -945,7 +945,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -964,7 +964,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -987,7 +987,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Jim",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1091,7 +1091,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1110,7 +1110,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1133,7 +1133,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1274,7 +1274,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1293,7 +1293,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1312,7 +1312,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1331,7 +1331,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1354,7 +1354,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1372,7 +1372,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1390,7 +1390,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1512,7 +1512,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1531,7 +1531,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1550,7 +1550,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1573,7 +1573,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1591,7 +1591,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1762,7 +1762,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1781,7 +1781,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1800,7 +1800,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1819,7 +1819,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Other Movie" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1838,7 +1838,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1857,7 +1857,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1880,7 +1880,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1898,7 +1898,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1916,7 +1916,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1934,7 +1934,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1952,7 +1952,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -2322,7 +2322,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2341,7 +2341,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2360,7 +2360,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Other Movie" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2379,7 +2379,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2398,7 +2398,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2421,7 +2421,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -2439,7 +2439,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -2457,7 +2457,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -2475,7 +2475,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -2493,7 +2493,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -2767,7 +2767,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -2785,7 +2785,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -2803,7 +2803,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -2821,7 +2821,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -2840,7 +2840,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -2859,7 +2859,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2878,7 +2878,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2897,7 +2897,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2916,7 +2916,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2935,7 +2935,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2954,7 +2954,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2973,7 +2973,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Other Matrix" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2996,7 +2996,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3014,7 +3014,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3032,7 +3032,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Jim",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3050,7 +3050,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Julia",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3068,7 +3068,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Julia",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3086,7 +3086,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3211,7 +3211,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -3230,7 +3230,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -3249,7 +3249,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -3272,7 +3272,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3440,7 +3440,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -3458,7 +3458,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -3477,7 +3477,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -3496,7 +3496,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -3515,7 +3515,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -3538,7 +3538,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3556,7 +3556,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3574,7 +3574,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3853,7 +3853,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -3871,7 +3871,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -3889,7 +3889,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -3907,7 +3907,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -3925,7 +3925,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -3944,7 +3944,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -3963,7 +3963,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -3982,7 +3982,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4001,7 +4001,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4020,7 +4020,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4039,7 +4039,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4062,7 +4062,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4080,7 +4080,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4098,7 +4098,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Jim",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4116,7 +4116,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4387,7 +4387,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -4405,7 +4405,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -4423,7 +4423,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -4441,7 +4441,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -4459,7 +4459,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -4478,7 +4478,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -4497,7 +4497,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4516,7 +4516,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4535,7 +4535,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4554,7 +4554,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4573,7 +4573,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4596,7 +4596,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4614,7 +4614,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4632,7 +4632,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Jim",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4650,7 +4650,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4919,7 +4919,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -4937,7 +4937,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -4955,7 +4955,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -4973,7 +4973,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -4992,7 +4992,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5011,7 +5011,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5030,7 +5030,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5049,7 +5049,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5072,7 +5072,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Julia",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -5090,7 +5090,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -5108,7 +5108,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Jim",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -5503,7 +5503,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5521,7 +5521,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5539,7 +5539,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5557,7 +5557,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5575,7 +5575,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -5593,7 +5593,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -5611,7 +5611,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5630,7 +5630,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5649,7 +5649,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5668,7 +5668,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5687,7 +5687,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5706,7 +5706,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5725,7 +5725,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5744,7 +5744,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5763,7 +5763,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5782,7 +5782,7 @@ subscription SubscriptionPerson {
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5805,7 +5805,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -5823,7 +5823,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -5841,7 +5841,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -5859,7 +5859,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Jim",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -5877,7 +5877,7 @@ subscription SubscriptionPerson {
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Jim",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {

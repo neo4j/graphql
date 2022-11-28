@@ -199,7 +199,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             name: "Actor 1",
@@ -222,7 +222,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             name: "Actor 2",
@@ -245,7 +245,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             name: "Actor 3",
@@ -268,7 +268,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             name: "Actor 4",
@@ -360,7 +360,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             name: "ActorDirector",
@@ -383,7 +383,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             name: "PersonDirector",
@@ -468,7 +468,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             name: "PersonReviewer",
@@ -492,7 +492,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             reputation: 1,
@@ -652,7 +652,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             name: "PersonDirector",
@@ -676,7 +676,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             name: "ActorDirector",
@@ -699,7 +699,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             name: "ActorDirector",
@@ -722,7 +722,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             name: "OtherActorDirector",
@@ -745,7 +745,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             name: "OtherPersonDirector",
@@ -769,7 +769,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             name: "PersonReviewer",
@@ -793,7 +793,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             url: "InfluencerReviewerUrl",
@@ -817,7 +817,7 @@ describe("Subscriptions connect with create", () => {
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
-                    event: "relationship_created",
+                    event: "create_relationship",
                     properties: {
                         from: {
                             name: "Actor",

@@ -41,7 +41,7 @@ export function publishEventsToPlugin(
         const serializedEvents = metadata.reduce(parseEvents(schemaModel), []);
         const serializedEventsWithoutDuplicates = removeDuplicateEvents(
             serializedEvents,
-            "relationship_deleted",
+            "delete_relationship",
             "delete"
         );
         for (const subscriptionsEvent of serializedEventsWithoutDuplicates) {
@@ -85,7 +85,7 @@ function parseEvents(schemaModel: Neo4jGraphQLSchemaModel) {
     };
 }
 
-type EventType = "create" | "update" | "delete" | "relationship_created" | "relationship_deleted";
+type EventType = "create" | "update" | "delete" | "create_relationship" | "delete_relationship";
 type MapIdToListOfTypenamesType = Map<number, { fromTypename: string; toTypename: string }[]>;
 function removeDuplicateEvents(events: SubscriptionsEvent[], ...eventTypes: EventType[]): SubscriptionsEvent[] {
     const resultIdsByEventType = eventTypes.reduce((acc, eventType) => {
@@ -141,7 +141,7 @@ function isNodeSubscriptionMeta(event: EventMeta): event is NodeSubscriptionMeta
     return ["create", "update", "delete"].includes(event.event);
 }
 function isRelationshipSubscriptionMeta(event: EventMeta): event is RelationshipSubscriptionMeta {
-    return ["relationship_created", "relationship_deleted"].includes(event.event);
+    return ["create_relationship", "delete_relationship"].includes(event.event);
 }
 function isRelationshipWithTypenameSubscriptionMeta(
     event: RelationshipSubscriptionMeta

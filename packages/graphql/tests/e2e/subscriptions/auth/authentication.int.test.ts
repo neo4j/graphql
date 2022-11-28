@@ -436,7 +436,7 @@ describe("Subscription authentication", () => {
                 {
                     [typeMovie.operations.subscribe.relationship_created]: {
                         [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                        event: "RELATIONSHIP_CREATED",
+                        event: "CREATE_RELATIONSHIP",
                         relationshipFieldName: "actors",
                         createdRelationship: {
                             actors: {
@@ -496,7 +496,7 @@ describe("Subscription authentication", () => {
             expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authenticated" })]);
         });
 
-        test("authentication pass - relationship_created", async () => {
+        test("authentication pass - create_relationship", async () => {
             await supertest(server.path)
                 .post("")
                 .send({
@@ -563,7 +563,7 @@ describe("Subscription authentication", () => {
                 {
                     [typeMovie.operations.subscribe.relationship_created]: {
                         [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                        event: "RELATIONSHIP_CREATED",
+                        event: "CREATE_RELATIONSHIP",
                         relationshipFieldName: "actors",
                         createdRelationship: {
                             actors: {
@@ -581,7 +581,7 @@ describe("Subscription authentication", () => {
             expect(wsClient.errors).toEqual([]);
         });
 
-        test("unauthenticated subscription does not send events - connect", async () => {
+        test("unauthenticated subscription does not send events - create_relationship", async () => {
             await supertest(server.path)
                 .post("")
                 .send({

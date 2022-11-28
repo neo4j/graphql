@@ -111,11 +111,11 @@ export function generateSubscriptionTypes({
         });
 
         const relationshipCreatedEvent = schemaComposer.createObjectTC({
-            name: subscriptionEventTypeNames.relationship_created,
+            name: subscriptionEventTypeNames.create_relationship,
             fields: {
                 event: {
                     type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("RELATIONSHIP_CREATED")?.value,
+                    resolve: () => EventType.getValue("CREATE_RELATIONSHIP")?.value,
                 },
                 timestamp: {
                     type: new GraphQLNonNull(GraphQLFloat),
@@ -125,11 +125,11 @@ export function generateSubscriptionTypes({
         });
 
         const relationshipDeletedEvent = schemaComposer.createObjectTC({
-            name: subscriptionEventTypeNames.relationship_deleted,
+            name: subscriptionEventTypeNames.delete_relationship,
             fields: {
                 event: {
                     type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("RELATIONSHIP_DELETED")?.value,
+                    resolve: () => EventType.getValue("DELETE_RELATIONSHIP")?.value,
                 },
                 timestamp: {
                     type: new GraphQLNonNull(GraphQLFloat),
@@ -177,7 +177,7 @@ export function generateSubscriptionTypes({
             });
 
             relationshipCreatedEvent.addFields({
-                [subscriptionEventPayloadFieldNames.relationship_created]: {
+                [subscriptionEventPayloadFieldNames.create_relationship]: {
                     type: eventPayload.NonNull,
                     resolve: (source: RelationshipSubscriptionsEvent) => {
                         return getRelationshipEventDataForNode(source, node, nodeToRelationFieldMap).properties;
@@ -196,7 +196,7 @@ export function generateSubscriptionTypes({
             });
 
             relationshipDeletedEvent.addFields({
-                [subscriptionEventPayloadFieldNames.relationship_deleted]: {
+                [subscriptionEventPayloadFieldNames.delete_relationship]: {
                     type: eventPayload.NonNull,
                     resolve: (source: RelationshipSubscriptionsEvent) => {
                         return getRelationshipEventDataForNode(source, node, nodeToRelationFieldMap).properties;
@@ -286,7 +286,7 @@ export function generateSubscriptionTypes({
                     type: relationshipCreatedEvent.NonNull,
                     subscribe: generateSubscribeMethod({
                         node,
-                        type: "relationship_created",
+                        type: "create_relationship",
                         nodes,
                         relationshipFields,
                     }),
@@ -297,7 +297,7 @@ export function generateSubscriptionTypes({
                     type: relationshipDeletedEvent.NonNull,
                     subscribe: generateSubscribeMethod({
                         node,
-                        type: "relationship_deleted",
+                        type: "delete_relationship",
                         nodes,
                         relationshipFields,
                     }),

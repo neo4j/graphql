@@ -49,7 +49,7 @@ export function subscriptionWhere({
     if (event.event === "update" || event.event === "delete") {
         return filterByProperties(node, where, event.properties.old);
     }
-    if (event.event === "relationship_created" || event.event === "relationship_deleted") {
+    if (event.event === "create_relationship" || event.event === "delete_relationship") {
         if (!nodes || !relationshipFields) {
             return false;
         }

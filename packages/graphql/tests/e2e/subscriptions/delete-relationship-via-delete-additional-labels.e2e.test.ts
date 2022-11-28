@@ -287,7 +287,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -303,7 +303,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -323,7 +323,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -341,7 +341,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -440,7 +440,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine 3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -456,7 +456,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine 3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -472,7 +472,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
             {
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine 2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -492,7 +492,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Someone",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -510,7 +510,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Someone else",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -528,7 +528,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Someone",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -674,7 +674,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 // 1. movie + person
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine 3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -691,7 +691,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 // 2. movie + dinosaur
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine 3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -708,7 +708,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 // 1. movie + person
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine 3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -725,7 +725,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 // 2. movie + dinosaur
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine 3" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -742,7 +742,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 // 1. movie + person
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine 2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -759,7 +759,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 // 2. movie + dinosaur
                 [typeMovie.operations.subscribe.relationship_deleted]: {
                     [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine 2" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -779,7 +779,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Person someone",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -796,7 +796,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Dinosaur someone",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -813,7 +813,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Dinosaur or Person",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -957,7 +957,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -976,7 +976,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -995,7 +995,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -1014,7 +1014,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -1033,7 +1033,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -1052,7 +1052,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -1070,7 +1070,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
             {
                 [typeSeries.operations.subscribe.relationship_deleted]: {
                     [typeSeries.operations.subscribe.payload.relationship_deleted]: { title: "A Series" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -1086,7 +1086,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
             {
                 [typeSeries.operations.subscribe.relationship_deleted]: {
                     [typeSeries.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -1102,7 +1102,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
             {
                 [typeSeries.operations.subscribe.relationship_deleted]: {
                     [typeSeries.operations.subscribe.payload.relationship_deleted]: { title: "A Production" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -1282,7 +1282,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -1300,7 +1300,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -1319,7 +1319,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
             {
                 [typeSeries.operations.subscribe.relationship_deleted]: {
                     [typeSeries.operations.subscribe.payload.relationship_deleted]: { title: "Another Series" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -1336,7 +1336,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 // 1. series + series
                 [typeSeries.operations.subscribe.relationship_deleted]: {
                     [typeSeries.operations.subscribe.payload.relationship_deleted]: { title: "Another Series" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -1353,7 +1353,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 // 2. series + production
                 [typeSeries.operations.subscribe.relationship_deleted]: {
                     [typeSeries.operations.subscribe.payload.relationship_deleted]: { title: "Another Series" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -1370,7 +1370,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 // 3. production + series
                 [typeSeries.operations.subscribe.relationship_deleted]: {
                     [typeSeries.operations.subscribe.payload.relationship_deleted]: { title: "A Series" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -1387,7 +1387,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 // 1. series + series
                 [typeSeries.operations.subscribe.relationship_deleted]: {
                     [typeSeries.operations.subscribe.payload.relationship_deleted]: { title: "Another Series" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -1404,7 +1404,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 // 2. series + production
                 [typeSeries.operations.subscribe.relationship_deleted]: {
                     [typeSeries.operations.subscribe.payload.relationship_deleted]: { title: "Another Series" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -1421,7 +1421,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 // 3. production + series
                 [typeSeries.operations.subscribe.relationship_deleted]: {
                     [typeSeries.operations.subscribe.payload.relationship_deleted]: { title: "A Production" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -1438,7 +1438,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 // 1. series + series
                 [typeSeries.operations.subscribe.relationship_deleted]: {
                     [typeSeries.operations.subscribe.payload.relationship_deleted]: { title: "Another Series" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -1455,7 +1455,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 // 2. series + production
                 [typeSeries.operations.subscribe.relationship_deleted]: {
                     [typeSeries.operations.subscribe.payload.relationship_deleted]: { title: "Another Series" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {
@@ -1472,7 +1472,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 // 3. production + series
                 [typeSeries.operations.subscribe.relationship_deleted]: {
                     [typeSeries.operations.subscribe.payload.relationship_deleted]: { title: "Another Production" },
-                    event: "RELATIONSHIP_DELETED",
+                    event: "DELETE_RELATIONSHIP",
 
                     relationshipFieldName: "productions",
                     deletedRelationship: {

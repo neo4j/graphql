@@ -46,7 +46,7 @@ export function generateSubscribeMethod({
     relationshipFields,
 }: {
     node: Node;
-    type: "create" | "update" | "delete" | "relationship_created" | "relationship_deleted";
+    type: "create" | "update" | "delete" | "create_relationship" | "delete_relationship";
     nodes?: Node[];
     relationshipFields?: Map<string, ObjectFields>;
 }) {
@@ -75,7 +75,7 @@ export function generateSubscribeMethod({
             });
         }
 
-        if (["relationship_created", "relationship_deleted"].includes(type)) {
+        if (["create_relationship", "delete_relationship"].includes(type)) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
                 const relationEventPayload = data[0] as RelationshipSubscriptionsEvent;
                 const isOfRelevantType =

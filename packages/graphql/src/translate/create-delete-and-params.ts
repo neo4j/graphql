@@ -237,7 +237,7 @@ function createDeleteAndParams({
                         const [fromTypename, toTypename] =
                             relationField.direction === "IN" ? [refNode.name, node.name] : [node.name, refNode.name];
                         const eventWithMetaStr = createConnectionEventMetaObject({
-                            event: "relationship_deleted",
+                            event: "delete_relationship",
                             relVariable: relationshipVariable,
                             fromVariable,
                             toVariable,
