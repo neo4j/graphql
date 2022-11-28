@@ -3,7 +3,7 @@
 
 WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
 
-Subscriptions to `CONNECT` events will listen to newly created relationships to a node of the specified type. 
+Subscriptions to `CONNECT` events will listen for newly created relationships to a node of the specified type. 
 
 NOTE: This subscription operation is **only** available for types that define relationship fields.
 
