@@ -128,16 +128,6 @@ export function translateRead(
         );
     }
 
-    if (!projectionSubqueries.empty && hasOrdering) {
-        addSortAndLimitOptionsToClause({
-            optionsInput,
-            target: matchNode,
-            projectionClause: returnClause,
-            nodeField: node.singular,
-            fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
-        });
-    }
-
     let projectionClause: Cypher.Clause = returnClause; // TODO avoid reassign
     let connectionPreClauses: Cypher.Clause | undefined;
 
