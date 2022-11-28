@@ -43,7 +43,7 @@ export function translateTopLevelMatch({
         node,
         context,
         matchNode,
-        withClause,
+        withClause
     );
     const result = Cypher.concat(topLevelMatch, aggregateWhereCall, withClause).build();
     return result;
@@ -154,18 +154,37 @@ function createFulltextMatchClause(
     return matchQuery;
 }
 
+type logicalOperator = "AND" | "OR";
+
+type WhereFilter = Record<string | logicalOperator, any>;
+
+type AggregateWhereInput = {
+    count: number;
+    count_LT: number;
+    count_LTE: number;
+    count_GT: number;
+    count_GTE: number;
+    node: WhereFilter;
+    edge: WhereFilter;
+} & WhereFilter;
+
+type AggregateWhereReturn = {
+    returnVariables: ("*" | Cypher.ProjectionColumn)[];
+    predicateVariables: Cypher.Variable[];
+    predicates: Cypher.Predicate[];
+};
+
 export function preComputedWhereFields(
     whereInput: any,
     node: Node,
     context: Context,
     matchNode: Cypher.Variable,
-    withClause: Cypher.With,
+    withClause: Cypher.With
 ): Cypher.Clause | undefined {
     if (!whereInput) {
         return;
     }
-    let returnClause: Cypher.CompositeClause | undefined;
-    Object.entries(whereInput).forEach(([key, value]) => {
+    const precomputedClauses = Object.entries(whereInput).map(([key, value]) => {
         const match = whereRegEx.exec(key);
         if (!match) {
             throw new Error(`Failed to match key in filter: ${key}`);
@@ -175,7 +194,7 @@ export function preComputedWhereFields(
 
         if (isAggregate && relationField) {
             if (!value) {
-                return [undefined, undefined];
+                return;
             }
             const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             const direction = relationField.direction;
@@ -189,19 +208,179 @@ export function preComputedWhereFields(
                 cypherRelation.reverse();
             }
             const matchQuery = new Cypher.Match(cypherRelation);
-            const [returnVariables, predicates] = computeRootWhereAggregate(
-                value,
+            const { returnVariables, predicates } = aggregateWhere(
+                value as AggregateWhereInput,
                 refNode,
                 aggregationTarget,
                 cypherRelation
             );
             matchQuery.return(...returnVariables);
-            returnClause = Cypher.concat(returnClause, new Cypher.Call(matchQuery).innerWith(matchNode));
-            withClause.where(Cypher.and(...predicates))
+            withClause.where(Cypher.and(...predicates));
+            return new Cypher.Call(matchQuery).innerWith(matchNode);
         }
     });
-    return returnClause
+    return Cypher.concat(...precomputedClauses);
 }
+
+// Reducer function that merge an array of AggregateWhereReturn into a single AggregateWhereReturn
+function aggregateWhereReducer(accumulator: AggregateWhereReturn, current: AggregateWhereReturn) {
+    return {
+        returnVariables: [...accumulator.returnVariables, ...(current?.returnVariables || [])],
+        predicateVariables: [...accumulator.predicateVariables, ...(current?.predicateVariables || [])],
+        predicates: [...accumulator.predicates, ...(current?.predicates || [])],
+    };
+}
+
+function aggregateWhere(
+    aggregateWhereInput: AggregateWhereInput,
+    refNode: Node,
+    aggregationTarget: Cypher.Node,
+    cypherRelation: Cypher.Relationship
+): AggregateWhereReturn {
+    return Object.entries(aggregateWhereInput)
+        .map(([key, value]): AggregateWhereReturn => {
+            if (["count", "count_LT", "count_LTE", "count_GT", "count_GTE"].includes(key)) {
+                const paramName = new Cypher.Param(value);
+                const count = Cypher.count(aggregationTarget);
+                const operator = whereRegEx.exec(key)?.groups?.operator || "EQ";
+                const operation = createBaseOperation({
+                    operator,
+                    property: count,
+                    param: paramName,
+                });
+                const operationVar = new Cypher.Variable();
+                return {
+                    returnVariables: [[operation, operationVar]],
+                    predicateVariables: [operationVar],
+                    predicates: [Cypher.eq(operationVar, new Cypher.Param(true))],
+                };
+            } else if (["node", "edge"].includes(key)) {
+                const target = key === "edge" ? cypherRelation : aggregationTarget;
+                return aggregateEntityWhere(value, refNode, target);
+            } else if (["AND", "OR"].includes(key)) {
+                const logicalOperator = key === "AND" ? Cypher.and : Cypher.or;
+                const { returnVariables, predicateVariables, predicates } = value
+                    .map((whereInput) => {
+                        return aggregateWhere(whereInput, refNode, aggregationTarget, cypherRelation);
+                    })
+                    .reduce(aggregateWhereReducer, {
+                        returnVariables: [],
+                        predicateVariables: [],
+                        predicates: [],
+                    });
+
+                return {
+                    returnVariables,
+                    predicateVariables,
+                    predicates: [logicalOperator(...predicates)],
+                };
+            }
+            return {
+                returnVariables: [],
+                predicateVariables: [],
+                predicates: [],
+            };
+        })
+        .reduce(aggregateWhereReducer, {
+            returnVariables: [],
+            predicateVariables: [],
+            predicates: [],
+        });
+}
+
+function aggregateEntityWhere(
+    aggregateEntityWhereInput: WhereFilter,
+    refNode: Node,
+    target: Cypher.Node | Cypher.Relationship
+): AggregateWhereReturn {
+    return Object.entries(aggregateEntityWhereInput)
+        .map(([key, value]): AggregateWhereReturn => {
+            if (["AND", "OR"].includes(key)) {
+                const logicalOperator = key === "AND" ? Cypher.and : Cypher.or;
+                const { returnVariables, predicateVariables, predicates } = value
+                    .map((whereInput) => {
+                        return aggregateEntityWhere(whereInput, refNode, target);
+                    })
+                    .reduce(aggregateWhereReducer, {
+                        returnVariables: [],
+                        predicateVariables: [],
+                        predicates: [],
+                    });
+                return {
+                    returnVariables,
+                    predicateVariables,
+                    predicates: [logicalOperator(...predicates)],
+                };
+            } else {
+                const paramName = new Cypher.Param(value);
+                const regexResult = aggregationFieldRegEx.exec(key)?.groups as AggregationFieldRegexGroups;
+                const { logicalOperator } = regexResult;
+                const { fieldName, aggregationOperator } = regexResult;
+                const fieldType = refNode.primitiveFields.find((name) => name.fieldName === fieldName)?.typeMeta.name;
+
+                let operation;
+                if (fieldType === "String" && aggregationOperator) {
+                    operation = createBaseOperation({
+                        operator: logicalOperator || "EQ",
+                        property: getAggregateOperation(Cypher.size(target.property(fieldName)), aggregationOperator),
+                        param: paramName,
+                    });
+                } else if (aggregationOperator) {
+                    operation = createBaseOperation({
+                        operator: logicalOperator || "EQ",
+                        property: getAggregateOperation(target.property(fieldName), aggregationOperator),
+                        param: paramName,
+                    });
+                } else {
+                    const innerVar = new Cypher.Variable();
+                    const innerOperation = createBaseOperation({
+                        operator: logicalOperator || "EQ",
+                        property: innerVar,
+                        param: paramName,
+                    });
+
+                    const collectedProperty =
+                        fieldType === "String" && logicalOperator !== "EQUAL"
+                            ? Cypher.collect(Cypher.size(target.property(fieldName)))
+                            : Cypher.collect(target.property(fieldName));
+                    operation = Cypher.any(innerVar, collectedProperty, innerOperation);
+                }
+                const operationVar = new Cypher.Variable();
+                return {
+                    returnVariables: [[operation, operationVar]],
+                    predicateVariables: [operationVar],
+                    predicates: [Cypher.eq(operationVar, new Cypher.Param(true))],
+                };
+            }
+        })
+        .reduce(aggregateWhereReducer, {
+            returnVariables: [],
+            predicateVariables: [],
+            predicates: [],
+        });
+}
+
+function getAggregateOperation(
+    property: Cypher.PropertyRef | Cypher.Function,
+    aggregationOperator: string
+): Cypher.Function {
+    switch (aggregationOperator) {
+        case "AVERAGE":
+            return Cypher.avg(property);
+        case "MIN":
+        case "SHORTEST":
+            return Cypher.min(property);
+        case "MAX":
+        case "LONGEST":
+            return Cypher.max(property);
+        case "SUM":
+            return Cypher.sum(property);
+        default:
+            throw new Error(`Invalid operator ${aggregationOperator}`);
+    }
+}
+/* 
+
 
 function computeRootWhereAggregate(
     value: any,
@@ -355,3 +534,4 @@ function createAggregateOperation(
             throw new Error(`Invalid operator ${aggregationOperator}`);
     }
 }
+ */

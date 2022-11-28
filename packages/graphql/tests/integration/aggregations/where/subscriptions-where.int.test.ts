@@ -1,0 +1,275 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import type { Driver, Session } from "neo4j-driver";
+import { graphql } from "graphql";
+import Neo4j from "../../neo4j";
+import { Neo4jGraphQL } from "../../../../src/classes";
+import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { cleanNodes } from "../../../utils/clean-nodes";
+import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+
+describe.skip("Subscription events using aggregate where", () => {
+    let driver: Driver;
+    let neo4j: Neo4j;
+    let neoSchema: Neo4jGraphQL;
+    let session: Session;
+    let userType: UniqueType;
+    let postType: UniqueType;
+    let likeInterface: UniqueType;
+    let typeDefs: string;
+    const postId1 = "Post1";
+    const postId2 = "Post2";
+    const postId3 = "Post3";
+    const postId4 = "Post4";
+    const postId5 = "Post5";
+    const postId6 = "Post6";
+    const userName = "Username1";
+    const userName2 = "username2";
+    const userName3 = "username3";
+    const userName4 = "userName4";
+    const date1 = new Date("2022-01-09T18:46:40.000Z");
+    const date2 = new Date("2022-05-01T18:46:40.000Z");
+    const date3 = new Date("2022-08-11T10:06:25.000Z");
+    let plugin: TestSubscriptionsPlugin;
+
+    beforeAll(async () => {
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+    });
+
+    beforeEach(async () => {
+        session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+        userType = generateUniqueType("User");
+        postType = generateUniqueType("Post");
+        likeInterface = generateUniqueType("LikeEdge");
+        typeDefs = `
+            type ${userType.name} {
+                name: String!
+                likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT, properties: "${likeInterface.name}")
+            }
+    
+            type ${postType.name} {
+                id: ID
+                content: String!
+                likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}")
+            }
+
+            interface ${likeInterface.name} {
+                likedAt: DateTime
+            }
+        `;
+
+        await session.run(`
+            CREATE (u:${userType.name} {name: "${userName}"})
+            CREATE (u2:${userType.name} {name: "${userName2}"})
+            CREATE (u3:${userType.name} {name: "${userName3}"})
+            CREATE (u4:${userType.name} {name: "${userName4}"})
+            CREATE (u)-[:LIKES { likedAt: dateTime("${date1.toISOString()}")}]->(p:${postType.name} {id: "${postId1}"})
+            CREATE (u2)-[:LIKES { likedAt: dateTime("${date2.toISOString()}")}]->(p2:${
+            postType.name
+        } {id: "${postId2}"})
+            CREATE (u3)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p2)
+            CREATE (p3:${postType.name} {id: "${postId3}"})
+            CREATE (u2)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p3)
+            CREATE (u3)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p3)
+            CREATE (p4:${postType.name} {id: "${postId4}"})
+            CREATE (u2)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p4)
+            CREATE (u3)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p4)
+            CREATE (u4)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p4)
+            CREATE (p5:${postType.name} {id: "${postId5}"})
+            CREATE (u2)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p5)
+            CREATE (u3)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p5)
+            CREATE (u4)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p5)
+            CREATE (p6:${postType.name} {id: "${postId6}"})
+            CREATE (u2)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p6)
+            CREATE (u3)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p6)
+            CREATE (u4)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p6)
+        `);
+
+        plugin = new TestSubscriptionsPlugin();
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+            plugins: {
+                subscriptions: plugin,
+            },
+        });
+    });
+
+    afterEach(async () => {
+        await cleanNodes(session, [userType, postType]);
+        await session.close();
+    });
+
+    afterAll(async () => {
+        await driver.close();
+    });
+
+    test("should notify the correct connect events from a user", async () => {
+        const query = `
+            mutation {
+                ${userType.operations.update}(
+                    where: { name: "${userName}" }
+                    update: { 
+                        likedPosts: { 
+                            connect: { 
+                                where: { 
+                                    node: {
+                                        likesAggregate: {
+                                            count: 3
+                                        }
+                                    } 
+                                } 
+                            } 
+                        } 
+                }) {
+                    ${userType.plural} {
+                        name
+                        likedPosts {
+                            id
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {}),
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
+        expect(users).toEqual([
+            {
+                name: userName,
+                likedPosts: expect.toIncludeSameMembers([
+                    { id: postId1 },
+                    { id: postId4 },
+                    { id: postId5 },
+                    { id: postId6 },
+                ]),
+            },
+        ]);
+        const storedValue = await session.run(
+            `
+            MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
+            WHERE u.name = "${userName}" 
+            RETURN p
+            `,
+            {}
+        );
+        expect(storedValue.records).toHaveLength(4);
+        const connectEvents = plugin.eventList.filter((eventItem) => eventItem.event === "connect");
+        expect(connectEvents).toHaveLength(3);
+    });
+
+    test("should notify the correct connect events of multiple users", async () => {
+        const query = `
+            mutation {
+                ${userType.operations.update}(
+                    update: { 
+                        likedPosts: { 
+                            connect: { 
+                                where: { 
+                                    node: {
+                                        likesAggregate: {
+                                            count_LTE: 2
+                                        }
+                                    } 
+                                } 
+                            } 
+                        } 
+                }) {
+                    ${userType.plural} {
+                        name
+                        likedPosts {
+                            id
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {}),
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
+        expect(users).toEqual([
+            {
+                name: userName,
+                likedPosts: expect.toIncludeSameMembers([
+                    { id: postId1 },
+                    { id: postId2 },
+                    { id: postId3 },
+                ]),
+            },
+            {
+                name: userName2,
+                likedPosts: expect.toIncludeSameMembers([
+                    { id: postId1 },
+                    { id: postId2 },
+                    { id: postId3 },
+                    { id: postId4 },
+                    { id: postId5 },
+                    { id: postId6 },
+                ]),
+            },
+            {
+                name: userName3,
+                likedPosts: expect.toIncludeSameMembers([
+                    { id: postId1 },
+                    { id: postId2 },
+                    { id: postId3 },
+                    { id: postId4 },
+                    { id: postId5 },
+                    { id: postId6 },
+                ]),
+            },
+            {
+                name: userName4,
+                likedPosts: expect.toIncludeSameMembers([
+                    { id: postId1 },
+                    { id: postId2 },
+                    { id: postId3 },
+                    { id: postId4 },
+                    { id: postId5 },
+                    { id: postId6 },
+                ]),
+            },
+        ]);
+        const storedValue = await session.run(
+            `
+            MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
+            RETURN p
+            `,
+            {}
+        );
+        expect(storedValue.records).toHaveLength(4);
+        const connectEvents = plugin.eventList.filter((eventItem) => eventItem.event === "connect");
+        expect(connectEvents).toHaveLength(3);
+    });
+});
