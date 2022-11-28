@@ -352,10 +352,10 @@ describe("Subscription authentication", () => {
 
         const movieSubscriptionQuery = ({ typeMovie, typePerson, typeInfluencer }) => `
         subscription SubscriptionMovie {
-            ${typeMovie.operations.subscribe.connected} {
+            ${typeMovie.operations.subscribe.relationship_created} {
                 relationshipFieldName
                 event
-                ${typeMovie.operations.subscribe.payload.connected} {
+                ${typeMovie.operations.subscribe.payload.relationship_created} {
                     title
                 }
                 createdRelationship {
@@ -434,9 +434,9 @@ describe("Subscription authentication", () => {
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toIncludeSameMembers([
                 {
-                    [typeMovie.operations.subscribe.connected]: {
-                        [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                        event: "CONNECT",
+                    [typeMovie.operations.subscribe.relationship_created]: {
+                        [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                        event: "RELATIONSHIP_CREATED",
                         relationshipFieldName: "actors",
                         createdRelationship: {
                             actors: {
@@ -561,9 +561,9 @@ describe("Subscription authentication", () => {
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toIncludeSameMembers([
                 {
-                    [typeMovie.operations.subscribe.connected]: {
-                        [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                        event: "CONNECT",
+                    [typeMovie.operations.subscribe.relationship_created]: {
+                        [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                        event: "RELATIONSHIP_CREATED",
                         relationshipFieldName: "actors",
                         createdRelationship: {
                             actors: {

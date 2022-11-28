@@ -19,7 +19,7 @@
 
 import { META_CYPHER_VARIABLE } from "../../constants";
 
-export type SubscriptionsEventType = "connect" | "disconnect";
+export type SubscriptionsEventType = "relationship_created" | "relationship_deleted";
 
 type EventMetaParameters = EventMetaTypenameParameters | EventMetaLabelsParameters;
 type EventMetaCommonParameters = {

@@ -171,7 +171,7 @@ function createDisconnectAndParams({
                     ? [relatedNode.name, parentNode.name]
                     : [parentNode.name, relatedNode.name];
             const eventWithMetaStr = createConnectionEventMetaObject({
-                event: "disconnect",
+                event: "relationship_deleted",
                 relVariable: relVarName,
                 fromVariable,
                 toVariable,

@@ -380,7 +380,7 @@ export type RelationshipSubscriptionMeta =
     | RelationshipSubscriptionMetaTypenameParameters
     | RelationshipSubscriptionMetaLabelsParameters;
 type RelationshipSubscriptionMetaCommonParameters = {
-    event: "connect" | "disconnect";
+    event: "relationship_created" | "relationship_deleted";
     relationshipName: string;
     id_from: Integer | string | number;
     id_to: Integer | string | number;
@@ -435,7 +435,7 @@ export type NodeSubscriptionsEvent =
       };
 export type RelationshipSubscriptionsEvent =
     | {
-          event: "connect";
+          event: "relationship_created";
           relationshipName: string;
           properties: {
               from: Record<string, any>;
@@ -450,7 +450,7 @@ export type RelationshipSubscriptionsEvent =
           timestamp: number;
       }
     | {
-          event: "disconnect";
+          event: "relationship_deleted";
           relationshipName: string;
           properties: {
               from: Record<string, any>;

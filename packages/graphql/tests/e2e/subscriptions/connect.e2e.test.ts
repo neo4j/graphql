@@ -132,10 +132,10 @@ describe("Connect Subscription", () => {
 
     const actorSubscriptionQuery = (typeActor) => `
     subscription SubscriptionActor {
-        ${typeActor.operations.subscribe.connected} {
+        ${typeActor.operations.subscribe.relationship_created} {
             relationshipFieldName
             event
-            ${typeActor.operations.subscribe.payload.connected} {
+            ${typeActor.operations.subscribe.payload.relationship_created} {
                 name
             }
             createdRelationship {
@@ -152,10 +152,10 @@ describe("Connect Subscription", () => {
 
     const movieSubscriptionQuery = ({ typeMovie, typePerson, typeInfluencer }) => `
 subscription SubscriptionMovie {
-    ${typeMovie.operations.subscribe.connected} {
+    ${typeMovie.operations.subscribe.relationship_created} {
         relationshipFieldName
         event
-        ${typeMovie.operations.subscribe.payload.connected} {
+        ${typeMovie.operations.subscribe.payload.relationship_created} {
             title
         }
         createdRelationship {
@@ -196,10 +196,10 @@ subscription SubscriptionMovie {
 
     const personSubscriptionQuery = (typePerson) => `
 subscription SubscriptionPerson {
-    ${typePerson.operations.subscribe.connected} {
+    ${typePerson.operations.subscribe.relationship_created} {
         relationshipFieldName
         event
-        ${typePerson.operations.subscribe.payload.connected} {
+        ${typePerson.operations.subscribe.payload.relationship_created} {
             name
         }
         createdRelationship {
@@ -259,9 +259,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -276,9 +276,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -397,9 +397,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -414,9 +414,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -433,9 +433,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu Reeves" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu Reeves" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -448,9 +448,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu Reeves" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu Reeves" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -513,9 +513,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -531,9 +531,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -594,9 +594,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -724,9 +724,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -741,9 +741,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -760,9 +760,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu Reeves" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu Reeves" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -775,9 +775,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Jose Molina" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Jose Molina" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -898,9 +898,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(3);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Mulan" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Mulan" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -915,9 +915,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -932,9 +932,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -1058,9 +1058,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(1);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -1160,9 +1160,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(1);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -1275,9 +1275,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(2);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -1293,9 +1293,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -1314,9 +1314,9 @@ subscription SubscriptionPerson {
         // TODO: fix these
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.connected]: {
-                    [typePerson.operations.subscribe.payload.connected]: { name: "Ana" },
-                    event: "CONNECT",
+                [typePerson.operations.subscribe.relationship_created]: {
+                    [typePerson.operations.subscribe.payload.relationship_created]: { name: "Ana" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -1329,9 +1329,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.connected]: {
-                    [typePerson.operations.subscribe.payload.connected]: { name: "Ana" },
-                    event: "CONNECT",
+                [typePerson.operations.subscribe.relationship_created]: {
+                    [typePerson.operations.subscribe.payload.relationship_created]: { name: "Ana" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -1567,9 +1567,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -1582,9 +1582,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Marion" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Marion" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -1599,9 +1599,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -1616,9 +1616,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -1633,9 +1633,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -1650,9 +1650,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -1668,9 +1668,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -1686,9 +1686,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -1704,9 +1704,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -1904,9 +1904,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(5);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -1919,9 +1919,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Marion" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Marion" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -1936,9 +1936,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -1953,9 +1953,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -1970,9 +1970,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -1987,9 +1987,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2005,9 +2005,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2096,9 +2096,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -2115,9 +2115,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -2208,9 +2208,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toEqual([]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2300,9 +2300,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toEqual([]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2400,9 +2400,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toEqual([]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2418,9 +2418,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2518,9 +2518,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toEqual([]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2662,9 +2662,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2680,9 +2680,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2698,9 +2698,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -2793,9 +2793,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toEqual([]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2811,9 +2811,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2933,9 +2933,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toEqual([]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -2951,9 +2951,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -3083,9 +3083,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -3100,9 +3100,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -3120,9 +3120,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -3271,9 +3271,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -3288,9 +3288,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -3306,9 +3306,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -3326,9 +3326,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -3469,9 +3469,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -3486,9 +3486,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -3503,9 +3503,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -3522,9 +3522,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -3537,9 +3537,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Marion" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Marion" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -3746,9 +3746,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -3763,9 +3763,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -3780,9 +3780,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -3797,9 +3797,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -3815,9 +3815,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -3835,9 +3835,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -3850,9 +3850,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Marion" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Marion" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4023,9 +4023,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(3);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -4041,9 +4041,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -4059,9 +4059,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -4256,9 +4256,9 @@ subscription SubscriptionPerson {
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -4274,9 +4274,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "reviewers",
                     createdRelationship: {
                         actors: null,
@@ -4294,9 +4294,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.connected]: {
-                    [typePerson.operations.subscribe.payload.connected]: { name: "Ana" },
-                    event: "CONNECT",
+                [typePerson.operations.subscribe.relationship_created]: {
+                    [typePerson.operations.subscribe.payload.relationship_created]: { name: "Ana" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4364,9 +4364,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu Reeves" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu Reeves" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4381,9 +4381,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -4478,9 +4478,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(3);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4493,9 +4493,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Tom" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Tom" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4508,9 +4508,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Tom" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Tom" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4525,9 +4525,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -4542,9 +4542,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -4559,9 +4559,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Constantine" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Constantine" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -4654,9 +4654,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(2);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -4671,9 +4671,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -4791,9 +4791,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(4);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Edgar" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Edgar" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4806,9 +4806,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Allen" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Allen" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -4823,9 +4823,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -4840,9 +4840,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The House of Usher" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The House of Usher" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -4857,9 +4857,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -4874,9 +4874,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5018,9 +5018,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(3);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Lenore" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Lenore" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -5035,9 +5035,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -5052,9 +5052,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5069,9 +5069,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5311,9 +5311,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(3);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Allen Poe" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Allen Poe" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -5328,9 +5328,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Fall" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Fall" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -5345,9 +5345,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The House of Usher" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The House of Usher" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5363,9 +5363,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The House of Usher" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The House of Usher" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5457,9 +5457,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu Reeves" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Keanu Reeves" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -5474,9 +5474,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Matrix" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -5636,9 +5636,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(4);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Edgar" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Edgar" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -5651,9 +5651,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Allen" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Allen" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -5668,9 +5668,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -5685,9 +5685,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The House of Usher" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The House of Usher" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -5702,9 +5702,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5719,9 +5719,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5863,9 +5863,9 @@ subscription SubscriptionPerson {
         expect(wsClient2.events).toHaveLength(3);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Lenore" },
-                    event: "CONNECT",
+                [typeActor.operations.subscribe.relationship_created]: {
+                    [typeActor.operations.subscribe.payload.relationship_created]: { name: "Lenore" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "movies",
                     createdRelationship: {
                         movies: {
@@ -5880,9 +5880,9 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "actors",
                     createdRelationship: {
                         actors: {
@@ -5897,9 +5897,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,
@@ -5914,9 +5914,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "The Raven" },
-                    event: "CONNECT",
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Raven" },
+                    event: "RELATIONSHIP_CREATED",
                     relationshipFieldName: "directors",
                     createdRelationship: {
                         actors: null,

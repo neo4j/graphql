@@ -460,7 +460,7 @@ export default function createUpdateAndParams({
                                         ? [refNode.name, node.name]
                                         : [node.name, refNode.name];
                                 const eventWithMetaStr = createConnectionEventMeta({
-                                    event: "connect",
+                                    event: "relationship_created",
                                     relVariable: propertiesName,
                                     fromVariable,
                                     toVariable,

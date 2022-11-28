@@ -105,8 +105,8 @@ export type RootTypeFieldNames = {
         created: string;
         updated: string;
         deleted: string;
-        connected: string;
-        disconnected: string;
+        relationship_created: string;
+        relationship_deleted: string;
     };
 };
 
@@ -130,8 +130,8 @@ export type SubscriptionEvents = {
     create: string;
     update: string;
     delete: string;
-    connect: string;
-    disconnect: string;
+    relationship_created: string;
+    relationship_deleted: string;
 };
 
 class Node extends GraphElement {
@@ -241,8 +241,8 @@ class Node extends GraphElement {
                 created: `${this.singular}Created`,
                 updated: `${this.singular}Updated`,
                 deleted: `${this.singular}Deleted`,
-                connected: `${this.singular}RelationshipCreated`,
-                disconnected: `${this.singular}RelationshipDeleted`,
+                relationship_created: `${this.singular}RelationshipCreated`,
+                relationship_deleted: `${this.singular}RelationshipDeleted`,
             },
         };
     }
@@ -278,8 +278,8 @@ class Node extends GraphElement {
             create: `${pascalCaseSingular}CreatedEvent`,
             update: `${pascalCaseSingular}UpdatedEvent`,
             delete: `${pascalCaseSingular}DeletedEvent`,
-            connect: `${pascalCaseSingular}RelationshipCreatedEvent`,
-            disconnect: `${pascalCaseSingular}RelationshipDeletedEvent`,
+            relationship_created: `${pascalCaseSingular}RelationshipCreatedEvent`,
+            relationship_deleted: `${pascalCaseSingular}RelationshipDeletedEvent`,
         };
     }
 
@@ -290,8 +290,8 @@ class Node extends GraphElement {
             create: `created${pascalCaseSingular}`,
             update: `updated${pascalCaseSingular}`,
             delete: `deleted${pascalCaseSingular}`,
-            connect: `${this.singular}`,
-            disconnect: `${this.singular}`,
+            relationship_created: `${this.singular}`,
+            relationship_deleted: `${this.singular}`,
         };
     }
 

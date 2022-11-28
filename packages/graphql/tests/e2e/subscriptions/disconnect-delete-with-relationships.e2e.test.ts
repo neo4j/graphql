@@ -126,10 +126,10 @@ describe("Delete Subscriptions when relationships are targeted- with interfaces,
 
     const actorSubscriptionQuery = (typeActor) => `
     subscription SubscriptionActor {
-        ${typeActor.operations.subscribe.disconnected} {
+        ${typeActor.operations.subscribe.relationship_deleted} {
             relationshipFieldName
             event
-            ${typeActor.operations.subscribe.payload.disconnected} {
+            ${typeActor.operations.subscribe.payload.relationship_deleted} {
                 name
             }
             deletedRelationship {
@@ -146,10 +146,10 @@ describe("Delete Subscriptions when relationships are targeted- with interfaces,
 
     const movieSubscriptionQuery = ({ typeMovie, typePerson, typeInfluencer }) => `
 subscription SubscriptionMovie {
-    ${typeMovie.operations.subscribe.disconnected} {
+    ${typeMovie.operations.subscribe.relationship_deleted} {
         relationshipFieldName
         event
-        ${typeMovie.operations.subscribe.payload.disconnected} {
+        ${typeMovie.operations.subscribe.payload.relationship_deleted} {
             title
         }
         deletedRelationship {
@@ -190,10 +190,10 @@ subscription SubscriptionMovie {
 
     const personSubscriptionQuery = (typePerson) => `
 subscription SubscriptionPerson {
-    ${typePerson.operations.subscribe.disconnected} {
+    ${typePerson.operations.subscribe.relationship_deleted} {
         relationshipFieldName
         event
-        ${typePerson.operations.subscribe.payload.disconnected} {
+        ${typePerson.operations.subscribe.payload.relationship_deleted} {
             name
         }
         deletedRelationship {
@@ -287,9 +287,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -307,11 +307,11 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
+                [typeActor.operations.subscribe.relationship_deleted]: {
+                    [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -428,9 +428,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -446,9 +446,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -466,11 +466,11 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
+                [typeActor.operations.subscribe.relationship_deleted]: {
+                    [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -484,11 +484,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeActor.operations.subscribe.disconnected]: {
-                    [typeActor.operations.subscribe.payload.disconnected]: {
+                [typeActor.operations.subscribe.relationship_deleted]: {
+                    [typeActor.operations.subscribe.payload.relationship_deleted]: {
                         name: "Keanu Reeves",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -626,9 +626,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -644,9 +644,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -662,9 +662,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -681,9 +681,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -870,9 +870,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -888,9 +888,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -906,9 +906,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -924,9 +924,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -943,9 +943,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -962,9 +962,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -983,11 +983,11 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Jim",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1089,9 +1089,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1108,9 +1108,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1129,11 +1129,11 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1272,9 +1272,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1291,9 +1291,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1310,9 +1310,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1329,9 +1329,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1350,11 +1350,11 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1368,11 +1368,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1386,11 +1386,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1510,9 +1510,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1529,9 +1529,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1548,9 +1548,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1569,11 +1569,11 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1587,11 +1587,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1760,9 +1760,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1779,9 +1779,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1798,9 +1798,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1817,9 +1817,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Other Movie" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Other Movie" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1836,9 +1836,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1855,9 +1855,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -1876,11 +1876,11 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1894,11 +1894,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1912,11 +1912,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1930,11 +1930,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -1948,11 +1948,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -2320,9 +2320,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2339,9 +2339,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2358,9 +2358,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Other Movie" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Other Movie" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2377,9 +2377,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2396,9 +2396,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2417,11 +2417,11 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -2435,11 +2435,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -2453,11 +2453,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -2471,11 +2471,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -2489,11 +2489,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -2765,9 +2765,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -2783,9 +2783,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -2801,9 +2801,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -2819,9 +2819,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -2838,9 +2838,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -2857,9 +2857,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2876,9 +2876,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2895,9 +2895,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2914,9 +2914,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2933,9 +2933,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2952,9 +2952,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2971,9 +2971,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Other Matrix" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Other Matrix" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -2992,11 +2992,11 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3010,11 +3010,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3028,11 +3028,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Jim",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3046,11 +3046,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Julia",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3064,11 +3064,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Julia",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3082,11 +3082,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3209,9 +3209,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -3228,9 +3228,9 @@ subscription SubscriptionPerson {
             },
 
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -3247,9 +3247,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -3268,11 +3268,11 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3438,9 +3438,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -3456,9 +3456,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -3475,9 +3475,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -3494,9 +3494,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -3513,9 +3513,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -3534,11 +3534,11 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3552,11 +3552,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3570,11 +3570,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -3851,9 +3851,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -3869,9 +3869,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -3887,9 +3887,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -3905,9 +3905,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -3923,9 +3923,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -3942,9 +3942,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -3961,9 +3961,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -3980,9 +3980,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -3999,9 +3999,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4018,9 +4018,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4037,9 +4037,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4058,11 +4058,11 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4076,11 +4076,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4094,11 +4094,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Jim",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4112,11 +4112,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4385,9 +4385,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -4403,9 +4403,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -4421,9 +4421,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -4439,9 +4439,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -4457,9 +4457,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -4476,9 +4476,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -4495,9 +4495,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4514,9 +4514,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4533,9 +4533,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4552,9 +4552,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4571,9 +4571,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -4592,11 +4592,11 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4610,11 +4610,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4628,11 +4628,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Jim",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4646,11 +4646,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -4917,9 +4917,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -4935,9 +4935,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -4953,9 +4953,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -4971,9 +4971,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -4990,9 +4990,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5009,9 +5009,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5028,9 +5028,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5047,9 +5047,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5068,11 +5068,11 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Julia",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -5086,11 +5086,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -5104,11 +5104,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Jim",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -5501,9 +5501,9 @@ subscription SubscriptionPerson {
 
         expect(wsClient2.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5519,9 +5519,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5537,9 +5537,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5555,9 +5555,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5573,9 +5573,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -5591,9 +5591,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "actors",
                     deletedRelationship: {
@@ -5609,9 +5609,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5628,9 +5628,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5647,9 +5647,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5666,9 +5666,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "directors",
                     deletedRelationship: {
@@ -5685,9 +5685,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5704,9 +5704,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Constantine2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Constantine2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5723,9 +5723,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5742,9 +5742,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "John Wick" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "John Wick" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5761,9 +5761,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix2" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix2" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5780,9 +5780,9 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typeMovie.operations.subscribe.disconnected]: {
-                    [typeMovie.operations.subscribe.payload.disconnected]: { title: "Matrix3" },
-                    event: "DISCONNECT",
+                [typeMovie.operations.subscribe.relationship_deleted]: {
+                    [typeMovie.operations.subscribe.payload.relationship_deleted]: { title: "Matrix3" },
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "reviewers",
                     deletedRelationship: {
@@ -5801,11 +5801,11 @@ subscription SubscriptionPerson {
         ]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -5819,11 +5819,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -5837,11 +5837,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Ana",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -5855,11 +5855,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Jim",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {
@@ -5873,11 +5873,11 @@ subscription SubscriptionPerson {
                 },
             },
             {
-                [typePerson.operations.subscribe.disconnected]: {
-                    [typePerson.operations.subscribe.payload.disconnected]: {
+                [typePerson.operations.subscribe.relationship_deleted]: {
+                    [typePerson.operations.subscribe.payload.relationship_deleted]: {
                         name: "Jim",
                     },
-                    event: "DISCONNECT",
+                    event: "RELATIONSHIP_DELETED",
 
                     relationshipFieldName: "movies",
                     deletedRelationship: {

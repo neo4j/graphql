@@ -183,10 +183,10 @@ describe("Subscriptions", () => {
             }
 
             enum EventType {
-              CONNECT
               CREATE
               DELETE
-              DISCONNECT
+              RELATIONSHIP_CREATED
+              RELATIONSHIP_DELETED
               UPDATE
             }
 
@@ -937,10 +937,10 @@ describe("Subscriptions", () => {
             }
 
             enum EventType {
-              CONNECT
               CREATE
               DELETE
-              DISCONNECT
+              RELATIONSHIP_CREATED
+              RELATIONSHIP_DELETED
               UPDATE
             }
 
@@ -1399,10 +1399,10 @@ describe("Subscriptions", () => {
             }
 
             enum EventType {
-              CONNECT
               CREATE
               DELETE
-              DISCONNECT
+              RELATIONSHIP_CREATED
+              RELATIONSHIP_DELETED
               UPDATE
             }
 
@@ -2779,10 +2779,10 @@ describe("Subscriptions", () => {
             }
 
             enum EventType {
-              CONNECT
               CREATE
               DELETE
-              DISCONNECT
+              RELATIONSHIP_CREATED
+              RELATIONSHIP_DELETED
               UPDATE
             }
 
@@ -3387,10 +3387,10 @@ describe("Subscriptions", () => {
             }
 
             enum EventType {
-              CONNECT
               CREATE
               DELETE
-              DISCONNECT
+              RELATIONSHIP_CREATED
+              RELATIONSHIP_DELETED
               UPDATE
             }
 

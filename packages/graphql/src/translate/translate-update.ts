@@ -320,7 +320,7 @@ export default async function translateUpdate({
                         const [fromTypename, toTypename] =
                             relationField.direction === "IN" ? [refNode.name, node.name] : [node.name, refNode.name];
                         const eventWithMetaStr = createConnectionEventMeta({
-                            event: "connect",
+                            event: "relationship_created",
                             relVariable: propertiesName,
                             fromVariable,
                             toVariable,
