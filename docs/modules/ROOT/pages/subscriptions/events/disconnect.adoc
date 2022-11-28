@@ -11,7 +11,7 @@ As relationship-specific information, the event will contain the relationship fi
 
 NOTE: A new event will be triggered for each deleted relationship.
 
-This means that, if the type targeted for the subscriptions defines two or more relationships in the schema and two or more relationships are deleted, there will be an equal number of events triggered as the number of deleted relationships. 
+This means that, if the type targeted for the subscriptions defines two or more relationships in the schema and one of each relationships are deleted following a mutation operation, there will be an equal number of events triggered as the number of deleted relationships. 
 
 Each event will have the relationships object populated with the deleted relationship's properties for one single relationship name only - all other relationship names will have a null value.
 
@@ -29,7 +29,77 @@ A subscription to a type can be made with the top-level subscription `[type]Rela
 * `relationshipFieldName`: The field name of the deleted relationship, as part of the node target to the subscription.
 * `deletedRelationship`: An object having as keys all field names of the node target to the subscription which represent its relationships. For any given event, all field names but the one corresponding to `relationshipFieldName` will be null. The field name equal to `relationshipFieldName` will contain the relationship properties, if defined, as well as a `node` key containing the properties of the node on the other side of the relationship. Only top-level properties, without relationships, are available. Note these are the properties before the operation that trigger the disconnect took place.
 
-NOTE: Irrespective of the relationship direction in the database, the `DISCONNECT` event is bound to the type targeted for the subscription. The consequence is that - given a relationship between types A and B that is not reciprocal (that is, in the GraphQL schema type A defines a relationship to B but B does **not** define a relationship to A) and a GraphQL operation that deletes the relationship between them - even though the two nodes will be disconnected in the database, only a subscription to type A will catch the `DISCONNECT` event. Check out the xref:subscriptions/events/connect.adoc#non-reciprocal-relationships[Non-reciprocal Relationships] section below for more details.
+NOTE: Irrespective of the relationship direction in the database, the `DISCONNECT` event is bound to the type targeted for the subscription. The consequence is that - given a relationship between types A and B that is not reciprocal (that is, in the GraphQL schema type A defines a relationship to B but B does **not** define a relationship to A) and a GraphQL operation that deletes the relationship between them - even though the two nodes will be disconnected in the database, the `DISCONNECT` event will only be returned to the subscription to type A.. Check out the xref:subscriptions/events/connect.adoc#non-reciprocal-relationships[Non-reciprocal Relationships] section below for more details.
+
+For example, considering the following type definitions:
+```graphql
+type Movie {
+    title: String
+    genre: String
+    actors: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+    reviewers: [Reviewer] @relationship(type: "REVIEWED", direction: IN, properties: "Reviewed")
+}
+type Actor {
+    name: String
+}
+interface ActedIn @relationshipProperties {
+    screenTime: Int!
+}
+type Reviewer {
+    name: String
+    reputation: Int
+}
+interface Reviewed @relationshipProperties {
+    score: Int!
+}
+```
+
+An ongoing subscription to relationships deleted from the `Movie` type, upon a mutation deleting then `Actor` named `Tom Hardy` and the `Reviewer` named `Jane` from a `Movie` titled `Inception` would receive the following events:
+```graphql
+{
+    # 1  - relationship type `ACTED_IN`
+    event: "DISCONNECT",
+    timestamp,
+    movie: {
+        title: "Inception",
+        genre: "Adventure"
+    },
+    relationshipFieldName: "actors", # notice the field name specified here is populated below in the `createdRelationship` object
+    deletedRelationship: {
+        actors: {
+            screenTime: 1000, # relationship properties for the relationship type `ACTED_IN` that was deleted
+            node: { # top-level properties of the node at the other end of the relationship, in this case `Actor` type, before the delete occured
+                name: "Tom Hardy"
+            }
+        },
+        reviewers: null # relationship declared by this field name is not covered by this event, check out the following..
+    }
+}
+{
+    # 2 - relationship type `REVIEWED`
+    event: "DISCONNECT",
+    timestamp,
+    movie: {
+        title: "Inception",
+        genre: "Adventure"
+    },
+    relationshipFieldName: "reviewers", # this event covers the relationship declared by this field name
+    deletedRelationship: {
+        actors: null, # relationship declared by this field name is not covered by this event
+        reviewers: { # field name equal to `relationshipFieldName`
+            score: 8, 
+            node: { 
+                name: "Jane",
+                reputation: 9
+            }
+        }
+    }
+}
+```
+
+== Examples
+
+=== Disconnect with Standard Types
 
 For example, considering the following type definitions:
 ```graphql
@@ -56,6 +126,7 @@ subscription {
             title
             genre
         }
+        relationshipFieldName
         deletedRelationship {
             actors {
                 screenTime
@@ -67,8 +138,6 @@ subscription {
     }
 }
 ```
-
-== Examples
 
 === Disconnect with Abstract Types
 
@@ -107,6 +176,7 @@ subscription {
             title
             genre
         }
+        relationshipFieldName
         deletedRelationship {
            directors {
                 year
@@ -159,6 +229,7 @@ subscription {
             title
             genre
         }
+        relationshipFieldName
         deletedRelationship {
             reviewers {
                 score
@@ -225,6 +296,7 @@ subscription {
             title
             genre
         }
+        relationshipFieldName
         deletedRelationship {
            actors { # corresponds to the `ACTED_IN` relationship type
                 screenTime
@@ -262,6 +334,7 @@ subscription {
         actor {
             name
         }
+        relationshipFieldName
         deletedRelationship {
            movies { # corresponds to the `ACTED_IN` relationship type
                 screenTime
@@ -328,6 +401,7 @@ mutation {
         title: "John Wick",
         genre: "Action"
     }
+    relationshipFieldName: "actors",
     deletedRelationship {
         actors: {
             screenTime: 420,
@@ -345,6 +419,7 @@ mutation {
     actor {
         name: "Keanu Reeves"
     }
+    relationshipFieldName: "movies",
     deletedRelationship {
         movies: {
             screenTime: 420,
@@ -423,6 +498,7 @@ mutation {
         title: "New York Stories",
         genre: "Comedy"
     }
+    relationshipFieldName: "directors",
     deletedRelationship {
         actors: null,
         directors: {
@@ -441,6 +517,7 @@ mutation {
         title: "New York Stories",
         genre: "Comedy"
     }
+    relationshipFieldName: "directors",
     deletedRelationship {
         actors: null,
         directors: {
@@ -497,6 +574,7 @@ subscription {
             title
             genre
         }
+        relationshipFieldName
         deletedRelationship {
            people { # corresponds to the `PART_OF` relationship type
                 node {
@@ -519,6 +597,7 @@ subscription {
         actor {
             name
         }
+        relationshipFieldName
         deletedRelationship {
            movies { # corresponds to the `PART_OF` relationship type
                 node {
@@ -588,6 +667,7 @@ mutation {
         title: "Sweeney Todd",
         genre: "Horror"
     }
+    relationshipFieldName: "people",
     deletedRelationship {
         people: {
             node: {
@@ -605,6 +685,7 @@ mutation {
         title: "Sweeney Todd",
         genre: "Horror"
     }
+    relationshipFieldName: "actors",
     deletedRelationship {
         people: null,
         actors: {
@@ -621,6 +702,7 @@ mutation {
     actor {
         name: "John Logan"
     }
+    relationshipFieldName: "movies",
     deletedRelationship {
         movies: {
             node: {
@@ -638,6 +720,7 @@ mutation {
         title: "Sweeney Todd",
         genre: "Horror"
     }
+    relationshipFieldName: "people",
     deletedRelationship {
         people: {
             node: {
@@ -655,6 +738,7 @@ mutation {
         title: "Sweeney Todd",
         genre: "Horror"
     }
+    relationshipFieldName: "actors",
     deletedRelationship {
         people: null,
         actors: {
@@ -671,6 +755,7 @@ mutation {
     actor {
         name: "Johnny Depp"
     }
+    relationshipFieldName: "movies",
     deletedRelationship {
         movies: {
             node: {
@@ -691,6 +776,7 @@ Had we subscribed to `Person` as well, we would have received two more events:
     actor {
         name: "John Logan"
     }
+    relationshipFieldName: "movies",
     deletedRelationship {
         movies: {
             node: {
@@ -707,6 +793,7 @@ Had we subscribed to `Person` as well, we would have received two more events:
     actor {
         name: "Johnny Depp"
     }
+    relationshipFieldName: "movies",
     deletedRelationship {
         movies: {
             node: {
