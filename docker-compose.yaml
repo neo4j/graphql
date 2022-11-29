@@ -2,7 +2,7 @@ version: "3.0"
 
 services:
     neo4j-service:
-        image: neo4j:5.1.0-enterprise
+        image: neo4j:5.2.0-enterprise
         ports:
             - 7474:7474
             - 7687:7687

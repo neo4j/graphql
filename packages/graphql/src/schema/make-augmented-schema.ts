@@ -86,12 +86,9 @@ import { addGlobalNodeFields } from "./create-global-nodes";
 import { addMathOperatorsToITC } from "./math";
 import { addArrayMethodsToITC } from "./array-methods";
 import { FloatWhere } from "../graphql/input-objects/FloatWhere";
-import { ConcreteEntity } from "../schema-model/ConcreteEntity";
-import type { Entity } from "../schema-model/Entity";
-import { CompositeEntity } from "../schema-model/CompositeEntity";
 
 function makeAugmentedSchema(
-    typeDefs: TypeSource,
+    document: DocumentNode,
     {
         features,
         enableRegex,
@@ -110,12 +107,9 @@ function makeAugmentedSchema(
 ): {
     nodes: Node[];
     relationships: Relationship[];
-    entities: Map<string, Entity>;
     typeDefs: DocumentNode;
     resolvers: IResolvers;
 } {
-    const document = getDocument(typeDefs);
-
     if (!skipValidateTypeDefs) {
         validateDocument(document);
     }
@@ -536,15 +530,7 @@ function makeAugmentedSchema(
         composer.createInputTC(FloatWhere);
     }
 
-    const concreteEntities: Map<string, ConcreteEntity> = new Map();
-
     nodes.forEach((node) => {
-        const concreteEntity = new ConcreteEntity({ name: node.name });
-        if (concreteEntities.has(node.name)) {
-            throw new Error(`Duplicate node ${node.name}`);
-        }
-        concreteEntities.set(node.name, concreteEntity);
-
         const nodeFields = objectFieldsToComposeFields([
             ...node.primitiveFields,
             ...node.cypherFields,
@@ -783,21 +769,12 @@ function makeAugmentedSchema(
         }
     });
 
-    const compositeEntities: Map<string, CompositeEntity> = new Map();
-
     unionTypes.forEach((union) => {
         if (!union.types) {
             throw new Error(`Union ${union.name.value} has no types`);
         }
 
-        const compositeConcreteEntities: ConcreteEntity[] = [];
-
         const fields = union.types.reduce((f, type) => {
-            const concreteEntity = concreteEntities.get(type.name.value);
-            if (!concreteEntity) {
-                throw new Error(`Could not find concrete entity with name ${type.name.value}`);
-            }
-            compositeConcreteEntities.push(concreteEntity);
             return { ...f, [type.name.value]: `${type.name.value}Where` };
         }, {});
 
@@ -805,16 +782,6 @@ function makeAugmentedSchema(
             name: `${union.name.value}Where`,
             fields,
         });
-
-        if (!compositeConcreteEntities.length) {
-            throw new Error(`Composite entity ${union.name.value} has no concrete entities`);
-        }
-        const compositeEntity = new CompositeEntity({
-            name: union.name.value,
-            concreteEntities: compositeConcreteEntities,
-        });
-
-        compositeEntities.set(union.name.value, compositeEntity);
     });
 
     if (generateSubscriptions) {
@@ -967,12 +934,9 @@ function makeAugmentedSchema(
         }),
     };
 
-    const entities: Map<string, Entity> = new Map([...concreteEntities, ...compositeEntities]);
-
     return {
         nodes,
         relationships,
-        entities,
         typeDefs: parsedDoc,
         resolvers: generatedResolvers,
     };

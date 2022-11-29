@@ -237,20 +237,19 @@ describe("Nested Unions", () => {
             OPTIONAL MATCH (this)<-[this_disconnect_actors_LeadActor0_rel:ACTED_IN]-(this_disconnect_actors_LeadActor0:LeadActor)
             WHERE this_disconnect_actors_LeadActor0.name = $updateMovies_args_disconnect_actors_LeadActor0_where_LeadActorparam0
             CALL {
-            	WITH this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel
-            	WITH collect(this_disconnect_actors_LeadActor0) as this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel
+            	WITH this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel, this
+            	WITH collect(this_disconnect_actors_LeadActor0) as this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel, this
             	UNWIND this_disconnect_actors_LeadActor0 as x
             	DELETE this_disconnect_actors_LeadActor0_rel
             	RETURN count(*) AS _
             }
-            WITH this, this_disconnect_actors_LeadActor0
             CALL {
             WITH this, this_disconnect_actors_LeadActor0
             OPTIONAL MATCH (this_disconnect_actors_LeadActor0)-[this_disconnect_actors_LeadActor0_actedIn_Series0_rel:ACTED_IN]->(this_disconnect_actors_LeadActor0_actedIn_Series0:Series)
             WHERE this_disconnect_actors_LeadActor0_actedIn_Series0.name = $updateMovies_args_disconnect_actors_LeadActor0_disconnect_actedIn_Series0_where_Seriesparam0
             CALL {
-            	WITH this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel
-            	WITH collect(this_disconnect_actors_LeadActor0_actedIn_Series0) as this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel
+            	WITH this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel, this_disconnect_actors_LeadActor0
+            	WITH collect(this_disconnect_actors_LeadActor0_actedIn_Series0) as this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel, this_disconnect_actors_LeadActor0
             	UNWIND this_disconnect_actors_LeadActor0_actedIn_Series0 as x
             	DELETE this_disconnect_actors_LeadActor0_actedIn_Series0_rel
             	RETURN count(*) AS _

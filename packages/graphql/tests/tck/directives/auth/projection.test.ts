@@ -105,27 +105,27 @@ describe("Cypher Auth Projection", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:User)
-            SET this0.id = $this0_id
-            RETURN this0
-            }
+            "UNWIND $create_param0 AS create_var1
             CALL {
-            CREATE (this1:User)
-            SET this1.id = $this1_id
-            RETURN this1
+                WITH create_var1
+                CREATE (create_this0:\`User\`)
+                SET
+                    create_this0.id = create_var1.id
+                RETURN create_this0
             }
-            CALL apoc.util.validate(NOT ((this0.id IS NOT NULL AND this0.id = $projectionauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ((this1.id IS NOT NULL AND this1.id = $projectionauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN [
-            this0 { .id },
-            this1 { .id }] AS data"
+            RETURN collect(create_this0 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"id-1\\",
-                \\"this1_id\\": \\"id-2\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"id-1\\"
+                    },
+                    {
+                        \\"id\\": \\"id-2\\"
+                    }
+                ],
                 \\"projectionauth_param0\\": \\"super_admin\\",
                 \\"resolvedCallbacks\\": {}
             }"
