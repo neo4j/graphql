@@ -108,6 +108,56 @@ actorNode.setAlias("pepe");
 query.print(); // MATCH(pepe:Actor:MyOtherLabel)-[:ACTED_IN]->(m:Movie) ....
 ```
 
+## Patterns
+
+Writing complex patterns (such as `()-[]->()<-[]-()`) can be tricky in a readable and composable API.
+
+The following cases will create the pattern: `(:Actor {name: "Neo"})-[:ACTED_IN*3 {role: "neo"}]-(:Movie {title: "The Matrix"})`. In all 3 cases all of the parameters are optional and the default direction would be from the first node to the second (`()-[]->()`)
+
+### Proposals
+
+**1. Use a related chain**
+
+This approach is closer to a fluent API, easier to write, and consistent across all nodes and relationships, but have 2 downsides:
+
+-   It is hard to noticed which options are scoped to the relationship and which ones to the node.
+-   It may be hard to compose a pattern from variables (i.e. having the relationship outside the fluent interface).
+
+```typescript
+new CypherBuilder.Node({ labels: ["Actor"] })
+    .withProperties({ title: "The Matrix" })
+    .related()
+    .undirected()
+    .withType("ACTED_IN")
+    .length(3)
+    .withProperties({ role: "neo " })
+    .to(movieNode.withProperties({ title: "The Matrix" }));
+```
+
+**2. A nested relationship**
+
+This approach is a bit more verbose, but adds a level of nested field to the relationship, making it easier to separate and compose.
+
+```typescript
+new CypherBuilder.Node({ labels: ["Actor"] })
+    .withProperties({ title: "The Matrix" })
+    .related(new Relationship().undirected().withType("ACTED_IN").length(3).withProperties({ role: "neo " }))
+    .to(movieNode.withProperties({ title: "The Matrix" }));
+```
+
+**3. A nested relationship in a callback**
+
+Similar to before, but using a callback for the nested relationship instead of directly. This makes it slightly easier to enforce the type at runtime, but adds the added complexity of a callback and slightly harder to compose with existing relationships.
+
+```typescript
+new CypherBuilder.Node({ labels: ["Actor"] })
+    .withProperties({ title: "The Matrix" })
+    .related((relationship) =>
+        relationship.undirected().withType("ACTED_IN").length(3).withProperties({ role: "neo " })
+    )
+    .to(movieNode.withProperties({ title: "The Matrix" }));
+```
+
 ## Cypher Builder Domain
 
 The domain of the CypherBuilder is a subset of [Cypher syntax](https://neo4j.com/docs/cypher-manual/current/syntax/). Only the minimum required abstraction for query composition for the library will be taken into account.
