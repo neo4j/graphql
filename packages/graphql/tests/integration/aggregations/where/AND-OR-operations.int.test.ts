@@ -113,7 +113,7 @@ describe("Nested within AND/OR", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(result.errors).toBeFalsy();
@@ -149,7 +149,7 @@ describe("Nested within AND/OR", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(result.errors).toBeFalsy();
@@ -194,7 +194,7 @@ describe("Nested within AND/OR", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(result.errors).toBeFalsy();
@@ -239,7 +239,7 @@ describe("Nested within AND/OR", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(result.errors).toBeFalsy();
@@ -284,7 +284,7 @@ describe("Nested within AND/OR", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(result.errors).toBeFalsy();
@@ -338,7 +338,7 @@ describe("Nested within AND/OR", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(result.errors).toBeFalsy();
@@ -386,7 +386,7 @@ describe("Nested within AND/OR", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(result.errors).toBeFalsy();
