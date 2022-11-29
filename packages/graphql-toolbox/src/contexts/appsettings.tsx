@@ -67,6 +67,13 @@ export function AppSettingsProvider(props: React.PropsWithChildren<any>) {
         if (!constraintState) {
             Storage.store(LOCAL_STATE_CONSTRAINT, ConstraintState.ignore.toString());
         }
+
+        // On load of the application, if LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING is not set, set it to true.
+        // The user can at any point opt out of product usage tracking.
+        const isEnabledProductUsageTracking = Storage.retrieve(LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING);
+        if (isEnabledProductUsageTracking === null) {
+            Storage.store(LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING, "true");
+        }
     }, []);
 
     return <AppSettingsContext.Provider value={value}>{props.children}</AppSettingsContext.Provider>;
