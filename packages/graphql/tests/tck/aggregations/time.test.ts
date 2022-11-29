@@ -58,6 +58,7 @@ describe("Cypher Aggregations Time", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             RETURN { createdAt: { min: min(this.createdAt) } }"
         `);
 
@@ -82,6 +83,7 @@ describe("Cypher Aggregations Time", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             RETURN { createdAt: { max: max(this.createdAt) } }"
         `);
 
@@ -107,6 +109,7 @@ describe("Cypher Aggregations Time", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             RETURN { createdAt: { min: min(this.createdAt), max: max(this.createdAt) } }"
         `);
 

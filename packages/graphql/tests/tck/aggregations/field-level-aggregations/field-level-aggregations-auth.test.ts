@@ -73,6 +73,7 @@ describe("Field Level Aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title, actorsAggregate: { count: size([(this_actorsAggregate_this0:\`Actor\`)-[this_actorsAggregate_this1:ACTED_IN]->(this) | this_actorsAggregate_this0]) } } AS this"
         `);
@@ -110,6 +111,7 @@ describe("Field Level Aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
+            WITH *
             RETURN this { .name, moviesAggregate: { count: size([(this)-[this_moviesAggregate_this1:ACTED_IN]->(this_moviesAggregate_this0:\`Movie\`) WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_moviesAggregate_this0]) } } AS this"
         `);
 

@@ -110,6 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Drive\`)
+            WITH *
             WHERE this.current = $param0
             CALL {
                 WITH this

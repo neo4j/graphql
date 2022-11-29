@@ -94,6 +94,7 @@ describe("#324", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Person\`)
+            WITH *
             WHERE this.identifier = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_car0_relationship:CAR]->(this_car0:Car)

@@ -90,6 +90,7 @@ describe("Cypher Fragment", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             RETURN this { .id, .username } AS this"
         `);
 
@@ -117,25 +118,26 @@ describe("Cypher Fragment", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-CALL {
-    WITH this
-    CALL {
-        WITH *
-        MATCH (this)-[this0:OWNS]->(this_owns:\`Tile\`)
-        WITH this_owns { __resolveType: \\"Tile\\" } AS this_owns
-        RETURN this_owns AS this_owns
-        UNION
-        WITH *
-        MATCH (this)-[this1:OWNS]->(this_owns:\`Character\`)
-        WITH this_owns { __resolveType: \\"Character\\" } AS this_owns
-        RETURN this_owns AS this_owns
-    }
-    WITH this_owns
-    RETURN collect(this_owns) AS this_owns
-}
-RETURN this { .id, owns: this_owns } AS this"
-`);
+            "MATCH (this:\`User\`)
+            WITH *
+            CALL {
+                WITH this
+                CALL {
+                    WITH *
+                    MATCH (this)-[this0:OWNS]->(this_owns:\`Tile\`)
+                    WITH this_owns { __resolveType: \\"Tile\\" } AS this_owns
+                    RETURN this_owns AS this_owns
+                    UNION
+                    WITH *
+                    MATCH (this)-[this1:OWNS]->(this_owns:\`Character\`)
+                    WITH this_owns { __resolveType: \\"Character\\" } AS this_owns
+                    RETURN this_owns AS this_owns
+                }
+                WITH this_owns
+                RETURN collect(this_owns) AS this_owns
+            }
+            RETURN this { .id, owns: this_owns } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -161,6 +163,7 @@ RETURN this { .id, owns: this_owns } AS this"
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             RETURN this { .id, .username } AS this"
         `);
 

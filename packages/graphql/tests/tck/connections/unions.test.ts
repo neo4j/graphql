@@ -86,6 +86,7 @@ describe("Cypher -> Connections -> Unions", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Author\`)
+            WITH *
             CALL {
                 WITH this
                 CALL {
@@ -143,6 +144,7 @@ describe("Cypher -> Connections -> Unions", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Author\`)
+            WITH *
             CALL {
                 WITH this
                 CALL {
@@ -204,6 +206,7 @@ describe("Cypher -> Connections -> Unions", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Author\`)
+            WITH *
             CALL {
                 WITH this
                 CALL {
@@ -274,6 +277,7 @@ describe("Cypher -> Connections -> Unions", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Author\`)
+            WITH *
             CALL {
                 WITH this
                 CALL {
@@ -341,6 +345,7 @@ describe("Cypher -> Connections -> Unions", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Author\`)
+            WITH *
             CALL {
                 WITH this
                 CALL {

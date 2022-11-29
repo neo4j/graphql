@@ -57,6 +57,7 @@ describe("Cypher LocalDateTime", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             WHERE this.localDT = $param0
             RETURN this { .localDT } AS this"
         `);
@@ -92,6 +93,7 @@ describe("Cypher LocalDateTime", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             WHERE this.localDT >= $param0
             RETURN this { .localDT } AS this"
         `);
@@ -178,6 +180,7 @@ describe("Cypher LocalDateTime", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             SET this.localDT = $this_update_localDT
             RETURN collect(DISTINCT this { .id, .localDT }) AS data"
         `);

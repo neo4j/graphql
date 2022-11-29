@@ -76,6 +76,7 @@ describe("Node Directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Person\`)
+            WITH *
             WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id } AS this"
         `);
@@ -103,6 +104,7 @@ describe("Node Directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Comment\`)
+            WITH *
             WHERE EXISTS {
                 MATCH (this0:\`Person\`)-[:HAS_POST]->(this)
                 WHERE this0.id = $param0

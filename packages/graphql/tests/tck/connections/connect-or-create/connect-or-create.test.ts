@@ -150,6 +150,7 @@ describe("Create or Connect", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Actor\`)
+                WITH *
                 WHERE this.name = $param0
                 SET this.name = $this_update_name
                 WITH this
@@ -375,6 +376,7 @@ describe("Create or Connect", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Actor\`)
+                WITH *
                 WHERE this.name = $param0
                 SET this.name = $this_update_name
                 WITH this
@@ -437,6 +439,7 @@ describe("Create or Connect", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Actor\`)
+                WITH *
                 WHERE this.name = $param0
                 SET this.name = $this_update_name
                 WITH this
@@ -600,6 +603,7 @@ describe("Create or Connect", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Actor\`)
+                WITH *
                 WHERE this.name = $param0
                 SET this.name = $this_update_name
                 WITH this

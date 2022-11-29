@@ -85,6 +85,7 @@ describe("#387", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Place\`)
+            WITH *
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"return '' + ''\\", { this: this, auth: $auth }) AS this_url_works

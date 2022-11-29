@@ -51,6 +51,7 @@ describe("Cypher -> fulltext -> Aggregate", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
+            WITH *
             WHERE \\"Movie\\" IN labels(this)
             RETURN { count: count(this) }"
         `);

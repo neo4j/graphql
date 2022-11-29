@@ -73,6 +73,7 @@ describe("Cypher relationship", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:TOP_ACTOR]->(this_topActor:\`Actor\`)
@@ -104,6 +105,7 @@ describe("Cypher relationship", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             CALL {
                 WITH this
                 MATCH (this_actors:\`Actor\`)-[this0:ACTED_IN]->(this)
@@ -138,6 +140,7 @@ describe("Cypher relationship", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:TOP_ACTOR]->(this_topActor:\`Actor\`)
@@ -178,6 +181,7 @@ describe("Cypher relationship", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             WHERE this.title = $param0
             CALL {
                 WITH this

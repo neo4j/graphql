@@ -70,6 +70,7 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`:\`Multimedia\`)
+            WITH *
             RETURN this { .title } AS this"
         `);
 
@@ -95,6 +96,7 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`:\`Multimedia\`)
+            WITH *
             CALL {
                 WITH this
                 MATCH (this_actors:\`Actor\`:\`Person\`)-[this0:ACTED_IN]->(this)
@@ -200,6 +202,7 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`:\`Multimedia\`)
+            WITH *
             WHERE this.id = $param0
             DETACH DELETE this"
         `);
@@ -229,6 +232,7 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`:\`Multimedia\`)
+            WITH *
             WHERE this.id = $param0
             SET this.id = $this_update_id
             RETURN collect(DISTINCT this { .id }) AS data"

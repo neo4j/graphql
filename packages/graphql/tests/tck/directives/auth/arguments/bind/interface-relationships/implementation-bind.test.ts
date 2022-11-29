@@ -259,6 +259,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -394,6 +395,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -475,6 +477,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE this.id = $param0
             WITH this
             CALL {

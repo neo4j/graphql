@@ -58,6 +58,7 @@ describe("Cypher Aggregations Float", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             RETURN { actorCount: { min: min(this.actorCount) } }"
         `);
 
@@ -82,6 +83,7 @@ describe("Cypher Aggregations Float", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             RETURN { actorCount: { max: max(this.actorCount) } }"
         `);
 
@@ -106,6 +108,7 @@ describe("Cypher Aggregations Float", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             RETURN { actorCount: { average: avg(this.actorCount) } }"
         `);
 
@@ -130,6 +133,7 @@ describe("Cypher Aggregations Float", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             RETURN { actorCount: { sum: sum(this.actorCount) } }"
         `);
 
@@ -157,6 +161,7 @@ describe("Cypher Aggregations Float", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             RETURN { actorCount: { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } }"
         `);
 

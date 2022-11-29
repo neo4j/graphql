@@ -84,6 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Bulk\`:\`BULK\`)
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:MATERIAL_BULK]->(this_material:\`Material\`)

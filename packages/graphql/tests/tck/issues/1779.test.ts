@@ -61,6 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Person\`)
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:attends]->(this_attends:\`School\`)

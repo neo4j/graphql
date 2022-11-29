@@ -79,6 +79,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             WHERE this.title = $param0
             CALL {
                 WITH this
@@ -122,6 +123,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             WHERE this.title = $param0
             CALL {
                 WITH this
@@ -160,6 +162,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             WHERE this.title = $param0
             CALL {
                 WITH this
@@ -198,6 +201,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
+            WITH *
             WHERE this.name = $param0
             CALL {
                 WITH this
@@ -250,6 +254,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
+            WITH *
             WHERE this.name = $param0
             CALL {
                 WITH this
@@ -302,6 +307,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             WHERE this.title = $param0
             CALL {
                 WITH this
@@ -345,6 +351,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             WHERE this.title = $param0
             CALL {
                 WITH this

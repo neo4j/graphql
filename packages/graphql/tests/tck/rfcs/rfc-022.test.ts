@@ -79,6 +79,7 @@ describe("tck/rfs/022 subquery projection", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
+                WITH *
                 WHERE this.released = $param0
                 CALL {
                     WITH this
@@ -124,6 +125,7 @@ describe("tck/rfs/022 subquery projection", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
+                WITH *
                 WHERE this.released = $param0
                 CALL {
                     WITH this
@@ -214,6 +216,7 @@ describe("tck/rfs/022 subquery projection", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
+                WITH *
                 WHERE this.released = $param0
                 CALL {
                     WITH this

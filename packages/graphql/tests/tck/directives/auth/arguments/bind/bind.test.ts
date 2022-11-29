@@ -192,6 +192,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE this.id = $param0
             SET this.id = $this_update_id
             WITH this
@@ -235,6 +236,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
@@ -333,6 +335,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
+            WITH *
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -396,6 +399,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
+            WITH *
             WHERE this.id = $param0
             WITH this
             CALL {

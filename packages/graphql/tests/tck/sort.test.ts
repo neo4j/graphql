@@ -87,6 +87,7 @@ describe("Cypher sort tests", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
                 WITH *
+                WITH *
                 ORDER BY this.id DESC
                 RETURN this { .id, .title } AS this"
             `);
@@ -112,6 +113,7 @@ describe("Cypher sort tests", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
                 WITH *
+                WITH *
                 ORDER BY this.id DESC
                 RETURN this { aliased: this.id, .title, .id } AS this"
             `);
@@ -135,6 +137,7 @@ describe("Cypher sort tests", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
+                WITH *
                 WITH *
                 ORDER BY this.id DESC
                 RETURN this { .title, .id } AS this"
@@ -160,6 +163,7 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
@@ -202,6 +206,7 @@ describe("Cypher sort tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WITH *
+            WITH *
             ORDER BY this.id DESC, this.title ASC
             RETURN this { .id, .title } AS this"
         `);
@@ -230,6 +235,7 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             WHERE this.title = $param0
             WITH *
             ORDER BY this.id DESC, this.title ASC
@@ -271,6 +277,7 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_GENRE]->(this_genres:\`Genre\`)
@@ -302,6 +309,7 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_GENRE]->(this_genres:\`Genre\`)
@@ -334,6 +342,7 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_GENRE]->(this_genres:\`Genre\`)

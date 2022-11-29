@@ -58,6 +58,7 @@ describe("Cypher Aggregations BigInt", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`File\`)
+            WITH *
             RETURN { size: { min: min(this.size) } }"
         `);
 
@@ -82,6 +83,7 @@ describe("Cypher Aggregations BigInt", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`File\`)
+            WITH *
             RETURN { size: { max: max(this.size) } }"
         `);
 
@@ -106,6 +108,7 @@ describe("Cypher Aggregations BigInt", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`File\`)
+            WITH *
             RETURN { size: { average: avg(this.size) } }"
         `);
 
@@ -130,6 +133,7 @@ describe("Cypher Aggregations BigInt", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`File\`)
+            WITH *
             RETURN { size: { sum: sum(this.size) } }"
         `);
 
@@ -157,6 +161,7 @@ describe("Cypher Aggregations BigInt", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`File\`)
+            WITH *
             RETURN { size: { min: min(this.size), max: max(this.size), average: avg(this.size), sum: sum(this.size) } }"
         `);
 

@@ -73,6 +73,7 @@ describe("Field Level Aggregations Alias", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
+            WITH *
             RETURN this { actorsAggregate: { node: { name: head(apoc.cypher.runFirstColumnMany(\\"MATCH (this)<-[r:ACTED_IN]-(n:\`Person\`)
                     WITH n as n
                     ORDER BY size(n.name) DESC

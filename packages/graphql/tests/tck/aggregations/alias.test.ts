@@ -76,6 +76,7 @@ describe("Cypher Aggregations Many while Alias fields", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             RETURN { _count: count(this), _id: { _shortest: min(this.id), _longest: max(this.id) }, _title: { _shortest:
                                         reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
                                             CASE

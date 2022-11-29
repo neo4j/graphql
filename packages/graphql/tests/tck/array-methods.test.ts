@@ -60,6 +60,7 @@ describe("Arrays Methods", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             CALL apoc.util.validate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
             RETURN collect(DISTINCT this { .title, .ratings }) AS data"
@@ -113,6 +114,7 @@ describe("Arrays Methods", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             CALL apoc.util.validate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
             SET this.scores = this.scores + $this_update_scores_PUSH
@@ -179,6 +181,7 @@ describe("Arrays Methods", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             CALL apoc.util.validate(this.filmingLocations IS NULL, \\"Property %s cannot be NULL\\", ['filmingLocations'])
             SET this.filmingLocations = this.filmingLocations + [p in $this_update_filmingLocations_PUSH | point(p)]
             RETURN collect(DISTINCT this { .title, filmingLocations: (CASE
@@ -237,6 +240,7 @@ describe("Arrays Methods", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             WITH this
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
@@ -297,6 +301,7 @@ describe("Arrays Methods", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             CALL apoc.util.validate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings[0..-$this_update_ratings_POP]
             RETURN collect(DISTINCT this { .title, .ratings }) AS data"
@@ -351,6 +356,7 @@ describe("Arrays Methods", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             CALL apoc.util.validate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
             SET this.ratings = this.ratings[0..-$this_update_ratings_POP]
             SET this.scores = this.scores[0..-$this_update_scores_POP]
@@ -408,6 +414,7 @@ describe("Arrays Methods", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             WITH this
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
@@ -471,6 +478,7 @@ describe("Arrays Methods", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             CALL apoc.util.validate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
             SET this.scores = this.scores[0..-$this_update_scores_POP]
@@ -544,6 +552,7 @@ describe("Arrays Methods", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
+            WITH *
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
@@ -648,6 +657,7 @@ describe("Arrays Methods", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
+            WITH *
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)

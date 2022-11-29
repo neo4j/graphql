@@ -81,6 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Community\`)
+            WITH *
             WHERE this.id = $param0
             CALL {
                 WITH this

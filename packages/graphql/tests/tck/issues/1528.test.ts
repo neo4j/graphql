@@ -77,6 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Genre\`)
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)<-[this_connection_moviesConnectionthis0:IS_GENRE]-(this_Movie:\`Movie\`)

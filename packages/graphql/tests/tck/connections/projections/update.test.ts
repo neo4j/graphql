@@ -83,6 +83,7 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             WHERE this.title = $param0
             WITH *
             CALL {

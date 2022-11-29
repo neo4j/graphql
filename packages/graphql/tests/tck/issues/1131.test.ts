@@ -89,6 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`BibliographicReference\`:\`Resource\`)
+            WITH *
             WHERE this.uri = $param0
             SET this.prefLabel = $this_update_prefLabel
             WITH this

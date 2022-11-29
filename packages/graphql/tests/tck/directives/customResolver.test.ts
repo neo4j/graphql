@@ -66,9 +66,10 @@ describe("Cypher customResolver directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-RETURN this { .firstName, .lastName, .fullName } AS this"
-`);
+            "MATCH (this:\`User\`)
+            WITH *
+            RETURN this { .firstName, .lastName, .fullName } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -88,9 +89,10 @@ RETURN this { .firstName, .lastName, .fullName } AS this"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-RETURN this { .fullName, .firstName, .lastName } AS this"
-`);
+            "MATCH (this:\`User\`)
+            WITH *
+            RETURN this { .fullName, .firstName, .lastName } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });

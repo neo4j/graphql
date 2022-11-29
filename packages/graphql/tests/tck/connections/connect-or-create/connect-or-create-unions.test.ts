@@ -207,6 +207,7 @@ describe("Create or connect with unions", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
+            WITH *
             WHERE this.name = $param0
             SET this.name = $this_update_name
             WITH this

@@ -82,6 +82,7 @@ describe("Cypher Alias", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
             CALL {
                 WITH this
                 MATCH (this_actors:\`Actor\`)-[this0:ACTED_IN]->(this)

@@ -63,6 +63,7 @@ describe("QueryDirection in relationships aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             RETURN this { friendsAggregate: { count: size([(this)-[this_friendsAggregate_this1:FRIENDS_WITH]-(this_friendsAggregate_this0:\`User\`) | this_friendsAggregate_this0]) } } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -101,6 +102,7 @@ describe("QueryDirection in relationships aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             RETURN this { friendsAggregate: { count: size([(this)-[this_friendsAggregate_this1:FRIENDS_WITH]->(this_friendsAggregate_this0:\`User\`) | this_friendsAggregate_this0]) } } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -139,6 +141,7 @@ describe("QueryDirection in relationships aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             RETURN this { friendsAggregate: { count: size([(this)-[this_friendsAggregate_this1:FRIENDS_WITH]-(this_friendsAggregate_this0:\`User\`) | this_friendsAggregate_this0]) } } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

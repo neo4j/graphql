@@ -95,6 +95,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             RETURN this { .id } AS this"
         `);
@@ -122,6 +123,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.name = $param0 AND (this.id IS NOT NULL AND this.id = $auth_param0))
             RETURN this { .id } AS this"
         `);
@@ -153,6 +155,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             CALL {
                 WITH this
@@ -195,6 +198,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             CALL {
                 WITH this
@@ -239,6 +243,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             CALL {
                 WITH this
@@ -280,6 +285,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             CALL {
                 WITH this
@@ -321,6 +327,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             CALL {
                 WITH this
@@ -370,6 +377,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             CALL {
                 WITH this
@@ -420,6 +428,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             CALL {
                 WITH this
@@ -464,6 +473,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             SET this.name = $this_update_name
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -496,6 +506,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.name = $param0 AND (this.id IS NOT NULL AND this.id = $auth_param0))
             SET this.name = $this_update_name
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -532,6 +543,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             WITH this
             OPTIONAL MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
@@ -614,6 +626,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             DETACH DELETE this"
         `);
@@ -641,6 +654,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.name = $param0 AND (this.id IS NOT NULL AND this.id = $auth_param0))
             DETACH DELETE this"
         `);
@@ -669,6 +683,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             WITH this
             OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
@@ -841,6 +856,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
@@ -895,6 +911,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
@@ -950,6 +967,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
@@ -1005,6 +1023,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
@@ -1061,6 +1080,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
@@ -1109,6 +1129,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
@@ -1177,6 +1198,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
@@ -1237,6 +1259,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)

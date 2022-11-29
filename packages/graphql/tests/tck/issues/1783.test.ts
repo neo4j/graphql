@@ -121,6 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
+            WITH *
             WHERE (this.current = $param0 AND size([(this)-[this0:ARCHITECTURE]->(this1:\`MasterData\`) WHERE (this0.current = $param1 AND size([(this1)-[this2:HAS_NAME]->(this3:\`NameDetails\`) WHERE (this2.current = $param2 AND this3.fullName = $param3) | 1]) = 1) | 1]) = 1 AND size([(this)-[this4:HAS_NAME]->(this5:\`NameDetails\`) WHERE (this4.current = $param4 AND this5.fullName CONTAINS $param5) | 1]) = 1)
             CALL {
                 WITH this

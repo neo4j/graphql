@@ -51,6 +51,7 @@ describe("Cypher -> fulltext -> Match", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
+            WITH *
             WHERE \\"Movie\\" IN labels(this)
             RETURN this { .title } AS this"
         `);
@@ -78,6 +79,7 @@ describe("Cypher -> fulltext -> Match", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
+            WITH *
             WHERE (\\"Movie\\" IN labels(this) AND this.title = $param1)
             RETURN this { .title } AS this"
         `);

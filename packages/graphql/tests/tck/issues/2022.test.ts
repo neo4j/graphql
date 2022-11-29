@@ -91,6 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`ArtPiece\`)
+            WITH *
             WITH collect(this) AS edges
             WITH edges, size(edges) AS totalCount
             UNWIND edges AS this
