@@ -84,14 +84,14 @@ export class UniqueType {
                 created: `${singular}Created`,
                 updated: `${singular}Updated`,
                 deleted: `${singular}Deleted`,
-                connected: `${singular}Connected`,
-                disconnected: `${singular}Disconnected`,
+                connected: `${singular}RelationshipCreated`,
+                disconnected: `${singular}RelationshipDeleted`,
                 payload: {
                     created: `created${pascalCaseSingular}`,
                     updated: `updated${pascalCaseSingular}`,
                     deleted: `deleted${pascalCaseSingular}`,
-                    connected: `connected${pascalCaseSingular}`,
-                    disconnected: `disconnected${pascalCaseSingular}`,
+                    connected: `${singular}`,
+                    disconnected: `${singular}`,
                 },
             },
         };

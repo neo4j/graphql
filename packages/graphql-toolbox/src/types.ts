@@ -54,6 +54,9 @@ declare global {
         neo4jDesktopApi: {
             getContext: () => Promise<Record<string, unknown> | unknown>;
         };
+        Canny: any;
+        CannyIsLoaded: boolean;
+        attachEvent: any;
     }
 }
 window.neo4jDesktopApi = window.neo4jDesktopApi || {};
