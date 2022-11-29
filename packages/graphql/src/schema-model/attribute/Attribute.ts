@@ -17,12 +17,14 @@
  * limitations under the License.
  */
 
-import { GraphQLEnumType } from "graphql";
+import type { Annotation } from "../annotation/Annotation";
 
-export const RelationDirection = new GraphQLEnumType({
-    name: "RelationDirection",
-    values: {
-        IN: {},
-        OUT: {},
-    },
-});
+export class Attribute {
+    public readonly name: string;
+    public readonly annotations: Annotation[];
+
+    constructor({ name, annotations }: { name: string; annotations: Annotation[] }) {
+        this.name = name;
+        this.annotations = annotations;
+    }
+}

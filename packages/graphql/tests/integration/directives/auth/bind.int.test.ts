@@ -117,9 +117,9 @@ describe("auth/bind", () => {
                         posts: {
                             create: [{
                                 node: {
-                                    id: "post-id-1",
+                                    id: "not-valid",
                                     creator: {
-                                        create: { node: {id: "not valid"} }
+                                        create: { node: {id: "${userId}_2"} }
                                     }
                                 }
                             }]
@@ -193,6 +193,215 @@ describe("auth/bind", () => {
                     ) {
                         posts {
                             id
+                        }
+                    }
+               }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
+
+            try {
+                await session.run(`
+                    CREATE (:Post {id: "${postId}"})
+                `);
+
+                const req = createJwtRequest(secret, { sub: userId });
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should no throw forbidden when creating a node without passing the bind specified at the Field level", async () => {
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                    name: String
+                }
+
+                extend type User {
+                    id: ID @auth(rules: [{ operations: [CREATE], bind: { id: "$jwt.sub" } }])
+                }
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const userName = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    createUsers(input: 
+                        [
+                            {
+                                name: "${userName}",
+                            }
+                        ]
+                        ) {
+                        users {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
+
+            try {
+                const req = createJwtRequest(secret, { sub: userId });
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                });
+                expect(gqlResult.errors).toBeFalsy();
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should no throw forbidden when creating a nested node without passing the bind specified at the Field level", async () => {
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type Post {
+                    id: ID
+                    title: String
+                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                }
+
+                type User {
+                    id: ID
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                extend type Post {
+                    id: ID @auth(rules: [{ operations: [CREATE], bind: { id: "$jwt.postId" } }])
+                }
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const title = generate({
+                charset: "alphabetic",
+            });
+            const query = `
+                mutation {
+                    createUsers(input: [{
+                        id: "${userId}",
+                        posts: {
+                            create: 
+                            [
+                                {
+                                    node: {
+                                        title: "${title}"
+                                    }
+                                }
+                            ]
+                        }
+                    }]) {
+                        users {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
+
+            try {
+                const req = createJwtRequest(secret, { postId });
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                });
+                expect(gqlResult.errors).toBeFalsy();
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw forbidden when creating field with invalid bind (bind across relationships)", async () => {
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type Post {
+                    id: ID
+                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                type User {
+                    id: ID
+                }
+
+                extend type Post @auth(rules: [{ operations: [CREATE], bind: { creator: { id: "$jwt.sub"} } }])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+               mutation {
+                   createPosts(input: [
+                    {
+                       id: "${postId}",
+                       creator: {
+                            create: { node: { id: "not-the-valid-user-id" } }
+                        }
+                    }
+                ]) {
+                        posts {
+                            id
+                            creator {
+                                id
+                            }
                         }
                     }
                }

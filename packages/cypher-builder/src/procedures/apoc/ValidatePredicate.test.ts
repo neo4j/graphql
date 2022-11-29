@@ -34,15 +34,19 @@ describe("ValidatePredicate", () => {
         expectTypeOf<Cypher.apoc.ValidatePredicate>().toMatchTypeOf<Cypher.Predicate>();
     });
 
-    test("Simple subquery", () => {
+    test("Simple validatePredicate", () => {
         const node = new Cypher.Node({ labels: ["Movie"] });
-        const subquery = new Cypher.Match(node).return(node);
+        const validatePredicate = new Cypher.apoc.ValidatePredicate(
+            Cypher.eq(new Cypher.Literal(1), new Cypher.Literal(2)),
+            "That's not how math works"
+        );
+        const query = new Cypher.Match(node);
+        query.where(validatePredicate).return(node);
 
-        const apocCall = new Cypher.apoc.RunFirstColumn(subquery, [node]);
-
-        expect(apocCall.getCypher(env)).toMatchInlineSnapshot(`
-            "apoc.cypher.runFirstColumnMany(\\"MATCH (this0:\`Movie\`)
-            RETURN this0\\", { this0: this0 })"
+        expect(query.getCypher(env)).toMatchInlineSnapshot(`
+            "MATCH (this0:\`Movie\`)
+            WHERE apoc.util.validatePredicate(1 = 2, \\"That's not how math works\\", [0])
+            RETURN this0"
         `);
     });
 });

@@ -26,6 +26,7 @@ export type ApocExpr = RunFirstColumn | ConvertFormat;
 
 export { RunFirstColumn } from "./RunFirstColumn";
 export { ValidatePredicate } from "./ValidatePredicate";
+export { Validate } from "./Validate";
 
 export const date = {
     convertFormat,

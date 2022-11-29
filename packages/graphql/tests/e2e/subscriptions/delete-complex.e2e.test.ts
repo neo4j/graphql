@@ -53,12 +53,10 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
                 actors: [${typeActor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
                 reviewers: [Reviewer!]! @relationship(type: "REVIEWED", properties: "Review", direction: IN)
-                imdbId: Int @unique
             }
             
             type ${typeActor} {
                 name: String!
-                id: Int @unique
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
             
@@ -77,22 +75,18 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             type ${typePerson} implements Reviewer {
                 name: String!
                 reputation: Int!
-                id: Int @unique
-                reviewerId: Int @unique
                 movies: [${typeMovie}!]! @relationship(type: "REVIEWED", direction: OUT, properties: "Review")
             }
             
             type ${typeInfluencer} implements Reviewer {
                 reputation: Int!
                 url: String!
-                reviewerId: Int
             }
             
             union Director = ${typePerson} | ${typeActor}
             
             interface Reviewer {
                 reputation: Int!
-                reviewerId: Int
 
             }
         `;
@@ -3731,8 +3725,6 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
                 `,
             })
             .expect(200);
-
-        // console.log("HERE", r.error);
 
         await delay(3);
         expect(wsClient.errors).toEqual([]);

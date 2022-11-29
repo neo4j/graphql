@@ -461,7 +461,7 @@ describe("Subscriptions update", () => {
         });
 
         expect(plugin.eventList).toEqual(
-            expect.toIncludeSameMembers([
+            expect.arrayContaining([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
