@@ -47,7 +47,7 @@ export function translateRead(
 
     let projAuth: Cypher.Clause | undefined;
 
-    const [topLevelMatch, topLevelWith] = createMatchClause({
+    const { matchClause: topLevelMatch, withClause: topLevelWith } = createMatchClause({
         matchNode,
         node,
         context,
@@ -186,7 +186,7 @@ export function translateRead(
         node,
         context,
         matchNode,
-        topLevelWith,
+        topLevelWith
     );
 
     const readQuery = Cypher.concat(
