@@ -132,7 +132,7 @@ describe("Update using aggregate where", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -217,7 +217,7 @@ describe("Update using aggregate where", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -276,7 +276,7 @@ describe("Update using aggregate where", () => {
                                         count: 1
                                     }
                                 }
-                            } 
+                            }
                             update: {
                                 node: {
                                     content: "${expectedContent}"
@@ -299,7 +299,7 @@ describe("Update using aggregate where", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
