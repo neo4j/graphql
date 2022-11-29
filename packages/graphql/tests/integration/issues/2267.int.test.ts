@@ -71,9 +71,9 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
         await session.run(`
         CREATE(:${Place} {displayName: "786 aa"})
         CREATE(:${Place} {displayName: "8 à Huita"})
-        CREATE(:${Place} {displayName: "9ème Sauvagea"})<-[:ACTIVITY]-(:${Story} {name: "A story"})
-        CREATE(:${Place} {displayName: "A One Shopa"})
         CREATE(:${Place} {displayName: "zaza"})
+        CREATE(:${Place} {displayName: "A One Shopa"})
+        CREATE(:${Place} {displayName: "9ème Sauvagea"})<-[:ACTIVITY]-(:${Story} {name: "A story"})
         `);
 
         neoSchema = new Neo4jGraphQL({
