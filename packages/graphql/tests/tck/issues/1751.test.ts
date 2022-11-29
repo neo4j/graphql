@@ -88,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this_admins0)<-[aggr_edge:HAS_ADMINISTRATOR]-(aggr_node:Organization)
             RETURN count(aggr_node) = $aggr_count
             \\", { this_admins0: this_admins0, aggr_count: $aggr_count })
-            WITH this, collect(DISTINCT this_admins0) as this_admins0_to_delete
+            WITH this, collect(DISTINCT this_admins0) AS this_admins0_to_delete
             CALL {
             	WITH this_admins0_to_delete
             	UNWIND this_admins0_to_delete AS x

@@ -120,18 +120,20 @@ describe("Subscriptions metadata on delete", () => {
             WITH this, meta
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
-            WITH this, meta, collect(DISTINCT this_actors0) as this_actors0_to_delete
-            WITH this, this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Actor\\" }) AS meta
+            WITH this, meta, collect(DISTINCT this_actors0) AS this_actors0_to_delete, this_actors0_relationship
+            WITH this, this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Actor\\" } + { event: \\"disconnect\\", timestamp: timestamp(), id_from: id(n), id_to: id(this), id: id(this_actors0_relationship), relationshipName: \\"ACTED_IN\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\", properties: { from: n { .* }, to: this { .* }, relationship: this_actors0_relationship { .* } } }) AS meta
             CALL {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
             	RETURN count(*) AS _
             }
+            WITH this, collect(distinct meta) AS update_meta
+            WITH this, REDUCE(m=[], n IN update_meta | m + n) AS meta
             DETACH DELETE this
-            WITH meta
-            UNWIND meta AS m
-            RETURN collect(DISTINCT m) AS meta"
+            WITH collect(meta) AS meta
+            WITH REDUCE(m=[], n IN meta | m + n) AS meta
+            RETURN meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -192,40 +194,46 @@ describe("Subscriptions metadata on delete", () => {
             WITH this, meta
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
-            WITH this, meta, this_actors0
+            WITH this, meta, this_actors0, this_actors0_relationship
             OPTIONAL MATCH (this_actors0)-[this_actors0_movies0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
             WHERE this_actors0_movies0.id = $this_deleteMovies_args_delete_actors0_delete_movies0_where_Movieparam0
-            WITH this, meta, this_actors0, this_actors0_movies0
+            WITH this, meta, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship
             OPTIONAL MATCH (this_actors0_movies0)<-[this_actors0_movies0_actors0_relationship:ACTED_IN]-(this_actors0_movies0_actors0:Actor)
             WHERE this_actors0_movies0_actors0.name = $this_deleteMovies_args_delete_actors0_delete_movies0_delete_actors0_where_Actorparam0
-            WITH this, meta, this_actors0, this_actors0_movies0, collect(DISTINCT this_actors0_movies0_actors0) as this_actors0_movies0_actors0_to_delete
-            WITH this, this_actors0, this_actors0_movies0, this_actors0_movies0_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Actor\\" }) AS meta
+            WITH this, meta, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, collect(DISTINCT this_actors0_movies0_actors0) AS this_actors0_movies0_actors0_to_delete, this_actors0_movies0_actors0_relationship
+            WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, this_actors0_movies0_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Actor\\" } + { event: \\"disconnect\\", timestamp: timestamp(), id_from: id(n), id_to: id(this_actors0_movies0), id: id(this_actors0_movies0_actors0_relationship), relationshipName: \\"ACTED_IN\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\", properties: { from: n { .* }, to: this_actors0_movies0 { .* }, relationship: this_actors0_movies0_actors0_relationship { .* } } }) AS meta
             CALL {
             	WITH this_actors0_movies0_actors0_to_delete
             	UNWIND this_actors0_movies0_actors0_to_delete AS x
             	DETACH DELETE x
             	RETURN count(*) AS _
             }
-            WITH this, meta, this_actors0, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete
-            WITH this, this_actors0, this_actors0_movies0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" }) AS meta
+            WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, collect(distinct meta) AS update_meta
+            WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, REDUCE(m=[], n IN update_meta | m + n) AS meta
+            WITH this, meta, this_actors0, this_actors0_relationship, collect(DISTINCT this_actors0_movies0) AS this_actors0_movies0_to_delete, this_actors0_movies0_relationship
+            WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } + { event: \\"disconnect\\", timestamp: timestamp(), id_from: id(this_actors0), id_to: id(n), id: id(this_actors0_movies0_relationship), relationshipName: \\"ACTED_IN\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\", properties: { from: this_actors0 { .* }, to: n { .* }, relationship: this_actors0_movies0_relationship { .* } } }) AS meta
             CALL {
             	WITH this_actors0_movies0_to_delete
             	UNWIND this_actors0_movies0_to_delete AS x
             	DETACH DELETE x
             	RETURN count(*) AS _
             }
-            WITH this, meta, collect(DISTINCT this_actors0) as this_actors0_to_delete
-            WITH this, this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Actor\\" }) AS meta
+            WITH this, this_actors0, this_actors0_relationship, collect(distinct meta) AS update_meta
+            WITH this, this_actors0, this_actors0_relationship, REDUCE(m=[], n IN update_meta | m + n) AS meta
+            WITH this, meta, collect(DISTINCT this_actors0) AS this_actors0_to_delete, this_actors0_relationship
+            WITH this, this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Actor\\" } + { event: \\"disconnect\\", timestamp: timestamp(), id_from: id(n), id_to: id(this), id: id(this_actors0_relationship), relationshipName: \\"ACTED_IN\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\", properties: { from: n { .* }, to: this { .* }, relationship: this_actors0_relationship { .* } } }) AS meta
             CALL {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
             	RETURN count(*) AS _
             }
+            WITH this, collect(distinct meta) AS update_meta
+            WITH this, REDUCE(m=[], n IN update_meta | m + n) AS meta
             DETACH DELETE this
-            WITH meta
-            UNWIND meta AS m
-            RETURN collect(DISTINCT m) AS meta"
+            WITH collect(meta) AS meta
+            WITH REDUCE(m=[], n IN meta | m + n) AS meta
+            RETURN meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
