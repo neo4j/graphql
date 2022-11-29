@@ -21,7 +21,11 @@ import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { Node } from "../../classes";
-import { WHERE_AGGREGATION_AVERAGE_TYPES, WHERE_AGGREGATION_OPERATORS, WHERE_AGGREGATION_TYPES } from "../../constants";
+import {
+    WHERE_AGGREGATION_AVERAGE_TYPES,
+    AGGREGATION_COMPARISON_OPERATORS,
+    WHERE_AGGREGATION_TYPES,
+} from "../../constants";
 import type { BaseField, RelationField } from "../../types";
 import type { ObjectFields } from "../get-obj-field-meta";
 import { createConnectOrCreateField } from "./create-connect-or-create-field";
@@ -595,7 +599,7 @@ function createRelationshipFields({
 
                 if (field.typeMeta.name === "String") {
                     aggregationInput.addFields(
-                        WHERE_AGGREGATION_OPERATORS.reduce((res, operator) => {
+                        AGGREGATION_COMPARISON_OPERATORS.reduce((res, operator) => {
                             return {
                                 ...res,
                                 [`${field.fieldName}_${operator}`]: `${operator === "EQUAL" ? "String" : "Int"}`,
@@ -611,7 +615,7 @@ function createRelationshipFields({
 
                 if (WHERE_AGGREGATION_AVERAGE_TYPES.includes(field.typeMeta.name)) {
                     aggregationInput.addFields(
-                        WHERE_AGGREGATION_OPERATORS.reduce((res, operator) => {
+                        AGGREGATION_COMPARISON_OPERATORS.reduce((res, operator) => {
                             let averageType = "Float";
 
                             if (field.typeMeta.name === "BigInt") {
@@ -639,7 +643,7 @@ function createRelationshipFields({
                 }
 
                 aggregationInput.addFields(
-                    WHERE_AGGREGATION_OPERATORS.reduce(
+                    AGGREGATION_COMPARISON_OPERATORS.reduce(
                         (res, operator) => ({
                             ...res,
                             [`${field.fieldName}_${operator}`]: field.typeMeta.name,

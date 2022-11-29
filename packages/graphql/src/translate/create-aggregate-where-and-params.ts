@@ -22,6 +22,13 @@ import type { GraphElement, Node, Relationship } from "../classes";
 import type { RelationField, Context, BaseField } from "../types";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
+import {
+    ENTITIES,
+    LOGICAL_OPERATORS,
+    AGGREGATION_COMPARISON_OPERATORS,
+    AGGREGATION_AGGREGATE_OPERATORS,
+    AGGREGATION_AGGREGATE_COUNT_OPERATORS
+} from "../constants";
 
 type Operator = "=" | "<" | "<=" | ">" | ">=";
 
@@ -44,11 +51,12 @@ type AggregateWhereReturn = {
     predicates: Cypher.Predicate[];
 };
 
-const comparisonOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
-const aggregationOperators = ["SHORTEST", "LONGEST", "MIN", "MAX", "SUM"];
-const countOperators = ["count", "count_LT", "count_LTE", "count_GT", "count_GTE"];
-const logicalOperators = ["AND", "OR"];
-const entities = ["node", "edge"];
+/* const AGGREGATION_COMPARISON_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+const AGGREGATION_AGGREGATE_OPERATORS = ["SHORTEST", "LONGEST", "MIN", "MAX", "SUM"];
+const AGGREGATION_AGGREGATE_COUNT_OPERATORS = ["count", "count_LT", "count_LTE", "count_GT", "count_GTE"]; 
+const LOGICAL_OPERATORS = ["AND", "OR"];
+*/
+
 
 // Reducer function that merge an array of AggregateWhereReturn into a single AggregateWhereReturn
 function aggregateWhereReducer(accumulator: AggregateWhereReturn, current: AggregateWhereReturn) {
@@ -66,7 +74,7 @@ export function aggregateWhere(
 ): AggregateWhereReturn {
     return Object.entries(aggregateWhereInput)
         .map(([key, value]): AggregateWhereReturn => {
-            if (countOperators.includes(key)) {
+            if (AGGREGATION_AGGREGATE_COUNT_OPERATORS.includes(key)) {
                 const paramName = new Cypher.Param(value);
                 const count = Cypher.count(aggregationTarget);
                 const operator = whereRegEx.exec(key)?.groups?.operator || "EQ";
@@ -80,10 +88,10 @@ export function aggregateWhere(
                     returnVariables: [[operation, operationVar]],
                     predicates: [Cypher.eq(operationVar, new Cypher.Param(true))],
                 };
-            } else if (entities.includes(key)) {
+            } else if (ENTITIES.includes(key)) {
                 const target = key === "edge" ? cypherRelation : aggregationTarget;
                 return aggregateEntityWhere(value, refNode, target);
-            } else if (logicalOperators.includes(key)) {
+            } else if (LOGICAL_OPERATORS.includes(key)) {
                 const logicalOperator = key === "AND" ? Cypher.and : Cypher.or;
                 const { returnVariables, predicates } = value
                     .map((whereInput) => {
@@ -117,7 +125,7 @@ function aggregateEntityWhere(
 ): AggregateWhereReturn {
     return Object.entries(aggregateEntityWhereInput)
         .map(([key, value]): AggregateWhereReturn => {
-            if (logicalOperators.includes(key)) {
+            if (LOGICAL_OPERATORS.includes(key)) {
                 const logicalOperator = key === "AND" ? Cypher.and : Cypher.or;
                 const { returnVariables, predicates } = value
                     .map((whereInput) => {
@@ -240,7 +248,7 @@ function aggregate({
     let params = {};
 
     Object.entries(inputValue).forEach(([key, value]) => {
-        if (logicalOperators.includes(key)) {
+        if (LOGICAL_OPERATORS.includes(key)) {
             const innerClauses: string[] = [];
 
             (value as any[]).forEach((v: any, i) => {
@@ -269,11 +277,11 @@ function aggregate({
         }
 
         const field = [...nodeOrRelationship.primitiveFields, ...nodeOrRelationship.temporalFields].find((f) =>
-            comparisonOperators.some(
+            AGGREGATION_COMPARISON_OPERATORS.some(
                 (op) =>
                     key.split(`_${op}`)[0] === f.fieldName ||
                     key.split(`_AVERAGE_${op}`)[0] === f.fieldName ||
-                    aggregationOperators.some((x) => key.split(`_${x}_${op}`)[0] === f.fieldName)
+                    AGGREGATION_AGGREGATE_OPERATORS.some((x) => key.split(`_${x}_${op}`)[0] === f.fieldName)
             )
         ) as BaseField;
 
@@ -287,7 +295,7 @@ function aggregate({
         const paramName = `${chainStr}_${key}`;
         params[paramName] = value;
 
-        if (comparisonOperators.some((fO) => operatorString.split(`AVERAGE_`)[1] === fO)) {
+        if (AGGREGATION_COMPARISON_OPERATORS.some((fO) => operatorString.split(`AVERAGE_`)[1] === fO)) {
             const [, averageOperatorString] = operatorString.split("AVERAGE_");
             const averageOperator = createOperator(averageOperatorString);
 
@@ -306,7 +314,7 @@ function aggregate({
             return;
         }
 
-        if (comparisonOperators.some((fO) => operatorString.split(`SUM_`)[1] === fO)) {
+        if (AGGREGATION_COMPARISON_OPERATORS.some((fO) => operatorString.split(`SUM_`)[1] === fO)) {
             const [, opStr] = operatorString.split("SUM_");
             const operator = createOperator(opStr);
 
@@ -315,7 +323,7 @@ function aggregate({
             return;
         }
 
-        if (aggregationOperators.some((fO) => comparisonOperators.includes(operatorString.split(`${fO}_`)[1]))) {
+        if (AGGREGATION_AGGREGATE_OPERATORS.some((fO) => AGGREGATION_COMPARISON_OPERATORS.includes(operatorString.split(`${fO}_`)[1]))) {
             if (field.typeMeta.name === "String") {
                 const hoistedVariable = `${paramName}_SIZE`;
                 const isShortest = operatorString.startsWith("SHORTEST_");
@@ -385,7 +393,7 @@ function createPredicate({
     let params = {};
 
     Object.entries(aggregation).forEach(([key, value]) => {
-        if (logicalOperators.includes(key)) {
+        if (LOGICAL_OPERATORS.includes(key)) {
             const innerClauses: string[] = [];
 
             (value as any[]).forEach((v: any, i) => {
@@ -417,7 +425,7 @@ function createPredicate({
             return;
         }
 
-        countOperators.forEach((countType) => {
+        AGGREGATION_AGGREGATE_COUNT_OPERATORS.forEach((countType) => {
             if (key === countType) {
                 const paramName = `${chainStr}_${key}`;
                 params[paramName] = value;
@@ -426,7 +434,7 @@ function createPredicate({
             }
         });
 
-        entities.forEach((nOrE) => {
+        ENTITIES.forEach((nOrE) => {
             if (key !== nOrE) {
                 return;
             }
