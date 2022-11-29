@@ -178,6 +178,7 @@ export function translateRead(
                 fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
             });
         }
+
         projectionClause = Cypher.concat(withTotalCount, connectionClause, returnClause);
     }
 
@@ -188,7 +189,7 @@ export function translateRead(
         matchNode,
         topLevelWith
     );
-
+    
     const readQuery = Cypher.concat(
         topLevelMatch,
         preComputedWhereClause,
