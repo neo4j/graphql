@@ -4,7 +4,8 @@
     "private": true,
     "description": "Subscriptions example",
     "scripts": {
-        "start": "node server.js",
+        "start": "ts-node server.js",
+        "start:old": "node server.js",
         "start:dev": "concurrently \"parcel client/index.html client/qr.html\" \"node server.js\"",
         "build": "parcel build client/index.html client/qr.html",
         "test": "echo \"Error: no test specified\" && exit 1"
@@ -39,6 +40,8 @@
         "neo4j-driver": "^5.3.0",
         "parcel": "^2.8.0",
         "urql": "^3.0.3",
+        "ts-node": "10.9.1",
+        "typescript": "4.9.3",
         "wonka": "^6.1.1",
         "ws": "^8.11.0"
     },
