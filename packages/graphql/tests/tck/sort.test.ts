@@ -230,7 +230,6 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.title = $param0
             WITH *
             ORDER BY this.id DESC, this.title ASC

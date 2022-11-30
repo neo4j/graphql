@@ -243,7 +243,6 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
                 WITH this
@@ -292,7 +291,6 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -328,7 +326,6 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0) AND (this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -364,7 +361,6 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL apoc.util.validate(NOT ((exists((this)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -445,7 +441,6 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL apoc.util.validate(NOT ((exists((this)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -521,7 +516,6 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -552,7 +546,6 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
@@ -614,7 +607,6 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -685,7 +677,6 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Comment\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL apoc.util.validate(NOT ((exists((this)<-[:HAS_COMMENT]-(:\`User\`)) AND any(auth_this0 IN [(this)<-[:HAS_COMMENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -786,7 +777,6 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL {

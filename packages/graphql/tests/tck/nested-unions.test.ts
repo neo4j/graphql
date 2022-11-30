@@ -104,7 +104,6 @@ describe("Nested Unions", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.title = $param0
             WITH this
             CALL {
@@ -229,7 +228,6 @@ describe("Nested Unions", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.title = $param0
             WITH this
             CALL {

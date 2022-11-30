@@ -69,7 +69,6 @@ describe("Subscriptions metadata on delete", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
             MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.id = $param0
             WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             CALL {
@@ -114,7 +113,6 @@ describe("Subscriptions metadata on delete", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
             MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.id = $param0
             WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             WITH this, meta
@@ -188,7 +186,6 @@ describe("Subscriptions metadata on delete", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
             MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.id = $param0
             WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             WITH this, meta

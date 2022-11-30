@@ -61,7 +61,6 @@ describe("Cypher Points", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
-            WITH *
             WHERE this.points = [var0 IN $param0 | point(var0)]
             RETURN this { points: (CASE
                 WHEN this.points IS NOT NULL THEN [p_var0 IN this.points | { point: p_var0, crs: p_var0.crs }]
@@ -100,7 +99,6 @@ describe("Cypher Points", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
-            WITH *
             WHERE NOT (this.points = [var0 IN $param0 | point(var0)])
             RETURN this { points: (CASE
                 WHEN this.points IS NOT NULL THEN [p_var0 IN this.points | { point: p_var0 }]
@@ -140,7 +138,6 @@ describe("Cypher Points", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
-            WITH *
             WHERE point($param0) IN this.points
             RETURN this { points: (CASE
                 WHEN this.points IS NOT NULL THEN [p_var0 IN this.points | { point: p_var0, crs: p_var0.crs }]
@@ -178,7 +175,6 @@ describe("Cypher Points", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
-            WITH *
             WHERE NOT (point($param0) IN this.points)
             RETURN this { points: (CASE
                 WHEN this.points IS NOT NULL THEN [p_var0 IN this.points | { point: p_var0, crs: p_var0.crs }]
@@ -270,7 +266,6 @@ describe("Cypher Points", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
-            WITH *
             WHERE this.id = $param0
             SET this.points = [p in $this_update_points | point(p)]
             RETURN collect(DISTINCT this { points: (CASE

@@ -177,7 +177,6 @@ describe("Plural directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Tech\`)
-            WITH *
             WHERE this.name = $param0
             DETACH DELETE this"
         `);

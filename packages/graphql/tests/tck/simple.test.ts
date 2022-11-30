@@ -64,7 +64,6 @@ describe("Simple Cypher tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.title = $param0
             RETURN this { .title } AS this"
         `);
@@ -93,7 +92,6 @@ describe("Simple Cypher tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.title = $param0
             RETURN this { .id, .title } AS this"
         `);
@@ -123,7 +121,6 @@ describe("Simple Cypher tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.title = $param0
             RETURN this { .id, .title } AS this"
         `);

@@ -68,7 +68,6 @@ describe("Root Connection Query tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.title = $param0
             WITH collect(this) AS edges
             WITH edges, size(edges) AS totalCount
@@ -139,7 +138,6 @@ describe("Root Connection Query tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.title CONTAINS $param0
             WITH collect(this) AS edges
             WITH edges, size(edges) AS totalCount

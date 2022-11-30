@@ -64,7 +64,6 @@ describe("#402", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Event\`)
-            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAPPENS_IN]->(this_area:\`Area\`)

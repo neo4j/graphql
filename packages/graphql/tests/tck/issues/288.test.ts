@@ -108,7 +108,6 @@ describe("#288", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`USER\`)
-            WITH *
             WHERE this.USERID = $param0
             SET this.COMPANYID = $this_update_COMPANYID
             RETURN collect(DISTINCT this { .USERID, .COMPANYID }) AS data"

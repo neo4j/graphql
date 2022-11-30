@@ -96,7 +96,6 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`:\`Person\`)
-            WITH *
             WHERE this.age > $param0
             CALL {
                 WITH this

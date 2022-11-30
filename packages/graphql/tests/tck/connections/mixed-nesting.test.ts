@@ -77,7 +77,6 @@ describe("Mixed nesting", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.title = $param0
             CALL {
                 WITH this
@@ -141,7 +140,6 @@ describe("Mixed nesting", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.title = $param0
             CALL {
                 WITH this
@@ -208,7 +206,6 @@ describe("Mixed nesting", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.title = $param0
             CALL {
                 WITH this

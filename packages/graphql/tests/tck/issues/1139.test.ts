@@ -78,7 +78,6 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             CALL {
                 WITH this

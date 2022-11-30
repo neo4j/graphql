@@ -191,7 +191,8 @@ export function preComputedWhereFields(
     if (!whereInput) {
         return;
     }
-    const precomputedClauses = Object.entries(whereInput).map(([key, value]) => {
+    const precomputedClauses: Cypher.Call[] = [];
+    Object.entries(whereInput).forEach(([key, value]) => {
         const match = whereRegEx.exec(key);
         if (!match) {
             throw new Error(`Failed to match key in filter: ${key}`);
@@ -223,8 +224,11 @@ export function preComputedWhereFields(
             );
             matchQuery.return(...returnVariables);
             withClause.where(Cypher.and(...predicates));
-            return new Cypher.Call(matchQuery).innerWith(matchNode);
+            precomputedClauses.push(new Cypher.Call(matchQuery).innerWith(matchNode));
         }
     });
+    if (!precomputedClauses.length) {
+        return;
+    }
     return Cypher.concat(...precomputedClauses);
 }

@@ -81,7 +81,6 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Organization\`)
-            WITH *
             WHERE this.title = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_admins0_relationship:HAS_ADMINISTRATOR]->(this_admins0:Admin)

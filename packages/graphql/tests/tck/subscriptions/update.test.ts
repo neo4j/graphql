@@ -71,7 +71,6 @@ describe("Subscriptions metadata on update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
             MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.id = $param0
             WITH this { .* } AS oldProps, this, meta
             CALL {

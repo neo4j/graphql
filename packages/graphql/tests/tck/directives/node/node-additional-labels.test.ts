@@ -200,7 +200,6 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`:\`Multimedia\`)
-            WITH *
             WHERE this.id = $param0
             DETACH DELETE this"
         `);
@@ -230,7 +229,6 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`:\`Multimedia\`)
-            WITH *
             WHERE this.id = $param0
             SET this.id = $this_update_id
             RETURN collect(DISTINCT this { .id }) AS data"

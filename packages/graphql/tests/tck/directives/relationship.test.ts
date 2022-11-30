@@ -178,7 +178,6 @@ describe("Cypher relationship", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.title = $param0
             CALL {
                 WITH this

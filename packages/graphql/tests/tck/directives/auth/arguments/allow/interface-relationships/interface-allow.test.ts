@@ -156,7 +156,6 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             WITH *
             CALL {
@@ -219,7 +218,6 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -354,7 +352,6 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL apoc.util.validate(NOT ((exists((this)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -430,7 +427,6 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
@@ -506,7 +502,6 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -598,7 +593,6 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -714,7 +708,6 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL {

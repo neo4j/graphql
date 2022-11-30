@@ -72,7 +72,6 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Component\`)
-            WITH *
             WHERE this.uuid = $param0
             CALL {
                 WITH this

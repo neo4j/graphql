@@ -372,7 +372,6 @@ describe("tck/rfs/003", () => {
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "MATCH (this:\`Movie\`)
-                        WITH *
                         WHERE this.id = $param0
                         SET this.id = $this_update_id
                         WITH this
@@ -427,7 +426,6 @@ describe("tck/rfs/003", () => {
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "MATCH (this:\`Movie\`)
-                        WITH *
                         WHERE this.id = $param0
                         SET this.id = $this_update_id
                         WITH this
@@ -492,7 +490,6 @@ describe("tck/rfs/003", () => {
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
-                            WITH *
                             WHERE this.id = $param0
                             WITH this
                             OPTIONAL MATCH (this)<-[this_directed0_relationship:DIRECTED]-(this_director0:Director)
@@ -587,7 +584,6 @@ describe("tck/rfs/003", () => {
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
-                            WITH *
                             WHERE this.id = $param0
                             WITH this
                             OPTIONAL MATCH (this)<-[this_directed0_relationship:DIRECTED]-(this_director0:Director)
@@ -682,7 +678,6 @@ describe("tck/rfs/003", () => {
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
-                            WITH *
                             WHERE this.id = $param0
                             WITH this
                             CREATE (this_director0_create0_node:Director)
@@ -771,7 +766,6 @@ describe("tck/rfs/003", () => {
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
-                            WITH *
                             WHERE this.id = $param0
                             WITH this
                             OPTIONAL MATCH (this)<-[this_delete_director0_relationship:DIRECTED]-(this_delete_director0:Director)
@@ -895,7 +889,6 @@ describe("tck/rfs/003", () => {
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
-                            WITH *
                             WHERE this.id = $param0
                             WITH this
                             OPTIONAL MATCH (this)<-[this_delete_director0_relationship:DIRECTED]-(this_delete_director0:Director)
@@ -1284,7 +1277,6 @@ describe("tck/rfs/003", () => {
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "MATCH (this:\`Movie\`)
-                        WITH *
                         WHERE this.id = $param0
                         WITH this
                         CALL {
@@ -1381,7 +1373,6 @@ describe("tck/rfs/003", () => {
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "MATCH (this:\`Movie\`)
-                        WITH *
                         WHERE this.id = $param0
                         WITH this
                         CALL {
@@ -1503,7 +1494,6 @@ describe("tck/rfs/003", () => {
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "MATCH (this:\`Movie\`)
-                        WITH *
                         WHERE this.id = $param0
                         WITH this
                         CALL {

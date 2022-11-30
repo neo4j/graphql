@@ -98,7 +98,6 @@ describe("Cypher coalesce()", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE (coalesce(this.id, \\"00000000-00000000-00000000-00000000\\") = $param0 AND coalesce(this.name, \\"Jane Smith\\") =~ $param1 AND NOT (this.verified = $param2) AND this.numberOfFriends > $param3 AND coalesce(this.rating, 2.5) < $param4 AND coalesce(this.fromInterface, \\"From Interface\\") = $param5 AND coalesce(this.toBeOverridden, \\"Overridden\\") = $param6)
             RETURN this { .name } AS this"
         `);
@@ -155,7 +154,6 @@ describe("Cypher coalesce()", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WHERE coalesce(this.status, \\"ACTIVE\\") = $param0
             RETURN this { .id, .status } AS this"
         `);

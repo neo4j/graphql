@@ -145,7 +145,6 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -205,7 +204,6 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -328,7 +326,6 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
@@ -398,7 +395,6 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -485,7 +481,6 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -597,7 +592,6 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             WHERE this.id = $param0
             WITH this
             CALL {

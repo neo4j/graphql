@@ -57,7 +57,6 @@ describe("Cypher Time", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.time = $param0
             RETURN this { .time } AS this"
         `);
@@ -91,7 +90,6 @@ describe("Cypher Time", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WHERE this.time >= $param0
             RETURN this { .time } AS this"
         `);

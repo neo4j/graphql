@@ -80,7 +80,6 @@ describe("Node directive with unions", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WITH *
             WHERE this.title = $param0
             CALL {
                 WITH this
