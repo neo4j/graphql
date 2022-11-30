@@ -4,7 +4,13 @@
 > 
 > Please provide a description of the work completed in this PR below
 
+## Complexity
 
+> **Note**
+>
+> Please provide an estimated complexity of this PR of either Low, Medium or High
+
+Complexity:
 
 # Issue
 
