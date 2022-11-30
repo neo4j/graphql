@@ -69,11 +69,11 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
         `;
 
         await session.run(`
-        CREATE(:${Place} {displayName: "786 aa"})
+        CREATE(:${Place} {displayName: "786 aa"})<-[:ACTIVITY]-(:${Post} {name: "A post"})
         CREATE(:${Place} {displayName: "8 à Huita"})
         CREATE(:${Place} {displayName: "9ème Sauvagea"})<-[:ACTIVITY]-(:${Story} {name: "A story"})
         CREATE(:${Place} {displayName: "A One Shopa"})
-        CREATE(:${Place} {displayName: "zaza"})
+        CREATE(:${Place} {displayName: "zaza"})<-[:ACTIVITY]-(:${Post} {name: "Another post"})
         `);
 
         neoSchema = new Neo4jGraphQL({
@@ -151,7 +151,11 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
             [Place.plural]: [
                 {
                     displayName: "786 aa",
-                    activity: [],
+                    activity: [
+                        {
+                            name: "A post",
+                        },
+                    ],
                 },
                 {
                     displayName: "8 à Huita",
@@ -171,7 +175,11 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
                 },
                 {
                     displayName: "zaza",
-                    activity: [],
+                    activity: [
+                        {
+                            name: "Another post",
+                        },
+                    ],
                 },
             ],
         });
