@@ -51,13 +51,6 @@ type AggregateWhereReturn = {
     predicates: Cypher.Predicate[];
 };
 
-/* const AGGREGATION_COMPARISON_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];
-const AGGREGATION_AGGREGATE_OPERATORS = ["SHORTEST", "LONGEST", "MIN", "MAX", "SUM"];
-const AGGREGATION_AGGREGATE_COUNT_OPERATORS = ["count", "count_LT", "count_LTE", "count_GT", "count_GTE"]; 
-const LOGICAL_OPERATORS = ["AND", "OR"];
-*/
-
-
 // Reducer function that merge an array of AggregateWhereReturn into a single AggregateWhereReturn
 function aggregateWhereReducer(accumulator: AggregateWhereReturn, current: AggregateWhereReturn) {
     return {
