@@ -25,6 +25,7 @@ import type { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
 import type { AuthContext, Context } from "../../../src/types";
 import { Builder } from "./builder";
 import { Executor } from "../../../src/classes/Executor";
+import { Neo4jGraphQLSchemaModel } from "../../../src/schema-model/Neo4jGraphQLSchemaModel";
 
 export class ContextBuilder extends Builder<Context, Context> {
     constructor(newOptions: Partial<Context> = {}) {
@@ -36,7 +37,7 @@ export class ContextBuilder extends Builder<Context, Context> {
             }),
             nodes: [],
             relationships: [],
-            entities: new Map(),
+            schemaModel: new Neo4jGraphQLSchemaModel({ concreteEntities: [], compositeEntities: [] }),
             schema: new GraphQLSchema({}),
             subscriptionsEnabled: false,
             executionContext: {} as neo4j.Driver,

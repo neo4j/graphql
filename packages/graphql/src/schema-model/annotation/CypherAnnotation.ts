@@ -17,12 +17,10 @@
  * limitations under the License.
  */
 
-import type { Entity } from "./Entity";
+export class CypherAnnotation {
+    public statement: string;
 
-export class ConcreteEntity implements Entity {
-    public readonly name: string;
-
-    constructor({ name }: { name: string }) {
-        this.name = name;
+    constructor({ statement }: { statement: string }) {
+        this.statement = statement;
     }
 }

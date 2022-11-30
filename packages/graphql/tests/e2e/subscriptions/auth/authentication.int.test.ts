@@ -256,8 +256,7 @@ describe("Subscription authentication", () => {
         });
     });
 
-    /* eslint-disable-next-line jest/no-disabled-tests */
-    describe.skip("auth with subscribe operations - connections", () => {
+    describe("auth with subscribe operations - connections", () => {
         let server: TestGraphQLServer;
         let wsClient: WebSocketTestClient;
         let typeDefs: string;
@@ -353,18 +352,15 @@ describe("Subscription authentication", () => {
 
         const movieSubscriptionQuery = ({ typeMovie, typePerson, typeInfluencer }) => `
         subscription SubscriptionMovie {
-            ${typeMovie.operations.subscribe.connected} {
-                direction
-                relationshipName
+            ${typeMovie.operations.subscribe.relationship_created} {
+                relationshipFieldName
                 event
-                ${typeMovie.operations.subscribe.payload.connected} {
+                ${typeMovie.operations.subscribe.payload.relationship_created} {
                     title
                 }
-                relationship {
+                createdRelationship {
                     reviewers {
-                        edge {
-                            score
-                        }
+                        score
                         node {
                             ... on ${typePerson.name}EventPayload {
                                 name
@@ -376,17 +372,13 @@ describe("Subscription authentication", () => {
                         }
                     }
                     actors {
-                        edge {
-                            screenTime
-                        }
+                        screenTime
                         node {
                             name
                         }
                     }
                     directors {
-                        edge {
-                            year
-                        }
+                        year
                         node {
                             ... on ${typePerson.name}EventPayload {
                                 name
@@ -442,16 +434,13 @@ describe("Subscription authentication", () => {
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toIncludeSameMembers([
                 {
-                    [typeMovie.operations.subscribe.connected]: {
-                        [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                        event: "CONNECT",
-                        direction: "IN",
-                        relationshipName: "actors",
-                        relationship: {
+                    [typeMovie.operations.subscribe.relationship_created]: {
+                        [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                        event: "CREATE_RELATIONSHIP",
+                        relationshipFieldName: "actors",
+                        createdRelationship: {
                             actors: {
-                                edge: {
-                                    screenTime: 1000,
-                                },
+                                screenTime: 1000,
                                 node: {
                                     name: "Keanu",
                                 },
@@ -507,7 +496,7 @@ describe("Subscription authentication", () => {
             expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authenticated" })]);
         });
 
-        test("authentication pass - connect", async () => {
+        test("authentication pass - create_relationship", async () => {
             await supertest(server.path)
                 .post("")
                 .send({
@@ -572,16 +561,13 @@ describe("Subscription authentication", () => {
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toIncludeSameMembers([
                 {
-                    [typeMovie.operations.subscribe.connected]: {
-                        [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                        event: "CONNECT",
-                        direction: "IN",
-                        relationshipName: "actors",
-                        relationship: {
+                    [typeMovie.operations.subscribe.relationship_created]: {
+                        [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                        event: "CREATE_RELATIONSHIP",
+                        relationshipFieldName: "actors",
+                        createdRelationship: {
                             actors: {
-                                edge: {
-                                    screenTime: 250,
-                                },
+                                screenTime: 250,
                                 node: {
                                     name: "Keanu",
                                 },
@@ -595,7 +581,7 @@ describe("Subscription authentication", () => {
             expect(wsClient.errors).toEqual([]);
         });
 
-        test("unauthenticated subscription does not send events - connect", async () => {
+        test("unauthenticated subscription does not send events - create_relationship", async () => {
             await supertest(server.path)
                 .post("")
                 .send({
