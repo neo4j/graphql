@@ -67,7 +67,6 @@ describe("Cypher customResolver directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             RETURN this { .firstName, .lastName, .fullName } AS this"
         `);
 
@@ -90,7 +89,6 @@ describe("Cypher customResolver directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             RETURN this { .fullName, .firstName, .lastName } AS this"
         `);
 

@@ -63,7 +63,6 @@ describe("Plural directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Tech\`)
-            WITH *
             RETURN this { .name } AS this"
         `);
 
@@ -86,7 +85,6 @@ describe("Plural directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Tech\`)
-            WITH *
             RETURN { count: count(this) }"
         `);
 
@@ -151,7 +149,6 @@ describe("Plural directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Tech\`)
-            WITH *
             SET this.name = $this_update_name
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -208,7 +205,6 @@ describe("Plural directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Tech\`)
-            WITH *
             RETURN this { .name } AS this"
         `);
 

@@ -111,7 +111,6 @@ describe("Cypher TimeStamps On Time Fields", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             SET this.updatedAt = time()
             SET this.interfaceTimestamp = time()
             SET this.id = $this_update_id

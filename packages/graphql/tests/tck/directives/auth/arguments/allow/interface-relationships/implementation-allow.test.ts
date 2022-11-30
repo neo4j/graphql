@@ -98,7 +98,6 @@ describe("@auth allow on specific interface implementation", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WITH *
-            WITH *
             CALL {
             WITH *
             CALL {

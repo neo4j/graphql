@@ -66,7 +66,6 @@ describe("Undirected relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:FRIENDS_WITH]-(this_friends:\`User\`)
@@ -134,7 +133,6 @@ describe("Undirected relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             CALL {
                 WITH this
                 CALL {
@@ -212,7 +210,6 @@ describe("Undirected relationships", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
             WITH *
-            WITH *
             CALL {
             WITH *
             CALL {
@@ -276,7 +273,6 @@ describe("Undirected relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Foo\`)
-            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:DRINKS_AT]->(this_DrinksAt:\`Bar\`)

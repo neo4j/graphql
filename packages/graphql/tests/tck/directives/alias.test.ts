@@ -73,7 +73,6 @@ describe("Cypher alias directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this_actedIn:\`Movie\`)
@@ -113,7 +112,6 @@ describe("Cypher alias directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)

@@ -80,7 +80,6 @@ describe("https://github.com/neo4j/graphql/issues/1263", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             CALL {
                 WITH this
                 CALL {

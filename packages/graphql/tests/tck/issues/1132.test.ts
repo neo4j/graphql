@@ -59,7 +59,6 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Source\`)
-            WITH *
             WITH this
             CALL {
             	WITH this
@@ -130,7 +129,6 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Source\`)
-            WITH *
             WITH this
             CALL {
             WITH this

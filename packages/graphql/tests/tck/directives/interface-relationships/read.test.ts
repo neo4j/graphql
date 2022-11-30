@@ -85,7 +85,6 @@ describe("Interface Relationships", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
             WITH *
-            WITH *
             CALL {
             WITH *
             CALL {
@@ -130,7 +129,6 @@ describe("Interface Relationships", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
             WITH *
-            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:CURRENTLY_ACTING_IN]->(this_Movie:\`Movie\`)
@@ -170,7 +168,6 @@ describe("Interface Relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             WITH *
             CALL {
             WITH *
@@ -228,7 +225,6 @@ describe("Interface Relationships", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
             WITH *
-            WITH *
             CALL {
             WITH *
             CALL {
@@ -273,7 +269,6 @@ describe("Interface Relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             WITH *
             CALL {
             WITH *
@@ -330,7 +325,6 @@ describe("Interface Relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             CALL {
                 WITH this
                 CALL {
@@ -383,7 +377,6 @@ describe("Interface Relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             CALL {
                 WITH this
                 CALL {
@@ -450,7 +443,6 @@ describe("Interface Relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             CALL {
                 WITH this
                 CALL {
@@ -512,7 +504,6 @@ describe("Interface Relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             CALL {
                 WITH this
                 CALL {

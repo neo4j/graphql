@@ -180,7 +180,6 @@ describe("Cypher LocalDateTime", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             SET this.localDT = $this_update_localDT
             RETURN collect(DISTINCT this { .id, .localDT }) AS data"
         `);

@@ -69,7 +69,6 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`SomeNode\`)
-            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_OTHER_NODES]->(this_other:\`OtherNode\`)

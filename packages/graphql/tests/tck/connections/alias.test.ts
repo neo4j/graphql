@@ -68,7 +68,6 @@ describe("Connections Alias", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             CALL {
                 WITH this
                 MATCH (this)<-[this_connection_actorsthis0:ACTED_IN]-(this_Actor:\`Actor\`)

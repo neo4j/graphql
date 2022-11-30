@@ -22,10 +22,10 @@ import { int } from "neo4j-driver";
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams, { ProjectionResult } from "./create-projection-and-params";
-import type { GraphQLOptionsArg, GraphQLSortArg, Context, GraphQLWhereArg } from "../types";
+import type { GraphQLOptionsArg, GraphQLSortArg, Context } from "../types";
 import { createAuthPredicates } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import { createMatchClause, preComputedWhereFields } from "./translate-top-level-match";
+import { createMatchClause } from "./translate-top-level-match";
 import Cypher from "@neo4j/cypher-builder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
@@ -47,7 +47,11 @@ export function translateRead(
 
     let projAuth: Cypher.Clause | undefined;
 
-    const { matchClause: topLevelMatch, withClause: topLevelWith } = createMatchClause({
+    const {
+        matchClause: topLevelMatch,
+        preComputedWhereFieldSubqueries,
+        whereClause: topLevelWhereClause,
+    } = createMatchClause({
         matchNode,
         node,
         context,
@@ -80,7 +84,7 @@ export function translateRead(
     });
 
     if (authPredicates) {
-        topLevelWith.where(new Cypher.apoc.ValidatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR));
+        topLevelWhereClause.where(new Cypher.apoc.ValidatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR));
     }
 
     const projectionSubqueries = Cypher.concat(...projection.subqueries);
@@ -182,18 +186,13 @@ export function translateRead(
         projectionClause = Cypher.concat(withTotalCount, connectionClause, returnClause);
     }
 
-    const preComputedWhereClause = preComputedWhereFields(
-        resolveTree.args.where as GraphQLWhereArg | undefined,
-        node,
-        context,
-        matchNode,
-        topLevelWith
-    );
-    
+    const preComputedWhereFields = preComputedWhereFieldSubqueries
+        ? Cypher.concat(preComputedWhereFieldSubqueries, topLevelWhereClause)
+        : undefined;
+
     const readQuery = Cypher.concat(
         topLevelMatch,
-        preComputedWhereClause,
-        topLevelWith,
+        preComputedWhereFields,
         projAuth,
         connectionPreClauses,
         projectionSubqueriesBeforeSort,

@@ -90,7 +90,6 @@ describe("Cypher Fragment", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             RETURN this { .id, .username } AS this"
         `);
 
@@ -119,7 +118,6 @@ describe("Cypher Fragment", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             CALL {
                 WITH this
                 CALL {
@@ -163,7 +161,6 @@ describe("Cypher Fragment", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             RETURN this { .id, .username } AS this"
         `);
 

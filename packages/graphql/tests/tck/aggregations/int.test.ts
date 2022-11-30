@@ -58,7 +58,6 @@ describe("Cypher Aggregations Int", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             RETURN { imdbRating: { min: min(this.imdbRating) } }"
         `);
 
@@ -83,7 +82,6 @@ describe("Cypher Aggregations Int", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             RETURN { imdbRating: { max: max(this.imdbRating) } }"
         `);
 
@@ -108,7 +106,6 @@ describe("Cypher Aggregations Int", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             RETURN { imdbRating: { average: avg(this.imdbRating) } }"
         `);
 
@@ -133,7 +130,6 @@ describe("Cypher Aggregations Int", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             RETURN { imdbRating: { sum: sum(this.imdbRating) } }"
         `);
 
@@ -161,7 +157,6 @@ describe("Cypher Aggregations Int", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             RETURN { imdbRating: { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating), sum: sum(this.imdbRating) } }"
         `);
 

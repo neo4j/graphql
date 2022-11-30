@@ -58,7 +58,6 @@ describe("Cypher Aggregations ID", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             RETURN { id: { shortest: min(this.id) } }"
         `);
 
@@ -83,7 +82,6 @@ describe("Cypher Aggregations ID", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             RETURN { id: { longest: max(this.id) } }"
         `);
 
@@ -109,7 +107,6 @@ describe("Cypher Aggregations ID", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             RETURN { id: { shortest: min(this.id), longest: max(this.id) } }"
         `);
 

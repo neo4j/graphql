@@ -70,7 +70,6 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WITH *
             RETURN this { .title } AS this"
         `);
 
@@ -96,7 +95,6 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WITH *
             CALL {
                 WITH this
                 MATCH (this_actors:\`Person\`)-[this0:ACTED_IN]->(this)
@@ -132,7 +130,6 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WITH *
             CALL {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Person\`)

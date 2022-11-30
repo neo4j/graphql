@@ -72,7 +72,6 @@ describe("tck/rfcs/query-limits", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
                 WITH *
-                WITH *
                 LIMIT $param0
                 RETURN this { .id } AS this"
             `);
@@ -104,7 +103,6 @@ describe("tck/rfcs/query-limits", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Show\`)
                 WITH *
-                WITH *
                 LIMIT $param0
                 RETURN this { .id } AS this"
             `);
@@ -135,7 +133,6 @@ describe("tck/rfcs/query-limits", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Show\`)
-                WITH *
                 WITH *
                 LIMIT $param0
                 RETURN this { .id } AS this"
@@ -172,7 +169,6 @@ describe("tck/rfcs/query-limits", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH *
                 WITH *
                 LIMIT $param0
                 CALL {
@@ -227,7 +223,6 @@ describe("tck/rfcs/query-limits", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH *
                 WITH *
                 LIMIT $param0
                 CALL {
@@ -292,7 +287,6 @@ describe("tck/rfcs/query-limits", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
                 WITH *
-                WITH *
                 LIMIT $param0
                 CALL {
                     WITH this
@@ -355,7 +349,6 @@ describe("tck/rfcs/query-limits", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Festival\`)
-                WITH *
                 CALL {
                     WITH this
                     MATCH (this)<-[this_connection_showsConnectionthis0:PART_OF]-(this_Show:\`Show\`)
@@ -404,7 +397,6 @@ describe("tck/rfcs/query-limits", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH *
                 WITH *
                 LIMIT $param0
                 CALL {

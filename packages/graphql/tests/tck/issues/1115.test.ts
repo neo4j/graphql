@@ -76,7 +76,6 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Parent\`)
-            WITH *
             WITH this
             CALL {
                 WITH this

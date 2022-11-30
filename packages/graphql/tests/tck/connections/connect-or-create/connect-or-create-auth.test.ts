@@ -309,7 +309,6 @@ describe("connectOrCreate", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH *
                 SET this.title = $this_update_title
                 WITH this
                 CALL {
@@ -360,7 +359,6 @@ describe("connectOrCreate", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH *
                 SET this.title = $this_update_title
                 WITH this
                 CALL {
@@ -411,7 +409,6 @@ describe("connectOrCreate", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH *
                 SET this.title = $this_update_title
                 WITH this
                 CALL {
@@ -462,7 +459,6 @@ describe("connectOrCreate", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH *
                 SET this.title = $this_update_title
                 WITH this
                 CALL {
@@ -521,7 +517,6 @@ describe("connectOrCreate", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH *
                 SET this.title = $this_update_title
                 WITH this
                 CALL {
@@ -573,7 +568,6 @@ describe("connectOrCreate", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH *
                 SET this.title = $this_update_title
                 WITH this
                 CALL {
@@ -625,7 +619,6 @@ describe("connectOrCreate", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH *
                 SET this.title = $this_update_title
                 WITH this
                 CALL {
@@ -677,7 +670,6 @@ describe("connectOrCreate", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH *
                 SET this.title = $this_update_title
                 WITH this
                 CALL {
@@ -735,7 +727,6 @@ describe("connectOrCreate", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH *
                 SET this.title = $this_update_title
                 WITH this
                 CALL {

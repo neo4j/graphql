@@ -71,7 +71,6 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WITH *
             RETURN this { .title } AS this"
         `);
 

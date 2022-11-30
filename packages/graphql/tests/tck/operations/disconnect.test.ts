@@ -112,7 +112,6 @@ describe("Cypher Disconnect", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Product\`)
-            WITH *
             SET this.id = $this_update_id
             SET this.name = $this_update_name
             WITH this

@@ -213,7 +213,6 @@ describe("Cypher coalesce()", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_moviesConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)

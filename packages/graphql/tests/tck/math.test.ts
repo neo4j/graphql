@@ -82,7 +82,6 @@ describe("Math operators", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WITH this
             CALL {
             WITH this
@@ -124,7 +123,6 @@ describe("Math operators", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             WITH this
             CALL {
             WITH this
@@ -164,7 +162,6 @@ describe("Math operators", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
@@ -248,7 +245,6 @@ describe("Math operators", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
@@ -323,7 +319,6 @@ describe("Math operators", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             WITH this
             CALL {
             	 WITH this
@@ -415,7 +410,6 @@ describe("Math operators", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             WITH this
             CALL {
             	 WITH this

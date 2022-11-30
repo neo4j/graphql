@@ -91,7 +91,6 @@ describe("#601", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Stakeholder\`)
-            WITH *
             WHERE apoc.util.validatePredicate(NOT (any(var1 IN [\\"view\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this

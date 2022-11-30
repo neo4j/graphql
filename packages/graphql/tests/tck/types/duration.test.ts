@@ -189,7 +189,6 @@ describe("Cypher Duration", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *
             SET this.duration = $this_update_duration
             RETURN collect(DISTINCT this { .id, .duration }) AS data"
         `);

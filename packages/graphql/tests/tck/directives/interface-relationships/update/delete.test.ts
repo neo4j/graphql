@@ -80,7 +80,6 @@ describe("Interface Relationships - Update delete", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             WITH this
             OPTIONAL MATCH (this)-[this_delete_actedIn_Movie0_relationship:ACTED_IN]->(this_delete_actedIn_Movie0:Movie)
             WHERE this_delete_actedIn_Movie0.title STARTS WITH $updateActors_args_delete_actedIn0_where_Movieparam0
@@ -154,7 +153,6 @@ describe("Interface Relationships - Update delete", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             WITH this
             OPTIONAL MATCH (this)-[this_delete_actedIn_Movie0_relationship:ACTED_IN]->(this_delete_actedIn_Movie0:Movie)
             WHERE this_delete_actedIn_Movie0.title STARTS WITH $updateActors_args_delete_actedIn0_where_Movieparam0
@@ -260,7 +258,6 @@ describe("Interface Relationships - Update delete", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             WITH this
             OPTIONAL MATCH (this)-[this_delete_actedIn_Movie0_relationship:ACTED_IN]->(this_delete_actedIn_Movie0:Movie)
             WHERE this_delete_actedIn_Movie0.title STARTS WITH $updateActors_args_delete_actedIn0_where_Movieparam0
@@ -365,7 +362,6 @@ describe("Interface Relationships - Update delete", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
             WITH this
             OPTIONAL MATCH (this)-[this_delete_actedIn_Movie0_relationship:ACTED_IN]->(this_delete_actedIn_Movie0:Movie)
             WHERE this_delete_actedIn_Movie0.title STARTS WITH $updateActors_args_delete_actedIn0_where_Movieparam0

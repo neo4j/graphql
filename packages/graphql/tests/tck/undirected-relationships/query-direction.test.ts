@@ -67,7 +67,6 @@ describe("QueryDirection in relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:FRIENDS_WITH]-(this_friends:\`User\`)
@@ -123,7 +122,6 @@ describe("QueryDirection in relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:FRIENDS_WITH]->(this_friends:\`User\`)
@@ -176,7 +174,6 @@ describe("QueryDirection in relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:FRIENDS_WITH]->(this_friends:\`User\`)
@@ -222,7 +219,6 @@ describe("QueryDirection in relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[this0:FRIENDS_WITH]-(this_friends:\`User\`)
