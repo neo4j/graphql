@@ -14,6 +14,9 @@
         "type": "git",
         "url": "git+https://github.com/neo4j/graphql.git"
     },
+    "engines": {
+        "node": "16.x"
+    },
     "keywords": [
         "place",
         "neo4j",
