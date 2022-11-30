@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/cypher-builder",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "Neo4j Cypher query builder",
     "exports": "./dist/index.js",
     "main": "./dist/index.js",
