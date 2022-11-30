@@ -142,7 +142,7 @@ function findConnectedNodesCypherQuery(varName: string): string {
 
 function createDisconnectEventMetaForDeletedNode({ relVariable, fromVariable, toVariable }) {
     return createConnectionEventMetaObject({
-        event: "disconnect",
+        event: "delete_relationship",
         relVariable,
         fromVariable,
         toVariable,
