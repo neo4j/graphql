@@ -170,10 +170,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_baseObjectConnection
             }
-            RETURN this { relatedId: this_relatedId, nameDetailsConnection: this_nameDetailsConnection, marketsConnection: this_marketsConnection, baseObjectConnection: this_baseObjectConnection } AS this
-            ORDER BY this.relatedId ASC
-            SKIP $param6
-            LIMIT $param7"
+            RETURN this { relatedId: this_relatedId, nameDetailsConnection: this_nameDetailsConnection, marketsConnection: this_marketsConnection, baseObjectConnection: this_baseObjectConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -184,14 +181,6 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                     \\"high\\": 0
                 },
                 \\"param5\\": {
-                    \\"low\\": 50,
-                    \\"high\\": 0
-                },
-                \\"param6\\": {
-                    \\"low\\": 0,
-                    \\"high\\": 0
-                },
-                \\"param7\\": {
                     \\"low\\": 50,
                     \\"high\\": 0
                 },
