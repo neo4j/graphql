@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql-plugin-subscriptions-amqp",
-    "version": "1.0.0",
+    "version": "0.4.0",
     "description": "Subscription plugin for @neo4j/graphql, supporting AMQP brokers such as RabbitMQ",
     "keywords": [
         "neo4j",
