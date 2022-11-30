@@ -512,9 +512,15 @@ function createRelationshipFields({
             });
 
             if (!(composeNode instanceof InterfaceTypeComposer)) {
-                nodeCreateInput.addFields({
-                    [rel.fieldName]: unionCreateInput,
-                });
+                if (rel.typeMeta.array || !rel.typeMeta.required) {
+                    nodeCreateInput.addFields({
+                        [rel.fieldName]: unionCreateInput,
+                    });
+                } else {
+                    nodeCreateInput.addFields({
+                        [rel.fieldName]: unionCreateInput.NonNull,
+                    });
+                }
             }
 
             nodeRelationInput.addFields({
