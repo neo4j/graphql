@@ -167,6 +167,14 @@ describe("Relay Cursor Connection projections", () => {
                 WITH { node: { __resolveType: \\"Actor\\" } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge
+                    LIMIT $this_connection_actorsConnectionparam0
+                    RETURN collect(edge) AS this_connection_actorsConnectionvar1
+                }
+                WITH this_connection_actorsConnectionvar1 AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
             RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
@@ -174,7 +182,11 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"this_connection_actorsConnectionparam0\\": {
+                    \\"low\\": 5,
+                    \\"high\\": 0
+                }
             }"
         `);
     });
@@ -352,6 +364,14 @@ describe("Relay Cursor Connection projections", () => {
                 WITH { node: { name: this_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge
+                    LIMIT $this_connection_actorsConnectionparam0
+                    RETURN collect(edge) AS this_connection_actorsConnectionvar1
+                }
+                WITH this_connection_actorsConnectionvar1 AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
             RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
@@ -359,7 +379,11 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"this_connection_actorsConnectionparam0\\": {
+                    \\"low\\": 5,
+                    \\"high\\": 0
+                }
             }"
         `);
     });
