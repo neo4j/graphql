@@ -92,7 +92,7 @@ export function createMatchClause({
     }
 
     const preComputedWhereFieldSubqueries = preComputedWhereFields(
-        context.resolveTree.args.where,
+        context.resolveTree.args.where as Record<string, any>,
         node,
         context,
         matchNode,
@@ -182,7 +182,7 @@ function createFulltextMatchClause(
 }
 
 export function preComputedWhereFields(
-    whereInput: any,
+    whereInput: Record<string, any> | undefined,
     node: Node,
     context: Context,
     matchNode: Cypher.Variable,
