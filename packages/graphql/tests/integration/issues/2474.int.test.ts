@@ -23,6 +23,8 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
+import { int } from "neo4j-driver";
+import exp from "constants";
 
 describe("https://github.com/neo4j/graphql/issues/2474", () => {
     let driver: Driver;
@@ -126,13 +128,13 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
         await driver.close();
     });
 
-    test("should fail", async () => {
+    test("should creates the correct nodes", async () => {
         const query = `
         mutation {
             ${Mandate.operations.create}(
               input: [
                 {
-                  price: 99000
+                  price: 99000 
                   valuation: {
                     create: {
                       node: {
@@ -161,9 +163,27 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
               info {
                 nodesCreated
               }
+              ${Mandate.plural} {
+                price
+                valuation {
+                  uuid
+                  estate {
+                    uuid
+                    area
+                    estateType
+                    floor
+                    address {
+                      uuid
+                      postalCode {
+                        number
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
-        `; 
+        `;
 
         const result = await graphql({
             schema: await neoSchema.getSchema(),
@@ -171,6 +191,191 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             contextValue: neo4j.getContextValues(),
         });
         expect(result.errors).toBeFalsy();
-        expect(result.data).toEqual({});
+        expect(result.data).toEqual({
+            [Mandate.operations.create]: {
+                [Mandate.plural]: [
+                    {
+                        price: 99000,
+                        valuation: {
+                            uuid: expect.any(String),
+                            estate: {
+                                uuid: expect.any(String),
+                                area: 75,
+                                estateType: "APARTMENT",
+                                floor: 2,
+                                address: {
+                                    uuid: expect.any(String),
+                                    postalCode: {
+                                        number: "13001",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                ],
+                info: {
+                    nodesCreated: 5,
+                },
+            },
+        });
+
+        const dbResult = await session.run(`
+            MATCH (mandate:${Mandate.name})-[:HAS_VALUATION]->(valuation:${Valuation.name})-[:VALUATION_FOR]->(estate:${Estate.name})-[:HAS_ADDRESS]->(address:${Address.name})-[:HAS_POSTAL_CODE]->(postalCode:${PostalCode.name})
+            RETURN mandate, valuation, estate, address, postalCode
+        `);
+        const nodes = Object.fromEntries(
+            Object.entries(dbResult.records[0].toObject()).map(([key, value]) => [key, value.properties])
+        );
+
+        expect(nodes).toEqual({
+            mandate: expect.objectContaining({
+                price: 99000,
+            }),
+            valuation: expect.objectContaining({
+                uuid: expect.any(String),
+            }),
+            estate: expect.objectContaining({
+                uuid: expect.any(String),
+                area: 75,
+                estateType: "APARTMENT",
+                floor: int(2),
+            }),
+            address: expect.objectContaining({
+                uuid: expect.any(String),
+            }),
+            postalCode: expect.objectContaining({
+                number: "13001",
+            }),
+        });
+    });
+
+    test("should not fails when used unions or interfaces as input", async () => {
+        const query = `
+        mutation {
+            ${Mandate.operations.create}(
+              input: [
+                {
+                  price: 99000 
+                  valuation: {
+                    create: {
+                      node: {
+                        estate: {
+                          create: {
+                            node: {
+                              address: {
+                                create: {
+                                  node: {
+                                    node: { ${Estate.name}: { create: { node: { area: 13.2, estateType: APARTMENT } } } }
+                                  }
+                                }
+                              }
+                              area: 75
+                              estateType: APARTMENT
+                              floor: 2
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            ) {
+              info {
+                nodesCreated
+              }
+              ${Mandate.plural} {
+                price
+                valuation {
+                  uuid
+                  estate {
+                    uuid
+                    area
+                    estateType
+                    floor
+                    address {
+                      uuid
+                      node {
+                        ...on ${Estate.name} {
+                          area
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Mandate.operations.create]: {
+                [Mandate.plural]: [
+                    {
+                        price: 99000,
+                        valuation: {
+                            uuid: expect.any(String),
+                            estate: {
+                                uuid: expect.any(String),
+                                area: 75,
+                                estateType: "APARTMENT",
+                                floor: 2,
+                                address: {
+                                    uuid: expect.any(String),
+                                    node: expect.arrayContaining([
+                                        {
+                                            area: 13.2,
+                                        },
+                                        {
+                                            area: 75
+                                        },
+                                    ]),
+                                },
+                            },
+                        },
+                    },
+                ],
+                info: {
+                    nodesCreated: 5,
+                },
+            },
+        });
+
+        const dbResult = await session.run(`
+            MATCH (mandate:${Mandate.name})-[:HAS_VALUATION]->(valuation:${Valuation.name})-[:VALUATION_FOR]->(estate:${Estate.name})-[:HAS_ADDRESS]->(address:${Address.name})<-[:HAS_ADDRESS]-(estate2:${Estate.name})
+            RETURN mandate, valuation, estate, address, estate2
+        `);
+        const nodes = Object.fromEntries(
+            Object.entries(dbResult.records[0].toObject()).map(([key, value]) => [key, value.properties])
+        );
+
+        expect(nodes).toEqual({
+            mandate: expect.objectContaining({
+                price: 99000,
+            }),
+            valuation: expect.objectContaining({
+                uuid: expect.any(String),
+            }),
+            estate: expect.objectContaining({
+                uuid: expect.any(String),
+                area: 75,
+                estateType: "APARTMENT",
+                floor: int(2),
+            }),
+            address: expect.objectContaining({
+                uuid: expect.any(String),
+            }),
+            estate2: expect.objectContaining({
+                uuid: expect.any(String),
+                area: 13.2,
+                estateType: "APARTMENT",
+            }),
+        });
     });
 });

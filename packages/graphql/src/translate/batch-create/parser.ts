@@ -35,7 +35,10 @@ function getRelationshipFields(
     const refNodes: Node[] = [];
 
     if (relationField) {
-        if (relationField.union) {
+        if (relationField.interface || relationField.union) {
+            throw new UnsupportedUnwindOptimization(`Not supported operation: Interface or Union`);
+        }
+     /*    if (relationField.union) {
             Object.keys(value as Record<string, any>).forEach((unionTypeName) => {
                 refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
             });
@@ -43,7 +46,7 @@ function getRelationshipFields(
             relationField.interface?.implementations?.forEach((implementationName) => {
                 refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
             });
-        } else {
+        } */ else {
             refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
         }
     }
@@ -149,7 +152,8 @@ export function getTreeDescriptor(
             }
             if (typeof value === "object" && value !== null && !scalar) {
                 // TODO: supports union/interfaces
-                const innerNode = relationField ? relatedNodes[0] : node;
+                const innerNode = relationField && relatedNodes[0] ? relatedNodes[0] : node;
+              
                 if (Array.isArray(value)) {
                     previous.children[key] = mergeTreeDescriptors(
                         value.map((el) =>
