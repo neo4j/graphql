@@ -24,7 +24,6 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
 import { int } from "neo4j-driver";
-import exp from "constants";
 
 describe("https://github.com/neo4j/graphql/issues/2474", () => {
     let driver: Driver;
