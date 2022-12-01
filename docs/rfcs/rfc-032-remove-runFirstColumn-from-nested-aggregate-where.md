@@ -201,3 +201,94 @@ RETURN collect(DISTINCT this { .name, likedPosts: this_likedPosts }) AS data
 ```
 
 Note that a `DISTINCT` has been used to reduce the cardinality without losing any data.
+
+## Risks
+
+There is a slight change to the cardinality with this solution.
+
+Consider, the Cypher in the proposed solution and the case where "someUser" has liked 2 posts. One of these posts has 2 likes whilst the other does not. In this case the proposed Cypher would produce the following results:
+
+| this       | this_likes0_relationship | this_likedPosts0 |
+|------------|--------------------------|------------------|
+| this       | null                     | null             |
+| this       | this_likes0_relationship | this_likedPosts0 |
+
+Note that the row where `this_likes0_relationship` and `this_likedPosts0` are null has been kept. However, if the `WHERE` clause was applied directly to the `OPTIONAL MATCH` the `null` row would have been removed (assuming there are cases for the same `this` node where they are not `null`):
+
+| this       | this_likes0_relationship | this_likedPosts0 |
+|------------|--------------------------|------------------|
+| this       | this_likes0_relationship | this_likedPosts0 |
+
+
+This means that there is an extra occurrence of `this`. This is unlikely to cause an issue as `this` is not manipulated at the nested level and the duplication can be removed by adding `WITH DISTINCT this` between nested blocks. For example, this is the query we would propose for deleting an interface using a nested aggregation filter:
+
+Current cypher:
+
+```cypher
+MATCH (this:`Actor`)
+WITH *
+WHERE this.name = "actorName"
+WITH this
+OPTIONAL MATCH (this)-[this_actedIn_Movie0_relationship:ACTED_IN]->(this_actedIn_Movie0:Movie)
+WITH *
+WHERE this_actedIn_Movie0.title = "movieTitle"
+WITH this, collect(DISTINCT this_actedIn_Movie0) AS this_actedIn_Movie0_to_delete
+CALL {
+    WITH this_actedIn_Movie0_to_delete
+    UNWIND this_actedIn_Movie0_to_delete AS x
+    DETACH DELETE x
+    RETURN count(*) AS _
+}
+WITH this
+OPTIONAL MATCH (this)-[this_actedIn_Series0_relationship:ACTED_IN]->(this_actedIn_Series0:Series)
+WITH *
+WHERE this_actedIn_Series0.title = "movieTitle"
+WITH this, collect(DISTINCT this_actedIn_Series0) AS this_actedIn_Series0_to_delete
+CALL {
+    WITH this_actedIn_Series0_to_delete
+    UNWIND this_actedIn_Series0_to_delete AS x
+    DETACH DELETE x
+    RETURN count(*) AS _
+}
+DETACH DELETE this
+```
+
+Proposed cypher:
+
+```cypher
+MATCH (this:`Actor`)
+WITH *
+WHERE this.name = "actorName"
+WITH this
+OPTIONAL MATCH (this)-[this_actedIn_Movie0_relationship:ACTED_IN]->(this_actedIn_Movie0:Movie)
+WITH DISTINCT *, CASE this_actedIn_Movie0.title = "movieTitle"
+    WHEN true THEN [this_actedIn_Movie0_relationship, this_actedIn_Movie0]
+    ELSE [null, null]
+END AS someVar
+WITH DISTINCT *, someVar[0] AS this_actedIn_Movie0_relationship, someVar[1] AS this_actedIn_Movie0
+WITH this, collect(DISTINCT this_actedIn_Movie0) AS this_actedIn_Movie0_to_delete
+CALL {
+    WITH this_actedIn_Movie0_to_delete
+    UNWIND this_actedIn_Movie0_to_delete AS x
+    DETACH DELETE x
+    RETURN count(*) AS _
+}
+WITH DISTINCT this // Duplicate this is now removed
+OPTIONAL MATCH (this)-[this_actedIn_Series0_relationship:ACTED_IN]->(this_actedIn_Series0:Series)
+WITH DISTINCT this, CASE this_actedIn_Series0.title = "movieTitle"
+    WHEN true THEN [this_actedIn_Series0_relationship, this_actedIn_Series0]
+    ELSE [null, null]
+END AS someVar
+WITH DISTINCT *, someVar[0] AS this_actedIn_Series0_relationship, someVar[1] AS this_actedIn_Series0
+WITH this, collect(DISTINCT this_actedIn_Series0) AS this_actedIn_Series0_to_delete
+CALL {
+    WITH this_actedIn_Series0_to_delete
+    UNWIND this_actedIn_Series0_to_delete AS x
+    DETACH DELETE x
+    RETURN count(*) AS _
+}
+WITH DISTINCT this // Duplicate this is now removed
+DETACH DELETE this
+```
+
+The extra occurrences of `this_likes0_relationship` and `this_likedPosts0` are always going to be null so no data will accidentally be manipulated/returned involving these relations/nodes.
