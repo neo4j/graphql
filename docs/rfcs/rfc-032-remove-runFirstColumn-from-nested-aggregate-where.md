@@ -113,7 +113,7 @@ Cypher:
 MATCH (this:`User`)
 WHERE this.name = "someUser"
 WITH this
-OPTIONAL MATCH (this)-[this_likes0_relationship:LIKES]->(this_likedPosts0:Post) # Note this OPTIONAL MATCH
+OPTIONAL MATCH (this)-[this_likes0_relationship:LIKES]->(this_likedPosts0:Post) // Note this OPTIONAL MATCH
 WHERE apoc.cypher.runFirstColumnSingle("
     MATCH (this_likedPosts0)<-[aggr_edge:LIKES]-(aggr_node:User)
     RETURN count(aggr_node) = 2
@@ -139,7 +139,7 @@ Attempting to use the previous solution here, produces the following Cypher:
 MATCH (this:`User`)
 WHERE this.name = "someUser"
 WITH this
-OPTIONAL MATCH (this)-[this_likes0_relationship:LIKES]->(this_likedPosts0:Post) # Note this OPTIONAL MATCH
+OPTIONAL MATCH (this)-[this_likes0_relationship:LIKES]->(this_likedPosts0:Post) // Note this OPTIONAL MATCH
 CALL {
     WITH this_likedPosts0
     MATCH (this_likedPosts0)<-[aggr_edge:LIKES]-(aggr_node:User)
@@ -165,3 +165,39 @@ RETURN collect(DISTINCT this { .name, likedPosts: this_likedPosts }) AS data
 Notice how a `WITH *` is required between the `CALL (subquery)` following the `OPTIONAL MATCH` and the `WHERE` clause. This is required, because applying a `WHERE` clause directly after a `CALL (subquery)` is invalid Cypher.
 
 However, if a `WHERE` clause is not applied directly to an `OPTIONAL MATCH`, it behaves as though being applied to a standard `MATCH`. This means that instead of returning still returning `this` along with `null` for `this_likes0_relationship` and `this_likedPosts0` when the conditions of the `WHERE` clause are not met, the whole row is not returned. This means that the top-level node `this` is also filtered, which is not the desired outcome and results in some nodes not being updated as required.
+
+## Proposed Solution
+
+A `WITH CASE` clause can be used to apply the predicates and returning the nodes/relations when conditions are met and `null` when the conditions are not met. This means that the same behaviour is maintained, as when the `WHERE` clause is applied directly to the `OPTIONAL MATCH`:
+
+```cypher
+MATCH (this:`User`)
+WHERE this.name = "someUser"
+WITH this
+OPTIONAL MATCH (this)-[this_likes0_relationship:LIKES]->(this_likedPosts0:Post)
+CALL {
+    WITH this_likedPosts0
+    MATCH (this_likedPosts0)<-[aggr_edge:LIKES]-(aggr_node:User)
+    RETURN count(aggr_node) = 2 AS this_likePosts0_aggrCount
+}
+WITH DISTINCT *, CASE this_likePosts0_aggrCount = true
+    WHEN true THEN [this_likes0_relationship, this_likedPosts0]
+    ELSE [null, null]
+END AS someVar
+WITH *, someVar[0] AS this_likes0_relationship, someVar[1] AS this_likedPosts0
+CALL apoc.do.when(this_likedPosts0 IS NOT NULL, "
+    SET this_likedPosts0.content = $this_update_likedPosts0_content
+    RETURN count(*) AS _
+", "", {this:this, this_likedPosts0:this_likedPosts0})
+YIELD value AS _
+WITH *
+CALL {
+    WITH this
+    MATCH (this)-[update_this0:LIKES]->(this_likedPosts:`Post`)
+    WITH this_likedPosts { .id, .content } AS this_likedPosts
+    RETURN collect(this_likedPosts) AS this_likedPosts
+}
+RETURN collect(DISTINCT this { .name, likedPosts: this_likedPosts }) AS data
+```
+
+Note that a `DISTINCT` has been used to reduce the cardinality without losing any data.
