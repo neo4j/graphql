@@ -12,8 +12,9 @@
     ],
     "scripts": {
         "start": "node server.js",
-        "start:dev": "concurrently \"parcel client/index.html client/qr.html\" \"node server.js\"",
-        "build": "parcel build client/index.html client/qr.html",
+        "start:dev": "npm run clean && concurrently \"parcel client/index.html client/qr.html\" \"node server.js\"",
+        "build": "npm run clean && parcel build client/index.html client/qr.html",
+        "clean": "rimraf dist/",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
@@ -34,10 +35,9 @@
     },
     "homepage": "https://github.com/neo4j/graphql#readme",
     "dependencies": {
-        "@neo4j/graphql": "^3.12.2",
+        "@neo4j/graphql": "^3.13.0",
         "@neo4j/graphql-plugin-auth": "^1.1.0",
-        "@neo4j/graphql-plugin-subscriptions-amqp": "^0.3.0",
-        "@tsconfig/node16": "1.0.3",
+        "@neo4j/graphql-plugin-subscriptions-amqp": "^0.4.0",
         "apollo-server-core": "^3.11.1",
         "apollo-server-express": "^3.11.1",
         "dotenv": "^16.0.3",
@@ -46,9 +46,8 @@
         "graphql-ws": "^5.11.2",
         "neo4j-driver": "^5.3.0",
         "parcel": "^2.8.0",
+        "rimraf": "^3.0.2",
         "urql": "^3.0.3",
-        "typescript": "4.9.3",
-        "ts-node": "10.9.1",
         "wonka": "^6.1.1",
         "ws": "^8.11.0"
     },
