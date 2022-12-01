@@ -3,9 +3,15 @@
     "version": "0.1.0",
     "private": true,
     "description": "Subscriptions example",
+    "engines": {
+        "node": "16.x"
+    },
+    "browserslist": [
+        "last 2 versions",
+        "not dead"
+    ],
     "scripts": {
-        "start": "ts-node server.js",
-        "start:old": "node server.js",
+        "start": "node server.js",
         "start:dev": "concurrently \"parcel client/index.html client/qr.html\" \"node server.js\"",
         "build": "parcel build client/index.html client/qr.html",
         "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,9 +19,6 @@
     "repository": {
         "type": "git",
         "url": "git+https://github.com/neo4j/graphql.git"
-    },
-    "engines": {
-        "node": "16.x"
     },
     "keywords": [
         "place",
@@ -34,6 +37,7 @@
         "@neo4j/graphql": "^3.12.2",
         "@neo4j/graphql-plugin-auth": "^1.1.0",
         "@neo4j/graphql-plugin-subscriptions-amqp": "^0.3.0",
+        "@tsconfig/node16": "1.0.3",
         "apollo-server-core": "^3.11.1",
         "apollo-server-express": "^3.11.1",
         "dotenv": "^16.0.3",
@@ -43,8 +47,8 @@
         "neo4j-driver": "^5.3.0",
         "parcel": "^2.8.0",
         "urql": "^3.0.3",
-        "ts-node": "10.9.1",
         "typescript": "4.9.3",
+        "ts-node": "10.9.1",
         "wonka": "^6.1.1",
         "ws": "^8.11.0"
     },

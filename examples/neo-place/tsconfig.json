@@ -1,0 +1,16 @@
+{
+    "extends": "@tsconfig/node16/tsconfig.json",
+    "compilerOptions": {
+        "composite": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "importsNotUsedAsValues": "error",
+        "noUnusedParameters": true,
+        "noUnusedLocals": true,
+        "noImplicitAny": false,
+        "rootDir": ".",
+        "baseUrl": ".",
+        "outDir": "dist"
+    },
+    "include": ["package.json", "src/**/*", "tests/**/*"]
+}

@@ -24,15 +24,21 @@ function setupButtons() {
     }
 }
 
-let wsUrl = `ws://${LOCAL_GRAPHQL_SERVER_URI_BASE}`;
-let url = `http://${LOCAL_GRAPHQL_SERVER_URI_BASE}`;
-if (process.env.NODE_ENV === "production") {
-    wsUrl = "wss://team-graphql.uc.r.appspot.com/graphql";
-    url = "/graphql";
-}
+// let wsUrl = `ws://${LOCAL_GRAPHQL_SERVER_URI_BASE}`;
+// let url = `http://${LOCAL_GRAPHQL_SERVER_URI_BASE}`;
+// console.log(process.env.NODE_ENV)
+// if (process.env.NODE_ENV === "production") {
+//     wsUrl = "wss://team-graphql.uc.r.appspot.com/graphql";
+//     url = "/graphql";
+// }
+
+console.log(process.env.NODE_ENV)
+const wsUrl = "wss://team-graphql.uc.r.appspot.com/graphql";
+const url = "/graphql";
 
 console.log("Url:", url);
 console.log("WS Url:", wsUrl);
+
 const serverApi = new GraphQLServerApi({
     url,
     wsUrl,
