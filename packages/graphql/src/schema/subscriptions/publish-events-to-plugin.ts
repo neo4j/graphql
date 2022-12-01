@@ -39,7 +39,11 @@ export function publishEventsToPlugin(
         const metadata: EventMeta[] = executeResult.records[0]?.meta || [];
 
         const serializedEvents = metadata.reduce(parseEvents(schemaModel), []);
-        const serializedEventsWithoutDuplicates = removeDuplicateEvents(serializedEvents, "disconnect", "delete");
+        const serializedEventsWithoutDuplicates = removeDuplicateEvents(
+            serializedEvents,
+            "delete_relationship",
+            "delete"
+        );
         for (const subscriptionsEvent of serializedEventsWithoutDuplicates) {
             try {
                 const publishPromise = plugin.publish(subscriptionsEvent); // Not using await to avoid blocking
@@ -81,7 +85,7 @@ function parseEvents(schemaModel: Neo4jGraphQLSchemaModel) {
     };
 }
 
-type EventType = "create" | "update" | "delete" | "connect" | "disconnect";
+type EventType = "create" | "update" | "delete" | "create_relationship" | "delete_relationship";
 type MapIdToListOfTypenamesType = Map<number, { fromTypename: string; toTypename: string }[]>;
 function removeDuplicateEvents(events: SubscriptionsEvent[], ...eventTypes: EventType[]): SubscriptionsEvent[] {
     const resultIdsByEventType = eventTypes.reduce((acc, eventType) => {
@@ -137,7 +141,7 @@ function isNodeSubscriptionMeta(event: EventMeta): event is NodeSubscriptionMeta
     return ["create", "update", "delete"].includes(event.event);
 }
 function isRelationshipSubscriptionMeta(event: EventMeta): event is RelationshipSubscriptionMeta {
-    return ["connect", "disconnect"].includes(event.event);
+    return ["create_relationship", "delete_relationship"].includes(event.event);
 }
 function isRelationshipWithTypenameSubscriptionMeta(
     event: RelationshipSubscriptionMeta

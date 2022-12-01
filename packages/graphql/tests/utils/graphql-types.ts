@@ -32,14 +32,14 @@ type UniqueTypeOperations = {
         created: string;
         updated: string;
         deleted: string;
-        connected: string;
-        disconnected: string;
+        relationship_created: string;
+        relationship_deleted: string;
         payload: {
             created: string;
             updated: string;
             deleted: string;
-            connected: string;
-            disconnected: string;
+            relationship_created: string;
+            relationship_deleted: string;
         };
     };
 };
@@ -84,14 +84,14 @@ export class UniqueType {
                 created: `${singular}Created`,
                 updated: `${singular}Updated`,
                 deleted: `${singular}Deleted`,
-                connected: `${singular}RelationshipCreated`,
-                disconnected: `${singular}RelationshipDeleted`,
+                relationship_created: `${singular}RelationshipCreated`,
+                relationship_deleted: `${singular}RelationshipDeleted`,
                 payload: {
                     created: `created${pascalCaseSingular}`,
                     updated: `updated${pascalCaseSingular}`,
                     deleted: `deleted${pascalCaseSingular}`,
-                    connected: `${singular}`,
-                    disconnected: `${singular}`,
+                    relationship_created: `${singular}`,
+                    relationship_deleted: `${singular}`,
                 },
             },
         };

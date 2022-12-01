@@ -1,5 +1,11 @@
 # @neo4j/cypher-builder
 
+## 0.1.6
+
+### Patch Changes
+
+-   [#2406](https://github.com/neo4j/graphql/pull/2406) [`150b64c04`](https://github.com/neo4j/graphql/commit/150b64c046dd511d29436b33d67770aed6217c8f) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Apoc.util.validate is now invocable from CallProcedure
+
 ## 0.1.5
 
 ### Patch Changes
