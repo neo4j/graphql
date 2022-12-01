@@ -73,11 +73,13 @@ export function createConnectionClause({
         totalCount,
     ]);
 
+    // `first` specified on connection field in query needs to be compared with existing `@queryOptions`-imposed limit
+    const relatedFirstArg = relatedNode.queryOptions ? relatedNode.queryOptions.getLimit(firstArg) : firstArg;
     const withSortAfterUnwindClause = createSortAndLimitProjection({
         resolveTree,
         relationshipRef: edgeItem,
         nodeRef: edgeItem.property("node"),
-        limit: relatedNode?.queryOptions?.getLimit(firstArg), // `first` specified on connection field in query needs to be compared with existing `@queryOptions`-imposed limit
+        limit: relatedFirstArg,
     });
 
     let unwindSortClause: Cypher.Clause | undefined;
@@ -214,6 +216,7 @@ function createConnectionSubquery({
             return undefined;
         }
     }
+
     const edgeSubquery = createEdgeSubquery({
         resolveTree,
         field,

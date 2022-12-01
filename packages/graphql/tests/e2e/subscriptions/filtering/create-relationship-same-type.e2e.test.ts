@@ -98,10 +98,10 @@ describe("Connect Subscription with optional filters valid for all types", () =>
 
     const articleSubscriptionQuery = ({ typeArticle, where }) => `
 subscription SubscriptionMovie {
-    ${typeArticle.operations.subscribe.connected}(where: ${where}) {
+    ${typeArticle.operations.subscribe.relationship_created}(where: ${where}) {
         relationshipFieldName
         event
-        ${typeArticle.operations.subscribe.payload.connected} {
+        ${typeArticle.operations.subscribe.payload.relationship_created} {
             title
         }
         createdRelationship {
@@ -119,10 +119,10 @@ subscription SubscriptionMovie {
 
     const personSubscriptionQuery = ({ typePerson, where }) => `
 subscription SubscriptionMovie {
-    ${typePerson.operations.subscribe.connected}(where: ${where}) {
+    ${typePerson.operations.subscribe.relationship_created}(where: ${where}) {
         relationshipFieldName
         event
-        ${typePerson.operations.subscribe.payload.connected} {
+        ${typePerson.operations.subscribe.payload.relationship_created} {
             name
         }
         createdRelationship {
@@ -190,9 +190,9 @@ subscription SubscriptionMovie {
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeArticle.operations.subscribe.connected]: {
-                    [typeArticle.operations.subscribe.payload.connected]: { title: "articol" },
-                    event: "CONNECT",
+                [typeArticle.operations.subscribe.relationship_created]: {
+                    [typeArticle.operations.subscribe.payload.relationship_created]: { title: "articol" },
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "references",
                     createdRelationship: {
                         references: {
@@ -209,7 +209,7 @@ subscription SubscriptionMovie {
     });
 
     test("node relationship to self - standard type - by connected field expecting none - OUT", async () => {
-        const where = `{${typeArticle.operations.subscribe.payload.connected}: {title_IN: ["art"]}}`;
+        const where = `{${typeArticle.operations.subscribe.payload.relationship_created}: {title_IN: ["art"]}}`;
         await wsClient.subscribe(articleSubscriptionQuery({ typeArticle, where }));
 
         await supertest(server.path)
@@ -260,7 +260,7 @@ subscription SubscriptionMovie {
     });
 
     test("node relationship to self - standard type - by connected field - OUT", async () => {
-        const where = `{${typeArticle.operations.subscribe.payload.connected}: {title_IN: ["articol"]}}`;
+        const where = `{${typeArticle.operations.subscribe.payload.relationship_created}: {title_IN: ["articol"]}}`;
         await wsClient.subscribe(articleSubscriptionQuery({ typeArticle, where }));
 
         await supertest(server.path)
@@ -311,9 +311,9 @@ subscription SubscriptionMovie {
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeArticle.operations.subscribe.connected]: {
-                    [typeArticle.operations.subscribe.payload.connected]: { title: "articol" },
-                    event: "CONNECT",
+                [typeArticle.operations.subscribe.relationship_created]: {
+                    [typeArticle.operations.subscribe.payload.relationship_created]: { title: "articol" },
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "references",
                     createdRelationship: {
                         references: {
@@ -327,9 +327,9 @@ subscription SubscriptionMovie {
                 },
             },
             {
-                [typeArticle.operations.subscribe.connected]: {
-                    [typeArticle.operations.subscribe.payload.connected]: { title: "articol" },
-                    event: "CONNECT",
+                [typeArticle.operations.subscribe.relationship_created]: {
+                    [typeArticle.operations.subscribe.payload.relationship_created]: { title: "articol" },
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "references",
                     createdRelationship: {
                         references: {
@@ -446,9 +446,9 @@ subscription SubscriptionMovie {
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.connected]: {
-                    [typePerson.operations.subscribe.payload.connected]: { name: "Adam" },
-                    event: "CONNECT",
+                [typePerson.operations.subscribe.relationship_created]: {
+                    [typePerson.operations.subscribe.payload.relationship_created]: { name: "Adam" },
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "knownBy",
                     createdRelationship: {
                         knownBy: {
@@ -513,7 +513,7 @@ subscription SubscriptionMovie {
     });
 
     test("node relationship to self - standard type - by connected field - IN", async () => {
-        const where = `{${typePerson.operations.subscribe.payload.connected}: {name_IN: ["Adam"]}}`;
+        const where = `{${typePerson.operations.subscribe.payload.relationship_created}: {name_IN: ["Adam"]}}`;
 
         await wsClient.subscribe(personSubscriptionQuery({ typePerson, where }));
 
@@ -563,9 +563,9 @@ subscription SubscriptionMovie {
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typePerson.operations.subscribe.connected]: {
-                    [typePerson.operations.subscribe.payload.connected]: { name: "Adam" },
-                    event: "CONNECT",
+                [typePerson.operations.subscribe.relationship_created]: {
+                    [typePerson.operations.subscribe.payload.relationship_created]: { name: "Adam" },
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "knownBy",
                     createdRelationship: {
                         knownBy: {
@@ -578,9 +578,9 @@ subscription SubscriptionMovie {
                 },
             },
             {
-                [typePerson.operations.subscribe.connected]: {
-                    [typePerson.operations.subscribe.payload.connected]: { name: "Adam" },
-                    event: "CONNECT",
+                [typePerson.operations.subscribe.relationship_created]: {
+                    [typePerson.operations.subscribe.payload.relationship_created]: { name: "Adam" },
+                    event: "CREATE_RELATIONSHIP",
                     relationshipFieldName: "knownBy",
                     createdRelationship: {
                         knownBy: {
@@ -596,7 +596,7 @@ subscription SubscriptionMovie {
     });
 
     test("node relationship to self - standard type - by connected field expecting none - IN", async () => {
-        const where = `{${typePerson.operations.subscribe.payload.connected}: {name_IN: ["Eve"]}}`;
+        const where = `{${typePerson.operations.subscribe.payload.relationship_created}: {name_IN: ["Eve"]}}`;
 
         await wsClient.subscribe(personSubscriptionQuery({ typePerson, where }));
 

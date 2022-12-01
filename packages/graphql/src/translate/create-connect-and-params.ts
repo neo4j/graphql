@@ -262,7 +262,7 @@ function createConnectAndParams({
                     ? [relatedNode.name, parentNode.name]
                     : [parentNode.name, relatedNode.name];
             const eventWithMetaStr = createConnectionEventMetaObject({
-                event: "connect",
+                event: "create_relationship",
                 relVariable: relationshipName,
                 fromVariable,
                 toVariable,

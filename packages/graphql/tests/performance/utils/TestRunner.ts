@@ -103,7 +103,7 @@ export class TestRunner {
     // Check for the profile plan to have the correct settings
     private assertQueryOptions(profiledPlan: ProfiledPlan): void {
         assert.ok(profiledPlan.arguments);
-        assert.strictEqual(profiledPlan.arguments.runtime, "INTERPRETED");
+        assert.strictEqual(profiledPlan.arguments.runtime, "PIPELINED");
         assert.strictEqual(profiledPlan.arguments.planner, "COST");
         assert.strictEqual(profiledPlan.arguments["planner-impl"], "DP");
     }
@@ -112,7 +112,7 @@ export class TestRunner {
         // planner and runtime options are needed to ensure consistent results on our query plan
         return `CYPHER
         planner=dp
-        runtime=interpreted
+        runtime=pipelined
         PROFILE ${query}`;
     }
 
