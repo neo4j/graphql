@@ -36,11 +36,13 @@ export function createWherePredicate({
     whereInput,
     context,
     element,
+    topLevelWhere,
 }: {
     targetElement: Cypher.Variable;
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
+    topLevelWhere?: boolean;
 }): Cypher.Predicate | undefined {
     const whereFields = Object.entries(whereInput);
 
@@ -55,7 +57,7 @@ export function createWherePredicate({
             });
         }
 
-        return createPropertyWhere({ key, value, element, targetElement, context });
+        return createPropertyWhere({ key, value, element, targetElement, context, topLevelWhere });
     });
 
     // Implicit AND
