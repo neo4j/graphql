@@ -216,13 +216,13 @@ export function preComputedWhereFields(
                 cypherRelation.reverse();
             }
             const matchQuery = new Cypher.Match(cypherRelation);
-            const { returnVariables, predicates } = aggregateWhere(
+            const { returnProjections, predicates } = aggregateWhere(
                 value as AggregateWhereInput,
                 refNode,
                 aggregationTarget,
                 cypherRelation
             );
-            matchQuery.return(...returnVariables);
+            matchQuery.return(...returnProjections);
             withClause.where(Cypher.and(...predicates));
             precomputedClauses.push(new Cypher.Call(matchQuery).innerWith(matchNode));
         }
