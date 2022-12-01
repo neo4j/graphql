@@ -23,7 +23,7 @@ import type { RelationField, Context, BaseField } from "../types";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
 import {
-    ENTITIES,
+    NODE_OR_EDGE_KEYS,
     LOGICAL_OPERATORS,
     AGGREGATION_COMPARISON_OPERATORS,
     AGGREGATION_AGGREGATE_OPERATORS,
@@ -72,7 +72,7 @@ export function aggregateWhere(
             const operationVar = new Cypher.Variable();
             returnVariables.push([operation, operationVar]);
             predicates.push(Cypher.eq(operationVar, new Cypher.Param(true)));
-        } else if (ENTITIES.includes(key)) {
+        } else if (NODE_OR_EDGE_KEYS.includes(key)) {
             const target = key === "edge" ? cypherRelation : aggregationTarget;
             const { returnVariables: innerReturnVariables, predicates: innerPredicates } = aggregateEntityWhere(
                 value,
@@ -421,7 +421,7 @@ function createPredicate({
             }
         });
 
-        ENTITIES.forEach((nOrE) => {
+        NODE_OR_EDGE_KEYS.forEach((nOrE) => {
             if (key !== nOrE) {
                 return;
             }

@@ -72,7 +72,7 @@ export const SCALAR_TYPES = [
     "Duration",
 ];
 
-export const ENTITIES = ["node", "edge"];
+export const NODE_OR_EDGE_KEYS = ["node", "edge"];
 
 export const LOGICAL_OPERATORS = ["AND", "OR"];
 
