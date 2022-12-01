@@ -50,7 +50,7 @@ export class Literal<T extends LiteralValue = any> implements CypherCompilable {
     }
 }
 
-/** Represents a NULL literal value
+/** Represents a `NULL` literal value
  * @group References
  */
 export const CypherNull = new Literal(null);

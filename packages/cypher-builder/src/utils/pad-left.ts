@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-/** Adds spaces to the left of the string, returns empty string is variable is undefined or empty string */
+/** Adds spaces to the left of the string, returns empty string if variable is undefined or empty string */
 export function padLeft(str: string | undefined): string {
     if (!str) return "";
     return ` ${str}`;

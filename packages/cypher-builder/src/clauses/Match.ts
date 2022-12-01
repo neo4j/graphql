@@ -79,7 +79,7 @@ export class Match<T extends MatchableElement> extends Clause {
      * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/optional-match/)
      * @example
      * ```ts
-     * new Match(new Node({labels: ["Movie"]})).optional();
+     * new Cypher.Match(new Node({labels: ["Movie"]})).optional();
      * ```
      * _Cypher:_
      * ```cypher
