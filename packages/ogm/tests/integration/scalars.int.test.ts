@@ -19,7 +19,6 @@
 
 import { Driver, Session, Date as Neo4jDate, DateTime, Duration, LocalDateTime, LocalTime, Time } from "neo4j-driver";
 import { gql } from "graphql-tag";
-import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import { OGM } from "../../src";
 import { generateUniqueType } from "../utils";
