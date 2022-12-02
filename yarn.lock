@@ -14126,7 +14126,7 @@ __metadata:
     react: 18.2.0
     react-bootstrap: 2.6.0
     react-dom: 18.2.0
-    react-markdown: 8.0.3
+    react-markdown: 8.0.4
     react-mde: 11.5.0
     react-router-dom: 6.4.4
     showdown: 2.1.0
@@ -16703,9 +16703,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-markdown@npm:8.0.3":
-  version: 8.0.3
-  resolution: "react-markdown@npm:8.0.3"
+"react-markdown@npm:8.0.4":
+  version: 8.0.4
+  resolution: "react-markdown@npm:8.0.4"
   dependencies:
     "@types/hast": ^2.0.0
     "@types/prop-types": ^15.0.0
@@ -16725,7 +16725,7 @@ __metadata:
   peerDependencies:
     "@types/react": ">=16"
     react: ">=16"
-  checksum: 66c0b45889d0262168547d9356145ced276993dac1d441c5c1cf2371fe71f347419696f9040c084c7d77c1caced21d358677c38f66edae736f942ac5964c032f
+  checksum: 9feec3734694ef05f450779a1adac10dbb768b8f3adbf4c81f59ca3cea8fd2f6a578fa4c488183597a7418f972715e5d84705cc76f278b55c86d622e82561bf8
   languageName: node
   linkType: hard
 
