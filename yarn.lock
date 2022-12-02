@@ -2464,19 +2464,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:0.11.0, @neo4j-ndl/base@npm:^0.11.0":
-  version: 0.11.0
-  resolution: "@neo4j-ndl/base@npm:0.11.0"
-  checksum: df7d51f81fcd8e7f062810a6da14599c84ebbfc151de2a70a376895bf7efd42eb90c516861a83dbd3046a40ab94e31c141b314f935445a955f5d0e72ec923137
+"@neo4j-ndl/base@npm:0.12.2, @neo4j-ndl/base@npm:^0.12.2":
+  version: 0.12.2
+  resolution: "@neo4j-ndl/base@npm:0.12.2"
+  checksum: af7ce89f8324e6dfabb99009858db3fed8b0097c5a72ff09d371bca8b975b63b412fe7fb103dee59bd69564f100e5ada5a359d5c8c830d9ed3fb0cc4c768e0cd
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:0.11.1":
-  version: 0.11.1
-  resolution: "@neo4j-ndl/react@npm:0.11.1"
+"@neo4j-ndl/react@npm:0.12.2":
+  version: 0.12.2
+  resolution: "@neo4j-ndl/react@npm:0.12.2"
   dependencies:
     "@heroicons/react": ^1.0.5
-    "@neo4j-ndl/base": ^0.11.0
+    "@neo4j-ndl/base": ^0.12.2
     classnames: ^2.3.1
     detect-browser: ^5.3.0
     react-dropzone: ^14.0.0
@@ -2487,7 +2487,7 @@ __metadata:
     tinycolor2: ^1.4.2
   peerDependencies:
     react: 17.x
-  checksum: 04e2ceae439d31cbf5d02a25dade3e085778b11143817a5ecf0230c6579c6a5d03d5cb79859194ae8d051cb3fed8e64d7860c24539cb755aabc71076d90a7d40
+  checksum: 79f987bdd7bac7b22d9778d85e1ef274ce8e2c875d163f3fbf3b3592919f830b7944267628ff8052e4279152710e54b0ec132d5f77de6668c99d5b035ca2fd44
   languageName: node
   linkType: hard
 
@@ -2582,8 +2582,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@neo4j-ndl/base": 0.11.0
-    "@neo4j-ndl/react": 0.11.1
+    "@neo4j-ndl/base": 0.12.2
+    "@neo4j-ndl/react": 0.12.2
     "@neo4j/graphql": 3.13.0
     "@neo4j/introspector": 1.0.2
     "@playwright/test": 1.28.1
