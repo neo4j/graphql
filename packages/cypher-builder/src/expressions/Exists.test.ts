@@ -17,15 +17,24 @@
  * limitations under the License.
  */
 
-import { GraphQLEnumType } from "graphql";
+import { TestClause } from "../utils/TestClause";
+import Cypher from "..";
 
-export const EventType = new GraphQLEnumType({
-    name: "EventType",
-    values: {
-        CREATE: {},
-        DELETE: {},
-        UPDATE: {},
-        CREATE_RELATIONSHIP: {},
-        DELETE_RELATIONSHIP: {},
-    },
+describe("Exists", () => {
+    test("wraps clause within exists", () => {
+        const subquery = new Cypher.Match(new Cypher.Node({ labels: ["Movie"] })).return("*");
+
+        const existsExpression = new Cypher.Exists(subquery);
+
+        const queryResult = new TestClause(existsExpression).build();
+
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "EXISTS {
+                MATCH (this0:\`Movie\`)
+                RETURN *
+            }"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+    });
 });
