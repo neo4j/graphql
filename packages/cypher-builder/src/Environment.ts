@@ -17,21 +17,26 @@
  * limitations under the License.
  */
 
-import { Param } from "./variables/Param";
-import type { NamedReference, Reference } from "./variables/Reference";
+import { Param } from "./references/Param";
+import type { NamedReference, Reference } from "./references/Reference";
 
 export type EnvPrefix = {
     params?: string;
     variables?: string;
 };
 
-/** Hold the internal references of Cypher parameters and variables */
+/** Hold the internal references of Cypher parameters and variables
+ *  @group Internal
+ */
 export class CypherEnvironment {
     private readonly globalPrefix: EnvPrefix;
 
     private references: Map<Reference, string> = new Map();
     private params: Param[] = [];
 
+    /**
+     *  @hidden
+     */
     constructor(prefix?: string | EnvPrefix) {
         if (!prefix || typeof prefix === "string") {
             this.globalPrefix = {

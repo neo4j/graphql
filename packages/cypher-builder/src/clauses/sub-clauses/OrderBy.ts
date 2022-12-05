@@ -21,10 +21,10 @@ import type { CypherEnvironment } from "../../Environment";
 import { CypherASTNode } from "../../CypherASTNode";
 import type { Expr } from "../../types";
 import { compileCypherIfExists } from "../../utils/compile-cypher-if-exists";
-import type { Param } from "../../variables/Param";
-import type { Variable } from "../../variables/Variable";
+import type { Param } from "../../references/Param";
+import type { Variable } from "../../references/Variable";
 import { normalizeVariable } from "../../utils/normalize-variable";
-import type { Literal } from "../../variables/Literal";
+import type { Literal } from "../../references/Literal";
 import type { Integer } from "neo4j-driver";
 
 export type Order = "ASC" | "DESC";

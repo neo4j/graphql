@@ -17,11 +17,8 @@
  * limitations under the License.
  */
 
-import { Param } from "../references/Param";
-
-export function convertToCypherParams<T>(original: Record<string, T>): Record<string, Param<T>> {
-    return Object.entries(original).reduce((acc, [key, value]) => {
-        acc[key] = new Param(value);
-        return acc;
-    }, {});
+/** Adds spaces to the left of the string, returns empty string if variable is undefined or empty string */
+export function padLeft(str: string | undefined): string {
+    if (!str) return "";
+    return ` ${str}`;
 }

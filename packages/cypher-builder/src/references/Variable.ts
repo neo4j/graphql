@@ -17,11 +17,26 @@
  * limitations under the License.
  */
 
-import { Param } from "../references/Param";
+import { NamedReference, Reference } from "./Reference";
 
-export function convertToCypherParams<T>(original: Record<string, T>): Record<string, Param<T>> {
-    return Object.entries(original).reduce((acc, [key, value]) => {
-        acc[key] = new Param(value);
-        return acc;
-    }, {});
+/** Represents a variable
+ * @group Internal
+ */
+export class Variable extends Reference {
+    constructor() {
+        super("var");
+    }
+}
+
+/** For compatibility reasons, represents a plain string variable
+ * @hidden
+ */
+export class NamedVariable extends Variable implements NamedReference {
+    public readonly id: string;
+
+    constructor(name: string) {
+        super();
+        this.id = name;
+        this.prefix = "";
+    }
 }
