@@ -19,7 +19,7 @@
 
 import type { ValueNode } from "graphql";
 import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
-import neo4j from "neo4j-driver";
+import neo4j, { isLocalTime } from "neo4j-driver";
 
 export const LOCAL_TIME_REGEX =
     /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?$/;
@@ -60,6 +60,10 @@ export const parseLocalTime = (
 };
 
 const parse = (value: unknown) => {
+    if (isLocalTime(value as object)) {
+        return value;
+    }
+
     const { hour, minute, second, nanosecond } = parseLocalTime(value);
 
     return new neo4j.types.LocalTime(hour, minute, second, nanosecond);
