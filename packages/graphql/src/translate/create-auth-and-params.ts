@@ -446,7 +446,7 @@ function createRelationshipPredicate({
             authPredicate
         );
     } else {
-        predicateFunction = Cypher.all(
+        predicateFunction = Cypher.any(
             targetNodeRef,
             new Cypher.PatternComprehension(innerPattern, targetNodeRef),
             authPredicate
