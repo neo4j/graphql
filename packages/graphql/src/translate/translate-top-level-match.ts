@@ -112,7 +112,6 @@ export function createMatchClause({
             whereInput,
             context,
             element: node,
-            topLevelWhere: true,
         });
 
         if (whereOp) whereClause.where(whereOp);
