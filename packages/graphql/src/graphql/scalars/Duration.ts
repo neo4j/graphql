@@ -19,7 +19,7 @@
 
 import type { ValueNode } from "graphql";
 import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
-import neo4j from "neo4j-driver";
+import neo4j, { isDuration } from "neo4j-driver";
 
 // Matching P[nY][nM][nD][T[nH][nM][nS]]  |  PnW  |  PYYYYMMDDTHHMMSS | PYYYY-MM-DDTHH:MM:SS
 // For unit based duration a decimal value can only exist on the smallest unit(e.g. P2Y4.5M matches P2.5Y4M does not)
@@ -119,10 +119,18 @@ export const parseDuration = (
     };
 };
 
-const parse = (value: string) => {
-    const { months, days, seconds, nanoseconds } = parseDuration(value);
+const parse = (value: unknown) => {
+    if (typeof value === "string") {
+        const { months, days, seconds, nanoseconds } = parseDuration(value);
 
-    return new neo4j.types.Duration(months, days, seconds, nanoseconds);
+        return new neo4j.types.Duration(months, days, seconds, nanoseconds);
+    }
+
+    if (isDuration(value as object)) {
+        return value;
+    }
+
+    throw new GraphQLError(`Only string or Duration can be validated as Duration, but received: ${value}`);
 };
 
 export const GraphQLDuration = new GraphQLScalarType({
@@ -148,16 +156,13 @@ export const GraphQLDuration = new GraphQLScalarType({
         return value;
     },
     parseValue: (value: unknown) => {
-        if (typeof value !== "string") {
-            throw new GraphQLError(`Only strings can be validated as Duration, but received: ${value}`);
-        }
-
         return parse(value);
     },
     parseLiteral: (ast: ValueNode) => {
         if (ast.kind !== Kind.STRING) {
             throw new GraphQLError(`Only strings can be validated as Duration, but received: ${ast.kind}`);
         }
+
         return parse(ast.value);
     },
 });
