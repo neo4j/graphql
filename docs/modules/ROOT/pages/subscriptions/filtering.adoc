@@ -5,7 +5,7 @@ Filtering can only be applied at the root of the Subscription operation.
 
 NOTE: As aggregations are not supported on subscription types, there is currently no way to apply filter on these fields.
 
-A Subscription can be created to target the changes to a node (Create/ Update/ Delete) or to a relationship (Connect/ Disconnect). 
+A Subscription can be created to target the changes to a node (Create/ Update/ Delete) or to a relationship (Create Relationship/ Delete Relationship). 
 
 While the format slightly differs depending on whether the subscription targets a node or a relationship, providing a `where` argument allows for filtering on the events that are returned to the subscription.
 
@@ -194,9 +194,9 @@ movieUpdate(where: {
 
 When subscribing to relationship events, the `where` argument still allows for specifying filters on the top-level properties of the targeted nodes, and also supports specifying filters on the relationship properties (`edge`) and on the top-level properties (`node`) of the nodes at the other end of the relationship. This is done by using the operators described above, and the usage is very similar to the one in xref:subscriptions/filtering.adoc#node-events-usage[Subscribing to node events].
 
-The relationship-related filtering logic is even more powerful, as filters can also express the expected relationship field, or the expected concrete type at the other end of the relationship when having relationships to Abastract Types.
+The relationship-related filtering logic is even more powerful, as filters can also express the expected relationship field, or the expected concrete type at the other end of the relationship when having relationships to Abastract Types. Note that these fields are combined in the resulting filter with a xref:subscriptions/filtering.adoc#filter-logical-or[logical `OR`].
 
-Only events matching these properties, conditions and type will be returned to this subscription.
+Only events matching these properties, conditions and type will be returned to this subscription. Note that these fields are combined in the resulting filter with a xref:subscriptions/filtering.adoc#filter-logical-and[logical `AND`].
 
 Considering the following type definitions:
 [source, graphql, indent=0]
@@ -239,7 +239,7 @@ The format of the `where` argument is:
 
 Below are some example of how filtering can be applied when creating a subscription to relationship events.
 
-=== Connect
+=== Create Relationship
 The following example filters the subscriptions to newly created relationships that are connecting a `Movie` from genres other than "Drama", to an `Actor` with a screen time bigger than 10:
 
 [source, graphql, indent=0]
@@ -261,7 +261,7 @@ movieRelationshipCreated(where: { movie: { genre_NOT: "Drama" }, createdRelation
 
 NOTE: `Where` will only filter by properties set at the moment of creation.
 
-=== Disconnect
+=== Delete Relationship
 The following example filters the subscriptions to deleted relationships that were connecting a `Movie` of genre Comedy or Adventure to an `Actor` named "Jim Carrey":
 
 [source, graphql, indent=0]
@@ -284,10 +284,10 @@ movieRelationshipDeleted(where: { movie: { genre_IN: ["Comedy", "Adventure"] }, 
 NOTE: `Where` will only filter by existing properties right before deletion.
 
 
-==== Relationship-related filters
+=== Relationship-related filters
 So far we've seen how to filter the subscription events by using operations on nodes or relationship properties. The relationship-related filtering logic is even more powerful, as filters can also express the expected relationship field, or the expected concrete type at the other end of the relationship when having relationships to Abastract Types.
 
-The following examples are valid for both connect/ disconnect events. Their purpose is to illustrate the various ways in which a subscription to a relationship event can be filtered to suit needs of various specificity.
+The following examples are valid for both `CREATE_RELATIONSHIP`/ `DELETE_RELATIONSHIP` events. Their purpose is to illustrate the various ways in which a subscription to a relationship event can be filtered to suit needs of various specificity.
 
 Considering the following type definitions:
 [source, graphql, indent=0]
@@ -492,6 +492,11 @@ Different filters can be applied to the different relationships without any cons
     }
 }
 ----
+
+[[filter-logical-or]]
+NOTE: Note that in the above, there is an implicit logical `OR` between the `actors`, `directors` and `reviewers`, relationship fields. I.e. a relationship of **either** type `ACTED_IN` **or** of type `DIRECTED` **or** of type `REVIEWED` will trigger the subscription above.
+[[filter-logical-and]]
+NOTE: Note that there is an implicit logical `AND` between the `edge` and `node` fields inside of the `actors` relationship field. I.e. a relationship of type `ACTED_IN` with the property `screenTime` less than 60 **and** a target node with name in ["Tom Hardy", "George Clooney"] will trigger the subscription.
 
 === Abstract Types
 

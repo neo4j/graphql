@@ -1,9 +1,9 @@
-[[connect]]
-= Connect Subscriptions
+[[create_relationship]]
+= Create Relationship Subscriptions
 
 WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
 
-Subscriptions to `CONNECT` events will listen for newly created relationships to a node of the specified type. 
+Subscriptions to `CREATE_RELATIONSHIP` events will listen for newly created relationships to a node of the specified type. 
 
 NOTE: This subscription operation is **only** available for types that define relationship fields.
 
@@ -17,19 +17,19 @@ Each event will have the relationships object populated with the created relatio
 
 The event will also contain the properties of the nodes at both ends of the relationship, as well as the properties of the new relationship, if any.
 
-NOTE: The `CONNECT` events represent new relationships being created and contain information about the nodes at each end of the new relationship. However, the connected nodes may or may not have previously existed. To subscribe to the node's updates, you need to use one of the `CREATE` or `UPDATE` subscriptions.
+NOTE: The `CREATE_RELATIONSHIP` events represent new relationships being created and contain information about the nodes at each end of the new relationship. However, the connected nodes may or may not have previously existed. To subscribe to the node's updates, you need to use one of the `CREATE` or `UPDATE` subscriptions.
 
-== `CONNECT` event
+== `CREATE_RELATIONSHIP` event
 
 A subscription to a type can be made with the top-level subscription `[type]RelationshipCreated`. The subscription will contain the following fields:
 
-* `event`: The event triggering this subscription, in this case it will always be `"CONNECT"`.
+* `event`: The event triggering this subscription, in this case it will always be `"CREATE_RELATIONSHIP"`.
 * `timestamp`: The timestamp in which the mutation was made. Note that multiple events may come with the same timestamp if triggered by the same query.
-* `<typename>`: The properties of the node target to the subscription. Only top-level properties, without relationships, are available. Note these are the properties before the operation that triggered the connection took place.
+* `<typename>`: The properties of the node target to the subscription. Only top-level properties, without relationships, are available. Note these are the properties before the operation that triggered the `CREATE_RELATIONSHIP` took place.
 * `relationshipFieldName`: The field name of the newly created relationship, as part of the node target to the subscription.
-* `createdRelationship`: An object having as keys all field names of the node target to the subscription which represent its relationships. For any given event, all field names except the one corresponding to `relationshipFieldName` will be null. The field name equal to `relationshipFieldName` will contain the relationship properties if defined, and a `node` key containing the properties of the node on the other side of the relationship. Only top-level properties, without relationships, are available. Note these are the properties before the operation that triggered the connection took place.
+* `createdRelationship`: An object having as keys all field names of the node target to the subscription which represent its relationships. For any given event, all field names except the one corresponding to `relationshipFieldName` will be null. The field name equal to `relationshipFieldName` will contain the relationship properties if defined, and a `node` key containing the properties of the node on the other side of the relationship. Only top-level properties, without relationships, are available. Note these are the properties before the operation that triggered the `CREATE_RELATIONSHIP` took place.
 
-NOTE: Irrespective of the relationship direction in the database, the `CONNECT` event is bound to the type targeted for the subscription. The consequence is that - given a relationship between types A and B that is not reciprocal (that is, in the GraphQL schema type A defines a relationship to B but B does **not** define a relationship to A) and a GraphQL operation that creates the relationship between them - even though the two nodes will be connected in the database, the `CONNECT` event will only be returned to the subscription to type A. Check out the xref:subscriptions/events/connect.adoc#non-reciprocal-relationships[Non-reciprocal Relationships] section below for more details.
+NOTE: Irrespective of the relationship direction in the database, the `CREATE_RELATIONSHIP` event is bound to the type targeted for the subscription. The consequence is that - given a relationship between types A and B that is not reciprocal (that is, in the GraphQL schema type A defines a relationship to B but B does **not** define a relationship to A) and a GraphQL operation that creates the relationship between them - even though the two nodes will be connected in the database, the `CREATE_RELATIONSHIP` event will only be returned to the subscription to type A. Check out the xref:subscriptions/events/create_relationship.adoc#non-reciprocal-relationships[Non-reciprocal Relationships] section below for more details.
 
 For example, considering the following type definitions:
 ```graphql
@@ -54,11 +54,11 @@ interface Reviewed @relationshipProperties {
 }
 ```
 
-An ongoing subscription to relationships created on the `Movie` type, upon a mutation creating an `Actor` named `Tom Hardy` and a `Reviewer` named `Jane` to a `Movie` titled `Inception` would receive the following events:
+An ongoing subscription to created relationships on the `Movie` type, upon a mutation creating an `Actor` named `Tom Hardy` and a `Reviewer` named `Jane` to a `Movie` titled `Inception` would receive the following events:
 ```graphql
 {
     # 1  - relationship type `ACTED_IN`
-    event: "CONNECT",
+    event: "CREATE_RELATIONSHIP",
     timestamp,
     movie: {
         title: "Inception",
@@ -77,7 +77,7 @@ An ongoing subscription to relationships created on the `Movie` type, upon a mut
 }
 {
     # 2 - relationship type `REVIEWED`
-    event: "CONNECT",
+    event: "CREATE_RELATIONSHIP",
     timestamp,
     movie: {
         title: "Inception",
@@ -99,7 +99,7 @@ An ongoing subscription to relationships created on the `Movie` type, upon a mut
 
 == Examples
 
-=== Connect with Standard Types
+=== Create Relationship with Standard Types
 
 For example, considering the following type definitions:
 ```graphql
@@ -116,7 +116,7 @@ interface ActedIn @relationshipProperties {
 }
 ```
 
-A subscription to any `Movie` connections would look like:
+A subscription to any `Movie` created relationships would look like:
 ```graphql
 subscription {
     movieRelationshipCreated {
@@ -139,7 +139,7 @@ subscription {
 }
 ```
 
-=== Connect with Abstract Types
+=== Create Relationship with Abstract Types
 
 When using Abstract Types with relationships, you will need to specify one or more of the corresponding Concrete Types when performing the subscription operation.
 
@@ -166,7 +166,7 @@ interface Directed @relationshipProperties {
 }
 ```
 
-A subscription to any `Movie` connections would look like:
+A subscription to any `Movie` created relationships would look like:
 ```graphql
 subscription {
     movieRelationshipCreated {
@@ -219,7 +219,7 @@ interface Review {
 }
 ```
 
-A subscription to any `Movie` connections would look like:
+A subscription to any `Movie` created relationships would look like:
 ```graphql
 subscription {
     movieRelationshipCreated {
@@ -323,7 +323,7 @@ subscription {
 
 ==== Person
 
-As the `Person` type does not define any relationships, it is **not** possible to subscribe to `CONNECT` events for this type.
+As the `Person` type does not define any relationships, it is **not** possible to subscribe to `CREATE_RELATIONSHIP` events for this type.
 
 ==== Actor
 ```graphql
@@ -382,11 +382,11 @@ mutation {
 }
 ```
 
-...two events will be published (given that we subscribed to `CONNECT` events on both types):
+...two events will be published (given that we subscribed to `CREATE_RELATIONSHIP` events on both types):
 ```graphql
 { 
     # from `movieRelationshipCreated`
-    event: "CONNECT"
+    event: "CREATE_RELATIONSHIP"
     timestamp
     movie {
         title: "John Wick",
@@ -405,7 +405,7 @@ mutation {
 },
 {
     # from `actorRelationshipCreated`
-    event: "CONNECT"
+    event: "CREATE_RELATIONSHIP"
     timestamp
     actor {
         name: "Keanu Reeves"
@@ -469,11 +469,11 @@ mutation {
 }
 ```
 
-...two events will be published (given that we subscribed to `CONNECT` events on the `Movie` type):
+...two events will be published (given that we subscribed to `CREATE_RELATIONSHIP` events on the `Movie` type):
 ```graphql
 { 
     # relationship 1 - from `movieRelationshipCreated`
-    event: "CONNECT"
+    event: "CREATE_RELATIONSHIP"
     timestamp
     movie {
         title: "New York Stories",
@@ -492,7 +492,7 @@ mutation {
 },
 { 
     # relationship 2 - from `movieRelationshipCreated`
-    event: "CONNECT"
+    event: "CREATE_RELATIONSHIP"
     timestamp
     movie {
         title: "New York Stories",
@@ -632,7 +632,7 @@ mutation {
 ```graphql
 { 
     # relationship 1 `people` - for GraphQL types `Movie`, `Person`
-    event: "CONNECT"
+    event: "CREATE_RELATIONSHIP"
     timestamp
     movie {
         title: "Sweeney Todd",
@@ -650,7 +650,7 @@ mutation {
 },
 { 
     # relationship 1 `people` - for GraphQL types `Movie`, `Actor`
-    event: "CONNECT"
+    event: "CREATE_RELATIONSHIP"
     timestamp
     movie {
         title: "Sweeney Todd",
@@ -668,7 +668,7 @@ mutation {
 },
 { 
     # relationship 1 `movies` - for GraphQL types `Actor`, `Movie`
-    event: "CONNECT"
+    event: "CREATE_RELATIONSHIP"
     timestamp
     actor {
         name: "John Logan"
@@ -685,7 +685,7 @@ mutation {
 },
 { 
     # relationship 2 `actors` - for GraphQL types `Movie`,`Person`
-    event: "CONNECT"
+    event: "CREATE_RELATIONSHIP"
     timestamp
     movie {
         title: "Sweeney Todd",
@@ -703,7 +703,7 @@ mutation {
 },
 { 
     # relationship 2 `actors` - for GraphQL types `Movie`, `Actor`
-    event: "CONNECT"
+    event: "CREATE_RELATIONSHIP"
     timestamp
     movie {
         title: "Sweeney Todd",
@@ -721,7 +721,7 @@ mutation {
 },
 { 
     # relationship 2 `movies` - for GraphQL types `Actor`, `Movie`
-    event: "CONNECT"
+    event: "CREATE_RELATIONSHIP"
     timestamp
     actor {
         name: "Johnny Depp"
@@ -742,7 +742,7 @@ Had we subscribed to `Person` as well, we would have received two more events:
 ```graphql
 { 
     # relationship 1 `movies` - for GraphQL types `Person`, `Movie`
-    event: "CONNECT"
+    event: "CREATE_RELATIONSHIP"
     timestamp
     actor {
         name: "John Logan"
@@ -759,7 +759,7 @@ Had we subscribed to `Person` as well, we would have received two more events:
 },
 { 
     # relationship 2 `movies` - for GraphQL types `Person`, `Movie`
-    event: "CONNECT"
+    event: "CREATE_RELATIONSHIP"
     timestamp
     actor {
         name: "Johnny Depp"
