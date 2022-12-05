@@ -23,7 +23,7 @@ import neo4j from "./neo4j";
 import { OGM } from "../../src";
 import { generateUniqueType } from "../utils";
 
-describe("pluralize with underscore", () => {
+describe("Neo4j native types used with OGM", () => {
     const TestType = generateUniqueType("TestType");
 
     const typeDefs = gql`
