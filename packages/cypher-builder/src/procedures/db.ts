@@ -19,11 +19,11 @@
 
 import type { CypherEnvironment } from "../Environment";
 import { Where } from "../clauses/sub-clauses/Where";
-import type { NodeRef } from "../variables/NodeRef";
+import type { NodeRef } from "../references/NodeRef";
 import { Clause } from "../clauses/Clause";
 import { WithReturn } from "../clauses/mixins/WithReturn";
 import { mixin } from "../clauses/utils/mixin";
-import type { Variable } from "../variables/Variable";
+import type { Variable } from "../references/Variable";
 import type { Predicate } from "../types";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 
@@ -31,6 +31,9 @@ import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 export interface FullTextQueryNodes extends WithReturn {}
 
 // TODO: remove yield and CALL and put them in CallProcedure
+/**
+ * @group Procedures
+ */
 @mixin(WithReturn)
 export class FullTextQueryNodes extends Clause {
     private targetNode: NodeRef;

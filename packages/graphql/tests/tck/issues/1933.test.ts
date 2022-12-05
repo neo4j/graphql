@@ -80,16 +80,21 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Employee\`)
-            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)-[aggr_edge:PARTICIPATES]->(aggr_node:Project)
-            RETURN sum(aggr_edge.allocation) <= toFloat($aggr_edge_allocation_SUM_LTE)
-            \\", { this: this, aggr_edge_allocation_SUM_LTE: $aggr_edge_allocation_SUM_LTE })
+            CALL {
+                WITH this
+                MATCH (this:\`Employee\`)-[this0:PARTICIPATES]->(this1:\`Project\`)
+                RETURN sum(this0.allocation) <= $param0 AS var2
+            }
+            WITH *
+            WHERE var2 = $param1
             RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: size([(this)-[this_projectsAggregate_this1:PARTICIPATES]->(this_projectsAggregate_this0:\`Project\`) | this_projectsAggregate_this0]), edge: { allocation: head(apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[r:PARTICIPATES]->(n:Project)
                     RETURN {min: min(r.allocation), max: max(r.allocation), average: avg(r.allocation), sum: sum(r.allocation)}\\", { this: this })) } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"aggr_edge_allocation_SUM_LTE\\": 25
+                \\"param0\\": 25,
+                \\"param1\\": true
             }"
         `);
     });
@@ -120,16 +125,21 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Employee\`)
-            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)-[aggr_edge:PARTICIPATES]->(aggr_node:Project)
-            RETURN aggr_edge.allocation <= $aggr_edge_allocation_LTE
-            \\", { this: this, aggr_edge_allocation_LTE: $aggr_edge_allocation_LTE })
+            CALL {
+                WITH this
+                MATCH (this:\`Employee\`)-[this0:PARTICIPATES]->(this1:\`Project\`)
+                RETURN any(var2 IN collect(this0.allocation) WHERE var2 <= $param0) AS var3
+            }
+            WITH *
+            WHERE var3 = $param1
             RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: size([(this)-[this_projectsAggregate_this1:PARTICIPATES]->(this_projectsAggregate_this0:\`Project\`) | this_projectsAggregate_this0]), edge: { allocation: head(apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[r:PARTICIPATES]->(n:Project)
                     RETURN {min: min(r.allocation), max: max(r.allocation), average: avg(r.allocation), sum: sum(r.allocation)}\\", { this: this })) } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"aggr_edge_allocation_LTE\\": 25
+                \\"param0\\": 25,
+                \\"param1\\": true
             }"
         `);
     });

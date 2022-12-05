@@ -22,9 +22,13 @@ import type { Pattern } from "../../Pattern";
 import { Where } from "../../clauses/sub-clauses/Where";
 import type { Expr, Predicate } from "../../types";
 import { compileCypherIfExists } from "../../utils/compile-cypher-if-exists";
-import type { Variable } from "../../variables/Variable";
+import type { Variable } from "../../references/Variable";
 import { CypherFunction } from "./CypherFunction";
 
+/** Represents a predicate function that can be used in a WHERE statement
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/predicate/)
+ * @group Internal
+ */
 export class PredicateFunction extends CypherFunction {}
 
 /** Predicate function that uses a list comprehension "var IN list WHERE .." */
@@ -52,14 +56,29 @@ class ListPredicateFunction extends PredicateFunction {
     }
 }
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/predicate/#functions-any)
+ * @group Expressions
+ * @category Cypher Functions
+ */
 export function any(variable: Variable, listExpr: Expr, whereFilter?: Predicate): PredicateFunction {
     return new ListPredicateFunction("any", variable, listExpr, whereFilter);
 }
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/predicate/#functions-all)
+ * @group Expressions
+ * @category Cypher Functions
+ */
 export function all(variable: Variable, listExpr: Expr, whereFilter?: Predicate): PredicateFunction {
     return new ListPredicateFunction("all", variable, listExpr, whereFilter);
 }
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/predicate/#functions-single)
+ * @group Expressions
+ * @category Cypher Functions
+ */
 export function single(variable: Variable, listExpr: Expr, whereFilter: Predicate): PredicateFunction {
     return new ListPredicateFunction("single", variable, listExpr, whereFilter);
 }
@@ -79,6 +98,11 @@ class ExistsFunction extends PredicateFunction {
     }
 }
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/predicate/#functions-exists)
+ * @group Expressions
+ * @category Cypher Functions
+ */
 export function exists(pattern: Pattern): PredicateFunction {
     return new ExistsFunction(pattern);
 }

@@ -18,8 +18,8 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import type { RelationshipRef } from "../variables/RelationshipRef";
-import { NodeRef } from "../variables/NodeRef";
+import type { RelationshipRef } from "../references/RelationshipRef";
+import { NodeRef } from "../references/NodeRef";
 import { MatchParams, Pattern } from "../Pattern";
 import { Clause } from "./Clause";
 import { OnCreate, OnCreateParam } from "./sub-clauses/OnCreate";
@@ -30,6 +30,10 @@ import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 
 export interface Merge extends WithReturn, WithSet {}
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/merge/)
+ * @group Clauses
+ */
 @mixin(WithReturn, WithSet)
 export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
     private pattern: Pattern<T>;
@@ -53,6 +57,9 @@ export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
         return this;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const mergeStr = `MERGE ${this.pattern.getCypher(env)}`;
         const setCypher = compileCypherIfExists(this.setSubClause, env, { prefix: "\n" });

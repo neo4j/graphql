@@ -18,7 +18,7 @@
  */
 
 import Cypher from "../index";
-import { Param } from "../variables/Param";
+import { Param } from "../references/Param";
 
 describe("db procedures", () => {
     describe("FullTextQueryNodes", () => {

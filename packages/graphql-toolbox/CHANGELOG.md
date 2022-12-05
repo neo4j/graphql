@@ -1,5 +1,16 @@
 # @neo4j/graphql-toolbox
 
+## 1.4.3
+
+### Patch Changes
+
+-   [#2482](https://github.com/neo4j/graphql/pull/2482) [`1a037d2c1`](https://github.com/neo4j/graphql/commit/1a037d2c12314a21d691dc22af35770083f317ec) Thanks [@tbwiss](https://github.com/tbwiss)! - fix: Toolbox set default product usage tracking state
+
+-   [#2454](https://github.com/neo4j/graphql/pull/2454) [`4b8c17982`](https://github.com/neo4j/graphql/commit/4b8c17982b1dcd38996c57766c36a260d429bccf) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: the GraphQL Toolbox gets a Canny changelog widget
+
+-   Updated dependencies [[`12ec721e6`](https://github.com/neo4j/graphql/commit/12ec721e66f7ce570b31be3341c625a48bda304f), [`b981c45f7`](https://github.com/neo4j/graphql/commit/b981c45f76753557c18b1152ad62f258d2bee7f7), [`c06ac56ae`](https://github.com/neo4j/graphql/commit/c06ac56ae84360dc19bccd4545334c8c65b1c768), [`e220f36e0`](https://github.com/neo4j/graphql/commit/e220f36e07bb27aeb5c787e7ebf5b09e7fba2afc), [`b624c7ace`](https://github.com/neo4j/graphql/commit/b624c7aced55493f9df1abcaca91b139713f4186), [`20aa9c05b`](https://github.com/neo4j/graphql/commit/20aa9c05be4c780493d536bc98335fb88d857b6a)]:
+    -   @neo4j/graphql@3.13.0
+
 ## 1.4.2
 
 ### Patch Changes
