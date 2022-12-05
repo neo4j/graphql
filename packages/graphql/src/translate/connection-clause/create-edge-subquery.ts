@@ -73,18 +73,22 @@ export function createEdgeSubquery({
     });
 
     const matchClause = new Cypher.Match(relPattern);
+    const subqueryWith = new Cypher.With("*");
+    let preComputedSubqueries: Cypher.CompositeClause | undefined;
     if (whereInput) {
         const relationship = context.relationships.find((r) => r.name === field.relationshipTypeName) as Relationship;
-        const wherePredicate = createConnectionWherePropertyOperation({
-            context,
-            whereInput,
-            edgeRef: relationshipRef,
-            targetNode: relatedNodeRef,
-            node: relatedNode,
-            edge: relationship,
-        });
+        const { predicate: wherePredicate, preComputedSubqueries: tempPreComputedSubqueries } =
+            createConnectionWherePropertyOperation({
+                context,
+                whereInput,
+                edgeRef: relationshipRef,
+                targetNode: relatedNodeRef,
+                node: relatedNode,
+                edge: relationship,
+            });
 
-        if (wherePredicate) matchClause.where(wherePredicate);
+        if (wherePredicate) subqueryWith.where(wherePredicate);
+        preComputedSubqueries = tempPreComputedSubqueries;
     }
     const authPredicate = createAuthPredicates({
         operations: "READ",
@@ -93,7 +97,7 @@ export function createEdgeSubquery({
         where: { varName: relatedNodeRef, node: relatedNode },
     });
     if (authPredicate) {
-        matchClause.where(authPredicate);
+        subqueryWith.where(authPredicate);
     }
 
     const authAllowPredicate = createAuthPredicates({
@@ -107,7 +111,7 @@ export function createEdgeSubquery({
     });
 
     if (authAllowPredicate) {
-        matchClause.where(new Cypher.apoc.ValidatePredicate(Cypher.not(authAllowPredicate), AUTH_FORBIDDEN_ERROR));
+        subqueryWith.where(new Cypher.apoc.ValidatePredicate(Cypher.not(authAllowPredicate), AUTH_FORBIDDEN_ERROR));
     }
 
     const projection = createEdgeProjection({
@@ -135,5 +139,5 @@ export function createEdgeSubquery({
         });
     }
 
-    return Cypher.concat(matchClause, withSortClause, ...projection.subqueries, withReturn);
+    return Cypher.concat(matchClause, preComputedSubqueries, subqueryWith, withSortClause, ...projection.subqueries, withReturn);
 }

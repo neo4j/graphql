@@ -84,7 +84,7 @@ export function createFieldAggregation({
         nodeFields: aggregationFields.node,
     });
 
-    const [whereQuery, whereParams] = createWhereAndParams({
+    const [whereQuery, preComputedSubqueries, whereParams] = createWhereAndParams({
         whereInput: (field.args.where as GraphQLWhereArg) || {},
         varName: subqueryNodeAlias,
         node: referenceNode,
@@ -125,7 +125,7 @@ export function createFieldAggregation({
     const projectionMap = new Cypher.Map();
 
     if (aggregationFields.count) {
-        const countProjection = createCountExpression({
+        const { countProjection, preComputedSubqueries } = createCountExpression({
             sourceNode,
             relationAggregationField,
             referenceNode,

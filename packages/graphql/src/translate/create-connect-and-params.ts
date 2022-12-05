@@ -101,7 +101,7 @@ function createConnectAndParams({
                 return { subquery: "", params: {} };
             }
 
-            const rootNodeWhereAndParams = createWhereAndParams({
+            const [rootNodeWhereCypher, preComputedSubqueries, rootNodeWhereParams] = createWhereAndParams({
                 whereInput: {
                     ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
                         if (k !== "_on") {
@@ -120,14 +120,18 @@ function createConnectAndParams({
                 varName: nodeName,
                 recursing: true,
             });
-            if (rootNodeWhereAndParams[0]) {
-                whereStrs.push(rootNodeWhereAndParams[0]);
-                params = { ...params, ...rootNodeWhereAndParams[1] };
+            if (rootNodeWhereCypher) {
+                whereStrs.push(rootNodeWhereCypher);
+                params = { ...params, ...rootNodeWhereParams };
+                if (preComputedSubqueries) {
+                    subquery.push(preComputedSubqueries);
+                    subquery.push("WITH *");
+                }
             }
 
             // For _on filters
             if (connect.where.node?._on?.[relatedNode.name]) {
-                const onTypeNodeWhereAndParams = createWhereAndParams({
+                const [onTypeNodeWhereCypher, preComputedSubqueries, onTypeNodeWhereParams] = createWhereAndParams({
                     whereInput: {
                         ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
                             if (k !== "_on") {
@@ -147,9 +151,13 @@ function createConnectAndParams({
                     chainStr: `${nodeName}_on_${relatedNode.name}`,
                     recursing: true,
                 });
-                if (onTypeNodeWhereAndParams[0]) {
-                    whereStrs.push(onTypeNodeWhereAndParams[0]);
-                    params = { ...params, ...onTypeNodeWhereAndParams[1] };
+                if (onTypeNodeWhereCypher) {
+                    whereStrs.push(onTypeNodeWhereCypher);
+                    params = { ...params, ...onTypeNodeWhereParams };
+                    if (preComputedSubqueries) {
+                        subquery.push(preComputedSubqueries);
+                        subquery.push("WITH *");
+                    }
                 }
             }
         }

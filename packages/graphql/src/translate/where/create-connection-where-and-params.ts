@@ -38,11 +38,11 @@ export default function createConnectionWhereAndParams({
     relationship: Relationship;
     relationshipVariable: string;
     parameterPrefix: string;
-}): [string, any] {
+}): [string, string, any] {
     const nodeRef = new Cypher.NamedNode(nodeVariable);
     const edgeRef = new Cypher.NamedVariable(relationshipVariable);
 
-    const andOp = createConnectionWherePropertyOperation({
+    const { predicate: andOp, preComputedSubqueries } = createConnectionWherePropertyOperation({
         context,
         whereInput,
         edgeRef,
@@ -51,13 +51,16 @@ export default function createConnectionWhereAndParams({
         edge: relationship,
     });
 
+    let preComputedSubqueryCypher = "";
     const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
         const cypher = andOp?.getCypher(env) || "";
-
+        if (preComputedSubqueries) {
+            preComputedSubqueryCypher = preComputedSubqueries.getCypher(env);
+        }
         return [cypher, {}];
     });
 
     // NOTE: the following prefix is just to avoid collision until this is refactored into a single cypher ast
     const result = whereCypher.build(`${parameterPrefix.replace(/\./g, "_").replace(/\[|\]/g, "")}_${node.name}`);
-    return [result.cypher, result.params];
+    return [result.cypher, preComputedSubqueryCypher, result.params];
 }

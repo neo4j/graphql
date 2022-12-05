@@ -141,6 +141,15 @@ export default function createUpdateAndParams({
                     if (update.update) {
                         const whereStrs: string[] = [];
 
+                        if (withVars) {
+                            subquery.push(`WITH ${withVars.join(", ")}`);
+                        }
+
+                        const labels = refNode.getLabelString(context);
+                        subquery.push(
+                            `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
+                        );
+
                         if (update.where) {
                             try {
                                 const where = createConnectionWhereAndParams({
@@ -154,24 +163,19 @@ export default function createUpdateAndParams({
                                         relationField.union ? `.${refNode.name}` : ""
                                     }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
                                 });
-                                const [whereClause, whereParams] = where;
+                                const [whereClause, preComputedSubqueries, whereParams] = where;
                                 if (whereClause) {
                                     whereStrs.push(whereClause);
                                     res.params = { ...res.params, ...whereParams };
+                                    if (preComputedSubqueries) {
+                                        subquery.push(preComputedSubqueries);
+                                        subquery.push("WITH *");
+                                    }
                                 }
                             } catch {
                                 return;
                             }
                         }
-
-                        if (withVars) {
-                            subquery.push(`WITH ${withVars.join(", ")}`);
-                        }
-
-                        const labels = refNode.getLabelString(context);
-                        subquery.push(
-                            `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
-                        );
 
                         if (node.auth) {
                             const whereAuth = createAuthAndParams({
