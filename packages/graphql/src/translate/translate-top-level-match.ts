@@ -23,6 +23,8 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
+import { whereRegEx, WhereRegexGroups } from "./where/utils";
+import { AggregateWhereInput, aggregateWhere } from "./create-aggregate-where-and-params";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -35,11 +37,23 @@ export function translateTopLevelMatch({
     node: Node;
     operation: AuthOperations;
 }): Cypher.CypherResult {
-    const matchQuery = createMatchClause({ matchNode, node, context, operation });
-
-    const result = matchQuery.build();
-    return result;
+    const { matchClause, preComputedWhereFieldSubqueries, whereClause } = createMatchClause({
+        matchNode,
+        node,
+        context,
+        operation,
+    });
+    if (preComputedWhereFieldSubqueries) {
+        return Cypher.concat(matchClause, preComputedWhereFieldSubqueries, whereClause).build();
+    }
+    return matchClause.build();
 }
+
+type CreateMatchClauseReturn = {
+    matchClause: Cypher.Match | Cypher.db.FullTextQueryNodes;
+    preComputedWhereFieldSubqueries: Cypher.Clause | undefined;
+    whereClause: Cypher.Match | Cypher.db.FullTextQueryNodes | Cypher.With;
+};
 
 export function createMatchClause({
     matchNode,
@@ -51,11 +65,13 @@ export function createMatchClause({
     context: Context;
     node: Node;
     operation: AuthOperations;
-}): Cypher.Match | Cypher.db.FullTextQueryNodes {
+}): CreateMatchClauseReturn {
     const { resolveTree } = context;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
-    let matchQuery: Cypher.Match<Cypher.Node> | Cypher.db.FullTextQueryNodes;
+    const withClause: Cypher.With = new Cypher.With("*");
+    let matchClause: Cypher.Match | Cypher.db.FullTextQueryNodes = new Cypher.Match(matchNode);
     let whereInput = resolveTree.args.where as GraphQLWhereArg | undefined;
+    let whereOperators: Cypher.Predicate[] = [];
 
     // TODO: removed deprecated fulltext translation
     if (Object.entries(fulltextInput).length) {
@@ -65,19 +81,29 @@ export function createMatchClause({
         const [indexName, indexInput] = Object.entries(fulltextInput)[0];
         const phraseParam = new Cypher.Param(indexInput.phrase);
 
-        matchQuery = new Cypher.db.FullTextQueryNodes(matchNode, indexName, phraseParam);
+        matchClause = new Cypher.db.FullTextQueryNodes(matchNode, indexName, phraseParam);
 
-        const labelsChecks = node.getLabels(context).map((label) => {
+        whereOperators = node.getLabels(context).map((label) => {
             return Cypher.in(new Cypher.Literal(label), Cypher.labels(matchNode));
         });
-
-        const andChecks = Cypher.and(...labelsChecks);
-        if (andChecks) matchQuery.where(andChecks);
     } else if (context.fulltextIndex) {
-        matchQuery = createFulltextMatchClause(matchNode, whereInput, node, context);
+        ({ matchClause, whereOperators } = createFulltextMatchClause(matchNode, whereInput, node, context));
         whereInput = whereInput?.[node.singular];
-    } else {
-        matchQuery = new Cypher.Match(matchNode);
+    }
+
+    const preComputedWhereFieldSubqueries = preComputedWhereFields(
+        context.resolveTree.args.where as Record<string, any>,
+        node,
+        context,
+        matchNode,
+        withClause
+    );
+
+    const whereClause = preComputedWhereFieldSubqueries ? withClause : matchClause;
+
+    if (whereOperators && whereOperators.length) {
+        const andChecks = Cypher.and(...whereOperators);
+        whereClause.where(andChecks);
     }
 
     if (whereInput) {
@@ -86,9 +112,10 @@ export function createMatchClause({
             whereInput,
             context,
             element: node,
+            topLevelWhere: true,
         });
 
-        if (whereOp) matchQuery.where(whereOp);
+        if (whereOp) whereClause.where(whereOp);
     }
 
     const whereAuth = createAuthAndParams({
@@ -102,10 +129,14 @@ export function createMatchClause({
             return whereAuth;
         });
 
-        matchQuery.where(authQuery);
+        whereClause.where(authQuery);
     }
 
-    return matchQuery;
+    return {
+        matchClause,
+        preComputedWhereFieldSubqueries,
+        whereClause,
+    };
 }
 
 function createFulltextMatchClause(
@@ -113,7 +144,10 @@ function createFulltextMatchClause(
     whereInput: GraphQLWhereArg | undefined,
     node: Node,
     context: Context
-): Cypher.db.FullTextQueryNodes {
+): {
+    matchClause: Cypher.db.FullTextQueryNodes;
+    whereOperators: Cypher.Predicate[];
+} {
     // TODO: remove indexName assignment and undefined check once the name argument has been removed.
     const indexName = context.fulltextIndex.indexName || context.fulltextIndex.name;
     if (indexName === undefined) {
@@ -122,23 +156,79 @@ function createFulltextMatchClause(
     const phraseParam = new Cypher.Param(context.resolveTree.args.phrase);
     const scoreVar = context.fulltextIndex.scoreVariable;
 
-    const matchQuery = new Cypher.db.FullTextQueryNodes(matchNode, indexName, phraseParam, scoreVar);
+    const matchClause = new Cypher.db.FullTextQueryNodes(matchNode, indexName, phraseParam, scoreVar);
 
     const expectedLabels = node.getLabels(context);
     const labelsChecks = matchNode.hasLabels(...expectedLabels);
+    const whereOperators: Cypher.Predicate[] = [];
 
     if (whereInput?.[SCORE_FIELD]) {
         if (whereInput[SCORE_FIELD].min || whereInput[SCORE_FIELD].min === 0) {
             const scoreMinOp = Cypher.gte(scoreVar, new Cypher.Param(whereInput[SCORE_FIELD].min));
-            if (scoreMinOp) matchQuery.where(scoreMinOp);
+            if (scoreMinOp) whereOperators.push(scoreMinOp);
         }
         if (whereInput[SCORE_FIELD].max || whereInput[SCORE_FIELD].max === 0) {
             const scoreMaxOp = Cypher.lte(scoreVar, new Cypher.Param(whereInput[SCORE_FIELD].max));
-            if (scoreMaxOp) matchQuery.where(scoreMaxOp);
+            if (scoreMaxOp) whereOperators.push(scoreMaxOp);
         }
     }
 
-    if (labelsChecks) matchQuery.where(labelsChecks);
+    if (labelsChecks) whereOperators.push(labelsChecks);
 
-    return matchQuery;
+    return {
+        matchClause,
+        whereOperators,
+    };
+}
+
+export function preComputedWhereFields(
+    whereInput: Record<string, any> | undefined,
+    node: Node,
+    context: Context,
+    matchNode: Cypher.Variable,
+    withClause: Cypher.Match | Cypher.db.FullTextQueryNodes | Cypher.With
+): Cypher.Clause | undefined {
+    if (!whereInput) {
+        return;
+    }
+    const precomputedClauses: Cypher.Call[] = [];
+    Object.entries(whereInput).forEach(([key, value]) => {
+        const match = whereRegEx.exec(key);
+        if (!match) {
+            throw new Error(`Failed to match key in filter: ${key}`);
+        }
+        const { fieldName, isAggregate } = match?.groups as WhereRegexGroups;
+        const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
+
+        if (isAggregate && relationField) {
+            if (!value) {
+                return;
+            }
+            const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const direction = relationField.direction;
+            const aggregationTarget = new Cypher.Node({ labels: refNode.getLabels(context) });
+            const cypherRelation = new Cypher.Relationship({
+                source: matchNode as Cypher.Node,
+                target: aggregationTarget,
+                type: relationField.type,
+            });
+            if (direction === "IN") {
+                cypherRelation.reverse();
+            }
+            const matchQuery = new Cypher.Match(cypherRelation);
+            const { returnProjections, predicates } = aggregateWhere(
+                value as AggregateWhereInput,
+                refNode,
+                aggregationTarget,
+                cypherRelation
+            );
+            matchQuery.return(...returnProjections);
+            withClause.where(Cypher.and(...predicates));
+            precomputedClauses.push(new Cypher.Call(matchQuery).innerWith(matchNode));
+        }
+    });
+    if (!precomputedClauses.length) {
+        return;
+    }
+    return Cypher.concat(...precomputedClauses);
 }
