@@ -41,7 +41,7 @@ export default function createWhereAndParams({
 }): [string, any] {
     const nodeRef = new Cypher.NamedNode(varName);
 
-    const wherePredicate = createWherePredicate({
+    const { predicate: wherePredicate } = createWherePredicate({
         element: node,
         context,
         whereInput,

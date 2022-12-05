@@ -66,7 +66,7 @@ export function createRelationshipOperation({
         return exists;
     }
 
-    const relationOperator = createWherePredicate({
+    const { predicate: relationOperator} = createWherePredicate({
         // Nested properties here
         whereInput: value,
         targetElement: childNode,

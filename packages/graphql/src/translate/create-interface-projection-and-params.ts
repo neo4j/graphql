@@ -172,7 +172,7 @@ function createInterfaceSubquery({
             ...(whereInput?._on?.[refNode.name] || {}),
         };
 
-        const wherePredicate = createWherePredicate({
+        const { predicate: wherePredicate } = createWherePredicate({
             whereInput: whereInput2,
             context,
             targetElement: relatedNode,

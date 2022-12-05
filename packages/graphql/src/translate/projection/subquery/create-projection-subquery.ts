@@ -80,7 +80,7 @@ export function createProjectionSubquery({
     });
 
     if (whereInput) {
-        const wherePredicate = createWherePredicate({
+        const { predicate: wherePredicate} = createWherePredicate({
             element: node,
             context,
             whereInput,

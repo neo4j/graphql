@@ -56,7 +56,7 @@ export function createCountExpression({
     const relationshipPattern = relationship.pattern({
         directed: !(direction === "undirected"),
     });
-    const wherePredicate = createWherePredicate({
+    const { predicate: wherePredicate} = createWherePredicate({
         element: referenceNode,
         context,
         whereInput: (field.args.where as GraphQLWhereArg) || {},

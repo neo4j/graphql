@@ -136,7 +136,7 @@ export function createConnectionWherePropertyOperation({
 
         if (key.startsWith("edge")) {
             const nestedProperties: Record<string, any> = value;
-            const result = createWherePredicate({
+            const { predicate: result } = createWherePredicate({
                 targetElement: edgeRef,
                 whereInput: nestedProperties,
                 context,
@@ -160,7 +160,7 @@ export function createConnectionWherePropertyOperation({
                 throw new Error("_on is used as the only argument and node is not present within");
             }
 
-            const result = createWherePredicate({
+            const { predicate: result } = createWherePredicate({
                 targetElement: targetNode,
                 whereInput: nestedProperties,
                 context,
