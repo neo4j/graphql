@@ -20,8 +20,8 @@
 import type { CypherEnvironment } from "../../Environment";
 import type { Expr } from "../../types";
 import { CypherASTNode } from "../../CypherASTNode";
-import type { Variable } from "../../variables/Variable";
-import type { Literal } from "../../variables/Literal";
+import type { Variable } from "../../references/Variable";
+import type { Literal } from "../../references/Literal";
 
 // TODO: improve projection column, some expressions require alias
 export type ProjectionColumn = Expr | [Expr, string | Variable | Literal];

@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { Param } from "../references/Param";
+import type { ConvertFormat } from "./functions/convert-format";
+import type { RunFirstColumn } from "./functions/RunFirstColumn";
+import type { ValidatePredicate } from "./functions/ValidatePredicate";
+import type { Validate } from "./procedures/Validate";
 
-export function convertToCypherParams<T>(original: Record<string, T>): Record<string, Param<T>> {
-    return Object.entries(original).reduce((acc, [key, value]) => {
-        acc[key] = new Param(value);
-        return acc;
-    }, {});
-}
+export type ApocPredicate = ValidatePredicate;
+export type ApocFunction = ApocPredicate | RunFirstColumn | ConvertFormat;
+export type ApocProcedure = Validate;

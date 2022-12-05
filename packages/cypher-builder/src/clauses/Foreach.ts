@@ -24,11 +24,11 @@ import { mixin } from "./utils/mixin";
 import type { DeleteClause } from "./sub-clauses/Delete";
 import type { SetClause } from "./sub-clauses/Set";
 import type { RemoveClause } from "./sub-clauses/Remove";
-import { padBlock } from "../utils/utils";
+import { padBlock } from "../utils/pad-block";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import type { Create } from "./Create";
 import type { Merge } from "./Merge";
-import type { Variable } from "../variables/Variable";
+import type { Variable } from "../references/Variable";
 import type { Expr } from "../types";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -37,6 +37,10 @@ export interface Foreach extends WithWith {}
 // TODO: Set, Remove and Delete cannot be used as they are not directly exposed
 type ForeachClauses = Foreach | SetClause | RemoveClause | Create | Merge | DeleteClause;
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/foreach/)
+ * @group Clauses
+ */
 @mixin(WithWith)
 export class Foreach extends Clause {
     private variable: Variable;
@@ -50,6 +54,9 @@ export class Foreach extends Clause {
         this.mapClause = mapClause;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const variableStr = this.variable.getCypher(env);
         const listExpr = this.listExpr.getCypher(env);

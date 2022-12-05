@@ -20,8 +20,16 @@
 import { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
 import { escapeLabel } from "../utils/escape-label";
-import type { NodeRef } from "../variables/NodeRef";
+import type { NodeRef } from "../references/NodeRef";
 
+/** Generates a predicate to check if a node has a label
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/expressions/#existential-subqueries)
+ * @group Expressions
+ * @example
+ * ```cypher
+ * MATCH(this) WHERE this:MyNode
+ * ```
+ */
 export class HasLabel extends CypherASTNode {
     private node: NodeRef;
     private expectedLabels: string[];
