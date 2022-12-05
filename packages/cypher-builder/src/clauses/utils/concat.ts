@@ -22,9 +22,15 @@ import type { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import { Clause } from "../Clause";
 
+/** The result of multiple clauses concatenated with {@link concat}
+ * @group Clauses
+ */
 export class CompositeClause extends Clause {
     private children: CypherASTNode[];
 
+    /**
+     * @hidden
+     */
     constructor(children: Array<Clause | undefined>, private separator: string) {
         super();
         this.children = [];
@@ -42,13 +48,18 @@ export class CompositeClause extends Clause {
         return this.children.length === 0;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const childrenStrs = this.children.map((c) => c.getCypher(env));
         return childrenStrs.join(this.separator);
     }
 }
 
-/** Concatenates multiple clauses into a clause */
+/** Concatenates multiple {@link Clause | clauses} into a single clause
+ * @group Clauses
+ */
 export function concat(...clauses: Array<Clause | undefined>): CompositeClause {
     return new CompositeClause(clauses, "\n");
 }

@@ -20,6 +20,9 @@
 import type { CypherEnvironment } from "../Environment";
 import { Reference } from "./Reference";
 
+/** Represents a parameter that will be passed as a separate object
+ * @group References
+ */
 export class Param<T = any> extends Reference {
     public readonly value: T;
 
@@ -46,6 +49,9 @@ export class Param<T = any> extends Reference {
     }
 }
 
+/** Represents a parameter with a given name
+ * @group References
+ */
 export class NamedParam extends Param<any> {
     public id: string;
 
@@ -54,6 +60,9 @@ export class NamedParam extends Param<any> {
         this.id = name;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         env.addNamedParamReference(this.id, this);
         return super.getCypher(env);

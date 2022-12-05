@@ -19,9 +19,9 @@
 
 import type { Call } from "../Call";
 import type { CypherEnvironment } from "../../Environment";
-import type { PropertyRef } from "../../variables/PropertyRef";
-import type { Param } from "../../variables/Param";
-import type { Variable } from "../../variables/Variable";
+import type { PropertyRef } from "../../references/PropertyRef";
+import type { Param } from "../../references/Param";
+import type { Variable } from "../../references/Variable";
 import { CypherASTNode } from "../../CypherASTNode";
 
 export type SetParam = [PropertyRef, Param<any>];

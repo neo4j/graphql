@@ -21,7 +21,10 @@ import type { CypherEnvironment } from "../../Environment";
 import type { CypherCompilable, Expr } from "../../types";
 import { serializeMap } from "../../utils/serialize-map";
 
-/** Represents a Map */
+/** Represents a Map
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/maps/)
+ * @group Expressions
+ */
 export class MapExpr implements CypherCompilable {
     private value: Record<string, Expr | undefined>;
 
@@ -39,6 +42,9 @@ export class MapExpr implements CypherCompilable {
         }
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         return serializeMap(env, this.value);
     }

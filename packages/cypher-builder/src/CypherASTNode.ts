@@ -20,7 +20,9 @@
 import type { CypherEnvironment } from "./Environment";
 import type { CypherCompilable } from "./types";
 
-/** Abstract class representing a Cypher Statement in the AST */
+/** Abstract class representing a Cypher Statement in the AST
+ * @hidden
+ */
 export abstract class CypherASTNode implements CypherCompilable {
     protected parent?: CypherASTNode;
 
@@ -28,6 +30,9 @@ export abstract class CypherASTNode implements CypherCompilable {
         this.parent = parent;
     }
 
+    /**
+     * @hidden
+     */
     public getRoot(): CypherASTNode {
         if (this.parent) {
             return this.parent.getRoot();

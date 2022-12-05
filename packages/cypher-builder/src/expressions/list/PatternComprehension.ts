@@ -28,6 +28,10 @@ import { compileCypherIfExists } from "../../utils/compile-cypher-if-exists";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PatternComprehension extends WithWhere {}
 
+/** Represents a Pattern comprehension
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/lists/#cypher-pattern-comprehension)
+ * @group Expressions
+ */
 @mixin(WithWhere)
 export class PatternComprehension extends CypherASTNode {
     private pattern: Pattern;
