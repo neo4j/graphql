@@ -25,7 +25,7 @@ A subscription to a type can be made with the top-level subscription `[type]Rela
 
 * `event`: The event triggering this subscription, in this case it will always be `"CONNECT"`.
 * `timestamp`: The timestamp in which the mutation was made. Note that multiple events may come with the same timestamp if triggered by the same query.
-* `<typename>`: The properties of the node target to the subscription. Only top-level properties, without relationships, are available. Note these are the properties before the operation that trigger the connection took place.
+* `<typename>`: The properties of the node target to the subscription. Only top-level properties, without relationships, are available. Note these are the properties before the operation that triggered the connection took place.
 * `relationshipFieldName`: The field name of the newly created relationship, as part of the node target to the subscription.
 * `createdRelationship`: An object having as keys all field names of the node target to the subscription which represent its relationships. For any given event, all field names except the one corresponding to `relationshipFieldName` will be null. The field name equal to `relationshipFieldName` will contain the relationship properties if defined, and a `node` key containing the properties of the node on the other side of the relationship. Only top-level properties, without relationships, are available. Note these are the properties before the operation that triggered the connection took place.
 
@@ -72,7 +72,7 @@ An ongoing subscription to relationships created on the `Movie` type, upon a mut
                 name: "Tom Hardy"
             }
         },
-        reviewers: null # relationship declared by this field name is not covered by this event, check out the following..
+        reviewers: null # relationship declared by this field name is not covered by this event, check out the following...
     }
 }
 {
@@ -469,7 +469,7 @@ mutation {
 }
 ```
 
-...results in the two events will potentially be published (given that we subscribed to `CONNECT` events on the `Movie` type):
+...two events will be published (given that we subscribed to `CONNECT` events on the `Movie` type):
 ```graphql
 { 
     # relationship 1 - from `movieRelationshipCreated`
