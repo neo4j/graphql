@@ -80,7 +80,7 @@ function createDurationOperation({
     });
 }
 
-function createBaseOperation({
+export function createBaseOperation({
     operator,
     property,
     param,
@@ -116,6 +116,7 @@ function createBaseOperation({
         case "NOT_INCLUDES":
             return Cypher.in(param, property);
         case "EQ":
+        case "EQUAL":
         case "NOT":
             return Cypher.eq(property, param);
         default:
