@@ -24,6 +24,9 @@ import type { Predicate } from "../../types";
 
 type BooleanOperator = "AND" | "NOT" | "OR";
 
+/**
+ *  @group Internal
+ */
 export abstract class BooleanOp extends CypherASTNode {
     protected operator: BooleanOperator;
 
@@ -73,6 +76,23 @@ class NotOp extends BooleanOp {
     }
 }
 
+/** Generates an `AND` operator between the given predicates
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-boolean)
+ * @group Expressions
+ * @category Operators
+ * @example
+ * ```ts
+ * console.log("Test", Cypher.and(
+ *     Cypher.eq(new Cypher.Literal("Hi"), new Cypher.Literal("Hi")),
+ *     new Cypher.Literal(false)).toString()
+ * );
+ * ```
+ * Translates to
+ * ```cypher
+ * "Hi" = "Hi" AND false
+ * ```
+ *
+ */
 export function and(left: Predicate, right: Predicate, ...extra: Array<Predicate | undefined>): BooleanOp;
 export function and(...ops: Array<Predicate>): Predicate;
 export function and(...ops: Array<Predicate | undefined>): Predicate | undefined;
@@ -86,10 +106,43 @@ export function and(...ops: Array<Predicate | undefined>): Predicate | undefined
     return predicate1;
 }
 
+/** Generates an `NOT` operator before the given predicate
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-boolean)
+ * @group Expressions
+ * @category Operators
+ * @example
+ * ```ts
+ * console.log("Test", Cypher.not(
+ *     Cypher.eq(new Cypher.Literal("Hi"), new Cypher.Literal("Hi"))
+ * );
+ * ```
+ * Translates to
+ * ```cypher
+ * NOT "Hi" = "Hi"
+ * ```
+ *
+ */
 export function not(child: Predicate): BooleanOp {
     return new NotOp(child);
 }
 
+/** Generates an `OR` operator between the given predicates
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-boolean)
+ * @group Expressions
+ * @category Operators
+ * @example
+ * ```ts
+ * console.log("Test", Cypher.or(
+ *     Cypher.eq(new Cypher.Literal("Hi"), new Cypher.Literal("Hi")),
+ *     new Cypher.Literal(false)).toString()
+ * );
+ * ```
+ * Translates to
+ * ```cypher
+ * "Hi" = "Hi" OR false
+ * ```
+ *
+ */
 export function or(left: Predicate, right: Predicate, ...extra: Array<Predicate | undefined>): BooleanOp;
 export function or(...ops: Array<Predicate>): Predicate;
 export function or(...ops: Array<Predicate | undefined>): Predicate | undefined;

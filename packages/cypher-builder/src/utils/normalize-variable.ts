@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Literal } from "../variables/Literal";
+import { Literal } from "../references/Literal";
 import { isCypherCompilable } from "./is-cypher-compilable";
-import type { Param } from "../variables/Param";
-import type { Variable } from "../variables/Variable";
+import type { Param } from "../references/Param";
+import type { Variable } from "../references/Variable";
 
 export function normalizeVariable(value: string | number | Variable | Literal | Param): Variable | Literal | Param {
     if (isCypherCompilable(value)) return value;

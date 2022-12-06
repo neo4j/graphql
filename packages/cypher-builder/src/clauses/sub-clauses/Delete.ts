@@ -19,8 +19,8 @@
 
 import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
-import type { NodeRef } from "../../variables/NodeRef";
-import type { RelationshipRef } from "../../variables/RelationshipRef";
+import type { NodeRef } from "../../references/NodeRef";
+import type { RelationshipRef } from "../../references/RelationshipRef";
 
 export type DeleteInput = Array<NodeRef | RelationshipRef>;
 

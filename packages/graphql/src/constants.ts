@@ -72,7 +72,14 @@ export const SCALAR_TYPES = [
     "Duration",
 ];
 
-export const WHERE_AGGREGATION_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+export const NODE_OR_EDGE_KEYS = ["node", "edge"];
+
+export const LOGICAL_OPERATORS = ["AND", "OR"];
+
+// aggregation
+export const AGGREGATION_COMPARISON_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+export const AGGREGATION_AGGREGATE_OPERATORS = ["SHORTEST", "LONGEST", "MIN", "MAX", "SUM"];
+export const AGGREGATION_AGGREGATE_COUNT_OPERATORS = ["count", "count_LT", "count_LTE", "count_GT", "count_GTE"];
 
 // Types that you can average
 // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg

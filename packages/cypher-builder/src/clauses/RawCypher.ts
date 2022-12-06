@@ -23,7 +23,9 @@ import { Clause } from "./Clause";
 
 type RawCypherCallback = (env: CypherEnvironment) => [string, Record<string, any>] | string | undefined;
 
-/** For compatibility reasons, allows for a raw string to be used as a clause */
+/** For compatibility reasons, allows for a raw string to be used as a clause
+ * @group Other
+ */
 export class RawCypher extends Clause {
     private callback: RawCypherCallback;
 
