@@ -42,6 +42,7 @@ import { buildMathStatements, matchMathField, mathDescriptorBuilder } from "./ut
 import { indentBlock } from "./utils/indent-block";
 import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
 import { findConflictingProperties } from "../utils/is-property-clash";
+import Cypher from "@neo4j/cypher-builder";
 
 interface Res {
     strs: string[];
@@ -186,6 +187,39 @@ export default function createUpdateAndParams({
                             }
                         }
                         if (whereStrs.length) {
+                            const filterOutputVariableAsVariable = new Cypher.Variable();
+                            const aggregatePredicate = Cypher.eq(new Cypher.Literal(true), new Cypher.Literal(true));
+                            const cypherRelationshipVariable = new Cypher.NamedVariable(relationshipVariable);
+                            const cypherRelatedNodeVariable = new Cypher.NamedVariable(variableName);
+                            const filterProjection = new Cypher.List([
+                                cypherRelationshipVariable,
+                                cypherRelatedNodeVariable,
+                            ]);
+                            const optionalFilterOutput = new Cypher.List([
+                                new Cypher.Literal(null),
+                                new Cypher.Literal(null),
+                            ]);
+                            const aggregateFilter = new Cypher.Case(aggregatePredicate)
+                                .when(new Cypher.Literal(true))
+                                .then(filterProjection)
+                                .else(optionalFilterOutput);
+
+                            const aggregationWith = new Cypher.With("*", [
+                                aggregateFilter,
+                                filterOutputVariableAsVariable,
+                            ]).distinct();
+                            const caseProjectionWith = new Cypher.With(
+                                "*",
+                                [
+                                    new Cypher.ListAccessor(filterOutputVariableAsVariable, 0),
+                                    cypherRelationshipVariable,
+                                ],
+                                [new Cypher.ListAccessor(filterOutputVariableAsVariable, 1), cypherRelatedNodeVariable]
+                            );
+                            const { cypher, } = Cypher.concat(aggregationWith, caseProjectionWith).build(
+                                "ASDIJOJAISODJ"
+                            );
+                            subquery.push(cypher);
                             subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
                         }
 
