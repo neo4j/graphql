@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: "Download built documentation"
+      - name: "Download performance report"
         uses: actions/github-script@v6.3.3
         with:
           script: |
