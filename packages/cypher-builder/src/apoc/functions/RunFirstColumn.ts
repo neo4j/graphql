@@ -19,10 +19,14 @@
 
 import { CypherASTNode } from "../../CypherASTNode";
 import type { Clause } from "../../clauses/Clause";
-import type { Variable } from "../../variables/Variable";
+import type { Variable } from "../../references/Variable";
 import type { CypherEnvironment } from "../../Environment";
 import type { MapExpr } from "../../expressions/map/MapExpr";
 
+/**
+ * @group Expressions
+ * @category Cypher Functions
+ */
 export class RunFirstColumn extends CypherASTNode {
     private innerClause: Clause | string;
     private variables: Variable[] | MapExpr;

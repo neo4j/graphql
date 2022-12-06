@@ -17,22 +17,8 @@
  * limitations under the License.
  */
 
-import { NamedReference, Reference } from "./Reference";
-
-/** Represents a variable */
-export class Variable extends Reference {
-    constructor() {
-        super("var");
-    }
-}
-
-/** For compatibility reasons, represents a plain string variable */
-export class NamedVariable extends Variable implements NamedReference {
-    public readonly id: string;
-
-    constructor(name: string) {
-        super();
-        this.id = name;
-        this.prefix = "";
-    }
+export function padBlock(block: string, spaces = 4): string {
+    const paddingStr = " ".repeat(spaces);
+    const paddedNewLines = block.replace(/\n/g, `\n${paddingStr}`);
+    return `${paddingStr}${paddedNewLines}`;
 }

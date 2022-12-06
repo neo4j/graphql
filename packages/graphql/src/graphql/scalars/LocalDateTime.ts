@@ -19,7 +19,7 @@
 
 import type { ValueNode } from "graphql";
 import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
-import neo4j from "neo4j-driver";
+import neo4j, { isLocalDateTime } from "neo4j-driver";
 
 // Matching YYYY-MM-DDTHH:MM:SS(.sss+)
 const LOCAL_DATE_TIME_REGEX =
@@ -68,6 +68,10 @@ export const parseLocalDateTime = (
 };
 
 const parse = (value: unknown) => {
+    if (isLocalDateTime(value as object)) {
+        return value;
+    }
+
     const { year, month, day, hour, minute, second, nanosecond } = parseLocalDateTime(value);
 
     return new neo4j.types.LocalDateTime(year, month, day, hour, minute, second, nanosecond);

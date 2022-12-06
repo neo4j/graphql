@@ -1,0 +1,11 @@
+{
+    "excludeExternals": true,
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "includeVersion": false,
+    "excludeTags": [],
+    "hideGenerator": true,
+    "name": "Cypher Builder",
+    "visibilityFilters": {},
+    "sidebarLinks": {}
+}

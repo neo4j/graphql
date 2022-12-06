@@ -20,8 +20,10 @@
 import type { CypherEnvironment } from "../../Environment";
 import type { CypherCompilable, Expr } from "../../types";
 
-
-/** Represents a List */
+/** Represents a List
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/lists/)
+ * @group Expressions
+ */
 export class ListExpr implements CypherCompilable {
     private value: Expr[];
 
@@ -30,14 +32,14 @@ export class ListExpr implements CypherCompilable {
     }
 
     private serializeList(env: CypherEnvironment, obj: Expr[]): string {
-        const valuesList = obj.map(expr => {
+        const valuesList = obj.map((expr) => {
             return expr.getCypher(env);
         });
-    
-        const serializedContent = valuesList.join(", ");    
+
+        const serializedContent = valuesList.join(", ");
         return `[ ${serializedContent} ]`;
     }
-    
+
     public getCypher(env: CypherEnvironment): string {
         return this.serializeList(env, this.value);
     }

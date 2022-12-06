@@ -17,24 +17,31 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../../CypherASTNode";
-import type { CypherEnvironment } from "../../Environment";
-import type { Predicate } from "../../types";
+import { PropertyRef } from "./PropertyRef";
+import type { CypherCompilable } from "../types";
+import type { CypherEnvironment } from "../Environment";
 
-// Note, this is a procedure, but acts as a predicate expression
+/** Represents a reference that will be kept in the environment */
+export abstract class Reference implements CypherCompilable {
+    public prefix: string;
 
-export class ValidatePredicate extends CypherASTNode {
-    private predicate: Predicate;
-    private message: string;
-
-    constructor(predicate: Predicate, message: string) {
-        super();
-        this.predicate = predicate;
-        this.message = message;
+    constructor(prefix = "") {
+        this.prefix = prefix;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
-        const predicateCypher = this.predicate.getCypher(env);
-        return `apoc.util.validatePredicate(${predicateCypher}, "${this.message}", [0])`;
+        const id = env.getReferenceId(this);
+        return `${id}`;
     }
+
+    public property(path: string): PropertyRef {
+        return new PropertyRef(this, path);
+    }
+}
+
+export interface NamedReference extends Reference {
+    readonly id: string;
 }
