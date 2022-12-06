@@ -140,15 +140,7 @@ export default function createUpdateAndParams({
 
                     if (update.update) {
                         const whereStrs: string[] = [];
-
-                        if (withVars) {
-                            subquery.push(`WITH ${withVars.join(", ")}`);
-                        }
-
-                        const labels = refNode.getLabelString(context);
-                        subquery.push(
-                            `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
-                        );
+                        const delayedSubquery: string[] = [];
 
                         if (update.where) {
                             try {
@@ -168,14 +160,24 @@ export default function createUpdateAndParams({
                                     whereStrs.push(whereClause);
                                     res.params = { ...res.params, ...whereParams };
                                     if (preComputedSubqueries) {
-                                        subquery.push(preComputedSubqueries);
-                                        subquery.push("WITH *");
+                                        delayedSubquery.push(preComputedSubqueries);
+                                        delayedSubquery.push("WITH *");
                                     }
                                 }
                             } catch {
                                 return;
                             }
                         }
+
+                        if (withVars) {
+                            subquery.push(`WITH ${withVars.join(", ")}`);
+                        }
+
+                        const labels = refNode.getLabelString(context);
+                        subquery.push(
+                            `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
+                        );
+                        subquery.push(...delayedSubquery);
 
                         if (node.auth) {
                             const whereAuth = createAuthAndParams({
