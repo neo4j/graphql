@@ -162,7 +162,6 @@ export default function createUpdateAndParams({
                                     res.params = { ...res.params, ...whereParams };
                                     if (preComputedSubqueries) {
                                         delayedSubquery.push(preComputedSubqueries);
-                                        delayedSubquery.push("WITH *");
                                     }
                                 }
                             } catch {
@@ -223,7 +222,7 @@ export default function createUpdateAndParams({
                                 [new Cypher.ListAccessor(filterOutputVariableAsVariable, 1), cypherRelatedNodeVariable]
                             );
                             const { cypher, } = Cypher.concat(aggregationWith, caseProjectionWith).build(
-                                "ASDIJOJAISODJ"
+                                "OPTIONAL_AGGREGATION"
                             );
                             subquery.push(cypher);
                             subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
