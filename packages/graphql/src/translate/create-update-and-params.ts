@@ -205,7 +205,7 @@ export default function createUpdateAndParams({
                                 new Cypher.Literal(null),
                             ]);
                             const aggregateFilter = new Cypher.Case(aggregatePredicate)
-                                .when(new Cypher.Literal(true))
+                                .when(new Cypher.RawCypher(whereStrs.join(" AND ")))
                                 .then(filterProjection)
                                 .else(optionalFilterOutput);
 
@@ -225,7 +225,7 @@ export default function createUpdateAndParams({
                                 "OPTIONAL_AGGREGATION"
                             );
                             subquery.push(cypher);
-                            subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
+                            // subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
                         }
 
                         if (update.update.node) {
