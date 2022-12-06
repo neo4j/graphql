@@ -109,29 +109,25 @@ export function createPropertyWhere({
         }
 
         if (relationField) {
-            return {
-                predicate: createRelationshipOperation({
-                    relationField,
-                    context,
-                    parentNode: targetElement as Cypher.Node,
-                    operator,
-                    value,
-                    isNot,
-                }),
-            };
+            return createRelationshipOperation({
+                relationField,
+                context,
+                parentNode: targetElement as Cypher.Node,
+                operator,
+                value,
+                isNot,
+            });
         }
 
         const connectionField = node.connectionFields.find((x) => x.fieldName === fieldName);
         if (connectionField) {
-            return {
-                predicate: createConnectionOperation({
-                    value,
-                    connectionField,
-                    context,
-                    parentNode: targetElement as Cypher.Node,
-                    operator,
-                }),
-            };
+            return createConnectionOperation({
+                value,
+                connectionField,
+                context,
+                parentNode: targetElement as Cypher.Node,
+                operator,
+            });
         }
 
         if (value === null) {

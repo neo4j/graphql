@@ -141,6 +141,7 @@ export default function createUpdateAndParams({
 
                     if (update.update) {
                         const whereStrs: string[] = [];
+                        const delayedSubquery: string[] = [];
 
                         if (update.where) {
                             try {
@@ -155,10 +156,14 @@ export default function createUpdateAndParams({
                                         relationField.union ? `.${refNode.name}` : ""
                                     }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
                                 });
-                                const [whereClause, whereParams] = where;
+                                const [whereClause, preComputedSubqueries, whereParams] = where;
                                 if (whereClause) {
                                     whereStrs.push(whereClause);
                                     res.params = { ...res.params, ...whereParams };
+                                    if (preComputedSubqueries) {
+                                        delayedSubquery.push(preComputedSubqueries);
+                                        delayedSubquery.push("WITH *");
+                                    }
                                 }
                             } catch {
                                 return;
@@ -173,6 +178,7 @@ export default function createUpdateAndParams({
                         subquery.push(
                             `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
                         );
+                        subquery.push(...delayedSubquery);
 
                         if (node.auth) {
                             const whereAuth = createAuthAndParams({

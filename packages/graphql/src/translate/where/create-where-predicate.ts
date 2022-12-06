@@ -57,16 +57,17 @@ export function createWherePredicate({
             });
             if (predicate) {
                 predicates.push(predicate);
+                subqueries = Cypher.concat(subqueries, preComputedSubqueries);
             }
-            subqueries = Cypher.concat(subqueries, preComputedSubqueries);
+            return;
         }
         const { predicate, preComputedSubquery } = createPropertyWhere({ key, value, element, targetElement, context });
         if (predicate) {
             predicates.push(predicate);
+            subqueries = Cypher.concat(subqueries, preComputedSubquery);
+            return;
         }
-        subqueries = Cypher.concat(subqueries, preComputedSubquery);
     });
-
     // Implicit AND
     return { predicate: Cypher.and(...predicates), preComputedSubqueries: subqueries };
 }

@@ -39,10 +39,10 @@ import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-agg
 import { upperFirst } from "../../utils/upper-first";
 import { getRelationshipDirectionStr } from "../../utils/get-relationship-direction";
 import Cypher from "@neo4j/cypher-builder";
-import { createCountExpression } from "./create-count-expression";
 
-const subqueryNodeAlias = "n";
-const subqueryRelationAlias = "r";
+let counter = 0;
+let subqueryNodeAlias = "n";
+let subqueryRelationAlias = "r";
 
 type AggregationFields = {
     count?: ResolveTree;
@@ -60,7 +60,12 @@ export function createFieldAggregation({
     nodeLabel: string;
     node: Node;
     field: ResolveTree;
-}): { query: string; params: Record<string, any> } | undefined {
+}): { matchVar: string; cypher: string; params: Record<string, any> } | undefined {
+    // TODO use cypher builder nodes/vars
+    subqueryNodeAlias = `${subqueryNodeAlias}${counter}`;
+    subqueryRelationAlias = `${subqueryRelationAlias}${counter}`;
+    counter += 1;
+
     const relationAggregationField = node.relationFields.find((x) => {
         return `${x.fieldName}Aggregate` === field.name;
     });
@@ -84,7 +89,7 @@ export function createFieldAggregation({
         nodeFields: aggregationFields.node,
     });
 
-    const [whereQuery, whereParams] = createWhereAndParams({
+    const [whereQuery, wherePreComputedWhereFields, whereParams] = createWhereAndParams({
         whereInput: (field.args.where as GraphQLWhereArg) || {},
         varName: subqueryNodeAlias,
         node: referenceNode,
@@ -100,43 +105,21 @@ export function createFieldAggregation({
         context,
         directed: field.args.directed as boolean | undefined,
     });
-    const matchWherePattern = createMatchWherePattern(targetPattern, authData, whereQuery);
+    const matchWherePattern = createMatchWherePattern(targetPattern, wherePreComputedWhereFields, authData, whereQuery);
     const apocRunParams = {
         ...serializeParamsForApocRun(whereParams as Record<string, any>),
         ...serializeAuthParamsForApocRun(authData),
     };
 
-    const sourceNode = new Cypher.NamedNode(nodeLabel);
-    const targetNode = new Cypher.Node({ labels: referenceNode.getLabels(context) });
-
-    const authCallWhere = new Cypher.RawCypher((env: Cypher.Environment) => {
-        const subqueryNodeName = targetNode.getCypher(env);
-        const authDataResult = createFieldAggregationAuth({
-            node: referenceNode,
-            context,
-            subqueryNodeAlias: subqueryNodeName,
-            nodeFields: aggregationFields.node,
-        });
-
-        // TODO: refactor auth into cypherBuilder
-        return [authDataResult.whereQuery, authDataResult.params];
-    });
-    const cypherParams = { ...authData.params, ...whereParams };
+    const cypherParams = { ...apocRunParams, ...authData.params, ...whereParams };
     const projectionMap = new Cypher.Map();
 
-    if (aggregationFields.count) {
-        const countProjection = createCountExpression({
-            sourceNode,
-            relationAggregationField,
-            referenceNode,
-            context,
-            field,
-            authCallWhere,
-            targetNode,
-        });
+    let returnMatchPattern = "";
 
+    if (aggregationFields.count) {
+        returnMatchPattern = matchWherePattern;
         projectionMap.set({
-            count: countProjection,
+            count: Cypher.count(new Cypher.NamedNode(subqueryNodeAlias)),
         });
     }
     const nodeFields = aggregationFields.node;
@@ -150,7 +133,7 @@ export function createFieldAggregation({
                         fields: nodeFields,
                         fieldAlias: subqueryNodeAlias,
                         graphElement: referenceNode,
-                        params: apocRunParams,
+                        params: cypherParams,
                     }),
                     cypherParams,
                 ];
@@ -168,7 +151,7 @@ export function createFieldAggregation({
                         fields: edgeFields,
                         fieldAlias: subqueryRelationAlias,
                         graphElement: referenceRelation,
-                        params: apocRunParams,
+                        params: cypherParams,
                     }),
                     cypherParams,
                 ];
@@ -177,12 +160,16 @@ export function createFieldAggregation({
     }
 
     const rawProjection = new Cypher.RawCypher((env) => {
-        return projectionMap.getCypher(env);
+        return [projectionMap.getCypher(env), cypherParams];
     });
 
     const result = rawProjection.build(`${nodeLabel}_${field.alias}_`);
 
-    return { query: result.cypher, params: { ...result.params } };
+    return {
+        matchVar: result.cypher,
+        cypher: returnMatchPattern,
+        params: result.params,
+    };
 }
 
 function getAggregationFields(fieldPathBase: string, field: ResolveTree): AggregationFields {

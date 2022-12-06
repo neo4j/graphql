@@ -142,6 +142,7 @@ function createInterfaceSubquery({
 
     const withClause = new Cypher.With(...fullWithVars.map((f) => new Cypher.NamedVariable(f)));
     const matchQuery = new Cypher.Match(pattern);
+    const preComputedWhereFieldsWith = new Cypher.With("*");
 
     const authAllowPredicate = createAuthPredicates({
         entity: refNode,
@@ -157,8 +158,10 @@ function createInterfaceSubquery({
             Cypher.not(authAllowPredicate),
             AUTH_FORBIDDEN_ERROR
         );
-        matchQuery.where(apocValidateClause);
+        preComputedWhereFieldsWith.where(apocValidateClause);
     }
+
+    let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
 
     if (resolveTree.args.where) {
         const whereInput2 = {
@@ -172,7 +175,7 @@ function createInterfaceSubquery({
             ...(whereInput?._on?.[refNode.name] || {}),
         };
 
-        const { predicate: wherePredicate } = createWherePredicate({
+        const { predicate: wherePredicate, preComputedSubqueries } = createWherePredicate({
             whereInput: whereInput2,
             context,
             targetElement: relatedNode,
@@ -180,8 +183,9 @@ function createInterfaceSubquery({
         });
 
         if (wherePredicate) {
-            matchQuery.where(wherePredicate);
+            preComputedWhereFieldsWith.where(wherePredicate);
         }
+        preComputedWhereFieldSubqueries = preComputedSubqueries;
     }
 
     const whereAuthPredicate = createAuthPredicates({
@@ -194,7 +198,7 @@ function createInterfaceSubquery({
         context,
     });
     if (whereAuthPredicate) {
-        matchQuery.where(whereAuthPredicate);
+        preComputedWhereFieldsWith.where(whereAuthPredicate);
     }
 
     const {
@@ -214,5 +218,12 @@ function createInterfaceSubquery({
 
     const returnClause = new Cypher.Return([new Cypher.RawCypher(projectionStr), `${nodeVariable}_${field.fieldName}`]);
 
-    return Cypher.concat(withClause, matchQuery, projectionSubqueryClause, returnClause);
+    return Cypher.concat(
+        withClause,
+        matchQuery,
+        preComputedWhereFieldSubqueries,
+        preComputedWhereFieldsWith,
+        projectionSubqueryClause,
+        returnClause
+    );
 }

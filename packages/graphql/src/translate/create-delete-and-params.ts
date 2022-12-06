@@ -92,10 +92,19 @@ function createDeleteAndParams({
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
                     const withRelationshipStr = context.subscriptionsEnabled ? `, ${relationshipVariable}` : "";
 
+                    if (withVars) {
+                        res.strs.push(`WITH ${withVars.join(", ")}`);
+                    }
+
+                    const labels = refNode.getLabelString(context);
+                    res.strs.push(
+                        `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
+                    );
+
                     const whereStrs: string[] = [];
                     if (d.where) {
                         try {
-                            const whereAndParams = createConnectionWhereAndParams({
+                            const [whereCypher, preComputedSubqueries, whereParams] = createConnectionWhereAndParams({
                                 nodeVariable: variableName,
                                 whereInput: d.where,
                                 node: refNode,
@@ -106,23 +115,18 @@ function createDeleteAndParams({
                                     relationField.union ? `.${refNode.name}` : ""
                                 }${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
                             });
-                            if (whereAndParams[0]) {
-                                whereStrs.push(whereAndParams[0]);
-                                res.params = { ...res.params, ...whereAndParams[1] };
+                            if (whereCypher) {
+                                whereStrs.push(whereCypher);
+                                res.params = { ...res.params, ...whereParams };
+                                if (preComputedSubqueries) {
+                                    res.strs.push(preComputedSubqueries);
+                                    res.strs.push("WITH *");
+                                }
                             }
                         } catch {
                             return;
                         }
                     }
-
-                    if (withVars) {
-                        res.strs.push(`WITH ${withVars.join(", ")}`);
-                    }
-
-                    const labels = refNode.getLabelString(context);
-                    res.strs.push(
-                        `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
-                    );
 
                     const whereAuth = createAuthAndParams({
                         operations: "DELETE",
