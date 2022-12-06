@@ -115,11 +115,15 @@ export function createFieldAggregation({
     const projectionMap = new Cypher.Map();
 
     let returnMatchPattern = "";
+    const thisRef = new Cypher.NamedVariable(nodeLabel)
+    const withClause = new Cypher.With(thisRef);
 
     if (aggregationFields.count) {
         returnMatchPattern = matchWherePattern;
+        const countRef = new Cypher.Variable();
+        withClause.addColumns([Cypher.count(new Cypher.NamedNode(subqueryNodeAlias)), countRef]);
         projectionMap.set({
-            count: Cypher.count(new Cypher.NamedNode(subqueryNodeAlias)),
+            count: countRef,
         });
     }
     const nodeFields = aggregationFields.node;
@@ -160,6 +164,8 @@ export function createFieldAggregation({
     }
 
     const rawProjection = new Cypher.RawCypher((env) => {
+        const withCypher = withClause.getCypher(env);
+        returnMatchPattern = `${returnMatchPattern}\n${withCypher}`;
         return [projectionMap.getCypher(env), cypherParams];
     });
 
