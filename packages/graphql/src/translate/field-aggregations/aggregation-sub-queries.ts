@@ -21,7 +21,6 @@ import type { AggregationAuth } from "./field-aggregations-auth";
 import { wrapApocConvertDate } from "../projection/elements/create-datetime-element";
 import { stringifyObject } from "../utils/stringify-object";
 import Cypher from "@neo4j/cypher-builder";
-import { escapeQuery } from "../utils/escape-query";
 
 export function createMatchWherePattern(
     matchPattern: Cypher.Relationship,
@@ -35,12 +34,12 @@ export function createMatchWherePattern(
     // const matchClauses = [matchPattern, preComputedWhereFields, whereQuery, whereInput, andQuery, auth.whereQuery];
 
     const matchClause = new Cypher.OptionalMatch(matchPattern);
-    const whereClause = preComputedWhereFields ? new Cypher.With("*") : matchClause;
+    const whereClause = !preComputedWhereFields?.empty ? new Cypher.With("*") : matchClause;
     if (wherePredicate) {
         whereClause.where(wherePredicate);
     }
     whereClause.where(new Cypher.RawCypher(() => [auth.whereQuery, auth.params]));
-    return preComputedWhereFields ? Cypher.concat(matchClause, preComputedWhereFields, whereClause) : matchClause;
+    return !preComputedWhereFields?.empty ? Cypher.concat(matchClause, preComputedWhereFields, whereClause) : matchClause;
 }
 
 export function stringAggregationQuery(

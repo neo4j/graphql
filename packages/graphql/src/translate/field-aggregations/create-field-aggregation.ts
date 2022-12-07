@@ -19,7 +19,7 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Node, Relationship } from "../../classes";
-import type { Context, RelationField, GraphQLWhereArg } from "../../types";
+import type { Context, GraphQLWhereArg } from "../../types";
 import {
     getFieldType,
     AggregationType,
@@ -32,9 +32,8 @@ import * as AggregationSubQueries from "./aggregation-sub-queries";
 import { createFieldAggregationAuth } from "./field-aggregations-auth";
 import { createMatchWherePattern } from "./aggregation-sub-queries";
 import mapToDbProperty from "../../utils/map-to-db-property";
-import createWhereAndParams from "../where/create-where-and-params";
 import { stringifyObject } from "../utils/stringify-object";
-import { serializeParamsForApocRun, wrapInApocRunFirstColumn } from "../utils/apoc-run";
+import { wrapInApocRunFirstColumn } from "../utils/apoc-run";
 import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
@@ -114,8 +113,15 @@ export function createFieldAggregation({
     //     directed: field.args.directed as boolean | undefined,
     // });
 
-    const targetPattern = new Cypher.Relationship({ source: sourceRef, type: relationAggregationField.type, target: targetRef });
-    if (getRelationshipDirection(relationAggregationField, { directed: field.args.directed as boolean | undefined }) === "IN") {
+    const targetPattern = new Cypher.Relationship({
+        source: sourceRef,
+        type: relationAggregationField.type,
+        target: targetRef,
+    });
+    if (
+        getRelationshipDirection(relationAggregationField, { directed: field.args.directed as boolean | undefined }) ===
+        "IN"
+    ) {
         targetPattern.reverse();
     }
     const matchWherePattern = createMatchWherePattern(targetPattern, preComputedSubqueries, authData, predicate);
@@ -127,16 +133,18 @@ export function createFieldAggregation({
     const cypherParams = { ...apocRunParams, ...authData.params };
     const projectionMap = new Cypher.Map();
 
-    let returnMatchPattern: Cypher.Clause | Cypher.RawCypher = new Cypher.RawCypher("");
+    let returnMatchPattern: Cypher.Clause;
     const countRef = new Cypher.Variable();
     let countFunction: Cypher.Function | undefined;
 
     if (aggregationFields.count) {
-        returnMatchPattern = matchWherePattern;
         countFunction = Cypher.count(sourceRef);
         projectionMap.set({
             count: countRef,
         });
+        returnMatchPattern = new Cypher.Call(
+            Cypher.concat(matchWherePattern, new Cypher.Return([countFunction, countRef]))
+        ).innerWith(sourceRef);
     }
     const nodeFields = aggregationFields.node;
     if (nodeFields) {
@@ -182,7 +190,7 @@ export function createFieldAggregation({
         if (countFunction) {
             preProjectionAggregation = `${countFunction.getCypher(env)} AS ${countRef.getCypher(env)}`;
         }
-        cypher = returnMatchPattern.getCypher(env);
+        cypher = returnMatchPattern?.getCypher(env) || "";
         return [projectionMap.getCypher(env), cypherParams];
     });
 
