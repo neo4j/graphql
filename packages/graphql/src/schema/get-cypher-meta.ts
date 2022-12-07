@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { ConstDirectiveNode, FieldDefinitionNode } from "graphql";
+import type { DirectiveNode, FieldDefinitionNode } from "graphql";
 
 type CypherMeta = {
     statement: string;
@@ -41,7 +41,7 @@ export default function getCypherMeta(
     };
 }
 
-function parseStatementFlag(directive: ConstDirectiveNode): string {
+function parseStatementFlag(directive: DirectiveNode): string {
     const stmtArg = directive.arguments?.find((x) => x.name.value === "statement");
     if (!stmtArg) {
         throw new Error("@cypher statement required");
@@ -53,7 +53,7 @@ function parseStatementFlag(directive: ConstDirectiveNode): string {
     return stmtArg.value.value;
 }
 
-function parseExperimentalFlag(directive: ConstDirectiveNode): boolean {
+function parseExperimentalFlag(directive: DirectiveNode): boolean {
     const experimentalArg = directive.arguments?.find((x) => x.name.value === "experimental");
     if (!experimentalArg) return false;
     if (experimentalArg?.value.kind !== "BooleanValue") {
