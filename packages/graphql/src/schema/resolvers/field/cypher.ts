@@ -38,7 +38,7 @@ export function cypherResolver({
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
 
-        if (!cypherResultVariables) {
+        if (!cypherResultVariables && field.experimental) {
             cypherResultVariables = await getCypherResultVariables(statement, context.executor);
         }
 
@@ -49,7 +49,7 @@ export function cypherResolver({
             args,
             type,
             statement,
-            cypherResultVariables,
+            cypherResultVariables: cypherResultVariables || [],
         });
         const executeResult = await execute({
             cypher,

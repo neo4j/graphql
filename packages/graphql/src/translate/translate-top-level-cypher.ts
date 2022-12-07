@@ -26,7 +26,6 @@ import Cypher from "@neo4j/cypher-builder";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "./create-auth-param";
 import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
-import { unescapeQuery } from "./utils/escape-query";
 
 export function translateTopLevelCypher({
     context,
@@ -161,18 +160,20 @@ export function translateTopLevelCypher({
     const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
     if (type === "Query") {
-        cypherStrs.push(
-            "CALL {",
-            unescapeQuery(statement), // NOTE: Deprecated
-            "}"
-        );
-
-        if (cypherResultVariables.length > 0) {
-            if (field.isScalar || field.isEnum) {
-                cypherStrs.push(`UNWIND ${cypherResultVariables[0]} as this`);
-            } else {
-                cypherStrs.push(`WITH ${cypherResultVariables[0]} as this`);
-            }
+        if (field.experimental) {
+            const experimentalCypherStatement = createExperimentalCypherStatement({
+                statement,
+                field,
+                cypherResultVariables,
+            });
+            cypherStrs.push(...experimentalCypherStatement);
+        } else {
+            const legacyCypherStatement = createLegacyCypherStatement({
+                statement,
+                field,
+                apocParams: apocParamsStr,
+            });
+            cypherStrs.push(...legacyCypherStatement);
         }
     } else {
         cypherStrs.push(`
@@ -209,4 +210,49 @@ export function translateTopLevelCypher({
         }
         return [cypherStrs.join("\n"), params];
     }).build();
+}
+
+function createLegacyCypherStatement({
+    statement,
+    field,
+    apocParams,
+}: {
+    statement: string;
+    field: CypherField;
+    apocParams: string;
+}): string[] {
+    const isArray = field.typeMeta.array;
+    const expectMultipleValues = !field.isScalar && !field.isEnum && isArray;
+    const cypherStrs: string[] = [];
+
+    if (expectMultipleValues) {
+        cypherStrs.push(`WITH apoc.cypher.runFirstColumnMany("${statement}", ${apocParams}) as x`);
+    } else {
+        cypherStrs.push(`WITH apoc.cypher.runFirstColumnSingle("${statement}", ${apocParams}) as x`);
+    }
+
+    cypherStrs.push("UNWIND x as this\nWITH this");
+    return cypherStrs;
+}
+
+function createExperimentalCypherStatement({
+    statement,
+    field,
+    cypherResultVariables,
+}: {
+    statement: string;
+    field: CypherField;
+    cypherResultVariables: string[];
+}): string[] {
+    const cypherStrs: string[] = [];
+    cypherStrs.push("CALL {", statement, "}");
+
+    if (cypherResultVariables.length > 0) {
+        if (field.isScalar || field.isEnum) {
+            cypherStrs.push(`UNWIND ${cypherResultVariables[0]} as this`);
+        } else {
+            cypherStrs.push(`WITH ${cypherResultVariables[0]} as this`);
+        }
+    }
+    return cypherStrs;
 }

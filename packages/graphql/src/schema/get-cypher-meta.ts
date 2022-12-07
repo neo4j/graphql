@@ -17,13 +17,17 @@
  * limitations under the License.
  */
 
-import type { FieldDefinitionNode } from "graphql";
+import type { ConstDirectiveNode, FieldDefinitionNode } from "graphql";
 
 type CypherMeta = {
     statement: string;
+    experimental: boolean;
 };
 
-function getCypherMeta(field: FieldDefinitionNode, interfaceField?: FieldDefinitionNode): CypherMeta | undefined {
+export default function getCypherMeta(
+    field: FieldDefinitionNode,
+    interfaceField?: FieldDefinitionNode
+): CypherMeta | undefined {
     const directive =
         field.directives?.find((x) => x.name.value === "cypher") ||
         interfaceField?.directives?.find((x) => x.name.value === "cypher");
@@ -31,6 +35,13 @@ function getCypherMeta(field: FieldDefinitionNode, interfaceField?: FieldDefinit
         return undefined;
     }
 
+    return {
+        statement: parseStatementFlag(directive),
+        experimental: parseExperimentalFlag(directive),
+    };
+}
+
+function parseStatementFlag(directive: ConstDirectiveNode): string {
     const stmtArg = directive.arguments?.find((x) => x.name.value === "statement");
     if (!stmtArg) {
         throw new Error("@cypher statement required");
@@ -39,11 +50,15 @@ function getCypherMeta(field: FieldDefinitionNode, interfaceField?: FieldDefinit
         throw new Error("@cypher statement not a string");
     }
 
-    const statement = stmtArg.value.value;
-
-    return {
-        statement,
-    };
+    return stmtArg.value.value;
 }
 
-export default getCypherMeta;
+function parseExperimentalFlag(directive: ConstDirectiveNode): boolean {
+    const experimentalArg = directive.arguments?.find((x) => x.name.value === "experimental");
+    if (!experimentalArg) return false;
+    if (experimentalArg?.value.kind !== "BooleanValue") {
+        throw new Error("@cypher experimental flag isnot a boolean");
+    }
+
+    return experimentalArg.value.value;
+}

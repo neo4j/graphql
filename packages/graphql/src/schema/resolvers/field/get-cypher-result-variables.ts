@@ -17,12 +17,20 @@
  * limitations under the License.
  */
 
+import type { QueryResult } from "neo4j-driver";
 import type { Executor } from "../../../classes/Executor";
-import { unescapeQuery } from "../../../translate/utils/escape-query";
 
 export async function getCypherResultVariables(statement: string, executor: Executor): Promise<string[]> {
     const explainStatement = wrapInExplain(statement);
     const result = await executor.execute(explainStatement, {}, "READ");
+    return parseExplainResult(result);
+}
+
+function wrapInExplain(statement: string): string {
+    return `EXPLAIN ${statement}`;
+}
+
+function parseExplainResult(result: QueryResult): string[] {
     if (!result.summary.plan) throw new Error("Failed to get the plan of @cypher");
 
     const plan = result.summary.plan;
@@ -30,8 +38,4 @@ export async function getCypherResultVariables(statement: string, executor: Exec
         return [];
     }
     return [plan.arguments["Details"]];
-}
-
-function wrapInExplain(statement: string): string {
-    return `EXPLAIN ${unescapeQuery(statement)}`;
 }
