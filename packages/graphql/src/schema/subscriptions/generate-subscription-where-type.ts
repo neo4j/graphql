@@ -51,7 +51,7 @@ export function generateSubscriptionConnectionWhereType({
     relationshipFields: Map<string, ObjectFields>;
     interfaceCommonFields: Map<string, ObjectFields>;
 }): { created: InputTypeComposer; deleted: InputTypeComposer } {
-    const fieldName = node.subscriptionEventPayloadFieldNames.connect;
+    const fieldName = node.subscriptionEventPayloadFieldNames.create_relationship;
     const typeName = node.name;
 
     let connectedNode = schemaComposer.getITC(`${typeName}SubscriptionWhere`);

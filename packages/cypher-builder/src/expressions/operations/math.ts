@@ -44,11 +44,23 @@ function createOp(op: MathOperator, exprs: Expr[]): MathOp {
     return new MathOp(op, exprs);
 }
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-mathematical)
+ * @see [String Concatenation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#syntax-concatenating-two-strings)
+ * @group Expressions
+ * @category Operators
+ */
 export function plus(leftExpr: Expr, rightExpr: Expr): MathOp;
 export function plus(...exprs: Expr[]): MathOp;
 export function plus(...exprs: Expr[]): MathOp {
     return createOp("+", exprs);
 }
+
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-mathematical)
+ * @group Expressions
+ * @category Operators
+ */
 export function minus(leftExpr: Expr, rightExpr: Expr): MathOp {
     return createOp("-", [leftExpr, rightExpr]);
 }

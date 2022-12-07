@@ -1,5 +1,26 @@
 # @neo4j/graphql
 
+## 3.13.0
+
+### Minor Changes
+
+-   [#2456](https://github.com/neo4j/graphql/pull/2456) [`b981c45f7`](https://github.com/neo4j/graphql/commit/b981c45f76753557c18b1152ad62f258d2bee7f7) Thanks [@a-alle](https://github.com/a-alle)! - Adds support for subscriptions events for connect and disconnect
+
+-   [#2383](https://github.com/neo4j/graphql/pull/2383) [`20aa9c05b`](https://github.com/neo4j/graphql/commit/20aa9c05be4c780493d536bc98335fb88d857b6a) Thanks [@a-alle](https://github.com/a-alle)! - Adds filtering on connect and disconnect subscriptions events
+
+### Patch Changes
+
+-   [#2406](https://github.com/neo4j/graphql/pull/2406) [`12ec721e6`](https://github.com/neo4j/graphql/commit/12ec721e66f7ce570b31be3341c625a48bda304f) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Bulk-create performance improvements for protected nodes and fields.
+
+-   [#2488](https://github.com/neo4j/graphql/pull/2488) [`c06ac56ae`](https://github.com/neo4j/graphql/commit/c06ac56ae84360dc19bccd4545334c8c65b1c768) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix cursor based pagination over connection fields
+
+-   [#2438](https://github.com/neo4j/graphql/pull/2438) [`e220f36e0`](https://github.com/neo4j/graphql/commit/e220f36e07bb27aeb5c787e7ebf5b09e7fba2afc) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix nested delete attempting to delete same node multiple times
+
+-   [#2476](https://github.com/neo4j/graphql/pull/2476) [`b624c7ace`](https://github.com/neo4j/graphql/commit/b624c7aced55493f9df1abcaca91b139713f4186) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove additional SKIP and LIMIT from Cypher which was causing excessive skipping
+
+-   Updated dependencies [[`150b64c04`](https://github.com/neo4j/graphql/commit/150b64c046dd511d29436b33d67770aed6217c8f)]:
+    -   @neo4j/cypher-builder@0.1.6
+
 ## 3.12.2
 
 ### Patch Changes
