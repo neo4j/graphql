@@ -26,6 +26,9 @@ import type { CypherCompilable } from "./types";
 export abstract class CypherASTNode implements CypherCompilable {
     protected parent?: CypherASTNode;
 
+    /**
+     * @hidden
+     */
     constructor(parent?: CypherASTNode) {
         this.parent = parent;
     }
