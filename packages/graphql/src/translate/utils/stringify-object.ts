@@ -28,11 +28,10 @@ export function stringifyObject(
             `{ ${Object.entries(fields)
                 .filter(([, value]) => Boolean(value))
                 .map(([key, value]): string | undefined => {
-                    if (typeof value === "string") {
-                        return `${key}: ${value}`;
-                    }
-                    else {
+                    if (value instanceof Cypher.RawCypher) {
                         return `${key}: ${value?.getCypher(env)}`;
+                    } else {
+                        return `${key}: ${value}`;
                     }
                 })
                 .join(", ")} }`

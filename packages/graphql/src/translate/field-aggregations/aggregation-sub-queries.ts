@@ -99,8 +99,8 @@ export function dateTimeAggregationQuery(
         const fieldPathCypher = fieldPath.getCypher(env);
         return `${matchWherePattern.getCypher(env)}
         RETURN ${stringifyObject({
-            min: new Cypher.RawCypher(escapeQuery(wrapApocConvertDate(`min(${fieldPathCypher})`))),
-            max: new Cypher.RawCypher(escapeQuery(wrapApocConvertDate(`max(${fieldPathCypher})`))),
+            min: new Cypher.RawCypher(wrapApocConvertDate(`min(${fieldPathCypher})`)),
+            max: new Cypher.RawCypher(wrapApocConvertDate(`max(${fieldPathCypher})`)),
         }).getCypher(env)}`;
     });
 }

@@ -19,6 +19,7 @@
 
 import { stringifyObject } from "./stringify-object";
 import Cypher from "@neo4j/cypher-builder";
+import { escapeQuery } from "./escape-query";
 
 /** Wraps a query inside an apoc call, escaping strings and serializing params */
 export function wrapInApocRunFirstColumn(
@@ -29,11 +30,17 @@ export function wrapInApocRunFirstColumn(
     const serializedParams = stringifyObject(params);
 
     if (expectMultipleValues === false) {
-        return new Cypher.RawCypher((env) => `apoc.cypher.runFirstColumnSingle("${query.getCypher(env)}", ${serializedParams.getCypher(env)})`);
+        return new Cypher.RawCypher(
+            (env) =>
+                `apoc.cypher.runFirstColumnSingle("${escapeQuery(query.getCypher(env))}", ${serializedParams.getCypher(
+                    env
+                )})`
+        );
     }
 
     return new Cypher.RawCypher(
-        (env) => `apoc.cypher.runFirstColumnMany("${query.getCypher(env)}", ${serializedParams.getCypher(env)})`
+        (env) =>
+            `apoc.cypher.runFirstColumnMany("${escapeQuery(query.getCypher(env))}", ${serializedParams.getCypher(env)})`
     );
 }
 
