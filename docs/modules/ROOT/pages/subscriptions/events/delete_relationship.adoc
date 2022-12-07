@@ -11,7 +11,7 @@ As relationship-specific information, the event will contain the relationship fi
 
 NOTE: A new event will be triggered for each deleted relationship.
 
-This means that, if the type targeted for the subscriptions defines two or more relationships in the schema and one of each relationships are deleted following a mutation operation, there will be an equal number of events triggered as the number of deleted relationships. 
+This means that, if the type targeted for the subscriptions defines two or more relationships in the schema and one of each relationships are deleted following a mutation operation, the number of events triggered will be equivalent to the number of relationships deleted.
 
 Each event will have the relationships object populated with the deleted relationship's properties for one single relationship name only - all other relationship names will have a null value.
 
@@ -351,7 +351,7 @@ subscription {
 
 The presence of the `movie` field inside of `deletedRelationship` for the `actorRelationshipDeleted` subscription reflects the fact that the `ACTED_IN` typed relationship is reciprocal.
 
-Therefore, when a relationship of this type is deleted, such as by running the following mutations...
+Therefore, when a relationship of this type is deleted, such as by running the following mutations:
 ```graphql
 mutation { 
     createMovies(
@@ -391,7 +391,7 @@ mutation {
 }
 ```
 
-...two events will be published (given that we subscribed to `DELETE_RELATIONSHIP` events on both types):
+Two events will be published (given that we subscribed to `DELETE_RELATIONSHIP` events on both types):
 ```graphql
 { 
     # from `movieRelationshipDeleted`
@@ -432,7 +432,7 @@ mutation {
 }
 ```
 
-Since the `DIRECTED` relationship between types `Movie` and `Director` is **not** reciprocal, executing the following mutations...
+Since the `DIRECTED` relationship between types `Movie` and `Director` is **not** reciprocal, executing the following mutations:
 ```graphql
 mutation {
     createMovies(
@@ -488,7 +488,7 @@ mutation {
 }
 ```
 
-...two events will be published (given that we subscribed to `DELETE_RELATIONSHIP` events on the `Movie` type):
+Two events will be published (given that we subscribed to `DELETE_RELATIONSHIP` events on the `Movie` type):
 ```graphql
 { 
     # relationship 1 - from `movieRelationshipDeleted`
@@ -610,7 +610,7 @@ subscription {
 }
 ```
 
-...running the following mutations ...
+Running the following mutations:
 ```graphql
 mutation {
     createMovies(
@@ -657,7 +657,7 @@ mutation {
 }
 ```
 
-...result in the following events:
+Result in the following events:
 ```graphql
 { 
     # relationship 1 `people` - for GraphQL types `Movie`, `Person`

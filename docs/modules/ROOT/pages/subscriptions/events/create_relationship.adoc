@@ -11,7 +11,7 @@ As relationship-specific information, the event will contain the relationship fi
 
 NOTE: A new event will be triggered for each new relationship.
 
-This means that, if the type targeted for the subscriptions defines two or more relationships in the schema and one of each relationships are created following a mutation operation, there will be an equal number of events triggered as the number of created relationships. 
+This means that, if the type targeted for the subscriptions defines two or more relationships in the schema and one of each relationships are created following a mutation operation, the number of events triggered will be equivalent to the number of relationships created.
 
 Each event will have the relationships object populated with the created relationship's properties for one single relationship name only - all other relationship names will have a null value.
 
@@ -351,7 +351,7 @@ subscription {
 
 The presence of the `movie` field inside of `createdRelationship` for the `actorRelationshipCreated` subscription reflects the fact that the `ACTED_IN` typed relationship is reciprocal.
 
-Therefore, when a new relationship of this type is made, such as by running a mutation as follows...
+Therefore, when a new relationship of this type is made, such as by running a mutation as follows:
 ```graphql
 mutation {
     createMovies(
@@ -382,7 +382,7 @@ mutation {
 }
 ```
 
-...two events will be published (given that we subscribed to `CREATE_RELATIONSHIP` events on both types):
+Two events will be published (given that we subscribed to `CREATE_RELATIONSHIP` events on both types):
 ```graphql
 { 
     # from `movieRelationshipCreated`
@@ -423,7 +423,7 @@ mutation {
 }
 ```
 
-Since the `DIRECTED` relationship between types `Movie` and `Director` is **not** reciprocal, executing a mutation as follows...
+Since the `DIRECTED` relationship between types `Movie` and `Director` is **not** reciprocal, executing a mutation as follows:
 ```graphql
 mutation {
     createMovies(
@@ -469,7 +469,7 @@ mutation {
 }
 ```
 
-...two events will be published (given that we subscribed to `CREATE_RELATIONSHIP` events on the `Movie` type):
+Two events will be published (given that we subscribed to `CREATE_RELATIONSHIP` events on the `Movie` type):
 ```graphql
 { 
     # relationship 1 - from `movieRelationshipCreated`
@@ -591,7 +591,7 @@ subscription {
 }
 ```
 
-...running a mutation as follows...
+Running a mutation as follows:
 ```graphql
 mutation {
     createMovies(
@@ -628,7 +628,7 @@ mutation {
 }
 ```
 
-...results in the following events:
+Results in the following events:
 ```graphql
 { 
     # relationship 1 `people` - for GraphQL types `Movie`, `Person`
