@@ -22,6 +22,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createAuthAndParams } from "../create-auth-and-params";
 import type { Context } from "../../types";
 import type { Node } from "../../classes";
+import type Cypher from "@neo4j/cypher-builder";
 
 export type AggregationAuth = {
     params: Record<string, string>;
@@ -41,7 +42,7 @@ export function createFieldAggregationAuth({
 }: {
     node: Node;
     context: Context;
-    subqueryNodeAlias: string;
+    subqueryNodeAlias: Cypher.Node;
     nodeFields: Record<string, ResolveTree> | undefined;
 }): AggregationAuth {
     const allowAuth = getAllowAuth({ node, context, varName: subqueryNodeAlias });
@@ -61,7 +62,7 @@ function getAllowAuth({
 }: {
     node: Node;
     context: Context;
-    varName: string;
+    varName: Cypher.Node;
 }): PartialAuthQueries {
     const allowAuth = createAuthAndParams({
         operations: "READ",
@@ -94,7 +95,7 @@ function getWhereAuth({
 }: {
     node: Node;
     context: Context;
-    varName: string;
+    varName: Cypher.Node;
 }): PartialAuthQueries {
     const whereAuth = createAuthAndParams({
         operations: "READ",
@@ -125,7 +126,7 @@ function getFieldAuth({
     fields: Record<string, ResolveTree> | undefined;
     node: Node;
     context: Context;
-    varName: string;
+    varName: Cypher.Node;
 }): PartialAuthQueries {
     const authStrs: string[] = [];
     let authParams: Record<string, string> = {};

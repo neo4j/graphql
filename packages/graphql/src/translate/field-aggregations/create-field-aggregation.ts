@@ -37,12 +37,9 @@ import { stringifyObject } from "../utils/stringify-object";
 import { serializeParamsForApocRun, wrapInApocRunFirstColumn } from "../utils/apoc-run";
 import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
-import { getRelationshipDirectionStr } from "../../utils/get-relationship-direction";
+import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import Cypher from "@neo4j/cypher-builder";
-
-let counter = 0;
-let subqueryNodeAlias = "n";
-let subqueryRelationAlias = "r";
+import { createWherePredicate } from "../where/create-where-predicate";
 
 type AggregationFields = {
     count?: ResolveTree;
@@ -64,9 +61,11 @@ export function createFieldAggregation({
     | { matchVar: string; cypher: string; params: Record<string, any>; preProjectionAggregation: string | undefined }
     | undefined {
     // TODO use cypher builder nodes/vars
-    subqueryNodeAlias = `${subqueryNodeAlias}${counter}`;
-    subqueryRelationAlias = `${subqueryRelationAlias}${counter}`;
-    counter += 1;
+    // const subqueryNodeRef = new Cypher.Node();
+    const sourceRef = new Cypher.NamedNode(nodeLabel);
+    const targetRef = new Cypher.Node();
+    // const subqueryRelationRef = new Cypher.Relationship({})
+    // subqueryRelationAlias = `${subqueryRelationAlias}${counter}`;
 
     const relationAggregationField = node.relationFields.find((x) => {
         return `${x.fieldName}Aggregate` === field.name;
@@ -87,42 +86,54 @@ export function createFieldAggregation({
     const authData = createFieldAggregationAuth({
         node: referenceNode,
         context,
-        subqueryNodeAlias,
+        subqueryNodeAlias: sourceRef,
         nodeFields: aggregationFields.node,
     });
 
-    const [whereQuery, wherePreComputedWhereFields, whereParams] = createWhereAndParams({
+    // const [whereQuery, wherePreComputedWhereFields, whereParams] = createWhereAndParams({
+    //     whereInput: (field.args.where as GraphQLWhereArg) || {},
+    //     varName: subqueryNodeAlias,
+    //     node: referenceNode,
+    //     context,
+    //     recursing: true,
+    //     chainStr: `${nodeLabel}_${field.alias}_${subqueryNodeAlias}`,
+    // });
+
+    const { predicate, preComputedSubqueries } = createWherePredicate({
+        targetElement: targetRef,
         whereInput: (field.args.where as GraphQLWhereArg) || {},
-        varName: subqueryNodeAlias,
-        node: referenceNode,
         context,
-        recursing: true,
-        chainStr: `${nodeLabel}_${field.alias}_${subqueryNodeAlias}`,
+        element: referenceNode,
     });
 
-    const targetPattern = createTargetPattern({
-        nodeLabel,
-        relationField: relationAggregationField,
-        referenceNode,
-        context,
-        directed: field.args.directed as boolean | undefined,
-    });
-    const matchWherePattern = createMatchWherePattern(targetPattern, wherePreComputedWhereFields, authData, whereQuery);
+    // const targetPattern = createTargetPattern({
+    //     nodeLabel,
+    //     relationField: relationAggregationField,
+    //     referenceNode,
+    //     context,
+    //     directed: field.args.directed as boolean | undefined,
+    // });
+
+    const targetPattern = new Cypher.Relationship({ source: sourceRef, type: relationAggregationField.type, target: targetRef });
+    if (getRelationshipDirection(relationAggregationField, { directed: field.args.directed as boolean | undefined }) === "IN") {
+        targetPattern.reverse();
+    }
+    const matchWherePattern = createMatchWherePattern(targetPattern, preComputedSubqueries, authData, predicate);
     const apocRunParams = {
-        ...serializeParamsForApocRun(whereParams as Record<string, any>),
+        // ...serializeParamsForApocRun(whereParams as Record<string, any>),
         ...serializeAuthParamsForApocRun(authData),
     };
 
-    const cypherParams = { ...apocRunParams, ...authData.params, ...whereParams };
+    const cypherParams = { ...apocRunParams, ...authData.params };
     const projectionMap = new Cypher.Map();
 
-    let returnMatchPattern = "";
+    let returnMatchPattern: Cypher.Clause | Cypher.RawCypher = new Cypher.RawCypher("");
     const countRef = new Cypher.Variable();
     let countFunction: Cypher.Function | undefined;
 
     if (aggregationFields.count) {
         returnMatchPattern = matchWherePattern;
-        countFunction = Cypher.count(new Cypher.NamedNode(subqueryNodeAlias));
+        countFunction = Cypher.count(sourceRef);
         projectionMap.set({
             count: countRef,
         });
@@ -130,16 +141,16 @@ export function createFieldAggregation({
     const nodeFields = aggregationFields.node;
     if (nodeFields) {
         projectionMap.set({
-            node: new Cypher.RawCypher(() => {
+            node: new Cypher.RawCypher((env) => {
                 return [
                     createAggregationQuery({
                         nodeLabel,
                         matchWherePattern,
                         fields: nodeFields,
-                        fieldAlias: subqueryNodeAlias,
+                        fieldAlias: targetRef,
                         graphElement: referenceNode,
                         params: cypherParams,
-                    }),
+                    }).getCypher(env),
                     cypherParams,
                 ];
             }),
@@ -148,16 +159,16 @@ export function createFieldAggregation({
     const edgeFields = aggregationFields.edge;
     if (edgeFields) {
         projectionMap.set({
-            edge: new Cypher.RawCypher(() => {
+            edge: new Cypher.RawCypher((env) => {
                 return [
                     createAggregationQuery({
                         nodeLabel,
                         matchWherePattern,
                         fields: edgeFields,
-                        fieldAlias: subqueryRelationAlias,
+                        fieldAlias: targetPattern,
                         graphElement: referenceRelation,
                         params: cypherParams,
-                    }),
+                    }).getCypher(env),
                     cypherParams,
                 ];
             }),
@@ -165,11 +176,13 @@ export function createFieldAggregation({
     }
 
     let preProjectionAggregation: string | undefined;
+    let cypher = "";
 
     const rawProjection = new Cypher.RawCypher((env) => {
         if (countFunction) {
             preProjectionAggregation = `${countFunction.getCypher(env)} AS ${countRef.getCypher(env)}`;
         }
+        cypher = returnMatchPattern.getCypher(env);
         return [projectionMap.getCypher(env), cypherParams];
     });
 
@@ -177,7 +190,7 @@ export function createFieldAggregation({
 
     return {
         matchVar: result.cypher,
-        cypher: returnMatchPattern,
+        cypher,
         params: result.params,
         preProjectionAggregation,
     };
@@ -198,24 +211,24 @@ function getAggregationFields(fieldPathBase: string, field: ResolveTree): Aggreg
     return { count, edge, node };
 }
 
-function createTargetPattern({
-    nodeLabel,
-    relationField,
-    referenceNode,
-    context,
-    directed,
-}: {
-    nodeLabel: string;
-    relationField: RelationField;
-    referenceNode: Node;
-    context: Context;
-    directed?: boolean;
-}): string {
-    const { inStr, outStr } = getRelationshipDirectionStr(relationField, { directed });
-    const nodeOutStr = `(${subqueryNodeAlias}${referenceNode.getLabelString(context)})`;
+// function createTargetPattern({
+//     nodeLabel,
+//     relationField,
+//     referenceNode,
+//     context,
+//     directed,
+// }: {
+//     nodeLabel: string;
+//     relationField: RelationField;
+//     referenceNode: Node;
+//     context: Context;
+//     directed?: boolean;
+// }): string {
+//     const { inStr, outStr } = getRelationshipDirectionStr(relationField, { directed });
+//     const nodeOutStr = `(${subqueryNodeAlias}${referenceNode.getLabelString(context)})`;
 
-    return `(${nodeLabel})${inStr}[${subqueryRelationAlias}:${relationField.type}]${outStr}${nodeOutStr}`;
-}
+//     return `(${nodeLabel})${inStr}[${subqueryRelationAlias}:${relationField.type}]${outStr}${nodeOutStr}`;
+// }
 
 function createAggregationQuery({
     nodeLabel,
@@ -226,12 +239,12 @@ function createAggregationQuery({
     params,
 }: {
     nodeLabel: string;
-    matchWherePattern: string;
+    matchWherePattern: Cypher.Clause;
     fields: Record<string, ResolveTree>;
-    fieldAlias: string;
+    fieldAlias: Cypher.Node | Cypher.Relationship;
     graphElement: Node | Relationship;
     params: Record<string, string>;
-}): string {
+}): Cypher.RawCypher {
     const fieldsSubQueries = Object.values(fields).reduce((acc, field) => {
         const fieldType = getFieldType(field);
         const dbProperty = mapToDbProperty(graphElement, field.name);
@@ -248,9 +261,9 @@ function createAggregationQuery({
                 [nodeLabel]: nodeLabel,
             }
         );
-        acc[field.alias] = `head(${aggregationQuery})`;
+        acc[field.alias] = new Cypher.RawCypher((env) => `head(${aggregationQuery.getCypher(env)})`);
         return acc;
-    }, {} as Record<string, string>);
+    }, {} as Record<string, Cypher.RawCypher>);
 
     return stringifyObject(fieldsSubQueries);
 }
@@ -261,11 +274,11 @@ function getAggregationSubquery({
     type,
     targetAlias,
 }: {
-    matchWherePattern: string;
+    matchWherePattern: Cypher.Clause;
     fieldName: string;
     type: AggregationType | undefined;
-    targetAlias: string;
-}): string {
+    targetAlias: Cypher.Node | Cypher.Relationship;
+}): Cypher.RawCypher {
     switch (type) {
         case AggregationType.String:
         case AggregationType.Id:

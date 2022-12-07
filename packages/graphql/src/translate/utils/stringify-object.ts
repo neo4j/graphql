@@ -17,12 +17,24 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
+
 /** Serializes object into a string for Cypher objects */
-export function stringifyObject(fields: Record<string, string | undefined | null>): string {
-    return `{ ${Object.entries(fields)
-        .filter(([, value]) => Boolean(value))
-        .map(([key, value]): string | undefined => {
-            return `${key}: ${value}`;
-        })
-        .join(", ")} }`;
+export function stringifyObject(
+    fields: Record<string, Cypher.RawCypher | string | undefined | null>
+): Cypher.RawCypher {
+    return new Cypher.RawCypher(
+        (env) =>
+            `{ ${Object.entries(fields)
+                .filter(([, value]) => Boolean(value))
+                .map(([key, value]): string | undefined => {
+                    if (typeof value === "string") {
+                        return `${key}: ${value}`;
+                    }
+                    else {
+                        return `${key}: ${value?.getCypher(env)}`;
+                    }
+                })
+                .join(", ")} }`
+    );
 }
