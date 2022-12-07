@@ -97,7 +97,7 @@ describe("Update using aggregate where", () => {
         await driver.close();
     });
 
-    test("should update by using an aggregation count", async () => {
+    test.only("should update by using an aggregation count", async () => {
         const query = `
             mutation {
                 ${userType.operations.update}(
