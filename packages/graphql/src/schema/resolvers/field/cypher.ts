@@ -34,12 +34,11 @@ export function cypherResolver({
     statement: string;
     type: "Query" | "Mutation";
 }) {
-    let cypherResultVariables: string[] | undefined; // Represent the memoized result variables of a @cypher query
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
 
-        if (!cypherResultVariables && field.experimental) {
-            cypherResultVariables = await getCypherResultVariables(statement, context.executor);
+        if (!field.returnVariables && field.experimental) {
+            field.returnVariables = await getCypherResultVariables(statement, context.executor);
         }
 
         const { cypher, params } = translateTopLevelCypher({
@@ -49,7 +48,6 @@ export function cypherResolver({
             args,
             type,
             statement,
-            cypherResultVariables: cypherResultVariables || [],
         });
         const executeResult = await execute({
             cypher,

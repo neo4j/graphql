@@ -34,7 +34,6 @@ export function translateTopLevelCypher({
     args,
     type,
     statement,
-    cypherResultVariables,
 }: {
     context: Context;
     info: GraphQLResolveInfo;
@@ -42,7 +41,6 @@ export function translateTopLevelCypher({
     args: any;
     statement: string;
     type: "Query" | "Mutation";
-    cypherResultVariables: string[];
 }): Cypher.CypherResult {
     context.resolveTree = getNeo4jResolveTree(info);
     const { resolveTree } = context;
@@ -164,7 +162,6 @@ export function translateTopLevelCypher({
             const experimentalCypherStatement = createExperimentalCypherStatement({
                 statement,
                 field,
-                cypherResultVariables,
             });
             cypherStrs.push(...experimentalCypherStatement);
         } else {
@@ -235,23 +232,18 @@ function createLegacyCypherStatement({
     return cypherStrs;
 }
 
-function createExperimentalCypherStatement({
-    statement,
-    field,
-    cypherResultVariables,
-}: {
-    statement: string;
-    field: CypherField;
-    cypherResultVariables: string[];
-}): string[] {
+function createExperimentalCypherStatement({ statement, field }: { statement: string; field: CypherField }): string[] {
+    if (!field.returnVariables) {
+        throw new Error("Variables not available on @cypher field");
+    }
     const cypherStrs: string[] = [];
     cypherStrs.push("CALL {", statement, "}");
 
-    if (cypherResultVariables.length > 0) {
+    if (field.returnVariables.length > 0) {
         if (field.isScalar || field.isEnum) {
-            cypherStrs.push(`UNWIND ${cypherResultVariables[0]} as this`);
+            cypherStrs.push(`UNWIND ${field.returnVariables[0]} as this`);
         } else {
-            cypherStrs.push(`WITH ${cypherResultVariables[0]} as this`);
+            cypherStrs.push(`WITH ${field.returnVariables[0]} as this`);
         }
     }
     return cypherStrs;

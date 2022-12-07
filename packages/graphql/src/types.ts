@@ -169,6 +169,7 @@ export interface ConnectionField extends BaseField {
 export interface CypherField extends BaseField {
     statement: string;
     experimental: boolean;
+    returnVariables?: string[];
     isEnum: boolean;
     isScalar: boolean;
 }
