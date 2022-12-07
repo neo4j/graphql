@@ -34,10 +34,6 @@ jobs:
             var fs = require('fs');
             fs.writeFileSync('${{ github.workspace }}/performance.zip', Buffer.from(download.data));
       - run: unzip performance.zip
-      - id: get-performance-report
-        run: |
-          performanceReport=$(<performanceReport)
-          echo "performanceReport=$performanceReport" >> "$GITHUB_OUTPUT"
       - id: get-pr-number
         run: |
           number=$(<prnumber)
@@ -47,8 +43,5 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@fcf6fe9e4a0409cd9316a5011435be0f3327f1e1 # v2.3.1
         with:
           number: ${{ steps.get-pr-number.outputs.pr-number }}
-          message: |
-            The performance tests are complete. The results are in!
-
-            ${{ steps.get-performance-report.outputs.performanceReport }}
+          path: ./performanceReport
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
