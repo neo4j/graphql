@@ -48,7 +48,7 @@ export class ListExpr implements CypherCompilable {
         return this.serializeList(env, this.value);
     }
 
-    public get(idx) {
+    public get(idx: number): Expr | undefined {
         return this.value[idx];
     }
 }

@@ -26,7 +26,7 @@ export function caseWhere(predicate: Cypher.Predicate, columns: Cypher.List): Cy
     const aggregationWith = new Cypher.With("*", [caseFilter, caseProjection]).distinct();
     const columnsProjection = Array(columns.length).fill(() => undefined).map(
         (element, index) =>
-            [new Cypher.ListAccessor(caseProjection, index), columns.get(index)] as [Cypher.Expr, Cypher.Variable]
+            [caseProjection.index(index), columns.get(index)] as [Cypher.Expr, Cypher.Variable]
     );
     const caseProjectionWith = new Cypher.With("*", ...columnsProjection);
     return Cypher.concat(aggregationWith, caseProjectionWith);
