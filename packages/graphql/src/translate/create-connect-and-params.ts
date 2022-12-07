@@ -27,6 +27,8 @@ import createRelationshipValidationString from "./create-relationship-validation
 import type { CallbackBucket } from "../classes/CallbackBucket";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import Cypher from "@neo4j/cypher-builder";
+import { caseWhere } from "../utils/case-where";
 
 interface Res {
     connects: string[];
@@ -125,7 +127,6 @@ function createConnectAndParams({
                 params = { ...params, ...rootNodeWhereParams };
                 if (preComputedSubqueries) {
                     subquery.push(preComputedSubqueries);
-                    subquery.push("WITH *");
                 }
             }
 
@@ -156,7 +157,6 @@ function createConnectAndParams({
                     params = { ...params, ...onTypeNodeWhereParams };
                     if (preComputedSubqueries) {
                         subquery.push(preComputedSubqueries);
-                        subquery.push("WITH *");
                     }
                 }
             }
@@ -176,7 +176,10 @@ function createConnectAndParams({
         }
 
         if (whereStrs.length) {
-            subquery.push(`\tWHERE ${whereStrs.join(" AND ")}`);
+            const columns = new Cypher.List([new Cypher.NamedVariable(nodeName)]);
+            const caseWhereClause = caseWhere(new Cypher.RawCypher(whereStrs.join(" AND ")), columns);
+            const { cypher } = caseWhereClause.build("myPrefix");
+            subquery.push(cypher);
         }
 
         const nodeMatrix: Array<{ node: Node; name: string }> = [{ node: relatedNode, name: nodeName }];
