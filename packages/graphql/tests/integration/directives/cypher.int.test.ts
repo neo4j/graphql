@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import type { Driver } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -30,10 +30,15 @@ import { generateUniqueType } from "../../utils/graphql-types";
 describe("cypher", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+    let session: Session;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+    });
+
+    beforeEach(async () => {
+        session = await neo4j.getSession();
     });
 
     afterAll(async () => {
@@ -43,7 +48,7 @@ describe("cypher", () => {
     describe("Top level cypher", () => {
         describe("Query", () => {
             test("should query custom query and return relationship data", async () => {
-                const session = await neo4j.getSession();
+                session = await neo4j.getSession();
 
                 const movieTitle = generate({
                     charset: "alphabetic",
@@ -113,7 +118,7 @@ describe("cypher", () => {
             });
 
             test("should query custom query and return relationship data with custom where on field", async () => {
-                const session = await neo4j.getSession();
+                session = await neo4j.getSession();
 
                 const movieTitle = generate({
                     charset: "alphabetic",
@@ -183,7 +188,7 @@ describe("cypher", () => {
             });
 
             test("should query custom query and return relationship data with auth", async () => {
-                const session = await neo4j.getSession();
+                session = await neo4j.getSession();
 
                 const movieTitle = generate({
                     charset: "alphabetic",
@@ -260,7 +265,7 @@ describe("cypher", () => {
             });
 
             test("should query multiple nodes and return relationship data", async () => {
-                const session = await neo4j.getSession();
+                session = await neo4j.getSession();
 
                 const movieTitle1 = generate({
                     charset: "alphabetic",
@@ -352,7 +357,7 @@ describe("cypher", () => {
             });
 
             test("should query multiple connection fields on a type", async () => {
-                const session = await neo4j.getSession();
+                session = await neo4j.getSession();
 
                 const title = generate({
                     charset: "alphabetic",
@@ -457,7 +462,7 @@ describe("cypher", () => {
 
         describe("Mutation", () => {
             test("should query custom mutation and return relationship data", async () => {
-                const session = await neo4j.getSession();
+                session = await neo4j.getSession();
 
                 const movieTitle = generate({
                     charset: "alphabetic",
@@ -527,7 +532,7 @@ describe("cypher", () => {
             });
 
             test("should query custom mutation and return relationship data with custom where on field", async () => {
-                const session = await neo4j.getSession();
+                session = await neo4j.getSession();
 
                 const movieTitle = generate({
                     charset: "alphabetic",
@@ -597,7 +602,7 @@ describe("cypher", () => {
             });
 
             test("should query custom mutation and return relationship data with auth", async () => {
-                const session = await neo4j.getSession();
+                session = await neo4j.getSession();
 
                 const movieTitle = generate({
                     charset: "alphabetic",
@@ -703,7 +708,7 @@ describe("cypher", () => {
             `;
 
             beforeAll(async () => {
-                const session = await neo4j.getSession();
+                session = await neo4j.getSession();
 
                 const neoSchemaWithDefaultValue = new Neo4jGraphQL({
                     typeDefs: generateTypeDefs(true),
@@ -721,7 +726,7 @@ describe("cypher", () => {
             });
 
             afterAll(async () => {
-                const session = await neo4j.getSession();
+                session = await neo4j.getSession();
                 await session.run(`MATCH (n:${accountType.name}) DETACH DELETE n`);
                 await session.close();
             });
@@ -739,7 +744,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: neo4j.getContextValues(),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
                 const expectedStartId = `${defaultOffset + 1}`;
@@ -775,7 +780,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: neo4j.getContextValues(),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { offset, limit },
                     });
 
@@ -803,7 +808,7 @@ describe("cypher", () => {
         describe("Issues", () => {
             // https://github.com/neo4j/graphql/issues/227
             test("227", async () => {
-                const session = await neo4j.getSession();
+                session = await neo4j.getSession();
 
                 const memberId = generate({
                     charset: "alphabetic",
@@ -910,7 +915,7 @@ describe("cypher", () => {
             `;
 
             beforeAll(async () => {
-                const session = await neo4j.getSession();
+                session = await neo4j.getSession();
 
                 const neoSchemaWithDefaultValue = new Neo4jGraphQL({
                     typeDefs: generateTypeDefs(true),
@@ -936,7 +941,7 @@ describe("cypher", () => {
             });
 
             afterAll(async () => {
-                const session = await neo4j.getSession();
+                session = await neo4j.getSession();
                 await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
                 await session.close();
             });
@@ -955,7 +960,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: neo4j.getContextValues(),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { id: townId },
                     });
 
@@ -994,7 +999,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: neo4j.getContextValues(),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { id: townId, caseName: testCaseName },
                     });
 
@@ -1052,7 +1057,7 @@ describe("cypher", () => {
             `;
 
             beforeAll(async () => {
-                const session = await neo4j.getSession();
+                session = await neo4j.getSession();
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
@@ -1077,7 +1082,7 @@ describe("cypher", () => {
             });
 
             afterAll(async () => {
-                const session = await neo4j.getSession();
+                session = await neo4j.getSession();
                 await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
                 await session.close();
             });
