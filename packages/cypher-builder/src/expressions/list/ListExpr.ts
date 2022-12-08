@@ -27,6 +27,10 @@ import type { CypherCompilable, Expr } from "../../types";
 export class ListExpr implements CypherCompilable {
     private value: Expr[];
 
+    get length() {
+        return this.value.length;
+    }
+
     constructor(value: Expr[]) {
         this.value = value;
     }
@@ -42,5 +46,9 @@ export class ListExpr implements CypherCompilable {
 
     public getCypher(env: CypherEnvironment): string {
         return this.serializeList(env, this.value);
+    }
+
+    public get(idx: number): Expr | undefined {
+        return this.value[idx];
     }
 }

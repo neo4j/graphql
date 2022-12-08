@@ -24,6 +24,8 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import Cypher from "@neo4j/cypher-builder";
+import { caseWhere } from "../utils/case-where";
 
 interface Res {
     disconnects: string[];
@@ -94,8 +96,7 @@ function createDisconnectAndParams({
                     whereStrs.push(whereCypher);
                     params = { ...params, ...whereParams };
                     if (preComputedSubqueries) {
-                        subquery.push(preComputedSubqueries)
-                        subquery.push("WITH *");
+                        subquery.push(preComputedSubqueries);
                     }
                 }
             } catch {
@@ -117,7 +118,10 @@ function createDisconnectAndParams({
         }
 
         if (whereStrs.length) {
-            subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
+            const columns = new Cypher.List([new Cypher.NamedVariable(relVarName), new Cypher.NamedVariable(variableName)]);
+            const caseWhereClause = caseWhere(new Cypher.RawCypher(whereStrs.join(" AND ")), columns);
+            const { cypher } = caseWhereClause.build("myPrefix");
+            subquery.push(cypher);
         }
 
         const nodeMatrix: { node: Node; name: string }[] = [

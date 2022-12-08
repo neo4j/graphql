@@ -20,6 +20,7 @@
 import { PropertyRef } from "./PropertyRef";
 import type { CypherCompilable } from "../types";
 import type { CypherEnvironment } from "../Environment";
+import { ListIndex } from "../expressions/list/ListIndex";
 
 /** Represents a reference that will be kept in the environment */
 export abstract class Reference implements CypherCompilable {
@@ -39,6 +40,10 @@ export abstract class Reference implements CypherCompilable {
 
     public property(path: string): PropertyRef {
         return new PropertyRef(this, path);
+    }
+
+    public index(index: number): ListIndex {
+        return new ListIndex(this, index);
     }
 }
 

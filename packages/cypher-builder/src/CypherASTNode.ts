@@ -26,6 +26,9 @@ import type { CypherCompilable } from "./types";
 export abstract class CypherASTNode implements CypherCompilable {
     protected parent?: CypherASTNode;
 
+    /**
+     * @hidden
+     */
     constructor(parent?: CypherASTNode) {
         this.parent = parent;
     }
@@ -40,7 +43,9 @@ export abstract class CypherASTNode implements CypherCompilable {
         return this;
     }
 
-    /** Concrete tree traversal pattern to generate the Cypher on nested nodes */
+    /** Concrete tree traversal pattern to generate the Cypher on nested nodes
+     * @hidden
+     */
     public abstract getCypher(env: CypherEnvironment): string;
 
     /** Sets the parent-child relationship for build traversal */

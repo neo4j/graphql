@@ -53,7 +53,6 @@ export * as apoc from "./apoc/apoc";
 export { ListComprehension } from "./expressions/list/ListComprehension";
 export { PatternComprehension } from "./expressions/list/PatternComprehension";
 export { ListExpr as List } from "./expressions/list/ListExpr";
-export { ListAccessor } from "./expressions/list/ListAccessor";
 
 // --Map
 export { MapExpr as Map } from "./expressions/map/MapExpr";

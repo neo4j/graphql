@@ -25,6 +25,8 @@ import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import { createEventMetaObject } from "./subscriptions/create-event-meta";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import Cypher from "@neo4j/cypher-builder";
+import { caseWhere } from "../utils/case-where";
 
 interface Res {
     strs: string[];
@@ -120,7 +122,6 @@ function createDeleteAndParams({
                                 res.params = { ...res.params, ...whereParams };
                                 if (preComputedSubqueries) {
                                     res.strs.push(preComputedSubqueries);
-                                    res.strs.push("WITH *");
                                 }
                             }
                         } catch {
@@ -139,7 +140,10 @@ function createDeleteAndParams({
                         res.params = { ...res.params, ...whereAuth[1] };
                     }
                     if (whereStrs.length) {
-                        res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
+                        const columns = new Cypher.List([new Cypher.NamedVariable(relationshipVariable), new Cypher.NamedVariable(variableName)]);
+                        const caseWhereClause = caseWhere(new Cypher.RawCypher(whereStrs.join(" AND ")), columns);
+                        const { cypher } = caseWhereClause.build("myPrefix");
+                        res.strs.push(cypher);
                     }
 
                     const allowAuth = createAuthAndParams({

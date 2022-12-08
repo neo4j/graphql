@@ -21,8 +21,7 @@ import type { CypherEnvironment } from "../../Environment";
 import type { Variable } from "../../references/Variable";
 import type { CypherCompilable } from "../../types";
 
-
-export class ListAccessor implements CypherCompilable {
+export class ListIndex implements CypherCompilable {
     private value: Variable;
     private index: number;
 
