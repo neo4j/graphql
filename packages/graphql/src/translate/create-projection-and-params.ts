@@ -265,8 +265,8 @@ export default function createProjectionAndParams({
             if (aggregationFieldProjection.projectionSubqueryCypher) {
                 res.subqueries.push(new Cypher.RawCypher(aggregationFieldProjection.projectionSubqueryCypher));
             }
-            res.projection.push(`${alias}: ${aggregationFieldProjection.matchVar}`);
-            res.params = { ...res.params, ...aggregationFieldProjection.params };
+            res.projection.push(`${alias}: ${aggregationFieldProjection.projectionCypher}`);
+            res.params = { ...res.params, ...aggregationFieldProjection.projectionParams };
             return res;
         }
 

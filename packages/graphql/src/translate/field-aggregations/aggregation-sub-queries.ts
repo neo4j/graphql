@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { AggregationAuth } from "./field-aggregations-auth";
 import { wrapApocConvertDate } from "../projection/elements/create-datetime-element";
 import { stringifyObject } from "../utils/stringify-object";
 import Cypher from "@neo4j/cypher-builder";
@@ -28,11 +27,6 @@ export function createMatchWherePattern(
     auth: Cypher.Predicate | undefined,
     wherePredicate: Cypher.Predicate | undefined
 ): Cypher.Clause {
-    // const whereQuery = whereInput || auth.whereQuery ? "WHERE" : "";
-    // const andQuery = whereInput && auth.whereQuery ? "AND" : "";
-    // preComputedWhereFields = preComputedWhereFields ? `${preComputedWhereFields}\nWITH *` : "";
-    // const matchClauses = [matchPattern, preComputedWhereFields, whereQuery, whereInput, andQuery, auth.whereQuery];
-
     const matchClause = new Cypher.Match(matchPattern);
     const whereClause = !preComputedWhereFields?.empty ? new Cypher.With("*") : matchClause;
     if (wherePredicate) whereClause.where(wherePredicate);
