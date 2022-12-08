@@ -39,16 +39,20 @@ type Movie {
     actors: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
     reviewers: [Reviewer] @relationship(type: "REVIEWED", direction: IN, properties: "Reviewed")
 }
+
 type Actor {
     name: String
 }
+
 interface ActedIn @relationshipProperties {
     screenTime: Int!
 }
+
 type Reviewer {
     name: String
     reputation: Int
 }
+
 interface Reviewed @relationshipProperties {
     score: Int!
 }
@@ -108,9 +112,11 @@ type Movie {
     genre: String
     actors: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
 }
+
 type Actor {
     name: String
 }
+
 interface ActedIn @relationshipProperties {
     screenTime: Int!
 }
@@ -153,14 +159,18 @@ type Movie {
     genre: String
     directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
 }
+
 union Director = Person | Actor
+
 type Actor {
     name: String
 }
+
 type Person {
     name: String
     reputation: Int
 }
+
 interface Directed @relationshipProperties {
     year: Int!
 }
@@ -203,17 +213,21 @@ type Movie {
     genre: String
     reviewers: [Reviewer!]! @relationship(type: "REVIEWED", properties: "Review", direction: IN)
 }
+
 interface Reviewer {
     reputation: Int!
 }
+
 type Magazine implements Reviewer {
     title: String
     reputation: Int!
 }
+
 type Influencer implements Reviewer {
     name: String
     reputation: Int!
 }
+
 interface Review {
     score: Int!
 }
@@ -261,18 +275,23 @@ type Movie {
     actors: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
     directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
 }
+
 type Actor {
     name: String
     movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
 }
+
 type Person {
     name: String
     reputation: Int
 }
+
 union Director = Person | Actor
+
 interface ActedIn @relationshipProperties {
     screenTime: Int!
 }
+
 interface Directed @relationshipProperties {
     year: Int!
 }
@@ -528,10 +547,12 @@ type Actor @node(label: "Person") {
     name: String
     movies: [Movie!]! @relationship(type: "PART_OF", direction: OUT)
 }
+
 typePerson {
     name: String
     movies: [Movie!]! @relationship(type: "PART_OF", direction: OUT)
 }
+
 type Movie {
     title: String
     genre: String
