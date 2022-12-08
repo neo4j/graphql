@@ -250,7 +250,7 @@ function mergeStatement({
 
         withClause = new Cypher.RawCypher((env: Cypher.Environment) => {
             const eventWithMetaStr = createConnectionEventMeta({
-                event: "connect",
+                event: "create_relationship",
                 relVariable: relationship.getCypher(env),
                 fromVariable: relationship.source.getCypher(env),
                 toVariable: relationship.target.getCypher(env),

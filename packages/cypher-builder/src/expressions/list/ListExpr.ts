@@ -20,7 +20,10 @@
 import type { CypherEnvironment } from "../../Environment";
 import type { CypherCompilable, Expr } from "../../types";
 
-/** Represents a List */
+/** Represents a List
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/lists/)
+ * @group Expressions
+ */
 export class ListExpr implements CypherCompilable {
     private value: Expr[];
 

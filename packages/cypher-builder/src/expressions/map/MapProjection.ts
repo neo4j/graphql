@@ -19,10 +19,17 @@
 
 import type { CypherEnvironment } from "../../Environment";
 import type { CypherCompilable, Expr } from "../../types";
-import type { Variable } from "../../variables/Variable";
+import type { Variable } from "../../references/Variable";
 import { serializeMap } from "../../utils/serialize-map";
 
-/** Represents a Map projection https://neo4j.com/docs/cypher-manual/current/syntax/maps/#cypher-map-projection */
+/** Represents a Map projection
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/maps/#cypher-map-projection)
+ * @group Expressions
+ * @example
+ * ```cypher
+ * this { .title }
+ * ```
+ */
 export class MapProjection implements CypherCompilable {
     private extraValues: Record<string, Expr>;
     private variable: Variable;

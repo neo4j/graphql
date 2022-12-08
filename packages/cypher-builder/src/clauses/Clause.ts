@@ -21,11 +21,13 @@ import { CypherASTNode } from "../CypherASTNode";
 import { CypherEnvironment, EnvPrefix } from "../Environment";
 import type { CypherResult } from "../types";
 import { convertToCypherParams } from "../utils/convert-to-cypher-params";
-import { padBlock } from "../utils/utils";
+import { padBlock } from "../utils/pad-block";
 
 const customInspectSymbol = Symbol.for("nodejs.util.inspect.custom");
 
-/** Represents a clause AST node */
+/** Represents a clause AST node
+ *  @group Internal
+ */
 export abstract class Clause extends CypherASTNode {
     /** Compiles a clause into Cypher and params */
     public build(prefix?: string | EnvPrefix | undefined, extraParams: Record<string, any> = {}): CypherResult {
@@ -48,13 +50,17 @@ export abstract class Clause extends CypherASTNode {
         return new CypherEnvironment(prefix);
     }
 
-    // Custom string for browsers and templating
+    /** Custom string for browsers and templating
+     * @hidden
+     */
     public toString() {
         const cypher = padBlock(this.build().cypher);
         return `<Clause ${this.constructor.name}> """\n${cypher}\n"""`;
     }
 
-    // /** Custom log for console.log in Node */
+    /** Custom log for console.log in Node
+     * @hidden
+     */
     [customInspectSymbol](): string {
         return this.toString();
     }
