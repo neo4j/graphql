@@ -26,10 +26,11 @@ import { setupDatabase, cleanDatabase } from "./utils/setup-database";
 import { Neo4jGraphQL } from "../../src";
 import { collectTests, collectCypherTests } from "./utils/collect-test-files";
 import { ResultsWriter } from "./utils/ResultsWriter";
-import { ResultsDisplay } from "./utils/ResultsDisplay";
 import { TestRunner } from "./utils/TestRunner";
 import type * as Performance from "./types";
 import { schemaPerformance } from "./schema-performance";
+import { MarkdownFormatter } from "./utils/formatters/MarkdownFormatter";
+import { TTYFormatter } from "./utils/formatters/TTYFormatter";
 
 let driver: Driver;
 
@@ -118,8 +119,13 @@ async function queryPerformance() {
 
         const results = await runTests(withCypher);
 
-        const resultsDisplay = new ResultsDisplay();
-        await resultsDisplay.display(results, oldResults);
+        if (process.argv.includes("--markdown")) {
+            const resultsDisplay = new MarkdownFormatter();
+            console.log(await resultsDisplay.format(results, oldResults));
+        } else {
+            const resultsDisplay = new TTYFormatter();
+            console.table(await resultsDisplay.format(results, oldResults));
+        }
 
         const updateSnapshot = process.argv.includes("-u");
         if (updateSnapshot) {
