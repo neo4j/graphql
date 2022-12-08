@@ -63,7 +63,7 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
                 "The calculated overall rating based on all reviews"
                 overallRating: Float
                 "All submitted reviews about this location"
-                reviewsForLocation: [${Review}!]!
+                reviewsForLocation: [${Review}!]! @relationship(type: "HAS_REVIEW", direction: OUT)
             }
 
             type ${Review} {
@@ -73,7 +73,7 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
                 "A number from 1 - 5 with 1 being lowest and 5 being highest"
                 rating: Int
                 "The location the review is about"
-                location: ${Location}
+                location: ${Location} @relationship(type: "HAS_REVIEW", direction: IN)
             }
         `;
 
@@ -88,8 +88,8 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
             reviewsSubgraph.getSchema(),
         ]);
 
-        locationsServer = new SubgraphServer(locationsSchema, 4000);
-        reviewsServer = new SubgraphServer(reviewsSchema, 4001);
+        locationsServer = new SubgraphServer(locationsSchema, 4006);
+        reviewsServer = new SubgraphServer(reviewsSchema, 4007);
 
         const [locationsUrl, reviewsUrl] = await Promise.all([locationsServer.start(), reviewsServer.start()]);
 
@@ -98,13 +98,17 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
                 { name: "locations", url: locationsUrl },
                 { name: "reviews", url: reviewsUrl },
             ],
-            4002
+            4008
         );
 
         gatewayUrl = await gatewayServer.start();
 
         await neo4j.executeWrite(
-            `CREATE (:${Location} { id: "1", description: "description", name: "name", overallRating: 5.5, photo: "photo" })`
+            `
+                CREATE (l:${Location} { id: "1", description: "description", name: "name", overallRating: 5.5, photo: "photo" })
+                CREATE (l)-[:HAS_REVIEW]->(:${Review} { id: "1", comment: "Good", rating: 10 })
+                CREATE (l)-[:HAS_REVIEW]->(:${Review} { id: "2", comment: "Bad", rating: 1 })
+            `
         );
     });
 
@@ -114,7 +118,7 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
         await neo4j.close();
     });
 
-    test("all Location fields can be resolved across both subgraphs", async () => {
+    test("all Location fields and related reviews can be resolved across both subgraphs", async () => {
         const request = supertest(gatewayUrl);
 
         const response = await request.post("").send({
@@ -126,6 +130,11 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
                   name
                   overallRating
                   photo
+                  reviewsForLocation {
+                    id
+                    comment
+                    rating
+                  }
                 }
               }
         `,
@@ -135,7 +144,17 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
         expect(response.body).toEqual({
             data: {
                 [Location.plural]: [
-                    { description: "description", id: "1", name: "name", overallRating: 5.5, photo: "photo" },
+                    {
+                        description: "description",
+                        id: "1",
+                        name: "name",
+                        overallRating: 5.5,
+                        photo: "photo",
+                        reviewsForLocation: expect.toIncludeSameMembers([
+                            { id: "1", comment: "Good", rating: 10 },
+                            { id: "2", comment: "Bad", rating: 1 },
+                        ]),
+                    },
                 ],
             },
         });

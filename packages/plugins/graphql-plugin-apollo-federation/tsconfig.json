@@ -10,7 +10,7 @@
             "@neo4j/graphql-ogm": ["../../ogm/src"]
         }
     },
-    "include": ["examples/**/*", "src/**/*", "tests/**/*"],
+    "include": ["global.d.ts", "examples/**/*", "src/**/*", "tests/**/*"],
     "references": [
         { "path": "../../cypher-builder/tsconfig.json" },
         { "path": "../../graphql/tsconfig.json" },
