@@ -56,7 +56,7 @@ export class ListExpr implements CypherCompilable {
         return this.serializeList(env, this.value);
     }
 
-    /* Access individual elements in the list via the ListIndex class*/
+    /** Access individual elements in the list via the ListIndex class*/
     public index(index: number): ListIndex {
         return new ListIndex(this, index);
     }
