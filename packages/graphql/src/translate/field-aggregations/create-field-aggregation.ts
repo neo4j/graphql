@@ -47,7 +47,7 @@ export function createFieldAggregation({
     nodeLabel: string;
     node: Node;
     field: ResolveTree;
-}): { matchVar: string; cypher: string; params: Record<string, any> } | undefined {
+}): { matchVar: string; projectionSubqueryCypher: string; params: Record<string, any> } | undefined {
     const sourceRef = new Cypher.NamedNode(nodeLabel);
     const targetRef = new Cypher.Node();
 
@@ -95,7 +95,7 @@ export function createFieldAggregation({
     const matchWherePattern = createMatchWherePattern(targetPattern, preComputedSubqueries, authData, predicate);
     const projectionMap = new Cypher.Map();
 
-    let returnMatchPattern: Cypher.Clause = new Cypher.RawCypher("");
+    let projectionSubqueries: Cypher.Clause = new Cypher.RawCypher("");
     const countRef = new Cypher.Variable();
     let countFunction: Cypher.Function | undefined;
 
@@ -104,54 +104,40 @@ export function createFieldAggregation({
         projectionMap.set({
             count: countRef,
         });
-        returnMatchPattern = new Cypher.Call(
+        projectionSubqueries = new Cypher.Call(
             Cypher.concat(matchWherePattern, new Cypher.Return([countFunction, countRef]))
         ).innerWith(sourceRef);
     }
     const nodeFields = aggregationFields.node;
     if (nodeFields) {
-        const nodeProjectionMap = new Cypher.Map();
-
-        Object.values(nodeFields).forEach((field) => {
-            const dbProperty = mapToDbProperty(referenceNode, field.name);
-            const fieldType = getFieldType(field);
-            const fieldName = dbProperty || field.name;
-            nodeProjectionMap.set(fieldName, new Cypher.RawCypher(fieldName));
-            const subquery = getAggregationSubquery({
+        const { innerProjectionMap: nodeProjectionMap, innerProjectionSubqueries } =
+            getAggregationProjectionAndSubqueries({
+                referenceNode,
                 matchWherePattern,
-                fieldName,
-                type: fieldType,
-                targetAlias: targetRef,
+                targetRef,
+                sourceRef,
+                fields: nodeFields,
             });
-            returnMatchPattern = Cypher.concat(returnMatchPattern, new Cypher.Call(subquery).innerWith(sourceRef));
-        });
-
+        projectionSubqueries = Cypher.concat(projectionSubqueries, innerProjectionSubqueries);
         projectionMap.set({ node: nodeProjectionMap });
     }
     const edgeFields = aggregationFields.edge;
     if (edgeFields) {
-        const nodeProjectionMap = new Cypher.Map();
-
-        Object.values(edgeFields).forEach((field) => {
-            const dbProperty = mapToDbProperty(referenceNode, field.name);
-            const fieldType = getFieldType(field);
-            const fieldName = dbProperty || field.name;
-            nodeProjectionMap.set(fieldName, new Cypher.RawCypher(fieldName));
-            const subquery = getAggregationSubquery({
+        const { innerProjectionMap: edgeProjectionMap, innerProjectionSubqueries } =
+            getAggregationProjectionAndSubqueries({
+                referenceNode,
                 matchWherePattern,
-                fieldName,
-                type: fieldType,
-                targetAlias: targetPattern,
+                targetRef: targetPattern,
+                sourceRef,
+                fields: edgeFields,
             });
-            returnMatchPattern = Cypher.concat(returnMatchPattern, new Cypher.Call(subquery).innerWith(sourceRef));
-        });
-
-        projectionMap.set({ edge: nodeProjectionMap });
+        projectionSubqueries = Cypher.concat(projectionSubqueries, innerProjectionSubqueries);
+        projectionMap.set({ edge: edgeProjectionMap });
     }
 
-    let cypher = "";
+    let projectionSubqueryCypher = "";
     const rawProjection = new Cypher.RawCypher((env) => {
-        cypher = returnMatchPattern?.getCypher(env) || "";
+        projectionSubqueryCypher = projectionSubqueries?.getCypher(env) || "";
         return projectionMap.getCypher(env);
     });
 
@@ -159,9 +145,45 @@ export function createFieldAggregation({
 
     return {
         matchVar: result.cypher,
-        cypher,
+        projectionSubqueryCypher,
         params: result.params,
     };
+}
+
+function getAggregationProjectionAndSubqueries({
+    referenceNode,
+    matchWherePattern,
+    targetRef,
+    sourceRef,
+    fields,
+}: {
+    referenceNode: Node;
+    matchWherePattern: Cypher.Clause;
+    targetRef: Cypher.Node | Cypher.Relationship;
+    sourceRef: Cypher.Node;
+    fields: Record<string, ResolveTree>;
+}) {
+    let innerProjectionSubqueries: Cypher.Clause = new Cypher.RawCypher("");
+    const innerProjectionMap = new Cypher.Map();
+
+    Object.values(fields).forEach((field) => {
+        const dbProperty = mapToDbProperty(referenceNode, field.name);
+        const fieldType = getFieldType(field);
+        const fieldName = dbProperty || field.name;
+        innerProjectionMap.set(fieldName, new Cypher.RawCypher(fieldName));
+        const subquery = getAggregationSubquery({
+            matchWherePattern,
+            fieldName,
+            type: fieldType,
+            targetAlias: targetRef,
+        });
+        innerProjectionSubqueries = Cypher.concat(
+            innerProjectionSubqueries,
+            new Cypher.Call(subquery).innerWith(sourceRef)
+        );
+    });
+
+    return { innerProjectionMap, innerProjectionSubqueries };
 }
 
 function getAggregationFields(fieldPathBase: string, field: ResolveTree): AggregationFields {

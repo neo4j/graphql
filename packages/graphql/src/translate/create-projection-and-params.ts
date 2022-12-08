@@ -262,8 +262,8 @@ export default function createProjectionAndParams({
         });
 
         if (aggregationFieldProjection) {
-            if (aggregationFieldProjection.cypher) {
-                res.subqueries.push(new Cypher.RawCypher(aggregationFieldProjection.cypher));
+            if (aggregationFieldProjection.projectionSubqueryCypher) {
+                res.subqueries.push(new Cypher.RawCypher(aggregationFieldProjection.projectionSubqueryCypher));
             }
             res.projection.push(`${alias}: ${aggregationFieldProjection.matchVar}`);
             res.params = { ...res.params, ...aggregationFieldProjection.params };
