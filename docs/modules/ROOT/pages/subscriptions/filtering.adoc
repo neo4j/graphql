@@ -201,9 +201,9 @@ subscription {
 
 When subscribing to relationship events, the `where` argument still allows for specifying filters on the top-level properties of the targeted nodes, and also supports specifying filters on the relationship properties (`edge`) and on the top-level properties (`node`) of the nodes at the other end of the relationship. This is done by using the operators described above, and the usage is very similar to the one in xref:subscriptions/filtering.adoc#node-events-usage[Subscribing to node events].
 
-The relationship-related filtering logic is even more powerful, as filters can also express the expected relationship field, or the expected concrete type at the other end of the relationship when having relationships to Abstract Types. Note that these fields are combined in the resulting filter with a xref:subscriptions/filtering.adoc#filter-logical-or[logical `OR`].
+The relationship-related filtering logic is even more powerful, as filters can also express the expected relationship field, or the expected concrete type at the other end of the relationship when having relationships to Abstract Types. Note that each relationship field specified is combined with the others using a xref:subscriptions/filtering.adoc#filter-logical-or[logical `OR`]. Only events matching these relationship field names will be returned in the Subscription.
 
-Only events matching these properties, conditions and type will be returned to this subscription. Note that these fields are combined in the resulting filter with a xref:subscriptions/filtering.adoc#filter-logical-and[logical `AND`].
+You can further filter each relationship field by node and relationship properties. As per usual, these fields are combined in the resulting filter with a xref:subscriptions/filtering.adoc#filter-logical-and[logical `AND`].
 
 Considering the following type definitions:
 [source, graphql, indent=0]
