@@ -1,0 +1,93 @@
+name: "Performance Tests"
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - master
+
+jobs:
+  performance-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      neo4j:
+        image: neo4j:5-enterprise
+        env:
+          NEO4J_AUTH: neo4j/password
+          NEO4JLABS_PLUGINS: '["apoc"]'
+          NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
+        ports:
+          - 7687:7687
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+
+      - name: Target Branch - Check out
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.base_ref }}
+          fetch-depth: 0
+
+      - name: Target Branch - Install dependencies
+        run: yarn --immutable
+
+      - name: Target Branch - Run @neo4j/graphql warmup performance test
+        run: yarn performance
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
+      - name: Target Branch - Run @neo4j/graphql performance tests and create snapshot
+        run: yarn performance -u
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
+      - name: PR - Check out
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+
+      - name: PR - Install dependencies
+        run: yarn --immutable
+
+      - name: PR - Run @neo4j/graphql warmup performance test
+        run: yarn performance
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
+      - run: mkdir ./performance
+        working-directory: packages/graphql
+
+      - name: PR - Run @neo4j/graphql performance tests
+        run: |
+          yarn performance > ./performance/performanceReport
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
+      - name: PR - save PR number
+        env:
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "$PULL_REQUEST_NUMBER" > ./performance/prnumber
+        working-directory: packages/graphql
+
+      - name: Archive performance test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance
+          path: packages/graphql/performance/
