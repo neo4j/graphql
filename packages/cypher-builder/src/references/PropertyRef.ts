@@ -39,10 +39,14 @@ export class PropertyRef implements CypherCompilable {
         return this._variable;
     }
 
+    /** Access individual property via the PropertyRef class, using the dot notation */
     public property(path: string): PropertyRef {
         return new PropertyRef(this.variable, `${this._property}.${path}`);
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const variableStr = this.variable.getCypher(env);
         return `${variableStr}.${this._property}`;

@@ -36,6 +36,7 @@ import type { MapProjection } from "./expressions/map/MapProjection";
 import type { HasLabel } from "./expressions/HasLabel";
 import type { Reference } from "./references/Reference";
 import type { ApocFunction, ApocPredicate, ApocProcedure } from "./apoc/types";
+import type { ListIndex } from "./expressions/list/ListIndex";
 
 export type Operation = BooleanOp | ComparisonOp | MathOp;
 
@@ -54,7 +55,9 @@ export type Expr =
     | MapExpr // NOTE this cannot be set as a property in a node
     | MapProjection // NOTE this cannot be set as a property in a node
     | ListExpr
-    | ApocFunction;
+    | ListIndex
+    | ApocFunction
+    | Case<ComparisonOp>;
 
 /** Represents a predicate statement (i.e returns a boolean). Note that RawCypher is only added for compatibility */
 export type Predicate =
