@@ -33,7 +33,7 @@ export function caseWhere(predicate: Cypher.Predicate, columns: Cypher.Variable[
         .when(new Cypher.Literal(true))
         .then(new Cypher.List(columns))
         .else(nullList);
-    const aggregationWith = new Cypher.With("*", [caseFilter, caseProjection]).distinct();
+    const aggregationWith = new Cypher.With("*", [caseFilter, caseProjection]);
     const columnsProjection = Array(columns.length)
         .fill(() => undefined)
         .map((element, index) => [caseProjection.index(index), columns[index]] as [Cypher.Expr, Cypher.Variable]);

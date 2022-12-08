@@ -176,7 +176,7 @@ function createConnectAndParams({
         }
 
         if (whereStrs.length) {
-            const columns = new Cypher.List([new Cypher.NamedVariable(nodeName)]);
+            const columns = [new Cypher.NamedVariable(nodeName)];
             const caseWhereClause = caseWhere(new Cypher.RawCypher(whereStrs.join(" AND ")), columns);
             const { cypher } = caseWhereClause.build("myPrefix");
             subquery.push(cypher);

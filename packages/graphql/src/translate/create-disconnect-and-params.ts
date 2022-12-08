@@ -118,7 +118,7 @@ function createDisconnectAndParams({
         }
 
         if (whereStrs.length) {
-            const columns = new Cypher.List([new Cypher.NamedVariable(relVarName), new Cypher.NamedVariable(variableName)]);
+            const columns = [new Cypher.NamedVariable(relVarName), new Cypher.NamedVariable(variableName)];
             const caseWhereClause = caseWhere(new Cypher.RawCypher(whereStrs.join(" AND ")), columns);
             const { cypher } = caseWhereClause.build("myPrefix");
             subquery.push(cypher);
