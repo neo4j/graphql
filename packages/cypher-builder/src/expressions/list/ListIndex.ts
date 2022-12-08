@@ -18,46 +18,40 @@
  */
 
 import type { CypherEnvironment } from "../../Environment";
-import type { CypherCompilable, Expr } from "../../types";
-import { ListIndex } from "./ListIndex";
+import type { Variable } from "../../references/Variable";
+import type { CypherCompilable } from "../../types";
+import type { ListExpr } from "./ListExpr";
 
-/** Represents a List
+/** Access individual elements in the list
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/lists/)
  * @group Expressions
+ * @hidden
  * @example
  * ```ts
- * new Cypher.List([new Cypher.Literal("1"), new Cypher.Literal("2"), new Cypher.Literal("3")])
+ * const list = new Cypher.List([new Cypher.Literal("1"), new Cypher.Literal("2"), new Cypher.Literal("3")]);
+ * const listIndex = new ListIndex(list, 0);
  * ```
  * Translates to
  * ```cypher
- * [ "1", "2", "3" ]
+ * [ "1", "2", "3" ][0]
  * ```
  */
-export class ListExpr implements CypherCompilable {
-    private value: Expr[];
+export class ListIndex implements CypherCompilable {
+    private value: Variable | ListExpr;
+    private index: number;
 
-    constructor(value: Expr[]) {
-        this.value = value;
-    }
-
-    private serializeList(env: CypherEnvironment, obj: Expr[]): string {
-        const valuesList = obj.map((expr) => {
-            return expr.getCypher(env);
-        });
-
-        const serializedContent = valuesList.join(", ");
-        return `[ ${serializedContent} ]`;
+    /**
+     * @hidden
+     */
+    constructor(variable: Variable | ListExpr, index: number) {
+        this.value = variable;
+        this.index = index;
     }
 
     /**
      * @hidden
      */
     public getCypher(env: CypherEnvironment): string {
-        return this.serializeList(env, this.value);
-    }
-
-    /** Access individual elements in the list via the ListIndex class*/
-    public index(index: number): ListIndex {
-        return new ListIndex(this, index);
+        return `${this.value.getCypher(env)}[${this.index}]`;
     }
 }
