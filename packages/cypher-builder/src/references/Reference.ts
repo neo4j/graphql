@@ -38,10 +38,12 @@ export abstract class Reference implements CypherCompilable {
         return `${id}`;
     }
 
+    /* Access individual property via the PropertyRef class, using the dot notation */
     public property(path: string): PropertyRef {
         return new PropertyRef(this, path);
     }
 
+    /* Access individual elements via the ListIndex class, using the square bracket notation */
     public index(index: number): ListIndex {
         return new ListIndex(this, index);
     }
