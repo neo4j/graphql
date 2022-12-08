@@ -11,6 +11,8 @@ The `@cypher` directive binds a GraphQL field to the result(s) of a Cypher query
 directive @cypher(
     """The Cypher statement to run which returns a value of the same type composition as the field definition on which the directive is applied."""
     statement: String!,
+    """An experimental implementation for custom Cypher directive, with improved performance. Warning: this feature is experimental and may not work as expected."""
+    experimental: Boolean
 ) on FIELD_DEFINITION
 ----
 
@@ -165,6 +167,43 @@ type Query {
 ----
 
 The downside of the latter approach is that you will need to adjust the return object as you change your object type definition.
+
+== Experimental behaviour
+
+The new `experimental` flag will change the translation of custom Cypher. Instead of using https://neo4j.com/labs/apoc/4.0/overview/apoc.cypher/apoc.cypher.runFirstColumnMany/[apoc.cypher.runFirstColumnMany] it will directly wrap the query within a `CALL { }` subquery. This behvaiour has proven to be much more performant for the same queries, however, it may lead to unexpected changes, mainly if using Neo4j 5.x, where the subqueries need to be _aliased_.
+
+For example:
+
+The graphql query:
+[source, graphql, indent=0]
+----
+type query {
+    test: String! @cypher(statement: "RETURN 'hello'", experimental: true)
+}
+----
+
+Would get translated to:
+[source,cypher, indent=0]
+----
+CALL {
+    RETURN 'hello'
+}
+WITH 'hello' AS this
+RETURN this
+----
+
+Which is invalid in Neo4j 5.x.
+
+To fix it we just need to ensure the `RETURN` elements are aliased:
+[source, graphql, indent=0]
+----
+type query {
+    test: String! @cypher(statement: "RETURN 'hello' as result", experimental: true)
+}
+----
+
+
+Additionally, escaping strings is no longer needed with the `experimental` flag.
 
 == Usage examples
 

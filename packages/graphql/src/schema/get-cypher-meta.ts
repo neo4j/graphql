@@ -57,7 +57,7 @@ function parseExperimentalFlag(directive: DirectiveNode): boolean {
     const experimentalArg = directive.arguments?.find((x) => x.name.value === "experimental");
     if (!experimentalArg) return false;
     if (experimentalArg?.value.kind !== "BooleanValue") {
-        throw new Error("@cypher experimental flag isnot a boolean");
+        throw new Error("@cypher experimental flag is not a boolean");
     }
 
     return experimentalArg.value.value;
