@@ -85,7 +85,7 @@ export function createFieldAggregation({
     const authData = createFieldAggregationAuth({
         node: referenceNode,
         context,
-        subqueryNodeAlias: sourceRef,
+        subqueryNodeAlias: targetRef,
         nodeFields: aggregationFields.node,
     });
 
@@ -125,15 +125,15 @@ export function createFieldAggregation({
         targetPattern.reverse();
     }
     const matchWherePattern = createMatchWherePattern(targetPattern, preComputedSubqueries, authData, predicate);
-    const apocRunParams = {
-        // ...serializeParamsForApocRun(whereParams as Record<string, any>),
-        ...serializeAuthParamsForApocRun(authData),
-    };
+    // const apocRunParams = {
+    //     // ...serializeParamsForApocRun(whereParams as Record<string, any>),
+    //     ...serializeAuthParamsForApocRun(authData),
+    // };
 
-    const cypherParams = { ...apocRunParams, ...authData.params };
+    // const cypherParams = { ...apocRunParams, ...authData.params };
     const projectionMap = new Cypher.Map();
 
-    let returnMatchPattern: Cypher.Clause;
+    let returnMatchPattern: Cypher.Clause = new Cypher.RawCypher("");
     const countRef = new Cypher.Variable();
     let countFunction: Cypher.Function | undefined;
 
@@ -148,39 +148,79 @@ export function createFieldAggregation({
     }
     const nodeFields = aggregationFields.node;
     if (nodeFields) {
-        projectionMap.set({
-            node: new Cypher.RawCypher((env) => {
-                return [
-                    createAggregationQuery({
-                        nodeLabel,
-                        matchWherePattern,
-                        fields: nodeFields,
-                        fieldAlias: targetRef,
-                        graphElement: referenceNode,
-                        params: cypherParams,
-                    }).getCypher(env),
-                    cypherParams,
-                ];
-            }),
+        const nodeProjectionMap = new Cypher.Map();
+        
+
+        Object.values(nodeFields).forEach((field) => {
+            const dbProperty = mapToDbProperty(referenceNode, field.name);
+            const fieldType = getFieldType(field);
+            const fieldName = dbProperty || field.name;
+            nodeProjectionMap.set(fieldName, new Cypher.RawCypher(fieldName));
+            const subquery = getAggregationSubquery({
+                matchWherePattern,
+                fieldName,
+                type: fieldType,
+                targetAlias: targetRef,
+            });
+            returnMatchPattern = Cypher.concat(returnMatchPattern, new Cypher.Call(subquery).innerWith(sourceRef));
         });
+
+        projectionMap.set({ node: nodeProjectionMap });
+
+        // projectionMap.set({
+        //     node: new Cypher.RawCypher((env) => {
+        //         return [
+        //             createAggregationQuery({
+        //                 nodeLabel,
+        //                 matchWherePattern,
+        //                 fields: nodeFields,
+        //                 fieldAlias: targetRef,
+        //                 graphElement: referenceNode,
+        //                 params: cypherParams,
+        //             }).getCypher(env),
+        //             cypherParams,
+        //         ];
+        //     }),
+        // });
     }
     const edgeFields = aggregationFields.edge;
     if (edgeFields) {
-        projectionMap.set({
-            edge: new Cypher.RawCypher((env) => {
-                return [
-                    createAggregationQuery({
-                        nodeLabel,
+        // projectionMap.set({
+        //     edge: new Cypher.RawCypher((env) => {
+        //         return [
+        //             createAggregationQuery({
+        //                 nodeLabel,
+        //                 matchWherePattern,
+        //                 fields: edgeFields,
+        //                 fieldAlias: targetPattern,
+        //                 graphElement: referenceRelation,
+        //                 params: cypherParams,
+        //             }).getCypher(env),
+        //             cypherParams,
+        //         ];
+        //     }),
+        // });
+
+                const nodeProjectionMap = new Cypher.Map();
+
+                Object.values(edgeFields).forEach((field) => {
+                    const dbProperty = mapToDbProperty(referenceNode, field.name);
+                    const fieldType = getFieldType(field);
+                    const fieldName = dbProperty || field.name;
+                    nodeProjectionMap.set(fieldName, new Cypher.RawCypher(fieldName));
+                    const subquery = getAggregationSubquery({
                         matchWherePattern,
-                        fields: edgeFields,
-                        fieldAlias: targetPattern,
-                        graphElement: referenceRelation,
-                        params: cypherParams,
-                    }).getCypher(env),
-                    cypherParams,
-                ];
-            }),
-        });
+                        fieldName,
+                        type: fieldType,
+                        targetAlias: targetPattern,
+                    });
+                    returnMatchPattern = Cypher.concat(
+                        returnMatchPattern,
+                        new Cypher.Call(subquery).innerWith(sourceRef)
+                    );
+                });
+
+                projectionMap.set({ edge: nodeProjectionMap });
     }
 
     let preProjectionAggregation: string | undefined;
@@ -191,7 +231,7 @@ export function createFieldAggregation({
             preProjectionAggregation = `${countFunction.getCypher(env)} AS ${countRef.getCypher(env)}`;
         }
         cypher = returnMatchPattern?.getCypher(env) || "";
-        return [projectionMap.getCypher(env), cypherParams];
+        return projectionMap.getCypher(env);
     });
 
     const result = rawProjection.build(`${nodeLabel}_${field.alias}_`);
@@ -257,19 +297,19 @@ function createAggregationQuery({
         const fieldType = getFieldType(field);
         const dbProperty = mapToDbProperty(graphElement, field.name);
 
-        const aggregationQuery = wrapInApocRunFirstColumn(
-            getAggregationSubquery({
-                matchWherePattern,
-                fieldName: dbProperty || field.name,
-                type: fieldType,
-                targetAlias: fieldAlias,
-            }),
-            {
-                ...params,
-                [nodeLabel]: nodeLabel,
-            }
-        );
-        acc[field.alias] = new Cypher.RawCypher((env) => `head(${aggregationQuery.getCypher(env)})`);
+        // const aggregationQuery = wrapInApocRunFirstColumn(
+        //     getAggregationSubquery({
+        //         matchWherePattern,
+        //         fieldName: dbProperty || field.name,
+        //         type: fieldType,
+        //         targetAlias: fieldAlias,
+        //     }),
+        //     {
+        //         ...params,
+        //         [nodeLabel]: nodeLabel,
+        //     }
+        // );
+        // acc[field.alias] = new Cypher.RawCypher((env) => `head(${aggregationQuery.getCypher(env)})`);
         return acc;
     }, {} as Record<string, Cypher.RawCypher>);
 

@@ -19,10 +19,10 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
-import { createAuthAndParams } from "../create-auth-and-params";
+import { createAuthAndParams, createAuthPredicates } from "../create-auth-and-params";
 import type { Context } from "../../types";
 import type { Node } from "../../classes";
-import type Cypher from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 
 export type AggregationAuth = {
     params: Record<string, string>;
@@ -44,15 +44,23 @@ export function createFieldAggregationAuth({
     context: Context;
     subqueryNodeAlias: Cypher.Node;
     nodeFields: Record<string, ResolveTree> | undefined;
-}): AggregationAuth {
+}): Cypher.Predicate | undefined {
     const allowAuth = getAllowAuth({ node, context, varName: subqueryNodeAlias });
     const whereAuth = getWhereAuth({ node, context, varName: subqueryNodeAlias });
     const nodeAuth = getFieldAuth({ fields: nodeFields, node, context, varName: subqueryNodeAlias });
 
-    const cypherStrs = [...nodeAuth.queries, ...allowAuth.queries, ...whereAuth.queries];
-    const cypherParams = { ...nodeAuth.params, ...allowAuth.params, ...whereAuth.params };
+    const authPredicates: Cypher.Predicate[] = [];
 
-    return { params: cypherParams, whereQuery: cypherStrs.join(" AND\n") };
+    if (allowAuth) authPredicates.push(allowAuth);
+    if (whereAuth) authPredicates.push(whereAuth);
+    if (nodeAuth) authPredicates.push(nodeAuth);
+
+    return Cypher.and(...authPredicates);
+
+    // const cypherStrs = [...nodeAuth.queries, ...allowAuth.queries, ...whereAuth.queries];
+    // const cypherParams = { ...nodeAuth.params, ...allowAuth.params, ...whereAuth.params };
+
+    // return { params: cypherParams, whereQuery: cypherStrs.join(" AND\n") };
 }
 
 function getAllowAuth({
@@ -63,29 +71,36 @@ function getAllowAuth({
     node: Node;
     context: Context;
     varName: Cypher.Node;
-}): PartialAuthQueries {
-    const allowAuth = createAuthAndParams({
-        operations: "READ",
+}): Cypher.Predicate | undefined {
+    // const allowAuth = createAuthAndParams({
+    //     operations: "READ",
+    //     entity: node,
+    //     context,
+    //     allow: {
+    //         parentNode: node,
+    //         varName,
+    //     },
+    //     escapeQuotes: false,
+    // });
+
+    // if (allowAuth[0]) {
+    //     return {
+    //         queries: [`apoc.util.validatePredicate(NOT (${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`],
+    //         params: allowAuth[1],
+    //     };
+    // }
+
+    const allowAuth = createAuthPredicates({
         entity: node,
+        operations: "READ",
         context,
-        allow: {
-            parentNode: node,
-            varName,
-        },
+        allow: { parentNode: node, varName },
         escapeQuotes: false,
     });
 
-    if (allowAuth[0]) {
-        return {
-            queries: [`apoc.util.validatePredicate(NOT (${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`],
-            params: allowAuth[1],
-        };
-    }
+    if (allowAuth) return new Cypher.apoc.ValidatePredicate(Cypher.not(allowAuth), AUTH_FORBIDDEN_ERROR);
 
-    return {
-        queries: [],
-        params: {},
-    };
+    return undefined;
 }
 
 function getWhereAuth({
@@ -96,25 +111,38 @@ function getWhereAuth({
     node: Node;
     context: Context;
     varName: Cypher.Node;
-}): PartialAuthQueries {
-    const whereAuth = createAuthAndParams({
-        operations: "READ",
+}): Cypher.Predicate | undefined {
+    // const whereAuth = createAuthAndParams({
+    //     operations: "READ",
+    //     entity: node,
+    //     context,
+    //     where: { varName, node },
+    // });
+
+    // if (whereAuth[0]) {
+    //     return {
+    //         queries: [whereAuth[0]],
+    //         params: whereAuth[1],
+    //     };
+    // }
+
+    // return {
+    //     queries: [],
+    //     params: {},
+    // };
+
+    const allowAuth = createAuthPredicates({
         entity: node,
+        operations: "READ",
         context,
         where: { varName, node },
     });
 
-    if (whereAuth[0]) {
-        return {
-            queries: [whereAuth[0]],
-            params: whereAuth[1],
-        };
+    if (allowAuth) {
+        return allowAuth;
     }
 
-    return {
-        queries: [],
-        params: {},
-    };
+    return undefined;
 }
 
 function getFieldAuth({
@@ -127,35 +155,41 @@ function getFieldAuth({
     node: Node;
     context: Context;
     varName: Cypher.Node;
-}): PartialAuthQueries {
-    const authStrs: string[] = [];
-    let authParams: Record<string, string> = {};
-
+}): Cypher.Predicate | undefined {
+    const authPredicates: Cypher.Predicate[] = [];
     Object.entries(fields).forEach((selection) => {
         const authField = node.authableFields.find((x) => x.fieldName === selection[0]);
         if (authField && authField.auth) {
-            const allowAndParams = createAuthAndParams({
+            // const allowAndParams = createAuthAndParams({
+            //     entity: authField,
+            //     operations: "READ",
+            //     context,
+            //     allow: { parentNode: node, varName, chainStr: authField.fieldName },
+            //     escapeQuotes: false,
+            // });
+            // if (allowAndParams[0]) {
+            //     // authPredicates.push(allowAndParams[0]);
+            // }
+            const allowAuth = createAuthPredicates({
                 entity: authField,
                 operations: "READ",
                 context,
                 allow: { parentNode: node, varName, chainStr: authField.fieldName },
                 escapeQuotes: false,
             });
-            if (allowAndParams[0]) {
-                authStrs.push(allowAndParams[0]);
-                authParams = { ...authParams, ...allowAndParams[1] };
-            }
+
+            if (allowAuth) authPredicates.push(allowAuth);
         }
     });
 
-    if (authStrs.length > 0) {
-        return {
-            queries: [`apoc.util.validatePredicate(NOT (${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`],
-            params: authParams,
-        };
+    if (authPredicates.length > 0) {
+        return new Cypher.apoc.ValidatePredicate(Cypher.not(Cypher.and(...authPredicates)), AUTH_FORBIDDEN_ERROR);
+        // return {
+        //     queries: [
+        //         `apoc.util.validatePredicate(NOT (${authPredicates.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`,
+        //     ],
+        //     params: authParams,
+        // };
     }
-    return {
-        queries: [],
-        params: {},
-    };
+    return undefined;
 }
