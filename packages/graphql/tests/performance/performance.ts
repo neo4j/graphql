@@ -130,6 +130,7 @@ async function queryPerformance() {
         const updateSnapshot = process.argv.includes("-u");
         if (updateSnapshot) {
             await resultsWriter.writeResult(results);
+            console.log(`Performance snapshot written at ${resultsWriter.path}`);
         }
     } finally {
         await afterAll();

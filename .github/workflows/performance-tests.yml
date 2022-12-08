@@ -44,7 +44,8 @@ jobs:
           NEO_URL: bolt://localhost:7687
 
       - name: Target Branch - Run @neo4j/graphql performance tests and create snapshot
-        run: yarn performance -u
+        run: |
+          yarn performance -u
         working-directory: packages/graphql
         env:
           NEO_USER: neo4j
