@@ -40,6 +40,9 @@ export class ListIndex implements CypherCompilable {
     private value: Variable | ListExpr;
     private index: number;
 
+    /**
+     * @hidden
+     */
     constructor(variable: Variable | ListExpr, index: number) {
         this.value = variable;
         this.index = index;
