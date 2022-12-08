@@ -68,6 +68,26 @@ const typeDefs = gql`
         name: String!
         likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
     }
+
+    type Query {
+        customCypher: [Person]
+            @cypher(
+                statement: """
+                MATCH(m:Movie)--(p:Person)
+                WHERE m.released > 2000
+                RETURN p
+                """
+            )
+        experimentalCustomCypher: [Person]
+            @cypher(
+                statement: """
+                MATCH(m:Movie)--(p:Person)
+                WHERE m.released > 2000
+                RETURN p
+                """
+                experimental: true
+            )
+    }
 `;
 
 let neoSchema: Neo4jGraphQL;

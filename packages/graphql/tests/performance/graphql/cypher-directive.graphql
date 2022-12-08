@@ -1,0 +1,9 @@
+query TopLevelCypherDirective {
+    customCypher {
+        name
+        born
+        movies {
+            title
+        }
+    }
+}
