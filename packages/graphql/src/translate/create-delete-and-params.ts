@@ -140,7 +140,10 @@ function createDeleteAndParams({
                         res.params = { ...res.params, ...whereAuth[1] };
                     }
                     if (whereStrs.length) {
-                        const columns = [new Cypher.NamedVariable(relationshipVariable), new Cypher.NamedVariable(variableName)];
+                        const columns = [
+                            new Cypher.NamedVariable(relationshipVariable),
+                            new Cypher.NamedVariable(variableName),
+                        ];
                         const caseWhereClause = caseWhere(new Cypher.RawCypher(whereStrs.join(" AND ")), columns);
                         const { cypher } = caseWhereClause.build("myPrefix");
                         res.strs.push(cypher);
@@ -233,6 +236,11 @@ function createDeleteAndParams({
                             ", "
                         )}${withRelationshipStr}`
                     );
+                    /**
+                     * This ORDER BY is required to prevent hitting the "Node with id 2 has been deleted in this transaction"
+                     * bug. TODO - remove once the bug has bee fixed.
+                     */
+                    res.strs.push(`ORDER BY ${nodeToDelete} DESC`);
 
                     if (context.subscriptionsEnabled) {
                         const metaObjectStr = createEventMetaObject({
