@@ -32,8 +32,8 @@ export class MarkdownFormatter {
         comparisonData: Record<string, Performance.TestDisplayData>
     ): string {
         let table = "";
-        table += "| name | dbHits | time (ms) | old time (ms) | maxRows |\n";
-        table += "| ---- | ------ | --------- | ------------ | ------- |\n";
+        table += "| name | dbHits | old dbHits | time (ms) | old time (ms) | maxRows |\n";
+        table += "| ---- | ------ | ---------- | --------- | ------------- | ------- |\n";
 
         for (const item of data) {
             const key = `${item.file}.${item.name}`;
@@ -52,11 +52,13 @@ export class MarkdownFormatter {
             }
 
             let oldTime = "N/A" as string | number;
+            let oldDbHits = "N/A" as string | number;
             if (key in comparisonData) {
                 oldTime = comparisonData[key].result.time;
+                oldDbHits = comparisonData[key].result.dbHits;
             }
 
-            table += `| ${prefix} ${key} | ${item.result.dbHits} | ${item.result.time} | ${oldTime} | ${item.result.maxRows} |\n`;
+            table += `| ${prefix} ${key} | ${item.result.dbHits} | ${oldDbHits} | ${item.result.time} | ${oldTime} | ${item.result.maxRows} |\n`;
         }
 
         return table;
