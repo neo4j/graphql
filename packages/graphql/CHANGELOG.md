@@ -1,5 +1,22 @@
 # @neo4j/graphql
 
+## 3.13.1
+
+### Patch Changes
+
+-   [#2515](https://github.com/neo4j/graphql/pull/2515) [`1bec3f95d`](https://github.com/neo4j/graphql/commit/1bec3f95d0f469c2a4e879b1904a4d1a4938207e) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Add `bindPredicate` which allows the predicate used to evaluate `bind` rules to be changed
+
+-   [#2503](https://github.com/neo4j/graphql/pull/2503) [`0d70b0704`](https://github.com/neo4j/graphql/commit/0d70b07049a0f4b2391240929aadc54f62eedc42) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Allow scalars to be passed as their native Neo4j values - this might apply to using with the OGM for example
+
+-   [#2472](https://github.com/neo4j/graphql/pull/2472) [`5d349e05c`](https://github.com/neo4j/graphql/commit/5d349e05c08ed655144b9919528ba66047f49443) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Removes use of runFirstColumn for top-level aggregation queries.
+
+-   [#2501](https://github.com/neo4j/graphql/pull/2501) [`638f3205a`](https://github.com/neo4j/graphql/commit/638f3205ab3b20eb69a7bb33e6c11685d3e53a51) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fix bug during the create operation caused by defining a relational field name as "node"
+
+-   [#2492](https://github.com/neo4j/graphql/pull/2492) [`2710165e0`](https://github.com/neo4j/graphql/commit/2710165e0bfd200a8755e1b94f363ee17258fcac) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Ensure that union create input is non-nullable for required relationships
+
+-   Updated dependencies [[`c8c2d2d4d`](https://github.com/neo4j/graphql/commit/c8c2d2d4d4897adfd1afcd666bf9f46263dfab1f)]:
+    -   @neo4j/cypher-builder@0.1.7
+
 ## 3.13.0
 
 ### Minor Changes
