@@ -23,7 +23,6 @@ import type { Context, CypherField } from "../../../types";
 import { graphqlArgsToCompose } from "../../to-compose";
 import { isNeoInt } from "../../../utils/utils";
 import { translateTopLevelCypher } from "../../../translate";
-import { getCypherResultVariables } from "./get-cypher-result-variables";
 
 export function cypherResolver({
     field,
@@ -36,10 +35,6 @@ export function cypherResolver({
 }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
-
-        if (!field.returnVariables && field.experimental) {
-            field.returnVariables = await getCypherResultVariables(statement, context.executor);
-        }
 
         const { cypher, params } = translateTopLevelCypher({
             context,

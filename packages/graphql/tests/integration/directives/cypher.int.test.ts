@@ -40,31 +40,29 @@ describe("cypher", () => {
         await driver.close();
     });
 
-    describe.each([{ experimental: false }, { experimental: true }])(
-        `Top level cypher - Experimental:$experimental`,
-        ({ experimental }) => {
-            describe("Query", () => {
-                let Movie: UniqueType;
-                let Actor: UniqueType;
-                let Director: UniqueType;
+    describe(`Top level cypher`, () => {
+        describe("Query", () => {
+            let Movie: UniqueType;
+            let Actor: UniqueType;
+            let Director: UniqueType;
 
-                beforeEach(() => {
-                    Movie = generateUniqueType("Movie");
-                    Actor = generateUniqueType("Actor");
-                    Director = generateUniqueType("Director");
+            beforeEach(() => {
+                Movie = generateUniqueType("Movie");
+                Actor = generateUniqueType("Actor");
+                Director = generateUniqueType("Director");
+            });
+
+            test("should query custom query and return relationship data", async () => {
+                const session = await neo4j.getSession();
+
+                const movieTitle = generate({
+                    charset: "alphabetic",
+                });
+                const actorName = generate({
+                    charset: "alphabetic",
                 });
 
-                test("should query custom query and return relationship data", async () => {
-                    const session = await neo4j.getSession();
-
-                    const movieTitle = generate({
-                        charset: "alphabetic",
-                    });
-                    const actorName = generate({
-                        charset: "alphabetic",
-                    });
-
-                    const typeDefs = `
+                const typeDefs = `
                     type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -82,14 +80,13 @@ describe("cypher", () => {
                                 MATCH (m:${Movie} {title: $title})
                                 RETURN m
                                 """
-                                experimental: ${experimental}
                             )
                     }
                 `;
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-                    const source = `
+                const source = `
                     query($title: String!) {
                         customMovies(title: $title) {
                             title
@@ -100,11 +97,430 @@ describe("cypher", () => {
                     }
                 `;
 
+                try {
+                    await session.run(
+                        `
+                            CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
+                        `,
+                        {
+                            title: movieTitle,
+                            name: actorName,
+                        }
+                    );
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        variableValues: { title: movieTitle },
+                    });
+
+                    expect(gqlResult.errors).toBeFalsy();
+
+                    expect((gqlResult?.data as any).customMovies).toEqual([
+                        { title: movieTitle, actors: [{ name: actorName }] },
+                    ]);
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should query custom query and return relationship data with custom where on field", async () => {
+                const session = await neo4j.getSession();
+
+                const movieTitle = generate({
+                    charset: "alphabetic",
+                });
+                const actorName = generate({
+                    charset: "alphabetic",
+                });
+
+                const typeDefs = `
+                    type ${Movie} {
+                        title: String!
+                        actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+                    }
+
+                    type ${Actor} {
+                        name: String!
+                        movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+
+                    type Query {
+                        customMovies(title: String!): [${Movie}] @cypher(statement: """
+                            MATCH (m:${Movie} {title: $title})
+                            RETURN m
+                        """
+                        )
+                    }
+                `;
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                const source = `
+                    query($title: String!, $name: String) {
+                        customMovies(title: $title) {
+                            title
+                            actors(where: {name: $name}) {
+                                name
+                            }
+                        }
+                    }
+                `;
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
+                        `,
+                        {
+                            title: movieTitle,
+                            name: actorName,
+                        }
+                    );
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        variableValues: { title: movieTitle, name: actorName },
+                    });
+
+                    expect(gqlResult.errors).toBeFalsy();
+
+                    expect((gqlResult?.data as any).customMovies).toEqual([
+                        { title: movieTitle, actors: [{ name: actorName }] },
+                    ]);
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should query custom query and return relationship data with auth", async () => {
+                const session = await neo4j.getSession();
+
+                const movieTitle = generate({
+                    charset: "alphabetic",
+                });
+                const actorName = generate({
+                    charset: "alphabetic",
+                });
+
+                const typeDefs = `
+                    type ${Movie} {
+                        title: String!
+                        actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+                    }
+
+                    type ${Actor} @auth(rules: [{operations: [READ], roles: ["admin"]}]) {
+                        name: String!
+                        movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+
+                    type Query {
+                        customMovies(title: String!): [${Movie}] @cypher(statement: """
+                            MATCH (m:${Movie} {title: $title})
+                            RETURN m
+                            """)
+                    }
+                `;
+
+                const secret = "secret";
+
+                const neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    plugins: {
+                        auth: new Neo4jGraphQLAuthJWTPlugin({
+                            secret: "secret",
+                        }),
+                    },
+                });
+
+                const source = `
+                    query($title: String!, $name: String) {
+                        customMovies(title: $title) {
+                            title
+                            actors(where: {name: $name}) {
+                                name
+                            }
+                        }
+                    }
+                `;
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
+                        `,
+                        {
+                            title: movieTitle,
+                            name: actorName,
+                        }
+                    );
+
+                    const req = createJwtRequest(secret);
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                        variableValues: { title: movieTitle, name: actorName },
+                    });
+
+                    expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should query multiple nodes and return relationship data", async () => {
+                const session = await neo4j.getSession();
+
+                const movieTitle1 = generate({
+                    charset: "alphabetic",
+                });
+                const movieTitle2 = generate({
+                    charset: "alphabetic",
+                });
+                const movieTitle3 = generate({
+                    charset: "alphabetic",
+                });
+
+                const actorName = generate({
+                    charset: "alphabetic",
+                });
+
+                const typeDefs = `
+                    type ${Movie} {
+                        title: String!
+                        actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+                    }
+
+                    type ${Actor} {
+                        name: String!
+                        movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+
+                    type Query {
+                        customMovies(titles: [String!]!): [${Movie}] @cypher(statement: """
+                            MATCH (m:${Movie})
+                            WHERE m.title in $titles
+                            RETURN m
+                            """
+                            )
+                    }
+                `;
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                const source = `
+                    query($titles: [String!]!) {
+                        customMovies(titles: $titles) {
+                            title
+                            actors {
+                                name
+                            }
+                        }
+                    }
+                `;
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (:${Movie} {title: $title1})<-[:ACTED_IN]-(a:${Actor} {name: $name})
+                            CREATE (:${Movie} {title: $title2})<-[:ACTED_IN]-(a)
+                            CREATE (:${Movie} {title: $title3})<-[:ACTED_IN]-(a)
+                        `,
+                        {
+                            title1: movieTitle1,
+                            title2: movieTitle2,
+                            title3: movieTitle3,
+                            name: actorName,
+                        }
+                    );
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        variableValues: { titles: [movieTitle1, movieTitle2, movieTitle3] },
+                    });
+
+                    expect(gqlResult.errors).toBeFalsy();
+
+                    expect((gqlResult?.data as any).customMovies).toHaveLength(3);
+                    expect((gqlResult?.data as any).customMovies).toContainEqual({
+                        title: movieTitle1,
+                        actors: [{ name: actorName }],
+                    });
+                    expect((gqlResult?.data as any).customMovies).toContainEqual({
+                        title: movieTitle2,
+                        actors: [{ name: actorName }],
+                    });
+                    expect((gqlResult?.data as any).customMovies).toContainEqual({
+                        title: movieTitle3,
+                        actors: [{ name: actorName }],
+                    });
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should query multiple connection fields on a type", async () => {
+                const session = await neo4j.getSession();
+
+                const title = generate({
+                    charset: "alphabetic",
+                });
+
+                const actorName = generate({
+                    charset: "alphabetic",
+                });
+                const directorName = generate({
+                    charset: "alphabetic",
+                });
+
+                const typeDefs = `
+                    type ${Movie} {
+                        title: String!
+                        actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+                        directors: [${Director}!]! @relationship(type: "DIRECTED", direction: IN)
+                    }
+
+                    type ${Actor} {
+                        name: String!
+                        movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+
+                    type ${Director} {
+                        name: String!
+                        movies: [${Movie}!]! @relationship(type: "DIRECTED", direction: OUT)
+                    }
+
+                    type Query {
+                        movie(title: String!): ${Movie}
+                            @cypher(
+                                statement: """
+                                MATCH (m:${Movie})
+                                WHERE m.title = $title
+                                RETURN m
+                                """
+                            )
+                    }
+                `;
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                const source = `
+                    query($title: String!) {
+                        movie(title: $title) {
+                            title
+                            actorsConnection {
+                                edges {
+                                    node {
+                                        name
+                                    }
+                                }
+                            }
+                            directorsConnection {
+                                edges {
+                                    node {
+                                        name
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (m:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $actorName})
+                            CREATE (m)<-[:DIRECTED]-(:${Director} {name: $directorName})
+                        `,
+                        {
+                            title,
+                            actorName,
+                            directorName,
+                        }
+                    );
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        variableValues: { title },
+                    });
+
+                    expect(gqlResult.errors).toBeFalsy();
+
+                    expect(gqlResult?.data?.movie).toEqual({
+                        title,
+                        actorsConnection: {
+                            edges: [{ node: { name: actorName } }],
+                        },
+                        directorsConnection: {
+                            edges: [{ node: { name: directorName } }],
+                        },
+                    });
+                } finally {
+                    await session.close();
+                }
+            });
+
+            describe("with experimental columnName", () => {
+                test("should query custom query and return relationship data", async () => {
+                    const session = await neo4j.getSession();
+
+                    const movieTitle = generate({
+                        charset: "alphabetic",
+                    });
+                    const actorName = generate({
+                        charset: "alphabetic",
+                    });
+
+                    const typeDefs = `
+                        type ${Movie} {
+                            title: String!
+                            actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+                        }
+    
+                        type ${Actor} {
+                            name: String!
+                            movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                        }
+    
+                        type Query {
+                            customMovies(title: String!): [${Movie}]
+                                @cypher(
+                                    statement: """
+                                    MATCH (m:${Movie} {title: $title})
+                                    RETURN m
+                                    """,
+                                    columnName: "m"
+                                )
+                        }
+                    `;
+
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                    const source = `
+                        query($title: String!) {
+                            customMovies(title: $title) {
+                                title
+                                actors {
+                                    name
+                                }
+                            }
+                        }
+                    `;
+
                     try {
                         await session.run(
                             `
-                            CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
-                        `,
+                                CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
+                            `,
                             {
                                 title: movieTitle,
                                 name: actorName,
@@ -139,43 +555,44 @@ describe("cypher", () => {
                     });
 
                     const typeDefs = `
-                    type ${Movie} {
-                        title: String!
-                        actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
-                    }
-
-                    type ${Actor} {
-                        name: String!
-                        movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                    }
-
-                    type Query {
-                        customMovies(title: String!): [${Movie}] @cypher(statement: """
-                            MATCH (m:${Movie} {title: $title})
-                            RETURN m
-                        """,
-                        experimental: ${experimental})
-                    }
-                `;
+                        type ${Movie} {
+                            title: String!
+                            actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+                        }
+    
+                        type ${Actor} {
+                            name: String!
+                            movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                        }
+    
+                        type Query {
+                            customMovies(title: String!): [${Movie}] @cypher(statement: """
+                                MATCH (m:${Movie} {title: $title})
+                                RETURN m
+                            """,
+                            columnName: "m"
+                            )
+                        }
+                    `;
 
                     const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const source = `
-                    query($title: String!, $name: String) {
-                        customMovies(title: $title) {
-                            title
-                            actors(where: {name: $name}) {
-                                name
+                        query($title: String!, $name: String) {
+                            customMovies(title: $title) {
+                                title
+                                actors(where: {name: $name}) {
+                                    name
+                                }
                             }
                         }
-                    }
-                `;
+                    `;
 
                     try {
                         await session.run(
                             `
-                            CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
-                        `,
+                                CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
+                            `,
                             {
                                 title: movieTitle,
                                 name: actorName,
@@ -198,300 +615,29 @@ describe("cypher", () => {
                         await session.close();
                     }
                 });
+            });
+        });
 
-                test("should query custom query and return relationship data with auth", async () => {
-                    const session = await neo4j.getSession();
+        describe("Mutation", () => {
+            let Movie: UniqueType;
+            let Actor: UniqueType;
 
-                    const movieTitle = generate({
-                        charset: "alphabetic",
-                    });
-                    const actorName = generate({
-                        charset: "alphabetic",
-                    });
-
-                    const typeDefs = `
-                    type ${Movie} {
-                        title: String!
-                        actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
-                    }
-
-                    type ${Actor} @auth(rules: [{operations: [READ], roles: ["admin"]}]) {
-                        name: String!
-                        movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                    }
-
-                    type Query {
-                        customMovies(title: String!): [${Movie}] @cypher(statement: """
-                            MATCH (m:${Movie} {title: $title})
-                            RETURN m
-                        """, experimental: ${experimental}),
-                    }
-                `;
-
-                    const secret = "secret";
-
-                    const neoSchema = new Neo4jGraphQL({
-                        typeDefs,
-                        plugins: {
-                            auth: new Neo4jGraphQLAuthJWTPlugin({
-                                secret: "secret",
-                            }),
-                        },
-                    });
-
-                    const source = `
-                    query($title: String!, $name: String) {
-                        customMovies(title: $title) {
-                            title
-                            actors(where: {name: $name}) {
-                                name
-                            }
-                        }
-                    }
-                `;
-
-                    try {
-                        await session.run(
-                            `
-                            CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
-                        `,
-                            {
-                                title: movieTitle,
-                                name: actorName,
-                            }
-                        );
-
-                        const req = createJwtRequest(secret);
-
-                        const gqlResult = await graphql({
-                            schema: await neoSchema.getSchema(),
-                            source,
-                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
-                            variableValues: { title: movieTitle, name: actorName },
-                        });
-
-                        expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-                    } finally {
-                        await session.close();
-                    }
-                });
-
-                test("should query multiple nodes and return relationship data", async () => {
-                    const session = await neo4j.getSession();
-
-                    const movieTitle1 = generate({
-                        charset: "alphabetic",
-                    });
-                    const movieTitle2 = generate({
-                        charset: "alphabetic",
-                    });
-                    const movieTitle3 = generate({
-                        charset: "alphabetic",
-                    });
-
-                    const actorName = generate({
-                        charset: "alphabetic",
-                    });
-
-                    const typeDefs = `
-                    type ${Movie} {
-                        title: String!
-                        actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
-                    }
-
-                    type ${Actor} {
-                        name: String!
-                        movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                    }
-
-                    type Query {
-                        customMovies(titles: [String!]!): [${Movie}] @cypher(statement: """
-                            MATCH (m:${Movie})
-                            WHERE m.title in $titles
-                            RETURN m
-                        """, experimental: ${experimental})
-                    }
-                `;
-
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-                    const source = `
-                    query($titles: [String!]!) {
-                        customMovies(titles: $titles) {
-                            title
-                            actors {
-                                name
-                            }
-                        }
-                    }
-                `;
-
-                    try {
-                        await session.run(
-                            `
-                            CREATE (:${Movie} {title: $title1})<-[:ACTED_IN]-(a:${Actor} {name: $name})
-                            CREATE (:${Movie} {title: $title2})<-[:ACTED_IN]-(a)
-                            CREATE (:${Movie} {title: $title3})<-[:ACTED_IN]-(a)
-                        `,
-                            {
-                                title1: movieTitle1,
-                                title2: movieTitle2,
-                                title3: movieTitle3,
-                                name: actorName,
-                            }
-                        );
-
-                        const gqlResult = await graphql({
-                            schema: await neoSchema.getSchema(),
-                            source,
-                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                            variableValues: { titles: [movieTitle1, movieTitle2, movieTitle3] },
-                        });
-
-                        expect(gqlResult.errors).toBeFalsy();
-
-                        expect((gqlResult?.data as any).customMovies).toHaveLength(3);
-                        expect((gqlResult?.data as any).customMovies).toContainEqual({
-                            title: movieTitle1,
-                            actors: [{ name: actorName }],
-                        });
-                        expect((gqlResult?.data as any).customMovies).toContainEqual({
-                            title: movieTitle2,
-                            actors: [{ name: actorName }],
-                        });
-                        expect((gqlResult?.data as any).customMovies).toContainEqual({
-                            title: movieTitle3,
-                            actors: [{ name: actorName }],
-                        });
-                    } finally {
-                        await session.close();
-                    }
-                });
-
-                test("should query multiple connection fields on a type", async () => {
-                    const session = await neo4j.getSession();
-
-                    const title = generate({
-                        charset: "alphabetic",
-                    });
-
-                    const actorName = generate({
-                        charset: "alphabetic",
-                    });
-                    const directorName = generate({
-                        charset: "alphabetic",
-                    });
-
-                    const typeDefs = `
-                    type ${Movie} {
-                        title: String!
-                        actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
-                        directors: [${Director}!]! @relationship(type: "DIRECTED", direction: IN)
-                    }
-
-                    type ${Actor} {
-                        name: String!
-                        movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                    }
-
-                    type ${Director} {
-                        name: String!
-                        movies: [${Movie}!]! @relationship(type: "DIRECTED", direction: OUT)
-                    }
-
-                    type Query {
-                        movie(title: String!): ${Movie}
-                            @cypher(
-                                statement: """
-                                MATCH (m:${Movie})
-                                WHERE m.title = $title
-                                RETURN m
-                                """, experimental: ${experimental}
-                            )
-                    }
-                `;
-
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-                    const source = `
-                    query($title: String!) {
-                        movie(title: $title) {
-                            title
-                            actorsConnection {
-                                edges {
-                                    node {
-                                        name
-                                    }
-                                }
-                            }
-                            directorsConnection {
-                                edges {
-                                    node {
-                                        name
-                                    }
-                                }
-                            }
-                        }
-                    }
-                `;
-
-                    try {
-                        await session.run(
-                            `
-                            CREATE (m:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $actorName})
-                            CREATE (m)<-[:DIRECTED]-(:${Director} {name: $directorName})
-                        `,
-                            {
-                                title,
-                                actorName,
-                                directorName,
-                            }
-                        );
-
-                        const gqlResult = await graphql({
-                            schema: await neoSchema.getSchema(),
-                            source,
-                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                            variableValues: { title },
-                        });
-
-                        expect(gqlResult.errors).toBeFalsy();
-
-                        expect(gqlResult?.data?.movie).toEqual({
-                            title,
-                            actorsConnection: {
-                                edges: [{ node: { name: actorName } }],
-                            },
-                            directorsConnection: {
-                                edges: [{ node: { name: directorName } }],
-                            },
-                        });
-                    } finally {
-                        await session.close();
-                    }
-                });
+            beforeEach(() => {
+                Movie = generateUniqueType("Movie");
+                Actor = generateUniqueType("Actor");
             });
 
-            describe("Mutation", () => {
-                let Movie: UniqueType;
-                let Actor: UniqueType;
+            test("should query custom mutation and return relationship data", async () => {
+                const session = await neo4j.getSession();
 
-                beforeEach(() => {
-                    Movie = generateUniqueType("Movie");
-                    Actor = generateUniqueType("Actor");
+                const movieTitle = generate({
+                    charset: "alphabetic",
+                });
+                const actorName = generate({
+                    charset: "alphabetic",
                 });
 
-                test("should query custom mutation and return relationship data", async () => {
-                    const session = await neo4j.getSession();
-
-                    const movieTitle = generate({
-                        charset: "alphabetic",
-                    });
-                    const actorName = generate({
-                        charset: "alphabetic",
-                    });
-
-                    const typeDefs = `
+                const typeDefs = `
                     type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -508,15 +654,14 @@ describe("cypher", () => {
                                 statement: """
                                 MATCH (m:${Movie} {title: $title})
                                 RETURN m
-                                """,
-                                experimental: ${experimental}
+                                """
                             )
                     }
                 `;
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-                    const source = `
+                const source = `
                     mutation($title: String!) {
                         customMovies(title: $title) {
                             title
@@ -527,45 +672,45 @@ describe("cypher", () => {
                     }
                 `;
 
-                    try {
-                        await session.run(
-                            `
+                try {
+                    await session.run(
+                        `
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
                         `,
-                            {
-                                title: movieTitle,
-                                name: actorName,
-                            }
-                        );
+                        {
+                            title: movieTitle,
+                            name: actorName,
+                        }
+                    );
 
-                        const gqlResult = await graphql({
-                            schema: await neoSchema.getSchema(),
-                            source,
-                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                            variableValues: { title: movieTitle },
-                        });
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        variableValues: { title: movieTitle },
+                    });
 
-                        expect(gqlResult.errors).toBeFalsy();
+                    expect(gqlResult.errors).toBeFalsy();
 
-                        expect((gqlResult?.data as any).customMovies).toEqual([
-                            { title: movieTitle, actors: [{ name: actorName }] },
-                        ]);
-                    } finally {
-                        await session.close();
-                    }
+                    expect((gqlResult?.data as any).customMovies).toEqual([
+                        { title: movieTitle, actors: [{ name: actorName }] },
+                    ]);
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should query custom mutation and return relationship data with custom where on field", async () => {
+                const session = await neo4j.getSession();
+
+                const movieTitle = generate({
+                    charset: "alphabetic",
+                });
+                const actorName = generate({
+                    charset: "alphabetic",
                 });
 
-                test("should query custom mutation and return relationship data with custom where on field", async () => {
-                    const session = await neo4j.getSession();
-
-                    const movieTitle = generate({
-                        charset: "alphabetic",
-                    });
-                    const actorName = generate({
-                        charset: "alphabetic",
-                    });
-
-                    const typeDefs = `
+                const typeDefs = `
                     type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -580,13 +725,13 @@ describe("cypher", () => {
                         customMovies(title: String!): [${Movie}] @cypher(statement: """
                             MATCH (m:${Movie} {title: $title})
                             RETURN m
-                        """, experimental: ${experimental})
+                            """)
                     }
                 `;
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-                    const source = `
+                const source = `
                     mutation($title: String!, $name: String) {
                         customMovies(title: $title) {
                             title
@@ -597,45 +742,45 @@ describe("cypher", () => {
                     }
                 `;
 
-                    try {
-                        await session.run(
-                            `
+                try {
+                    await session.run(
+                        `
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
                         `,
-                            {
-                                title: movieTitle,
-                                name: actorName,
-                            }
-                        );
+                        {
+                            title: movieTitle,
+                            name: actorName,
+                        }
+                    );
 
-                        const gqlResult = await graphql({
-                            schema: await neoSchema.getSchema(),
-                            source,
-                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                            variableValues: { title: movieTitle },
-                        });
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        variableValues: { title: movieTitle },
+                    });
 
-                        expect(gqlResult.errors).toBeFalsy();
+                    expect(gqlResult.errors).toBeFalsy();
 
-                        expect((gqlResult?.data as any).customMovies).toEqual([
-                            { title: movieTitle, actors: [{ name: actorName }] },
-                        ]);
-                    } finally {
-                        await session.close();
-                    }
+                    expect((gqlResult?.data as any).customMovies).toEqual([
+                        { title: movieTitle, actors: [{ name: actorName }] },
+                    ]);
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should query custom mutation and return relationship data with auth", async () => {
+                const session = await neo4j.getSession();
+
+                const movieTitle = generate({
+                    charset: "alphabetic",
+                });
+                const actorName = generate({
+                    charset: "alphabetic",
                 });
 
-                test("should query custom mutation and return relationship data with auth", async () => {
-                    const session = await neo4j.getSession();
-
-                    const movieTitle = generate({
-                        charset: "alphabetic",
-                    });
-                    const actorName = generate({
-                        charset: "alphabetic",
-                    });
-
-                    const typeDefs = `
+                const typeDefs = `
                     type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -650,13 +795,13 @@ describe("cypher", () => {
                         customMovies(title: String!): [${Movie}] @cypher(statement: """
                             MATCH (m:${Movie} {title: $title})
                             RETURN m
-                        """, experimental: ${experimental})
+                            """)
                     }
                 `;
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-                    const source = `
+                const source = `
                     mutation($title: String!, $name: String) {
                         customMovies(title: $title) {
                             title
@@ -667,32 +812,31 @@ describe("cypher", () => {
                     }
                 `;
 
-                    try {
-                        await session.run(
-                            `
+                try {
+                    await session.run(
+                        `
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
                         `,
-                            {
-                                title: movieTitle,
-                                name: actorName,
-                            }
-                        );
+                        {
+                            title: movieTitle,
+                            name: actorName,
+                        }
+                    );
 
-                        const gqlResult = await graphql({
-                            schema: await neoSchema.getSchema(),
-                            source,
-                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                            variableValues: { title: movieTitle },
-                        });
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        variableValues: { title: movieTitle },
+                    });
 
-                        expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-                    } finally {
-                        await session.close();
-                    }
-                });
+                    expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+                } finally {
+                    await session.close();
+                }
             });
-        }
-    );
+        });
+    });
 
     describe("Field level cypher", () => {
         // Reproduces https://github.com/neo4j/graphql/issues/444 with default value test

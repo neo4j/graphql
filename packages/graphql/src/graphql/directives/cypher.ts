@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveLocation, GraphQLBoolean, GraphQLDirective, GraphQLNonNull, GraphQLString } from "graphql";
+import { DirectiveLocation, GraphQLDirective, GraphQLNonNull, GraphQLString } from "graphql";
 
 export const cypherDirective = new GraphQLDirective({
     name: "cypher",
@@ -30,11 +30,10 @@ export const cypherDirective = new GraphQLDirective({
                 "The Cypher statement to run which returns a value of the same type composition as the field definition on which the directive is applied.",
             type: new GraphQLNonNull(GraphQLString),
         },
-        experimental: {
+        columnName: {
             description:
-                "An experimental implementation for custom Cypher directive, with improved performance. Warning: this feature is experimental and may not work as expected.",
-            type: new GraphQLNonNull(GraphQLBoolean),
-            defaultValue: false,
+                "[Experimental] Name of the returned variable from the Cypher statement, if provided, the query will be optimized to improve performance.",
+            type: GraphQLString,
         },
     },
 });

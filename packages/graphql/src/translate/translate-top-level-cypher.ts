@@ -158,7 +158,7 @@ export function translateTopLevelCypher({
     const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
     if (type === "Query") {
-        if (field.experimental) {
+        if (field.columnName) {
             const experimentalCypherStatement = createExperimentalCypherStatement({
                 statement,
                 field,
@@ -233,17 +233,14 @@ function createLegacyCypherStatement({
 }
 
 function createExperimentalCypherStatement({ statement, field }: { statement: string; field: CypherField }): string[] {
-    if (!field.returnVariables) {
-        throw new Error("Variables not available on @cypher field");
-    }
     const cypherStrs: string[] = [];
     cypherStrs.push("CALL {", statement, "}");
 
-    if (field.returnVariables.length > 0) {
+    if (field.columnName) {
         if (field.isScalar || field.isEnum) {
-            cypherStrs.push(`UNWIND ${field.returnVariables[0]} as this`);
+            cypherStrs.push(`UNWIND ${field.columnName} as this`);
         } else {
-            cypherStrs.push(`WITH ${field.returnVariables[0]} as this`);
+            cypherStrs.push(`WITH ${field.columnName} as this`);
         }
     }
     return cypherStrs;
