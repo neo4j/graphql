@@ -31,7 +31,6 @@ interface Res {
     meta: ProjectionMeta;
     subqueries: Array<Cypher.Clause>;
     subqueriesBeforeSort: Array<Cypher.Clause>;
-    preProjectionAggregations: Set<string>;
 }
 
 export function translateCypherDirectiveProjection({

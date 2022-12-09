@@ -18,22 +18,30 @@
  */
 
 import { stringifyObject } from "./stringify-object";
+import Cypher from "@neo4j/cypher-builder";
 import { escapeQuery } from "./escape-query";
 
 /** Wraps a query inside an apoc call, escaping strings and serializing params */
 export function wrapInApocRunFirstColumn(
-    query: string,
+    query: Cypher.RawCypher,
     params: Record<string, string> = {},
     expectMultipleValues?: boolean
-): string {
+): Cypher.RawCypher {
     const serializedParams = stringifyObject(params);
-    const escapedQuery = escapeQuery(query);
 
     if (expectMultipleValues === false) {
-        return `apoc.cypher.runFirstColumnSingle("${escapedQuery}", ${serializedParams})`;
+        return new Cypher.RawCypher(
+            (env) =>
+                `apoc.cypher.runFirstColumnSingle("${escapeQuery(query.getCypher(env))}", ${serializedParams.getCypher(
+                    env
+                )})`
+        );
     }
 
-    return `apoc.cypher.runFirstColumnMany("${escapedQuery}", ${serializedParams})`;
+    return new Cypher.RawCypher(
+        (env) =>
+            `apoc.cypher.runFirstColumnMany("${escapeQuery(query.getCypher(env))}", ${serializedParams.getCypher(env)})`
+    );
 }
 
 export function serializeParamsForApocRun(params: Record<string, any>): Record<string, string> {

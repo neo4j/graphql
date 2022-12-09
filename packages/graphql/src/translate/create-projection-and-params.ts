@@ -43,7 +43,6 @@ interface Res {
     meta: ProjectionMeta;
     subqueries: Array<Cypher.Clause>;
     subqueriesBeforeSort: Array<Cypher.Clause>;
-    preProjectionAggregations: Set<string>;
 }
 
 export interface ProjectionMeta {
@@ -263,15 +262,11 @@ export default function createProjectionAndParams({
         });
 
         if (aggregationFieldProjection) {
-            if (aggregationFieldProjection.cypher) {
-                res.subqueries.push(new Cypher.RawCypher(aggregationFieldProjection.cypher));
+            if (aggregationFieldProjection.projectionSubqueryCypher) {
+                res.subqueries.push(new Cypher.RawCypher(aggregationFieldProjection.projectionSubqueryCypher));
             }
-            res.preProjectionAggregations.add(chainStr || varName);
-            if (aggregationFieldProjection.preProjectionAggregation) {
-                res.preProjectionAggregations.add(aggregationFieldProjection.preProjectionAggregation);
-            }
-            res.projection.push(`${alias}: ${aggregationFieldProjection.matchVar}`);
-            res.params = { ...res.params, ...aggregationFieldProjection.params };
+            res.projection.push(`${alias}: ${aggregationFieldProjection.projectionCypher}`);
+            res.params = { ...res.params, ...aggregationFieldProjection.projectionParams };
             return res;
         }
 
@@ -380,7 +375,7 @@ export default function createProjectionAndParams({
         generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
     ]);
 
-    const { projection, params, meta, subqueries, subqueriesBeforeSort, preProjectionAggregations } = Object.values(
+    const { projection, params, meta, subqueries, subqueriesBeforeSort } = Object.values(
         mergedFields
     ).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
@@ -388,14 +383,7 @@ export default function createProjectionAndParams({
         meta: {},
         subqueries: [],
         subqueriesBeforeSort: [],
-        preProjectionAggregations: new Set<string>(),
     });
-
-    const preProjectionAggregationString = [...preProjectionAggregations].join(", ");
-    if (preProjectionAggregationString) {
-        subqueries.push(new Cypher.RawCypher(`WITH ${preProjectionAggregationString}`));
-    }
-    
 
     return {
         projection: `{ ${projection.join(", ")} }`,
