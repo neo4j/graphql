@@ -17,21 +17,22 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import { wrapInApocRunFirstColumn } from "./apoc-run";
 
 describe("apoc translation utils", () => {
     describe("wrapInApocRunFirstColumn", () => {
         test("wraps and escapes a query inside runFirstColumn", () => {
-            const result = wrapInApocRunFirstColumn(`MATCH(n) RETURN n, "Hello"`);
+            const result = wrapInApocRunFirstColumn(new Cypher.RawCypher(`MATCH(n) RETURN n, "Hello"`)).build().cypher;
             expect(result).toBe(`apoc.cypher.runFirstColumnMany("MATCH(n) RETURN n, \\"Hello\\"", {  })`);
         });
         test("adds extra params", () => {
-            const result = wrapInApocRunFirstColumn(`MATCH(n) RETURN n`, { auth: "auth" });
+            const result = wrapInApocRunFirstColumn(new Cypher.RawCypher(`MATCH(n) RETURN n`), { auth: "auth" }).build().cypher;
             expect(result).toBe(`apoc.cypher.runFirstColumnMany("MATCH(n) RETURN n", { auth: auth })`);
         });
         test("double wrap", () => {
-            const firstWrap = wrapInApocRunFirstColumn(`MATCH(n) RETURN n, "Hello"`);
-            const result = wrapInApocRunFirstColumn(firstWrap);
+            const firstWrap = wrapInApocRunFirstColumn(new Cypher.RawCypher(`MATCH(n) RETURN n, "Hello"`));
+            const result = wrapInApocRunFirstColumn(firstWrap).build().cypher;
             expect(result).toBe(
                 // no-useless-escape disabled due to how escaped strings work when comparing strings.
                 // eslint-disable-next-line no-useless-escape
