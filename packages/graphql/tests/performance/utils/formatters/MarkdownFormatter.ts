@@ -43,12 +43,12 @@ export class MarkdownFormatter {
                 const comparisonItem = comparisonData[key];
                 const diff = item.result.dbHits - comparisonItem.result.dbHits;
                 if (diff >= 0 && diff / comparisonItem.result.dbHits >= 0.1) {
-                    prefix = "-";
+                    prefix = "🟥";
                 } else if (diff < 0 && -diff / comparisonItem.result.dbHits >= 0.1) {
-                    prefix = "+";
+                    prefix = "🟩";
                 }
             } else {
-                prefix = "~";
+                prefix = "🟦";
             }
 
             let oldTime = "N/A" as string | number;
