@@ -382,7 +382,6 @@ function createAuthPredicate({
                     relationField,
                     authPredicate,
                     kind,
-                    context,
                 });
                 predicates.push(relationshipPredicate);
             });
@@ -398,14 +397,12 @@ function createRelationshipPredicate({
     targetNodeRef,
     authPredicate,
     kind,
-    context,
 }: {
     nodeRef: Cypher.Node;
     relationField: RelationField;
     targetNodeRef: Cypher.Node;
     authPredicate: Cypher.Predicate;
     kind: string;
-    context: Context;
 }): Cypher.Predicate {
     const relationship = new Cypher.Relationship({
         source: nodeRef,
@@ -449,10 +446,7 @@ function createRelationshipPredicate({
             authPredicate
         );
     } else {
-        if (!context.plugins?.auth) {
-            throw new Error("Auth plugin is undefined");
-        }
-        predicateFunction = Cypher[context.plugins?.auth?.bindPredicate](
+        predicateFunction = Cypher.all(
             targetNodeRef,
             new Cypher.PatternComprehension(innerPattern, targetNodeRef),
             authPredicate

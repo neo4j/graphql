@@ -101,7 +101,7 @@ extend type Post @auth(rules: [
 ])
 ----
 
-When you specify `bind` on a relationship you can select fields on the related node. It's worth pointing out that `bind` on a relationship field will perform an `all` on the matched nodes to see if there is a match, or `any` if the `bindPredicate` option of the plugin has been set to "any".
+When you specify `bind` on a relationship you can select fields on the related node. It's worth pointing out that `bind` on a relationship field will perform an `ALL` on the matched nodes to see if there is a match. This means you can only use `bind` to enforce a single relationship to a single node.
 
 === Field-level `bind`
 

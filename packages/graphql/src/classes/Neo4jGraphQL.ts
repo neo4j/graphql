@@ -20,7 +20,7 @@
 import type { Driver } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
-import { makeExecutableSchema } from "@graphql-tools/schema";
+import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import type { IResolvers } from "@graphql-tools/utils";
 import { forEachField } from "@graphql-tools/utils";
@@ -48,6 +48,13 @@ import { Executor, ExecutorConstructorParam } from "./Executor";
 import { getDocument } from "../schema/get-document";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+
+export interface Neo4jGraphQLJWT {
+    jwksEndpoint?: string;
+    secret?: string | Buffer | { key: string | Buffer; passphrase: string };
+    noVerify?: boolean;
+    rolesPath?: string;
+}
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
