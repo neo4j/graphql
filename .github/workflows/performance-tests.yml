@@ -75,6 +75,7 @@ jobs:
       - name: PR - Run @neo4j/graphql performance tests
         run: |
           yarn performance --markdown > ./performance/performanceReport
+          yarn performance --schema >> ./performance/performanceReport
         working-directory: packages/graphql
         env:
           NEO_USER: neo4j
