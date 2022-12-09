@@ -296,6 +296,8 @@ type Query {
 === `@cypher` changes
 The default behaviour of the `@cypher` directive regarding the translation will change: Instead of using https://neo4j.com/labs/apoc/4.0/overview/apoc.cypher/apoc.cypher.runFirstColumnMany/[apoc.cypher.runFirstColumnMany] it will directly wrap the query within a `CALL { }` subquery. This behvaiour has proven to be much more performant for the same queries, however, it may lead to unexpected changes, mainly when using Neo4j 5.x, where the subqueries need to be _aliased_.
 
+On top of that, to improve performance, it is recommended to pass the returned alias in the property `columnName`, to ensure the subquery is properly integrated into the larger query.
+
 For example:
 
 The graphql query:
@@ -322,16 +324,16 @@ To fix it we just need to ensure the `RETURN` elements are aliased:
 [source, graphql, indent=0]
 ----
 type query {
-    test: String! @cypher(statement: "RETURN 'hello' as result", experimental: true)
+    test: String! @cypher(statement: "RETURN 'hello' as result")
 }
 ----
 
-This will be a breaking change, but this new behaviour can be used, as an experimental option with the `experimental` flag in the `@cypher` directive:
+This will be a breaking change, but this new behaviour can be used, as an experimental option with the `columnName` flag in the `@cypher` directive:
 
 [source, graphql, indent=0]
 ----
 type query {
-    test: String! @cypher(statement: "RETURN 'hello'", experimental: true)
+    test: String! @cypher(statement: "RETURN 'hello' as result", columnName: "result")
 }
 ----
 

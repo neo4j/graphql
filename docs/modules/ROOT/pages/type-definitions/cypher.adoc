@@ -168,17 +168,18 @@ type Query {
 
 The downside of the latter approach is that you will need to adjust the return object as you change your object type definition.
 
-== Experimental behaviour
+== columnName
 
-The new `experimental` flag will change the translation of custom Cypher. Instead of using https://neo4j.com/labs/apoc/4.0/overview/apoc.cypher/apoc.cypher.runFirstColumnMany/[apoc.cypher.runFirstColumnMany] it will directly wrap the query within a `CALL { }` subquery. This behvaiour has proven to be much more performant for the same queries, however, it may lead to unexpected changes, mainly if using Neo4j 5.x, where the subqueries need to be _aliased_.
+The `columName` argument will change the translation of custom Cypher. Instead of using https://neo4j.com/labs/apoc/4.0/overview/apoc.cypher/apoc.cypher.runFirstColumnMany/[apoc.cypher.runFirstColumnMany] it will directly wrap the query within a `CALL { }` subquery. This behvaiour has proven to be much more performant for the same queries.
 
-For example:
+
+`columnName` should be the name of the returned variable to be used in the rest of the query. For example:
 
 The graphql query:
 [source, graphql, indent=0]
 ----
 type query {
-    test: String! @cypher(statement: "RETURN 'hello'", experimental: true)
+    test: String! @cypher(statement: "MATCH(m:Movie) RETURN m", columnName: "m")
 }
 ----
 
@@ -186,24 +187,15 @@ Would get translated to:
 [source,cypher, indent=0]
 ----
 CALL {
-    RETURN 'hello'
+    MATCH(m:Movie) RETURN m
 }
-WITH 'hello' AS this
+WITH m AS this
 RETURN this
 ----
 
-Which is invalid in Neo4j 5.x.
+Additionally, escaping strings is no longer needed when `columName` is set.
 
-To fix it we just need to ensure the `RETURN` elements are aliased:
-[source, graphql, indent=0]
-----
-type query {
-    test: String! @cypher(statement: "RETURN 'hello' as result", experimental: true)
-}
-----
-
-
-Additionally, escaping strings is no longer needed with the `experimental` flag.
+NOTE: This alternative behaviour may lead to unexpected changes, mainly if using Neo4j 5.x, where subqueries need to be _aliased_.
 
 == Usage examples
 
