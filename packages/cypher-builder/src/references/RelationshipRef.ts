@@ -27,6 +27,9 @@ export type RelationshipInput = {
     type?: string;
 };
 
+/** Reference to a relationship property
+ * @group References
+ */
 export class RelationshipRef extends Reference {
     private _source: NodeRef;
     private _target: NodeRef;

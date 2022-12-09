@@ -21,7 +21,11 @@ import type { CypherEnvironment } from "../Environment";
 import { Clause } from "./Clause";
 import type { Procedure } from "../types";
 
-// ADD yield, where and return
+// TODO: ADD yield, where and return
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/call/)
+ * @group Clauses
+ */
 export class CallProcedure extends Clause {
     private procedure: Procedure;
 
@@ -30,6 +34,9 @@ export class CallProcedure extends Clause {
         this.procedure = procedure;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const procedureCypher = this.procedure.getCypher(env);
         return `CALL ${procedureCypher}`;

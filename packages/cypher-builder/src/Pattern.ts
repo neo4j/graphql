@@ -19,11 +19,11 @@
 
 import { stringifyObject } from "./utils/stringify-object";
 import { escapeLabel } from "./utils/escape-label";
-import { padLeft } from "./utils/utils";
-import type { NodeRef } from "./variables/NodeRef";
-import type { RelationshipRef } from "./variables/RelationshipRef";
+import { padLeft } from "./utils/pad-left";
+import type { NodeRef } from "./references/NodeRef";
+import type { RelationshipRef } from "./references/RelationshipRef";
 import type { CypherEnvironment } from "./Environment";
-import type { Param } from "./variables/Param";
+import type { Param } from "./references/Param";
 import type { CypherCompilable } from "./types";
 
 export type MatchableElement = NodeRef | RelationshipRef;
@@ -50,6 +50,9 @@ type MatchRelationshipParams = {
 
 export type MatchParams<T extends MatchableElement> = T extends NodeRef ? ParamsRecord : MatchRelationshipParams;
 
+/** Represents a MATCH pattern
+ * @group Other
+ */
 export class Pattern<T extends MatchableElement = MatchableElement> implements CypherCompilable {
     public readonly matchElement: T;
     private parameters: MatchParams<T>;
@@ -89,6 +92,9 @@ export class Pattern<T extends MatchableElement = MatchableElement> implements C
         return this;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         if (this.isRelationship(this.matchElement)) {
             return this.getRelationshipCypher(env, this.matchElement);

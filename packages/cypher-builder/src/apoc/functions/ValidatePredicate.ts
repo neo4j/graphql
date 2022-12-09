@@ -17,28 +17,30 @@
  * limitations under the License.
  */
 
-import type { ListExpr as List } from "../../expressions/list/ListExpr";
-import type { MapExpr as Map } from "../../expressions/map/MapExpr";
+import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import type { Predicate } from "../../types";
-import { Literal } from "../../variables/Literal";
-import { CypherASTNode } from "../../CypherASTNode";
 
-export class Validate extends CypherASTNode {
+// Note, this is a procedure, but acts as a predicate expression
+/**
+ * @group Expressions
+ * @category Cypher Functions
+ */
+export class ValidatePredicate extends CypherASTNode {
     private predicate: Predicate;
     private message: string;
-    private params: List | Map | Literal;
 
-    constructor(predicate: Predicate, message: string, params: List | Literal | Map = new Literal([0])) {
+    constructor(predicate: Predicate, message: string) {
         super();
         this.predicate = predicate;
         this.message = message;
-        this.params = params;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const predicateCypher = this.predicate.getCypher(env);
-        const paramsCypher = this.params.getCypher(env);
-        return `apoc.util.validate(${predicateCypher}, "${this.message}", ${paramsCypher})`;
+        return `apoc.util.validatePredicate(${predicateCypher}, "${this.message}", [0])`;
     }
 }

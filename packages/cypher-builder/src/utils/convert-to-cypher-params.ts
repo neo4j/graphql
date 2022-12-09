@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Param } from "../variables/Param";
+import { Param } from "../references/Param";
 
 export function convertToCypherParams<T>(original: Record<string, T>): Record<string, Param<T>> {
     return Object.entries(original).reduce((acc, [key, value]) => {
