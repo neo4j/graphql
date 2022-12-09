@@ -150,6 +150,10 @@ To update the file `performance.json`, with the results of the performance test,
 
 The performance tests can also run raw Cypher, to enable it, run `yarn performance --cypher`. Cypher queries must be located at `tests/performance/cypher`
 
+#### Running for markdown
+
+With the option `--markdown` the output will be formatted in markdown.
+
 #### Schema Generation
 
 Running `yarn performance --schema` will run instead the schema generation performance test.

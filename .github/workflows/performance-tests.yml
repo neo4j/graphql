@@ -35,51 +35,60 @@ jobs:
       - name: Target Branch - Install dependencies
         run: yarn --immutable
 
-      - name: Target Branch - Run @neo4j/graphql warmup performance test
-        run: yarn performance
-        working-directory: packages/graphql
-        env:
-          NEO_USER: neo4j
-          NEO_PASSWORD: password
-          NEO_URL: bolt://localhost:7687
-
-      - name: Target Branch - Run @neo4j/graphql performance tests and create snapshot
-        run: yarn performance -u
-        working-directory: packages/graphql
-        env:
-          NEO_USER: neo4j
-          NEO_PASSWORD: password
-          NEO_URL: bolt://localhost:7687
-
-      - name: PR - Check out
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.ref }}
-
-      - name: PR - Install dependencies
-        run: yarn --immutable
-
-      - name: PR - Run @neo4j/graphql warmup performance test
-        run: yarn performance
-        working-directory: packages/graphql
-        env:
-          NEO_USER: neo4j
-          NEO_PASSWORD: password
-          NEO_URL: bolt://localhost:7687
-
       - run: mkdir ./performance
         working-directory: packages/graphql
 
-      - name: PR - Run @neo4j/graphql performance tests
+      - name: Target Branch - Run @neo4j/graphql performance tests and create snapshot
         run: |
-          yarn performance > ./performance/performanceReport
+          yarn performance  # Warmup
+          yarn performance -u
         working-directory: packages/graphql
         env:
           NEO_USER: neo4j
           NEO_PASSWORD: password
           NEO_URL: bolt://localhost:7687
 
-      - name: PR - save PR number
+      - name: Target Branch - Run @neo4j/graphql Schema performance tests
+        run: |
+          yarn performance --schema # Warmup
+          VAR1=$(yarn performance --schema) && echo "Old $VAR1" > ./performance/schemaPerformance
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
+      - name: PR Branch - Check out
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+          clean: false
+
+      - name: PR Branch - Install dependencies
+        run: yarn --immutable
+
+      - name: PR Branch - Run @neo4j/graphql performance tests
+        run: |
+          yarn performance # Warmup
+          yarn performance --markdown > ./performance/performanceReport
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
+      - name: PR Branch - Run @neo4j/graphql Schema performance tests
+        run: |
+          yarn performance --schema # Warmup
+          yarn performance --schema >> ./performance/schemaPerformance
+          cat ./performance/schemaPerformance >> ./performance/performanceReport
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
+      - name: Save PR number
         env:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
         run: |
