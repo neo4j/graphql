@@ -42,7 +42,7 @@ export function translateTopLevelMatch({
         context,
         operation,
     });
-    if (whereClause instanceof Cypher.With) {
+    if (preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty) {
         return Cypher.concat(matchClause, preComputedWhereFieldSubqueries, whereClause).build();
     }
     return matchClause.build();

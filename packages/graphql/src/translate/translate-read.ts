@@ -177,7 +177,7 @@ export function translateRead(
     }
 
     const preComputedWhereFields =
-        topLevelWhereClause instanceof Cypher.With
+        preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty
             ? Cypher.concat(preComputedWhereFieldSubqueries, topLevelWhereClause)
             : undefined;
 
