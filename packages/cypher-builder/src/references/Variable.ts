@@ -20,7 +20,7 @@
 import { NamedReference, Reference } from "./Reference";
 
 /** Represents a variable
- * @group References
+ * @group Internal
  */
 export class Variable extends Reference {
     constructor() {
