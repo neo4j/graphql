@@ -147,14 +147,24 @@ export function translateCypherDirectiveProjection({
         }
     }
 
-    const runCypherInApocClause = createCypherDirectiveApocProcedure({
-        nodeRef: new Cypher.NamedNode(chainStr),
-        expectMultipleValues,
-        context,
-        field,
-        cypherField,
-    });
-    const unwindClause = new Cypher.Unwind([runCypherInApocClause, param]);
+    let customCypherClause: Cypher.Clause | undefined;
+    const nodeRef = new Cypher.NamedNode(chainStr);
+    if (!cypherField.columnName) {
+        const runCypherInApocClause = createCypherDirectiveApocProcedure({
+            nodeRef,
+            expectMultipleValues,
+            context,
+            field,
+            cypherField,
+        });
+        customCypherClause = new Cypher.Unwind([runCypherInApocClause, param]);
+    } else {
+        customCypherClause = createExperimentalCypherStatement({
+            field: cypherField,
+            nodeRef,
+            resultVariable: param,
+        });
+    }
 
     const unionExpression = hasUnionLabelsPredicate ? new Cypher.With("*").where(hasUnionLabelsPredicate) : undefined;
 
@@ -164,9 +174,9 @@ export function translateCypherDirectiveProjection({
         projectionExpr,
     });
 
-    const callSt = new Cypher.Call(Cypher.concat(unwindClause, unionExpression, ...subqueries, returnClause)).innerWith(
-        new Cypher.NamedVariable(chainStr)
-    );
+    const callSt = new Cypher.Call(
+        Cypher.concat(customCypherClause, unionExpression, ...subqueries, returnClause)
+    ).innerWith(new Cypher.NamedVariable(chainStr));
 
     const sortInput = (context.resolveTree.args.sort ??
         (context.resolveTree.args.options as any)?.sort ??
@@ -245,4 +255,28 @@ function createReturnClause({
         returnData = Cypher.head(returnData);
     }
     return new Cypher.Return([returnData, returnVariable]);
+}
+
+function createExperimentalCypherStatement({
+    field,
+    nodeRef,
+    resultVariable,
+}: {
+    field: CypherField;
+    nodeRef: Cypher.Node;
+    resultVariable: string;
+}): Cypher.Call {
+    const cypherStrs: string[] = [];
+    // TODO: pass varName
+    const rawCypher = new Cypher.RawCypher(field.statement);
+    const callClause = new Cypher.Call(rawCypher).innerWith(nodeRef);
+
+    if (field.columnName) {
+        if (field.isScalar || field.isEnum) {
+            cypherStrs.push(`UNWIND ${field.columnName} as this`);
+        } else {
+            callClause.with([new Cypher.NamedVariable(field.columnName), resultVariable]);
+        }
+    }
+    return callClause;
 }

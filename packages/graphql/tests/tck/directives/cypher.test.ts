@@ -688,5 +688,70 @@ describe("Cypher directive", () => {
                 }"
             `);
         });
+
+        test("should query field custom query and return relationship data with given columnName", async () => {
+            const typeDefs = `
+                type Movie {
+                    title: String!
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                    custom(title: String!): [Movie]
+                        @cypher(
+                            statement: """
+                            MATCH (m:Movie {title: $title})
+                            RETURN m
+                            """,
+                            columnName: "m"
+                        )
+                }
+
+                type Actor {
+                    name: String!
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            const query = gql`
+                query {
+                    movies {
+                        custom(title: "The Matrix") {
+                            title
+                            actors {
+                                name
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Movie\`)
+                CALL {
+                    WITH this
+                    CALL {
+                        WITH this
+                        MATCH (m:Movie {title: $title})
+                        RETURN m
+                    }
+                    WITH m AS this_custom
+                    CALL {
+                        WITH this_custom
+                        MATCH (this_custom_actors:\`Actor\`)-[this0:ACTED_IN]->(this_custom)
+                        WITH this_custom_actors { .name } AS this_custom_actors
+                        RETURN collect(this_custom_actors) AS this_custom_actors
+                    }
+                    RETURN collect(this_custom { .title, actors: this_custom_actors }) AS this_custom
+                }
+                RETURN this { custom: this_custom } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
     });
 });

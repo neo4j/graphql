@@ -835,6 +835,77 @@ describe("cypher", () => {
                     await session.close();
                 }
             });
+            describe("with columnName", () => {
+                test("custom query mutation", async () => {
+                    const session = await neo4j.getSession();
+
+                    const movieTitle = generate({
+                        charset: "alphabetic",
+                    });
+                    const actorName = generate({
+                        charset: "alphabetic",
+                    });
+
+                    const typeDefs = `
+                    type ${Movie} {
+                        title: String!
+                        actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+                    }
+
+                    type ${Actor} {
+                        name: String!
+                        movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+
+                    type Mutation {
+                        customMovies(title: String!): [${Movie}] @cypher(statement: """
+                            MATCH (m:${Movie} {title: $title})
+                            RETURN m
+                            """, columnName:"m")
+                    }
+                `;
+
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                    const source = `
+                    mutation($title: String!, $name: String) {
+                        customMovies(title: $title) {
+                            title
+                            actors(where: {name: $name}) {
+                                name
+                            }
+                        }
+                    }
+                `;
+
+                    try {
+                        await session.run(
+                            `
+                            CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
+                        `,
+                            {
+                                title: movieTitle,
+                                name: actorName,
+                            }
+                        );
+
+                        const gqlResult = await graphql({
+                            schema: await neoSchema.getSchema(),
+                            source,
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                            variableValues: { title: movieTitle },
+                        });
+
+                        expect(gqlResult.errors).toBeFalsy();
+
+                        expect((gqlResult?.data as any).customMovies).toEqual([
+                            { title: movieTitle, actors: [{ name: actorName }] },
+                        ]);
+                    } finally {
+                        await session.close();
+                    }
+                });
+            });
         });
     });
 
