@@ -125,21 +125,22 @@ describe("CypherBuilder Call", () => {
 
     it("CALL with unwind", () => {
         const node = new Cypher.Node({ labels: ["Movie"] });
+        const movie = new Cypher.Variable();
 
         const matchClause = new Cypher.Match(node)
             .where(Cypher.eq(new Cypher.Param("aa"), new Cypher.Param("bb")))
-            .return([node.property("title"), "movie"]);
+            .return([node.property("title"), movie]);
 
-        const clause = new Cypher.Call(matchClause).unwind("*");
-        console.log(clause);
+        const clause = new Cypher.Call(matchClause).unwind([movie, "m"]);
         const queryResult = clause.build();
+
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this0:\`Movie\`)
                 WHERE $param0 = $param1
-                RETURN this0.title AS movie
+                RETURN this0.title AS var1
             }
-            UNWIND *"
+            UNWIND var1 AS m"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`
