@@ -19,13 +19,11 @@
 
 import Cypher from "@neo4j/cypher-builder";
 
-/**
- * caseWhere is a function that take a predicate and a list of CypherVariable,
- * if the predicate is true then it return these, if the predicate instead is false then it returns these variables as null,
- * the output is the same to a WHERE predicate appended to the an OPTIONAL MATCH.
- * This is helpful when a Cypher block need to be put between an OPTIONAL MATCH and a WHERE.
+/** 
+ * caseWhere is a function that behaves like a WHERE filter appended after an OPTIONAL MATCH, it takes a predicate and a list of CypherVariable and returns a Clause.
+ * If the predicate is true then it returns these variables, if the predicate is false then it returns a list of NULLs instead.
+ * This is helpful when a Cypher block needs to be put between an OPTIONAL MATCH and a WHERE making the WHERE filter no longer optional.
  */
-
 export function caseWhere(predicate: Cypher.Predicate, columns: Cypher.Variable[]): Cypher.Clause {
     const caseProjection = new Cypher.Variable();
     const nullList = new Cypher.List(Array(columns.length).fill(new Cypher.Literal(null)));
@@ -36,7 +34,7 @@ export function caseWhere(predicate: Cypher.Predicate, columns: Cypher.Variable[
     const aggregationWith = new Cypher.With("*", [caseFilter, caseProjection]);
     const columnsProjection = Array(columns.length)
         .fill(() => undefined)
-        .map((element, index) => [caseProjection.index(index), columns[index]] as [Cypher.Expr, Cypher.Variable]);
+        .map((_, index) => [caseProjection.index(index), columns[index]] as [Cypher.Expr, Cypher.Variable]);
     const caseProjectionWith = new Cypher.With("*", ...columnsProjection);
     return Cypher.concat(aggregationWith, caseProjectionWith);
 }

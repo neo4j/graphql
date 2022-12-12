@@ -146,10 +146,10 @@ function createDeleteAndParams({
                         if (aggregationWhere) {
                             const columns = [new Cypher.NamedVariable(relationshipVariable), new Cypher.NamedVariable(variableName)];
                             const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
-                            const { cypher } = caseWhereClause.build("myPrefix");
+                            const { cypher } = caseWhereClause.build("aggregateWhereFilter");
                             res.strs.push(cypher);
                         } else {
-                            res.strs.push(`WHERE ${predicate}`);
+                            res.strs.push(`\tWHERE ${predicate}`);
                         }   
                     }
 

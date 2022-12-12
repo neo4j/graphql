@@ -199,10 +199,10 @@ export default function createUpdateAndParams({
                             if (aggregationWhere) {
                                 const columns = [new Cypher.NamedVariable(relationshipVariable), new Cypher.NamedVariable(variableName)];
                                 const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
-                                const { cypher } = caseWhereClause.build("myPrefix");
+                                const { cypher } = caseWhereClause.build("aggregateWhereFilter");
                                 subquery.push(cypher);
                             } else {
-                                subquery.push(`WHERE ${predicate}`);
+                                subquery.push(`\tWHERE ${predicate}`);
                             }                            
                         }
 
