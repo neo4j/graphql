@@ -42,7 +42,7 @@ export function translateTopLevelMatch({
         context,
         operation,
     });
-    if (preComputedWhereFieldSubqueries) {
+    if (whereClause instanceof Cypher.With) {
         return Cypher.concat(matchClause, preComputedWhereFieldSubqueries, whereClause).build();
     }
     return matchClause.build();
@@ -50,7 +50,7 @@ export function translateTopLevelMatch({
 
 type CreateMatchClauseReturn = {
     matchClause: Cypher.Match | Cypher.db.FullTextQueryNodes;
-    preComputedWhereFieldSubqueries: Cypher.Clause | undefined;
+    preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
     whereClause: Cypher.Match | Cypher.db.FullTextQueryNodes | Cypher.With;
 };
 
@@ -67,7 +67,6 @@ export function createMatchClause({
 }): CreateMatchClauseReturn {
     const { resolveTree } = context;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
-    const withClause: Cypher.With = new Cypher.With("*");
     let matchClause: Cypher.Match | Cypher.db.FullTextQueryNodes = new Cypher.Match(matchNode);
     let whereInput = resolveTree.args.where as GraphQLWhereArg | undefined;
     let whereOperators: Cypher.Predicate[] = [];
@@ -102,7 +101,7 @@ export function createMatchClause({
 
         preComputedWhereFieldSubqueries = preComputedSubqueries;
 
-        whereClause = preComputedWhereFieldSubqueries ? withClause : matchClause;
+        whereClause = preComputedWhereFieldSubqueries?.empty ? matchClause : new Cypher.With("*");
 
         if (whereOp) whereClause.where(whereOp);
     }
