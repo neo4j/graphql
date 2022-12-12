@@ -101,7 +101,10 @@ export function createMatchClause({
 
         preComputedWhereFieldSubqueries = preComputedSubqueries;
 
-        whereClause = preComputedWhereFieldSubqueries?.empty ? matchClause : new Cypher.With("*");
+        whereClause =
+            preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty
+                ? new Cypher.With("*")
+                : matchClause;
 
         if (whereOp) whereClause.where(whereOp);
     }

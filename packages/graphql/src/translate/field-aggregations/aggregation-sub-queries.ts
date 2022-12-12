@@ -28,17 +28,19 @@ export function createMatchWherePattern(
     wherePredicate: Cypher.Predicate | undefined
 ): Cypher.Clause {
     const matchClause = new Cypher.Match(matchPattern);
-    const whereClause = !preComputedWhereFields?.empty ? new Cypher.With("*") : matchClause;
+    const whereClause = preComputedWhereFields && !preComputedWhereFields?.empty ? new Cypher.With("*") : matchClause;
     if (wherePredicate) whereClause.where(wherePredicate);
     if (auth) whereClause.where(auth);
-    return !preComputedWhereFields?.empty ? Cypher.concat(matchClause, preComputedWhereFields, whereClause) : matchClause;
+    return preComputedWhereFields &&!preComputedWhereFields?.empty
+        ? Cypher.concat(matchClause, preComputedWhereFields, whereClause)
+        : matchClause;
 }
 
 export function stringAggregationQuery(
     matchWherePattern: Cypher.Clause,
     fieldName: string,
     fieldRef: Cypher.Variable,
-    targetAlias: Cypher.Node | Cypher.Relationship,
+    targetAlias: Cypher.Node | Cypher.Relationship
 ): Cypher.RawCypher {
     const fieldPath = targetAlias.property(fieldName);
     return new Cypher.RawCypher((env) => {
@@ -64,7 +66,9 @@ export function numberAggregationQuery(
         const fieldPathCypher = fieldPath.getCypher(env);
 
         return `${matchWherePattern.getCypher(env)}
-        RETURN {min: min(${fieldPathCypher}), max: max(${fieldPathCypher}), average: avg(${fieldPathCypher}), sum: sum(${fieldPathCypher})}  AS ${fieldRef.getCypher(env)}`;
+        RETURN {min: min(${fieldPathCypher}), max: max(${fieldPathCypher}), average: avg(${fieldPathCypher}), sum: sum(${fieldPathCypher})}  AS ${fieldRef.getCypher(
+            env
+        )}`;
     });
 }
 

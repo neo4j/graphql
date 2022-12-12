@@ -136,7 +136,8 @@ export function createConnectionWherePropertyOperation({
                     edge,
                 });
                 subOperations.push(predicate);
-                preComputedSubqueriesResult.push(preComputedSubqueries);
+                if (preComputedSubqueries && !preComputedSubqueries.empty)
+                    preComputedSubqueriesResult.push(preComputedSubqueries);
             });
             if (key === "AND") {
                 params.push(Cypher.and(...filterTruthy(subOperations)));
@@ -158,7 +159,8 @@ export function createConnectionWherePropertyOperation({
             });
 
             params.push(result);
-            preComputedSubqueriesResult.push(preComputedSubqueries);
+            if (preComputedSubqueries && !preComputedSubqueries.empty)
+                preComputedSubqueriesResult.push(preComputedSubqueries);
             return;
         }
 
@@ -185,7 +187,8 @@ export function createConnectionWherePropertyOperation({
 
             // NOTE: _NOT is handled by the size()=0
             params.push(result);
-            preComputedSubqueriesResult.push(preComputedSubqueries);
+            if (preComputedSubqueries && !preComputedSubqueries.empty)
+                preComputedSubqueriesResult.push(preComputedSubqueries);
             return;
         }
     });
