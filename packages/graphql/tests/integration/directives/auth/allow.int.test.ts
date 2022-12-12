@@ -18,17 +18,25 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import type { Driver } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { cleanNodes } from "../../../utils/clean-nodes";
+import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
 
 describe("auth/allow", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+    let session: Session;
     const secret = "secret";
+
+    let userType: UniqueType;
+    let postType: UniqueType;
+    let commentType: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -39,16 +47,29 @@ describe("auth/allow", () => {
         await driver.close();
     });
 
+    beforeEach(async () => {
+        userType = generateUniqueType("User");
+        postType = generateUniqueType("Post");
+        commentType = generateUniqueType("Comment");
+
+        session = await neo4j.getSession();
+    });
+
+    afterEach(async () => {
+        await cleanNodes(session, [userType, postType]);
+        await session.close();
+    });
+
     describe("read", () => {
         test("should throw forbidden when reading a node with invalid allow", async () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${userType.name} {
                     id: ID
                 }
 
-                extend type User @auth(rules: [{ operations: [READ], allow: { id: "$jwt.sub" } }])
+                extend type ${userType.name} @auth(rules: [{ operations: [READ], allow: { id: "$jwt.sub" } }])
             `;
 
             const userId = generate({
@@ -57,7 +78,7 @@ describe("auth/allow", () => {
 
             const query = `
                 {
-                    users(where: {id: "${userId}"}) {
+                    ${userType.plural}(where: {id: "${userId}"}) {
                         id
                     }
                 }
@@ -74,7 +95,7 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})
+                    CREATE (:${userType.name} {id: "${userId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -95,11 +116,11 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${userType.name} {
                     id: ID
                 }
 
-                extend type User {
+                extend type ${userType.name} {
                     password: String @auth(rules: [{ operations: [READ], allow: { id: "$jwt.sub" } }])
                 }
             `;
@@ -110,7 +131,7 @@ describe("auth/allow", () => {
 
             const query = `
                 {
-                    users(where: {id: "${userId}"}) {
+                    ${userType.plural}(where: {id: "${userId}"}) {
                         password
                     }
                 }
@@ -127,7 +148,7 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}", password: "letmein"})
+                    CREATE (:${userType.name} {id: "${userId}", password: "letmein"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -148,16 +169,16 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type Post {
+                type ${postType.name} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type User {
+                type ${userType.name} {
                     id: ID
                 }
 
-                extend type User {
+                extend type ${userType.name} {
                     password: String @auth(rules: [{ operations: [READ], allow: { id: "$jwt.sub" } }])
                 }
             `;
@@ -172,7 +193,7 @@ describe("auth/allow", () => {
 
             const query = `
                 {
-                    posts(where: {id: "${postId}"}) {
+                    ${postType.plural}(where: {id: "${postId}"}) {
                         creator {
                             password
                         }
@@ -191,7 +212,7 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:Post {id: "${postId}"})<-[:HAS_POST]-(:User {id: "${userId}", password: "letmein"})
+                    CREATE (:${postType.name} {id: "${postId}"})<-[:HAS_POST]-(:${userType.name} {id: "${userId}", password: "letmein"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -212,16 +233,16 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type Post {
+                type ${postType.name} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type User {
+                type ${userType.name} {
                     id: ID
                 }
 
-                extend type User {
+                extend type ${userType.name} {
                     password: String @auth(rules: [{ operations: [READ], allow: { id: "$jwt.sub" } }])
                 }
             `;
@@ -236,7 +257,7 @@ describe("auth/allow", () => {
 
             const query = `
                 {
-                    posts(where: {id: "${postId}"}) {
+                    ${postType.plural}(where: {id: "${postId}"}) {
                         creatorConnection {
                             edges {
                                 node {
@@ -259,7 +280,7 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:Post {id: "${postId}"})<-[:HAS_POST]-(:User {id: "${userId}", password: "letmein"})
+                    CREATE (:${postType.name} {id: "${postId}"})<-[:HAS_POST]-(:${userType.name} {id: "${userId}", password: "letmein"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -280,18 +301,18 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type Post {
+                type ${postType.name} {
                     content: String
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type User {
+                type ${userType.name} {
                     id: ID
                     name: String
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type Post
+                extend type ${postType.name}
                     @auth(rules: [{ operations: [READ], allow: { creator: { id: "$jwt.sub" } } }])
             `;
 
@@ -305,7 +326,7 @@ describe("auth/allow", () => {
 
             const query = `
                 {
-                    users(where: {id: "${userId}"}) {
+                    ${userType.plural}(where: {id: "${userId}"}) {
                         id
                         posts {
                             content
@@ -325,7 +346,7 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                    CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -346,18 +367,18 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type Post {
+                type ${postType.name} {
                     content: String
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type User {
+                type ${userType.name} {
                     id: ID
                     name: String
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type Post
+                extend type ${postType.name}
                     @auth(rules: [{ operations: [READ], allow: { creator: { id: "$jwt.sub" } } }])
             `;
 
@@ -371,7 +392,7 @@ describe("auth/allow", () => {
 
             const query = `
                 {
-                    users(where: {id: "${userId}"}) {
+                    ${userType.plural}(where: {id: "${userId}"}) {
                         id
                         postsConnection {
                             edges {
@@ -395,7 +416,7 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                    CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -416,26 +437,26 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type Comment {
+                type ${commentType.name}  {
                     id: ID
                     content: String
-                    creator: User! @relationship(type: "HAS_COMMENT", direction: IN)
+                    creator: ${userType.name}! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
-                type Post {
+                type ${postType.name} {
                     id: ID
                     content: String
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
-                    comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
+                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
+                    comments: [${commentType.name}!]! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
-                type User {
+                type ${userType.name} {
                     id: ID
                     name: String
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type Comment
+                extend type ${commentType.name}
                     @auth(rules: [{ operations: [READ], allow: { creator: { id: "$jwt.sub" } } }])
             `;
 
@@ -453,7 +474,7 @@ describe("auth/allow", () => {
 
             const query = `
                 {
-                    users(where: {id: "${userId}"}) {
+                    ${userType.plural}(where: {id: "${userId}"}) {
                         id
                         posts(where: {id: "${postId}"}) {
                             comments(where: {id: "${commentId}"}) {
@@ -475,7 +496,7 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})-[:HAS_COMMENT]->(:Comment {id: "${commentId}"})
+                    CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})-[:HAS_COMMENT]->(:${commentType.name} {id: "${commentId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -498,11 +519,11 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${userType.name}  {
                     id: ID
                 }
 
-                extend type User
+                extend type ${userType.name}
                     @auth(rules: [{ operations: [UPDATE], allow: { id: "$jwt.sub"  } }])
             `;
 
@@ -512,8 +533,8 @@ describe("auth/allow", () => {
 
             const query = `
                 mutation {
-                    updateUsers(where: {id: "${userId}"}, update: {id: "new-id"}) {
-                        users {
+                    ${userType.operations.update}(where: {id: "${userId}"}, update: {id: "new-id"}) {
+                        ${userType.plural} {
                             id
                         }
                     }
@@ -531,7 +552,7 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})
+                    CREATE (: ${userType.name} {id: "${userId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -552,11 +573,11 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${userType.name} {
                     id: ID
                 }
 
-                extend type User {
+                extend type ${userType.name} {
                     password: String @auth(rules: [{ operations: [UPDATE], allow: { id: "$jwt.sub" }}])
                 }
 
@@ -568,8 +589,8 @@ describe("auth/allow", () => {
 
             const query = `
                 mutation {
-                    updateUsers(where: {id: "${userId}"}, update: {password: "new-password"}) {
-                        users {
+                    ${userType.operations.update}(where: {id: "${userId}"}, update: {password: "new-password"}) {
+                        ${userType.plural} {
                             id
                         }
                     }
@@ -587,7 +608,7 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})
+                    CREATE (:${userType.name} {id: "${userId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -608,17 +629,17 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type Post {
+                type ${postType.name} {
                     id: ID
                     content: String
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type User {
+                type ${userType.name} {
                     id: ID
                 }
 
-                extend type User @auth(rules: [{ operations: [UPDATE], allow: { id: "$jwt.sub" }}])
+                extend type ${userType.name} @auth(rules: [{ operations: [UPDATE], allow: { id: "$jwt.sub" }}])
             `;
 
             const userId = generate({
@@ -631,11 +652,11 @@ describe("auth/allow", () => {
 
             const query = `
                 mutation {
-                    updatePosts(
+                    ${postType.operations.update}(
                         where: { id: "${postId}" }
                         update: { creator: { update: { node: { id: "new-id" } } } }
                     ) {
-                        posts {
+                        ${postType.plural} {
                             id
                         }
                     }
@@ -653,7 +674,7 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                    CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -674,17 +695,17 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type Post {
+                type ${postType.name} {
                     id: ID
                     content: String
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type User {
+                type ${userType.name} {
                     id: ID
                 }
 
-                extend type User {
+                extend type ${userType.name} {
                     password: String @auth(rules: [{ operations: [UPDATE], allow: { id: "$jwt.sub" }}])
                 }
             `;
@@ -699,11 +720,11 @@ describe("auth/allow", () => {
 
             const query = `
                 mutation {
-                    updatePosts(
+                    ${postType.operations.update}(
                         where: { id: "${postId}" }
                         update: { creator: { update: { node: { password: "new-password" } } } }
                     ) {
-                        posts {
+                        ${postType.plural} {
                             id
                         }
                     }
@@ -721,7 +742,7 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                    CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -744,11 +765,11 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${userType.name} {
                     id: ID
                 }
 
-                extend type User @auth(rules: [{ operations: [DELETE], allow: { id: "$jwt.sub" }}])
+                extend type ${userType.name} @auth(rules: [{ operations: [DELETE], allow: { id: "$jwt.sub" }}])
             `;
 
             const userId = generate({
@@ -757,7 +778,7 @@ describe("auth/allow", () => {
 
             const query = `
                 mutation {
-                    deleteUsers(
+                    ${userType.operations.delete}(
                         where: { id: "${userId}" }
                     ) {
                        nodesDeleted
@@ -776,7 +797,7 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})
+                    CREATE (:${userType.name} {id: "${userId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -797,18 +818,18 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User {
+                type ${userType.name} {
                     id: ID
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type Post {
+                type ${postType.name} {
                     id: ID
                     name: String
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type Post @auth(rules: [{ operations: [DELETE], allow: { creator: { id: "$jwt.sub" } }}])
+                extend type ${postType.name} @auth(rules: [{ operations: [DELETE], allow: { creator: { id: "$jwt.sub" } }}])
             `;
 
             const userId = generate({
@@ -821,7 +842,7 @@ describe("auth/allow", () => {
 
             const query = `
                 mutation {
-                    deleteUsers(
+                    ${userType.operations.delete}(
                         where: { id: "${userId}" },
                         delete: {
                             posts: {
@@ -849,7 +870,7 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                    CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -872,17 +893,17 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Post {
+                type ${postType.name} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type User {
+                type ${userType.name} {
                     id: ID
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type Post @auth(rules: [{ operations: [DISCONNECT], allow: { creator: { id: "$jwt.sub" } }}])
+                extend type ${postType.name} @auth(rules: [{ operations: [DISCONNECT], allow: { creator: { id: "$jwt.sub" } }}])
             `;
 
             const userId = generate({
@@ -895,11 +916,11 @@ describe("auth/allow", () => {
 
             const query = `
                 mutation {
-                    updateUsers(
+                    ${userType.operations.update}(
                         where: { id: "${userId}" }
                         disconnect: { posts: { where: { node: { id: "${postId}" } } } }
                     ) {
-                        users {
+                        ${userType.plural} {
                             id
                         }
                     }
@@ -917,7 +938,7 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                    CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -938,24 +959,24 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Comment {
+                type ${commentType.name} {
                     id: ID
                     content: String
-                    post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
+                    post: ${postType.name}! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
-                type Post {
+                type ${postType.name} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
-                    comments: Comment! @relationship(type: "HAS_COMMENT", direction: OUT)
+                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
+                    comments: ${commentType.name}! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
-                type User {
+                type ${userType.name} {
                     id: ID
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type Post @auth(rules: [{ operations: [DISCONNECT], allow: { creator: { id: "$jwt.sub" } }}])
+                extend type ${postType.name} @auth(rules: [{ operations: [DISCONNECT], allow: { creator: { id: "$jwt.sub" } }}])
             `;
 
             const userId = generate({
@@ -972,7 +993,7 @@ describe("auth/allow", () => {
 
             const query = `
                 mutation {
-                    updateComments(
+                    ${commentType.operations.update}(
                         where: { id: "${commentId}" }
                         update: {
                             post: {
@@ -986,7 +1007,7 @@ describe("auth/allow", () => {
                             }
                         }
                     ) {
-                        comments {
+                        ${commentType.plural} {
                             id
                         }
                     }
@@ -1004,9 +1025,9 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->
-                                (:Post {id: "${postId}"})-[:HAS_COMMENT]->
-                                    (:Comment {id: "${commentId}"})
+                    CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->
+                                (:${postType.name} {id: "${postId}"})-[:HAS_COMMENT]->
+                                    (:${commentType.name} {id: "${commentId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -1029,17 +1050,17 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Post {
+                type ${postType.name} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
+                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type User {
+                type ${userType.name} {
                     id: ID
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type Post @auth(rules: [{ operations: [CONNECT], allow: { creator: { id: "$jwt.sub" } }}])
+                extend type ${postType.name} @auth(rules: [{ operations: [CONNECT], allow: { creator: { id: "$jwt.sub" } }}])
             `;
 
             const userId = generate({
@@ -1052,11 +1073,11 @@ describe("auth/allow", () => {
 
             const query = `
                 mutation {
-                    updateUsers(
+                    ${userType.operations.update}(
                         where: { id: "${userId}" }
                         connect: { posts: { where: { node: { id: "${postId}" } } } }
                     ) {
-                        users {
+                        ${userType.plural} {
                             id
                         }
                     }
@@ -1074,8 +1095,8 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})
-                    CREATE (:Post {id: "${postId}"})
+                    CREATE (:${userType.name} {id: "${userId}"})
+                    CREATE (:${postType.name} {id: "${postId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
@@ -1096,24 +1117,24 @@ describe("auth/allow", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Comment {
+                type ${commentType.name} {
                     id: ID
                     content: String
-                    post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
+                    post: ${postType.name}! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
-                type Post {
+                type ${postType.name} {
                     id: ID
-                    creator: User! @relationship(type: "HAS_POST", direction: IN)
-                    comments: Comment! @relationship(type: "HAS_COMMENT", direction: OUT)
+                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
+                    comments: ${commentType.name}! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
-                type User {
+                type ${userType.name} {
                     id: ID
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type Post @auth(rules: [{ operations: [CONNECT], allow: { creator: { id: "$jwt.sub" } }}])
+                extend type ${postType.name} @auth(rules: [{ operations: [CONNECT], allow: { creator: { id: "$jwt.sub" } }}])
             `;
 
             const userId = generate({
@@ -1130,7 +1151,7 @@ describe("auth/allow", () => {
 
             const query = `
                 mutation {
-                    updateComments(
+                    ${commentType.operations.update}(
                         where: { id: "${commentId}" }
                         update: {
                             post: {
@@ -1144,7 +1165,7 @@ describe("auth/allow", () => {
                             }
                         }
                     ) {
-                        comments {
+                        ${commentType.plural} {
                             id
                         }
                     }
@@ -1162,8 +1183,8 @@ describe("auth/allow", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})
-                    CREATE (:Post {id: "${postId}"})-[:HAS_COMMENT]->(:Comment {id: "${commentId}"})
+                    CREATE (:${userType.name} {id: "${userId}"})
+                    CREATE (:${postType.name} {id: "${postId}"})-[:HAS_COMMENT]->(:${commentType.name} {id: "${commentId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: "invalid" });
