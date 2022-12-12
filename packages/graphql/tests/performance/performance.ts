@@ -86,7 +86,7 @@ const typeDefs = gql`
                 WHERE m.released > 2000
                 RETURN p
                 """
-                experimental: true
+                columnName: "p"
             )
     }
 `;
