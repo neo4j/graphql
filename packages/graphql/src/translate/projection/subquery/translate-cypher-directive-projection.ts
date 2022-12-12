@@ -160,7 +160,8 @@ export function translateCypherDirectiveProjection({
         customCypherClause = new Cypher.Unwind([runCypherInApocClause, param]);
     } else {
         customCypherClause = createExperimentalCypherStatement({
-            field: cypherField,
+            cypherField,
+            field,
             nodeRef,
             resultVariable: param,
         });
@@ -259,24 +260,38 @@ function createReturnClause({
 
 function createExperimentalCypherStatement({
     field,
+    cypherField,
     nodeRef,
     resultVariable,
 }: {
-    field: CypherField;
+    cypherField: CypherField;
+    field: ResolveTree;
     nodeRef: Cypher.Node;
     resultVariable: string;
-}): Cypher.Call {
-    const cypherStrs: string[] = [];
-    // TODO: pass varName
-    const rawCypher = new Cypher.RawCypher(field.statement);
+}): Cypher.Clause {
+    const rawCypher = new Cypher.RawCypher(cypherField.statement);
     const callClause = new Cypher.Call(rawCypher).innerWith(nodeRef);
 
-    if (field.columnName) {
-        if (field.isScalar || field.isEnum) {
-            cypherStrs.push(`UNWIND ${field.columnName} as this`);
+    // TODO: avoid duplication with createCypherDirectiveApocProcedure
+    const nullArgumentValues = cypherField.arguments.reduce(
+        (r, argument) => ({
+            ...r,
+            [argument.name.value]: null,
+        }),
+        {}
+    );
+    const extraArgs = new Cypher.RawCypher(() => {
+        return ["", { ...nullArgumentValues, ...field.args }];
+    });
+
+    if (cypherField.columnName) {
+        const columnVariable = new Cypher.NamedVariable(cypherField.columnName);
+
+        if (cypherField.isScalar || cypherField.isEnum) {
+            callClause.unwind([columnVariable, resultVariable]);
         } else {
-            callClause.with([new Cypher.NamedVariable(field.columnName), resultVariable]);
+            callClause.with([columnVariable, resultVariable]);
         }
     }
-    return callClause;
+    return Cypher.concat(callClause, extraArgs);
 }
