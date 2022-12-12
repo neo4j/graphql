@@ -1,5 +1,11 @@
 # @neo4j/cypher-builder
 
+## 0.1.7
+
+### Patch Changes
+
+-   [#2530](https://github.com/neo4j/graphql/pull/2530) [`c8c2d2d4d`](https://github.com/neo4j/graphql/commit/c8c2d2d4d4897adfd1afcd666bf9f46263dfab1f) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Introduce ListIndex and add support to the square bracket notation.
+
 ## 0.1.6
 
 ### Patch Changes
