@@ -81,7 +81,7 @@ async function beforeAll() {
     await resetDb();
 }
 
-function beforeEach(_testInfo: Performance.TestInfo): Promise<void> {
+function beforeEach(): Promise<void> {
     return Promise.resolve();
 }
 
