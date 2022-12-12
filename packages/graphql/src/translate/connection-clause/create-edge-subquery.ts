@@ -73,7 +73,6 @@ export function createEdgeSubquery({
     });
 
     const matchClause = new Cypher.Match(relPattern);
-    // const subqueryWith = new Cypher.With("*");
     const predicates: Cypher.Predicate[] = [];
     let preComputedSubqueries: Cypher.CompositeClause | undefined;
     if (whereInput) {
