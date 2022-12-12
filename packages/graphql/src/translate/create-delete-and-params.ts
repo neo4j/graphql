@@ -144,13 +144,16 @@ function createDeleteAndParams({
                     if (whereStrs.length) {
                         const predicate = `${whereStrs.join(" AND ")}`;
                         if (aggregationWhere) {
-                            const columns = [new Cypher.NamedVariable(relationshipVariable), new Cypher.NamedVariable(variableName)];
+                            const columns = [
+                                new Cypher.NamedVariable(relationshipVariable),
+                                new Cypher.NamedVariable(variableName),
+                            ];
                             const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
                             const { cypher } = caseWhereClause.build("aggregateWhereFilter");
                             res.strs.push(cypher);
                         } else {
-                            res.strs.push(`\tWHERE ${predicate}`);
-                        }   
+                            res.strs.push(`WHERE ${predicate}`);
+                        }
                     }
 
                     const allowAuth = createAuthAndParams({
@@ -240,11 +243,12 @@ function createDeleteAndParams({
                             ", "
                         )}${withRelationshipStr}`
                     );
+
                     /**
                      * This ORDER BY is required to prevent hitting the "Node with id 2 has been deleted in this transaction"
                      * bug. TODO - remove once the bug has bee fixed.
                      */
-                    res.strs.push(`ORDER BY ${nodeToDelete} DESC`);
+                    if (aggregationWhere) res.strs.push(`ORDER BY ${nodeToDelete} DESC`);
 
                     if (context.subscriptionsEnabled) {
                         const metaObjectStr = createEventMetaObject({

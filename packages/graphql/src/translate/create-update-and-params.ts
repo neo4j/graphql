@@ -202,7 +202,7 @@ export default function createUpdateAndParams({
                                 const { cypher } = caseWhereClause.build("aggregateWhereFilter");
                                 subquery.push(cypher);
                             } else {
-                                subquery.push(`\tWHERE ${predicate}`);
+                                subquery.push(`WHERE ${predicate}`);
                             }                            
                         }
 
