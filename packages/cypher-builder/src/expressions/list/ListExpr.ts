@@ -36,16 +36,12 @@ import { ListIndex } from "./ListIndex";
 export class ListExpr implements CypherCompilable {
     private value: Expr[];
 
-    get length() {
-        return this.value.length;
-    }
-
     constructor(value: Expr[]) {
         this.value = value;
     }
 
-    private serializeList(env: CypherEnvironment, list: Expr[]): string {
-        const valuesList = list.map((expr) => {
+    private serializeList(env: CypherEnvironment, obj: Expr[]): string {
+        const valuesList = obj.map((expr) => {
             return expr.getCypher(env);
         });
 

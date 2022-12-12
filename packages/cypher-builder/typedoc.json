@@ -2,7 +2,7 @@
     "excludeExternals": true,
     "excludePrivate": true,
     "excludeProtected": true,
-    "includeVersion": true,
+    "includeVersion": false,
     "excludeTags": [],
     "hideGenerator": true,
     "name": "Cypher Builder",
