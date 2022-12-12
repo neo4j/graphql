@@ -49,13 +49,6 @@ import { getDocument } from "../schema/get-document";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 
-export interface Neo4jGraphQLJWT {
-    jwksEndpoint?: string;
-    secret?: string | Buffer | { key: string | Buffer; passphrase: string };
-    noVerify?: boolean;
-    rolesPath?: string;
-}
-
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
     enableRegex?: boolean;
