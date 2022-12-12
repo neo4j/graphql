@@ -104,6 +104,7 @@ function createDeleteAndParams({
                     );
 
                     const whereStrs: string[] = [];
+                    let aggregationWhere = false;
                     if (d.where) {
                         try {
                             const [whereCypher, preComputedSubqueries, whereParams] = createConnectionWhereAndParams({
@@ -122,6 +123,7 @@ function createDeleteAndParams({
                                 res.params = { ...res.params, ...whereParams };
                                 if (preComputedSubqueries) {
                                     res.strs.push(preComputedSubqueries);
+                                    aggregationWhere = true;
                                 }
                             }
                         } catch {
@@ -140,13 +142,15 @@ function createDeleteAndParams({
                         res.params = { ...res.params, ...whereAuth[1] };
                     }
                     if (whereStrs.length) {
-                        const columns = [
-                            new Cypher.NamedVariable(relationshipVariable),
-                            new Cypher.NamedVariable(variableName),
-                        ];
-                        const caseWhereClause = caseWhere(new Cypher.RawCypher(whereStrs.join(" AND ")), columns);
-                        const { cypher } = caseWhereClause.build("myPrefix");
-                        res.strs.push(cypher);
+                        const predicate = `${whereStrs.join(" AND ")}`;
+                        if (aggregationWhere) {
+                            const columns = [new Cypher.NamedVariable(relationshipVariable), new Cypher.NamedVariable(variableName)];
+                            const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
+                            const { cypher } = caseWhereClause.build("myPrefix");
+                            res.strs.push(cypher);
+                        } else {
+                            res.strs.push(`WHERE ${predicate}`);
+                        }   
                     }
 
                     const allowAuth = createAuthAndParams({

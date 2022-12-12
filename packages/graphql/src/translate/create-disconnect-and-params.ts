@@ -81,6 +81,7 @@ function createDisconnectAndParams({
         ) as unknown as Relationship;
 
         const whereStrs: string[] = [];
+        let aggregationWhere = false;
         if (disconnect.where) {
             try {
                 const [whereCypher, preComputedSubqueries, whereParams] = createConnectionWhereAndParams({
@@ -97,6 +98,7 @@ function createDisconnectAndParams({
                     params = { ...params, ...whereParams };
                     if (preComputedSubqueries) {
                         subquery.push(preComputedSubqueries);
+                        aggregationWhere = true;
                     }
                 }
             } catch {
@@ -118,10 +120,15 @@ function createDisconnectAndParams({
         }
 
         if (whereStrs.length) {
-            const columns = [new Cypher.NamedVariable(relVarName), new Cypher.NamedVariable(variableName)];
-            const caseWhereClause = caseWhere(new Cypher.RawCypher(whereStrs.join(" AND ")), columns);
-            const { cypher } = caseWhereClause.build("myPrefix");
-            subquery.push(cypher);
+            const predicate = `${whereStrs.join(" AND ")}`;
+            if (aggregationWhere) {
+                const columns = [new Cypher.NamedVariable(relVarName), new Cypher.NamedVariable(variableName)];
+                const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
+                const { cypher } = caseWhereClause.build("myPrefix");
+                subquery.push(cypher);
+            } else {
+                subquery.push(`WHERE ${predicate}`);
+            }    
         }
 
         const nodeMatrix: { node: Node; name: string }[] = [

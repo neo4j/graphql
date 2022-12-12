@@ -143,6 +143,7 @@ export default function createUpdateAndParams({
                     if (update.update) {
                         const whereStrs: string[] = [];
                         const delayedSubquery: string[] = [];
+                        let aggregationWhere = false;
 
                         if (update.where) {
                             try {
@@ -163,6 +164,7 @@ export default function createUpdateAndParams({
                                     res.params = { ...res.params, ...whereParams };
                                     if (preComputedSubqueries) {
                                         delayedSubquery.push(preComputedSubqueries);
+                                        aggregationWhere = true;
                                     }
                                 }
                             } catch {
@@ -193,10 +195,15 @@ export default function createUpdateAndParams({
                             }
                         }
                         if (whereStrs.length) {
-                            const columns = [new Cypher.NamedVariable(relationshipVariable), new Cypher.NamedVariable(variableName)];
-                            const caseWhereClause = caseWhere(new Cypher.RawCypher(whereStrs.join(" AND ")), columns);
-                            const { cypher } = caseWhereClause.build("myPrefix");
-                            subquery.push(cypher);
+                            const predicate = `${whereStrs.join(" AND ")}`;
+                            if (aggregationWhere) {
+                                const columns = [new Cypher.NamedVariable(relationshipVariable), new Cypher.NamedVariable(variableName)];
+                                const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
+                                const { cypher } = caseWhereClause.build("myPrefix");
+                                subquery.push(cypher);
+                            } else {
+                                subquery.push(`WHERE ${predicate}`);
+                            }                            
                         }
 
                         if (update.update.node) {

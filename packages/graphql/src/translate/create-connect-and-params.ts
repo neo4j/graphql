@@ -93,6 +93,7 @@ function createConnectAndParams({
         subquery.push(`\tOPTIONAL MATCH (${nodeName}${label})`);
 
         const whereStrs: string[] = [];
+        let aggregationWhere = false;
         if (connect.where) {
             // If _on is the only where key and it doesn't contain this implementation, don't connect it
             if (
@@ -127,6 +128,7 @@ function createConnectAndParams({
                 params = { ...params, ...rootNodeWhereParams };
                 if (preComputedSubqueries) {
                     subquery.push(preComputedSubqueries);
+                    aggregationWhere = true;
                 }
             }
 
@@ -176,10 +178,15 @@ function createConnectAndParams({
         }
 
         if (whereStrs.length) {
-            const columns = [new Cypher.NamedVariable(nodeName)];
-            const caseWhereClause = caseWhere(new Cypher.RawCypher(whereStrs.join(" AND ")), columns);
-            const { cypher } = caseWhereClause.build("myPrefix");
-            subquery.push(cypher);
+            const predicate = `${whereStrs.join(" AND ")}`;
+            if (aggregationWhere) {
+                const columns = [new Cypher.NamedVariable(nodeName)];
+                const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
+                const { cypher } = caseWhereClause.build("myPrefix");
+                subquery.push(cypher);
+            } else {
+                subquery.push(`WHERE ${predicate}`);
+            }  
         }
 
         const nodeMatrix: Array<{ node: Node; name: string }> = [{ node: relatedNode, name: nodeName }];
