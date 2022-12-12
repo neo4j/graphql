@@ -97,14 +97,6 @@ export function createPropertyWhere({
 
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
-
-            // return createAggregateOperation({
-            //     relationField,
-            //     context,
-            //     value,
-            //     parentNode: targetElement as Cypher.Node,
-            // });
-
             return preComputedWhereFields(value, relationField, context, targetElement);
         }
 

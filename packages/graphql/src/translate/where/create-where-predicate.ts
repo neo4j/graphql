@@ -57,14 +57,15 @@ export function createWherePredicate({
             });
             if (predicate) {
                 predicates.push(predicate);
-                subqueries = Cypher.concat(subqueries, preComputedSubqueries);
+                if (preComputedSubqueries && !preComputedSubqueries.empty)
+                    subqueries = Cypher.concat(subqueries, preComputedSubqueries);
             }
             return;
         }
         const { predicate, preComputedSubquery } = createPropertyWhere({ key, value, element, targetElement, context });
         if (predicate) {
             predicates.push(predicate);
-            subqueries = Cypher.concat(subqueries, preComputedSubquery);
+            if (preComputedSubquery) subqueries = Cypher.concat(subqueries, preComputedSubquery);
             return;
         }
     });
@@ -97,7 +98,8 @@ function createNestedPredicate({
         if (predicate) {
             nested.push(predicate);
         }
-        subqueries = Cypher.concat(subqueries, preComputedSubqueries);
+        if (preComputedSubqueries && !preComputedSubqueries.empty)
+            subqueries = Cypher.concat(subqueries, preComputedSubqueries);
     });
     if (key === "OR") {
         return { predicate: Cypher.or(...nested), preComputedSubqueries: subqueries };
