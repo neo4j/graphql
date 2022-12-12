@@ -170,10 +170,12 @@ function getAggregationProjectionAndSubqueries({
         const dbProperty = mapToDbProperty(referenceNode, field.name);
         const fieldType = getFieldType(field);
         const fieldName = dbProperty || field.name;
-        innerProjectionMap.set(fieldName, new Cypher.RawCypher(fieldName));
+        const fieldRef = new Cypher.Variable();
+        innerProjectionMap.set(fieldName, fieldRef);
         const subquery = getAggregationSubquery({
             matchWherePattern,
             fieldName,
+            fieldRef,
             type: fieldType,
             targetAlias: targetRef,
         });
@@ -204,25 +206,27 @@ function getAggregationFields(fieldPathBase: string, field: ResolveTree): Aggreg
 function getAggregationSubquery({
     matchWherePattern,
     fieldName,
+    fieldRef,
     type,
     targetAlias,
 }: {
     matchWherePattern: Cypher.Clause;
     fieldName: string;
+    fieldRef: Cypher.Variable;
     type: AggregationType | undefined;
     targetAlias: Cypher.Node | Cypher.Relationship;
 }): Cypher.RawCypher {
     switch (type) {
         case AggregationType.String:
         case AggregationType.Id:
-            return AggregationSubQueries.stringAggregationQuery(matchWherePattern, fieldName, targetAlias);
+            return AggregationSubQueries.stringAggregationQuery(matchWherePattern, fieldName, fieldRef, targetAlias);
         case AggregationType.Int:
         case AggregationType.BigInt:
         case AggregationType.Float:
-            return AggregationSubQueries.numberAggregationQuery(matchWherePattern, fieldName, targetAlias);
+            return AggregationSubQueries.numberAggregationQuery(matchWherePattern, fieldName, fieldRef, targetAlias);
         case AggregationType.DateTime:
-            return AggregationSubQueries.dateTimeAggregationQuery(matchWherePattern, fieldName, targetAlias);
+            return AggregationSubQueries.dateTimeAggregationQuery(matchWherePattern, fieldName, fieldRef, targetAlias);
         default:
-            return AggregationSubQueries.defaultAggregationQuery(matchWherePattern, fieldName, targetAlias);
+            return AggregationSubQueries.defaultAggregationQuery(matchWherePattern, fieldName, fieldRef, targetAlias);
     }
 }
