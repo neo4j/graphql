@@ -142,7 +142,7 @@ function createInterfaceSubquery({
 
     const withClause = new Cypher.With(...fullWithVars.map((f) => new Cypher.NamedVariable(f)));
     const matchQuery = new Cypher.Match(pattern);
-    const preComputedWhereFieldsWith = new Cypher.With("*");
+    const predicates: Cypher.Predicate[] = [];
 
     const authAllowPredicate = createAuthPredicates({
         entity: refNode,
@@ -158,7 +158,7 @@ function createInterfaceSubquery({
             Cypher.not(authAllowPredicate),
             AUTH_FORBIDDEN_ERROR
         );
-        preComputedWhereFieldsWith.where(apocValidateClause);
+        predicates.push(apocValidateClause);
     }
 
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
@@ -183,7 +183,7 @@ function createInterfaceSubquery({
         });
 
         if (wherePredicate) {
-            preComputedWhereFieldsWith.where(wherePredicate);
+            predicates.push(wherePredicate);
         }
         preComputedWhereFieldSubqueries = preComputedSubqueries;
     }
@@ -198,7 +198,7 @@ function createInterfaceSubquery({
         context,
     });
     if (whereAuthPredicate) {
-        preComputedWhereFieldsWith.where(whereAuthPredicate);
+        predicates.push(whereAuthPredicate);
     }
 
     const {
@@ -218,12 +218,20 @@ function createInterfaceSubquery({
 
     const returnClause = new Cypher.Return([new Cypher.RawCypher(projectionStr), `${nodeVariable}_${field.fieldName}`]);
 
-    return Cypher.concat(
-        withClause,
-        matchQuery,
-        preComputedWhereFieldSubqueries,
-        preComputedWhereFieldsWith,
-        projectionSubqueryClause,
-        returnClause
-    );
+    if (preComputedWhereFieldSubqueries && preComputedWhereFieldSubqueries?.empty) {
+        const preComputedWhereFieldsWith = new Cypher.With("*");
+        preComputedWhereFieldsWith.where(Cypher.and(...predicates));
+        return Cypher.concat(
+            withClause,
+            matchQuery,
+            preComputedWhereFieldSubqueries,
+            preComputedWhereFieldsWith,
+            projectionSubqueryClause,
+            returnClause
+        );
+    }
+
+    matchQuery.where(Cypher.and(...predicates));
+
+    return Cypher.concat(withClause, matchQuery, projectionSubqueryClause, returnClause);
 }
