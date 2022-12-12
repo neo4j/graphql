@@ -37,6 +37,7 @@ export function createMatchWherePattern(
 export function stringAggregationQuery(
     matchWherePattern: Cypher.Clause,
     fieldName: string,
+    fieldRef: Cypher.Variable,
     targetAlias: Cypher.Node | Cypher.Relationship,
 ): Cypher.RawCypher {
     const fieldPath = targetAlias.property(fieldName);
@@ -48,13 +49,14 @@ export function stringAggregationQuery(
         WITH ${targetAliasCypher} as ${targetAliasCypher}
         ORDER BY size(${fieldPathCypher}) DESC
         WITH collect(${fieldPathCypher}) as list
-        RETURN {longest: head(list), shortest: last(list)} AS ${fieldName}`;
+        RETURN {longest: head(list), shortest: last(list)} AS ${fieldRef.getCypher(env)}`;
     });
 }
 
 export function numberAggregationQuery(
     matchWherePattern: Cypher.Clause,
     fieldName: string,
+    fieldRef: Cypher.Variable,
     targetAlias: Cypher.Node | Cypher.Relationship
 ): Cypher.RawCypher {
     const fieldPath = targetAlias.property(fieldName);
@@ -62,13 +64,14 @@ export function numberAggregationQuery(
         const fieldPathCypher = fieldPath.getCypher(env);
 
         return `${matchWherePattern.getCypher(env)}
-        RETURN {min: min(${fieldPathCypher}), max: max(${fieldPathCypher}), average: avg(${fieldPathCypher}), sum: sum(${fieldPathCypher})}  AS ${fieldName}`;
+        RETURN {min: min(${fieldPathCypher}), max: max(${fieldPathCypher}), average: avg(${fieldPathCypher}), sum: sum(${fieldPathCypher})}  AS ${fieldRef.getCypher(env)}`;
     });
 }
 
 export function defaultAggregationQuery(
     matchWherePattern: Cypher.Clause,
     fieldName: string,
+    fieldRef: Cypher.Variable,
     targetAlias: Cypher.Node | Cypher.Relationship
 ): Cypher.RawCypher {
     const fieldPath = targetAlias.property(fieldName);
@@ -76,13 +79,14 @@ export function defaultAggregationQuery(
         const fieldPathCypher = fieldPath.getCypher(env);
 
         return `${matchWherePattern.getCypher(env)}
-        RETURN {min: min(${fieldPathCypher}), max: max(${fieldPathCypher})} AS ${fieldName}`;
+        RETURN {min: min(${fieldPathCypher}), max: max(${fieldPathCypher})} AS ${fieldRef.getCypher(env)}`;
     });
 }
 
 export function dateTimeAggregationQuery(
     matchWherePattern: Cypher.Clause,
     fieldName: string,
+    fieldRef: Cypher.Variable,
     targetAlias: Cypher.Node | Cypher.Relationship
 ): Cypher.RawCypher {
     const fieldPath = targetAlias.property(fieldName);
@@ -92,6 +96,6 @@ export function dateTimeAggregationQuery(
         RETURN ${stringifyObject({
             min: new Cypher.RawCypher(wrapApocConvertDate(`min(${fieldPathCypher})`)),
             max: new Cypher.RawCypher(wrapApocConvertDate(`max(${fieldPathCypher})`)),
-        }).getCypher(env)} AS ${fieldName}`;
+        }).getCypher(env)} AS ${fieldRef.getCypher(env)}`;
     });
 }
