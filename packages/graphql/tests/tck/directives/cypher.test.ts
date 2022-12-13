@@ -751,7 +751,11 @@ describe("Cypher directive", () => {
                 RETURN this { custom: this_custom } AS this"
             `);
 
-            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"title\\": \\"The Matrix\\"
+                }"
+            `);
         });
     });
 });
