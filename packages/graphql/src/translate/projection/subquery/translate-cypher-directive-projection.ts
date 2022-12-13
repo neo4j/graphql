@@ -171,7 +171,7 @@ export function translateCypherDirectiveProjection({
         });
         customCypherClause = new Cypher.Unwind([runCypherInApocClause, param]);
     } else {
-        customCypherClause = createExperimentalCypherStatement({
+        customCypherClause = createCypherDirectiveSubquery({
             cypherField,
             nodeRef,
             resultVariable: param,
@@ -243,7 +243,7 @@ function createCypherDirectiveApocProcedure({
     return apocClause;
 }
 
-function createExperimentalCypherStatement({
+function createCypherDirectiveSubquery({
     cypherField,
     nodeRef,
     resultVariable,
