@@ -1,5 +1,11 @@
 # @neo4j/graphql-plugin-auth
 
+## 1.1.1
+
+### Patch Changes
+
+-   [#2515](https://github.com/neo4j/graphql/pull/2515) [`1bec3f95d`](https://github.com/neo4j/graphql/commit/1bec3f95d0f469c2a4e879b1904a4d1a4938207e) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Add `bindPredicate` which allows the predicate used to evaluate `bind` rules to be changed
+
 ## 1.1.0
 
 ### Minor Changes

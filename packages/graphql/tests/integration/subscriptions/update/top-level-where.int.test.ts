@@ -140,7 +140,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
         });
     });
 
-    test.only("Top-level OR", async () => {
+    test("Top-level OR", async () => {
         const query = `
             mutation {
                 ${postType.operations.update}(where: { 

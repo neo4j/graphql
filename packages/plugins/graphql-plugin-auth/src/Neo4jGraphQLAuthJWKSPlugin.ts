@@ -29,16 +29,19 @@ export interface JWKSPluginInput {
     jwksEndpoint: string;
     rolesPath?: string;
     globalAuthentication?: boolean;
+    bindPredicate?: "all" | "any";
 }
 
 class Neo4jGraphQLAuthJWKSPlugin {
     rolesPath?: string;
     isGlobalAuthenticationEnabled?: boolean;
     client: JwksClient;
+    bindPredicate: "all" | "any";
 
     constructor(input: JWKSPluginInput) {
         this.rolesPath = input.rolesPath;
         this.isGlobalAuthenticationEnabled = input.globalAuthentication || false;
+        this.bindPredicate = input.bindPredicate || "all";
 
         const options: JwksRsa.Options = {
             jwksUri: input.jwksEndpoint,

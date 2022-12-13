@@ -11,6 +11,8 @@ The `@cypher` directive binds a GraphQL field to the result(s) of a Cypher query
 directive @cypher(
     """The Cypher statement to run which returns a value of the same type composition as the field definition on which the directive is applied."""
     statement: String!,
+    """[Experimental] Name of the returned variable from the Cypher statement, if provided, the query will be optimized to improve performance."""
+    columnName: String
 ) on FIELD_DEFINITION
 ----
 
@@ -165,6 +167,35 @@ type Query {
 ----
 
 The downside of the latter approach is that you will need to adjust the return object as you change your object type definition.
+
+== columnName
+
+The `columName` argument will change the translation of custom Cypher. Instead of using https://neo4j.com/labs/apoc/4.0/overview/apoc.cypher/apoc.cypher.runFirstColumnMany/[apoc.cypher.runFirstColumnMany] it will directly wrap the query within a `CALL { }` subquery. This behvaiour has proven to be much more performant for the same queries.
+
+
+`columnName` should be the name of the returned variable to be used in the rest of the query. For example:
+
+The graphql query:
+[source, graphql, indent=0]
+----
+type query {
+    test: String! @cypher(statement: "MATCH(m:Movie) RETURN m", columnName: "m")
+}
+----
+
+Would get translated to:
+[source,cypher, indent=0]
+----
+CALL {
+    MATCH(m:Movie) RETURN m
+}
+WITH m AS this
+RETURN this
+----
+
+Additionally, escaping strings is no longer needed when `columName` is set.
+
+NOTE: This alternative behaviour may lead to unexpected changes, mainly if using Neo4j 5.x, where subqueries need to be _aliased_.
 
 == Usage examples
 
