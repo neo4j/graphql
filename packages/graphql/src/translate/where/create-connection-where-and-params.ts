@@ -38,7 +38,7 @@ export default function createConnectionWhereAndParams({
     relationship: Relationship;
     relationshipVariable: string;
     parameterPrefix: string;
-}): [string, string, any] {
+}): { cypher: string, subquery: string,  params:Record<string, any> } {
     const nodeRef = new Cypher.NamedNode(nodeVariable);
     const edgeRef = new Cypher.NamedVariable(relationshipVariable);
 

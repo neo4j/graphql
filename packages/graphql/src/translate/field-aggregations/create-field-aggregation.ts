@@ -99,7 +99,7 @@ export function createFieldAggregation({
     );
     const projectionMap = new Cypher.Map();
 
-    let projectionSubqueries: Cypher.Clause = new Cypher.RawCypher("");
+    let projectionSubqueries: Cypher.Clause | undefined;
     const countRef = new Cypher.Variable();
     let countFunction: Cypher.Function | undefined;
 
