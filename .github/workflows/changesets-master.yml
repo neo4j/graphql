@@ -63,6 +63,7 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
 
       - name: Create release branch for merging into dev
+        if: steps.changesets.outputs.published == 'true'
         uses: peterjgrainger/action-create-branch@08259812c8ebdbf1973747f9297e332fa078d3c1 # v2.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
