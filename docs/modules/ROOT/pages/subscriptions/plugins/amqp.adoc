@@ -1,8 +1,6 @@
 [[amqp]]
 = AMQP Plugin
 
-WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
-
 The `@neo4j/graphql-plugin-subscriptions-amqp` plugin connects to brokers through `AMQP 0-9-1` protocol such as:
 
 * link:https://www.rabbitmq.com/[RabbitMQ]
