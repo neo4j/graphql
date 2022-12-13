@@ -159,7 +159,7 @@ function createConnectAndParams({
                     params = { ...params, ...onTypeNodeWhereParams };
                     if (preComputedSubqueries) {
                         subquery.push(preComputedSubqueries);
-                        aggregateWhere = true;
+                        aggregationWhere = true;
                     }
                 }
             }

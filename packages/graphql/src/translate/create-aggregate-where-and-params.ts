@@ -115,7 +115,7 @@ function createCountPredicateAndProjection(
     const operationVar = new Cypher.Variable();
     return {
         returnProjection: [operation, operationVar],
-        predicate: Cypher.eq(operationVar, new Cypher.Param(true)),
+        predicate: Cypher.eq(operationVar, new Cypher.Literal(true)),
     };
 }
 
@@ -144,7 +144,7 @@ function aggregateEntityWhere(
             const operation = createEntityOperation(refNode, target, key, value);
             const operationVar = new Cypher.Variable();
             returnProjections.push([operation, operationVar]);
-            predicates.push(Cypher.eq(operationVar, new Cypher.Param(true)));
+            predicates.push(Cypher.eq(operationVar, new Cypher.Literal(true)));
         }
     });
     return {

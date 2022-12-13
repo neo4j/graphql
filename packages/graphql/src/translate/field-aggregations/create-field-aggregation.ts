@@ -86,13 +86,17 @@ export function createFieldAggregation({
         type: relationAggregationField.type,
         target: targetRef,
     });
-    if (
-        getRelationshipDirection(relationAggregationField, { directed: field.args.directed as boolean | undefined }) ===
-        "IN"
-    ) {
-        targetPattern.reverse();
-    }
-    const matchWherePattern = createMatchWherePattern(targetPattern, preComputedSubqueries, authData, predicate);
+    const relationshipDirection = getRelationshipDirection(relationAggregationField, {
+        directed: field.args.directed as boolean | undefined,
+    });
+    if (relationshipDirection === "IN") targetPattern.reverse();
+    const matchWherePattern = createMatchWherePattern(
+        targetPattern,
+        relationshipDirection !== "undirected",
+        preComputedSubqueries,
+        authData,
+        predicate
+    );
     const projectionMap = new Cypher.Map();
 
     let projectionSubqueries: Cypher.Clause = new Cypher.RawCypher("");

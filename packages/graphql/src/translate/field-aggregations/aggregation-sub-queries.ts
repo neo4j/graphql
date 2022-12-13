@@ -23,11 +23,12 @@ import Cypher from "@neo4j/cypher-builder";
 
 export function createMatchWherePattern(
     matchPattern: Cypher.Relationship,
+    directed: boolean,
     preComputedWhereFields: Cypher.CompositeClause | undefined,
     auth: Cypher.Predicate | undefined,
     wherePredicate: Cypher.Predicate | undefined
 ): Cypher.Clause {
-    const matchClause = new Cypher.Match(matchPattern);
+    const matchClause = new Cypher.Match(matchPattern.pattern({ directed }));
     const whereClause = preComputedWhereFields && !preComputedWhereFields?.empty ? new Cypher.With("*") : matchClause;
     if (wherePredicate) whereClause.where(wherePredicate);
     if (auth) whereClause.where(auth);
