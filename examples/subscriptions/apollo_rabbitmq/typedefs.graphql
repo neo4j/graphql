@@ -1,0 +1,15 @@
+type Movie {
+    title: String!
+    tagline: String
+    released: Int!
+    actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+}
+
+type Person {
+    name: String! @unique
+    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+}
+
+interface ActedIn @relationshipProperties {
+    roles: [String!]
+}
