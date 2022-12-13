@@ -36,8 +36,8 @@ export class TTYFormatter {
     public format(
         results: Array<Performance.TestDisplayData>,
         oldResults: Record<string, Performance.TestDisplayData> | undefined
-    ): Promise<Record<string, TTYTableItem>> {
-        return Promise.resolve(this.parseForTTYTable(results, oldResults));
+    ): Record<string, TTYTableItem> {
+        return this.parseForTTYTable(results, oldResults);
     }
 
     private parseForTTYTable(
