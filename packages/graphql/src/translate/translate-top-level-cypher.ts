@@ -158,16 +158,20 @@ export function translateTopLevelCypher({
     const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
     if (type === "Query") {
-        const isArray = field.typeMeta.array;
-        const expectMultipleValues = !field.isScalar && !field.isEnum && isArray;
-
-        if (expectMultipleValues) {
-            cypherStrs.push(`WITH apoc.cypher.runFirstColumnMany("${statement}", ${apocParamsStr}) as x`);
+        if (field.columnName) {
+            const experimentalCypherStatement = createExperimentalCypherStatement({
+                statement,
+                field,
+            });
+            cypherStrs.push(...experimentalCypherStatement);
         } else {
-            cypherStrs.push(`WITH apoc.cypher.runFirstColumnSingle("${statement}", ${apocParamsStr}) as x`);
+            const legacyCypherStatement = createLegacyCypherStatement({
+                statement,
+                field,
+                apocParams: apocParamsStr,
+            });
+            cypherStrs.push(...legacyCypherStatement);
         }
-
-        cypherStrs.push("UNWIND x as this\nWITH this");
     } else {
         cypherStrs.push(`
             CALL apoc.cypher.doIt("${statement}", ${apocParamsStr}) YIELD value
@@ -203,4 +207,41 @@ export function translateTopLevelCypher({
         }
         return [cypherStrs.join("\n"), params];
     }).build();
+}
+
+function createLegacyCypherStatement({
+    statement,
+    field,
+    apocParams,
+}: {
+    statement: string;
+    field: CypherField;
+    apocParams: string;
+}): string[] {
+    const isArray = field.typeMeta.array;
+    const expectMultipleValues = !field.isScalar && !field.isEnum && isArray;
+    const cypherStrs: string[] = [];
+
+    if (expectMultipleValues) {
+        cypherStrs.push(`WITH apoc.cypher.runFirstColumnMany("${statement}", ${apocParams}) as x`);
+    } else {
+        cypherStrs.push(`WITH apoc.cypher.runFirstColumnSingle("${statement}", ${apocParams}) as x`);
+    }
+
+    cypherStrs.push("UNWIND x as this\nWITH this");
+    return cypherStrs;
+}
+
+function createExperimentalCypherStatement({ statement, field }: { statement: string; field: CypherField }): string[] {
+    const cypherStrs: string[] = [];
+    cypherStrs.push("CALL {", statement, "}");
+
+    if (field.columnName) {
+        if (field.isScalar || field.isEnum) {
+            cypherStrs.push(`UNWIND ${field.columnName} as this`);
+        } else {
+            cypherStrs.push(`WITH ${field.columnName} as this`);
+        }
+    }
+    return cypherStrs;
 }
