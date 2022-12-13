@@ -2,4 +2,4 @@
 "@neo4j/graphql": patch
 ---
 
-Removed apoc usage when an aggregation filter is present.
+Performance increase by removing use of `apoc.runFirstColumn` from nested aggregate where filters
