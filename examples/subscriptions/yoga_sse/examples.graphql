@@ -1,0 +1,132 @@
+# Queries
+
+query GetAllMovies  {
+  movies {
+    title
+  }
+}
+
+query GetMoviesFrom1999 {
+  movies(where: {released: 1999}) {
+    title
+    tagline
+  }
+}
+
+# With Relationships
+
+## Using limit and sort
+query MoviesWithActors {
+  movies(options: {limit: 10, sort: [{released: DESC}]}) {
+    title
+    released
+    actors {
+      name
+    }
+  }
+}
+
+## Filtering on relationships
+query KeanuMovies {
+  movies(where: {actors_SOME: {name: "Keanu Reeves"}}) {
+    title,
+    released
+  }
+}
+
+## Relationship properties
+query KeanuRoles {
+  people(where: {name: "Keanu Reeves"}) {
+    moviesConnection {
+      edges {
+        roles
+        node {
+          title
+        }
+      }
+    }
+  }
+}
+
+# Mutations
+
+## Note: if not setting released, the creation will fail
+mutation CreateSimpleMovie {
+  createMovies(input: [{title: "The Matrix Resurrections", released: 2021}]) {
+    movies {
+      title
+    }
+  }
+}
+
+
+## MATCH(m:Movie {title: "The Matrix Resurrections"}) RETURN m
+mutation CreateMovieAndConnectToActor {
+  createMovies(input: [{
+      title: "The Matrix Resurrections",
+      released: 2021,
+      actors: {
+        connectOrCreate: [
+          {
+            where: {
+              node: {
+                name: "Keanu Reeves"
+              }
+            },
+            onCreate: {
+              node: {
+                name: "Keanu Reeves"
+              }
+            }
+          }
+        ]
+      }
+    }]) {
+    movies {
+      title
+    }
+  }
+}
+
+
+## Update
+mutation UpdateNeoEvilTwin {
+  updatePeople(
+      where: {
+        name: "Keanu Reeves"
+      },
+      update: {
+        name: "Seveer Unaek"
+      }) {
+    people {
+      name
+    }
+  }
+}
+
+## Delete
+mutation DeleteEvilTwin {
+  deletePeople(where: {name: "Seveer Unaek"}) {
+    nodesDeleted
+  }
+}
+
+# Aggregations
+query MoviesCountAndLongestTitle {
+  moviesAggregate {
+    count
+    title {
+      longest
+    }
+  }
+}
+
+## NestedAggregation
+query MoviesWithActorsCount {
+  movies {
+    title
+    actorsAggregate {
+      count
+    }
+  }
+}

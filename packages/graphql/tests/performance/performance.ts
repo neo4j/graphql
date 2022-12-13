@@ -26,10 +26,11 @@ import { setupDatabase, cleanDatabase } from "./utils/setup-database";
 import { Neo4jGraphQL } from "../../src";
 import { collectTests, collectCypherTests } from "./utils/collect-test-files";
 import { ResultsWriter } from "./utils/ResultsWriter";
-import { ResultsDisplay } from "./utils/ResultsDisplay";
 import { TestRunner } from "./utils/TestRunner";
 import type * as Performance from "./types";
 import { schemaPerformance } from "./schema-performance";
+import { MarkdownFormatter } from "./utils/formatters/MarkdownFormatter";
+import { TTYFormatter } from "./utils/formatters/TTYFormatter";
 
 let driver: Driver;
 
@@ -68,6 +69,26 @@ const typeDefs = gql`
         name: String!
         likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
     }
+
+    type Query {
+        customCypher: [Person]
+            @cypher(
+                statement: """
+                MATCH(m:Movie)--(p:Person)
+                WHERE m.released > 2000
+                RETURN p
+                """
+            )
+        experimentalCustomCypher: [Person]
+            @cypher(
+                statement: """
+                MATCH(m:Movie)--(p:Person)
+                WHERE m.released > 2000
+                RETURN p
+                """
+                columnName: "p"
+            )
+    }
 `;
 
 let neoSchema: Neo4jGraphQL;
@@ -80,7 +101,7 @@ async function beforeAll() {
     await resetDb();
 }
 
-function beforeEach(_testInfo: Performance.TestInfo): Promise<void> {
+function beforeEach(): Promise<void> {
     return Promise.resolve();
 }
 
@@ -118,12 +139,18 @@ async function queryPerformance() {
 
         const results = await runTests(withCypher);
 
-        const resultsDisplay = new ResultsDisplay();
-        await resultsDisplay.display(results, oldResults);
+        if (process.argv.includes("--markdown")) {
+            const resultsDisplay = new MarkdownFormatter();
+            console.log(resultsDisplay.format(results, oldResults));
+        } else {
+            const resultsDisplay = new TTYFormatter();
+            console.table(resultsDisplay.format(results, oldResults));
+        }
 
         const updateSnapshot = process.argv.includes("-u");
         if (updateSnapshot) {
             await resultsWriter.writeResult(results);
+            console.log(`Performance snapshot written at ${resultsWriter.path}`);
         }
     } finally {
         await afterAll();

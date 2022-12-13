@@ -36,7 +36,7 @@
         "@neo4j/graphql": "^3.13.0",
         "@types/amqplib": "0.10.0",
         "@types/debug": "4.1.7",
-        "@types/jest": "29.2.3",
+        "@types/jest": "29.2.4",
         "@types/node": "18.11.10",
         "apollo-server": "3.11.1",
         "apollo-server-express": "3.11.1",
@@ -46,9 +46,9 @@
         "neo4j-driver": "5.3.0",
         "pluralize": "8.0.0",
         "randomstring": "1.2.3",
-        "supertest": "6.3.2",
+        "supertest": "6.3.3",
         "ts-jest": "29.0.3",
-        "typescript": "4.9.3",
+        "typescript": "4.9.4",
         "ws": "8.11.0"
     },
     "dependencies": {

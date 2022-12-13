@@ -1,0 +1,17 @@
+{
+    "name": "yoga-subscriptions-server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "@neo4j/graphql": "^3.13.0",
+        "graphql": "^16.6.0",
+        "graphql-yoga": "^3.1.1",
+        "neo4j-driver": "^5.3.0"
+    }
+}

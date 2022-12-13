@@ -1,0 +1,47 @@
+name: "Performance Tests Comment"
+
+on:
+  workflow_run:
+    workflows: ["Performance Tests"]
+    types:
+      - completed
+
+jobs:
+  performance-tests-comment:
+    if: github.event.workflow_run.conclusion == 'success'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Download performance report"
+        uses: actions/github-script@v6.3.3
+        with:
+          script: |
+            var artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: ${{ github.event.workflow_run.id }},
+            });
+            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "performance"
+            })[0];
+            var download = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            var fs = require('fs');
+            fs.writeFileSync('${{ github.workspace }}/performance.zip', Buffer.from(download.data));
+      - run: unzip performance.zip
+      - id: get-pr-number
+        run: |
+          number=$(<prnumber)
+          case "$number" in ''|*[!0-9]*) echo "Provided PR number is not an integer"; exit 1 ;; esac
+          echo "pr-number=$number" >> "$GITHUB_OUTPUT"
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@fcf6fe9e4a0409cd9316a5011435be0f3327f1e1 # v2.3.1
+        with:
+          number: ${{ steps.get-pr-number.outputs.pr-number }}
+          path: ./performanceReport
+          GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}

@@ -1,0 +1,102 @@
+name: "Performance Tests"
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - master
+
+jobs:
+  performance-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      neo4j:
+        image: neo4j:5-enterprise
+        env:
+          NEO4J_AUTH: neo4j/password
+          NEO4JLABS_PLUGINS: '["apoc"]'
+          NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
+        ports:
+          - 7687:7687
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+
+      - name: Target Branch - Check out
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.base_ref }}
+          fetch-depth: 0
+
+      - name: Target Branch - Install dependencies
+        run: yarn --immutable
+
+      - run: mkdir ./performance
+        working-directory: packages/graphql
+
+      - name: Target Branch - Run @neo4j/graphql performance tests and create snapshot
+        run: |
+          yarn performance  # Warmup
+          yarn performance -u
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
+      - name: Target Branch - Run @neo4j/graphql Schema performance tests
+        run: |
+          yarn performance --schema # Warmup
+          VAR1=$(yarn performance --schema) && echo "Old $VAR1" > ./performance/schemaPerformance
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
+      - name: PR Branch - Check out
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+          clean: false
+
+      - name: PR Branch - Install dependencies
+        run: yarn --immutable
+
+      - name: PR Branch - Run @neo4j/graphql performance tests
+        run: |
+          yarn performance # Warmup
+          yarn performance --markdown > ./performance/performanceReport
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
+      - name: PR Branch - Run @neo4j/graphql Schema performance tests
+        run: |
+          yarn performance --schema # Warmup
+          yarn performance --schema >> ./performance/schemaPerformance
+          cat ./performance/schemaPerformance >> ./performance/performanceReport
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
+      - name: Save PR number
+        env:
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "$PULL_REQUEST_NUMBER" > ./performance/prnumber
+        working-directory: packages/graphql
+
+      - name: Archive performance test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance
+          path: packages/graphql/performance/
