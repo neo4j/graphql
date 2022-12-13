@@ -20,6 +20,7 @@
 import { wrapApocConvertDate } from "../projection/elements/create-datetime-element";
 import { stringifyObject } from "../utils/stringify-object";
 import Cypher from "@neo4j/cypher-builder";
+import { dedent } from "graphql-compose";
 
 export function createMatchWherePattern(
     matchPattern: Cypher.Relationship,
@@ -48,7 +49,7 @@ export function stringAggregationQuery(
         const targetAliasCypher = targetAlias.getCypher(env);
         const fieldPathCypher = fieldPath.getCypher(env);
 
-        return `${matchWherePattern.getCypher(env)}
+        return dedent`${matchWherePattern.getCypher(env)}
         WITH ${targetAliasCypher} as ${targetAliasCypher}
         ORDER BY size(${fieldPathCypher}) DESC
         WITH collect(${fieldPathCypher}) as list
@@ -66,7 +67,7 @@ export function numberAggregationQuery(
     return new Cypher.RawCypher((env) => {
         const fieldPathCypher = fieldPath.getCypher(env);
 
-        return `${matchWherePattern.getCypher(env)}
+        return dedent`${matchWherePattern.getCypher(env)}
         RETURN {min: min(${fieldPathCypher}), max: max(${fieldPathCypher}), average: avg(${fieldPathCypher}), sum: sum(${fieldPathCypher})}  AS ${fieldRef.getCypher(
             env
         )}`;
@@ -83,7 +84,7 @@ export function defaultAggregationQuery(
     return new Cypher.RawCypher((env) => {
         const fieldPathCypher = fieldPath.getCypher(env);
 
-        return `${matchWherePattern.getCypher(env)}
+        return dedent`${matchWherePattern.getCypher(env)}
         RETURN {min: min(${fieldPathCypher}), max: max(${fieldPathCypher})} AS ${fieldRef.getCypher(env)}`;
     });
 }
@@ -97,7 +98,7 @@ export function dateTimeAggregationQuery(
     const fieldPath = targetAlias.property(fieldName);
     return new Cypher.RawCypher((env) => {
         const fieldPathCypher = fieldPath.getCypher(env);
-        return `${matchWherePattern.getCypher(env)}
+        return dedent`${matchWherePattern.getCypher(env)}
         RETURN ${stringifyObject({
             min: new Cypher.RawCypher(wrapApocConvertDate(`min(${fieldPathCypher})`)),
             max: new Cypher.RawCypher(wrapApocConvertDate(`max(${fieldPathCypher})`)),

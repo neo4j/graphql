@@ -73,11 +73,15 @@ describe("Field Level Aggregations Alias", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { actorsAggregate: { node: { myName: head(apoc.cypher.runFirstColumnMany(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)
-                    WITH n as n
-                    ORDER BY size(n.name) DESC
-                    WITH collect(n.name) as list
-                    RETURN {longest: head(list), shortest: last(list)}\\", { this: this })) } } } AS this"
+            CALL {
+                WITH this
+                MATCH (this_actorsAggregate_this0:\`Actor\`)-[this_actorsAggregate_this1:ACTED_IN]->(this)
+                WITH this_actorsAggregate_this0 as this_actorsAggregate_this0
+                ORDER BY size(this_actorsAggregate_this0.name) DESC
+                WITH collect(this_actorsAggregate_this0.name) as list
+                RETURN {longest: head(list), shortest: last(list)} AS this_actorsAggregate_var2
+            }
+            RETURN this { actorsAggregate: { node: { name: this_actorsAggregate_var2 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -105,8 +109,12 @@ describe("Field Level Aggregations Alias", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { actorsAggregate: { edge: { time: head(apoc.cypher.runFirstColumnMany(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)
-                    RETURN {min: min(r.screentime), max: max(r.screentime), average: avg(r.screentime), sum: sum(r.screentime)}\\", { this: this })) } } } AS this"
+            CALL {
+                WITH this
+                MATCH (this_actorsAggregate_this1:\`Actor\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
+                RETURN {min: min(this_actorsAggregate_this0.time), max: max(this_actorsAggregate_this0.time), average: avg(this_actorsAggregate_this0.time), sum: sum(this_actorsAggregate_this0.time)}  AS this_actorsAggregate_var2
+            }
+            RETURN this { actorsAggregate: { edge: { time: this_actorsAggregate_var2 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

@@ -69,16 +69,14 @@ describe("Cypher Aggregations where node with Logical AND + OR", () => {
                 RETURN any(var2 IN collect(this1.someFloat) WHERE var2 = $param0) AS var3, any(var4 IN collect(this1.someFloat) WHERE var4 = $param1) AS var5
             }
             WITH *
-            WHERE (var3 = $param2 AND var5 = $param3)
+            WHERE (var3 = true AND var5 = true)
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": 10,
-                \\"param1\\": 11,
-                \\"param2\\": true,
-                \\"param3\\": true
+                \\"param1\\": 11
             }"
         `);
     });
@@ -105,16 +103,14 @@ describe("Cypher Aggregations where node with Logical AND + OR", () => {
                 RETURN any(var2 IN collect(this1.someFloat) WHERE var2 = $param0) AS var3, any(var4 IN collect(this1.someFloat) WHERE var4 = $param1) AS var5
             }
             WITH *
-            WHERE (var3 = $param2 OR var5 = $param3)
+            WHERE (var3 = true OR var5 = true)
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": 10,
-                \\"param1\\": 11,
-                \\"param2\\": true,
-                \\"param3\\": true
+                \\"param1\\": 11
             }"
         `);
     });

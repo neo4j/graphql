@@ -218,7 +218,7 @@ describe("tck/rfs/022 subquery projection", () => {
                 CALL {
                     WITH this
                     MATCH (this_actors:\`Person\`)-[this0:ACTED_IN]->(this)
-                    WHERE ((this_actors.name = $param1 AND (any(var2 IN [\\"admin\\"] WHERE any(var1 IN $auth.roles WHERE var1 = var2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND (this_actors.name IS NOT NULL AND this_actors.name = $param4))) AND apoc.util.validatePredicate(NOT ((any(var3 IN [\\"admin\\"] WHERE any(var2 IN $auth.roles WHERE var2 = var3)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND (this_actors.name IS NOT NULL AND this_actors.name = $param7))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    WHERE (this_actors.name = $param1 AND (any(var2 IN [\\"admin\\"] WHERE any(var1 IN $auth.roles WHERE var1 = var2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND (this_actors.name IS NOT NULL AND this_actors.name = $param4)) AND apoc.util.validatePredicate(NOT ((any(var3 IN [\\"admin\\"] WHERE any(var2 IN $auth.roles WHERE var2 = var3)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND (this_actors.name IS NOT NULL AND this_actors.name = $param7))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     WITH this_actors { .name } AS this_actors
                     RETURN collect(this_actors) AS this_actors
                 }
