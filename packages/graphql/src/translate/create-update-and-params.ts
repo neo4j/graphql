@@ -147,7 +147,11 @@ export default function createUpdateAndParams({
 
                         if (update.where) {
                             try {
-                                const where = createConnectionWhereAndParams({
+                                const {
+                                    cypher: whereClause,
+                                    subquery: preComputedSubqueries,
+                                    params: whereParams,
+                                } = createConnectionWhereAndParams({
                                     whereInput: update.where,
                                     node: refNode,
                                     nodeVariable: variableName,
@@ -158,7 +162,6 @@ export default function createUpdateAndParams({
                                         relationField.union ? `.${refNode.name}` : ""
                                     }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
                                 });
-                                const [whereClause, preComputedSubqueries, whereParams] = where;
                                 if (whereClause) {
                                     whereStrs.push(whereClause);
                                     res.params = { ...res.params, ...whereParams };
@@ -197,13 +200,16 @@ export default function createUpdateAndParams({
                         if (whereStrs.length) {
                             const predicate = `${whereStrs.join(" AND ")}`;
                             if (aggregationWhere) {
-                                const columns = [new Cypher.NamedVariable(relationshipVariable), new Cypher.NamedVariable(variableName)];
+                                const columns = [
+                                    new Cypher.NamedVariable(relationshipVariable),
+                                    new Cypher.NamedVariable(variableName),
+                                ];
                                 const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
                                 const { cypher } = caseWhereClause.build("aggregateWhereFilter");
                                 subquery.push(cypher);
                             } else {
                                 subquery.push(`WHERE ${predicate}`);
-                            }                            
+                            }
                         }
 
                         if (update.update.node) {

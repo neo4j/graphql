@@ -84,7 +84,11 @@ function createDisconnectAndParams({
         let aggregationWhere = false;
         if (disconnect.where) {
             try {
-                const [whereCypher, preComputedSubqueries, whereParams] = createConnectionWhereAndParams({
+                const {
+                    cypher: whereCypher,
+                    subquery: preComputedSubqueries,
+                    params: whereParams,
+                } = createConnectionWhereAndParams({
                     nodeVariable: variableName,
                     whereInput: disconnect.where,
                     node: relatedNode,
@@ -128,7 +132,7 @@ function createDisconnectAndParams({
                 subquery.push(cypher);
             } else {
                 subquery.push(`WHERE ${predicate}`);
-            }    
+            }
         }
 
         const nodeMatrix: { node: Node; name: string }[] = [

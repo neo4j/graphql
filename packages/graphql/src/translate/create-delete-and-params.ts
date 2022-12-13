@@ -107,7 +107,11 @@ function createDeleteAndParams({
                     let aggregationWhere = false;
                     if (d.where) {
                         try {
-                            const [whereCypher, preComputedSubqueries, whereParams] = createConnectionWhereAndParams({
+                            const {
+                                cypher: whereCypher,
+                                subquery: preComputedSubqueries,
+                                params: whereParams,
+                            } = createConnectionWhereAndParams({
                                 nodeVariable: variableName,
                                 whereInput: d.where,
                                 node: refNode,
