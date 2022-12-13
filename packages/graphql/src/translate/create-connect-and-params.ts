@@ -327,6 +327,10 @@ function createConnectAndParams({
             if (relValidationStrs.length) {
                 subquery.push(`\tWITH ${[...filterMetaVariable(withVars), nodeName].join(", ")}${innerMetaStr}`);
                 subquery.push(relValidationStrs.join("\n"));
+
+                if (context.subscriptionsEnabled) {
+                    innerMetaStr = ", meta";
+                }
             }
         }
 
