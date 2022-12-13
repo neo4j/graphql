@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import type { AuthOperations, Context, GraphQLWhereArg, RelationField } from "../types";
+import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
 import type { Node } from "../classes";
 import { createAuthAndParams } from "./create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
-import { AggregateWhereInput, aggregateWhere } from "./create-aggregate-where-and-params";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -174,40 +173,5 @@ function createFulltextMatchClause(
     return {
         matchClause,
         whereOperators,
-    };
-}
-
-export function preComputedWhereFields(
-    value: GraphQLWhereArg,
-    relationField: RelationField,
-    context: Context,
-    matchNode: Cypher.Variable
-): {
-    predicate: Cypher.Predicate | undefined;
-    preComputedSubquery: Cypher.Call;
-} {
-    const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-    const direction = relationField.direction;
-    const aggregationTarget = new Cypher.Node({ labels: refNode.getLabels(context) });
-    const cypherRelation = new Cypher.Relationship({
-        source: matchNode as Cypher.Node,
-        target: aggregationTarget,
-        type: relationField.type,
-    });
-    if (direction === "IN") {
-        cypherRelation.reverse();
-    }
-    const matchQuery = new Cypher.Match(cypherRelation);
-    const { returnProjections, predicates } = aggregateWhere(
-        value as AggregateWhereInput,
-        refNode,
-        aggregationTarget,
-        cypherRelation
-    );
-    matchQuery.return(...returnProjections);
-    const subquery = new Cypher.Call(matchQuery).innerWith(matchNode);
-    return {
-        predicate: Cypher.and(...predicates),
-        preComputedSubquery: subquery,
     };
 }
