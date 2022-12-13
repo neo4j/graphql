@@ -18,9 +18,10 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import type { Driver, Session } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
+import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
@@ -29,36 +30,10 @@ import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 describe("cypher", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let session: Session;
-
-    let movieType: UniqueType;
-    let actorType: UniqueType;
-    let directorType: UniqueType;
-    let memberType: UniqueType;
-    let genderType: UniqueType;
-    let townType: UniqueType;
-    let destinationType: UniqueType;
-
-    const movieTitle1 = "Some movie title";
-    const movieTitle2 = "foo";
-    const movieTitle3 = "MovieTitle 3";
-    const actorName = "An actor's name";
-    const directorName = "A director's name";
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-        movieType = generateUniqueType("Movie");
-        actorType = generateUniqueType("Actor");
-        directorType = generateUniqueType("Director");
-        memberType = generateUniqueType("Member");
-        genderType = generateUniqueType("Gender");
-        townType = generateUniqueType("Town");
-        destinationType = generateUniqueType("Destination");
     });
 
     afterAll(async () => {
@@ -128,7 +103,7 @@ describe("cypher", () => {
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
                         `,
                         {
-                            title: movieTitle1,
+                            title: movieTitle,
                             name: actorName,
                         }
                     );
@@ -137,13 +112,13 @@ describe("cypher", () => {
                         schema: await neoSchema.getSchema(),
                         source,
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                        variableValues: { title: movieTitle1 },
+                        variableValues: { title: movieTitle },
                     });
 
                     expect(gqlResult.errors).toBeFalsy();
 
                     expect((gqlResult?.data as any).customMovies).toEqual([
-                        { title: movieTitle1, actors: [{ name: actorName }] },
+                        { title: movieTitle, actors: [{ name: actorName }] },
                     ]);
                 } finally {
                     await session.close();
@@ -151,7 +126,14 @@ describe("cypher", () => {
             });
 
             test("should query custom query and return relationship data with custom where on field", async () => {
-                session = await neo4j.getSession();
+                const session = await neo4j.getSession();
+
+                const movieTitle = generate({
+                    charset: "alphabetic",
+                });
+                const actorName = generate({
+                    charset: "alphabetic",
+                });
 
                 const typeDefs = `
                     type ${Movie} {
@@ -192,7 +174,7 @@ describe("cypher", () => {
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
                         `,
                         {
-                            title: movieTitle1,
+                            title: movieTitle,
                             name: actorName,
                         }
                     );
@@ -201,13 +183,13 @@ describe("cypher", () => {
                         schema: await neoSchema.getSchema(),
                         source,
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                        variableValues: { title: movieTitle1, name: actorName },
+                        variableValues: { title: movieTitle, name: actorName },
                     });
 
                     expect(gqlResult.errors).toBeFalsy();
 
                     expect((gqlResult?.data as any).customMovies).toEqual([
-                        { title: movieTitle1, actors: [{ name: actorName }] },
+                        { title: movieTitle, actors: [{ name: actorName }] },
                     ]);
                 } finally {
                     await session.close();
@@ -215,7 +197,14 @@ describe("cypher", () => {
             });
 
             test("should query custom query and return relationship data with auth", async () => {
-                session = await neo4j.getSession();
+                const session = await neo4j.getSession();
+
+                const movieTitle = generate({
+                    charset: "alphabetic",
+                });
+                const actorName = generate({
+                    charset: "alphabetic",
+                });
 
                 const typeDefs = `
                     type ${Movie} {
@@ -264,7 +253,7 @@ describe("cypher", () => {
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
                         `,
                         {
-                            title: movieTitle1,
+                            title: movieTitle,
                             name: actorName,
                         }
                     );
@@ -275,7 +264,7 @@ describe("cypher", () => {
                         schema: await neoSchema.getSchema(),
                         source,
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
-                        variableValues: { title: movieTitle1, name: actorName },
+                        variableValues: { title: movieTitle, name: actorName },
                     });
 
                     expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -285,7 +274,21 @@ describe("cypher", () => {
             });
 
             test("should query multiple nodes and return relationship data", async () => {
-                session = await neo4j.getSession();
+                const session = await neo4j.getSession();
+
+                const movieTitle1 = generate({
+                    charset: "alphabetic",
+                });
+                const movieTitle2 = generate({
+                    charset: "alphabetic",
+                });
+                const movieTitle3 = generate({
+                    charset: "alphabetic",
+                });
+
+                const actorName = generate({
+                    charset: "alphabetic",
+                });
 
                 const typeDefs = `
                     type ${Movie} {
@@ -364,7 +367,18 @@ describe("cypher", () => {
             });
 
             test("should query multiple connection fields on a type", async () => {
-                session = await neo4j.getSession();
+                const session = await neo4j.getSession();
+
+                const title = generate({
+                    charset: "alphabetic",
+                });
+
+                const actorName = generate({
+                    charset: "alphabetic",
+                });
+                const directorName = generate({
+                    charset: "alphabetic",
+                });
 
                 const typeDefs = `
                     type ${Movie} {
@@ -426,7 +440,7 @@ describe("cypher", () => {
                             CREATE (m)<-[:DIRECTED]-(:${Director} {name: $directorName})
                         `,
                         {
-                            title: movieTitle1,
+                            title,
                             actorName,
                             directorName,
                         }
@@ -436,13 +450,13 @@ describe("cypher", () => {
                         schema: await neoSchema.getSchema(),
                         source,
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                        variableValues: { title: movieTitle1 },
+                        variableValues: { title },
                     });
 
                     expect(gqlResult.errors).toBeFalsy();
 
                     expect(gqlResult?.data?.movie).toEqual({
-                        title: movieTitle1,
+                        title,
                         actorsConnection: {
                             edges: [{ node: { name: actorName } }],
                         },
@@ -616,6 +630,13 @@ describe("cypher", () => {
             test("should query custom mutation and return relationship data", async () => {
                 const session = await neo4j.getSession();
 
+                const movieTitle = generate({
+                    charset: "alphabetic",
+                });
+                const actorName = generate({
+                    charset: "alphabetic",
+                });
+
                 const typeDefs = `
                     type ${Movie} {
                         title: String!
@@ -657,7 +678,7 @@ describe("cypher", () => {
                             CREATE (:${Movie} {title: $title})<-[:ACTED_IN]-(:${Actor} {name: $name})
                         `,
                         {
-                            title: movieTitle1,
+                            title: movieTitle,
                             name: actorName,
                         }
                     );
@@ -666,7 +687,7 @@ describe("cypher", () => {
                         schema: await neoSchema.getSchema(),
                         source,
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                        variableValues: { title: movieTitle1 },
+                        variableValues: { title: movieTitle },
                     });
 
                     expect(gqlResult.errors).toBeFalsy();
@@ -823,14 +844,16 @@ describe("cypher", () => {
             let schemaWithDefaultValue: GraphQLSchema;
             let schemaWithMissingValue: GraphQLSchema;
 
-            const testLabel = generateUniqueType("TestLabel");
-            const townId = "Some town ID";
-            const destinationId = "A destination ID";
-            const defaultPreposition = "Some val";
-            const testCaseName = "test-case-name";
+            const testLabel = generate({ charset: "alphabetic" });
+
+            const townId = generate({ charset: "alphabetic" });
+            const destinationId = generate({ charset: "alphabetic" });
+
+            const defaultPreposition = generate({ charset: "alphabetic" });
+            const testCaseName = generate({ charset: "alphabetic" });
 
             const generateTypeDefs = (withDefaultValue: boolean) => `
-                type ${destinationType.name} {
+                type Destination {
                     id: ID!
                     preposition(caseName: String${
                         withDefaultValue ? "= null" : ""
@@ -838,16 +861,16 @@ describe("cypher", () => {
                 }
 
                 type Query {
-                    townDestinationList(id: ID!): [${destinationType.name}] @cypher(statement: """
-                        MATCH (town:${townType.name} {id:$id})
-                        OPTIONAL MATCH (town)<-[:BELONGS_TO]-(destination:${destinationType.name})
+                    townDestinationList(id: ID!): [Destination] @cypher(statement: """
+                        MATCH (town:Town {id:$id})
+                        OPTIONAL MATCH (town)<-[:BELONGS_TO]-(destination:Destination)
                         RETURN destination
                     """)
                 }
             `;
 
             beforeAll(async () => {
-                session = await neo4j.getSession();
+                const session = await neo4j.getSession();
 
                 const neoSchemaWithDefaultValue = new Neo4jGraphQL({
                     typeDefs: generateTypeDefs(true),
@@ -861,8 +884,8 @@ describe("cypher", () => {
 
                 await session.run(
                     `
-                        CREATE (t:${townType.name}:${testLabel} {id: $townId})
-                        MERGE (t)<-[:BELONGS_TO]-(:${destinationType.name}:${testLabel} {id: $destinationId})
+                        CREATE (t:Town:${testLabel} {id: $townId})
+                        MERGE (t)<-[:BELONGS_TO]-(:Destination:${testLabel} {id: $destinationId})
                     `,
                     {
                         townId,
@@ -873,7 +896,7 @@ describe("cypher", () => {
             });
 
             afterAll(async () => {
-                session = await neo4j.getSession();
+                const session = await neo4j.getSession();
                 await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
                 await session.close();
             });
@@ -892,7 +915,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { id: townId },
                     });
 
@@ -931,7 +954,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { id: townId, caseName: testCaseName },
                     });
 
@@ -959,44 +982,37 @@ describe("cypher", () => {
 
         describe("Union type", () => {
             let schema: GraphQLSchema;
-            let postType: UniqueType;
-            let movieType2: UniqueType;
-            let userType: UniqueType;
-
             const secret = "secret";
 
-            const testLabel = "testLabel";
-            const userId = "1234";
+            const testLabel = generate({ charset: "alphabetic" });
+            const userId = generate({ charset: "alphabetic" });
+
+            const typeDefs = `
+                union PostMovieUser = Post | Movie | User
+
+                type Post {
+                    name: String
+                }
+
+                type Movie {
+                    name: String
+                }
+
+                type User {
+                    id: ID @id
+                    updates: [PostMovieUser!]!
+                        @cypher(
+                            statement: """
+                            MATCH (this:User)-[:WROTE]->(wrote:Post)
+                            RETURN wrote
+                            LIMIT 5
+                            """
+                        )
+                }
+            `;
 
             beforeAll(async () => {
-                session = await neo4j.getSession();
-                movieType2 = generateUniqueType("Movie");
-                postType = generateUniqueType("Post");
-                userType = generateUniqueType("User");
-
-                const typeDefs = `
-                    union PostMovieUser = ${postType.name} | ${movieType2.name} | ${userType.name}
-
-                    type ${postType.name} {
-                        name: String
-                    }
-
-                    type ${movieType2.name} {
-                        name: String
-                    }
-
-                    type ${userType.name} {
-                        id: ID @id
-                        updates: [PostMovieUser!]!
-                            @cypher(
-                                statement: """
-                                MATCH (this:${userType.name})-[:WROTE]->(wrote:${postType.name})
-                                RETURN wrote
-                                LIMIT 5
-                                """
-                            )
-                    }
-                `;
+                const session = await neo4j.getSession();
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
@@ -1010,9 +1026,9 @@ describe("cypher", () => {
 
                 await session.run(
                     `
-                        CREATE (p:${postType.name}:${testLabel} {name: "Postname"})
-                        CREATE (m:${movieType2.name}:${testLabel} {name: "Moviename"})
-                        CREATE (u:${userType.name}:${testLabel} {id: "${userId}"})
+                        CREATE (p:Post:${testLabel} {name: "Postname"})
+                        CREATE (m:Movie:${testLabel} {name: "Moviename"})
+                        CREATE (u:User:${testLabel} {id: "${userId}"})
                         CREATE (u)-[:WROTE]->(p)
                         CREATE (u)-[:WATCHED]->(m)
                     `
@@ -1021,7 +1037,7 @@ describe("cypher", () => {
             });
 
             afterAll(async () => {
-                session = await neo4j.getSession();
+                const session = await neo4j.getSession();
                 await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
                 await session.close();
             });
@@ -1029,7 +1045,7 @@ describe("cypher", () => {
             test("should return __typename", async () => {
                 const source = `
                         query {
-                            ${userType.plural} (where: { id: "${userId}" }) {
+                            users (where: { id: "${userId}" }) {
                                 updates {
                                     __typename
                                 }
@@ -1046,11 +1062,11 @@ describe("cypher", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
                 expect(gqlResult?.data as any).toEqual({
-                    [userType.plural]: [
+                    users: [
                         {
                             updates: [
                                 {
-                                    __typename: postType.name,
+                                    __typename: "Post",
                                 },
                             ],
                         },
