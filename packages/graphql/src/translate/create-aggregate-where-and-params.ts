@@ -22,11 +22,7 @@ import type { Node } from "../classes";
 import type { RelationField, Context, GraphQLWhereArg } from "../types";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
-import {
-    NODE_OR_EDGE_KEYS,
-    LOGICAL_OPERATORS,
-    AGGREGATION_AGGREGATE_COUNT_OPERATORS,
-} from "../constants";
+import { NODE_OR_EDGE_KEYS, LOGICAL_OPERATORS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
 
 type logicalOperator = "AND" | "OR";
 
@@ -47,7 +43,7 @@ type AggregateWhereReturn = {
     predicates: Cypher.Predicate[];
 };
 
-export function preComputedWhereFields(
+export function aggregatePreComputedWhereFields(
     value: GraphQLWhereArg,
     relationField: RelationField,
     context: Context,

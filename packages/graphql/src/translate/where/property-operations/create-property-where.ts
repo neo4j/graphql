@@ -30,7 +30,7 @@ import { createComparisonOperation } from "./create-comparison-operation";
 // Recursive function
 
 import { createRelationshipOperation } from "./create-relationship-operation";
-import { preComputedWhereFields } from "../../create-aggregate-where-and-params";
+import { aggregatePreComputedWhereFields } from "../../create-aggregate-where-and-params";
 
 /** Translates a property into its predicate filter */
 export function createPropertyWhere({
@@ -97,7 +97,7 @@ export function createPropertyWhere({
 
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
-            return preComputedWhereFields(value, relationField, context, targetElement);
+            return aggregatePreComputedWhereFields(value, relationField, context, targetElement);
         }
 
         if (relationField) {
