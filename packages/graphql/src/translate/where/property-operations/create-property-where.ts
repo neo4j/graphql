@@ -30,7 +30,7 @@ import { createComparisonOperation } from "./create-comparison-operation";
 // Recursive function
 
 import { createRelationshipOperation } from "./create-relationship-operation";
-import { preComputedWhereFields } from "../../translate-top-level-match";
+import { preComputedWhereFields } from "../../create-aggregate-where-and-params";
 
 /** Translates a property into its predicate filter */
 export function createPropertyWhere({

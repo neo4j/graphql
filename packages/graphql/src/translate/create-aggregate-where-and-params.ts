@@ -19,7 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { GraphElement, Node, Relationship } from "../classes";
-import type { RelationField, Context, BaseField } from "../types";
+import type { RelationField, Context, BaseField, GraphQLWhereArg } from "../types";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
 import {
@@ -50,6 +50,41 @@ type AggregateWhereReturn = {
     returnProjections: ("*" | Cypher.ProjectionColumn)[];
     predicates: Cypher.Predicate[];
 };
+
+export function preComputedWhereFields(
+    value: GraphQLWhereArg,
+    relationField: RelationField,
+    context: Context,
+    matchNode: Cypher.Variable
+): {
+    predicate: Cypher.Predicate | undefined;
+    preComputedSubquery: Cypher.Call;
+} {
+    const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+    const direction = relationField.direction;
+    const aggregationTarget = new Cypher.Node({ labels: refNode.getLabels(context) });
+    const cypherRelation = new Cypher.Relationship({
+        source: matchNode as Cypher.Node,
+        target: aggregationTarget,
+        type: relationField.type,
+    });
+    if (direction === "IN") {
+        cypherRelation.reverse();
+    }
+    const matchQuery = new Cypher.Match(cypherRelation);
+    const { returnProjections, predicates } = aggregateWhere(
+        value as AggregateWhereInput,
+        refNode,
+        aggregationTarget,
+        cypherRelation
+    );
+    matchQuery.return(...returnProjections);
+    const subquery = new Cypher.Call(matchQuery).innerWith(matchNode);
+    return {
+        predicate: Cypher.and(...predicates),
+        preComputedSubquery: subquery,
+    };
+}
 
 export function aggregateWhere(
     aggregateWhereInput: AggregateWhereInput,
