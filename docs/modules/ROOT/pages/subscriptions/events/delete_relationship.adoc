@@ -1,8 +1,6 @@
 [[delete_relationship]]
 = Delete Relationship Subscriptions
 
-WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
-
 Subscriptions to `DELETE_RELATIONSHIP` events will listen for relationships to a node of the specified type that have been deleted. 
 
 NOTE: This subscription operation is **only** available for types that define relationship fields.

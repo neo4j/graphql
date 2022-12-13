@@ -1,7 +1,5 @@
 [[subscriptions]]
-= Subscriptions (Beta)
-
-WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
+= Subscriptions
 
 GraphQL subscriptions add real-time capabilities to your API. Subscriptions allow to listen for changes on the database.
 
