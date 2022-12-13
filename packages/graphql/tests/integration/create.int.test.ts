@@ -235,8 +235,7 @@ describe("create", () => {
                 { id1, id2 }
             );
 
-            expect((reFind.records[0].toObject() as any).m.properties.id).toEqual(id1);
-            expect((reFind.records[1].toObject() as any).m.properties.id).toEqual(id2);
+            expect(reFind.records.map((r) => r.toObject().m.properties.id)).toIncludeSameMembers([id1, id2]);
         } finally {
             await session.close();
         }
