@@ -31,7 +31,7 @@ export function createMatchWherePattern(
     const whereClause = preComputedWhereFields && !preComputedWhereFields?.empty ? new Cypher.With("*") : matchClause;
     if (wherePredicate) whereClause.where(wherePredicate);
     if (auth) whereClause.where(auth);
-    return preComputedWhereFields &&!preComputedWhereFields?.empty
+    return preComputedWhereFields && !preComputedWhereFields?.empty
         ? Cypher.concat(matchClause, preComputedWhereFields, whereClause)
         : matchClause;
 }
