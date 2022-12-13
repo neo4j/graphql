@@ -72,14 +72,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -106,14 +105,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN any(var2 IN collect(this0.someFloatAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -140,14 +138,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN any(var2 IN collect(this0.someFloat) WHERE var2 > $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -174,14 +171,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN any(var2 IN collect(this0.someFloat) WHERE var2 >= $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -208,14 +204,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN any(var2 IN collect(this0.someFloat) WHERE var2 < $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -242,14 +237,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN any(var2 IN collect(this0.someFloat) WHERE var2 <= $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -276,14 +270,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN avg(this0.someFloat) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -310,14 +303,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN avg(this0.someFloat) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -344,14 +336,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN avg(this0.someFloat) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -378,14 +369,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN avg(this0.someFloat) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -412,14 +402,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN avg(this0.someFloat) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -446,14 +435,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN sum(this0.someFloat) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -480,14 +468,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN sum(this0.someFloat) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -514,14 +501,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN sum(this0.someFloat) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -548,14 +534,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN sum(this0.someFloat) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -582,14 +567,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN sum(this0.someFloat) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -616,14 +600,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN min(this0.someFloat) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -650,14 +633,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN min(this0.someFloat) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -684,14 +666,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN min(this0.someFloat) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -718,14 +699,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN min(this0.someFloat) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -752,14 +732,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN min(this0.someFloat) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -786,14 +765,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN max(this0.someFloat) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -820,14 +798,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN max(this0.someFloat) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -854,14 +831,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN max(this0.someFloat) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -888,14 +864,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN max(this0.someFloat) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -922,14 +897,13 @@ describe("Cypher Aggregations where edge with Float", () => {
                 RETURN max(this0.someFloat) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });

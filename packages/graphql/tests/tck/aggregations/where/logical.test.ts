@@ -67,7 +67,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
                 RETURN count(this1) > $param0 AS var2, count(this1) < $param1 AS var3
             }
             WITH *
-            WHERE (var2 = $param2 AND var3 = $param3)
+            WHERE (var2 = true AND var3 = true)
             RETURN this { .content } AS this"
         `);
 
@@ -80,9 +80,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
                 \\"param1\\": {
                     \\"low\\": 20,
                     \\"high\\": 0
-                },
-                \\"param2\\": true,
-                \\"param3\\": true
+                }
             }"
         `);
     });
@@ -109,7 +107,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
                 RETURN count(this1) > $param0 AS var2, count(this1) < $param1 AS var3
             }
             WITH *
-            WHERE (var2 = $param2 OR var3 = $param3)
+            WHERE (var2 = true OR var3 = true)
             RETURN this { .content } AS this"
         `);
 
@@ -122,9 +120,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
                 \\"param1\\": {
                     \\"low\\": 20,
                     \\"high\\": 0
-                },
-                \\"param2\\": true,
-                \\"param3\\": true
+                }
             }"
         `);
     });
@@ -158,7 +154,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
                 RETURN count(this1) > $param0 AS var2, count(this1) < $param1 AS var3, count(this1) > $param2 AS var4, count(this1) < $param3 AS var5
             }
             WITH *
-            WHERE ((var2 = $param4 AND var3 = $param5) AND (var4 = $param6 OR var5 = $param7))
+            WHERE ((var2 = true AND var3 = true) AND (var4 = true OR var5 = true))
             RETURN this { .content } AS this"
         `);
 
@@ -179,11 +175,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
                 \\"param3\\": {
                     \\"low\\": 20,
                     \\"high\\": 0
-                },
-                \\"param4\\": true,
-                \\"param5\\": true,
-                \\"param6\\": true,
-                \\"param7\\": true
+                }
             }"
         `);
     });
