@@ -95,7 +95,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_projectsAggregate_this0:PARTICIPATES]->(this_projectsAggregate_this1:\`Project\`)
-                        RETURN {min: min(this_projectsAggregate_this0.allocation), max: max(this_projectsAggregate_this0.allocation), average: avg(this_projectsAggregate_this0.allocation), sum: sum(this_projectsAggregate_this0.allocation)}  AS this_projectsAggregate_var3
+                RETURN {min: min(this_projectsAggregate_this0.allocation), max: max(this_projectsAggregate_this0.allocation), average: avg(this_projectsAggregate_this0.allocation), sum: sum(this_projectsAggregate_this0.allocation)}  AS this_projectsAggregate_var3
             }
             RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: this_projectsAggregate_var2, edge: { allocation: this_projectsAggregate_var3 } } } AS this"
         `);
@@ -148,7 +148,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_projectsAggregate_this0:PARTICIPATES]->(this_projectsAggregate_this1:\`Project\`)
-                        RETURN {min: min(this_projectsAggregate_this0.allocation), max: max(this_projectsAggregate_this0.allocation), average: avg(this_projectsAggregate_this0.allocation), sum: sum(this_projectsAggregate_this0.allocation)}  AS this_projectsAggregate_var3
+                RETURN {min: min(this_projectsAggregate_this0.allocation), max: max(this_projectsAggregate_this0.allocation), average: avg(this_projectsAggregate_this0.allocation), sum: sum(this_projectsAggregate_this0.allocation)}  AS this_projectsAggregate_var3
             }
             RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: this_projectsAggregate_var2, edge: { allocation: this_projectsAggregate_var3 } } } AS this"
         `);
