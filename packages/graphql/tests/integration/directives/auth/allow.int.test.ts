@@ -24,7 +24,6 @@ import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
-import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import { cleanNodes } from "../../../utils/clean-nodes";
 import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
 
