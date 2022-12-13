@@ -101,7 +101,7 @@ async function beforeAll() {
     await resetDb();
 }
 
-function beforeEach(_testInfo: Performance.TestInfo): Promise<void> {
+function beforeEach(): Promise<void> {
     return Promise.resolve();
 }
 
@@ -141,10 +141,10 @@ async function queryPerformance() {
 
         if (process.argv.includes("--markdown")) {
             const resultsDisplay = new MarkdownFormatter();
-            console.log(await resultsDisplay.format(results, oldResults));
+            console.log(resultsDisplay.format(results, oldResults));
         } else {
             const resultsDisplay = new TTYFormatter();
-            console.table(await resultsDisplay.format(results, oldResults));
+            console.table(resultsDisplay.format(results, oldResults));
         }
 
         const updateSnapshot = process.argv.includes("-u");
