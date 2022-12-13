@@ -20,8 +20,6 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Node, Relationship } from "../../classes";
 import type { Context, RelationField, ConnectionField } from "../../types";
-import { serializeParamsForApocRun } from "../utils/apoc-run";
-import type { AggregationAuth } from "./field-aggregations-auth";
 
 export enum AggregationType {
     Int = "IntAggregateSelection",
@@ -53,10 +51,4 @@ export function getReferenceRelation(context: Context, connectionField: Connecti
 
 export function getFieldByName(name: string, fields: Record<string, ResolveTree>): ResolveTree | undefined {
     return Object.values(fields).find((tree) => tree.name === name);
-}
-
-export function serializeAuthParamsForApocRun(auth: AggregationAuth): Record<string, string> {
-    const authParams = serializeParamsForApocRun(auth.params);
-    if (auth.whereQuery) authParams.auth = "$auth";
-    return authParams;
 }
