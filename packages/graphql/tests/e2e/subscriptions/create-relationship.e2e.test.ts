@@ -29,7 +29,7 @@ import Neo4j from "../setup/neo4j";
 import { cleanNodes } from "../../utils/clean-nodes";
 import { delay } from "../../../src/utils/utils";
 
-describe("Connect Subscription", () => {
+describe("Create Relationship Subscription", () => {
     let neo4j: Neo4j;
     let driver: Driver;
     let server: TestGraphQLServer;

@@ -441,7 +441,12 @@ export default async function translateUpdate({
             ...(relationshipValidationStr ? [`WITH *`, relationshipValidationStr] : []),
             ...connectionStrs,
             ...interfaceStrs,
-            ...(context.subscriptionsEnabled ? [`WITH *`, `UNWIND ${META_CYPHER_VARIABLE} AS m`] : []),
+            ...(context.subscriptionsEnabled
+                ? [
+                      `WITH *`,
+                      `UNWIND (CASE ${META_CYPHER_VARIABLE} WHEN [] then [null] else ${META_CYPHER_VARIABLE} end) AS m`,
+                  ]
+                : []),
             returnStatement,
         ]
             .filter(Boolean)

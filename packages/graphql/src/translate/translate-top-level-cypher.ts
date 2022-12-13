@@ -159,14 +159,12 @@ export function translateTopLevelCypher({
 
     if (type === "Query") {
         if (field.columnName) {
-            const experimentalCypherStatement = createExperimentalCypherStatement({
-                statement,
+            const experimentalCypherStatement = createCypherDirectiveSubquery({
                 field,
             });
             cypherStrs.push(...experimentalCypherStatement);
         } else {
-            const legacyCypherStatement = createLegacyCypherStatement({
-                statement,
+            const legacyCypherStatement = createCypherDirectiveApocProcedure({
                 field,
                 apocParams: apocParamsStr,
             });
@@ -209,12 +207,10 @@ export function translateTopLevelCypher({
     }).build();
 }
 
-function createLegacyCypherStatement({
-    statement,
+function createCypherDirectiveApocProcedure({
     field,
     apocParams,
 }: {
-    statement: string;
     field: CypherField;
     apocParams: string;
 }): string[] {
@@ -223,18 +219,18 @@ function createLegacyCypherStatement({
     const cypherStrs: string[] = [];
 
     if (expectMultipleValues) {
-        cypherStrs.push(`WITH apoc.cypher.runFirstColumnMany("${statement}", ${apocParams}) as x`);
+        cypherStrs.push(`WITH apoc.cypher.runFirstColumnMany("${field.statement}", ${apocParams}) as x`);
     } else {
-        cypherStrs.push(`WITH apoc.cypher.runFirstColumnSingle("${statement}", ${apocParams}) as x`);
+        cypherStrs.push(`WITH apoc.cypher.runFirstColumnSingle("${field.statement}", ${apocParams}) as x`);
     }
 
     cypherStrs.push("UNWIND x as this\nWITH this");
     return cypherStrs;
 }
 
-function createExperimentalCypherStatement({ statement, field }: { statement: string; field: CypherField }): string[] {
+function createCypherDirectiveSubquery({ field }: { field: CypherField }): string[] {
     const cypherStrs: string[] = [];
-    cypherStrs.push("CALL {", statement, "}");
+    cypherStrs.push("CALL {", field.statement, "}");
 
     if (field.columnName) {
         if (field.isScalar || field.isEnum) {
