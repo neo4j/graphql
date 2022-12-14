@@ -147,7 +147,6 @@ class Node extends GraphElement {
     public nodeDirective?: NodeDirective;
     public fulltextDirective?: FullText;
     public auth?: NodeAuth;
-    public description?: string;
     public queryOptions?: QueryOptionsDirective;
     public singular: string;
     public plural: string;
