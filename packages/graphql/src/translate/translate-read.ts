@@ -119,6 +119,27 @@ export function translateRead(
         });
     }
 
+    const hasConnectionLimit = resolveTree.args.first || resolveTree.args.after;
+
+    if (!hasOrdering && hasConnectionLimit) {
+        const afterInput = resolveTree.args.after as string | undefined;
+        const offset = afterInput ? cursorToOffset(afterInput) + 1 : undefined;
+        orderClause = new Cypher.With("*");
+        addSortAndLimitOptionsToClause({
+            optionsInput: {
+                sort: resolveTree.args.sort as any,
+                limit: resolveTree.args.first as any,
+                offset,
+            },
+            target: matchNode,
+            projectionClause: orderClause as Cypher.With,
+            nodeField: node.singular,
+            fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
+            cypherFields: node.cypherFields,
+            varName,
+        });
+    }
+
     const projectionExpression = new Cypher.RawCypher(() => {
         return [`${varName} ${projection.projection}`, projection.params];
     });
