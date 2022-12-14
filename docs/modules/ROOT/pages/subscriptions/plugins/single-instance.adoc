@@ -1,8 +1,6 @@
 [[single-instance]]
 = Single Instance Plugin
 
-WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
-
 The `@neo4j/graphql` library provides a zero-dependency plugin to be used during development to quickly deploy a subscriptions server locally in a single instance.
 If can be imported directly:
 

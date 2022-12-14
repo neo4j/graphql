@@ -27,14 +27,15 @@ import { WithReturn } from "./mixins/WithReturn";
 import { mixin } from "./utils/mixin";
 import { WithWith } from "./mixins/WithWith";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
+import { WithUnwind } from "./mixins/WithUnwind";
 
-export interface Call extends WithReturn, WithWith {}
+export interface Call extends WithReturn, WithWith, WithUnwind {}
 
 /**
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/call-subquery/)
  * @group Clauses
  */
-@mixin(WithReturn, WithWith)
+@mixin(WithReturn, WithWith, WithUnwind)
 export class Call extends Clause {
     private subQuery: CypherASTNode;
     private importWith: ImportWith | undefined;
@@ -61,8 +62,9 @@ export class Call extends Clause {
         const innerWithCypher = compileCypherIfExists(this.importWith, env, { suffix: "\n" });
         const returnCypher = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
         const withCypher = compileCypherIfExists(this.withStatement, env, { prefix: "\n" });
+        const unwindCypher = compileCypherIfExists(this.unwindStatement, env, { prefix: "\n" });
         const inCallBlock = `${innerWithCypher}${subQueryStr}`;
 
-        return `CALL {\n${padBlock(inCallBlock)}\n}${withCypher}${returnCypher}`;
+        return `CALL {\n${padBlock(inCallBlock)}\n}${withCypher}${unwindCypher}${returnCypher}`;
     }
 }

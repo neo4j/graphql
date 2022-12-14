@@ -513,7 +513,8 @@ describe("update", () => {
         }
     });
 
-    test("should delete a nested actor and one of their nested movies, within an update block abc", async () => {
+    // TODO: add this test for subscriptions
+    test.only("should delete a nested actor and one of their nested movies, within an update block abc", async () => {
         const session = await neo4j.getSession();
 
         const typeDefs = gql`

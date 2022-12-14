@@ -1,8 +1,6 @@
 [[create_relationship]]
 = Create Relationship Subscriptions
 
-WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
-
 Subscriptions to `CREATE_RELATIONSHIP` events will listen for newly created relationships to a node of the specified type. 
 
 NOTE: This subscription operation is **only** available for types that define relationship fields.
@@ -11,7 +9,7 @@ As relationship-specific information, the event will contain the relationship fi
 
 NOTE: A new event will be triggered for each new relationship.
 
-This means that, if the type targeted for the subscriptions defines two or more relationships in the schema and one of each relationships are created following a mutation operation, there will be an equal number of events triggered as the number of created relationships. 
+This means that, if the type targeted for the subscriptions defines two or more relationships in the schema and one of each relationships are created following a mutation operation, the number of events triggered will be equivalent to the number of relationships created.
 
 Each event will have the relationships object populated with the created relationship's properties for one single relationship name only - all other relationship names will have a null value.
 
@@ -39,16 +37,20 @@ type Movie {
     actors: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
     reviewers: [Reviewer] @relationship(type: "REVIEWED", direction: IN, properties: "Reviewed")
 }
+
 type Actor {
     name: String
 }
+
 interface ActedIn @relationshipProperties {
     screenTime: Int!
 }
+
 type Reviewer {
     name: String
     reputation: Int
 }
+
 interface Reviewed @relationshipProperties {
     score: Int!
 }
@@ -108,9 +110,11 @@ type Movie {
     genre: String
     actors: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
 }
+
 type Actor {
     name: String
 }
+
 interface ActedIn @relationshipProperties {
     screenTime: Int!
 }
@@ -153,14 +157,18 @@ type Movie {
     genre: String
     directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
 }
+
 union Director = Person | Actor
+
 type Actor {
     name: String
 }
+
 type Person {
     name: String
     reputation: Int
 }
+
 interface Directed @relationshipProperties {
     year: Int!
 }
@@ -203,17 +211,21 @@ type Movie {
     genre: String
     reviewers: [Reviewer!]! @relationship(type: "REVIEWED", properties: "Review", direction: IN)
 }
+
 interface Reviewer {
     reputation: Int!
 }
+
 type Magazine implements Reviewer {
     title: String
     reputation: Int!
 }
+
 type Influencer implements Reviewer {
     name: String
     reputation: Int!
 }
+
 interface Review {
     score: Int!
 }
@@ -261,18 +273,23 @@ type Movie {
     actors: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
     directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
 }
+
 type Actor {
     name: String
     movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
 }
+
 type Person {
     name: String
     reputation: Int
 }
+
 union Director = Person | Actor
+
 interface ActedIn @relationshipProperties {
     screenTime: Int!
 }
+
 interface Directed @relationshipProperties {
     year: Int!
 }
@@ -351,7 +368,7 @@ subscription {
 
 The presence of the `movie` field inside of `createdRelationship` for the `actorRelationshipCreated` subscription reflects the fact that the `ACTED_IN` typed relationship is reciprocal.
 
-Therefore, when a new relationship of this type is made, such as by running a mutation as follows...
+Therefore, when a new relationship of this type is made, such as by running a mutation as follows:
 ```graphql
 mutation {
     createMovies(
@@ -382,7 +399,7 @@ mutation {
 }
 ```
 
-...two events will be published (given that we subscribed to `CREATE_RELATIONSHIP` events on both types):
+Two events will be published (given that we subscribed to `CREATE_RELATIONSHIP` events on both types):
 ```graphql
 { 
     # from `movieRelationshipCreated`
@@ -423,7 +440,7 @@ mutation {
 }
 ```
 
-Since the `DIRECTED` relationship between types `Movie` and `Director` is **not** reciprocal, executing a mutation as follows...
+Since the `DIRECTED` relationship between types `Movie` and `Director` is **not** reciprocal, executing a mutation as follows:
 ```graphql
 mutation {
     createMovies(
@@ -469,7 +486,7 @@ mutation {
 }
 ```
 
-...two events will be published (given that we subscribed to `CREATE_RELATIONSHIP` events on the `Movie` type):
+Two events will be published (given that we subscribed to `CREATE_RELATIONSHIP` events on the `Movie` type):
 ```graphql
 { 
     # relationship 1 - from `movieRelationshipCreated`
@@ -528,10 +545,12 @@ type Actor @node(label: "Person") {
     name: String
     movies: [Movie!]! @relationship(type: "PART_OF", direction: OUT)
 }
+
 typePerson {
     name: String
     movies: [Movie!]! @relationship(type: "PART_OF", direction: OUT)
 }
+
 type Movie {
     title: String
     genre: String
@@ -591,7 +610,7 @@ subscription {
 }
 ```
 
-...running a mutation as follows...
+Running a mutation as follows:
 ```graphql
 mutation {
     createMovies(
@@ -628,7 +647,7 @@ mutation {
 }
 ```
 
-...results in the following events:
+Results in the following events:
 ```graphql
 { 
     # relationship 1 `people` - for GraphQL types `Movie`, `Person`
