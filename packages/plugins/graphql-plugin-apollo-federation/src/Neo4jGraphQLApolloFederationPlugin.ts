@@ -23,11 +23,20 @@ import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { IResolvers, makeDirectiveNode, TypeSource } from "@graphql-tools/utils";
 import { OGM } from "@neo4j/graphql-ogm";
 import type { SchemaDefinition, Neo4jGraphQLConstructor } from "@neo4j/graphql";
-import { ConstDirectiveNode, DefinitionNode, DocumentNode, FieldDefinitionNode, GraphQLSchema, Kind } from "graphql";
+import {
+    ConstDirectiveNode,
+    DefinitionNode,
+    DocumentNode,
+    FieldDefinitionNode,
+    GraphQLResolveInfo,
+    GraphQLSchema,
+    Kind,
+} from "graphql";
 import type * as neo4j from "neo4j-driver";
 
 type FederationDirective =
     | "@key"
+    | "@extends"
     | "@shareable"
     | "@inaccessible"
     | "@override"
@@ -37,9 +46,17 @@ type FederationDirective =
     | "@tag";
 
 const isFederationDirective = (directive: string): directive is FederationDirective =>
-    ["@key", "@shareable", "@inaccessible", "@override", "@external", "@provides", "@requires", "@tag"].includes(
-        directive
-    );
+    [
+        "@key",
+        "@extends",
+        "@shareable",
+        "@inaccessible",
+        "@override",
+        "@external",
+        "@provides",
+        "@requires",
+        "@tag",
+    ].includes(directive);
 
 export class Neo4jGraphQLApolloFederationPlugin {
     private importArgument: Map<
@@ -51,6 +68,7 @@ export class Neo4jGraphQLApolloFederationPlugin {
     constructor(typeDefs: TypeSource, driver: neo4j.Driver, database?: string) {
         this.importArgument = new Map([
             ["@key", "@federation__key"],
+            ["@extends", "@federation__extends"],
             ["@shareable", "@federation__shareable"],
             ["@inaccessible", "@federation__inaccessible"],
             ["@override", "@federation__override"],
@@ -163,11 +181,11 @@ export class Neo4jGraphQLApolloFederationPlugin {
         return resolverMap;
     }
 
-    private getReferenceResolver(): (reference, context) => Promise<unknown | undefined> {
-        const __resolveReference = async (reference, context): Promise<unknown> => {
+    private getReferenceResolver(): (reference, context, info) => Promise<unknown | undefined> {
+        const __resolveReference = async (reference, context, info: GraphQLResolveInfo): Promise<unknown> => {
             const { __typename, ...where } = reference;
             const model = this.ogm.model(__typename);
-            const records = await model.find({ where, context });
+            const records = await model.find({ where, context, selectionSet: info.fieldNodes[0].selectionSet });
             if (records[0]) {
                 return records[0];
             }
@@ -259,8 +277,8 @@ export class Neo4jGraphQLApolloFederationPlugin {
                             if (field.directives) {
                                 fields.push({
                                     ...field,
-                                    directives: field.directives.filter((directive) =>
-                                        federationDirectives.includes(directive.name.value)
+                                    directives: field.directives.filter(
+                                        (directive) => !federationDirectives.includes(`@${directive.name.value}`)
                                     ),
                                 });
                             } else {
@@ -270,16 +288,16 @@ export class Neo4jGraphQLApolloFederationPlugin {
 
                         definitions.push({
                             ...definition,
-                            directives: definition.directives.filter((directive) =>
-                                federationDirectives.includes(directive.name.value)
+                            directives: definition.directives.filter(
+                                (directive) => !federationDirectives.includes(`@${directive.name.value}`)
                             ),
                             fields,
                         });
                     } else {
                         definitions.push({
                             ...definition,
-                            directives: definition.directives.filter((directive) =>
-                                federationDirectives.includes(directive.name.value)
+                            directives: definition.directives.filter(
+                                (directive) => !federationDirectives.includes(`@${directive.name.value}`)
                             ),
                         });
                     }
