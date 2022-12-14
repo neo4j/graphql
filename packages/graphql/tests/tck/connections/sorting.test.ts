@@ -82,6 +82,9 @@ describe("Relationship Properties Cypher", () => {
             WITH edges, size(edges) AS totalCount
             UNWIND edges AS this
             WITH this, totalCount
+            WITH *
+            ORDER BY this.title ASC
+            LIMIT $param0
             CALL {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
@@ -99,6 +102,10 @@ describe("Relationship Properties Cypher", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": {
+                    \\"low\\": 5,
+                    \\"high\\": 0
+                },
                 \\"this_limit\\": {
                     \\"low\\": 5,
                     \\"high\\": 0
