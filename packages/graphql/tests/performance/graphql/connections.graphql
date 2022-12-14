@@ -28,3 +28,20 @@ query NestedConnection {
         }
     }
 }
+
+query ConnectionWithSort {
+    moviesConnection(first: 5) {
+        edges {
+            node {
+                title
+                actorsConnection {
+                    edges {
+                        node {
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

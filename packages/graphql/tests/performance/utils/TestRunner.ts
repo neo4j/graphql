@@ -63,10 +63,15 @@ export class TestRunner {
     ): Promise<Array<Performance.TestDisplayData>> {
         const results: Array<Performance.TestDisplayData> = [];
         for (const test of tests) {
-            await beforeEach(test);
-            const perfResult = await this.runCypherQuery(test.query);
-            await afterEach(test);
-            results.push({ name: test.name, result: perfResult, file: test.filename, type: "cypher" });
+            try {
+                await beforeEach(test);
+                const perfResult = await this.runCypherQuery(test.query);
+                await afterEach(test);
+                results.push({ name: test.name, result: perfResult, file: test.filename, type: "cypher" });
+            } catch (err) {
+                console.error("Error running test", test.filename, test.name);
+                console.warn(err);
+            }
         }
 
         return results;
