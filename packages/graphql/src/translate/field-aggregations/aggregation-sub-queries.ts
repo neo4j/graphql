@@ -50,9 +50,9 @@ export function stringAggregationQuery(
         const fieldPathCypher = fieldPath.getCypher(env);
 
         return dedent`${matchWherePattern.getCypher(env)}
-        WITH ${targetAliasCypher} as ${targetAliasCypher}
+        WITH ${targetAliasCypher}
         ORDER BY size(${fieldPathCypher}) DESC
-        WITH collect(${fieldPathCypher}) as list
+        WITH collect(${fieldPathCypher}) AS list
         RETURN {longest: head(list), shortest: last(list)} AS ${fieldRef.getCypher(env)}`;
     });
 }
