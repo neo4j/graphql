@@ -570,6 +570,121 @@ describe("assertIndexesAndConstraints/unique", () => {
                 await session.close();
             }
         });
+
+        test("should not allow updating to duplicate @unique properties when constraint is on an additional label", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            const baseType = generateUniqueType("Base");
+            const additionalType = generateUniqueType("Additional");
+            const typeDefs = `
+                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
+                    someStringProperty: String! @unique @alias(property: "someAlias")
+                    title: String!
+                }
+            `;
+
+            const createConstraintCypher = `
+                CREATE CONSTRAINT ${baseType.name}_unique_someAlias FOR (r:${additionalType.name})
+                REQUIRE r.someAlias IS UNIQUE;
+            `;
+
+            const session = driver.session({ database: databaseName });
+
+            try {
+                await session.run(createConstraintCypher);
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const generatedSchema = await neoSchema.getSchema();
+
+                const uniqueVal1 = "someVal1";
+                const uniqueVal2 = "someUniqueVal2";
+
+                const createMutation = `
+                    mutation {
+                        ${baseType.operations.create}(input: [
+                            {
+                                someStringProperty: "${uniqueVal1}",
+                                title: "someTitle"
+                            },
+                            {
+                                someStringProperty: "${uniqueVal2}",
+                                title: "someTitle2"
+                            },
+                        ]) {
+                            ${baseType.plural} {
+                                someStringProperty
+                            }
+                        }
+                    }
+                `;
+
+                const updateMutation = `
+                    mutation {
+                        ${baseType.operations.update}(update: {
+                            someStringProperty: "notUnique"
+                        }) {
+                            ${baseType.plural} {
+                                someStringProperty
+                            }
+                        }
+                    }
+                `;
+
+                const query = `
+                    query {
+                        ${baseType.plural} {
+                            someStringProperty
+                        }
+                    }
+                `;
+
+                const createGqlResult = await graphql({
+                    schema: generatedSchema,
+                    source: createMutation,
+                    contextValue: {
+                        driver,
+                        driverConfig: { database: databaseName },
+                    },
+                });
+
+                const updateGqlResult = await graphql({
+                    schema: generatedSchema,
+                    source: updateMutation,
+                    contextValue: {
+                        driver,
+                        driverConfig: { database: databaseName },
+                    },
+                });
+
+                const queryGqlResult = await graphql({
+                    schema: generatedSchema,
+                    source: query,
+                    contextValue: {
+                        driver,
+                        driverConfig: { database: databaseName },
+                    },
+                });
+
+                expect(createGqlResult?.errors).toBeFalsy();
+                expect((updateGqlResult?.errors as any[])[0].message).toBe("Constraint validation failed");
+
+                expect(queryGqlResult.errors).toBeFalsy();
+                expect(queryGqlResult.data?.[baseType.plural]).toIncludeSameMembers([
+                    {
+                        someStringProperty: uniqueVal1,
+                    },
+                    {
+                        someStringProperty: uniqueVal2,
+                    },
+                ]);
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("@id", () => {
