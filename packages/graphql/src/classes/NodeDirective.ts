@@ -47,22 +47,24 @@ export class NodeDirective {
         return `:${labels.join(":")}`;
     }
 
-    public getLabels(typeName: string, context: Context): string[] {
+    public getLabels(typeName: string, context?: Context): string[] {
         const mainLabel = this.label || typeName;
         const labels = [mainLabel, ...this.additionalLabels];
         return this.mapLabelsWithContext(labels, context);
     }
 
-    private mapLabelsWithContext(labels: string[], context: Context): string[] {
+    private mapLabelsWithContext(labels: string[], context?: Context): string[] {
         return labels.map((label: string) => {
-            const jwtPath = ContextParser.parseTag(label, "jwt");
-            let ctxPath = ContextParser.parseTag(label, "context");
-            if (jwtPath) ctxPath = `jwt.${jwtPath}`;
+            if (context) {
+                const jwtPath = ContextParser.parseTag(label, "jwt");
+                let ctxPath = ContextParser.parseTag(label, "context");
+                if (jwtPath) ctxPath = `jwt.${jwtPath}`;
 
-            if (ctxPath) {
-                const mappedLabel = ContextParser.getProperty(ctxPath, context);
-                if (!mappedLabel) throw new Error(`Label value not found in context.`);
-                return mappedLabel;
+                if (ctxPath) {
+                    const mappedLabel = ContextParser.getProperty(ctxPath, context);
+                    if (!mappedLabel) throw new Error(`Label value not found in context.`);
+                    return mappedLabel;
+                }
             }
             return label;
         });

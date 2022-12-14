@@ -299,7 +299,7 @@ class Node extends GraphElement {
         return this.nodeDirective?.getLabelsString(this.name, context) || `:${this.name}`;
     }
 
-    public getLabels(context: Context): string[] {
+    public getLabels(context?: Context): string[] {
         return this.nodeDirective?.getLabels(this.name, context) || [this.name];
     }
 
