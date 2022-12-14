@@ -386,6 +386,107 @@ describe("assertIndexesAndConstraints/unique", () => {
                 await session.close();
             }
         });
+
+        test("should not throw if constraint exists on an additional label", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            const baseType = generateUniqueType("Base");
+            const additionalType = generateUniqueType("Additional");
+
+            const typeDefs = `
+                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
+                    iri: Int!
+                    title: String! @unique
+                }
+            `;
+
+            const createConstraintCypher = `
+                CREATE CONSTRAINT ${baseType.name}_unique_title FOR (r:${additionalType.name})
+                REQUIRE r.title IS UNIQUE;
+            `;
+
+            const session = driver.session({ database: databaseName });
+
+            try {
+                await session.run(createConstraintCypher);
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await neoSchema.getSchema();
+
+                await expect(
+                    neoSchema.assertIndexesAndConstraints({
+                        driver,
+                        driverConfig: { database: databaseName },
+                    })
+                ).resolves.not.toThrow();
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should not create new constraint if constraint exists on an additional label", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            const baseType = generateUniqueType("Base");
+            const additionalType = generateUniqueType("Additional");
+            const typeDefs = `
+                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
+                    iri: Int!
+                    title: String! @unique
+                }
+            `;
+
+            const createConstraintCypher = `
+                CREATE CONSTRAINT ${baseType.name}_unique_title FOR (r:${additionalType.name})
+                REQUIRE r.title IS UNIQUE;
+            `;
+
+            const showConstraintsCypher = "SHOW UNIQUE CONSTRAINTS";
+
+            const session = driver.session({ database: databaseName });
+
+            try {
+                await session.run(createConstraintCypher);
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await neoSchema.getSchema();
+
+                await expect(
+                    neoSchema.assertIndexesAndConstraints({
+                        driver,
+                        driverConfig: { database: databaseName },
+                        options: { create: true },
+                    })
+                ).resolves.not.toThrow();
+
+                const dbConstraintsResult = (await session.run(showConstraintsCypher)).records.map((record) => {
+                    return record.toObject();
+                });
+
+                expect(
+                    dbConstraintsResult.filter(
+                        (record) => record.labelsOrTypes.includes(baseType.name) && record.properties.includes("title")
+                    )
+                ).toHaveLength(0);
+
+                expect(
+                    dbConstraintsResult.filter(
+                        (record) =>
+                            record.labelsOrTypes.includes(additionalType.name) && record.properties.includes("title")
+                    )
+                ).toHaveLength(1);
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("@id", () => {
@@ -764,7 +865,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const createConstraintCypher = `
-                CREATE CONSTRAINT unique_uri FOR (r:${additionalType.name})
+                CREATE CONSTRAINT ${baseType.name}_unique_uri FOR (r:${additionalType.name})
                 REQUIRE r.uri IS UNIQUE;
             `;
 
