@@ -405,8 +405,10 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const createConstraintCypher = `
-                CREATE CONSTRAINT ${baseType.name}_unique_title FOR (r:${additionalType.name})
-                REQUIRE r.title IS UNIQUE;
+                CREATE CONSTRAINT ${baseType.name}_unique_title ${dbInfo.gte("4.4") ? "FOR" : "ON"} (r:${
+                additionalType.name
+            })
+                ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.title IS UNIQUE;
             `;
 
             const session = driver.session({ database: databaseName });
@@ -445,8 +447,10 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const createConstraintCypher = `
-                CREATE CONSTRAINT ${baseType.name}_unique_title FOR (r:${additionalType.name})
-                REQUIRE r.title IS UNIQUE;
+                CREATE CONSTRAINT ${baseType.name}_unique_title ${dbInfo.gte("4.4") ? "FOR" : "ON"} (r:${
+                additionalType.name
+            })
+                ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.title IS UNIQUE;
             `;
 
             const showConstraintsCypher = "SHOW UNIQUE CONSTRAINTS";
@@ -505,8 +509,10 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const createConstraintCypher = `
-                CREATE CONSTRAINT ${baseType.name}_unique_someAlias FOR (r:${additionalType.name})
-                REQUIRE r.someAlias IS UNIQUE;
+                CREATE CONSTRAINT ${baseType.name}_unique_someAlias ${dbInfo.gte("4.4") ? "FOR" : "ON"} (r:${
+                additionalType.name
+            })
+                ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.someAlias IS UNIQUE;
             `;
 
             const session = driver.session({ database: databaseName });
@@ -588,8 +594,10 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const createConstraintCypher = `
-                CREATE CONSTRAINT ${baseType.name}_unique_someAlias FOR (r:${additionalType.name})
-                REQUIRE r.someAlias IS UNIQUE;
+                CREATE CONSTRAINT ${baseType.name}_unique_someAlias ${dbInfo.gte("4.4") ? "FOR" : "ON"} (r:${
+                additionalType.name
+            })
+                ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.someAlias IS UNIQUE;
             `;
 
             const session = driver.session({ database: databaseName });
@@ -1063,10 +1071,11 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const createConstraintCypher = `
-                CREATE CONSTRAINT ${baseType.name}_unique_someAlias FOR (r:${additionalType.name})
-                REQUIRE r.someAlias IS UNIQUE;
+                CREATE CONSTRAINT ${baseType.name}_unique_someAlias ${dbInfo.gte("4.4") ? "FOR" : "ON"} (r:${
+                additionalType.name
+            })
+                ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.someAlias IS UNIQUE;
             `;
-
             const session = driver.session({ database: databaseName });
 
             try {
@@ -1103,8 +1112,10 @@ describe("assertIndexesAndConstraints/unique", () => {
             `;
 
             const createConstraintCypher = `
-                CREATE CONSTRAINT ${baseType.name}_unique_someAlias FOR (r:${additionalType.name})
-                REQUIRE r.someAlias IS UNIQUE;
+                CREATE CONSTRAINT ${baseType.name}_unique_someAlias ${dbInfo.gte("4.4") ? "FOR" : "ON"} (r:${
+                additionalType.name
+            })
+                ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.someAlias IS UNIQUE;
             `;
 
             const showConstraintsCypher = "SHOW UNIQUE CONSTRAINTS";
