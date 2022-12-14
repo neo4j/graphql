@@ -462,7 +462,7 @@ describe("aggregations-where-edge-int", () => {
 
                 const query = `
                     {
-                        posts(where: { testString: "${testString}", likesAggregate: { edge: { someInt_GT: ${avgGT} } } }) {
+                        posts(where: { testString: "${testString}", likesAggregate: { edge: { someInt_AVERAGE_GT: ${avgGT} } } }) {
                             testString
                             likes {
                                 testString
@@ -512,7 +512,7 @@ describe("aggregations-where-edge-int", () => {
 
                 const query = `
                     {
-                        posts(where: { testString: "${testString}", likesAggregate: { edge: { someInt_GTE: ${avg} } } }) {
+                        posts(where: { testString: "${testString}", likesAggregate: { edge: { someInt_AVERAGE_GTE: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -553,16 +553,16 @@ describe("aggregations-where-edge-int", () => {
                 await session.run(
                     `
                         CREATE (p:Post {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES { someInt: ${someInt3} }]-(:User {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES { someInt: ${someInt2} }]-(:User {testString: "${testString}"})
                         CREATE (p)<-[:LIKES { someInt: ${someInt1} }]-(:User {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES { someInt: ${someInt2} }]-(:User {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES { someInt: ${someInt3} }]-(:User {testString: "${testString}"})
                         CREATE (:Post {testString: "${testString}"})
                     `
                 );
 
                 const query = `
                     {
-                        posts(where: { testString: "${testString}", likesAggregate: { edge: { someInt_LT: ${avgLT} } } }) {
+                        posts(where: { testString: "${testString}", likesAggregate: { edge: { someInt_AVERAGE_LT: ${avgLT} } } }) {
                             testString
                             likes {
                                 testString
@@ -612,7 +612,7 @@ describe("aggregations-where-edge-int", () => {
 
                 const query = `
                     {
-                        posts(where: { testString: "${testString}", likesAggregate: { edge: { someInt_LTE: ${avg} } } }) {
+                        posts(where: { testString: "${testString}", likesAggregate: { edge: { someInt_AVERAGE_LTE: ${avg} } } }) {
                             testString
                             likes {
                                 testString

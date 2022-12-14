@@ -16,9 +16,30 @@ jobs:
 
     strategy:
       matrix:
+        shard:
+          - 1/4
+          - 2/4
+          - 3/4
+          - 4/4
         graphql-version:
           - "^15.0.0"
           - "^16.0.0"
+        neo4j-version:
+          - 4.3-enterprise
+          - 4.4-community
+          - 4.4-enterprise
+          - 5-community
+          - 5-enterprise
+
+    services:
+      neo4j:
+        image: neo4j:${{ matrix.neo4j-version }}
+        env:
+          NEO4J_AUTH: neo4j/password
+          NEO4JLABS_PLUGINS: '["apoc"]'
+          NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
+        ports:
+          - 7687:7687
 
     steps:
       - uses: actions/checkout@v3
@@ -31,7 +52,10 @@ jobs:
       - name: Overwrite GraphQL version
         run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run TCK tests
-        run: yarn --cwd packages/graphql run test:tck --coverage
+        run: yarn --cwd packages/graphql run test:tck --shard=${{ matrix.shard }} --coverage
+        env:
+          VERIFY_TCK: true
+          NEO_USER: neo4j
       - if: ${{ env.CODECOV_TOKEN != '' }}
         name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -62,3 +86,9 @@ jobs:
           directory: ./packages/graphql/coverage/
           flags: graphql,schema
           fail_ci_if_error: true
+      - if: ${{ env.CODECOV_TOKEN != '' }}
+        name: Archive coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: api-library-coverage-graphql
+          path: packages/graphql/coverage/

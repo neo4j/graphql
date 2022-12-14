@@ -19,10 +19,10 @@
 
 import type { GraphQLWhereArg, Context } from "../../types";
 import type { Node } from "../../classes";
-import { createCypherWherePredicate } from "./create-cypher-where-predicate";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import { createWherePredicate } from "./create-where-predicate";
+import Cypher from "@neo4j/cypher-builder";
 
-// TODO: Remove this method and replace for directly using createCypherWherePredicate
+// TODO: Remove this method and replace for directly using createWherePredicate
 /** Wraps createCypherWhereParams with the old interface for compatibility with old way of composing cypher */
 export default function createWhereAndParams({
     whereInput,
@@ -39,16 +39,16 @@ export default function createWhereAndParams({
     chainStr?: string;
     recursing?: boolean;
 }): [string, any] {
-    const nodeRef = new CypherBuilder.NamedNode(varName);
+    const nodeRef = new Cypher.NamedNode(varName);
 
-    const wherePredicate = createCypherWherePredicate({
+    const wherePredicate = createWherePredicate({
         element: node,
         context,
         whereInput,
         targetElement: nodeRef,
     });
 
-    const whereCypher = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+    const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
         const cypher = wherePredicate?.getCypher(env) || "";
 
         return [cypher, {}];

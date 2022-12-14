@@ -54,3 +54,22 @@ li.CodeMirror-hint-active {
 .graphiql-container .graphiql-explorer-actions > span {
     display: none !important;
 }
+
+.Canny_BadgeContainer {
+    pointer-events: none;
+    right: unset !important;
+}
+
+.Canny_BadgeContainer .Canny_Badge {
+    pointer-events: none;
+    border-radius: 10px;
+    background-color: rgb(var(--colors-primary-40));
+    padding: 0.25rem;
+    border: 1px solid rgb(var(--colors-primary-40));
+}
+
+@-moz-document url-prefix() { 
+    .canny-indication-wrapper {
+        padding-bottom: 0.25rem;
+    }
+}

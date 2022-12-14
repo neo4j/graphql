@@ -38,7 +38,7 @@ import { serializeParamsForApocRun, wrapInApocRunFirstColumn } from "../utils/ap
 import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
 import { getRelationshipDirectionStr } from "../../utils/get-relationship-direction";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { createCountExpression } from "./create-count-expression";
 
 const subqueryNodeAlias = "n";
@@ -106,10 +106,10 @@ export function createFieldAggregation({
         ...serializeAuthParamsForApocRun(authData),
     };
 
-    const sourceNode = new CypherBuilder.NamedNode(nodeLabel);
-    const targetNode = new CypherBuilder.Node({ labels: referenceNode.getLabels(context) });
+    const sourceNode = new Cypher.NamedNode(nodeLabel);
+    const targetNode = new Cypher.Node({ labels: referenceNode.getLabels(context) });
 
-    const authCallWhere = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+    const authCallWhere = new Cypher.RawCypher((env: Cypher.Environment) => {
         const subqueryNodeName = targetNode.getCypher(env);
         const authDataResult = createFieldAggregationAuth({
             node: referenceNode,
@@ -122,7 +122,7 @@ export function createFieldAggregation({
         return [authDataResult.whereQuery, authDataResult.params];
     });
     const cypherParams = { ...authData.params, ...whereParams };
-    const projectionMap = new CypherBuilder.Map();
+    const projectionMap = new Cypher.Map();
 
     if (aggregationFields.count) {
         const countProjection = createCountExpression({
@@ -142,7 +142,7 @@ export function createFieldAggregation({
     const nodeFields = aggregationFields.node;
     if (nodeFields) {
         projectionMap.set({
-            node: new CypherBuilder.RawCypher((_env) => {
+            node: new Cypher.RawCypher(() => {
                 return [
                     createAggregationQuery({
                         nodeLabel,
@@ -160,7 +160,7 @@ export function createFieldAggregation({
     const edgeFields = aggregationFields.edge;
     if (edgeFields) {
         projectionMap.set({
-            edge: new CypherBuilder.RawCypher((_env) => {
+            edge: new Cypher.RawCypher(() => {
                 return [
                     createAggregationQuery({
                         nodeLabel,
@@ -176,7 +176,7 @@ export function createFieldAggregation({
         });
     }
 
-    const rawProjection = new CypherBuilder.RawCypher((env) => {
+    const rawProjection = new Cypher.RawCypher((env) => {
         return projectionMap.getCypher(env);
     });
 

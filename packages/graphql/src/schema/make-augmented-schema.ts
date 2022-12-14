@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { IResolvers, TypeSource } from "@graphql-tools/utils";
+import type { IResolvers } from "@graphql-tools/utils";
 import type {
     DefinitionNode,
     DocumentNode,
@@ -41,6 +41,7 @@ import { createResolver } from "./resolvers/mutation/create";
 import { deleteResolver } from "./resolvers/mutation/delete";
 import { updateResolver } from "./resolvers/mutation/update";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import { augmentFulltextSchema } from "./augment/fulltext";
 import * as constants from "../constants";
 import * as Scalars from "../graphql/scalars";
 import type { Node } from "../classes";
@@ -61,7 +62,6 @@ import getUniqueFields from "./get-unique-fields";
 import getWhereFields from "./get-where-fields";
 import { upperFirst } from "../utils/upper-first";
 import { ensureNonEmptyInput } from "./ensure-non-empty-input";
-import { getDocument } from "./get-document";
 import { getDefinitionNodes } from "./get-definition-nodes";
 import { isRootType } from "../utils/is-root-type";
 
@@ -84,25 +84,31 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { addMathOperatorsToITC } from "./math";
 import { addArrayMethodsToITC } from "./array-methods";
+import { FloatWhere } from "../graphql/input-objects/FloatWhere";
 
 function makeAugmentedSchema(
-    typeDefs: TypeSource,
-    {   
+    document: DocumentNode,
+    {
         features,
         enableRegex,
         skipValidateTypeDefs,
         generateSubscriptions,
         callbacks,
+        userCustomResolvers,
     }: {
         features?: Neo4jFeaturesSettings;
         enableRegex?: boolean;
         skipValidateTypeDefs?: boolean;
         generateSubscriptions?: boolean;
         callbacks?: Neo4jGraphQLCallbacks;
+        userCustomResolvers?: IResolvers | Array<IResolvers>;
     } = {}
-): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers: IResolvers } {
-    const document = getDocument(typeDefs);
-
+): {
+    nodes: Node[];
+    relationships: Relationship[];
+    typeDefs: DocumentNode;
+    resolvers: IResolvers;
+} {
     if (!skipValidateTypeDefs) {
         validateDocument(document);
     }
@@ -147,9 +153,10 @@ function makeAugmentedSchema(
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
-    const getNodesResult = getNodes(definitionNodes, { callbacks });
+    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers });
 
-    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
+    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames, floatWhereInTypeDefs } =
+        getNodesResult;
 
     // graphql-compose will break if the Point and CartesianPoint types are created but not used,
     // because it will purge the unused types but leave behind orphaned field resolvers
@@ -166,6 +173,7 @@ function makeAugmentedSchema(
     );
 
     const relationshipFields = new Map<string, ObjectFields>();
+    const interfaceCommonFields = new Map<string, ObjectFields>();
 
     relationshipProperties.forEach((relationship) => {
         const authDirective = (relationship.directives || []).find((x) => x.name.value === "auth");
@@ -252,7 +260,7 @@ function makeAugmentedSchema(
                 primitiveFields: relFields.primitiveFields,
             },
             enableRegex,
-            features
+            features,
         });
 
         composer.createInputTC({
@@ -304,6 +312,8 @@ function makeAugmentedSchema(
             fields: objectComposeFields,
         });
 
+        interfaceCommonFields.set(interfaceRelationship.name.value, interfaceFields);
+
         const interfaceOptionsInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Options`, (tc) => {
             tc.addFields({
                 limit: "Int",
@@ -314,7 +324,12 @@ function makeAugmentedSchema(
         const interfaceSortableFields = getSortableFields(interfaceFields).reduce(
             (res, f) => ({
                 ...res,
-                [f.fieldName]: sortDirection.getTypeName(),
+                [f.fieldName]: {
+                    type: sortDirection.getTypeName(),
+                    directives: graphqlDirectivesToCompose(
+                        f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                    ),
+                },
             }),
             {}
         );
@@ -350,7 +365,7 @@ function makeAugmentedSchema(
             },
             enableRegex,
             isInterface: true,
-            features
+            features,
         });
 
         const [
@@ -510,18 +525,9 @@ function makeAugmentedSchema(
         composer.createInputTC(CartesianPointDistance);
     }
 
-    unionTypes.forEach((union) => {
-        if (union.types && union.types.length) {
-            const fields = union.types.reduce((f, type) => {
-                return { ...f, [type.name.value]: `${type.name.value}Where` };
-            }, {});
-
-            composer.createInputTC({
-                name: `${union.name.value}Where`,
-                fields,
-            });
-        }
-    });
+    if (floatWhereInTypeDefs) {
+        composer.createInputTC(FloatWhere);
+    }
 
     nodes.forEach((node) => {
         const nodeFields = objectFieldsToComposeFields([
@@ -534,7 +540,7 @@ function makeAugmentedSchema(
             ...node.unionFields,
             ...node.temporalFields,
             ...node.pointFields,
-            ...node.computedFields,
+            ...node.customResolverFields,
         ]);
 
         const composeNode = composer.createObjectTC({
@@ -561,25 +567,31 @@ function makeAugmentedSchema(
         const sortFields = getSortableFields(node).reduce(
             (res, f) => ({
                 ...res,
-                [f.fieldName]: sortDirection.getTypeName(),
+                [f.fieldName]: {
+                    type: sortDirection.getTypeName(),
+                    directives: graphqlDirectivesToCompose(
+                        f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                    ),
+                },
             }),
             {}
         );
 
+        const nodeSortTypeName = `${node.name}Sort`;
         if (Object.keys(sortFields).length) {
             const sortInput = composer.createInputTC({
-                name: `${node.name}Sort`,
+                name: nodeSortTypeName,
                 fields: sortFields,
                 description: `Fields to sort ${upperFirst(
                     node.plural
-                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${node.name}Sort`} object.`,
+                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${nodeSortTypeName} object.`,
             });
 
             composer.createInputTC({
                 name: `${node.name}Options`,
                 fields: {
                     sort: {
-                        description: `Specify one or more ${`${node.name}Sort`} objects to sort ${upperFirst(
+                        description: `Specify one or more ${nodeSortTypeName} objects to sort ${upperFirst(
                             node.plural
                         )} by. The sorts will be applied in the order in which they are arranged in the array.`,
                         type: sortInput.NonNull.List,
@@ -605,7 +617,7 @@ function makeAugmentedSchema(
                 primitiveFields: node.primitiveFields,
                 scalarFields: node.scalarFields,
             },
-            features
+            features,
         });
 
         const countField = {
@@ -636,30 +648,13 @@ function makeAugmentedSchema(
             },
         });
 
+        const nodeWhereTypeName = `${node.name}Where`;
         composer.createInputTC({
-            name: `${node.name}Where`,
+            name: nodeWhereTypeName,
             fields: node.isGlobalNode ? { id: "ID", ...queryFields } : queryFields,
         });
 
-        if (node.fulltextDirective) {
-            const fields = node.fulltextDirective.indexes.reduce(
-                (res, index) => ({
-                    ...res,
-                    [index.name]: composer.createInputTC({
-                        name: `${node.name}${upperFirst(index.name)}Fulltext`,
-                        fields: {
-                            phrase: "String!",
-                        },
-                    }),
-                }),
-                {}
-            );
-
-            composer.createInputTC({
-                name: `${node.name}Fulltext`,
-                fields,
-            });
-        }
+        augmentFulltextSchema(node, composer, nodeWhereTypeName, nodeSortTypeName);
 
         const uniqueFields = getUniqueFields(node);
 
@@ -773,8 +768,23 @@ function makeAugmentedSchema(
         }
     });
 
+    unionTypes.forEach((union) => {
+        if (!union.types) {
+            throw new Error(`Union ${union.name.value} has no types`);
+        }
+
+        const fields = union.types.reduce((f, type) => {
+            return { ...f, [type.name.value]: `${type.name.value}Where` };
+        }, {});
+
+        composer.createInputTC({
+            name: `${union.name.value}Where`,
+            fields,
+        });
+    });
+
     if (generateSubscriptions) {
-        generateSubscriptionTypes({ schemaComposer: composer, nodes });
+        generateSubscriptionTypes({ schemaComposer: composer, nodes, relationshipFields, interfaceCommonFields });
     }
 
     ["Mutation", "Query"].forEach((type) => {
@@ -869,17 +879,19 @@ function makeAugmentedSchema(
         );
     }
 
-    const documentNames = parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value);
-
+    const documentNames = new Set(parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value));
     const resolveMethods = getResolveAndSubscriptionMethods(composer);
-    const generatedResolvers = {
-        ...Object.entries(resolveMethods).reduce((res, [key, value]) => {
-            if (!documentNames.includes(key)) {
-                return res;
-            }
 
-            return { ...res, [key]: value };
-        }, {}),
+    const generatedResolveMethods: Record<string, any> = {};
+
+    for (const [key, value] of Object.entries(resolveMethods)) {
+        if (documentNames.has(key)) {
+            generatedResolveMethods[key] = value;
+        }
+    }
+
+    const generatedResolvers = {
+        ...generatedResolveMethods,
         ...Object.values(Scalars).reduce((res, scalar: GraphQLScalarType) => {
             if (generatedTypeDefs.includes(`scalar ${scalar.name}\n`)) {
                 res[scalar.name] = scalar;

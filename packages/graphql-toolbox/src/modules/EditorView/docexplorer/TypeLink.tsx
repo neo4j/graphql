@@ -5,11 +5,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react";
 import { GraphQLList, GraphQLNonNull, GraphQLType, GraphQLNamedType } from "graphql";
-import { OnClickTypeFunction } from "./types";
-
-import { Maybe } from "./types";
+import { Fragment } from "react";
+import { OnClickTypeFunction, Maybe } from "./types";
 
 type TypeLinkProps = {
     type?: Maybe<GraphQLType>;
@@ -40,15 +38,18 @@ function renderType(type: Maybe<GraphQLType>, onClick: OnClickTypeFunction) {
         );
     }
     return (
-        <a
-            className="type-name"
-            onClick={(event) => {
-                event.preventDefault();
-                onClick(type as GraphQLNamedType, event);
-            }}
-            href="#"
-        >
-            {type?.name}
-        </a>
+        <Fragment>
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+            <a
+                className="type-name"
+                onClick={(event) => {
+                    event.preventDefault();
+                    onClick(type as GraphQLNamedType, event);
+                }}
+                href="#"
+            >
+                {type?.name}
+            </a>
+        </Fragment>
     );
 }

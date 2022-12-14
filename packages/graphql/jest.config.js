@@ -9,9 +9,12 @@ module.exports = {
     globalTeardown: path.join(__dirname, "jest.global-teardown.js"),
     roots: ["<rootDir>/packages/graphql/src/", "<rootDir>/packages/graphql/tests/"],
     coverageDirectory: "<rootDir>/packages/graphql/coverage/",
-    globals: {
-        "ts-jest": {
-            tsconfig: "<rootDir>/packages/graphql/tsconfig.json",
-        },
+    transform: {
+        "^.+\\.ts$": [
+            "ts-jest",
+            {
+                tsconfig: "<rootDir>/packages/graphql/tsconfig.json",
+            },
+        ],
     },
 };

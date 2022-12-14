@@ -22,6 +22,7 @@ import type { Neo4jGraphQL } from "../classes";
 import type { Context } from "../types";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { RelationshipQueryDirectionOption } from "../constants";
+import { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
 
 describe("createDisconnectAndParams", () => {
     test("should return the correct disconnect", () => {
@@ -78,7 +79,12 @@ describe("createDisconnectAndParams", () => {
         };
 
         // @ts-ignore
-        const context: Context = { neoSchema, nodes: [node], relationships: [] };
+        const context: Context = {
+            neoSchema,
+            nodes: [node],
+            relationships: [],
+            neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.4.0"),
+        };
 
         const result = createDisconnectAndParams({
             withVars: ["this"],
@@ -103,20 +109,27 @@ describe("createDisconnectAndParams", () => {
             WITH this
             OPTIONAL MATCH (this)-[this0_rel:SIMILAR]->(this0:Movie)
             WHERE this0.title = $this0_where_Movieparam0
-            FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END | 
-            DELETE this0_rel
-            )
-            WITH this, this0
+            CALL {
+            	WITH this0, this0_rel, this
+            	WITH collect(this0) as this0, this0_rel, this
+            	UNWIND this0 as x
+            	DELETE this0_rel
+            	RETURN count(*) AS _
+            }
             CALL {
             WITH this, this0
             OPTIONAL MATCH (this0)-[this0_similarMovies0_rel:SIMILAR]->(this0_similarMovies0:Movie)
             WHERE this0_similarMovies0.title = $this0_disconnect_similarMovies0_where_Movieparam0
-            FOREACH(_ IN CASE WHEN this0_similarMovies0 IS NULL THEN [] ELSE [1] END | 
-            DELETE this0_similarMovies0_rel
-            )
-            RETURN count(*) AS _
+            CALL {
+            	WITH this0_similarMovies0, this0_similarMovies0_rel, this0
+            	WITH collect(this0_similarMovies0) as this0_similarMovies0, this0_similarMovies0_rel, this0
+            	UNWIND this0_similarMovies0 as x
+            	DELETE this0_similarMovies0_rel
+            	RETURN count(*) AS _
             }
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this0_similarMovies_Movie
+            }
+            RETURN count(*) AS disconnect_this_Movie
             }"
         `);
 

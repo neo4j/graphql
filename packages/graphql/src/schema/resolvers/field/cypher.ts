@@ -35,7 +35,15 @@ export function cypherResolver({
 }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
-        const { cypher, params } = translateTopLevelCypher({ context, info, field, args, type, statement });
+
+        const { cypher, params } = translateTopLevelCypher({
+            context,
+            info,
+            field,
+            args,
+            type,
+            statement,
+        });
         const executeResult = await execute({
             cypher,
             params,

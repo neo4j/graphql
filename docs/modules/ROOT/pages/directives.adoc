@@ -15,6 +15,8 @@ Reference: xref::auth/auth-directive.adoc[`@auth` directive]
 
 == `@callback`
 
+NOTE: The `@callback` directive has been deprecated and will be removed in version 4.0. Please use the xref::directives.adoc#populated-by-directive[`@populatedBy` directive] instead.
+
 The `@callback` directive is used to specify a function that will be invoked when updating or creating the properties on a node or relationship.
 
 Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-callback[`@callback`]
@@ -27,10 +29,21 @@ Reference: xref::type-definitions/default-values.adoc#type-definitions-default-v
 
 == `@computed`
 
+NOTE: The `@computed` directive has been deprecated and will be removed in version 4.0.
+Please use the xref::directives.adoc#custom-resolver-directive[`@customResolver` directive] instead.
+
 The `@computed` directive specifies that a field will be resolved by a custom resolver, and allows the specification
 of any field dependencies.
 
 Reference: xref::custom-resolvers.adoc#custom-resolvers-computed[`@computed`]
+
+[[custom-resolver-directive]]
+== `@customResolver`
+
+The `@customResolver` directive specifies that a field will be resolved by a custom resolver, and allows the specification
+of any required fields that will be passed as arguments to the custom resolver.
+
+Reference: xref::custom-resolvers.adoc#custom-resolver-directive[`@customResolver`]
 
 == `@cypher`
 
@@ -46,7 +59,7 @@ Reference: xref::type-definitions/default-values.adoc#type-definitions-default-v
 
 == `@exclude`
 
-The `@exclude` directive is used on object types to instruct them to be skipped during Query and Mutation generation.
+The `@exclude` directive is used on object types to instruct them to be skipped during Query, Mutation and Subscription generation.
 
 Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-exclude[`@exclude`]
 
@@ -64,9 +77,28 @@ Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogener
 
 == `@node`
 
+NOTE: The plural argument of the `@node` directive has been deprecated and will be removed in version 4.0.
+Please use the xref::directives.adoc#plural-directive[`@plural` directive] instead.
+
 The `@node` directive is used to specify the configuration of a GraphQL object type which represents a Neo4j node.
 
 Reference: xref::type-definitions/database-mapping.adoc#type-definitions-node[`@node`]
+
+[[plural-directive]]
+== `@plural`
+
+The `@plural` directive redefines how to compose the plural of the type for the generated operations.
+This is particularly useful for types that are not correctly pluralized or are non-English words.
+
+Reference: xref::type-definitions/database-mapping.adoc#type-definitions-plural[`@plural`]
+
+[[populated-by-directive]]
+== `@populatedBy`
+
+The `@populatedBy` directive is used to specify a callback function that gets executed during GraphQL query parsing,
+to populate fields which have not been provided within the input.
+
+Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-populated-by[`@populatedBy`]
 
 == `@private`
 

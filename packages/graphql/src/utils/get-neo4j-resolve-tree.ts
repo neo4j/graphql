@@ -124,7 +124,6 @@ function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4j
     const fieldsByTypeName = Object.entries(resolveTree.fieldsByTypeName).reduce((res, [typeName, fields]) => {
         let type: GraphQLObjectType | GraphQLInterfaceType;
 
-        // eslint-disable-next-line no-underscore-dangle,@typescript-eslint/naming-convention
         const _type = resolveInfo.schema.getType(typeName) as GraphQLNamedType;
 
         if (!_type) {

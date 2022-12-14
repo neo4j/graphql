@@ -22,8 +22,8 @@ import type { Node } from "../../classes";
 import type { Context, RelationField, GraphQLWhereArg } from "../../types";
 
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
-import { createCypherWherePredicate } from "../where/create-cypher-where-predicate";
+import Cypher from "@neo4j/cypher-builder";
+import { createWherePredicate } from "../where/create-where-predicate";
 
 export function createCountExpression({
     sourceNode,
@@ -34,15 +34,15 @@ export function createCountExpression({
     authCallWhere,
     targetNode,
 }: {
-    sourceNode: CypherBuilder.Node;
+    sourceNode: Cypher.Node;
     referenceNode: Node;
     context: Context;
     relationAggregationField: RelationField;
     field: ResolveTree;
-    authCallWhere: CypherBuilder.Predicate | undefined;
-    targetNode: CypherBuilder.Node;
-}): CypherBuilder.Expr {
-    const relationship = new CypherBuilder.Relationship({
+    authCallWhere: Cypher.Predicate | undefined;
+    targetNode: Cypher.Node;
+}): Cypher.Expr {
+    const relationship = new Cypher.Relationship({
         source: sourceNode,
         target: targetNode,
         type: relationAggregationField.type,
@@ -56,14 +56,14 @@ export function createCountExpression({
     const relationshipPattern = relationship.pattern({
         directed: !(direction === "undirected"),
     });
-    const wherePredicate = createCypherWherePredicate({
+    const wherePredicate = createWherePredicate({
         element: referenceNode,
         context,
         whereInput: (field.args.where as GraphQLWhereArg) || {},
         targetElement: targetNode,
     });
 
-    const patternComprehension = new CypherBuilder.PatternComprehension(relationshipPattern, targetNode);
+    const patternComprehension = new Cypher.PatternComprehension(relationshipPattern, targetNode);
 
     if (wherePredicate) {
         patternComprehension.where(wherePredicate);
@@ -72,5 +72,5 @@ export function createCountExpression({
         patternComprehension.and(authCallWhere);
     }
 
-    return CypherBuilder.size(patternComprehension);
+    return Cypher.size(patternComprehension);
 }

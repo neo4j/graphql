@@ -1,8 +1,6 @@
 [[plugins]]
 = Subscription Plugins
 
-WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
-
 Plugins are used to enable subscriptions in `@neo4j/graphql` and to allow easy connection to different message brokers. This is required to run a production
 system with xref::subscriptions/scaling.adoc[horizontal scaling].
 

@@ -51,7 +51,7 @@ jobs:
 
       - name: Create release PR or release
         id: changesets
-        uses: changesets/action@2a025e8ab1cfa4312c2868cb6aa3cd3b473b84bf # renovate: tag=v1.3.0
+        uses: changesets/action@e9cc34b540dd3ad1b030c57fd97269e8f6ad905a # v1.4.1
         with:
           title: changesets for branch `master`
           version: yarn changeset-version-master
@@ -63,7 +63,8 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
 
       - name: Create release branch for merging into dev
-        uses: peterjgrainger/action-create-branch@c2800a3a9edbba2218da6861fa46496cf8f3195a # renovate: tag=v2.2.0
+        if: steps.changesets.outputs.published == 'true'
+        uses: peterjgrainger/action-create-branch@08259812c8ebdbf1973747f9297e332fa078d3c1 # v2.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
         with:
@@ -92,7 +93,7 @@ jobs:
     steps:
       - name: Send Slack announcement of release
         if: matrix.package.name == '@neo4j/graphql'
-        uses: slackapi/slack-github-action@v1.21.0
+        uses: slackapi/slack-github-action@v1.23.0
         with:
           payload: '{"version":"${{ matrix.package.version }}"}'
         env:

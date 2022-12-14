@@ -19,16 +19,19 @@
 
 import type { SubscriptionsEvent } from "../../../types";
 import { compareProperties } from "./utils/compare-properties";
+import { haveSameLength } from "../../../utils/utils";
 
 export function updateDiffFilter(event: SubscriptionsEvent): boolean {
     if (event.event !== "update") {
         return true;
     }
-
-    const sameLength = Object.keys(event.properties.old).length === Object.keys(event.properties.new).length;
-    if (!sameLength) return true;
-    const sameProperties = compareProperties(event.properties.old, event.properties.new);
-    if (!sameProperties) return true;
+    if (!haveSameLength(event.properties.old, event.properties.new)) {
+        return true;
+    }
+    const haveSameProperties = compareProperties(event.properties.old, event.properties.new);
+    if (!haveSameProperties) {
+        return true;
+    }
 
     return false;
 }

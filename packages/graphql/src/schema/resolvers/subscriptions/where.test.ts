@@ -18,6 +18,7 @@
  */
 
 import type { SubscriptionsEvent } from "../../../types";
+import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
 import { subscriptionWhere } from "./where";
 
 describe("subscriptionWhere", () => {
@@ -39,7 +40,38 @@ describe("subscriptionWhere", () => {
             typename: "Movie",
         };
 
-        expect(subscriptionWhere(args, event)).toBe(true);
+        const node = new NodeBuilder({
+            name: "Movie",
+            primitiveFields: [
+                {
+                    fieldName: "title",
+                    typeMeta: {
+                        name: "String",
+                        array: false,
+                        required: false,
+                        pretty: "String",
+                        input: {
+                            where: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            create: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            update: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                        },
+                    },
+                    otherDirectives: [],
+                    arguments: [],
+                },
+            ],
+        }).instance();
+
+        expect(subscriptionWhere({ where: args, event, node })).toBe(true);
     });
 
     test("filters expected not", () => {
@@ -60,6 +92,37 @@ describe("subscriptionWhere", () => {
             typename: "Movie",
         };
 
-        expect(subscriptionWhere(args, event)).toBe(false);
+        const node = new NodeBuilder({
+            name: "Movie",
+            primitiveFields: [
+                {
+                    fieldName: "title",
+                    typeMeta: {
+                        name: "String",
+                        array: false,
+                        required: false,
+                        pretty: "String",
+                        input: {
+                            where: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            create: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            update: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                        },
+                    },
+                    otherDirectives: [],
+                    arguments: [],
+                },
+            ],
+        }).instance();
+
+        expect(subscriptionWhere({ where: args, event, node })).toBe(false);
     });
 });

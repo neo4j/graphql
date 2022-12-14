@@ -31,10 +31,11 @@ jobs:
       - name: Set output variables
         id: vars
         run: |
-          echo ::set-output name=title::"[Test] Update yarn $(date +%Y-%m-%d)"
-          echo ::set-output name=branch::"yarn-update-$(date +%Y-%m-%d)"
+          today="$(date +%Y-%m-%d)"
+          echo "title=[YARN UPDATE] Update yarn $today" >> "$GITHUB_OUTPUT"
+          echo "branch=yarn-update-$today" >> "$GITHUB_OUTPUT"
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@18f90432bedd2afd6a825469ffd38aa24712a91d # tag=v4.1.1
+        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04 # v4.2.3
         with:
           token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
           commit-message: ${{ steps.vars.outputs.title }}

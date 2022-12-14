@@ -39,7 +39,7 @@ jobs:
       - name: Run packages/${{ matrix.package }} unit tests
         run: yarn run test:unit --coverage
         working-directory: packages/${{ matrix.package }}
-      - if: ${{ env.CODECOV_TOKEN != '' }}
+      - if: ${{ env.CODECOV_TOKEN != '' && matrix.package == 'graphql' }}
         name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -47,3 +47,9 @@ jobs:
           directory: ./packages/${{ matrix.package }}/coverage/
           flags: ${{ matrix.package }},unit
           fail_ci_if_error: true
+      - if: ${{ env.CODECOV_TOKEN != '' && matrix.package == 'graphql' }}
+        name: Archive coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: unit-coverage-${{ matrix.package }}
+          path: packages/${{ matrix.package }}/coverage/

@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import * as neo4j from "neo4j-driver";
 import * as util from "util";
 
@@ -28,7 +27,7 @@ async function connect(): Promise<neo4j.Driver> {
         return driver;
     }
 
-    const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
+    const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
     if (process.env.NEO_WAIT && !driver) {
         await util.promisify(setTimeout)(Number(process.env.NEO_WAIT));

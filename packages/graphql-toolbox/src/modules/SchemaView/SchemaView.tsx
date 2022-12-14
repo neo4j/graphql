@@ -20,6 +20,7 @@
 import { useCallback, useContext, useRef, useState } from "react";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
+import { Alert } from "@neo4j-ndl/react";
 import { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
 import { EditorFromTextArea } from "codemirror";
@@ -34,6 +35,7 @@ import {
 import { formatCode, ParserOptions } from "../EditorView/utils";
 import { AuthContext } from "../../contexts/auth";
 import { SettingsContext } from "../../contexts/settings";
+import { AppSettingsContext } from "../../contexts/appsettings";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { Storage } from "../../utils/storage";
@@ -41,9 +43,11 @@ import { SchemaSettings } from "./SchemaSettings";
 import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
 import { ActionElementsBar } from "./ActionElementsBar";
 import { SchemaEditor } from "./SchemaEditor";
-import { ConstraintState, Favorite } from "src/types";
+import { ConstraintState, Favorite } from "../../types";
 import { Favorites } from "./Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
+import { tracking } from "../../analytics/tracking";
+import { rudimentaryTypeDefinitionsAnalytics } from "../../analytics/analytics";
 
 export interface Props {
     hasSchema: boolean;
@@ -53,6 +57,7 @@ export interface Props {
 export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const auth = useContext(AuthContext);
     const settings = useContext(SettingsContext);
+    const appSettings = useContext(AppSettingsContext);
     const [error, setError] = useState<string | GraphQLError>("");
     const [showIntrospectionModal, setShowIntrospectionModal] = useState<boolean>(true);
     const [loading, setLoading] = useState<boolean>(false);
@@ -78,6 +83,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
         ];
         setFavorites(newFavorites);
         Storage.storeJSON(LOCAL_STATE_FAVORITES, newFavorites);
+        tracking.trackSaveFavorite({ screen: "type definitions" });
     };
 
     const setTypeDefsFromFavorite = (typeDefs: string) => {
@@ -116,6 +122,9 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: true } });
                 }
 
+                const analyticsResults = rudimentaryTypeDefinitionsAnalytics(typeDefs);
+                tracking.trackBuildSchema({ screen: "type definitions", ...analyticsResults });
+
                 onChange(schema);
             } catch (error) {
                 setError(error as GraphQLError);
@@ -126,35 +135,45 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
         [isDebugChecked, constraintState, isRegexChecked, auth.selectedDatabaseName]
     );
 
-    const introspect = useCallback(async () => {
-        try {
-            setLoading(true);
-            setIsIntrospecting(true);
+    const introspect = useCallback(
+        async ({ screen }: { screen: "query editor" | "type definitions" | "initial modal" }) => {
+            try {
+                setLoading(true);
+                setIsIntrospecting(true);
 
-            const sessionFactory = () =>
-                auth?.driver?.session({
-                    defaultAccessMode: neo4j.session.READ,
-                    database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
-                }) as neo4j.Session;
+                const sessionFactory = () =>
+                    auth?.driver?.session({
+                        defaultAccessMode: neo4j.session.READ,
+                        database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
+                    }) as neo4j.Session;
 
-            const typeDefs = await toGraphQLTypeDefs(sessionFactory);
+                const typeDefs = await toGraphQLTypeDefs(sessionFactory);
 
-            refForEditorMirror.current?.setValue(typeDefs);
-        } catch (error) {
-            const msg = (error as GraphQLError).message;
-            setError(msg);
-        } finally {
-            setLoading(false);
-            setIsIntrospecting(false);
-        }
-    }, [buildSchema, refForEditorMirror.current, auth.selectedDatabaseName]);
+                refForEditorMirror.current?.setValue(typeDefs);
 
-    const onSubmit = useCallback(() => {
+                tracking.trackDatabaseIntrospection({ screen, status: "success" });
+            } catch (error) {
+                const msg = (error as GraphQLError).message;
+                setError(msg);
+                tracking.trackDatabaseIntrospection({ screen, status: "failure" });
+            } finally {
+                setLoading(false);
+                setIsIntrospecting(false);
+            }
+        },
+        [buildSchema, refForEditorMirror.current, auth.selectedDatabaseName]
+    );
+
+    const onSubmit = useCallback(async () => {
         const value = refForEditorMirror.current?.getValue();
         if (value) {
-            buildSchema(value);
+            await buildSchema(value);
         }
     }, [buildSchema]);
+
+    const onClickIntrospect = async () => {
+        await introspect({ screen: "type definitions" });
+    };
 
     return (
         <div className="w-full flex">
@@ -173,12 +192,14 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     onIntrospect={() => {
                         setShowIntrospectionModal(false);
                         auth.setShowIntrospectionPrompt(false);
-                        introspect();
+                        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                        introspect({ screen: "initial modal" });
                     }}
                 />
             ) : null}
             <div className={`flex flex-col ${showRightPanel ? "w-content-container" : "w-full"}`}>
                 <div className="h-12 w-full bg-white">
+                    {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
                     <ActionElementsBar hasSchema={hasSchema} loading={loading} onSubmit={onSubmit} />
                 </div>
                 <div className="flex">
@@ -208,9 +229,19 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                                 loading={loading}
                                 isIntrospecting={isIntrospecting}
                                 formatTheCode={formatTheCode}
-                                introspect={introspect}
+                                introspect={onClickIntrospect}
                                 saveAsFavorite={saveAsFavorite}
                             />
+                            {!appSettings.hideProductUsageMessage ? (
+                                <Alert
+                                    className="absolute bottom-7 ml-4 w-[57rem] z-40"
+                                    closeable
+                                    name="ProductUsageMessage"
+                                    title={<strong>Product analytics</strong>}
+                                    description="To help make the Neo4j GraphQL Toolbox better we collect data on product usage. Review your settings at any time."
+                                    onClose={() => appSettings.setHideProductUsageMessage(true)}
+                                />
+                            ) : null}
                         </div>
                     </div>
                 </div>

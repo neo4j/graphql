@@ -95,32 +95,75 @@ export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<str
         .reduce((res, f) => {
             const fieldType = f.typeMeta.input.create.pretty;
             const defaultValue = (f as PrimitiveField)?.defaultValue;
+            const deprecatedDirectives = graphqlDirectivesToCompose(
+                f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+            );
 
             if (defaultValue !== undefined) {
                 res[f.fieldName] = {
                     type: fieldType,
                     defaultValue,
+                    directives: deprecatedDirectives,
                 };
             } else {
-                res[f.fieldName] = fieldType;
+                res[f.fieldName] = {
+                    type: fieldType,
+                    directives: deprecatedDirectives,
+                };
             }
 
             return res;
         }, {} as Record<string, InputField>);
 }
 
-export function objectFieldsToSubscriptionsWhereInputFields(fields: BaseField[]): Record<string, InputField> {
+export function objectFieldsToSubscriptionsWhereInputFields(
+    typeName: string,
+    fields: BaseField[]
+): Record<string, InputField> {
     return fields.reduce((res, f) => {
         const fieldType = f.typeMeta.input.update.pretty;
 
-        res[f.fieldName] = fieldType;
-
-        return res;
+        const ifArrayOfAnyTypeExceptBoolean = f.typeMeta.array && f.typeMeta.name !== "Boolean";
+        const ifAnyTypeExceptArrayAndBoolean = !f.typeMeta.array && f.typeMeta.name !== "Boolean";
+        const isOneOfNumberTypes = ["Int", "Float", "BigInt"].includes(f.typeMeta.name) && !f.typeMeta.array;
+        const isOneOfStringTypes = ["String", "ID"].includes(f.typeMeta.name) && !f.typeMeta.array;
+        return {
+            ...res,
+            AND: `[${typeName}SubscriptionWhere!]`,
+            OR: `[${typeName}SubscriptionWhere!]`,
+            [f.fieldName]: fieldType,
+            [`${f.fieldName}_NOT`]: fieldType,
+            ...(ifArrayOfAnyTypeExceptBoolean && {
+                [`${f.fieldName}_INCLUDES`]: f.typeMeta.name,
+                [`${f.fieldName}_NOT_INCLUDES`]: f.typeMeta.name,
+            }),
+            ...(ifAnyTypeExceptArrayAndBoolean && {
+                [`${f.fieldName}_IN`]: `[${f.typeMeta.name}]`,
+                [`${f.fieldName}_NOT_IN`]: `[${f.typeMeta.name}]`,
+            }),
+            ...(isOneOfNumberTypes && {
+                [`${f.fieldName}_LT`]: fieldType,
+                [`${f.fieldName}_LTE`]: fieldType,
+                [`${f.fieldName}_GT`]: fieldType,
+                [`${f.fieldName}_GTE`]: fieldType,
+            }),
+            ...(isOneOfStringTypes && {
+                [`${f.fieldName}_STARTS_WITH`]: fieldType,
+                [`${f.fieldName}_NOT_STARTS_WITH`]: fieldType,
+                [`${f.fieldName}_ENDS_WITH`]: fieldType,
+                [`${f.fieldName}_NOT_ENDS_WITH`]: fieldType,
+                [`${f.fieldName}_CONTAINS`]: fieldType,
+                [`${f.fieldName}_NOT_CONTAINS`]: fieldType,
+            }),
+        };
     }, {});
 }
 
 export function objectFieldsToUpdateInputFields(fields: BaseField[]): Record<string, InputField> {
     return fields.reduce((res, f) => {
+        const deprecatedDirectives = graphqlDirectivesToCompose(
+            f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+        );
         const staticField = f.readonly || (f as PrimitiveField)?.autogenerate;
         if (staticField) {
             return res;
@@ -128,7 +171,10 @@ export function objectFieldsToUpdateInputFields(fields: BaseField[]): Record<str
 
         const fieldType = f.typeMeta.input.update.pretty;
 
-        res[f.fieldName] = fieldType;
+        res[f.fieldName] = {
+            type: fieldType,
+            directives: deprecatedDirectives,
+        };
 
         return res;
     }, {});

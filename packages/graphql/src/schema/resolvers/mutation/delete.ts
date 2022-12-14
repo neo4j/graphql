@@ -37,7 +37,7 @@ export function deleteResolver({ node }: { node: Node }) {
             context,
         });
 
-        publishEventsToPlugin(executeResult, context.plugins?.subscriptions);
+        publishEventsToPlugin(executeResult, context.plugins?.subscriptions, context.schemaModel);
 
         return { bookmark: executeResult.bookmark, ...executeResult.statistics };
     }

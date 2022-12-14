@@ -17,9 +17,11 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { TemporalField } from "../../../types";
 
+/** Deprecated in favor of createDatetimeExpression */
 export function createDatetimeElement({
     resolveTree,
     field,
@@ -39,4 +41,30 @@ export function createDatetimeElement({
 
 export function wrapApocConvertDate(value: string): string {
     return `apoc.date.convertFormat(toString(${value}), "iso_zoned_date_time", "iso_offset_date_time")`;
+}
+
+export function createDatetimeExpression({
+    resolveTree,
+    field,
+    variable,
+}: {
+    resolveTree: ResolveTree;
+    field: TemporalField;
+    variable: Cypher.Variable;
+}): Cypher.Expr {
+    const dbFieldName = field.dbPropertyName || resolveTree.name;
+
+    const fieldProperty = variable.property(dbFieldName);
+
+    if (field.typeMeta.array) {
+        const comprehensionVariable = new Cypher.Variable();
+        const apocFormat = createApocConvertFormat(comprehensionVariable);
+
+        return new Cypher.ListComprehension(comprehensionVariable).in(fieldProperty).map(apocFormat);
+    }
+    return createApocConvertFormat(fieldProperty);
+}
+
+function createApocConvertFormat(variableOrProperty: Cypher.Variable | Cypher.PropertyRef): Cypher.Expr {
+    return Cypher.apoc.date.convertFormat(variableOrProperty, "iso_zoned_date_time", "iso_offset_date_time");
 }

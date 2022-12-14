@@ -21,13 +21,18 @@ import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { Node } from "../../classes";
-import { WHERE_AGGREGATION_AVERAGE_TYPES, WHERE_AGGREGATION_OPERATORS, WHERE_AGGREGATION_TYPES } from "../../constants";
+import {
+    WHERE_AGGREGATION_AVERAGE_TYPES,
+    AGGREGATION_COMPARISON_OPERATORS,
+    WHERE_AGGREGATION_TYPES,
+} from "../../constants";
 import type { BaseField, RelationField } from "../../types";
 import type { ObjectFields } from "../get-obj-field-meta";
 import { createConnectOrCreateField } from "./create-connect-or-create-field";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
+import { graphqlDirectivesToCompose } from "../to-compose";
 
 function createRelationshipFields({
     relationshipFields,
@@ -69,6 +74,10 @@ function createRelationshipFields({
         let anyNonNullRelProperties = false;
         let relFields: ObjectFields | undefined;
 
+        const deprecatedDirectives = graphqlDirectivesToCompose(
+            rel.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+        );
+
         if (rel.properties) {
             relFields = relationshipPropertyFields.get(rel.properties);
 
@@ -106,6 +115,7 @@ function createRelationshipFields({
                         type: rel.typeMeta.pretty,
                         args: nodeFieldArgs,
                         description: rel.description,
+                        directives: graphqlDirectivesToCompose(rel.otherDirectives),
                     },
                 });
             }
@@ -265,6 +275,7 @@ function createRelationshipFields({
                         type: rel.typeMeta.pretty,
                         args: nodeFieldArgs,
                         description: rel.description,
+                        directives: graphqlDirectivesToCompose(rel.otherDirectives),
                     },
                 });
             }
@@ -505,9 +516,15 @@ function createRelationshipFields({
             });
 
             if (!(composeNode instanceof InterfaceTypeComposer)) {
-                nodeCreateInput.addFields({
-                    [rel.fieldName]: unionCreateInput,
-                });
+                if (rel.typeMeta.array || !rel.typeMeta.required) {
+                    nodeCreateInput.addFields({
+                        [rel.fieldName]: unionCreateInput,
+                    });
+                } else {
+                    nodeCreateInput.addFields({
+                        [rel.fieldName]: unionCreateInput.NonNull,
+                    });
+                }
             }
 
             nodeRelationInput.addFields({
@@ -588,7 +605,7 @@ function createRelationshipFields({
 
                 if (field.typeMeta.name === "String") {
                     aggregationInput.addFields(
-                        WHERE_AGGREGATION_OPERATORS.reduce((res, operator) => {
+                        AGGREGATION_COMPARISON_OPERATORS.reduce((res, operator) => {
                             return {
                                 ...res,
                                 [`${field.fieldName}_${operator}`]: `${operator === "EQUAL" ? "String" : "Int"}`,
@@ -604,7 +621,7 @@ function createRelationshipFields({
 
                 if (WHERE_AGGREGATION_AVERAGE_TYPES.includes(field.typeMeta.name)) {
                     aggregationInput.addFields(
-                        WHERE_AGGREGATION_OPERATORS.reduce((res, operator) => {
+                        AGGREGATION_COMPARISON_OPERATORS.reduce((res, operator) => {
                             let averageType = "Float";
 
                             if (field.typeMeta.name === "BigInt") {
@@ -632,7 +649,7 @@ function createRelationshipFields({
                 }
 
                 aggregationInput.addFields(
-                    WHERE_AGGREGATION_OPERATORS.reduce(
+                    AGGREGATION_COMPARISON_OPERATORS.reduce(
                         (res, operator) => ({
                             ...res,
                             [`${field.fieldName}_${operator}`]: field.typeMeta.name,
@@ -644,7 +661,6 @@ function createRelationshipFields({
                 );
             });
 
-            // eslint-disable-next-line consistent-return
             return aggregationInput;
         });
 
@@ -665,9 +681,18 @@ function createRelationshipFields({
 
         whereInput.addFields({
             ...{
-                [rel.fieldName]: `${n.name}Where`,
-                [`${rel.fieldName}_NOT`]: `${n.name}Where`,
-                [`${rel.fieldName}Aggregate`]: whereAggregateInput,
+                [rel.fieldName]: {
+                    type: `${n.name}Where`,
+                    directives: deprecatedDirectives,
+                },
+                [`${rel.fieldName}_NOT`]: {
+                    type: `${n.name}Where`,
+                    directives: deprecatedDirectives,
+                },
+                [`${rel.fieldName}Aggregate`]: {
+                    type: whereAggregateInput,
+                    directives: deprecatedDirectives,
+                },
             },
         });
 
@@ -684,6 +709,7 @@ function createRelationshipFields({
                             description: `Return ${pluralize(sourceName)} where ${
                                 filter !== "SINGLE" ? filter.toLowerCase() : "one"
                             } of the related ${pluralize(rel.typeMeta.name)} match this filter`,
+                            directives: deprecatedDirectives,
                         },
                     }),
                     {}
@@ -691,12 +717,22 @@ function createRelationshipFields({
             );
 
             // Deprecate existing filters
-            whereInput.setFieldDirectiveByName(rel.fieldName, "deprecated", {
-                reason: `Use \`${rel.fieldName}_SOME\` instead.`,
-            });
-            whereInput.setFieldDirectiveByName(`${rel.fieldName}_NOT`, "deprecated", {
-                reason: `Use \`${rel.fieldName}_NONE\` instead.`,
-            });
+            whereInput.setFieldDirectives(rel.fieldName, [
+                {
+                    name: "deprecated",
+                    args: {
+                        reason: `Use \`${rel.fieldName}_SOME\` instead.`,
+                    },
+                },
+            ]);
+            whereInput.setFieldDirectives(`${rel.fieldName}_NOT`, [
+                {
+                    name: "deprecated",
+                    args: {
+                        reason: `Use \`${rel.fieldName}_NONE\` instead.`,
+                    },
+                },
+            ]);
         }
 
         const createName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}CreateFieldInput`;
@@ -744,6 +780,7 @@ function createRelationshipFields({
                     type: rel.typeMeta.pretty,
                     args: nodeFieldsArgs,
                     description: rel.description,
+                    directives: graphqlDirectivesToCompose(rel.otherDirectives),
                 },
             });
 
@@ -767,6 +804,7 @@ function createRelationshipFields({
                     [`${rel.fieldName}Aggregate`]: {
                         type: aggregationTypeObject,
                         args: aggregationFieldsArgs,
+                        directives: deprecatedDirectives,
                     },
                 });
             }
@@ -838,29 +876,47 @@ function createRelationshipFields({
         }
 
         nodeRelationInput.addFields({
-            [rel.fieldName]: create,
+            [rel.fieldName]: {
+                type: create,
+                directives: deprecatedDirectives,
+            },
         });
 
         if (!(composeNode instanceof InterfaceTypeComposer)) {
             nodeCreateInput.addFields({
-                [rel.fieldName]: nodeFieldInputName,
+                [rel.fieldName]: {
+                    type: nodeFieldInputName,
+                    directives: deprecatedDirectives,
+                },
             });
         }
 
         nodeUpdateInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldUpdateInputName}!]` : nodeFieldUpdateInputName,
+            [rel.fieldName]: {
+                type: rel.typeMeta.array ? `[${nodeFieldUpdateInputName}!]` : nodeFieldUpdateInputName,
+                directives: deprecatedDirectives,
+            },
         });
 
         nodeDeleteInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
+            [rel.fieldName]: {
+                type: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
+                directives: deprecatedDirectives,
+            },
         });
 
         nodeConnectInput.addFields({
-            [rel.fieldName]: connect,
+            [rel.fieldName]: {
+                type: connect,
+                directives: deprecatedDirectives,
+            },
         });
 
         nodeDisconnectInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldDisconnectInputName}!]` : nodeFieldDisconnectInputName,
+            [rel.fieldName]: {
+                type: rel.typeMeta.array ? `[${nodeFieldDisconnectInputName}!]` : nodeFieldDisconnectInputName,
+                directives: deprecatedDirectives,
+            },
         });
 
         if (n.uniqueFields.length) {

@@ -30,8 +30,8 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
         super({
             session() {
                 return {
-                    close() {},
-                    lastBookmark() {},
+                    close: () => true,
+                    lastBookmark: () => [],
                 };
             },
             ...newOptions,
@@ -59,7 +59,7 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
                     beginTransaction: () => {
                         return {
                             run: runMock,
-                            commit() {},
+                            commit: () => true,
                         } as unknown as Transaction;
                     },
                     readTransaction: (cb: any) => {
@@ -68,8 +68,8 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
                     writeTransaction: (cb: any) => {
                         return cb({ run: runMock });
                     },
-                    close() {},
-                    lastBookmark() {},
+                    close: () => true,
+                    lastBookmark: () => [],
                 } as unknown as Session;
             },
         });

@@ -19,6 +19,7 @@
 
 import { GraphQLEnumType } from "graphql";
 
+/** Deprecated in favour of @populatedBy */
 export const CallbackOperationEnum = new GraphQLEnumType({
     name: "CallbackOperation",
     description: "*For use in the @callback directive only*",

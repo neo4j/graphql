@@ -28,6 +28,10 @@ jobs:
         with:
           fail_on_error: true
           eslint_flags: "."
+          node_options: "--max_old_space_size=4096"
+
+  code-scanning:
+    uses: ./.github/workflows/reusable-codeql-analysis.yml
 
   package-tests:
     uses: ./.github/workflows/reusable-package-tests.yml
@@ -44,7 +48,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@b2feaf19c27470162a626bd6fa8438ae5b263721 # renovate: tag=v2.10.2
+      - uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50 # tag=v2.11.1
         id: filter
         with:
           list-files: shell
@@ -71,6 +75,9 @@ jobs:
   unit-tests:
     uses: ./.github/workflows/reusable-unit-tests.yml
 
+  cypher-builder-tests:
+    uses: ./.github/workflows/reusable-cypher-builder-tests.yml
+
   e2e-tests-plugins:
     uses: ./.github/workflows/reusable-subscriptions-plugin-amqp-e2e-test.yml
 
@@ -89,6 +96,7 @@ jobs:
   quality-gate:
     needs:
       - reviewdog-eslint
+      - code-scanning
       - package-tests
       - neo-push-tests
       - license-header-check

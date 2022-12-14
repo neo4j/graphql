@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import { getOrCreateCypherVariable } from "../../utils/get-or-create-cypher-variable";
 import type { PointField } from "../../../types";
-import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 
 export default function createPointElement({
     resolveTree,
@@ -32,34 +33,34 @@ export default function createPointElement({
 }): string {
     const expression = createPointExpression({ resolveTree, field, variable });
 
-    const cypherClause = new CypherBuilder.RawCypher((env) => {
+    const cypherClause = new Cypher.RawCypher((env) => {
         return expression.getCypher(env);
     });
     const { cypher } = cypherClause.build("p_");
     return `${resolveTree.alias}: (${cypher})`;
 }
 
-function createPointExpression({
+export function createPointExpression({
     resolveTree,
     field,
     variable,
 }: {
     resolveTree: ResolveTree;
     field: PointField;
-    variable: string;
-}): CypherBuilder.Expr {
+    variable: string | Cypher.Variable;
+}): Cypher.Expr {
     const isArray = field.typeMeta.array;
 
     const { crs, ...point } = resolveTree.fieldsByTypeName[field.typeMeta.name];
     const dbFieldName = field.dbPropertyName || resolveTree.name;
 
-    const CypherVariable = new CypherBuilder.NamedVariable(variable);
+    const CypherVariable = getOrCreateCypherVariable(variable);
 
     // Sadly need to select the whole point object due to the risk of height/z
     // being selected on a 2D point, to which the database will throw an error
-    let caseResult: CypherBuilder.Expr;
+    let caseResult: Cypher.Expr;
     if (isArray) {
-        const projectionVar = new CypherBuilder.Variable();
+        const projectionVar = new Cypher.Variable();
 
         const projectionMap = createPointProjectionMap({
             variableOrProperty: projectionVar,
@@ -67,7 +68,7 @@ function createPointExpression({
             point,
         });
 
-        caseResult = new CypherBuilder.ListComprehension(projectionVar)
+        caseResult = new Cypher.ListComprehension(projectionVar)
             .in(CypherVariable.property(dbFieldName))
             .map(projectionMap);
     } else {
@@ -78,10 +79,10 @@ function createPointExpression({
         });
     }
 
-    return new CypherBuilder.Case()
-        .when(CypherBuilder.isNotNull(CypherVariable.property(dbFieldName)))
+    return new Cypher.Case()
+        .when(Cypher.isNotNull(CypherVariable.property(dbFieldName)))
         .then(caseResult)
-        .else(CypherBuilder.Null);
+        .else(Cypher.Null);
 }
 
 function createPointProjectionMap({
@@ -89,11 +90,11 @@ function createPointProjectionMap({
     crs,
     point,
 }: {
-    variableOrProperty: CypherBuilder.Variable | CypherBuilder.PropertyRef;
+    variableOrProperty: Cypher.Variable | Cypher.PropertyRef;
     crs: unknown;
     point: unknown;
-}): CypherBuilder.Map {
-    const projectionMap = new CypherBuilder.Map();
+}): Cypher.Map {
+    const projectionMap = new Cypher.Map();
     if (point) {
         projectionMap.set({ point: variableOrProperty });
     }

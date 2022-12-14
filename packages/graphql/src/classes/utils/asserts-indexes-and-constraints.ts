@@ -22,6 +22,7 @@ import Debug from "debug";
 import type Node from "../Node";
 import type { DriverConfig } from "../..";
 import { DEBUG_EXECUTE } from "../../constants";
+import type { Neo4jDatabaseInfo } from "../Neo4jDatabaseInfo";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -29,7 +30,15 @@ export interface AssertIndexesAndConstraintsOptions {
     create?: boolean;
 }
 
-async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; session: Session }) {
+async function createIndexesAndConstraints({
+    nodes,
+    session,
+    dbInfo,
+}: {
+    nodes: Node[];
+    session: Session;
+    dbInfo: Neo4jDatabaseInfo;
+}) {
     const constraintsToCreate: { constraintName: string; label: string; property: string }[] = [];
     const indexesToCreate: { indexName: string; label: string; properties: string[] }[] = [];
 
@@ -69,7 +78,12 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
 
         if (node.fulltextDirective) {
             node.fulltextDirective.indexes.forEach((index) => {
-                const existingIndex = existingIndexes[index.name];
+                // TODO: remove indexName assignment and undefined check once the name argument has been removed.
+                const indexName = index.indexName || index.name;
+                if (indexName === undefined) {
+                    throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+                }
+                const existingIndex = existingIndexes[indexName];
                 if (!existingIndex) {
                     const properties = index.fields.map((field) => {
                         const stringField = node.primitiveFields.find((f) => f.fieldName === field);
@@ -78,7 +92,7 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
                     });
 
                     indexesToCreate.push({
-                        indexName: index.name,
+                        indexName: indexName,
                         label: node.getMainLabel(),
                         properties,
                     });
@@ -92,7 +106,7 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
                             const aliasError = stringField?.dbPropertyName ? ` aliased to field '${fieldName}''` : "";
 
                             indexErrors.push(
-                                `@fulltext index '${index.name}' on Node '${node.name}' already exists, but is missing field '${field}'${aliasError}`
+                                `@fulltext index '${indexName}' on Node '${node.name}' already exists, but is missing field '${field}'${aliasError}`
                             );
                         }
                     });
@@ -108,13 +122,12 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
     for (const constraintToCreate of constraintsToCreate) {
         const cypher = [
             `CREATE CONSTRAINT ${constraintToCreate.constraintName}`,
-            `IF NOT EXISTS ON (n:${constraintToCreate.label})`,
-            `ASSERT n.${constraintToCreate.property} IS UNIQUE`,
+            `IF NOT EXISTS ${dbInfo.gte("4.4") ? "FOR" : "ON"} (n:${constraintToCreate.label})`,
+            `${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} n.${constraintToCreate.property} IS UNIQUE`,
         ].join(" ");
 
         debug(`About to execute Cypher: ${cypher}`);
 
-        // eslint-disable-next-line no-await-in-loop
         const result = await session.run(cypher);
 
         const { constraintsAdded } = result.summary.counters.updates();
@@ -131,7 +144,6 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
 
         debug(`About to execute Cypher: ${cypher}`);
 
-        // eslint-disable-next-line no-await-in-loop
         await session.run(cypher);
 
         debug(`Created @fulltext index ${indexToCreate.indexName}`);
@@ -204,9 +216,14 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
     nodes.forEach((node) => {
         if (node.fulltextDirective) {
             node.fulltextDirective.indexes.forEach((index) => {
-                const existingIndex = existingIndexes[index.name];
+                // TODO: remove indexName assignment and undefined check once the name argument has been removed.
+                const indexName = index.indexName || index.name;
+                if (indexName === undefined) {
+                    throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+                }
+                const existingIndex = existingIndexes[indexName];
                 if (!existingIndex) {
-                    indexErrors.push(`Missing @fulltext index '${index.name}' on Node '${node.name}'`);
+                    indexErrors.push(`Missing @fulltext index '${indexName}' on Node '${node.name}'`);
 
                     return;
                 }
@@ -220,7 +237,7 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
                         const aliasError = stringField?.dbPropertyName ? ` aliased to field '${fieldName}''` : "";
 
                         indexErrors.push(
-                            `@fulltext index '${index.name}' on Node '${node.name}' is missing field '${field}'${aliasError}`
+                            `@fulltext index '${indexName}' on Node '${node.name}' is missing field '${field}'${aliasError}`
                         );
                     }
                 });
@@ -240,11 +257,13 @@ async function assertIndexesAndConstraints({
     driverConfig,
     nodes,
     options,
+    dbInfo,
 }: {
     driver: Driver;
     driverConfig?: DriverConfig;
     nodes: Node[];
     options?: AssertIndexesAndConstraintsOptions;
+    dbInfo: Neo4jDatabaseInfo;
 }): Promise<void> {
     await driver.verifyConnectivity();
 
@@ -267,7 +286,7 @@ async function assertIndexesAndConstraints({
 
     try {
         if (options?.create) {
-            await createIndexesAndConstraints({ nodes, session });
+            await createIndexesAndConstraints({ nodes, session, dbInfo });
         } else {
             await checkIndexesAndConstraints({ nodes, session });
         }

@@ -1,8 +1,6 @@
 [[create]]
 = Create Subscriptions
 
-WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
-
 Subscriptions to `CREATE` events will listen to newly created nodes. A new event will be triggered for each new node.
 The event will contain the node's properties.
 
@@ -38,22 +36,3 @@ subscription {
     }
 }
 ```
-
-== Using `where`
-Basic filtering of events can be done with the `where` parameter. This lets you filter on top-level properties of the created nodes.
-Only events matching these properties and type will be returned to this subscription.
-
-=== Example
-Assuming the same type definitions as before, we can filter our movies by their genre:
-
-```graphql
-movieCreated(where: {genre: "Drama"}) {
-    createdMovie {
-        title
-    }
-}
-```
-
-This way, only newly created movies with the genre `"Drama"` will trigger events to this subscription.
-
-NOTE: Where will only filter by properties set at the moment of creation.

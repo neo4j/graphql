@@ -578,6 +578,7 @@ CREATE (user6)-[:LIKES]->(Brooke)
 CREATE (user6)-[:LIKES]->(JohnnyMnemonic)
 CREATE (user6)-[:LIKES]->(CloudAtlas)
 
+// Dummy movies with one actor
 CREATE (m:Movie {name: "Sharknado", released: 2013})
 WITH *
 UNWIND range(0, 1000) AS x
@@ -586,7 +587,7 @@ CREATE (m2:Movie {name: "Sharknado "+x, released: 2013})
 CREATE (p)-[:ACTED_IN]->(m)
 CREATE (p)-[:ACTED_IN]->(m2)
 
-
+// Interesting union interactions
 CREATE (keanu)-[:LIKES]->(TheMatrix)
 CREATE (keanu)-[:LIKES]->(Keanu)
 
@@ -631,11 +632,28 @@ CREATE (JohnC)-[:LIKES]->(CloudAtlas)
 
 `;
 
+const indexQuery = `
+
+CREATE FULLTEXT INDEX MovieTaglineFulltextIndex
+IF NOT EXISTS FOR (n:Movie)
+ON EACH [n.tagline]
+
+`;
+
+const deleteIndexQuery = `
+
+CALL apoc.schema.assert({},{},true) YIELD label, key
+RETURN *
+
+`;
+
 export async function cleanDatabase(session: Session): Promise<void> {
     await session.run("MATCH (N) DETACH DELETE N");
+    await session.run(deleteIndexQuery);
 }
 
 export async function setupDatabase(session: Session): Promise<void> {
     await cleanDatabase(session);
     await session.run(cypherQuery);
+    await session.run(indexQuery);
 }
