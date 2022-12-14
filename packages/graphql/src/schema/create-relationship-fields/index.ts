@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type { Directive, InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { Node } from "../../classes";
@@ -768,20 +768,23 @@ function createRelationshipFields({
         });
 
         if (!rel.writeonly) {
-            const nodeFieldsBaseArgs = {
-                where: `${rel.typeMeta.name}Where`,
-                options: `${rel.typeMeta.name}Options`,
+            const relationshipField: { type: string; description?: string; directives: Directive[]; args?: any } = {
+                type: rel.typeMeta.pretty,
+                description: rel.description,
+                directives: graphqlDirectivesToCompose(rel.otherDirectives),
             };
 
-            const nodeFieldsArgs = addDirectedArgument(nodeFieldsBaseArgs, rel);
+            if (rel.typeMeta.array) {
+                const nodeFieldsBaseArgs = {
+                    where: `${rel.typeMeta.name}Where`,
+                    options: `${rel.typeMeta.name}Options`,
+                };
+                const nodeFieldsArgs = addDirectedArgument(nodeFieldsBaseArgs, rel);
+                relationshipField.args = nodeFieldsArgs;
+            }
 
             composeNode.addFields({
-                [rel.fieldName]: {
-                    type: rel.typeMeta.pretty,
-                    args: nodeFieldsArgs,
-                    description: rel.description,
-                    directives: graphqlDirectivesToCompose(rel.otherDirectives),
-                },
+                [rel.fieldName]: relationshipField,
             });
 
             if (composeNode instanceof ObjectTypeComposer) {

@@ -808,7 +808,7 @@ describe("Interface Relationships", () => {
 
             type Episode {
               runtime: Int!
-              series(directed: Boolean = true, options: SeriesOptions, where: SeriesWhere): Series!
+              series: Series!
               seriesAggregate(directed: Boolean = true, where: SeriesWhere): EpisodeSeriesSeriesAggregationSelection
               seriesConnection(after: String, directed: Boolean = true, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
             }
@@ -2796,11 +2796,11 @@ describe("Interface Relationships", () => {
 
             type Comment implements Content {
               content: String
-              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
+              creator: User!
               creatorAggregate(directed: Boolean = true, where: UserWhere): CommentUserCreatorAggregationSelection
               creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
-              post(directed: Boolean = true, options: PostOptions, where: PostWhere): Post!
+              post: Post!
               postAggregate(directed: Boolean = true, where: PostWhere): CommentPostPostAggregationSelection
               postConnection(after: String, directed: Boolean = true, first: Int, sort: [CommentPostConnectionSort!], where: CommentPostConnectionWhere): CommentPostConnection!
             }
@@ -3067,7 +3067,7 @@ describe("Interface Relationships", () => {
 
             interface Content {
               content: String
-              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
+              creator: User!
               creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
             }
@@ -3327,7 +3327,7 @@ describe("Interface Relationships", () => {
               commentsAggregate(directed: Boolean = true, where: CommentWhere): PostCommentCommentsAggregationSelection
               commentsConnection(after: String, directed: Boolean = true, first: Int, sort: [PostCommentsConnectionSort!], where: PostCommentsConnectionWhere): PostCommentsConnection!
               content: String
-              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
+              creator: User!
               creatorAggregate(directed: Boolean = true, where: UserWhere): PostUserCreatorAggregationSelection
               creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
