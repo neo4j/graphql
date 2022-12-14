@@ -24,7 +24,13 @@ type Author {
 type Book {
     name: String!
     year: Int
+    soldCopies: @cypher(statement: "OPTIONAL MATCH (this)<-[:SOLD]-(s:Sales) RETURN count(this)")
     authors: [Author!]! @relationship(type: "AUTHORED_BOOK", direction: IN)
+}
+
+type Sales {
+    price: Int
+    date: DateTime @DateTime()
 }
 ```
 
@@ -50,7 +56,78 @@ RETURN this {
 
 The current library behavior makes it not possible to filter an Author based on the property `lastPublishedYear` as the property is evaluated only in the `RETURN` statement.
 
-## Proposed Solution
+## Experimental Solution
+
+This solution rely on the rfc-028-cypher-directive-subquery alternative `columnName` solution,
+Changing the typeDefinition in compliance with the rfc-028 as:
+
+```graphql
+type Author {
+    name: String
+    mostRecentBook: Book
+        @cypher(statement: "MATCH (this)-[:AUTHORED_BOOK]->(b:Book) RETURN b ORDER BY b.year DESC LIMIT 1")
+    lastPublishedYear: Int
+        @cypher(statement: "MATCH (this)-[:AUTHORED_BOOK]->(b:Book) RETURN b.year ORDER BY b.year DESC LIMIT 1")
+    books: [Book!]! @relationship(type: "AUTHORED_BOOK", direction: OUT)
+}
+
+type Book {
+    name: String!
+    year: Int
+    soldCopies: @cypher(statement: "OPTIONAL MATCH (this)<-[:SOLD]-(s:Sales) RETURN count(this)")
+    authors: [Author!]! @relationship(type: "AUTHORED_BOOK", direction: IN)
+}
+
+type Sales {
+    price: Int
+}
+```
+The following GraphQL query:
+
+```graphql
+query Authors {
+  authors(where: {
+    name: "Simone"
+  }) {
+    name
+    lastPublishedYear
+  }
+}
+```
+
+produces:
+
+```cypher
+MATCH (this:`Author`)
+WHERE this.name = "Simone"
+CALL {
+    WITH this
+    CALL {
+        WITH this
+        MATCH (this)-[:AUTHORED_BOOK]->(b:Book) RETURN b.year AS result ORDER BY b.year DESC LIMIT 1
+    }
+    UNWIND result AS this_lastPublishedYear
+    
+    RETURN head(collect(this_lastPublishedYear)) AS this_lastPublishedYear
+}
+RETURN this { .name, lastPublishedYear: this_lastPublishedYear } AS this
+```
+
+There are some considerations to do to support filtering on the field `lastPublishedYear`:
+
+- Currently `@cypher` fields are computed only when these are present in the `SelectionSet` this has to be changed to support filtering,
+as they need to be computed also for filters.
+- The `WHERE` statement cannot be applied directly after the `CALL` statement, but instead should be applied to an extra `WITH` statement.
+- It will be no possible to apply the filter separately as it will translated logically to an `AND` predicates between `@cypher` fields and not.
+
+
+
+
+
+
+
+
+## No Experimental Solution
 
 This RFC proposes to support filtering on scalar fields evaluated with the directive `@cypher`.
 
