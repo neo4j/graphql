@@ -1,5 +1,11 @@
 # @neo4j/cypher-builder
 
+## 0.1.8
+
+### Patch Changes
+
+-   [#2545](https://github.com/neo4j/graphql/pull/2545) [`2d2cb2e42`](https://github.com/neo4j/graphql/commit/2d2cb2e42dc0d495b944fa5a49abed8e4c0892e5) Thanks [@angrykoala](https://github.com/angrykoala)! - Support for UNWIND statement after CALL { ... }
+
 ## 0.1.7
 
 ### Patch Changes
