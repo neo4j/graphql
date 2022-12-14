@@ -110,10 +110,10 @@ describe("Field Level Aggregations", () => {
             CALL {
                 WITH this
                 MATCH (this_actorsAggregate_this1:\`Actor\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
-                WITH this_actorsAggregate_this1 as this_actorsAggregate_this1
+                WITH this_actorsAggregate_this1
                 ORDER BY size(this_actorsAggregate_this1.name) DESC
-                WITH collect(this_actorsAggregate_this1.name) as list
-                RETURN {longest: head(list), shortest: last(list)} AS this_actorsAggregate_var3
+                WITH collect(this_actorsAggregate_this1.name) AS list
+                RETURN { longest: head(list), shortest: last(list) } AS this_actorsAggregate_var3
             }
             RETURN this { actorsAggregate: { count: this_actorsAggregate_var2, node: { name: this_actorsAggregate_var3 } } } AS this"
         `);
@@ -149,7 +149,7 @@ describe("Field Level Aggregations", () => {
             CALL {
                 WITH this
                 MATCH (this_actorsAggregate_this0:\`Actor\`)-[this_actorsAggregate_this1:ACTED_IN]->(this)
-                RETURN {min: min(this_actorsAggregate_this0.age), max: max(this_actorsAggregate_this0.age), average: avg(this_actorsAggregate_this0.age), sum: sum(this_actorsAggregate_this0.age)}  AS this_actorsAggregate_var2
+                RETURN { min: min(this_actorsAggregate_this0.age), max: max(this_actorsAggregate_this0.age), average: avg(this_actorsAggregate_this0.age), sum: sum(this_actorsAggregate_this0.age) }  AS this_actorsAggregate_var2
             }
             RETURN this { actorsAggregate: { node: { age: this_actorsAggregate_var2 } } } AS this"
         `);
@@ -184,10 +184,10 @@ describe("Field Level Aggregations", () => {
             CALL {
                 WITH this
                 MATCH (this_actorsAggregate_this0:\`Actor\`)-[this_actorsAggregate_this1:ACTED_IN]->(this)
-                WITH this_actorsAggregate_this0 as this_actorsAggregate_this0
+                WITH this_actorsAggregate_this0
                 ORDER BY size(this_actorsAggregate_this0.name) DESC
-                WITH collect(this_actorsAggregate_this0.name) as list
-                RETURN {longest: head(list), shortest: last(list)} AS this_actorsAggregate_var2
+                WITH collect(this_actorsAggregate_this0.name) AS list
+                RETURN { longest: head(list), shortest: last(list) } AS this_actorsAggregate_var2
             }
             RETURN this { .title, actorsAggregate: { node: { name: this_actorsAggregate_var2 } } } AS this"
         `);

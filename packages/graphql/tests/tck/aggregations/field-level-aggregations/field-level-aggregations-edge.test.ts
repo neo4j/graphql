@@ -79,7 +79,7 @@ describe("Field Level Aggregations", () => {
             CALL {
                 WITH this
                 MATCH (this_actorsAggregate_this1:\`Actor\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
-                RETURN {min: min(this_actorsAggregate_this0.screentime), max: max(this_actorsAggregate_this0.screentime), average: avg(this_actorsAggregate_this0.screentime), sum: sum(this_actorsAggregate_this0.screentime)}  AS this_actorsAggregate_var2
+                RETURN { min: min(this_actorsAggregate_this0.screentime), max: max(this_actorsAggregate_this0.screentime), average: avg(this_actorsAggregate_this0.screentime), sum: sum(this_actorsAggregate_this0.screentime) }  AS this_actorsAggregate_var2
             }
             RETURN this { actorsAggregate: { edge: { screentime: this_actorsAggregate_var2 } } } AS this"
         `);
