@@ -399,7 +399,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const typeDefs = `
                 type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
-                    iri: Int!
+                    someIntProperty: Int!
                     title: String! @unique
                 }
             `;
@@ -439,7 +439,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const additionalType = generateUniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
-                    iri: Int!
+                    someIntProperty: Int!
                     title: String! @unique
                 }
             `;
@@ -483,6 +483,89 @@ describe("assertIndexesAndConstraints/unique", () => {
                             record.labelsOrTypes.includes(additionalType.name) && record.properties.includes("title")
                     )
                 ).toHaveLength(1);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should not allow creating duplicate @unique properties when constraint is on an additional label", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            const baseType = generateUniqueType("Base");
+            const additionalType = generateUniqueType("Additional");
+            const typeDefs = `
+                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
+                    someStringProperty: String! @unique @alias(property: "someAlias")
+                    title: String!
+                }
+            `;
+
+            const createConstraintCypher = `
+                CREATE CONSTRAINT ${baseType.name}_unique_someAlias FOR (r:${additionalType.name})
+                REQUIRE r.someAlias IS UNIQUE;
+            `;
+
+            const session = driver.session({ database: databaseName });
+
+            try {
+                await session.run(createConstraintCypher);
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const generatedSchema = await neoSchema.getSchema();
+
+                const mutation = `
+                    mutation {
+                        ${baseType.operations.create}(input: [
+                            {
+                                someStringProperty: "notUnique",
+                                title: "someTitle"
+                            },
+                            {
+                                someStringProperty: "notUnique",
+                                title: "someTitle2"
+                            },
+                        ]) {
+                            ${baseType.plural} {
+                                someStringProperty
+                            }
+                        }
+                    }
+                `;
+
+                const query = `
+                    query {
+                        ${baseType.plural} {
+                            someStringProperty
+                        }
+                    }
+                `;
+
+                const mutationGqlResult = await graphql({
+                    schema: generatedSchema,
+                    source: mutation,
+                    contextValue: {
+                        driver,
+                        driverConfig: { database: databaseName },
+                    },
+                });
+
+                const queryGqlResult = await graphql({
+                    schema: generatedSchema,
+                    source: query,
+                    contextValue: {
+                        driver,
+                        driverConfig: { database: databaseName },
+                    },
+                });
+
+                expect((mutationGqlResult?.errors as any[])[0].message).toBe("Constraint validation failed");
+
+                expect(queryGqlResult.errors).toBeFalsy();
+                expect(queryGqlResult.data?.[baseType.plural]).toBeArrayOfSize(0);
             } finally {
                 await session.close();
             }
@@ -859,14 +942,14 @@ describe("assertIndexesAndConstraints/unique", () => {
             const additionalType = generateUniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                    iri: ID! @id @alias(property: "uri")
+                    someIdProperty: ID! @id @alias(property: "someAlias")
                     title: String!
                 }
             `;
 
             const createConstraintCypher = `
-                CREATE CONSTRAINT ${baseType.name}_unique_uri FOR (r:${additionalType.name})
-                REQUIRE r.uri IS UNIQUE;
+                CREATE CONSTRAINT ${baseType.name}_unique_someAlias FOR (r:${additionalType.name})
+                REQUIRE r.someAlias IS UNIQUE;
             `;
 
             const session = driver.session({ database: databaseName });
@@ -899,14 +982,14 @@ describe("assertIndexesAndConstraints/unique", () => {
             const additionalType = generateUniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                    iri: ID! @id @alias(property: "uri")
+                    someIdProperty: ID! @id @alias(property: "someAlias")
                     title: String!
                 }
             `;
 
             const createConstraintCypher = `
-                CREATE CONSTRAINT ${baseType.name}_unique_uri FOR (r:${additionalType.name})
-                REQUIRE r.uri IS UNIQUE;
+                CREATE CONSTRAINT ${baseType.name}_unique_someAlias FOR (r:${additionalType.name})
+                REQUIRE r.someAlias IS UNIQUE;
             `;
 
             const showConstraintsCypher = "SHOW UNIQUE CONSTRAINTS";
@@ -933,14 +1016,16 @@ describe("assertIndexesAndConstraints/unique", () => {
 
                 expect(
                     dbConstraintsResult.filter(
-                        (record) => record.labelsOrTypes.includes(baseType.name) && record.properties.includes("uri")
+                        (record) =>
+                            record.labelsOrTypes.includes(baseType.name) && record.properties.includes("someAlias")
                     )
                 ).toHaveLength(0);
 
                 expect(
                     dbConstraintsResult.filter(
                         (record) =>
-                            record.labelsOrTypes.includes(additionalType.name) && record.properties.includes("uri")
+                            record.labelsOrTypes.includes(additionalType.name) &&
+                            record.properties.includes("someAlias")
                     )
                 ).toHaveLength(1);
             } finally {
