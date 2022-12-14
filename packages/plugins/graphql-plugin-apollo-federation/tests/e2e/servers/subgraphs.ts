@@ -70,12 +70,77 @@ async function main() {
     // `;
 
     const locations = gql`
-        extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+        extend schema
+            @link(
+                url: "https://specs.apollo.dev/federation/v2.0"
+                import: [
+                    "@extends"
+                    "@external"
+                    "@inaccessible"
+                    "@key"
+                    "@override"
+                    "@provides"
+                    "@requires"
+                    "@shareable"
+                    "@tag"
+                ]
+            )
 
-        type Product @key(fields: "id") {
+        type Product @key(fields: "id") @key(fields: "sku package") @key(fields: "sku variation { id }") {
             id: ID!
-            name: String
-            price: Int
+            sku: String
+            package: String
+            variation: ProductVariation @relationship(type: "HAS_VARIATION", direction: OUT)
+            dimensions: ProductDimension @relationship(type: "HAS_DIMENSIONS", direction: OUT)
+            createdBy: User @provides(fields: "totalProductsCreated") @relationship(type: "CREATED_BY", direction: OUT)
+            notes: String @tag(name: "internal")
+            research: [ProductResearch!]! @relationship(type: "HAS_RESEARCH", direction: OUT)
+        }
+
+        type DeprecatedProduct @key(fields: "sku package") {
+            sku: String!
+            package: String!
+            reason: String
+            createdBy: User @relationship(type: "CREATED_BY", direction: OUT)
+        }
+
+        type ProductVariation {
+            id: ID!
+        }
+
+        type ProductResearch @key(fields: "study { caseNumber }") {
+            study: CaseStudy! @relationship(type: "HAS_STUDY", direction: OUT)
+            outcome: String
+        }
+
+        type CaseStudy {
+            caseNumber: ID!
+            description: String
+        }
+
+        type ProductDimension @shareable {
+            size: String
+            weight: Float
+            unit: String @inaccessible
+        }
+
+        type Query {
+            product(id: ID!): Product
+                @cypher(statement: "MATCH (product:Product) WHERE product.id = $id RETURN product")
+            deprecatedProduct(sku: String!, package: String!): DeprecatedProduct
+                @deprecated(reason: "Use product query instead")
+                @cypher(
+                    statement: "MATCH (product:DeprecatedProduct) WHERE product.sku = $sku AND product.package = $package = $id RETURN product"
+                )
+        }
+
+        # should be extends
+        type User @key(fields: "email") @extends {
+            averageProductsCreatedPerYear: Int @requires(fields: "totalProductsCreated yearsOfEmployment")
+            email: ID! @external
+            name: String @override(from: "users")
+            totalProductsCreated: Int @external
+            yearsOfEmployment: Int! @external
         }
     `;
 
@@ -96,16 +161,16 @@ async function main() {
     const neo4j = new Neo4j();
     await neo4j.init();
 
-    const locationsSubgraph = new Subgraph(locations, neo4j.driver);
-    const reviewsSubgraph = new Subgraph(reviews, neo4j.driver);
+    const locationsSubgraph = new Subgraph({ typeDefs: locations, driver: neo4j.driver });
+    const reviewsSubgraph = new Subgraph({ typeDefs: reviews, driver: neo4j.driver });
 
     const [locationsSchema, reviewsSchema] = await Promise.all([
         locationsSubgraph.getSchema(),
         reviewsSubgraph.getSchema(),
     ]);
 
-    const locationsServer = new SubgraphServer(locationsSchema, 4000);
-    const reviewsServer = new SubgraphServer(reviewsSchema, 4001);
+    const locationsServer = new SubgraphServer(locationsSchema, 4019);
+    const reviewsServer = new SubgraphServer(reviewsSchema, 4020);
 
     const [locationsUrl, reviewsUrl] = await Promise.all([locationsServer.start(), reviewsServer.start()]);
 

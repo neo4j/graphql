@@ -27,11 +27,12 @@ export class Subgraph {
     plugin: Neo4jGraphQLApolloFederationPlugin;
     library: Neo4jGraphQL;
 
-    constructor(typeDefs: TypeSource, driver: neo4j.Driver) {
+    constructor({ typeDefs, resolvers, driver }: { typeDefs: TypeSource; resolvers?: any; driver: neo4j.Driver }) {
         this.plugin = new Neo4jGraphQLApolloFederationPlugin(typeDefs, driver);
 
         this.library = new Neo4jGraphQL({
             typeDefs,
+            resolvers,
             driver,
             // @ts-ignore: federation slot not yet released
             plugins: { federation: this.plugin },

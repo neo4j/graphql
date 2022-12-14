@@ -50,12 +50,10 @@ export class GatewayServer implements Server {
     public async start(): Promise<string> {
         const { url } = await startStandaloneServer(this.server, { listen: { port: this.port } });
         this.url = url;
-        console.log(`started gateway server on ${url}`);
         return url;
     }
 
     public async stop(): Promise<void> {
         await this.server.stop();
-        console.log(`stopped gateway server running on ${this.url}`);
     }
 }

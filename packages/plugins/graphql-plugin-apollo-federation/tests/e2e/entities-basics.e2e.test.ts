@@ -68,8 +68,8 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
         neo4j = new Neo4j();
         await neo4j.init();
 
-        const productsSubgraph = new Subgraph(products, neo4j.driver);
-        const reviewsSubgraph = new Subgraph(reviews, neo4j.driver);
+        const productsSubgraph = new Subgraph({ typeDefs: products, driver: neo4j.driver });
+        const reviewsSubgraph = new Subgraph({ typeDefs: reviews, driver: neo4j.driver });
 
         const [productsSchema, reviewsSchema] = await Promise.all([
             productsSubgraph.getSchema(),

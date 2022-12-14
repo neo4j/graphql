@@ -80,8 +80,8 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
         neo4j = new Neo4j();
         await neo4j.init();
 
-        const locationsSubgraph = new Subgraph(locations, neo4j.driver);
-        const reviewsSubgraph = new Subgraph(reviews, neo4j.driver);
+        const locationsSubgraph = new Subgraph({ typeDefs: locations, driver: neo4j.driver });
+        const reviewsSubgraph = new Subgraph({ typeDefs: reviews, driver: neo4j.driver });
 
         const [locationsSchema, reviewsSchema] = await Promise.all([
             locationsSubgraph.getSchema(),
