@@ -53,7 +53,7 @@ export function stringAggregationQuery(
         WITH ${targetAliasCypher}
         ORDER BY size(${fieldPathCypher}) DESC
         WITH collect(${fieldPathCypher}) AS list
-        RETURN {longest: head(list), shortest: last(list)} AS ${fieldRef.getCypher(env)}`;
+        RETURN { longest: head(list), shortest: last(list) } AS ${fieldRef.getCypher(env)}`;
     });
 }
 
@@ -68,7 +68,7 @@ export function numberAggregationQuery(
         const fieldPathCypher = fieldPath.getCypher(env);
 
         return dedent`${matchWherePattern.getCypher(env)}
-        RETURN {min: min(${fieldPathCypher}), max: max(${fieldPathCypher}), average: avg(${fieldPathCypher}), sum: sum(${fieldPathCypher})}  AS ${fieldRef.getCypher(
+        RETURN { min: min(${fieldPathCypher}), max: max(${fieldPathCypher}), average: avg(${fieldPathCypher}), sum: sum(${fieldPathCypher}) }  AS ${fieldRef.getCypher(
             env
         )}`;
     });
@@ -85,7 +85,7 @@ export function defaultAggregationQuery(
         const fieldPathCypher = fieldPath.getCypher(env);
 
         return dedent`${matchWherePattern.getCypher(env)}
-        RETURN {min: min(${fieldPathCypher}), max: max(${fieldPathCypher})} AS ${fieldRef.getCypher(env)}`;
+        RETURN { min: min(${fieldPathCypher}), max: max(${fieldPathCypher}) } AS ${fieldRef.getCypher(env)}`;
     });
 }
 
