@@ -62,8 +62,8 @@ describe("Global authentication - Auth JWKS plugin", () => {
         jwksMock = createJWKSMock("https://myAuthTest.auth0.com");
     });
 
-    afterEach(async () => {
-        await jwksMock.stop();
+    afterEach(() => {
+        jwksMock.stop();
     });
 
     test("should fail if no JWT token is present and global authentication is enabled", async () => {

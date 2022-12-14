@@ -199,8 +199,8 @@ class Neo4jGraphQL {
     }
 
     private wrapResolvers(resolvers: IResolvers) {
-        if (!this.schemaModel?.entities) {
-            throw new Error("this.entities is undefined");
+        if (!this.schemaModel) {
+            throw new Error("Schema Model is not defined");
         }
 
         const wrapResolverArgs = {
