@@ -2674,5 +2674,103 @@ describe("@fulltext directive", () => {
                 await session.close();
             }
         });
+
+        test("should not throw if index exists on an additional label", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            const baseType = generateUniqueType("Base");
+            const additionalType = generateUniqueType("Additional");
+            const typeDefs = `
+                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
+                    title: String!
+                }
+            `;
+
+            const createIndexCypher = `
+                CREATE FULLTEXT INDEX ${indexName1}
+                IF NOT EXISTS FOR (n:${additionalType.name})
+                ON EACH [n.title]
+            `;
+
+            const session = driver.session({ database: databaseName });
+
+            try {
+                await session.run(createIndexCypher);
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await neoSchema.getSchema();
+
+                await expect(
+                    neoSchema.assertIndexesAndConstraints({
+                        driver,
+                        driverConfig: { database: databaseName },
+                    })
+                ).resolves.not.toThrow();
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should not create new constraint if constraint exists on an additional label", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            const baseType = generateUniqueType("Base");
+            const additionalType = generateUniqueType("Additional");
+            const typeDefs = `
+                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
+                    title: String!
+                }
+            `;
+
+            const createIndexCypher = `
+                CREATE FULLTEXT INDEX ${indexName1}
+                IF NOT EXISTS FOR (n:${additionalType.name})
+                ON EACH [n.title]
+            `;
+
+            const session = driver.session({ database: databaseName });
+
+            try {
+                await session.run(createIndexCypher);
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await neoSchema.getSchema();
+
+                await expect(
+                    neoSchema.assertIndexesAndConstraints({
+                        driver,
+                        driverConfig: { database: databaseName },
+                        options: { create: true },
+                    })
+                ).resolves.not.toThrow();
+
+                const dbConstraintsResult = (await session.run(indexQueryCypher)).records.map((record) => {
+                    return record.toObject().result;
+                });
+
+                expect(
+                    dbConstraintsResult.filter(
+                        (record) => record.labelsOrTypes.includes(baseType.name) && record.properties.includes("title")
+                    )
+                ).toHaveLength(0);
+
+                expect(
+                    dbConstraintsResult.filter(
+                        (record) =>
+                            record.labelsOrTypes.includes(additionalType.name) && record.properties.includes("title")
+                    )
+                ).toHaveLength(1);
+            } finally {
+                await session.close();
+            }
+        });
     });
 });
