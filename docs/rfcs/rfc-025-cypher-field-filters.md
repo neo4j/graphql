@@ -280,9 +280,17 @@ WHERE (this.name = "Simone" AND all(var in this_mostRecentBooks WHERE var.name =
 RETURN this { .name, mostRecentBooks: this_mostRecentBook } AS this
 ```
 
+## Challenges
+
+To apply filters to the `@cypher` fields, it will be required to have already these resolved.
+It will be efficient to resolve these fields only when are required for some filters or/and are present in the `SelectionSet` rather than resolve these all the time.
+Also changing the translation order of these fields may be not trivial.
+
 ## Risks
 
 -   This solution is relying on the new less used and tested `columnName` feature.
+-   It requires changing the translation order of the `@cypher` fields (no longer at Projection time).
+-   Maintaining some different predicates between `@cypher` field filters and standard filters.
 
 ## Security consideration
 
