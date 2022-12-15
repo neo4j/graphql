@@ -1,5 +1,20 @@
 # @neo4j/graphql
 
+## 3.14.0
+
+### Minor Changes
+
+-   [#2455](https://github.com/neo4j/graphql/pull/2455) [`9d9bea661`](https://github.com/neo4j/graphql/commit/9d9bea6611851dd3ae9912aa0eb29554ed2b0eb0) Thanks [@angrykoala](https://github.com/angrykoala)! - Add columnName argument to @cypher directive
+
+-   [#2551](https://github.com/neo4j/graphql/pull/2551) [`652ebcdba`](https://github.com/neo4j/graphql/commit/652ebcdbadf71c3e55989672eb1064b52b32828e) Thanks [@angrykoala](https://github.com/angrykoala)! - Subscriptions stable release.
+    -   [Documentation](https://neo4j.com/docs/graphql-manual/current/subscriptions/)
+    -   [Examples](https://github.com/neo4j/graphql/tree/dev/examples/subscriptions)
+
+### Patch Changes
+
+-   Updated dependencies [[`2d2cb2e42`](https://github.com/neo4j/graphql/commit/2d2cb2e42dc0d495b944fa5a49abed8e4c0892e5)]:
+    -   @neo4j/cypher-builder@0.1.8
+
 ## 3.13.1
 
 ### Patch Changes

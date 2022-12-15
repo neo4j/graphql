@@ -1,5 +1,16 @@
 # @neo4j/graphql-plugin-subscriptions-amqp
 
+## 1.0.0
+
+### Major Changes
+
+-   [#2551](https://github.com/neo4j/graphql/pull/2551) [`652ebcdba`](https://github.com/neo4j/graphql/commit/652ebcdbadf71c3e55989672eb1064b52b32828e) Thanks [@angrykoala](https://github.com/angrykoala)! - First stable release of @neo4j/graphql subscriptions support and stable release of AMQP plugin
+
+### Patch Changes
+
+-   Updated dependencies [[`9d9bea661`](https://github.com/neo4j/graphql/commit/9d9bea6611851dd3ae9912aa0eb29554ed2b0eb0), [`652ebcdba`](https://github.com/neo4j/graphql/commit/652ebcdbadf71c3e55989672eb1064b52b32828e)]:
+    -   @neo4j/graphql@3.14.0
+
 ## 0.4.0
 
 ### Patch Changes

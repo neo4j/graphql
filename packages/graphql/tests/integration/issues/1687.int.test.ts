@@ -110,14 +110,14 @@ describe("https://github.com/neo4j/graphql/issues/1687", () => {
         const result = await graphqlQuery(query);
         expect(result.errors).toBeUndefined();
         expect(result.data as any).toEqual({
-            [genreType.plural]: [
+            [genreType.plural]: expect.toIncludeSameMembers([
                 {
                     name: "Sci-fi",
                 },
                 {
                     name: "Action",
                 },
-            ],
+            ]),
         });
     });
 });

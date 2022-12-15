@@ -68,14 +68,13 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN any(var2 IN collect(this1.name) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"10\\",
-                \\"param1\\": true
+                \\"param0\\": \\"10\\"
             }"
         `);
     });
@@ -102,14 +101,13 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN any(var2 IN collect(this1.someStringAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"10\\",
-                \\"param1\\": true
+                \\"param0\\": \\"10\\"
             }"
         `);
     });
@@ -136,7 +134,7 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN any(var2 IN collect(size(this1.name)) WHERE var2 > $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -145,8 +143,7 @@ describe("Cypher Aggregations where node with String", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -173,7 +170,7 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN any(var2 IN collect(size(this1.name)) WHERE var2 >= $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -182,8 +179,7 @@ describe("Cypher Aggregations where node with String", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -210,7 +206,7 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN any(var2 IN collect(size(this1.name)) WHERE var2 < $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -219,8 +215,7 @@ describe("Cypher Aggregations where node with String", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -247,7 +242,7 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN any(var2 IN collect(size(this1.name)) WHERE var2 <= $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -256,8 +251,7 @@ describe("Cypher Aggregations where node with String", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -284,7 +278,7 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN min(size(this1.name)) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -293,8 +287,7 @@ describe("Cypher Aggregations where node with String", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -321,7 +314,7 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN min(size(this1.name)) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -330,8 +323,7 @@ describe("Cypher Aggregations where node with String", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -358,7 +350,7 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN min(size(this1.name)) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -367,8 +359,7 @@ describe("Cypher Aggregations where node with String", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -395,7 +386,7 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN min(size(this1.name)) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -404,8 +395,7 @@ describe("Cypher Aggregations where node with String", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -432,7 +422,7 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN min(size(this1.name)) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -441,8 +431,7 @@ describe("Cypher Aggregations where node with String", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -469,7 +458,7 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN max(size(this1.name)) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -478,8 +467,7 @@ describe("Cypher Aggregations where node with String", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -506,7 +494,7 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN max(size(this1.name)) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -515,8 +503,7 @@ describe("Cypher Aggregations where node with String", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -543,7 +530,7 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN max(size(this1.name)) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -552,8 +539,7 @@ describe("Cypher Aggregations where node with String", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -580,7 +566,7 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN max(size(this1.name)) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -589,8 +575,7 @@ describe("Cypher Aggregations where node with String", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -617,7 +602,7 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN max(size(this1.name)) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -626,8 +611,7 @@ describe("Cypher Aggregations where node with String", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -654,14 +638,13 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN avg(size(this1.name)) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -688,14 +671,13 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN avg(size(this1.name)) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -722,14 +704,13 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN avg(size(this1.name)) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -756,14 +737,13 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN avg(size(this1.name)) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -790,14 +770,13 @@ describe("Cypher Aggregations where node with String", () => {
                 RETURN avg(size(this1.name)) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
