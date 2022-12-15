@@ -21,7 +21,7 @@
         "@types/react-dom": "18.0.9",
         "@types/react-router-dom": "5.3.3",
         "@types/showdown": "2.0.0",
-        "css-loader": "6.7.2",
+        "css-loader": "6.7.3",
         "dotenv-webpack": "7.1.1",
         "graphql": "16.6.0",
         "react": "18.2.0",
