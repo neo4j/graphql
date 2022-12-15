@@ -23,8 +23,6 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
-import { whereRegEx, WhereRegexGroups } from "./where/utils";
-import { AggregateWhereInput, aggregateWhere } from "./create-aggregate-where-and-params";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -43,7 +41,7 @@ export function translateTopLevelMatch({
         context,
         operation,
     });
-    if (preComputedWhereFieldSubqueries) {
+    if (preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty) {
         return Cypher.concat(matchClause, preComputedWhereFieldSubqueries, whereClause).build();
     }
     return matchClause.build();
@@ -51,7 +49,7 @@ export function translateTopLevelMatch({
 
 type CreateMatchClauseReturn = {
     matchClause: Cypher.Match | Cypher.db.FullTextQueryNodes;
-    preComputedWhereFieldSubqueries: Cypher.Clause | undefined;
+    preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
     whereClause: Cypher.Match | Cypher.db.FullTextQueryNodes | Cypher.With;
 };
 
@@ -68,7 +66,6 @@ export function createMatchClause({
 }): CreateMatchClauseReturn {
     const { resolveTree } = context;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
-    const withClause: Cypher.With = new Cypher.With("*");
     let matchClause: Cypher.Match | Cypher.db.FullTextQueryNodes = new Cypher.Match(matchNode);
     let whereInput = resolveTree.args.where as GraphQLWhereArg | undefined;
     let whereOperators: Cypher.Predicate[] = [];
@@ -91,31 +88,29 @@ export function createMatchClause({
         whereInput = whereInput?.[node.singular];
     }
 
-    const preComputedWhereFieldSubqueries = preComputedWhereFields(
-        context.resolveTree.args.where as Record<string, any>,
-        node,
-        context,
-        matchNode,
-        withClause
-    );
-
-    const whereClause = preComputedWhereFieldSubqueries ? withClause : matchClause;
-
-    if (whereOperators && whereOperators.length) {
-        const andChecks = Cypher.and(...whereOperators);
-        whereClause.where(andChecks);
-    }
-
+    let whereClause: Cypher.Match | Cypher.db.FullTextQueryNodes | Cypher.With = matchClause;
+    let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
     if (whereInput) {
-        const whereOp = createWherePredicate({
+        const { predicate: whereOp, preComputedSubqueries } = createWherePredicate({
             targetElement: matchNode,
             whereInput,
             context,
             element: node,
-            topLevelWhere: true,
         });
 
+        preComputedWhereFieldSubqueries = preComputedSubqueries;
+
+        whereClause =
+            preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty
+                ? new Cypher.With("*")
+                : matchClause;
+
         if (whereOp) whereClause.where(whereOp);
+    }
+
+    if (whereOperators && whereOperators.length) {
+        const andChecks = Cypher.and(...whereOperators);
+        whereClause.where(andChecks);
     }
 
     const whereAuth = createAuthAndParams({
@@ -179,56 +174,4 @@ function createFulltextMatchClause(
         matchClause,
         whereOperators,
     };
-}
-
-export function preComputedWhereFields(
-    whereInput: Record<string, any> | undefined,
-    node: Node,
-    context: Context,
-    matchNode: Cypher.Variable,
-    withClause: Cypher.Match | Cypher.db.FullTextQueryNodes | Cypher.With
-): Cypher.Clause | undefined {
-    if (!whereInput) {
-        return;
-    }
-    const precomputedClauses: Cypher.Call[] = [];
-    Object.entries(whereInput).forEach(([key, value]) => {
-        const match = whereRegEx.exec(key);
-        if (!match) {
-            throw new Error(`Failed to match key in filter: ${key}`);
-        }
-        const { fieldName, isAggregate } = match?.groups as WhereRegexGroups;
-        const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
-
-        if (isAggregate && relationField) {
-            if (!value) {
-                return;
-            }
-            const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-            const direction = relationField.direction;
-            const aggregationTarget = new Cypher.Node({ labels: refNode.getLabels(context) });
-            const cypherRelation = new Cypher.Relationship({
-                source: matchNode as Cypher.Node,
-                target: aggregationTarget,
-                type: relationField.type,
-            });
-            if (direction === "IN") {
-                cypherRelation.reverse();
-            }
-            const matchQuery = new Cypher.Match(cypherRelation);
-            const { returnProjections, predicates } = aggregateWhere(
-                value as AggregateWhereInput,
-                refNode,
-                aggregationTarget,
-                cypherRelation
-            );
-            matchQuery.return(...returnProjections);
-            withClause.where(Cypher.and(...predicates));
-            precomputedClauses.push(new Cypher.Call(matchQuery).innerWith(matchNode));
-        }
-    });
-    if (!precomputedClauses.length) {
-        return;
-    }
-    return Cypher.concat(...precomputedClauses);
 }

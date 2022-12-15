@@ -42,6 +42,8 @@ import { buildMathStatements, matchMathField, mathDescriptorBuilder } from "./ut
 import { indentBlock } from "./utils/indent-block";
 import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
 import { findConflictingProperties } from "../utils/is-property-clash";
+import Cypher from "@neo4j/cypher-builder";
+import { caseWhere } from "../utils/case-where";
 
 interface Res {
     strs: string[];
@@ -140,10 +142,16 @@ export default function createUpdateAndParams({
 
                     if (update.update) {
                         const whereStrs: string[] = [];
+                        const delayedSubquery: string[] = [];
+                        let aggregationWhere = false;
 
                         if (update.where) {
                             try {
-                                const where = createConnectionWhereAndParams({
+                                const {
+                                    cypher: whereClause,
+                                    subquery: preComputedSubqueries,
+                                    params: whereParams,
+                                } = createConnectionWhereAndParams({
                                     whereInput: update.where,
                                     node: refNode,
                                     nodeVariable: variableName,
@@ -154,10 +162,13 @@ export default function createUpdateAndParams({
                                         relationField.union ? `.${refNode.name}` : ""
                                     }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
                                 });
-                                const [whereClause, whereParams] = where;
                                 if (whereClause) {
                                     whereStrs.push(whereClause);
                                     res.params = { ...res.params, ...whereParams };
+                                    if (preComputedSubqueries) {
+                                        delayedSubquery.push(preComputedSubqueries);
+                                        aggregationWhere = true;
+                                    }
                                 }
                             } catch {
                                 return;
@@ -172,6 +183,7 @@ export default function createUpdateAndParams({
                         subquery.push(
                             `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
                         );
+                        subquery.push(...delayedSubquery);
 
                         if (node.auth) {
                             const whereAuth = createAuthAndParams({
@@ -186,7 +198,18 @@ export default function createUpdateAndParams({
                             }
                         }
                         if (whereStrs.length) {
-                            subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
+                            const predicate = `${whereStrs.join(" AND ")}`;
+                            if (aggregationWhere) {
+                                const columns = [
+                                    new Cypher.NamedVariable(relationshipVariable),
+                                    new Cypher.NamedVariable(variableName),
+                                ];
+                                const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
+                                const { cypher } = caseWhereClause.build("aggregateWhereFilter");
+                                subquery.push(cypher);
+                            } else {
+                                subquery.push(`WHERE ${predicate}`);
+                            }
                         }
 
                         if (update.update.node) {
