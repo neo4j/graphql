@@ -255,6 +255,132 @@ describe("connections sort", () => {
         });
     });
 
+    it("top level connection sort with cypher field", async () => {
+        const query = `
+        query {
+         ${Movie.operations.connection}(first: 2, sort: {title: DESC}) {
+             totalCount
+             edges {
+                 node {
+                     title
+                     actorsConnection {
+                        edges {
+                            node {
+                                name
+                                totalScreenTime
+                            }
+                        }
+                     }
+                    }
+             }
+             pageInfo {
+                 hasNextPage
+                 endCursor
+             }
+         }
+        }
+     `;
+
+        const result = await graphql({
+            schema,
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(result.errors).toBeUndefined();
+        expect(result.data as any).toEqual({
+            [Movie.operations.connection]: {
+                totalCount: 3,
+                edges: [
+                    {
+                        node: {
+                            title: "E",
+                            actorsConnection: {
+                                edges: [],
+                            },
+                        },
+                    },
+                    {
+                        node: {
+                            title: "B",
+                            actorsConnection: {
+                                edges: [
+                                    {
+                                        node: {
+                                            name: actors[1].name,
+                                            totalScreenTime: 1,
+                                        },
+                                    },
+                                    {
+                                        node: {
+                                            name: actors[0].name,
+                                            totalScreenTime: 3,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                ],
+                pageInfo: {
+                    hasNextPage: true,
+                    endCursor: expect.toBeString(),
+                },
+            },
+        });
+    });
+
+    it("top level connection sort with nested cypher field", async () => {
+        const query = `
+        query {
+         ${Movie.operations.connection}(first: 2, sort: {title: DESC}) {
+             totalCount
+             edges {
+                 node {
+                     title
+                     numberOfActors
+                 }
+             }
+             pageInfo {
+                 hasNextPage
+                 endCursor
+             }
+         }
+        }
+     `;
+
+        const result = await graphql({
+            schema,
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(result.errors).toBeUndefined();
+        expect(result.data as any).toEqual({
+            [Movie.operations.connection]: {
+                totalCount: 3,
+                edges: [
+                    {
+                        node: {
+                            title: "E",
+                            numberOfActors: 0,
+                        },
+                    },
+                    {
+                        node: {
+                            title: "B",
+                            numberOfActors: 2,
+                        },
+                    },
+                ],
+                pageInfo: {
+                    hasNextPage: true,
+                    endCursor: expect.toBeString(),
+                },
+            },
+        });
+    });
+
     describe("on interface connection", () => {
         const gqlResultByTypeFromSource = (source: string) => (direction: "ASC" | "DESC") =>
             graphql({

@@ -45,3 +45,21 @@ query ConnectionWithSort {
         }
     }
 }
+
+query ConnectionWithSortAndCypher {
+    moviesConnection(first: 5, sort: { title: ASC, oneActorName: DESC }) {
+        edges {
+            node {
+                title
+                oneActorName
+                actorsConnection {
+                    edges {
+                        node {
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
