@@ -27,6 +27,8 @@ import createRelationshipValidationString from "./create-relationship-validation
 import type { CallbackBucket } from "../classes/CallbackBucket";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import Cypher from "@neo4j/cypher-builder";
+import { caseWhere } from "../utils/case-where";
 
 interface Res {
     connects: string[];
@@ -91,6 +93,7 @@ function createConnectAndParams({
         subquery.push(`\tOPTIONAL MATCH (${nodeName}${label})`);
 
         const whereStrs: string[] = [];
+        let aggregationWhere = false;
         if (connect.where) {
             // If _on is the only where key and it doesn't contain this implementation, don't connect it
             if (
@@ -101,7 +104,7 @@ function createConnectAndParams({
                 return { subquery: "", params: {} };
             }
 
-            const rootNodeWhereAndParams = createWhereAndParams({
+            const [rootNodeWhereCypher, preComputedSubqueries, rootNodeWhereParams] = createWhereAndParams({
                 whereInput: {
                     ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
                         if (k !== "_on") {
@@ -120,14 +123,18 @@ function createConnectAndParams({
                 varName: nodeName,
                 recursing: true,
             });
-            if (rootNodeWhereAndParams[0]) {
-                whereStrs.push(rootNodeWhereAndParams[0]);
-                params = { ...params, ...rootNodeWhereAndParams[1] };
+            if (rootNodeWhereCypher) {
+                whereStrs.push(rootNodeWhereCypher);
+                params = { ...params, ...rootNodeWhereParams };
+                if (preComputedSubqueries) {
+                    subquery.push(preComputedSubqueries);
+                    aggregationWhere = true;
+                }
             }
 
             // For _on filters
             if (connect.where.node?._on?.[relatedNode.name]) {
-                const onTypeNodeWhereAndParams = createWhereAndParams({
+                const [onTypeNodeWhereCypher, preComputedSubqueries, onTypeNodeWhereParams] = createWhereAndParams({
                     whereInput: {
                         ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
                             if (k !== "_on") {
@@ -147,9 +154,13 @@ function createConnectAndParams({
                     chainStr: `${nodeName}_on_${relatedNode.name}`,
                     recursing: true,
                 });
-                if (onTypeNodeWhereAndParams[0]) {
-                    whereStrs.push(onTypeNodeWhereAndParams[0]);
-                    params = { ...params, ...onTypeNodeWhereAndParams[1] };
+                if (onTypeNodeWhereCypher) {
+                    whereStrs.push(onTypeNodeWhereCypher);
+                    params = { ...params, ...onTypeNodeWhereParams };
+                    if (preComputedSubqueries) {
+                        subquery.push(preComputedSubqueries);
+                        aggregationWhere = true;
+                    }
                 }
             }
         }
@@ -168,7 +179,15 @@ function createConnectAndParams({
         }
 
         if (whereStrs.length) {
-            subquery.push(`\tWHERE ${whereStrs.join(" AND ")}`);
+            const predicate = `${whereStrs.join(" AND ")}`;
+            if (aggregationWhere) {
+                const columns = [new Cypher.NamedVariable(nodeName)];
+                const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
+                const { cypher } = caseWhereClause.build("aggregateWhereFilter");
+                subquery.push(cypher);
+            } else {
+                subquery.push(`\tWHERE ${predicate}`);
+            }
         }
 
         const nodeMatrix: Array<{ node: Node; name: string }> = [{ node: relatedNode, name: nodeName }];
@@ -308,6 +327,10 @@ function createConnectAndParams({
             if (relValidationStrs.length) {
                 subquery.push(`\tWITH ${[...filterMetaVariable(withVars), nodeName].join(", ")}${innerMetaStr}`);
                 subquery.push(relValidationStrs.join("\n"));
+
+                if (context.subscriptionsEnabled) {
+                    innerMetaStr = ", meta";
+                }
             }
         }
 

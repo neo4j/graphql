@@ -147,14 +147,37 @@ export function translateCypherDirectiveProjection({
         }
     }
 
-    const runCypherInApocClause = createCypherDirectiveApocProcedure({
-        nodeRef: new Cypher.NamedNode(chainStr),
-        expectMultipleValues,
-        context,
-        field,
-        cypherField,
-    });
-    const unwindClause = new Cypher.Unwind([runCypherInApocClause, param]);
+    let customCypherClause: Cypher.Clause | undefined;
+    const nodeRef = new Cypher.NamedNode(chainStr);
+
+    // Null default argument values are not passed into the resolve tree therefore these are not being passed to
+    // `apocParams` below causing a runtime error when executing.
+    const nullArgumentValues = cypherField.arguments.reduce(
+        (r, argument) => ({
+            ...r,
+            [argument.name.value]: null,
+        }),
+        {}
+    );
+    const extraArgs = { ...nullArgumentValues, ...field.args };
+
+    if (!cypherField.columnName) {
+        const runCypherInApocClause = createCypherDirectiveApocProcedure({
+            nodeRef,
+            expectMultipleValues,
+            context,
+            cypherField,
+            extraArgs,
+        });
+        customCypherClause = new Cypher.Unwind([runCypherInApocClause, param]);
+    } else {
+        customCypherClause = createCypherDirectiveSubquery({
+            cypherField,
+            nodeRef,
+            resultVariable: param,
+            extraArgs,
+        });
+    }
 
     const unionExpression = hasUnionLabelsPredicate ? new Cypher.With("*").where(hasUnionLabelsPredicate) : undefined;
 
@@ -164,9 +187,9 @@ export function translateCypherDirectiveProjection({
         projectionExpr,
     });
 
-    const callSt = new Cypher.Call(Cypher.concat(unwindClause, unionExpression, ...subqueries, returnClause)).innerWith(
-        new Cypher.NamedVariable(chainStr)
-    );
+    const callSt = new Cypher.Call(
+        Cypher.concat(customCypherClause, unionExpression, ...subqueries, returnClause)
+    ).innerWith(new Cypher.NamedVariable(chainStr));
 
     const sortInput = (context.resolveTree.args.sort ??
         (context.resolveTree.args.options as any)?.sort ??
@@ -188,28 +211,18 @@ export function translateCypherDirectiveProjection({
 
 function createCypherDirectiveApocProcedure({
     cypherField,
-    field,
     expectMultipleValues,
     context,
     nodeRef,
+    extraArgs,
 }: {
     cypherField: CypherField;
-    field: ResolveTree;
     expectMultipleValues: boolean;
     context: Context;
     nodeRef: Cypher.Node;
+    extraArgs: Record<string, any>;
 }): Cypher.apoc.RunFirstColumn {
-    // Null default argument values are not passed into the resolve tree therefore these are not being passed to
-    // `apocParams` below causing a runtime error when executing.
-    const nullArgumentValues = cypherField.arguments.reduce(
-        (r, argument) => ({
-            ...r,
-            [argument.name.value]: null,
-        }),
-        {}
-    );
-
-    const rawApocParams = Object.entries({ ...nullArgumentValues, ...field.args });
+    const rawApocParams = Object.entries(extraArgs);
 
     const apocParams: Record<string, Cypher.Param> = rawApocParams.reduce((acc, [key, value]) => {
         acc[key] = new Cypher.Param(value);
@@ -228,6 +241,37 @@ function createCypherDirectiveApocProcedure({
         Boolean(expectMultipleValues)
     );
     return apocClause;
+}
+
+function createCypherDirectiveSubquery({
+    cypherField,
+    nodeRef,
+    resultVariable,
+    extraArgs,
+}: {
+    cypherField: CypherField;
+    nodeRef: Cypher.Node;
+    resultVariable: string;
+    extraArgs: Record<string, any>;
+}): Cypher.Clause {
+    const rawCypher = new Cypher.RawCypher(cypherField.statement);
+    const callClause = new Cypher.Call(rawCypher).innerWith(nodeRef);
+
+    if (cypherField.columnName) {
+        const columnVariable = new Cypher.NamedVariable(cypherField.columnName);
+
+        if (cypherField.isScalar || cypherField.isEnum) {
+            callClause.unwind([columnVariable, resultVariable]);
+        } else {
+            callClause.with([columnVariable, resultVariable]);
+        }
+    }
+    return Cypher.concat(
+        callClause,
+        new Cypher.RawCypher(() => {
+            return ["", extraArgs];
+        })
+    );
 }
 
 function createReturnClause({

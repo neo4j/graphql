@@ -68,7 +68,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN any(var2 IN collect(this1.someInt) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -77,8 +77,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -105,7 +104,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN any(var2 IN collect(this1.someIntAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -114,8 +113,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -142,7 +140,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN any(var2 IN collect(this1.someInt) WHERE var2 > $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -151,8 +149,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -179,7 +176,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN any(var2 IN collect(this1.someInt) WHERE var2 >= $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -188,8 +185,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -216,7 +212,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN any(var2 IN collect(this1.someInt) WHERE var2 < $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -225,8 +221,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -253,7 +248,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN any(var2 IN collect(this1.someInt) WHERE var2 <= $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -262,8 +257,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -290,14 +284,13 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN avg(this1.someInt) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -324,14 +317,13 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN avg(this1.someInt) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -358,14 +350,13 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN avg(this1.someInt) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -392,14 +383,13 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN avg(this1.someInt) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -426,14 +416,13 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN avg(this1.someInt) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": 10,
-                \\"param1\\": true
+                \\"param0\\": 10
             }"
         `);
     });
@@ -460,7 +449,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN sum(this1.someInt) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -469,8 +458,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -497,7 +485,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN sum(this1.someInt) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -506,8 +494,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -534,7 +521,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN sum(this1.someInt) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -543,8 +530,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -571,7 +557,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN sum(this1.someInt) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -580,8 +566,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -608,7 +593,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN sum(this1.someInt) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -617,8 +602,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -645,7 +629,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN min(this1.someInt) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -654,8 +638,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -682,7 +665,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN min(this1.someInt) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -691,8 +674,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -719,7 +701,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN min(this1.someInt) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -728,8 +710,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -756,7 +737,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN min(this1.someInt) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -765,8 +746,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -793,7 +773,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN min(this1.someInt) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -802,8 +782,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -830,7 +809,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN max(this1.someInt) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -839,8 +818,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -867,7 +845,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN max(this1.someInt) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -876,8 +854,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -904,7 +881,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN max(this1.someInt) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -913,8 +890,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -941,7 +917,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN max(this1.someInt) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -950,8 +926,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -978,7 +953,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 RETURN max(this1.someInt) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -987,8 +962,7 @@ describe("Cypher Aggregations where node with Int", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });

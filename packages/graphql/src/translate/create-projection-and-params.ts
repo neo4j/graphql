@@ -262,8 +262,11 @@ export default function createProjectionAndParams({
         });
 
         if (aggregationFieldProjection) {
-            res.projection.push(`${alias}: ${aggregationFieldProjection.query}`);
-            res.params = { ...res.params, ...aggregationFieldProjection.params };
+            if (aggregationFieldProjection.projectionSubqueryCypher) {
+                res.subqueries.push(new Cypher.RawCypher(aggregationFieldProjection.projectionSubqueryCypher));
+            }
+            res.projection.push(`${alias}: ${aggregationFieldProjection.projectionCypher}`);
+            res.params = { ...res.params, ...aggregationFieldProjection.projectionParams };
             return res;
         }
 

@@ -176,9 +176,10 @@ export function translateRead(
         projectionClause = Cypher.concat(withTotalCount, connectionClause, returnClause);
     }
 
-    const preComputedWhereFields = preComputedWhereFieldSubqueries
-        ? Cypher.concat(preComputedWhereFieldSubqueries, topLevelWhereClause)
-        : undefined;
+    const preComputedWhereFields =
+        preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty
+            ? Cypher.concat(preComputedWhereFieldSubqueries, topLevelWhereClause)
+            : undefined;
 
     const readQuery = Cypher.concat(
         topLevelMatch,

@@ -21,7 +21,3 @@ RETURN this { actorsAggregate: { count: count } } as this
 # Test: FieldCountWithSize
 MATCH (this:`Movie`)
 RETURN this { actorsAggregate: { count: size([(this_actorsAggregate_this0:`Person`)-[this_actorsAggregate_this1:ACTED_IN]->(this) | this_actorsAggregate_this0]) } } as this
-
-# Test: FieldCountWithApoc
-MATCH (this:`Movie`)
-RETURN this { actorsAggregate: { count: head(apoc.cypher.runFirstColumn("MATCH (this)<-[r:ACTED_IN]-(n:Person)      RETURN COUNT(n)", { this: this })) } } as this

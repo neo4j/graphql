@@ -170,6 +170,7 @@ export interface ConnectionField extends BaseField {
  */
 export interface CypherField extends BaseField {
     statement: string;
+    columnName?: string;
     isEnum: boolean;
     isScalar: boolean;
 }
@@ -363,6 +364,7 @@ export type InputField = { type: string; defaultValue?: string; directives?: Dir
 export interface Neo4jGraphQLAuthPlugin {
     rolesPath?: string;
     isGlobalAuthenticationEnabled?: boolean;
+    bindPredicate: "all" | "any";
 
     decode<T>(token: string): Promise<T | undefined>;
 }

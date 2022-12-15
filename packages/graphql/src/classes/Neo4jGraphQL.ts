@@ -47,13 +47,6 @@ import { getDocument } from "../schema/get-document";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 
-export interface Neo4jGraphQLJWT {
-    jwksEndpoint?: string;
-    secret?: string | Buffer | { key: string | Buffer; passphrase: string };
-    noVerify?: boolean;
-    rolesPath?: string;
-}
-
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
     enableRegex?: boolean;
@@ -248,8 +241,8 @@ class Neo4jGraphQL {
             throw new Error("No resolvers to wrap");
         }
 
-        if (!this.schemaModel?.entities) {
-            throw new Error("this.entities is undefined");
+        if (!this.schemaModel) {
+            throw new Error("Schema Model is not defined");
         }
 
         const wrapResolverArgs = {
