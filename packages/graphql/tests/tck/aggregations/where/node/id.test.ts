@@ -69,14 +69,13 @@ describe("Cypher Aggregations where node with ID", () => {
                 RETURN any(var2 IN collect(this1.id) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"10\\",
-                \\"param1\\": true
+                \\"param0\\": \\"10\\"
             }"
         `);
     });
@@ -103,14 +102,13 @@ describe("Cypher Aggregations where node with ID", () => {
                 RETURN any(var2 IN collect(this1.someIdAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"10\\",
-                \\"param1\\": true
+                \\"param0\\": \\"10\\"
             }"
         `);
     });

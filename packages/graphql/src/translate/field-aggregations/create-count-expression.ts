@@ -41,7 +41,7 @@ export function createCountExpression({
     field: ResolveTree;
     authCallWhere: Cypher.Predicate | undefined;
     targetNode: Cypher.Node;
-}): Cypher.Expr {
+}): { countProjection: Cypher.Expr; preComputedSubqueries: Cypher.CompositeClause | undefined } {
     const relationship = new Cypher.Relationship({
         source: sourceNode,
         target: targetNode,
@@ -56,7 +56,7 @@ export function createCountExpression({
     const relationshipPattern = relationship.pattern({
         directed: !(direction === "undirected"),
     });
-    const wherePredicate = createWherePredicate({
+    const { predicate: wherePredicate, preComputedSubqueries } = createWherePredicate({
         element: referenceNode,
         context,
         whereInput: (field.args.where as GraphQLWhereArg) || {},
@@ -72,5 +72,5 @@ export function createCountExpression({
         patternComprehension.and(authCallWhere);
     }
 
-    return Cypher.size(patternComprehension);
+    return { countProjection: Cypher.size(patternComprehension), preComputedSubqueries };
 }

@@ -10,7 +10,9 @@
         "docs",
         "packages/*",
         "examples/migration",
+        "examples/neo-place",
         "examples/neo-push/*",
+        "examples/subscriptions/*",
         "packages/plugins/*"
     ],
     "scripts": {
@@ -23,6 +25,7 @@
         "test-docker": "docker-compose up --build --abort-on-container-exit",
         "prepare": "husky install",
         "changeset-version": "changeset version && yarn",
+        "changeset-version-4.0.0": "changeset version --since 4.0.0 && yarn",
         "changeset-version-master": "changeset version --since master && yarn",
         "release": "yarn build && changeset publish"
     },

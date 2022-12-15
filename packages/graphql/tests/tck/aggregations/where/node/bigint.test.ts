@@ -68,7 +68,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN any(var2 IN collect(this1.someBigInt) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -77,8 +77,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -105,7 +104,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN any(var2 IN collect(this1.someBigIntAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -114,8 +113,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -142,7 +140,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN any(var2 IN collect(this1.someBigInt) WHERE var2 > $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -151,8 +149,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -179,7 +176,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN any(var2 IN collect(this1.someBigInt) WHERE var2 >= $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -188,8 +185,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -216,7 +212,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN any(var2 IN collect(this1.someBigInt) WHERE var2 < $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -225,8 +221,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -253,7 +248,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN any(var2 IN collect(this1.someBigInt) WHERE var2 <= $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -262,8 +257,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -290,7 +284,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN avg(this1.someBigInt) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -299,8 +293,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -327,7 +320,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN avg(this1.someBigInt) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -336,8 +329,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -364,7 +356,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN avg(this1.someBigInt) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -373,8 +365,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -401,7 +392,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN avg(this1.someBigInt) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -410,8 +401,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -438,7 +428,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN avg(this1.someBigInt) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -447,8 +437,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -475,7 +464,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN sum(this1.someBigInt) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -484,8 +473,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -512,7 +500,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN sum(this1.someBigInt) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -521,8 +509,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -549,7 +536,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN sum(this1.someBigInt) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -558,8 +545,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -586,7 +572,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN sum(this1.someBigInt) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -595,8 +581,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -623,7 +608,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN sum(this1.someBigInt) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -632,8 +617,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -660,7 +644,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN min(this1.someBigInt) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -669,8 +653,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -697,7 +680,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN min(this1.someBigInt) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -706,8 +689,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -734,7 +716,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN min(this1.someBigInt) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -743,8 +725,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -771,7 +752,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN min(this1.someBigInt) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -780,8 +761,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -808,7 +788,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN min(this1.someBigInt) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -817,8 +797,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -845,7 +824,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN max(this1.someBigInt) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -854,8 +833,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -882,7 +860,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN max(this1.someBigInt) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -891,8 +869,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -919,7 +896,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN max(this1.someBigInt) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -928,8 +905,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -956,7 +932,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN max(this1.someBigInt) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -965,8 +941,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -993,7 +968,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 RETURN max(this1.someBigInt) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -1002,8 +977,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
                 \\"param0\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
