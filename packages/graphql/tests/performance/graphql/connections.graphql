@@ -30,7 +30,7 @@ query NestedConnection {
 }
 
 query ConnectionWithSort {
-    moviesConnection(first: 5) {
+    moviesConnection(first: 5, sort: { title: ASC }) {
         edges {
             node {
                 title
