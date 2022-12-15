@@ -136,6 +136,26 @@ export function translateRead(
     let connectionPreClauses: Cypher.Clause | undefined;
 
     if (isRootConnectionField) {
+        const hasConnectionOrdering = resolveTree.args.first || resolveTree.args.after || resolveTree.args.sort;
+        if (hasConnectionOrdering) {
+            const afterInput = resolveTree.args.after as string | undefined;
+            const offset = afterInput ? cursorToOffset(afterInput) + 1 : undefined;
+            orderClause = new Cypher.With("*");
+            addSortAndLimitOptionsToClause({
+                optionsInput: {
+                    sort: resolveTree.args.sort as any,
+                    limit: resolveTree.args.first as any,
+                    offset,
+                },
+                target: matchNode,
+                projectionClause: orderClause as Cypher.With,
+                nodeField: node.singular,
+                fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
+                cypherFields: node.cypherFields,
+                varName,
+            });
+        }
+
         // TODO: unify with createConnectionClause
         const edgesVar = new Cypher.NamedVariable("edges");
         const edgeVar = new Cypher.NamedVariable("edge");
@@ -154,7 +174,8 @@ export function translateRead(
         });
 
         const withTotalCount = new Cypher.With([connectionEdge, edgeVar], totalCountVar, matchNode);
-        const connectionClause = getConnectionSortClause({ context, projection, varName });
+        // const connectionSortClause = getConnectionSortClause({ context, projection, varName });
+        // orderClause = getConnectionSortClause({ context, projection, varName });
         const returnClause = new Cypher.With([Cypher.collect(edgeVar), edgesVar], totalCountVar).return([
             new Cypher.Map({
                 edges: edgesVar,
@@ -163,7 +184,8 @@ export function translateRead(
             matchNode,
         ]);
 
-        projectionClause = Cypher.concat(withTotalCount, connectionClause, returnClause);
+        projectionClause = Cypher.concat(withTotalCount, returnClause);
+        // projectionClause = Cypher.concat(withTotalCount, connectionSortClause, returnClause);
     }
 
     const preComputedWhereFields =
@@ -183,63 +205,4 @@ export function translateRead(
     );
 
     return readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
-}
-
-function getConnectionSortClause({
-    context,
-    projection,
-    varName,
-}: {
-    context: Context;
-    projection: ProjectionResult;
-    varName: string;
-}): Cypher.Clause {
-    const { resolveTree } = context;
-
-    const afterInput = resolveTree.args.after as string | undefined;
-    const firstInput = resolveTree.args.first as Integer | number | undefined;
-    const sortInput = resolveTree.args.sort as GraphQLSortArg[];
-
-    const cypherParams = {} as Record<string, any>;
-
-    const hasAfter = Boolean(afterInput);
-    const hasFirst = Boolean(firstInput);
-    const hasSort = Boolean(sortInput && sortInput.length);
-
-    const sortCypherFields = projection.meta?.cypherSortFields ?? [];
-
-    let sortStr = "";
-    if (hasSort) {
-        const sortArr = sortInput.reduce((res: string[], sort: GraphQLSortArg) => {
-            return [
-                ...res,
-                ...Object.entries(sort).map(([field, direction]) => {
-                    // if the sort arg is a cypher field, substitaute "edges" for varName
-                    const varOrEdgeName = sortCypherFields.find((x) => x === field) ? "edge.node" : varName;
-                    return `${varOrEdgeName}.${field} ${direction}`;
-                }),
-            ];
-        }, []);
-
-        sortStr = `ORDER BY ${sortArr.join(", ")}`;
-    }
-
-    let offsetStr = "";
-    if (hasAfter && typeof afterInput === "string") {
-        const offset = cursorToOffset(afterInput) + 1;
-        if (offset && offset !== 0) {
-            offsetStr = `SKIP $${varName}_offset`;
-            cypherParams[`${varName}_offset`] = int(offset);
-        }
-    }
-
-    let limitStr = "";
-    if (hasFirst) {
-        limitStr = `LIMIT $${varName}_limit`;
-        cypherParams[`${varName}_limit`] = firstInput;
-    }
-
-    return new Cypher.RawCypher(() => {
-        return [[sortStr, offsetStr, limitStr].join("\n"), cypherParams];
-    });
 }
