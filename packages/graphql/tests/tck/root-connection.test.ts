@@ -203,12 +203,12 @@ describe("Root Connection Query tests", () => {
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                    "{
-                        \\"this_limit\\": {
-                            \\"low\\": 20,
-                            \\"high\\": 0
-                        }
-                    }"
-            `);
+            "{
+                \\"this_limit\\": {
+                    \\"low\\": 20,
+                    \\"high\\": 0
+                }
+            }"
+        `);
     });
 });
