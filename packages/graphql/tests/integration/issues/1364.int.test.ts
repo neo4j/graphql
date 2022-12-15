@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
         await driver.close();
     });
 
-    test("Should project cypher fields after applying the sort when sorting on a non-cypher field on a root connection)", async () => {
+    test("Should project cypher fields after applying the sort when sorting on a non-cypher field on a root connection", async () => {
         const query = `
             {
                 ${testMovie.plural}Connection(sort: [{ title: ASC }]) {

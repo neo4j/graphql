@@ -106,9 +106,6 @@ describe("Root Connection Query tests", () => {
             WITH edges, size(edges) AS totalCount
             UNWIND edges AS this
             WITH this, totalCount
-            WITH *
-            ORDER BY this.title ASC
-            LIMIT $param0
             WITH { node: this { .title } } AS edge, totalCount, this
             ORDER BY this.title ASC
             LIMIT $this_limit
@@ -117,10 +114,6 @@ describe("Root Connection Query tests", () => {
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"low\\": 20,
-                    \\"high\\": 0
-                },
                 \\"this_limit\\": {
                     \\"low\\": 20,
                     \\"high\\": 0
@@ -150,9 +143,6 @@ describe("Root Connection Query tests", () => {
             WITH edges, size(edges) AS totalCount
             UNWIND edges AS this
             WITH this, totalCount
-            WITH *
-            ORDER BY this.title ASC
-            LIMIT $param1
             WITH { node: this { .title } } AS edge, totalCount, this
             ORDER BY this.title ASC
             LIMIT $this_limit
@@ -162,10 +152,6 @@ describe("Root Connection Query tests", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Matrix\\",
-                \\"param1\\": {
-                    \\"low\\": 20,
-                    \\"high\\": 0
-                },
                 \\"this_limit\\": {
                     \\"low\\": 20,
                     \\"high\\": 0
@@ -201,9 +187,6 @@ describe("Root Connection Query tests", () => {
             WITH edges, size(edges) AS totalCount
             UNWIND edges AS this
             WITH this, totalCount
-            WITH *
-            ORDER BY this.title ASC
-            LIMIT $param0
             CALL {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
@@ -221,10 +204,6 @@ describe("Root Connection Query tests", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"low\\": 20,
-                    \\"high\\": 0
-                },
                 \\"this_limit\\": {
                     \\"low\\": 20,
                     \\"high\\": 0
