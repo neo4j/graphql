@@ -249,7 +249,11 @@ async function getMissingConstraints({
     nodes.forEach((node) => {
         node.uniqueFields.forEach((field) => {
             const property = field.dbPropertyName || field.fieldName;
-            if (node.getLabels().every((label) => !existingConstraints[label]?.includes(property))) {
+            if (
+                [node.getMainLabel(), ...(node.nodeDirective?.additionalLabels || [])].every(
+                    (label) => !existingConstraints[label]?.includes(property)
+                )
+            ) {
                 missingConstraints.push({
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     constraintName: field.unique!.constraintName,
