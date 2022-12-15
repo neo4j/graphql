@@ -262,8 +262,11 @@ export default function createProjectionAndParams({
         });
 
         if (aggregationFieldProjection) {
-            res.projection.push(`${alias}: ${aggregationFieldProjection.query}`);
-            res.params = { ...res.params, ...aggregationFieldProjection.params };
+            if (aggregationFieldProjection.projectionSubqueryCypher) {
+                res.subqueries.push(new Cypher.RawCypher(aggregationFieldProjection.projectionSubqueryCypher));
+            }
+            res.projection.push(`${alias}: ${aggregationFieldProjection.projectionCypher}`);
+            res.params = { ...res.params, ...aggregationFieldProjection.projectionParams };
             return res;
         }
 
@@ -372,7 +375,9 @@ export default function createProjectionAndParams({
         generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
     ]);
 
-    const { projection, params, meta, subqueries, subqueriesBeforeSort } = Object.values(mergedFields).reduce(reducer, {
+    const { projection, params, meta, subqueries, subqueriesBeforeSort } = Object.values(
+        mergedFields
+    ).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
         params: {},
         meta: {},

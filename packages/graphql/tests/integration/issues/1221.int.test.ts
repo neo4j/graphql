@@ -160,7 +160,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         expect(res.errors).toBeUndefined();
 
         expect(res.data).toEqual({
-            [testSeries.plural]: [
+            [testSeries.plural]: expect.toIncludeSameMembers([
                 {
                     architectureConnection: {
                         edges: [
@@ -181,7 +181,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                     },
                     id: "321",
                 },
-            ],
+            ]),
         });
     });
 
@@ -252,7 +252,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         expect(res.errors).toBeUndefined();
 
         expect(res.data).toEqual({
-            [testSeries.plural]: [
+            [testSeries.plural]: expect.toIncludeSameMembers([
                 {
                     architectureConnection: {
                         edges: [
@@ -293,7 +293,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                     },
                     id: "621",
                 },
-            ],
+            ]),
         });
     });
 
@@ -489,7 +489,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         expect(res.errors).toBeUndefined();
 
         expect(res.data).toEqual({
-            [testMain.plural]: [
+            [testMain.plural]: expect.toIncludeSameMembers([
                 {
                     mainConnection: {
                         edges: [
@@ -518,7 +518,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                     },
                     id: "1321",
                 },
-            ],
+            ]),
         });
     });
 

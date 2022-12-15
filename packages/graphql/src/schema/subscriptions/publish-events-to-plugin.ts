@@ -42,7 +42,8 @@ export function publishEventsToPlugin(
         const serializedEventsWithoutDuplicates = removeDuplicateEvents(
             serializedEvents,
             "delete_relationship",
-            "delete"
+            "delete",
+            "create_relationship"
         );
         for (const subscriptionsEvent of serializedEventsWithoutDuplicates) {
             try {

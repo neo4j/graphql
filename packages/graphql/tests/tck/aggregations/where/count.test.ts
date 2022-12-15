@@ -67,7 +67,7 @@ describe("Cypher Aggregations where with count", () => {
                 RETURN count(this1) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -76,8 +76,7 @@ describe("Cypher Aggregations where with count", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -104,7 +103,7 @@ describe("Cypher Aggregations where with count", () => {
                 RETURN count(this1) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -113,8 +112,7 @@ describe("Cypher Aggregations where with count", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -141,7 +139,7 @@ describe("Cypher Aggregations where with count", () => {
                 RETURN count(this1) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -150,8 +148,7 @@ describe("Cypher Aggregations where with count", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -178,7 +175,7 @@ describe("Cypher Aggregations where with count", () => {
                 RETURN count(this1) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -187,8 +184,7 @@ describe("Cypher Aggregations where with count", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -215,7 +211,7 @@ describe("Cypher Aggregations where with count", () => {
                 RETURN count(this1) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -224,8 +220,7 @@ describe("Cypher Aggregations where with count", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });

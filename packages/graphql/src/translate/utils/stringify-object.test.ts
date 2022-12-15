@@ -24,9 +24,10 @@ describe("stringifyObject", () => {
         const result = stringifyObject({
             this: "this",
             that: `"that"`,
-        });
+        }).build();
 
-        expect(result).toBe(`{ this: this, that: "that" }`);
+        expect(result.cypher).toBe(`{ this: this, that: "that" }`);
+        expect(result.params).toMatchObject({});
     });
 
     test("ignores undefined, null and empty string values", () => {
@@ -35,8 +36,9 @@ describe("stringifyObject", () => {
             the: undefined,
             spanish: null,
             inquisition: "",
-        });
+        }).build();
 
-        expect(result).toBe(`{ nobody: expects }`);
+        expect(result.cypher).toBe(`{ nobody: expects }`);
+        expect(result.params).toMatchObject({});
     });
 });

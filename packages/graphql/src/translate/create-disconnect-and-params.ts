@@ -24,6 +24,8 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import Cypher from "@neo4j/cypher-builder";
+import { caseWhere } from "../utils/case-where";
 
 interface Res {
     disconnects: string[];
@@ -79,9 +81,14 @@ function createDisconnectAndParams({
         ) as unknown as Relationship;
 
         const whereStrs: string[] = [];
+        let aggregationWhere = false;
         if (disconnect.where) {
             try {
-                const whereAndParams = createConnectionWhereAndParams({
+                const {
+                    cypher: whereCypher,
+                    subquery: preComputedSubqueries,
+                    params: whereParams,
+                } = createConnectionWhereAndParams({
                     nodeVariable: variableName,
                     whereInput: disconnect.where,
                     node: relatedNode,
@@ -90,9 +97,13 @@ function createDisconnectAndParams({
                     relationship,
                     parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
                 });
-                if (whereAndParams[0]) {
-                    whereStrs.push(whereAndParams[0]);
-                    params = { ...params, ...whereAndParams[1] };
+                if (whereCypher) {
+                    whereStrs.push(whereCypher);
+                    params = { ...params, ...whereParams };
+                    if (preComputedSubqueries) {
+                        subquery.push(preComputedSubqueries);
+                        aggregationWhere = true;
+                    }
                 }
             } catch {
                 return { subquery: "", params: {} };
@@ -113,7 +124,15 @@ function createDisconnectAndParams({
         }
 
         if (whereStrs.length) {
-            subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
+            const predicate = `${whereStrs.join(" AND ")}`;
+            if (aggregationWhere) {
+                const columns = [new Cypher.NamedVariable(relVarName), new Cypher.NamedVariable(variableName)];
+                const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
+                const { cypher } = caseWhereClause.build("aggregateWhereFilter");
+                subquery.push(cypher);
+            } else {
+                subquery.push(`WHERE ${predicate}`);
+            }
         }
 
         const nodeMatrix: { node: Node; name: string }[] = [
