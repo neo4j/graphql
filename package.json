@@ -10,7 +10,9 @@
         "docs",
         "packages/*",
         "examples/migration",
+        "examples/neo-place",
         "examples/neo-push/*",
+        "examples/subscriptions/*",
         "packages/plugins/*"
     ],
     "scripts": {
