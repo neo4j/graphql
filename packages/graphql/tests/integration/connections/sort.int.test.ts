@@ -255,10 +255,10 @@ describe("connections sort", () => {
         });
     });
 
-    it("top level connection sort with cypher field", async () => {
+    it("top level connection sort with cypher field and multiple sort fields", async () => {
         const query = `
         query {
-         ${Movie.operations.connection}(first: 2, sort: {title: DESC}) {
+         ${Movie.operations.connection}(first: 2, sort: {title: DESC, totalCount: ASC}) {
              totalCount
              edges {
                  node {
