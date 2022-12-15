@@ -25,6 +25,12 @@ import { generateUniqueType } from "../utils";
 
 describe("https://github.com/neo4j/graphql/issues/2357", () => {
     let driver: Driver;
+    let typeDefs: string;
+    let enterpriseType: {
+        name: string;
+        plural: string;
+    };
+    let indexName: string;
 
     const id1 = "1";
     const id2 = "2";
@@ -38,91 +44,77 @@ describe("https://github.com/neo4j/graphql/issues/2357", () => {
         driver = await neo4j();
     });
 
+    beforeEach(async () => {
+        enterpriseType = generateUniqueType("Enterprise");
+        indexName = `${enterpriseType.name}_fulltext_index`;
+
+        typeDefs = `
+            type ${enterpriseType.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["full_name", "tags"] }]){
+                id: ID! @id
+                full_name: String!
+                tags: String
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+        });
+        await neoSchema.getSchema();
+        await neoSchema.assertIndexesAndConstraints({ driver, options: { create: true } });
+
+        const session = driver.session();
+
+        try {
+            await session.run(`
+                CREATE (:${enterpriseType.name} { id: "${id1}", full_name: "${matchingFullName}", tags: "${matchingTags}" })
+                CREATE (:${enterpriseType.name} { id: "${id2}", full_name: "${nonMatchingFullName}", tags: "${nonMatchingTags}" })
+            `);
+        } finally {
+            await session.close();
+        }
+    });
+
+    afterEach(async () => {
+        const session = driver.session();
+
+        try {
+            await session.run(`
+                MATCH (n:${enterpriseType.name})
+                DETACH DELETE n
+            `);
+        } finally {
+            await session.close();
+        }
+    });
+
     afterAll(async () => {
         await driver.close();
     });
 
     test("should filter using fulltext index", async () => {
-        const enterpriseType = generateUniqueType("Enterprise");
-        const indexName = `${enterpriseType.name}_fulltext_index`;
+        const ogm = new OGM({ typeDefs, driver });
 
-        const typeDefs = `
-            type ${enterpriseType.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["full_name", "tags"] }]){
-                id: ID! @id
-                full_name: String!
-                tags: String
-            }
-        `;
+        await ogm.init();
 
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            driver,
+        const Enterprise = ogm.model(enterpriseType.name);
+        const result = await Enterprise.find({
+            fulltext: {
+                [indexName]: { phrase: searchPhrase },
+            },
         });
-        await neoSchema.getSchema();
-        await neoSchema.assertIndexesAndConstraints({ driver, options: { create: true } });
 
-        const session = driver.session();
-
-        try {
-            await session.run(`
-                CREATE (:${enterpriseType.name} { id: "${id1}", full_name: "${matchingFullName}", tags: "${matchingTags}" })
-                CREATE (:${enterpriseType.name} { id: "${id2}", full_name: "${nonMatchingFullName}", tags: "${nonMatchingTags}" })
-            `);
-
-            const ogm = new OGM({ typeDefs, driver });
-
-            await ogm.init();
-
-            const Enterprise = ogm.model(enterpriseType.name);
-            const result = await Enterprise.find({
-                fulltext: {
-                    [indexName]: { phrase: searchPhrase },
-                },
-            });
-
-            expect(result).toEqual([{ id: id1, full_name: matchingFullName, tags: matchingTags }]);
-        } finally {
-            await session.close();
-        }
+        expect(result).toEqual([{ id: id1, full_name: matchingFullName, tags: matchingTags }]);
     });
 
     test("should not filter if fulltext arg is not applied", async () => {
-        const enterpriseType = generateUniqueType("Enterprise");
-        const indexName = `${enterpriseType.name}_fulltext_index`;
+        const ogm = new OGM({ typeDefs, driver });
 
-        const typeDefs = `
-            type ${enterpriseType.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["full_name", "tags"] }]){
-                id: ID! @id
-                full_name: String!
-                tags: String
-            }
-        `;
+        await ogm.init();
 
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            driver,
-        });
-        await neoSchema.getSchema();
-        await neoSchema.assertIndexesAndConstraints({ driver, options: { create: true } });
+        const Enterprise = ogm.model(enterpriseType.name);
+        const result = await Enterprise.find({});
 
-        const session = driver.session();
-
-        try {
-            await session.run(`
-                CREATE (:${enterpriseType.name} { id: "${id1}", full_name: "${matchingFullName}", tags: "${matchingTags}" })
-                CREATE (:${enterpriseType.name} { id: "${id2}", full_name: "${nonMatchingFullName}", tags: "${nonMatchingTags}" })
-            `);
-
-            const ogm = new OGM({ typeDefs, driver });
-
-            await ogm.init();
-
-            const Enterprise = ogm.model(enterpriseType.name);
-            const result = await Enterprise.find({});
-
-            expect(result).toHaveLength(2);
-        } finally {
-            await session.close();
-        }
+        expect(result).toHaveLength(2);
     });
 });
