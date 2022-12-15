@@ -7,6 +7,6 @@
     "access": "public",
     "baseBranch": "dev",
     "updateInternalDependencies": "patch",
-    "ignore": ["graphql-manual"],
+    "ignore": ["graphql-manual", "migration"],
     "privatePackages": { "version": true, "tag": true }
 }
