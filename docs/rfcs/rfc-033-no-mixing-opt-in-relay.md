@@ -118,7 +118,7 @@ interface Neo4jGraphQLConfig {
 
 - This RFC proposes many breaking changes. This may slow down the adoption of the new version of the library.
 - Disable the Relay spec making the edge properties no longer accessible.
-- Type `ActorWhere` and `MovieWhere` still contains: `moviesConnection_SOME`, `moviesConnection_ALL`, `moviesConnection_NONE`, `moviesConnection_SINGLE` it could be confusing and ambiguous to the users, see #References.
+- Type `ActorWhere` and `MovieWhere` still contains: `moviesConnection_SOME`, `moviesConnection_ALL`, `moviesConnection_NONE`, `moviesConnection_SINGLE` it could be confusing and ambiguous to the users, see [Connection Filters](#connection-filters).
 
 ### Security consideration
 
@@ -129,6 +129,8 @@ interface Neo4jGraphQLConfig {
 - Pagination changes.
 
 ## References
+
+### Connection Filters
 
 Using the [Connection spec](https://relay.dev/graphql/connections.htm) as filter in a Neo4j GraphQL syntax. 
 
