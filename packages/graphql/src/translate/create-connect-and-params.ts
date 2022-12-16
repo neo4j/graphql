@@ -232,7 +232,11 @@ function createConnectAndParams({
         subquery.push("\t\t\tWITH connectedNodes, parentNodes"); //
         subquery.push(`\t\t\tUNWIND parentNodes as ${parentVar}`);
         subquery.push(`\t\t\tUNWIND connectedNodes as ${nodeName}`);
-        subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        if (connect.overwrite === false) {
+            subquery.push(`\t\t\tCREATE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        } else {
+            subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        }
 
         if (relationField.properties) {
             const relationship = context.relationships.find(
@@ -287,7 +291,7 @@ function createConnectAndParams({
             innerMetaStr = `, connect_meta + meta AS meta`;
         }
 
-        if (includeRelationshipValidation) {
+        if (includeRelationshipValidation || connect.overwrite === false) {
             const relValidationStrs: string[] = [];
             const matrixItems = [
                 [parentNode, parentVar],
@@ -299,6 +303,7 @@ function createConnectAndParams({
                     node: mi[0],
                     context,
                     varName: mi[1],
+                    overwrite: relationField.fieldName,
                 });
                 if (relValidationStr) {
                     relValidationStrs.push(relValidationStr);

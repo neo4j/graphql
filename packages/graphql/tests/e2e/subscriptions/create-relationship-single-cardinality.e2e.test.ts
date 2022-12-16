@@ -1088,31 +1088,31 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    test.only("connect via update-connect  - 1:1", async () => {
+    test.skip("connect via update-connect  - 1:1", async () => {
         await wsClient.subscribe(actorSubscriptionQuery(typeActor));
 
         await wsClient2.subscribe(movieSubscriptionQuery({ typeMovie, typePerson, typeInfluencer }));
 
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeActor.operations.create}(
-                            input: [
-                                {
-                                  name: "Robin Williams",
-                                }
-                            ]
-                        ) {
-                            ${typeActor.plural} {
-                                name
-                            }
-                        }
-                    }
-                `,
-            })
-            .expect(200);
+        // await supertest(server.path)
+        //     .post("")
+        //     .send({
+        //         query: `
+        //             mutation {
+        //                 ${typeActor.operations.create}(
+        //                     input: [
+        //                         {
+        //                           name: "Robin Williams",
+        //                         }
+        //                     ]
+        //                 ) {
+        //                     ${typeActor.plural} {
+        //                         name
+        //                     }
+        //                 }
+        //             }
+        //         `,
+        //     })
+        //     .expect(200);
 
         await supertest(server.path)
             .post("")
@@ -1197,7 +1197,7 @@ subscription SubscriptionPerson {
         //                       url: "/Brad"
         //                     },
         //                     connect: {
-        //                       movies: [
+        //                         movieReviewed:
         //                         {
         //                           edge: {
         //                             score: 15
@@ -1207,7 +1207,7 @@ subscription SubscriptionPerson {
         //                               title: "Good Will Hunting"
         //                             }
         //                           },
-        //                           connect: [
+        //                           connect:
         //                             {
         //                               reviewer: {
         //                                 edge: {
@@ -1224,9 +1224,9 @@ subscription SubscriptionPerson {
         //                                 }
         //                               }
         //                             }
-        //                           ]
+
         //                         }
-        //                       ]
+
         //                     }
         //                 ) {
         //                     ${typeInfluencer.plural} {
