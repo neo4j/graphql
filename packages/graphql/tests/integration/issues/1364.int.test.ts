@@ -225,4 +225,47 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             },
         });
     });
+
+    test("Should project cypher fields after applying the sort when sorting on a  2 cypher fields on a root connection", async () => {
+        const query = `
+            {
+                ${testMovie.plural}Connection(sort: [{ totalActors: DESC }, { totalGenres: DESC }]) {
+                    edges {
+                        node {
+                            title
+                            totalGenres
+                        }
+                    }
+                }
+            }
+        `;
+
+        const queryResult = await graphqlQuery(query);
+        expect(queryResult.errors).toBeUndefined();
+
+        expect(queryResult.data as any).toEqual({
+            [`${testMovie.plural}Connection`]: {
+                edges: [
+                    {
+                        node: {
+                            title: "A Movie",
+                            totalGenres: 2,
+                        },
+                    },
+                    {
+                        node: {
+                            title: "B Movie",
+                            totalGenres: 1,
+                        },
+                    },
+                    {
+                        node: {
+                            title: "C Movie",
+                            totalGenres: 0,
+                        },
+                    },
+                ],
+            },
+        });
+    });
 });
