@@ -84,25 +84,25 @@ describe("#488", () => {
             CALL {
                 WITH this
                 CALL {
-                    WITH this
-                    MATCH (this)-[thisthis0:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
+                    WITH *
+                    MATCH (this)-[this2:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
                     WITH this_keywords  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords
                     RETURN this_keywords AS this_keywords
                     UNION
-                    WITH this
-                    MATCH (this)-[thisthis1:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
+                    WITH *
+                    MATCH (this)-[this3:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
                     WITH this_keywords { __resolveType: \\"Hashtag\\" } AS this_keywords
                     RETURN this_keywords AS this_keywords
                     UNION
-                    WITH this
-                    MATCH (this)-[thisthis2:HAS_KEYWORD]->(this_keywords:\`Text\`)
+                    WITH *
+                    MATCH (this)-[this4:HAS_KEYWORD]->(this_keywords:\`Text\`)
                     WITH this_keywords { __resolveType: \\"Text\\" } AS this_keywords
                     RETURN this_keywords AS this_keywords
                 }
                 WITH this_keywords
                 RETURN collect(this_keywords) AS this_keywords
             }
-            RETURN this { .name, keywords: this_keywords } as this"
+            RETURN this { .name, keywords: this_keywords } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -138,25 +138,25 @@ describe("#488", () => {
             CALL {
                 WITH this
                 CALL {
-                    WITH this
-                    MATCH (this)-[thisthis0:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
+                    WITH *
+                    MATCH (this)-[this2:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
                     WITH this_keywords  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords
                     RETURN this_keywords AS this_keywords
                     UNION
-                    WITH this
-                    MATCH (this)-[thisthis1:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
+                    WITH *
+                    MATCH (this)-[this3:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
                     WITH this_keywords { __resolveType: \\"Hashtag\\" } AS this_keywords
                     RETURN this_keywords AS this_keywords
                     UNION
-                    WITH this
-                    MATCH (this)-[thisthis2:HAS_KEYWORD]->(this_keywords:\`Text\`)
+                    WITH *
+                    MATCH (this)-[this4:HAS_KEYWORD]->(this_keywords:\`Text\`)
                     WITH this_keywords { __resolveType: \\"Text\\" } AS this_keywords
                     RETURN this_keywords AS this_keywords
                 }
                 WITH this_keywords
                 RETURN collect(this_keywords) AS this_keywords
             }
-            RETURN this { .name, keywords: this_keywords } as this"
+            RETURN this { .name, keywords: this_keywords } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

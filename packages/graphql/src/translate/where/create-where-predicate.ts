@@ -19,9 +19,9 @@
 
 import type { GraphQLWhereArg, Context } from "../../types";
 import type { GraphElement } from "../../classes";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 // Recursive function
-// eslint-disable-next-line import/no-cycle
+
 import { createPropertyWhere } from "./property-operations/create-property-where";
 
 type WhereOperators = "OR" | "AND";
@@ -37,29 +37,40 @@ export function createWherePredicate({
     context,
     element,
 }: {
-    targetElement: CypherBuilder.Variable;
+    targetElement: Cypher.Variable;
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
-}): CypherBuilder.Predicate | undefined {
+}): { predicate: Cypher.Predicate | undefined; preComputedSubqueries?: Cypher.CompositeClause | undefined } {
     const whereFields = Object.entries(whereInput);
 
-    const predicates = whereFields.map(([key, value]): CypherBuilder.Predicate | undefined => {
+    const predicates: Cypher.Predicate[] = [];
+    let subqueries: Cypher.CompositeClause | undefined;
+    whereFields.forEach(([key, value]) => {
         if (isWhereOperator(key)) {
-            return createNestedPredicate({
+            const { predicate, preComputedSubqueries } = createNestedPredicate({
                 key,
                 element,
                 targetElement,
                 context,
                 value,
             });
+            if (predicate) {
+                predicates.push(predicate);
+                if (preComputedSubqueries && !preComputedSubqueries.empty)
+                    subqueries = Cypher.concat(subqueries, preComputedSubqueries);
+            }
+            return;
         }
-
-        return createPropertyWhere({ key, value, element, targetElement, context });
+        const { predicate, preComputedSubquery } = createPropertyWhere({ key, value, element, targetElement, context });
+        if (predicate) {
+            predicates.push(predicate);
+            if (preComputedSubquery) subqueries = Cypher.concat(subqueries, preComputedSubquery);
+            return;
+        }
     });
-
     // Implicit AND
-    return CypherBuilder.and(...predicates);
+    return { predicate: Cypher.and(...predicates), preComputedSubqueries: subqueries };
 }
 
 function createNestedPredicate({
@@ -72,14 +83,26 @@ function createNestedPredicate({
     key: WhereOperators;
     value: Array<GraphQLWhereArg>;
     element: GraphElement;
-    targetElement: CypherBuilder.Variable;
+    targetElement: Cypher.Variable;
     context: Context;
-}): CypherBuilder.Predicate | undefined {
-    const nested = value.map((v) => {
-        return createWherePredicate({ whereInput: v, element, targetElement, context });
+}): { predicate: Cypher.Predicate | undefined; preComputedSubqueries?: Cypher.CompositeClause | undefined } {
+    const nested: Cypher.Predicate[] = [];
+    let subqueries: Cypher.CompositeClause | undefined;
+    value.forEach((v) => {
+        const { predicate, preComputedSubqueries } = createWherePredicate({
+            whereInput: v,
+            element,
+            targetElement,
+            context,
+        });
+        if (predicate) {
+            nested.push(predicate);
+        }
+        if (preComputedSubqueries && !preComputedSubqueries.empty)
+            subqueries = Cypher.concat(subqueries, preComputedSubqueries);
     });
     if (key === "OR") {
-        return CypherBuilder.or(...nested);
+        return { predicate: Cypher.or(...nested), preComputedSubqueries: subqueries };
     }
-    return CypherBuilder.and(...nested);
+    return { predicate: Cypher.and(...nested), preComputedSubqueries: subqueries };
 }

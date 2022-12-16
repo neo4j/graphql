@@ -39,7 +39,7 @@ async function createIndexesAndConstraints({
     session: Session;
     dbInfo: Neo4jDatabaseInfo;
 }) {
-    const constraintsToCreate: { constraintName: string; label: string; property: string }[] = [];
+    const constraintsToCreate = await getMissingConstraints({ nodes, session });
     const indexesToCreate: { indexName: string; label: string; properties: string[] }[] = [];
 
     const existingIndexes: Record<string, { labelsOrTypes: string; properties: string[] }> = {};
@@ -67,18 +67,14 @@ async function createIndexesAndConstraints({
     });
 
     nodes.forEach((node) => {
-        node.uniqueFields.forEach((field) => {
-            constraintsToCreate.push({
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                constraintName: field.unique!.constraintName,
-                label: node.getMainLabel(),
-                property: field.dbPropertyName || field.fieldName,
-            });
-        });
-
         if (node.fulltextDirective) {
             node.fulltextDirective.indexes.forEach((index) => {
-                const existingIndex = existingIndexes[index.name];
+                // TODO: remove indexName assignment and undefined check once the name argument has been removed.
+                const indexName = index.indexName || index.name;
+                if (indexName === undefined) {
+                    throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+                }
+                const existingIndex = existingIndexes[indexName];
                 if (!existingIndex) {
                     const properties = index.fields.map((field) => {
                         const stringField = node.primitiveFields.find((f) => f.fieldName === field);
@@ -87,7 +83,7 @@ async function createIndexesAndConstraints({
                     });
 
                     indexesToCreate.push({
-                        indexName: index.name,
+                        indexName: indexName,
                         label: node.getMainLabel(),
                         properties,
                     });
@@ -101,7 +97,7 @@ async function createIndexesAndConstraints({
                             const aliasError = stringField?.dbPropertyName ? ` aliased to field '${fieldName}''` : "";
 
                             indexErrors.push(
-                                `@fulltext index '${index.name}' on Node '${node.name}' already exists, but is missing field '${field}'${aliasError}`
+                                `@fulltext index '${indexName}' on Node '${node.name}' already exists, but is missing field '${field}'${aliasError}`
                             );
                         }
                     });
@@ -123,7 +119,6 @@ async function createIndexesAndConstraints({
 
         debug(`About to execute Cypher: ${cypher}`);
 
-        // eslint-disable-next-line no-await-in-loop
         const result = await session.run(cypher);
 
         const { constraintsAdded } = result.summary.counters.updates();
@@ -140,7 +135,6 @@ async function createIndexesAndConstraints({
 
         debug(`About to execute Cypher: ${cypher}`);
 
-        // eslint-disable-next-line no-await-in-loop
         await session.run(cypher);
 
         debug(`Created @fulltext index ${indexToCreate.indexName}`);
@@ -148,40 +142,13 @@ async function createIndexesAndConstraints({
 }
 
 async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; session: Session }) {
-    const constraintsCypher = "SHOW UNIQUE CONSTRAINTS";
-
-    const existingConstraints: Record<string, string[]> = {};
-    const missingConstraints: string[] = [];
-
-    debug(`About to execute Cypher: ${constraintsCypher}`);
-    const constraintsResult = await session.run(constraintsCypher);
-
-    constraintsResult.records
-        .map((record) => {
-            return record.toObject();
-        })
-        .forEach((constraint) => {
-            const label = constraint.labelsOrTypes[0];
-            const property = constraint.properties[0];
-
-            if (existingConstraints[label]) {
-                existingConstraints[label].push(property as string);
-            } else {
-                existingConstraints[label] = [property];
-            }
-        });
-
-    nodes.forEach((node) => {
-        node.uniqueFields.forEach((field) => {
-            const property = field.dbPropertyName || field.fieldName;
-            if (!existingConstraints[node.getMainLabel()]?.includes(property)) {
-                missingConstraints.push(`Missing constraint for ${node.name}.${property}`);
-            }
-        });
-    });
+    const missingConstraints = await getMissingConstraints({ nodes, session });
 
     if (missingConstraints.length) {
-        throw new Error(missingConstraints.join("\n"));
+        const missingConstraintMessages = missingConstraints.map(
+            (constraint) => `Missing constraint for ${constraint.label}.${constraint.property}`
+        );
+        throw new Error(missingConstraintMessages.join("\n"));
     }
 
     debug("Successfully checked for the existence of all necessary constraints");
@@ -213,9 +180,14 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
     nodes.forEach((node) => {
         if (node.fulltextDirective) {
             node.fulltextDirective.indexes.forEach((index) => {
-                const existingIndex = existingIndexes[index.name];
+                // TODO: remove indexName assignment and undefined check once the name argument has been removed.
+                const indexName = index.indexName || index.name;
+                if (indexName === undefined) {
+                    throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+                }
+                const existingIndex = existingIndexes[indexName];
                 if (!existingIndex) {
-                    indexErrors.push(`Missing @fulltext index '${index.name}' on Node '${node.name}'`);
+                    indexErrors.push(`Missing @fulltext index '${indexName}' on Node '${node.name}'`);
 
                     return;
                 }
@@ -229,7 +201,7 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
                         const aliasError = stringField?.dbPropertyName ? ` aliased to field '${fieldName}''` : "";
 
                         indexErrors.push(
-                            `@fulltext index '${index.name}' on Node '${node.name}' is missing field '${field}'${aliasError}`
+                            `@fulltext index '${indexName}' on Node '${node.name}' is missing field '${field}'${aliasError}`
                         );
                     }
                 });
@@ -242,6 +214,57 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
     }
 
     debug("Successfully checked for the existence of all necessary indexes");
+}
+
+async function getMissingConstraints({
+    nodes,
+    session,
+}: {
+    nodes: Node[];
+    session: Session;
+}): Promise<{ constraintName: string; label: string; property: string }[]> {
+    const existingConstraints: Record<string, string[]> = {};
+
+    const constraintsCypher = "SHOW UNIQUE CONSTRAINTS";
+    debug(`About to execute Cypher: ${constraintsCypher}`);
+    const constraintsResult = await session.run(constraintsCypher);
+
+    constraintsResult.records
+        .map((record) => {
+            return record.toObject();
+        })
+        .forEach((constraint) => {
+            const label = constraint.labelsOrTypes[0];
+            const property = constraint.properties[0];
+
+            if (existingConstraints[label]) {
+                existingConstraints[label].push(property as string);
+            } else {
+                existingConstraints[label] = [property];
+            }
+        });
+
+    const missingConstraints: { constraintName: string; label: string; property: string }[] = [];
+
+    nodes.forEach((node) => {
+        node.uniqueFields.forEach((field) => {
+            const property = field.dbPropertyName || field.fieldName;
+            if (
+                [node.getMainLabel(), ...(node.nodeDirective?.additionalLabels || [])].every(
+                    (label) => !existingConstraints[label]?.includes(property)
+                )
+            ) {
+                missingConstraints.push({
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    constraintName: field.unique!.constraintName,
+                    label: node.getMainLabel(),
+                    property,
+                });
+            }
+        });
+    });
+
+    return missingConstraints;
 }
 
 async function assertIndexesAndConstraints({

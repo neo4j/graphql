@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 const setTZ = require("set-tz");
 const neo4j = require("neo4j-driver");
 
@@ -13,10 +12,10 @@ module.exports = async function globalSetup() {
     // INFO: The 'global' object can only be accessed in globalSetup and globalTeardown.
     global.INT_TEST_DB_NAME = INT_TEST_DB_NAME;
 
-    const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
+    const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
     const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
     const driver = neo4j.driver(NEO_URL, auth);
-    const cypherCreateDb = `CREATE OR REPLACE DATABASE ${INT_TEST_DB_NAME}`;
+    const cypherCreateDb = `CREATE OR REPLACE DATABASE ${INT_TEST_DB_NAME} WAIT`;
     let session = null;
 
     try {
@@ -29,13 +28,19 @@ module.exports = async function globalSetup() {
         await session.run(cypherCreateDb);
     } catch (error) {
         if (
-            error.message.includes("This is an administration command and it should be executed against the system database") ||
+            error.message.includes(
+                "This is an administration command and it should be executed against the system database"
+            ) ||
             error.message.includes("Unsupported administration command") ||
             error.message.includes("Unable to route write operation to leader for database 'system'")
         ) {
-            console.log(`\nJest /packages/graphql setup: Will NOT create a separate integration test database as the command is not supported in the current environment.`); // eslint-disable-line no-console
+            console.log(
+                `\nJest /packages/graphql setup: Will NOT create a separate integration test database as the command is not supported in the current environment.`
+            );
         } else {
-            console.log(`\nJest /packages/graphql setup: Setup failure on neo4j @ ${NEO_URL}, cypher: "${cypherCreateDb}", Error: ${error.message}`); // eslint-disable-line no-console
+            console.log(
+                `\nJest /packages/graphql setup: Setup failure on neo4j @ ${NEO_URL}, cypher: "${cypherCreateDb}", Error: ${error.message}`
+            );
         }
     } finally {
         if (session) await session.close();

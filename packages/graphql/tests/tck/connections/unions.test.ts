@@ -101,9 +101,9 @@ describe("Cypher -> Connections -> Unions", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_publicationsConnection
             }
-            RETURN this { .name, publicationsConnection: publicationsConnection } as this"
+            RETURN this { .name, publicationsConnection: this_publicationsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -160,9 +160,9 @@ describe("Cypher -> Connections -> Unions", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_publicationsConnection
             }
-            RETURN this { .name, publicationsConnection: publicationsConnection } as this"
+            RETURN this { .name, publicationsConnection: this_publicationsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -221,9 +221,9 @@ describe("Cypher -> Connections -> Unions", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_publicationsConnection
             }
-            RETURN this { .name, publicationsConnection: publicationsConnection } as this"
+            RETURN this { .name, publicationsConnection: this_publicationsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -291,9 +291,9 @@ describe("Cypher -> Connections -> Unions", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_publicationsConnection
             }
-            RETURN this { .name, publicationsConnection: publicationsConnection } as this"
+            RETURN this { .name, publicationsConnection: this_publicationsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -360,9 +360,9 @@ describe("Cypher -> Connections -> Unions", () => {
                 WITH edge, totalCount
                 ORDER BY edge.words ASC
                 WITH collect(edge) AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_publicationsConnection
             }
-            RETURN this { .name, publicationsConnection: publicationsConnection } as this"
+            RETURN this { .name, publicationsConnection: this_publicationsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

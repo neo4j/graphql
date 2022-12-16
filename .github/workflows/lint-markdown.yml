@@ -19,13 +19,13 @@ jobs:
           node-version: lts/*
       - name: Install markdownlint
         run: npm install -g markdownlint-cli
-      - uses: dorny/paths-filter@b2feaf19c27470162a626bd6fa8438ae5b263721 # renovate: tag=v2.10.2
+      - uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50 # tag=v2.11.1
         id: filter
         with:
           list-files: shell
           filters: |
             markdown:
               - added|modified: '*.md'
-      - uses: xt0rted/markdownlint-problem-matcher@b643b0751c371f357690337d4549221347c0e1bc # renovate: tag=v1.1.0
+      - uses: xt0rted/markdownlint-problem-matcher@98d94724052d20ca2e06c091f202e4c66c3c59fb # tag=v2.0.0
       - name: Run markdownlint
         run: markdownlint --config ./.markdownlint.json ${{ steps.filter.outputs.markdown_files }}

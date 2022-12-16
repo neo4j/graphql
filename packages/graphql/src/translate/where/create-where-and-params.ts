@@ -20,7 +20,7 @@
 import type { GraphQLWhereArg, Context } from "../../types";
 import type { Node } from "../../classes";
 import { createWherePredicate } from "./create-where-predicate";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 
 // TODO: Remove this method and replace for directly using createWherePredicate
 /** Wraps createCypherWhereParams with the old interface for compatibility with old way of composing cypher */
@@ -38,17 +38,20 @@ export default function createWhereAndParams({
     varName: string;
     chainStr?: string;
     recursing?: boolean;
-}): [string, any] {
-    const nodeRef = new CypherBuilder.NamedNode(varName);
+}): [string, string, any] {
+    const nodeRef = new Cypher.NamedNode(varName);
 
-    const wherePredicate = createWherePredicate({
+    const { predicate: wherePredicate, preComputedSubqueries } = createWherePredicate({
         element: node,
         context,
         whereInput,
         targetElement: nodeRef,
     });
 
-    const whereCypher = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+    let preComputedWhereFieldsResult = "";
+
+    const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
+        preComputedWhereFieldsResult = preComputedSubqueries?.getCypher(env) || "";
         const cypher = wherePredicate?.getCypher(env) || "";
 
         return [cypher, {}];
@@ -57,5 +60,5 @@ export default function createWhereAndParams({
     const result = whereCypher.build(`${chainStr || ""}${varName}_`);
     const whereStr = `${!recursing ? "WHERE " : ""}`;
 
-    return [`${whereStr}${result.cypher}`, result.params];
+    return [`${whereStr}${result.cypher}`, preComputedWhereFieldsResult, result.params];
 }

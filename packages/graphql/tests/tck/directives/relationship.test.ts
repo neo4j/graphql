@@ -75,11 +75,11 @@ describe("Cypher relationship", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:TOP_ACTOR]->(this_topActor:\`Actor\`)
+                MATCH (this)-[this0:TOP_ACTOR]->(this_topActor:\`Actor\`)
                 WITH this_topActor { .name } AS this_topActor
                 RETURN head(collect(this_topActor)) AS this_topActor
             }
-            RETURN this { .title, topActor: this_topActor } as this"
+            RETURN this { .title, topActor: this_topActor } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -106,11 +106,11 @@ describe("Cypher relationship", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this_actors:\`Actor\`)-[thisthis0:ACTED_IN]->(this)
+                MATCH (this_actors:\`Actor\`)-[this0:ACTED_IN]->(this)
                 WITH this_actors { .name } AS this_actors
                 RETURN collect(this_actors) AS this_actors
             }
-            RETURN this { .title, actors: this_actors } as this"
+            RETURN this { .title, actors: this_actors } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -140,17 +140,17 @@ describe("Cypher relationship", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:TOP_ACTOR]->(this_topActor:\`Actor\`)
+                MATCH (this)-[this0:TOP_ACTOR]->(this_topActor:\`Actor\`)
                 CALL {
                     WITH this_topActor
-                    MATCH (this_topActor)-[thisthis1:ACTED_IN]->(this_topActor_movies:\`Movie\`)
+                    MATCH (this_topActor)-[this1:ACTED_IN]->(this_topActor_movies:\`Movie\`)
                     WITH this_topActor_movies { .title } AS this_topActor_movies
                     RETURN collect(this_topActor_movies) AS this_topActor_movies
                 }
                 WITH this_topActor { .name, movies: this_topActor_movies } AS this_topActor
                 RETURN head(collect(this_topActor)) AS this_topActor
             }
-            RETURN this { .title, topActor: this_topActor } as this"
+            RETURN this { .title, topActor: this_topActor } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -181,26 +181,26 @@ describe("Cypher relationship", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:TOP_ACTOR]->(this_topActor:\`Actor\`)
-                WHERE this_topActor.name = $thisparam0
+                MATCH (this)-[this0:TOP_ACTOR]->(this_topActor:\`Actor\`)
+                WHERE this_topActor.name = $param1
                 CALL {
                     WITH this_topActor
-                    MATCH (this_topActor)-[thisthis1:ACTED_IN]->(this_topActor_movies:\`Movie\`)
-                    WHERE this_topActor_movies.title = $thisparam1
+                    MATCH (this_topActor)-[this1:ACTED_IN]->(this_topActor_movies:\`Movie\`)
+                    WHERE this_topActor_movies.title = $param2
                     WITH this_topActor_movies { .title } AS this_topActor_movies
                     RETURN collect(this_topActor_movies) AS this_topActor_movies
                 }
                 WITH this_topActor { .name, movies: this_topActor_movies } AS this_topActor
                 RETURN head(collect(this_topActor)) AS this_topActor
             }
-            RETURN this { .title, topActor: this_topActor } as this"
+            RETURN this { .title, topActor: this_topActor } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some title\\",
-                \\"thisparam0\\": \\"top actor\\",
-                \\"thisparam1\\": \\"top actor movie\\"
+                \\"param1\\": \\"top actor\\",
+                \\"param2\\": \\"top actor movie\\"
             }"
         `);
     });

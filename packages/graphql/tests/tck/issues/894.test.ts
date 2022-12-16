@@ -75,11 +75,19 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_activeOrganization0_node:Organization)
             	WHERE this_connect_activeOrganization0_node._id = $this_connect_activeOrganization0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_activeOrganization0_node IS NULL THEN [] ELSE [1] END |
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_activeOrganization0_node) as connectedNodes, collect(this) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_activeOrganization0_node
             			MERGE (this)-[:ACTIVELY_MANAGING]->(this_connect_activeOrganization0_node)
-            		)
-            	)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this, this_connect_activeOrganization0_node
             	RETURN count(*) AS connect_this_connect_activeOrganization_Organization
             }
             WITH this
@@ -87,9 +95,13 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_activeOrganization0_rel:ACTIVELY_MANAGING]->(this_disconnect_activeOrganization0:Organization)
             WHERE NOT (this_disconnect_activeOrganization0._id = $updateUsers_args_disconnect_activeOrganization_where_Organizationparam0)
-            FOREACH(_ IN CASE WHEN this_disconnect_activeOrganization0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_activeOrganization0_rel
-            )
+            CALL {
+            	WITH this_disconnect_activeOrganization0, this_disconnect_activeOrganization0_rel, this
+            	WITH collect(this_disconnect_activeOrganization0) as this_disconnect_activeOrganization0, this_disconnect_activeOrganization0_rel, this
+            	UNWIND this_disconnect_activeOrganization0 as x
+            	DELETE this_disconnect_activeOrganization0_rel
+            	RETURN count(*) AS _
+            }
             RETURN count(*) AS disconnect_this_disconnect_activeOrganization_Organization
             }
             WITH *

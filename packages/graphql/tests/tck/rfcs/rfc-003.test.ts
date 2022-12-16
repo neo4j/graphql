@@ -56,25 +56,32 @@ describe("tck/rfs/003", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "CALL {
-                    CREATE (this0:Movie)
-                    SET this0.id = $this0_id
-                    WITH this0
+                    "UNWIND $create_param0 AS create_var1
                     CALL {
-                    	WITH this0
-                    	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
-                    	WITH count(this0_director_Director_unique) as c
-                    	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
-                    	RETURN c AS this0_director_Director_unique_ignored
-                    }
-                    RETURN this0
+                        WITH create_var1
+                        CREATE (create_this0:\`Movie\`)
+                        SET
+                            create_this0.id = create_var1.id
+                        WITH create_this0
+                        CALL {
+                        	WITH create_this0
+                        	MATCH (create_this0)<-[create_this0_director_Director_unique:DIRECTED]-(:Director)
+                        	WITH count(create_this0_director_Director_unique) as c
+                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
+                        	RETURN c AS create_this0_director_Director_unique_ignored
+                        }
+                        RETURN create_this0
                     }
                     RETURN 'Query cannot conclude with CALL'"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"this0_id\\": \\"movieId-1\\",
+                        \\"create_param0\\": [
+                            {
+                                \\"id\\": \\"movieId-1\\"
+                            }
+                        ],
                         \\"resolvedCallbacks\\": {}
                     }"
                 `);
@@ -111,25 +118,32 @@ describe("tck/rfs/003", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "CALL {
-                    CREATE (this0:Movie)
-                    SET this0.id = $this0_id
-                    WITH this0
+                    "UNWIND $create_param0 AS create_var1
                     CALL {
-                    	WITH this0
-                    	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
-                    	WITH count(this0_director_Director_unique) as c
-                    	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
-                    	RETURN c AS this0_director_Director_unique_ignored
-                    }
-                    RETURN this0
+                        WITH create_var1
+                        CREATE (create_this0:\`Movie\`)
+                        SET
+                            create_this0.id = create_var1.id
+                        WITH create_this0
+                        CALL {
+                        	WITH create_this0
+                        	MATCH (create_this0)<-[create_this0_director_Director_unique:DIRECTED]-(:Director)
+                        	WITH count(create_this0_director_Director_unique) as c
+                        	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                        	RETURN c AS create_this0_director_Director_unique_ignored
+                        }
+                        RETURN create_this0
                     }
                     RETURN 'Query cannot conclude with CALL'"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"this0_id\\": \\"movieId-1\\",
+                        \\"create_param0\\": [
+                            {
+                                \\"id\\": \\"movieId-1\\"
+                            }
+                        ],
                         \\"resolvedCallbacks\\": {}
                     }"
                 `);
@@ -173,38 +187,58 @@ describe("tck/rfs/003", () => {
                     });
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                        "CALL {
-                        CREATE (this0:Movie)
-                        SET this0.id = $this0_id
-                        WITH this0
-                        CREATE (this0_director0_node:Director)
-                        SET this0_director0_node.id = $this0_director0_node_id
-                        MERGE (this0)<-[:DIRECTED]-(this0_director0_node)
-                        WITH this0, this0_director0_node
+                        "UNWIND $create_param0 AS create_var1
                         CALL {
-                        	WITH this0_director0_node
-                        	MATCH (this0_director0_node)-[this0_director0_node_address_Address_unique:HAS_ADDRESS]->(:Address)
-                        	WITH count(this0_director0_node_address_Address_unique) as c
-                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
-                        	RETURN c AS this0_director0_node_address_Address_unique_ignored
-                        }
-                        WITH this0
-                        CALL {
-                        	WITH this0
-                        	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
-                        	WITH count(this0_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
-                        	RETURN c AS this0_director_Director_unique_ignored
-                        }
-                        RETURN this0
+                            WITH create_var1
+                            CREATE (create_this0:\`Movie\`)
+                            SET
+                                create_this0.id = create_var1.id
+                            WITH create_this0, create_var1
+                            CALL {
+                                WITH create_this0, create_var1
+                                UNWIND create_var1.director.create AS create_var2
+                                WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
+                                CREATE (create_this5:\`Director\`)
+                                SET
+                                    create_this5.id = create_var3.id
+                                MERGE (create_this5)-[create_this6:DIRECTED]->(create_this0)
+                                WITH create_this5
+                                CALL {
+                                	WITH create_this5
+                                	MATCH (create_this5)-[create_this5_address_Address_unique:HAS_ADDRESS]->(:Address)
+                                	WITH count(create_this5_address_Address_unique) as c
+                                	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
+                                	RETURN c AS create_this5_address_Address_unique_ignored
+                                }
+                                RETURN collect(NULL) AS create_var7
+                            }
+                            WITH create_this0
+                            CALL {
+                            	WITH create_this0
+                            	MATCH (create_this0)<-[create_this0_director_Director_unique:DIRECTED]-(:Director)
+                            	WITH count(create_this0_director_Director_unique) as c
+                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
+                            	RETURN c AS create_this0_director_Director_unique_ignored
+                            }
+                            RETURN create_this0
                         }
                         RETURN 'Query cannot conclude with CALL'"
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
-                            \\"this0_id\\": \\"movieId-2\\",
-                            \\"this0_director0_node_id\\": \\"directorId-2\\",
+                            \\"create_param0\\": [
+                                {
+                                    \\"id\\": \\"movieId-2\\",
+                                    \\"director\\": {
+                                        \\"create\\": {
+                                            \\"node\\": {
+                                                \\"id\\": \\"directorId-2\\"
+                                            }
+                                        }
+                                    }
+                                }
+                            ],
                             \\"resolvedCallbacks\\": {}
                         }"
                     `);
@@ -247,38 +281,58 @@ describe("tck/rfs/003", () => {
                     });
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                        "CALL {
-                        CREATE (this0:Movie)
-                        SET this0.id = $this0_id
-                        WITH this0
-                        CREATE (this0_director0_node:Director)
-                        SET this0_director0_node.id = $this0_director0_node_id
-                        MERGE (this0)<-[:DIRECTED]-(this0_director0_node)
-                        WITH this0, this0_director0_node
+                        "UNWIND $create_param0 AS create_var1
                         CALL {
-                        	WITH this0_director0_node
-                        	MATCH (this0_director0_node)-[this0_director0_node_address_Address_unique:HAS_ADDRESS]->(:Address)
-                        	WITH count(this0_director0_node_address_Address_unique) as c
-                        	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
-                        	RETURN c AS this0_director0_node_address_Address_unique_ignored
-                        }
-                        WITH this0
-                        CALL {
-                        	WITH this0
-                        	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
-                        	WITH count(this0_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
-                        	RETURN c AS this0_director_Director_unique_ignored
-                        }
-                        RETURN this0
+                            WITH create_var1
+                            CREATE (create_this0:\`Movie\`)
+                            SET
+                                create_this0.id = create_var1.id
+                            WITH create_this0, create_var1
+                            CALL {
+                                WITH create_this0, create_var1
+                                UNWIND create_var1.director.create AS create_var2
+                                WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
+                                CREATE (create_this5:\`Director\`)
+                                SET
+                                    create_this5.id = create_var3.id
+                                MERGE (create_this5)-[create_this6:DIRECTED]->(create_this0)
+                                WITH create_this5
+                                CALL {
+                                	WITH create_this5
+                                	MATCH (create_this5)-[create_this5_address_Address_unique:HAS_ADDRESS]->(:Address)
+                                	WITH count(create_this5_address_Address_unique) as c
+                                	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
+                                	RETURN c AS create_this5_address_Address_unique_ignored
+                                }
+                                RETURN collect(NULL) AS create_var7
+                            }
+                            WITH create_this0
+                            CALL {
+                            	WITH create_this0
+                            	MATCH (create_this0)<-[create_this0_director_Director_unique:DIRECTED]-(:Director)
+                            	WITH count(create_this0_director_Director_unique) as c
+                            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                            	RETURN c AS create_this0_director_Director_unique_ignored
+                            }
+                            RETURN create_this0
                         }
                         RETURN 'Query cannot conclude with CALL'"
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
-                            \\"this0_id\\": \\"movieId-2\\",
-                            \\"this0_director0_node_id\\": \\"directorId-2\\",
+                            \\"create_param0\\": [
+                                {
+                                    \\"id\\": \\"movieId-2\\",
+                                    \\"director\\": {
+                                        \\"create\\": {
+                                            \\"node\\": {
+                                                \\"id\\": \\"directorId-2\\"
+                                            }
+                                        }
+                                    }
+                                }
+                            ],
                             \\"resolvedCallbacks\\": {}
                         }"
                     `);
@@ -719,10 +773,20 @@ describe("tck/rfs/003", () => {
                             WITH this, this_delete_director0
                             OPTIONAL MATCH (this_delete_director0)-[this_delete_director0_address0_relationship:HAS_ADDRESS]->(this_delete_director0_address0:Address)
                             WHERE this_delete_director0_address0.id = $updateMovies_args_delete_director_delete_address_where_Addressparam0
-                            WITH this, this_delete_director0, collect(DISTINCT this_delete_director0_address0) as this_delete_director0_address0_to_delete
-                            FOREACH(x IN this_delete_director0_address0_to_delete | DETACH DELETE x)
-                            WITH this, collect(DISTINCT this_delete_director0) as this_delete_director0_to_delete
-                            FOREACH(x IN this_delete_director0_to_delete | DETACH DELETE x)
+                            WITH this, this_delete_director0, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
+                            CALL {
+                            	WITH this_delete_director0_address0_to_delete
+                            	UNWIND this_delete_director0_address0_to_delete AS x
+                            	DETACH DELETE x
+                            	RETURN count(*) AS _
+                            }
+                            WITH this, collect(DISTINCT this_delete_director0) AS this_delete_director0_to_delete
+                            CALL {
+                            	WITH this_delete_director0_to_delete
+                            	UNWIND this_delete_director0_to_delete AS x
+                            	DETACH DELETE x
+                            	RETURN count(*) AS _
+                            }
                             WITH *
                             WITH *
                             CALL {
@@ -832,10 +896,20 @@ describe("tck/rfs/003", () => {
                             WITH this, this_delete_director0
                             OPTIONAL MATCH (this_delete_director0)-[this_delete_director0_address0_relationship:HAS_ADDRESS]->(this_delete_director0_address0:Address)
                             WHERE this_delete_director0_address0.id = $updateMovies_args_delete_director_delete_address_where_Addressparam0
-                            WITH this, this_delete_director0, collect(DISTINCT this_delete_director0_address0) as this_delete_director0_address0_to_delete
-                            FOREACH(x IN this_delete_director0_address0_to_delete | DETACH DELETE x)
-                            WITH this, collect(DISTINCT this_delete_director0) as this_delete_director0_to_delete
-                            FOREACH(x IN this_delete_director0_to_delete | DETACH DELETE x)
+                            WITH this, this_delete_director0, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
+                            CALL {
+                            	WITH this_delete_director0_address0_to_delete
+                            	UNWIND this_delete_director0_address0_to_delete AS x
+                            	DETACH DELETE x
+                            	RETURN count(*) AS _
+                            }
+                            WITH this, collect(DISTINCT this_delete_director0) AS this_delete_director0_to_delete
+                            CALL {
+                            	WITH this_delete_director0_to_delete
+                            	UNWIND this_delete_director0_to_delete AS x
+                            	DETACH DELETE x
+                            	RETURN count(*) AS _
+                            }
                             WITH *
                             WITH *
                             CALL {
@@ -930,11 +1004,19 @@ describe("tck/rfs/003", () => {
                         	WITH this0
                         	OPTIONAL MATCH (this0_director_connect0_node:Director)
                         	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_param0
-                        	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-                        		FOREACH(_ IN CASE WHEN this0_director_connect0_node IS NULL THEN [] ELSE [1] END |
+                        	CALL {
+                        		WITH *
+                        		WITH collect(this0_director_connect0_node) as connectedNodes, collect(this0) as parentNodes
+                        		CALL {
+                        			WITH connectedNodes, parentNodes
+                        			UNWIND parentNodes as this0
+                        			UNWIND connectedNodes as this0_director_connect0_node
                         			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
-                        		)
-                        	)
+                        			RETURN count(*) AS _
+                        		}
+                        		RETURN count(*) AS _
+                        	}
+                        WITH this0, this0_director_connect0_node
                         	RETURN count(*) AS connect_this0_director_connect_Director
                         }
                         WITH this0
@@ -999,11 +1081,19 @@ describe("tck/rfs/003", () => {
                         	WITH this0
                         	OPTIONAL MATCH (this0_director_connect0_node:Director)
                         	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_param0
-                        	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-                        		FOREACH(_ IN CASE WHEN this0_director_connect0_node IS NULL THEN [] ELSE [1] END |
+                        	CALL {
+                        		WITH *
+                        		WITH collect(this0_director_connect0_node) as connectedNodes, collect(this0) as parentNodes
+                        		CALL {
+                        			WITH connectedNodes, parentNodes
+                        			UNWIND parentNodes as this0
+                        			UNWIND connectedNodes as this0_director_connect0_node
                         			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
-                        		)
-                        	)
+                        			RETURN count(*) AS _
+                        		}
+                        		RETURN count(*) AS _
+                        	}
+                        WITH this0, this0_director_connect0_node
                         	RETURN count(*) AS connect_this0_director_connect_Director
                         }
                         WITH this0
@@ -1086,21 +1176,35 @@ describe("tck/rfs/003", () => {
                             	WITH this0
                             	OPTIONAL MATCH (this0_director_connect0_node:Director)
                             	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_param0
-                            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-                            		FOREACH(_ IN CASE WHEN this0_director_connect0_node IS NULL THEN [] ELSE [1] END |
+                            	CALL {
+                            		WITH *
+                            		WITH collect(this0_director_connect0_node) as connectedNodes, collect(this0) as parentNodes
+                            		CALL {
+                            			WITH connectedNodes, parentNodes
+                            			UNWIND parentNodes as this0
+                            			UNWIND connectedNodes as this0_director_connect0_node
                             			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
-                            		)
-                            	)
+                            			RETURN count(*) AS _
+                            		}
+                            		RETURN count(*) AS _
+                            	}
                             WITH this0, this0_director_connect0_node
                             CALL {
                             	WITH this0, this0_director_connect0_node
                             	OPTIONAL MATCH (this0_director_connect0_node_address0_node:Address)
                             	WHERE this0_director_connect0_node_address0_node.street = $this0_director_connect0_node_address0_node_param0
-                            	FOREACH(_ IN CASE WHEN this0_director_connect0_node IS NULL THEN [] ELSE [1] END |
-                            		FOREACH(_ IN CASE WHEN this0_director_connect0_node_address0_node IS NULL THEN [] ELSE [1] END |
+                            	CALL {
+                            		WITH *
+                            		WITH this0, collect(this0_director_connect0_node_address0_node) as connectedNodes, collect(this0_director_connect0_node) as parentNodes
+                            		CALL {
+                            			WITH connectedNodes, parentNodes
+                            			UNWIND parentNodes as this0_director_connect0_node
+                            			UNWIND connectedNodes as this0_director_connect0_node_address0_node
                             			MERGE (this0_director_connect0_node)-[:HAS_ADDRESS]->(this0_director_connect0_node_address0_node)
-                            		)
-                            	)
+                            			RETURN count(*) AS _
+                            		}
+                            		RETURN count(*) AS _
+                            	}
                             	WITH this0, this0_director_connect0_node, this0_director_connect0_node_address0_node
                             CALL {
                             	WITH this0_director_connect0_node
@@ -1109,6 +1213,7 @@ describe("tck/rfs/003", () => {
                             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
                             	RETURN c AS this0_director_connect0_node_address_Address_unique_ignored
                             }
+                            WITH this0, this0_director_connect0_node, this0_director_connect0_node_address0_node
                             	RETURN count(*) AS connect_this0_director_connect0_node_address_Address
                             }
                             	RETURN count(*) AS connect_this0_director_connect_Director
@@ -1178,9 +1283,13 @@ describe("tck/rfs/003", () => {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
                         WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Directorparam0
-                        FOREACH(_ IN CASE WHEN this_disconnect_director0 IS NULL THEN [] ELSE [1] END |
-                        DELETE this_disconnect_director0_rel
-                        )
+                        CALL {
+                        	WITH this_disconnect_director0, this_disconnect_director0_rel, this
+                        	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
+                        	UNWIND this_disconnect_director0 as x
+                        	DELETE this_disconnect_director0_rel
+                        	RETURN count(*) AS _
+                        }
                         RETURN count(*) AS disconnect_this_disconnect_director_Director
                         }
                         WITH *
@@ -1270,11 +1379,19 @@ describe("tck/rfs/003", () => {
                         	WITH this
                         	OPTIONAL MATCH (this_connect_director0_node:Director)
                         	WHERE this_connect_director0_node.id = $this_connect_director0_node_param0
-                        	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-                        		FOREACH(_ IN CASE WHEN this_connect_director0_node IS NULL THEN [] ELSE [1] END |
+                        	CALL {
+                        		WITH *
+                        		WITH collect(this_connect_director0_node) as connectedNodes, collect(this) as parentNodes
+                        		CALL {
+                        			WITH connectedNodes, parentNodes
+                        			UNWIND parentNodes as this
+                        			UNWIND connectedNodes as this_connect_director0_node
                         			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
-                        		)
-                        	)
+                        			RETURN count(*) AS _
+                        		}
+                        		RETURN count(*) AS _
+                        	}
+                        WITH this, this_connect_director0_node
                         	RETURN count(*) AS connect_this_connect_director_Director
                         }
                         WITH this
@@ -1282,9 +1399,13 @@ describe("tck/rfs/003", () => {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
                         WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Directorparam0
-                        FOREACH(_ IN CASE WHEN this_disconnect_director0 IS NULL THEN [] ELSE [1] END |
-                        DELETE this_disconnect_director0_rel
-                        )
+                        CALL {
+                        	WITH this_disconnect_director0, this_disconnect_director0_rel, this
+                        	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
+                        	UNWIND this_disconnect_director0 as x
+                        	DELETE this_disconnect_director0_rel
+                        	RETURN count(*) AS _
+                        }
                         RETURN count(*) AS disconnect_this_disconnect_director_Director
                         }
                         WITH *
@@ -1379,11 +1500,19 @@ describe("tck/rfs/003", () => {
                         	WITH this
                         	OPTIONAL MATCH (this_connect_director0_node:Director)
                         	WHERE this_connect_director0_node.id = $this_connect_director0_node_param0
-                        	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-                        		FOREACH(_ IN CASE WHEN this_connect_director0_node IS NULL THEN [] ELSE [1] END |
+                        	CALL {
+                        		WITH *
+                        		WITH collect(this_connect_director0_node) as connectedNodes, collect(this) as parentNodes
+                        		CALL {
+                        			WITH connectedNodes, parentNodes
+                        			UNWIND parentNodes as this
+                        			UNWIND connectedNodes as this_connect_director0_node
                         			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
-                        		)
-                        	)
+                        			RETURN count(*) AS _
+                        		}
+                        		RETURN count(*) AS _
+                        	}
+                        WITH this, this_connect_director0_node
                         	RETURN count(*) AS connect_this_connect_director_Director
                         }
                         WITH this
@@ -1391,9 +1520,13 @@ describe("tck/rfs/003", () => {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
                         WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Directorparam0
-                        FOREACH(_ IN CASE WHEN this_disconnect_director0 IS NULL THEN [] ELSE [1] END |
-                        DELETE this_disconnect_director0_rel
-                        )
+                        CALL {
+                        	WITH this_disconnect_director0, this_disconnect_director0_rel, this
+                        	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
+                        	UNWIND this_disconnect_director0 as x
+                        	DELETE this_disconnect_director0_rel
+                        	RETURN count(*) AS _
+                        }
                         RETURN count(*) AS disconnect_this_disconnect_director_Director
                         }
                         WITH *

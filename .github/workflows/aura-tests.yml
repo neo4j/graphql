@@ -1,0 +1,74 @@
+name: "Aura Tests"
+
+on:
+  push:
+    branches:
+      - dev
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"
+  pull_request_target:
+    branches:
+      - dev
+      - master
+      - 4.0.0
+    paths:
+      - "**/CHANGELOG.md"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}-aura
+  cancel-in-progress: true
+
+jobs:
+  aura-free-tests:
+    if: |
+      github.event_name != 'pull_request_target' ||
+      github.event.pull_request.user.login == 'neo4j-team-graphql' &&
+      startsWith(github.head_ref, 'changeset-release/')
+    uses: ./.github/workflows/reusable-aura-tests.yml
+    with:
+      BRANCH: ${{ github.head_ref || github.ref }}
+    secrets:
+      URI: ${{ secrets.AURA_FREE_URI }}
+      PASSWORD: ${{ secrets.AURA_FREE_PASSWORD }}
+    concurrency: aura-free
+
+  aura-professional-4-tests:
+    if: |
+      github.event_name != 'pull_request_target' ||
+      github.event.pull_request.user.login == 'neo4j-team-graphql' &&
+      startsWith(github.head_ref, 'changeset-release/')
+    uses: ./.github/workflows/reusable-aura-tests.yml
+    with:
+      BRANCH: ${{ github.head_ref || github.ref }}
+    secrets:
+      URI: ${{ secrets.AURA_PROFESSIONAL_4_URI }}
+      PASSWORD: ${{ secrets.AURA_PROFESSIONAL_4_PASSWORD }}
+    concurrency: aura-professional-4
+
+  aura-professional-5-tests:
+    if: |
+      github.event_name != 'pull_request_target' ||
+      github.event.pull_request.user.login == 'neo4j-team-graphql' &&
+      startsWith(github.head_ref, 'changeset-release/')
+    uses: ./.github/workflows/reusable-aura-tests.yml
+    with:
+      BRANCH: ${{ github.head_ref || github.ref }}
+    secrets:
+      URI: ${{ secrets.AURA_PROFESSIONAL_5_URI }}
+      PASSWORD: ${{ secrets.AURA_PROFESSIONAL_5_PASSWORD }}
+    concurrency: aura-professional-5
+
+  aura-enterprise-5-tests:
+    if: |
+      github.event_name != 'pull_request_target' ||
+      github.event.pull_request.user.login == 'neo4j-team-graphql' &&
+      startsWith(github.head_ref, 'changeset-release/')
+    uses: ./.github/workflows/reusable-aura-tests.yml
+    with:
+      BRANCH: ${{ github.head_ref || github.ref }}
+    secrets:
+      URI: ${{ secrets.AURA_ENTERPRISE_5_URI }}
+      PASSWORD: ${{ secrets.AURA_ENTERPRISE_5_PASSWORD }}
+    concurrency: aura-enterprise-5

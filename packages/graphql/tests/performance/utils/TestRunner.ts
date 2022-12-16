@@ -18,7 +18,6 @@
  */
 
 import assert from "assert";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { gql } from "apollo-server-express";
 import type { Driver, ProfiledPlan } from "neo4j-driver";
 import type { DocumentNode } from "graphql";
@@ -26,6 +25,8 @@ import type * as Performance from "../types";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { translateQuery } from "../../tck/utils/tck-test-utils";
 import type Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
+
+type ExecutionHook = (info: Performance.TestInfo) => Promise<void>;
 
 export class TestRunner {
     private driver: Driver;
@@ -36,17 +37,19 @@ export class TestRunner {
         this.schema = schema;
     }
 
-    public async runTests(tests: Array<Performance.TestInfo>): Promise<Array<Performance.TestDisplayData>> {
+    public async runTests(
+        tests: Array<Performance.TestInfo>,
+        { beforeEach, afterEach }: { beforeEach: ExecutionHook; afterEach: ExecutionHook }
+    ): Promise<Array<Performance.TestDisplayData>> {
         const results: Array<Performance.TestDisplayData> = [];
         for (const test of tests) {
             try {
-                // eslint-disable-next-line no-await-in-loop -- We want to run tests sequentially
+                await beforeEach(test);
                 const perfResult = await this.runPerformanceTest(gql(test.query));
+                await afterEach(test);
                 results.push({ name: test.name, result: perfResult, file: test.filename, type: "graphql" });
             } catch (err) {
-                // eslint-disable-next-line no-console
                 console.error("Error running test", test.filename, test.name);
-                // eslint-disable-next-line no-console
                 console.warn(err);
             }
         }
@@ -54,12 +57,21 @@ export class TestRunner {
         return results;
     }
 
-    public async runCypherTests(tests: Array<Performance.TestInfo>): Promise<Array<Performance.TestDisplayData>> {
+    public async runCypherTests(
+        tests: Array<Performance.TestInfo>,
+        { beforeEach, afterEach }: { beforeEach: ExecutionHook; afterEach: ExecutionHook }
+    ): Promise<Array<Performance.TestDisplayData>> {
         const results: Array<Performance.TestDisplayData> = [];
         for (const test of tests) {
-            // eslint-disable-next-line no-await-in-loop -- We want to run tests sequentially
-            const perfResult = await this.runCypherQuery(test.query);
-            results.push({ name: test.name, result: perfResult, file: test.filename, type: "cypher" });
+            try {
+                await beforeEach(test);
+                const perfResult = await this.runCypherQuery(test.query);
+                await afterEach(test);
+                results.push({ name: test.name, result: perfResult, file: test.filename, type: "cypher" });
+            } catch (err) {
+                console.error("Error running test", test.filename, test.name);
+                console.warn(err);
+            }
         }
 
         return results;
@@ -96,7 +108,7 @@ export class TestRunner {
     // Check for the profile plan to have the correct settings
     private assertQueryOptions(profiledPlan: ProfiledPlan): void {
         assert.ok(profiledPlan.arguments);
-        assert.strictEqual(profiledPlan.arguments.runtime, "INTERPRETED");
+        assert.strictEqual(profiledPlan.arguments.runtime, "PIPELINED");
         assert.strictEqual(profiledPlan.arguments.planner, "COST");
         assert.strictEqual(profiledPlan.arguments["planner-impl"], "DP");
     }
@@ -105,7 +117,7 @@ export class TestRunner {
         // planner and runtime options are needed to ensure consistent results on our query plan
         return `CYPHER
         planner=dp
-        runtime=interpreted
+        runtime=pipelined
         PROFILE ${query}`;
     }
 

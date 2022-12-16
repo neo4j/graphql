@@ -24,9 +24,10 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createEventMeta } from "./subscriptions/create-event-meta";
-import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
+import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 
-export function translateDelete({ context, node }: { context: Context; node: Node }): CypherBuilder.CypherResult {
+export function translateDelete({ context, node }: { context: Context; node: Node }): Cypher.CypherResult {
     const { resolveTree } = context;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
@@ -41,7 +42,8 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
         withVars.push(META_CYPHER_VARIABLE);
     }
 
-    const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "DELETE" });
+    const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
+    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "DELETE" });
     matchAndWhereStr = topLevelMatch.cypher;
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
@@ -81,7 +83,11 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
         };
     }
 
-    const deleteQuery = new CypherBuilder.RawCypher((_env: CypherBuilder.Environment) => {
+    if (context.subscriptionsEnabled && !deleteInput) {
+        deleteStr = findConnectedNodesCypherQuery(varName);
+    }
+
+    const deleteQuery = new Cypher.RawCypher(() => {
         const eventMeta = createEventMeta({ event: "delete", nodeVariable: varName, typename: node.name });
         const cypher = [
             ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
@@ -102,9 +108,48 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
 function getDeleteReturn(context: Context): Array<string> {
     return context.subscriptionsEnabled
         ? [
-              `WITH ${META_CYPHER_VARIABLE}`,
-              `UNWIND ${META_CYPHER_VARIABLE} AS m`,
-              `RETURN collect(DISTINCT m) AS ${META_CYPHER_VARIABLE}`,
+              `WITH collect(${META_CYPHER_VARIABLE}) AS ${META_CYPHER_VARIABLE}`,
+              `WITH REDUCE(m=[], n IN ${META_CYPHER_VARIABLE} | m + n) AS ${META_CYPHER_VARIABLE}`,
+              `RETURN ${META_CYPHER_VARIABLE}`,
           ]
         : [];
+}
+
+function findConnectedNodesCypherQuery(varName: string): string {
+    return [
+        `CALL {`,
+        `\tWITH ${varName}`,
+        `\tOPTIONAL MATCH (${varName})-[r]-()`,
+        `\tWITH ${varName}, collect(DISTINCT r) AS relationships_to_delete`,
+        `\tUNWIND relationships_to_delete AS x`,
+        `\tWITH CASE`,
+        `\t\tWHEN id(${varName})=id(startNode(x)) THEN ${createDisconnectEventMetaForDeletedNode({
+            relVariable: "x",
+            fromVariable: varName,
+            toVariable: "endNode(x)",
+        })}`,
+        `\t\tWHEN id(${varName})=id(endNode(x)) THEN ${createDisconnectEventMetaForDeletedNode({
+            relVariable: "x",
+            fromVariable: "startNode(x)",
+            toVariable: varName,
+        })}`,
+        `\tEND AS meta`,
+        `\tRETURN collect(DISTINCT meta) AS relationship_meta`,
+        `}`,
+        `WITH REDUCE(m=meta, r IN relationship_meta | m + r) AS meta, ${varName}`,
+    ].join("\n");
+}
+
+function createDisconnectEventMetaForDeletedNode({ relVariable, fromVariable, toVariable }) {
+    return createConnectionEventMetaObject({
+        event: "delete_relationship",
+        relVariable,
+        fromVariable,
+        toVariable,
+        typename: `type(${relVariable})`,
+        fromLabels: `labels(${fromVariable})`,
+        toLabels: `labels(${toVariable})`,
+        toProperties: `properties(${toVariable})`,
+        fromProperties: `properties(${fromVariable})`,
+    });
 }

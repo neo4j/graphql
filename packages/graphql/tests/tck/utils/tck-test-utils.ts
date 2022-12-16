@@ -20,11 +20,13 @@
 import type { DocumentNode, GraphQLArgs } from "graphql";
 import { graphql } from "graphql";
 import type { IncomingMessage } from "http";
+import { Neo4jError } from "neo4j-driver";
 import createAuthParam from "../../../src/translate/create-auth-param";
 import type { Neo4jGraphQL } from "../../../src";
 import { DriverBuilder } from "../../utils/builders/driver-builder";
 import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
+import Neo4j from "../../integration/neo4j";
 
 export function compareParams({
     params,
@@ -122,8 +124,30 @@ export async function translateQuery(
         }
     }
 
+    const [cypher, params] = driverBuilder.runFunction.calls[0];
+
+    if (process.env.VERIFY_TCK) {
+        const neo4j = new Neo4j();
+        const session = await neo4j.getSession();
+        try {
+            await session.run(`EXPLAIN ${cypher}`, params);
+        } catch (e) {
+            if (e instanceof Neo4jError) {
+                throw new Error(
+                    `${e.message}\n\n${cypher as string}\n\n${formatParams(params as Record<string, any>)}`
+                );
+            }
+
+            throw e;
+        } finally {
+            await session.close();
+            const driver = await neo4j.getDriver();
+            await driver.close();
+        }
+    }
+
     return {
-        cypher: driverBuilder.runFunction.calls[0][0],
-        params: driverBuilder.runFunction.calls[0][1],
+        cypher,
+        params,
     };
 }

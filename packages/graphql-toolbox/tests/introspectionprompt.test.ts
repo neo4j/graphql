@@ -18,12 +18,13 @@
  */
 
 import * as neo4j from "neo4j-driver";
+import * as base from "@playwright/test";
 import { generate } from "randomstring";
-import { test, describe, beforeEach, afterEach, expect } from "./utils/pagemodel";
+import { test, beforeEach, afterEach, expect } from "./utils/pagemodel";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
-describe("Introspection prompt", () => {
+base.test.describe("Introspection prompt", () => {
     let driver: neo4j.Driver;
     const randomString = generate({
         charset: "alphabetic",
@@ -34,7 +35,7 @@ describe("Introspection prompt", () => {
     beforeEach(async () => {
         driver = neo4j.driver(NEO_URL, neo4j.auth.basic(NEO_USER, NEO_PASSWORD));
 
-        const session = await driver.session();
+        const session = driver.session();
         try {
             await session.run(`
                 CREATE (d:${label}) SET d.name = "test" RETURN d
@@ -45,7 +46,7 @@ describe("Introspection prompt", () => {
     });
 
     afterEach(async () => {
-        const session = await driver.session();
+        const session = driver.session();
         try {
             await session.run(`
                 MATCH (d:${label}) DETACH DELETE d

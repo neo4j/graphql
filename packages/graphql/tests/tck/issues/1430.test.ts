@@ -87,7 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             SET this_create_interface_ChildOne0_node_ChildOne.name = $this_create_interface_ChildOne0_node_ChildOne_name
             MERGE (this)-[:HAS_INTERFACE]->(this_create_interface_ChildOne0_node_ChildOne)
             WITH *
-            WITH this
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:HAS_INTERFACE]->(this_ChildOne:\`ChildOne\`)
@@ -140,26 +140,42 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_interface0_node:ChildOne)
             	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_interface0_node IS NULL THEN [] ELSE [1] END |
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_interface0_node) as connectedNodes, collect(this) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_interface0_node
             			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
-            		)
-            	)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this, this_connect_interface0_node
             	RETURN count(*) AS connect_this_connect_interface_ChildOne
             }
             CALL {
             		WITH this
-            	OPTIONAL MATCH (this_connect_interface0_node:ChildTwo)
-            	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_interface0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
-            		)
-            	)
+            	OPTIONAL MATCH (this_connect_interface1_node:ChildTwo)
+            	WHERE this_connect_interface1_node.name = $this_connect_interface1_node_param0
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_interface1_node) as connectedNodes, collect(this) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_interface1_node
+            			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface1_node)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this, this_connect_interface1_node
             	RETURN count(*) AS connect_this_connect_interface_ChildTwo
             }
             WITH *
-            WITH this
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:HAS_INTERFACE]->(this_ChildOne:\`ChildOne\`)
@@ -176,6 +192,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             "{
                 \\"param0\\": \\"TestId\\",
                 \\"this_connect_interface0_node_param0\\": \\"childone name connect\\",
+                \\"this_connect_interface1_node_param0\\": \\"childone name connect\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

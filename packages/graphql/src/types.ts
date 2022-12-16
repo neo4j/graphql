@@ -25,6 +25,8 @@ import type { Node, Relationship } from "./classes";
 import type { Neo4jDatabaseInfo } from "./classes/Neo4jDatabaseInfo";
 import type { RelationshipQueryDirectionOption } from "./constants";
 import type { Executor } from "./classes/Executor";
+import type { Directive } from "graphql-compose";
+import type { Neo4jGraphQLSchemaModel } from "./schema-model/Neo4jGraphQLSchemaModel";
 
 export { Node } from "./classes";
 
@@ -46,6 +48,7 @@ export interface Context {
     neo4jDatabaseInfo: Neo4jDatabaseInfo;
     nodes: Node[];
     relationships: Relationship[];
+    schemaModel: Neo4jGraphQLSchemaModel;
     schema: GraphQLSchema;
     auth?: AuthContext;
     callbacks?: Neo4jGraphQLCallbacks;
@@ -77,13 +80,16 @@ export interface Auth {
     type: "JWT";
 }
 
-export type FullTextIndex = {
-    name: string;
+export type FulltextIndex = {
+    name: string | undefined;
     fields: string[];
+    queryType: string;
+    queryName: string | undefined;
+    indexName: string | undefined; // TODO: not undefined once name is removed.
 };
 
 export type FullText = {
-    indexes: FullTextIndex[];
+    indexes: FulltextIndex[];
 };
 
 /**
@@ -118,7 +124,7 @@ export interface Unique {
 
 export interface Callback {
     operations: CallbackOperations[];
-    name: string;
+    callbackName: string;
 }
 
 /**
@@ -162,6 +168,7 @@ export interface ConnectionField extends BaseField {
  */
 export interface CypherField extends BaseField {
     statement: string;
+    columnName?: string;
     isEnum: boolean;
     isScalar: boolean;
 }
@@ -192,7 +199,7 @@ export interface UnionField extends BaseField {
     nodes?: string[];
 }
 
-export interface ComputedField extends BaseField {
+export interface CustomResolverField extends BaseField {
     requiredFields: string[];
 }
 
@@ -220,6 +227,10 @@ export type SortDirection = "ASC" | "DESC";
 
 export interface GraphQLSortArg {
     [field: string]: SortDirection;
+}
+
+export interface NestedGraphQLSortArg {
+    [field: string]: GraphQLSortArg;
 }
 
 export interface ConnectionSortArg {
@@ -345,55 +356,118 @@ export interface CypherQueryOptions {
     replan?: CypherReplanning;
 }
 
-/** Nested Records helper type, supports any level of recursion. Ending in properties of type T */
-export interface NestedRecord<T> extends Record<string | symbol | number, T | NestedRecord<T>> {} // Using interface to allow recursive types
-
 /** Input field for graphql-compose */
-export type InputField = { type: string; defaultValue?: string } | string;
+export type InputField = { type: string; defaultValue?: string; directives?: Directive[] } | string;
 
 export interface Neo4jGraphQLAuthPlugin {
     rolesPath?: string;
     isGlobalAuthenticationEnabled?: boolean;
+    bindPredicate: "all" | "any";
 
     decode<T>(token: string): Promise<T | undefined>;
 }
 
 /** Raw event metadata returned from queries */
-export type EventMeta = {
+export type NodeSubscriptionMeta = {
     event: "create" | "update" | "delete";
+    typename: string;
     properties: {
         old: Record<string, any>;
         new: Record<string, any>;
     };
-    typename: string;
     id: Integer | string | number;
     timestamp: Integer | string | number;
 };
+export type RelationshipSubscriptionMeta =
+    | RelationshipSubscriptionMetaTypenameParameters
+    | RelationshipSubscriptionMetaLabelsParameters;
+type RelationshipSubscriptionMetaCommonParameters = {
+    event: "create_relationship" | "delete_relationship";
+    relationshipName: string;
+    id_from: Integer | string | number;
+    id_to: Integer | string | number;
+    properties: {
+        from: Record<string, any>;
+        to: Record<string, any>;
+        relationship: Record<string, any>;
+    };
+    id: Integer | string | number;
+    timestamp: Integer | string | number;
+};
+export type RelationshipSubscriptionMetaTypenameParameters = RelationshipSubscriptionMetaCommonParameters & {
+    fromTypename: string;
+    toTypename: string;
+};
+export type RelationshipSubscriptionMetaLabelsParameters = RelationshipSubscriptionMetaCommonParameters & {
+    fromLabels: string[];
+    toLabels: string[];
+};
+export type EventMeta = NodeSubscriptionMeta | RelationshipSubscriptionMeta;
 
-/** Serialized subscription event */
-export type SubscriptionsEvent = (
+export type NodeSubscriptionsEvent =
     | {
           event: "create";
+          typename: string;
           properties: {
               old: undefined;
               new: Record<string, any>;
           };
+          id: number;
+          timestamp: number;
       }
     | {
           event: "update";
+          typename: string;
           properties: {
               old: Record<string, any>;
               new: Record<string, any>;
           };
+          id: number;
+          timestamp: number;
       }
     | {
           event: "delete";
+          typename: string;
           properties: {
               old: Record<string, any>;
               new: undefined;
           };
+          id: number;
+          timestamp: number;
+      };
+export type RelationshipSubscriptionsEvent =
+    | {
+          event: "create_relationship";
+          relationshipName: string;
+          properties: {
+              from: Record<string, any>;
+              to: Record<string, any>;
+              relationship: Record<string, any>;
+          };
+          id_from: number;
+          id_to: number;
+          fromTypename: string;
+          toTypename: string;
+          id: number;
+          timestamp: number;
       }
-) & { id: number; timestamp: number; typename: string };
+    | {
+          event: "delete_relationship";
+          relationshipName: string;
+          properties: {
+              from: Record<string, any>;
+              to: Record<string, any>;
+              relationship: Record<string, any>;
+          };
+          id_from: number;
+          id_to: number;
+          fromTypename: string;
+          toTypename: string;
+          id: number;
+          timestamp: number;
+      };
+/** Serialized subscription event */
+export type SubscriptionsEvent = NodeSubscriptionsEvent | RelationshipSubscriptionsEvent;
 
 export interface Neo4jGraphQLSubscriptionsPlugin {
     events: EventEmitter;

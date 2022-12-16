@@ -20,9 +20,8 @@
 import { useContext } from "react";
 import { Checkbox, Radio } from "@neo4j-ndl/react";
 import { Theme, ThemeContext } from "../../contexts/theme";
-import { LOCAL_STATE_SHOW_LINT_MARKERS } from "../../constants";
-import { Storage } from "../../utils/storage";
 import { AppSettingsContext } from "../..//contexts/appsettings";
+import { tracking } from "../../analytics/tracking";
 
 interface Props {
     onClickClose: () => void;
@@ -35,18 +34,29 @@ export const AppSettings = ({ onClickClose }: Props) => {
     const handleOnChangeEditorTheme = (event: any) => {
         const next = event?.target?.id === Theme.LIGHT.toString() ? Theme.LIGHT : Theme.DARK;
         theme.setTheme(next);
+        tracking.trackChangeEditorTheme({ screen: "type definitions", theme: next });
     };
 
-    const onChangeShowLintMarkersCheckbox = (): void => {
+    const onChangeShowLintMarkers = (): void => {
         appSettings.setShowLintMarkers(!appSettings.showLintMarkers);
-        Storage.store(LOCAL_STATE_SHOW_LINT_MARKERS, Boolean(!appSettings.showLintMarkers).toString());
+    };
+
+    const onChangeProductUsageTracking = (): void => {
+        appSettings.setEnableProductUsageTracking(!appSettings.enableProductUsageTracking);
     };
 
     return (
         <div className="p-6 w-full">
             <div className="pb-6 flex justify-between items-center">
                 <span className="h5">Settings</span>
-                <span className="text-lg cursor-pointer" onClick={onClickClose}>
+                <span
+                    data-test-settings-close-button
+                    className="text-lg cursor-pointer"
+                    onClick={onClickClose}
+                    onKeyDown={onClickClose}
+                    role="button"
+                    tabIndex={0}
+                >
                     {"\u2715"}
                 </span>
             </div>
@@ -67,14 +77,38 @@ export const AppSettings = ({ onClickClose }: Props) => {
                         checked={theme.theme === Theme.DARK}
                         onChange={handleOnChangeEditorTheme}
                     />
-                    <div className="mt-4">
+                    <div className="mt-3">
                         <Checkbox
-                            data-test-show-lint-markers-checkbox
+                            data-test-show-lint-markers
                             className="m-0"
+                            aria-label="Show lint markers"
                             label="Show lint markers"
                             checked={appSettings.showLintMarkers}
-                            onChange={onChangeShowLintMarkersCheckbox}
+                            onChange={onChangeShowLintMarkers}
                         />
+                    </div>
+                </div>
+            </div>
+            <div className="pt-9">
+                <span className="h6">Product Analytics</span>
+                <div className="pt-3 flex">
+                    <Checkbox
+                        data-test-enable-product-usage-tracking
+                        aria-label="Product usage tracking toggle"
+                        className={`mt-1 ${
+                            appSettings.enableProductUsageTracking
+                                ? "data-test-enable-product-usage-tracking-checked"
+                                : ""
+                        }`}
+                        checked={appSettings.enableProductUsageTracking}
+                        onChange={onChangeProductUsageTracking}
+                    />
+                    <div className="ml-3">
+                        <p className="text-sm">Product usage</p>
+                        <p className="text-xs">
+                            This data helps us prioritize features and improvements. No personal information is
+                            collected or sent.
+                        </p>
                     </div>
                 </div>
             </div>

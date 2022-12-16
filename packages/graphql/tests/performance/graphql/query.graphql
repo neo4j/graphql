@@ -46,6 +46,34 @@ query DeeplyNested_skip {
     }
 }
 
+query Nested {
+    movies {
+        actors {
+            name
+            movies {
+                title
+                actors {
+                    name
+                }
+            }
+        }
+    }
+}
+
+query NestedWithFilter {
+    movies {
+        actors(where: { born_GT: 1000 }) {
+            name
+            movies(where: { title_CONTAINS: "Shark" }) {
+                title
+                actors {
+                    name
+                }
+            }
+        }
+    }
+}
+
 query OrFilterOnRelationships {
     movies(
         where: {
@@ -163,5 +191,28 @@ query DeeplyNestedWithRelationshipSingleFilters {
         }
     ) {
         name
+    }
+}
+
+query Fulltext {
+    movieTaglineFulltextQuery(phrase: "the real world") {
+        movie {
+            title
+            tagline
+        }
+        score
+    }
+}
+
+query FulltextWithNestedQuery {
+    movieTaglineFulltextQuery(phrase: "the real world") {
+        movie {
+            title
+            tagline
+            actors {
+                name
+            }
+        }
+        score
     }
 }

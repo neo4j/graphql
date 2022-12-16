@@ -7,5 +7,6 @@
     "access": "public",
     "baseBranch": "dev",
     "updateInternalDependencies": "patch",
-    "ignore": ["@neo4j/graphql-plugin-subscriptions-amqp", "graphql-manual"]
+    "ignore": ["graphql-manual", "migration"],
+    "privatePackages": { "version": true, "tag": true }
 }

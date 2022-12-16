@@ -98,14 +98,14 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                     WITH { node: { fullName: this_MasterData_NameDetails.fullName } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS this_MasterData_nameDetailsConnection
                 }
-                WITH { node: { nameDetailsConnection: nameDetailsConnection } } AS edge
+                WITH { node: { nameDetailsConnection: this_MasterData_nameDetailsConnection } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS architectureConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_architectureConnection
             }
-            RETURN this { .id, architectureConnection: architectureConnection } as this"
+            RETURN this { .id, architectureConnection: this_architectureConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -210,19 +210,19 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                         WITH { node: { fullName: this_Series_MasterData_NameDetails.fullName } } AS edge
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
+                        RETURN { edges: edges, totalCount: totalCount } AS this_Series_MasterData_nameDetailsConnection
                     }
-                    WITH { node: { nameDetailsConnection: nameDetailsConnection } } AS edge
+                    WITH { node: { nameDetailsConnection: this_Series_MasterData_nameDetailsConnection } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS architectureConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS this_Series_architectureConnection
                 }
-                WITH { node: { architectureConnection: architectureConnection } } AS edge
+                WITH { node: { architectureConnection: this_Series_architectureConnection } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS mainConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_mainConnection
             }
-            RETURN this { .id, mainConnection: mainConnection } as this"
+            RETURN this { .id, mainConnection: this_mainConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

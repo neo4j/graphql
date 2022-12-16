@@ -24,15 +24,23 @@ import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
 
 describe("auth/object-path", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     const secret = "secret";
+    let User: UniqueType;
+    let Post: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+    });
+
+    beforeEach(() => {
+        User = generateUniqueType("User");
+        Post = generateUniqueType("Post");
     });
 
     afterAll(async () => {
@@ -43,11 +51,11 @@ describe("auth/object-path", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type User {
+            type ${User} {
                 id: ID
             }
 
-            extend type User @auth(rules: [{ operations: [READ], allow: { id: "$jwt.nested.object.path.sub" } }])
+            extend type ${User} @auth(rules: [{ operations: [READ], allow: { id: "$jwt.nested.object.path.sub" } }])
         `;
 
         const userId = generate({
@@ -56,7 +64,7 @@ describe("auth/object-path", () => {
 
         const query = `
             {
-                users(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id: "${userId}"}) {
                     id
                 }
             }
@@ -73,7 +81,7 @@ describe("auth/object-path", () => {
 
         try {
             await session.run(`
-                CREATE (:User {id: "${userId}"})
+                CREATE (:${User} {id: "${userId}"})
             `);
 
             const req = createJwtRequest(secret, {
@@ -94,7 +102,7 @@ describe("auth/object-path", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [user] = (gqlResult.data as any).users;
+            const [user] = (gqlResult.data as any)[User.plural];
             expect(user).toEqual({ id: userId });
         } finally {
             await session.close();
@@ -105,16 +113,16 @@ describe("auth/object-path", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type User {
+            type ${User} {
                 id: ID
             }
 
-            type Post {
+            type ${Post} {
                 id: ID
-                creator: User! @relationship(type: "HAS_POST", direction: IN)
+                creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
             }
 
-            extend type Post @auth(rules: [{ operations: [READ], allow: { creator: { id: "$context.userId" } } }])
+            extend type ${Post} @auth(rules: [{ operations: [READ], allow: { creator: { id: "$context.userId" } } }])
         `;
 
         const userId = generate({
@@ -127,7 +135,7 @@ describe("auth/object-path", () => {
 
         const query = `
             {
-                posts(where: {id: "${postId}"}) {
+                ${Post.plural}(where: {id: "${postId}"}) {
                     id
                 }
             }
@@ -144,7 +152,7 @@ describe("auth/object-path", () => {
 
         try {
             await session.run(`
-                CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                CREATE (:${User} {id: "${userId}"})-[:HAS_POST]->(:${Post} {id: "${postId}"})
             `);
 
             const req = createJwtRequest(secret);
@@ -157,7 +165,7 @@ describe("auth/object-path", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any).posts;
+            const [post] = (gqlResult.data as any)[Post.plural];
             expect(post).toEqual({ id: postId });
         } finally {
             await session.close();
@@ -168,11 +176,11 @@ describe("auth/object-path", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type User {
+            type ${User} {
                 id: ID
             }
 
-            extend type User @auth(rules: [{ operations: [READ], roles: ["admin"] }])
+            extend type ${User} @auth(rules: [{ operations: [READ], roles: ["admin"] }])
         `;
 
         const userId = generate({
@@ -181,7 +189,7 @@ describe("auth/object-path", () => {
 
         const query = `
             {
-                users(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id: "${userId}"}) {
                     id
                 }
             }
@@ -199,7 +207,7 @@ describe("auth/object-path", () => {
 
         try {
             await session.run(`
-                CREATE (:User {id: "${userId}"})
+                CREATE (:${User} {id: "${userId}"})
             `);
 
             const req = createJwtRequest(secret, {
@@ -213,7 +221,7 @@ describe("auth/object-path", () => {
             });
 
             expect(gqlResult.errors).toBeUndefined();
-            const [user] = (gqlResult.data as any).users;
+            const [user] = (gqlResult.data as any)[User.plural];
 
             expect(user).toEqual({ id: userId });
         } finally {
@@ -225,11 +233,11 @@ describe("auth/object-path", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type User {
+            type ${User} {
                 id: ID
             }
 
-            extend type User @auth(rules: [{ operations: [READ], roles: ["admin"] }])
+            extend type ${User} @auth(rules: [{ operations: [READ], roles: ["admin"] }])
         `;
 
         const userId = generate({
@@ -238,7 +246,7 @@ describe("auth/object-path", () => {
 
         const query = `
             {
-                users(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id: "${userId}"}) {
                     id
                 }
             }
@@ -256,7 +264,7 @@ describe("auth/object-path", () => {
 
         try {
             await session.run(`
-                CREATE (:User {id: "${userId}"})
+                CREATE (:${User} {id: "${userId}"})
             `);
 
             // Not a valid JWT since signature shall never match

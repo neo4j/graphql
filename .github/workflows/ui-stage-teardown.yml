@@ -23,7 +23,7 @@ jobs:
           npm install -g surge
           surge teardown neo4j-graphql-toolbox-stage-${{ github.event.pull_request.number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
       - name: Comment on PR
-        uses: marocchino/sticky-pull-request-comment@39c5b5dc7717447d0cba270cd115037d32d28443 # renovate: tag=v2.2.0
+        uses: marocchino/sticky-pull-request-comment@fcf6fe9e4a0409cd9316a5011435be0f3327f1e1 # v2.3.1
         with:
           message: |
             Thanks for the UI updates.

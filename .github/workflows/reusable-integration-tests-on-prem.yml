@@ -24,9 +24,11 @@ jobs:
             { package: "graphql", shard: 4/4 },
           ]
         neo4j-version:
-          - 4.3.2
-          - 4.3
-          - 4.4
+          - 4.3-enterprise
+          #   - 4.4-community
+          - 4.4-enterprise
+          #   - 5-community
+          - 5-enterprise
         graphql-version:
           - "^15.0.0"
           - "^16.0.0"
@@ -35,7 +37,7 @@ jobs:
 
     services:
       neo4j:
-        image: neo4j:${{ matrix.neo4j-version }}-enterprise
+        image: neo4j:${{ matrix.neo4j-version }}
         env:
           NEO4J_AUTH: neo4j/password
           NEO4JLABS_PLUGINS: '["apoc"]'

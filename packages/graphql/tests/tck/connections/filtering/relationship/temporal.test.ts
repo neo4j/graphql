@@ -58,7 +58,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
         });
     });
 
-    test("DISTANCE", async () => {
+    test("GT and LT", async () => {
         const query = gql`
             query {
                 movies {
@@ -92,9 +92,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
                 WITH { startDate: this_connection_actorsConnectionthis0.startDate, endDateTime: apoc.date.convertFormat(toString(this_connection_actorsConnectionthis0.endDateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), node: { name: this_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection: actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

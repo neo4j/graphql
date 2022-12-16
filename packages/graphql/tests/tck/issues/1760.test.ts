@@ -124,11 +124,16 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`ApplicationVariant\`)
-            WHERE this.current = $param0
-            WITH *,  apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id\\", {this: this, auth: $auth}) AS relatedId
-            ORDER BY relatedId ASC
-            SKIP $this_offset
-            LIMIT $this_limit
+            WHERE (this.current = $param0 AND apoc.util.validatePredicate(NOT ((any(var1 IN [\\"ALL\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id\\", { this: this, auth: $auth }) AS this_relatedId
+                RETURN head(collect(this_relatedId)) AS this_relatedId
+            }
+            WITH *
+            ORDER BY this_relatedId ASC
+            SKIP $param4
+            LIMIT $param5
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_NameDetails:\`NameDetails\`)
@@ -136,7 +141,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 WITH { node: { fullName: this_NameDetails.fullName } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_nameDetailsConnection
             }
             CALL {
                 WITH this
@@ -149,12 +154,12 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                     WITH { node: { fullName: this_Market_NameDetails.fullName } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS this_Market_nameDetailsConnection
                 }
-                WITH { node: { nameDetailsConnection: nameDetailsConnection } } AS edge
+                WITH { node: { nameDetailsConnection: this_Market_nameDetailsConnection } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS marketsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_marketsConnection
             }
             CALL {
                 WITH this
@@ -163,20 +168,19 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 WITH { node: { id: this_BaseObject.id } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS baseObjectConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_baseObjectConnection
             }
-            CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"ALL\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { relatedId: relatedId, nameDetailsConnection: nameDetailsConnection, marketsConnection: marketsConnection, baseObjectConnection: baseObjectConnection } as this"
+            RETURN this { relatedId: this_relatedId, nameDetailsConnection: this_nameDetailsConnection, marketsConnection: this_marketsConnection, baseObjectConnection: this_baseObjectConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
-                \\"this_offset\\": {
+                \\"param4\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
                 },
-                \\"this_limit\\": {
+                \\"param5\\": {
                     \\"low\\": 50,
                     \\"high\\": 0
                 },

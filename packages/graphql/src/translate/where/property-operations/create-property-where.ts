@@ -18,19 +18,19 @@
  */
 
 import type { Context } from "../../../types";
-import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { GraphElement, Node } from "../../../classes";
 import { whereRegEx, WhereRegexGroups } from "../utils";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createGlobalNodeOperation } from "./create-global-node-operation";
-import { createAggregateOperation } from "./create-aggregate-operation";
 // Recursive function
-// eslint-disable-next-line import/no-cycle
+
 import { createConnectionOperation } from "./create-connection-operation";
 import { createComparisonOperation } from "./create-comparison-operation";
 // Recursive function
-// eslint-disable-next-line import/no-cycle
+
 import { createRelationshipOperation } from "./create-relationship-operation";
+import { aggregatePreComputedWhereFields } from "../../create-aggregate-where-and-params";
 
 /** Translates a property into its predicate filter */
 export function createPropertyWhere({
@@ -43,9 +43,12 @@ export function createPropertyWhere({
     key: string;
     value: any;
     element: GraphElement;
-    targetElement: CypherBuilder.Variable;
+    targetElement: Cypher.Variable;
     context: Context;
-}): CypherBuilder.Predicate | undefined {
+}): {
+    predicate: Cypher.Predicate | undefined;
+    preComputedSubquery?: Cypher.Call | undefined;
+} {
     const match = whereRegEx.exec(key);
     if (!match) {
         throw new Error(`Failed to match key in filter: ${key}`);
@@ -68,23 +71,25 @@ export function createPropertyWhere({
         dbFieldName = `${prefix}${dbFieldName}`;
     }
 
-    let propertyRef: CypherBuilder.PropertyRef | CypherBuilder.Function = targetElement.property(dbFieldName);
+    let propertyRef: Cypher.PropertyRef | Cypher.Function = targetElement.property(dbFieldName);
 
     if (element instanceof Node) {
         const node = element;
         if (node.isGlobalNode && key === "id") {
-            return createGlobalNodeOperation({
-                node,
-                value,
-                targetElement,
-                coalesceValue,
-            });
+            return {
+                predicate: createGlobalNodeOperation({
+                    node,
+                    value,
+                    targetElement,
+                    coalesceValue,
+                }),
+            };
         }
 
         if (coalesceValue) {
-            propertyRef = CypherBuilder.coalesce(
-                propertyRef as CypherBuilder.PropertyRef,
-                new CypherBuilder.RawCypher(`${coalesceValue}`) // TODO: move into CypherBuilder.literal
+            propertyRef = Cypher.coalesce(
+                propertyRef,
+                new Cypher.RawCypher(`${coalesceValue}`) // TODO: move into Cypher.literal
             );
         }
 
@@ -92,20 +97,14 @@ export function createPropertyWhere({
 
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
-
-            return createAggregateOperation({
-                relationField,
-                context,
-                value,
-                parentNode: targetElement as CypherBuilder.Node,
-            });
+            return aggregatePreComputedWhereFields(value, relationField, context, targetElement);
         }
 
         if (relationField) {
             return createRelationshipOperation({
                 relationField,
                 context,
-                parentNode: targetElement as CypherBuilder.Node,
+                parentNode: targetElement as Cypher.Node,
                 operator,
                 value,
                 isNot,
@@ -118,16 +117,20 @@ export function createPropertyWhere({
                 value,
                 connectionField,
                 context,
-                parentNode: targetElement as CypherBuilder.Node,
+                parentNode: targetElement as Cypher.Node,
                 operator,
             });
         }
 
         if (value === null) {
             if (isNot) {
-                return CypherBuilder.isNotNull(propertyRef);
+                return {
+                    predicate: Cypher.isNotNull(propertyRef),
+                };
             }
-            return CypherBuilder.isNull(propertyRef);
+            return {
+                predicate: Cypher.isNull(propertyRef),
+            };
         }
     }
     const pointField = element.pointFields.find((x) => x.fieldName === fieldName);
@@ -137,14 +140,16 @@ export function createPropertyWhere({
 
     const comparisonOp = createComparisonOperation({
         propertyRefOrCoalesce: propertyRef,
-        param: new CypherBuilder.Param(value),
+        param: new Cypher.Param(value),
         operator,
         durationField,
         pointField,
         neo4jDatabaseInfo: context.neo4jDatabaseInfo,
     });
     if (isNot) {
-        return CypherBuilder.not(comparisonOp);
+        return {
+            predicate: Cypher.not(comparisonOp),
+        };
     }
-    return comparisonOp;
+    return { predicate: comparisonOp };
 }

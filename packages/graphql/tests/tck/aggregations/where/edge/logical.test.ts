@@ -67,16 +67,20 @@ describe("Cypher Aggregations where edge with Logical AND + OR", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
-            RETURN (aggr_edge.someFloat = $aggr_edge_AND_0_someFloat_EQUAL AND aggr_edge.someFloat = $aggr_edge_AND_1_someFloat_EQUAL)
-            \\", { this: this, aggr_edge_AND_0_someFloat_EQUAL: $aggr_edge_AND_0_someFloat_EQUAL, aggr_edge_AND_1_someFloat_EQUAL: $aggr_edge_AND_1_someFloat_EQUAL })
-            RETURN this { .content } as this"
+            CALL {
+                WITH this
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                RETURN any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) AS var3, any(var4 IN collect(this0.someFloat) WHERE var4 = $param1) AS var5
+            }
+            WITH *
+            WHERE (var3 = true AND var5 = true)
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"aggr_edge_AND_0_someFloat_EQUAL\\": 10,
-                \\"aggr_edge_AND_1_someFloat_EQUAL\\": 11
+                \\"param0\\": 10,
+                \\"param1\\": 11
             }"
         `);
     });
@@ -97,16 +101,20 @@ describe("Cypher Aggregations where edge with Logical AND + OR", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
-            RETURN (aggr_edge.someFloat = $aggr_edge_OR_0_someFloat_EQUAL OR aggr_edge.someFloat = $aggr_edge_OR_1_someFloat_EQUAL)
-            \\", { this: this, aggr_edge_OR_0_someFloat_EQUAL: $aggr_edge_OR_0_someFloat_EQUAL, aggr_edge_OR_1_someFloat_EQUAL: $aggr_edge_OR_1_someFloat_EQUAL })
-            RETURN this { .content } as this"
+            CALL {
+                WITH this
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                RETURN any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) AS var3, any(var4 IN collect(this0.someFloat) WHERE var4 = $param1) AS var5
+            }
+            WITH *
+            WHERE (var3 = true OR var5 = true)
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"aggr_edge_OR_0_someFloat_EQUAL\\": 10,
-                \\"aggr_edge_OR_1_someFloat_EQUAL\\": 11
+                \\"param0\\": 10,
+                \\"param1\\": 11
             }"
         `);
     });

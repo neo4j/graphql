@@ -1,8 +1,6 @@
 [[getting-started]]
 = Getting Started with Subscriptions
 
-WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
-
 To get started with subscriptions you need a GraphQL server with subscription capabilities.
 
 == Example using Apollo and WebSockets

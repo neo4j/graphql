@@ -98,7 +98,7 @@ describe("Interface Relationships - Update create", () => {
             WITH *
             WITH *
             CALL {
-            WITH this
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:ACTED_IN]->(this_Movie:\`Movie\`)

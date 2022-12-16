@@ -17,12 +17,8 @@
  * limitations under the License.
  */
 
-// This file should only be used for tests.
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { generate } from "randomstring";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import pluralize from "pluralize";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import camelcase from "camelcase";
 
 export function upperFirst(str: string): string {
