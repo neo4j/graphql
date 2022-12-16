@@ -67,7 +67,7 @@ describe("Cypher Where Aggregations with @node directive", () => {
                 RETURN any(var2 IN collect(size(this1.someName)) WHERE var2 > $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -76,8 +76,7 @@ describe("Cypher Where Aggregations with @node directive", () => {
                 \\"param0\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });

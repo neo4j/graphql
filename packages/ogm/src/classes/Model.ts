@@ -135,7 +135,7 @@ class Model {
             }
         `;
 
-        const variableValues = { where, options, ...args };
+        const variableValues = { where, options, fulltext, ...args };
 
         const result = await graphql({
             schema: this.schema,

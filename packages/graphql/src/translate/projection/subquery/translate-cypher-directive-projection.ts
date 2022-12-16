@@ -194,7 +194,8 @@ export function translateCypherDirectiveProjection({
     const sortInput = (context.resolveTree.args.sort ??
         (context.resolveTree.args.options as any)?.sort ??
         []) as GraphQLSortArg[];
-    const isSortArg = sortInput.find((obj) => Object.keys(obj)[0] === alias);
+
+    const isSortArg = sortInput.find((obj) => Object.keys(obj).includes(alias));
     if (isSortArg) {
         if (!res.meta.cypherSortFields) {
             res.meta.cypherSortFields = [];
@@ -254,8 +255,9 @@ function createCypherDirectiveSubquery({
     resultVariable: string;
     extraArgs: Record<string, any>;
 }): Cypher.Clause {
+    const innerWithAlias = new Cypher.With([nodeRef, new Cypher.NamedNode("this")]);
     const rawCypher = new Cypher.RawCypher(cypherField.statement);
-    const callClause = new Cypher.Call(rawCypher).innerWith(nodeRef);
+    const callClause = new Cypher.Call(Cypher.concat(innerWithAlias, rawCypher)).innerWith(nodeRef);
 
     if (cypherField.columnName) {
         const columnVariable = new Cypher.NamedVariable(cypherField.columnName);

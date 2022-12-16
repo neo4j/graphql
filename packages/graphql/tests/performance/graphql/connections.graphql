@@ -30,10 +30,28 @@ query NestedConnection {
 }
 
 query ConnectionWithSort {
-    moviesConnection(first: 5) {
+    moviesConnection(first: 5, sort: { title: ASC }) {
         edges {
             node {
                 title
+                actorsConnection {
+                    edges {
+                        node {
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+query ConnectionWithSortAndCypher {
+    moviesConnection(first: 5, sort: [{ title: ASC }, { oneActorName: DESC }]) {
+        edges {
+            node {
+                title
+                oneActorName
                 actorsConnection {
                     edges {
                         node {

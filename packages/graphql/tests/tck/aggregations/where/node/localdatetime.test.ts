@@ -68,7 +68,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN any(var2 IN collect(this1.someLocalDateTime) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -82,8 +82,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -110,7 +109,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN any(var2 IN collect(this1.someLocalDateTimeAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -124,8 +123,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -152,7 +150,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN any(var2 IN collect(this1.someLocalDateTime) WHERE var2 > $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -166,8 +164,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -194,7 +191,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN any(var2 IN collect(this1.someLocalDateTime) WHERE var2 >= $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -208,8 +205,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -236,7 +232,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN any(var2 IN collect(this1.someLocalDateTime) WHERE var2 < $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -250,8 +246,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -278,7 +273,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN any(var2 IN collect(this1.someLocalDateTime) WHERE var2 <= $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -292,8 +287,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -320,7 +314,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN min(this1.someLocalDateTime) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -334,8 +328,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -362,7 +355,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN min(this1.someLocalDateTime) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -376,8 +369,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -404,7 +396,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN min(this1.someLocalDateTime) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -418,8 +410,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -446,7 +437,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN min(this1.someLocalDateTime) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -460,8 +451,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -488,7 +478,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN min(this1.someLocalDateTime) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -502,8 +492,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -530,7 +519,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN max(this1.someLocalDateTime) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -544,8 +533,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -572,7 +560,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN max(this1.someLocalDateTime) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -586,8 +574,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -614,7 +601,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN max(this1.someLocalDateTime) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -628,8 +615,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -656,7 +642,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN max(this1.someLocalDateTime) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -670,8 +656,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -698,7 +683,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                 RETURN max(this1.someLocalDateTime) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -712,8 +697,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 0,
                     \\"nanosecond\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });

@@ -10,7 +10,9 @@
         "docs",
         "packages/*",
         "examples/migration",
+        "examples/neo-place",
         "examples/neo-push/*",
+        "examples/subscriptions/*",
         "packages/plugins/*"
     ],
     "scripts": {
@@ -23,6 +25,7 @@
         "test-docker": "docker-compose up --build --abort-on-container-exit",
         "prepare": "husky install",
         "changeset-version": "changeset version && yarn",
+        "changeset-version-4.0.0": "changeset version --since 4.0.0 && yarn",
         "changeset-version-master": "changeset version --since master && yarn",
         "release": "yarn build && changeset publish"
     },
@@ -38,7 +41,7 @@
         "eslint-import-resolver-typescript": "3.5.2",
         "eslint-plugin-eslint-comments": "3.2.0",
         "eslint-plugin-import": "2.26.0",
-        "eslint-plugin-jest": "27.1.6",
+        "eslint-plugin-jest": "27.1.7",
         "eslint-plugin-jsx-a11y": "6.6.1",
         "eslint-plugin-react": "7.31.11",
         "graphql": "16.6.0",
