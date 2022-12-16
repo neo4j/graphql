@@ -304,7 +304,7 @@ describe("connections sort", () => {
                         node: {
                             title: "B",
                             actorsConnection: {
-                                edges: [
+                                edges: expect.toIncludeAllMembers([
                                     {
                                         node: {
                                             name: actors[1].name,
@@ -317,7 +317,7 @@ describe("connections sort", () => {
                                             totalScreenTime: 3,
                                         },
                                     },
-                                ],
+                                ]),
                             },
                         },
                     },
