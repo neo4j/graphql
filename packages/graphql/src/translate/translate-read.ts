@@ -174,8 +174,6 @@ export function translateRead(
         });
 
         const withTotalCount = new Cypher.With([connectionEdge, edgeVar], totalCountVar, matchNode);
-        // const connectionSortClause = getConnectionSortClause({ context, projection, varName });
-        // orderClause = getConnectionSortClause({ context, projection, varName });
         const returnClause = new Cypher.With([Cypher.collect(edgeVar), edgesVar], totalCountVar).return([
             new Cypher.Map({
                 edges: edgesVar,
@@ -185,7 +183,6 @@ export function translateRead(
         ]);
 
         projectionClause = Cypher.concat(withTotalCount, returnClause);
-        // projectionClause = Cypher.concat(withTotalCount, connectionSortClause, returnClause);
     }
 
     const preComputedWhereFields =
