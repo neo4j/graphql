@@ -1,4 +1,4 @@
-# Standalone Relay GraphQL Cursor Connections Specification
+# No mixing - Opt-in GraphQL Cursor Connections Specification 
 
 ## Problem
 
@@ -8,6 +8,7 @@ As the [Connection spec](https://relay.dev/graphql/connections.htm) and the Neo4
 having a Query or Mutation using both syntaxes could result in a high complexity operation.
 
 Let's consider this typeDefs for the RFC:
+
 ```graphql
     type Actor  {
         id: ID!
@@ -65,6 +66,7 @@ The RFC proposes also that the [Connection spec](https://relay.dev/graphql/conne
 ### Deprecated syntaxes:
 
 #### Querying connections in conjunction with the Neo4j GraphQL syntax:
+
 ```graphql
 query Actors {
   actors {
@@ -76,17 +78,17 @@ query Actors {
   }
 }
 ```
-#### Using the [Connection spec](https://relay.dev/graphql/connections.htm) as filter in a Neo4j GraphQL syntax. 
+
 ```graphql
-query Actors{
-  actors(where: {
-    moviesConnection_SOME: {
-      edge: {
-        year: null
+query ActorsConnection {
+  actorsConnection {
+    edges {
+      node {
+        movies {
+          name
+        }
       }
     }
-  }) {
-    name
   }
 }
 ```
@@ -98,18 +100,8 @@ The following types should not be generated anymore, if not specified differentl
 - ActorMoviesConnection & MovieActorsConnection
 - ActorEdge & MovieEdge
 - ActorMoviesRelationship & MovieActorsRelationship
-- ActedInCreateInput 
+- PageInfo
 
-As currently, the relationship properties are accessible only using the [Connection spec](https://relay.dev/graphql/connections.htm), it may be recommended to remove all soft references as node & edge fields in the Neo4j GraphQL API, see Aggregation, CreateInput, UpdateInput.
-
-For instance:
-- Type `MovieActorActorsAggregationSelection` should not hold anymore the field `edge`, and the content of the node field of type `MovieActorActorsNodeAggregateSelection` should spreaded in the type `MovieActorActorsAggregationSelection`.
-- Type `ActorMoviesCreateFieldInput` should no longer have the separation between `node` and `edge` but only the node content spreaded in the type `ActorMoviesCreateFieldInput`.
-- Type `ActorWhere` should no contains anymore `[moviesConnection_SOME, moviesConnection_ALL, moviesConnection_NONE, moviesConnection_SINGLE]` but instead they should be part of a new type `ActorConnectionWhere`, the same for `MovieWhere`. 
-`ActorConnectionWhere` should not hold references to the `MovieWhere`.
-
-As no relationship properties are accessible by the Neo4j GraphQL syntax, 
-the directive `@relationshipProperties` should be only available when the [Connection spec](https://relay.dev/graphql/connections.htm) is included.
 
 ###  Configuration
 
@@ -123,12 +115,33 @@ interface Neo4jGraphQLConfig {
 ```
 
 ## Risks
-This RFC proposes many breaking changes. This may slow down the adpation to the new version of the libray. 
+
+- This RFC proposes many breaking changes. This may slow down the adpation to the new version of the libray.
+- Disable the Relay spec makes the edge properties no longer accessible.
+- Type `ActorWhere` and `MovieWhere` still contains: `moviesConnection_SOME`, `moviesConnection_ALL`, `moviesConnection_NONE`, `moviesConnection_SINGLE` it could be confusing and ambiguous to the users, see [^1].
 
 ### Security consideration
 
-None
+- None
 
 ## Out of Scope
-Pagination changes.
 
+- Pagination changes.
+
+## References
+
+[^1]: Using the [Connection spec](https://relay.dev/graphql/connections.htm) as filter in a Neo4j GraphQL syntax. 
+
+```graphql
+query Actors{
+  actors(where: {
+    moviesConnection_SOME: {
+      edge: {
+        year: null
+      }
+    }
+  }) {
+    name
+  }
+}
+```
