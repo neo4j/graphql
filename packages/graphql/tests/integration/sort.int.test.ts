@@ -424,6 +424,39 @@ describe("sort", () => {
                     expect(gqlMovies[1].id).toBe(movies[0].id);
                 });
             });
+
+            describe("with field not in selection set and multiple sort elements", () => {
+                const queryWithoutNumberOfActors = `
+                        query ($movieIds: [ID!]!, $direction: SortDirection!) {
+                            ${movieType.plural}(
+                                where: { id_IN: $movieIds },
+                                options: { sort: [{ numberOfActors: $direction, id: $direction }] }
+                            ) {
+                                id
+                            }
+                        }
+                    `;
+
+                const gqlResultByType = gqlResultByTypeFromSource(queryWithoutNumberOfActors);
+
+                test("ASC", async () => {
+                    const gqlResult = await gqlResultByType("ASC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const { [movieType.plural]: gqlMovies } = gqlResult.data as any;
+
+                    expect(gqlMovies).toHaveLength(2);
+                });
+                test("DESC", async () => {
+                    const gqlResult = await gqlResultByType("DESC");
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const { [movieType.plural]: gqlMovies } = gqlResult.data as any;
+                    expect(gqlMovies).toHaveLength(2);
+                });
+            });
         });
     });
 
