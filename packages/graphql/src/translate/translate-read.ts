@@ -163,16 +163,6 @@ export function translateRead(
             matchNode,
         ]);
 
-        if (!projectionSubqueries.empty && hasOrdering) {
-            addSortAndLimitOptionsToClause({
-                optionsInput,
-                target: matchNode,
-                projectionClause: returnClause,
-                nodeField: node.singular,
-                fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
-            });
-        }
-
         projectionClause = Cypher.concat(withTotalCount, connectionClause, returnClause);
     }
 
