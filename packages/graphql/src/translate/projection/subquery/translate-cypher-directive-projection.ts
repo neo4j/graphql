@@ -194,7 +194,8 @@ export function translateCypherDirectiveProjection({
     const sortInput = (context.resolveTree.args.sort ??
         (context.resolveTree.args.options as any)?.sort ??
         []) as GraphQLSortArg[];
-    const isSortArg = sortInput.find((obj) => Object.keys(obj)[0] === alias);
+
+    const isSortArg = sortInput.find((obj) => Object.keys(obj).includes(alias));
     if (isSortArg) {
         if (!res.meta.cypherSortFields) {
             res.meta.cypherSortFields = [];
