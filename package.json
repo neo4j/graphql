@@ -41,7 +41,7 @@
         "eslint-import-resolver-typescript": "3.5.2",
         "eslint-plugin-eslint-comments": "3.2.0",
         "eslint-plugin-import": "2.26.0",
-        "eslint-plugin-jest": "27.1.6",
+        "eslint-plugin-jest": "27.1.7",
         "eslint-plugin-jsx-a11y": "6.6.1",
         "eslint-plugin-react": "7.31.11",
         "graphql": "16.6.0",
