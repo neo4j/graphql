@@ -254,8 +254,9 @@ function createCypherDirectiveSubquery({
     resultVariable: string;
     extraArgs: Record<string, any>;
 }): Cypher.Clause {
+    const innerWithAlias = new Cypher.With([nodeRef, new Cypher.NamedNode("this")]);
     const rawCypher = new Cypher.RawCypher(cypherField.statement);
-    const callClause = new Cypher.Call(rawCypher).innerWith(nodeRef);
+    const callClause = new Cypher.Call(Cypher.concat(innerWithAlias, rawCypher)).innerWith(nodeRef);
 
     if (cypherField.columnName) {
         const columnVariable = new Cypher.NamedVariable(cypherField.columnName);
