@@ -5,7 +5,7 @@
 The Neo4j Graphql library introduced the [GraphQL Cursor Connections Specification](https://relay.dev/graphql/connections.htm) in its API design.
 
 As the [Connection spec](https://relay.dev/graphql/connections.htm) and the Neo4j Graphql library API design can differ a lot,
-having a Query or Mutation using both syntaxes could result in a high complexity operation.
+having a Query or Mutation using both syntaxes could result in a high-complexity operation.
 
 Let's consider this typeDefs for the RFC:
 
@@ -116,9 +116,9 @@ interface Neo4jGraphQLConfig {
 
 ## Risks
 
-- This RFC proposes many breaking changes. This may slow down the adpation to the new version of the libray.
-- Disable the Relay spec makes the edge properties no longer accessible.
-- Type `ActorWhere` and `MovieWhere` still contains: `moviesConnection_SOME`, `moviesConnection_ALL`, `moviesConnection_NONE`, `moviesConnection_SINGLE` it could be confusing and ambiguous to the users, see [^1].
+- This RFC proposes many breaking changes. This may slow down the adoption of the new version of the library.
+- Disable the Relay spec making the edge properties no longer accessible.
+- Type `ActorWhere` and `MovieWhere` still contains: `moviesConnection_SOME`, `moviesConnection_ALL`, `moviesConnection_NONE`, `moviesConnection_SINGLE` it could be confusing and ambiguous to the users, see #References.
 
 ### Security consideration
 
@@ -128,9 +128,9 @@ interface Neo4jGraphQLConfig {
 
 - Pagination changes.
 
-## References
+## References
 
-[^1]: Using the [Connection spec](https://relay.dev/graphql/connections.htm) as filter in a Neo4j GraphQL syntax. 
+Using the [Connection spec](https://relay.dev/graphql/connections.htm) as filter in a Neo4j GraphQL syntax. 
 
 ```graphql
 query Actors{
