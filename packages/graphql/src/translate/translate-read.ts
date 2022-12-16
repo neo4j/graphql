@@ -17,12 +17,10 @@
  * limitations under the License.
  */
 
-import type { Integer } from "neo4j-driver";
-import { int } from "neo4j-driver";
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
-import createProjectionAndParams, { ProjectionResult } from "./create-projection-and-params";
-import type { GraphQLOptionsArg, GraphQLSortArg, Context } from "../types";
+import createProjectionAndParams from "./create-projection-and-params";
+import type { GraphQLOptionsArg, Context } from "../types";
 import { createAuthPredicates } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createMatchClause } from "./translate-top-level-match";

@@ -229,7 +229,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
     test("Should project cypher fields after applying the sort when sorting on a  2 cypher fields on a root connection", async () => {
         const query = `
             {
-                ${testMovie.plural}Connection(sort: [{ totalActors: DESC }, { totalGenres: DESC }, ]) {
+                ${testMovie.plural}Connection(sort: [{ totalActors: DESC }, { totalGenres: DESC }]) {
                     edges {
                         node {
                             title
