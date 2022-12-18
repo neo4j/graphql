@@ -25,6 +25,8 @@ import type { Node, Relationship } from "./classes";
 import type { Neo4jDatabaseInfo } from "./classes/Neo4jDatabaseInfo";
 import type { RelationshipQueryDirectionOption } from "./constants";
 import type { Executor } from "./classes/Executor";
+import type { Directive } from "graphql-compose";
+import type { Neo4jGraphQLSchemaModel } from "./schema-model/Neo4jGraphQLSchemaModel";
 
 export { Node } from "./classes";
 
@@ -46,6 +48,7 @@ export interface Context {
     neo4jDatabaseInfo: Neo4jDatabaseInfo;
     nodes: Node[];
     relationships: Relationship[];
+    schemaModel: Neo4jGraphQLSchemaModel;
     schema: GraphQLSchema;
     auth?: AuthContext;
     callbacks?: Neo4jGraphQLCallbacks;
@@ -165,6 +168,7 @@ export interface ConnectionField extends BaseField {
  */
 export interface CypherField extends BaseField {
     statement: string;
+    columnName?: string;
     isEnum: boolean;
     isScalar: boolean;
 }
@@ -353,11 +357,12 @@ export interface CypherQueryOptions {
 }
 
 /** Input field for graphql-compose */
-export type InputField = { type: string; defaultValue?: string } | string;
+export type InputField = { type: string; defaultValue?: string; directives?: Directive[] } | string;
 
 export interface Neo4jGraphQLAuthPlugin {
     rolesPath?: string;
     isGlobalAuthenticationEnabled?: boolean;
+    bindPredicate: "all" | "any";
 
     decode<T>(token: string): Promise<T | undefined>;
     /**
@@ -369,41 +374,106 @@ export interface Neo4jGraphQLAuthPlugin {
 }
 
 /** Raw event metadata returned from queries */
-export type EventMeta = {
+export type NodeSubscriptionMeta = {
     event: "create" | "update" | "delete";
+    typename: string;
     properties: {
         old: Record<string, any>;
         new: Record<string, any>;
     };
-    typename: string;
     id: Integer | string | number;
     timestamp: Integer | string | number;
 };
+export type RelationshipSubscriptionMeta =
+    | RelationshipSubscriptionMetaTypenameParameters
+    | RelationshipSubscriptionMetaLabelsParameters;
+type RelationshipSubscriptionMetaCommonParameters = {
+    event: "create_relationship" | "delete_relationship";
+    relationshipName: string;
+    id_from: Integer | string | number;
+    id_to: Integer | string | number;
+    properties: {
+        from: Record<string, any>;
+        to: Record<string, any>;
+        relationship: Record<string, any>;
+    };
+    id: Integer | string | number;
+    timestamp: Integer | string | number;
+};
+export type RelationshipSubscriptionMetaTypenameParameters = RelationshipSubscriptionMetaCommonParameters & {
+    fromTypename: string;
+    toTypename: string;
+};
+export type RelationshipSubscriptionMetaLabelsParameters = RelationshipSubscriptionMetaCommonParameters & {
+    fromLabels: string[];
+    toLabels: string[];
+};
+export type EventMeta = NodeSubscriptionMeta | RelationshipSubscriptionMeta;
 
+export type NodeSubscriptionsEvent =
+    | {
+          event: "create";
+          typename: string;
+          properties: {
+              old: undefined;
+              new: Record<string, any>;
+          };
+          id: number;
+          timestamp: number;
+      }
+    | {
+          event: "update";
+          typename: string;
+          properties: {
+              old: Record<string, any>;
+              new: Record<string, any>;
+          };
+          id: number;
+          timestamp: number;
+      }
+    | {
+          event: "delete";
+          typename: string;
+          properties: {
+              old: Record<string, any>;
+              new: undefined;
+          };
+          id: number;
+          timestamp: number;
+      };
+export type RelationshipSubscriptionsEvent =
+    | {
+          event: "create_relationship";
+          relationshipName: string;
+          properties: {
+              from: Record<string, any>;
+              to: Record<string, any>;
+              relationship: Record<string, any>;
+          };
+          id_from: number;
+          id_to: number;
+          fromTypename: string;
+          toTypename: string;
+          id: number;
+          timestamp: number;
+      }
+    | {
+          event: "delete_relationship";
+          relationshipName: string;
+          properties: {
+              from: Record<string, any>;
+              to: Record<string, any>;
+              relationship: Record<string, any>;
+          };
+          id_from: number;
+          id_to: number;
+          fromTypename: string;
+          toTypename: string;
+          id: number;
+          timestamp: number;
+      };
 /** Serialized subscription event */
-export type SubscriptionsEvent = (
-    | {
-        event: "create";
-        properties: {
-            old: undefined;
-            new: Record<string, any>;
-        };
-    }
-    | {
-        event: "update";
-        properties: {
-            old: Record<string, any>;
-            new: Record<string, any>;
-        };
-    }
-    | {
-        event: "delete";
-        properties: {
-            old: Record<string, any>;
-            new: undefined;
-        };
-    }
-) & { id: number; timestamp: number; typename: string };
+export type SubscriptionsEvent = NodeSubscriptionsEvent | RelationshipSubscriptionsEvent;
 
 export interface Neo4jGraphQLSubscriptionsPlugin {
     events: EventEmitter;

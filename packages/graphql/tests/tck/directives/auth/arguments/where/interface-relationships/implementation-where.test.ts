@@ -556,7 +556,7 @@ describe("Cypher Auth Where", () => {
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
             WITH this
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
-            WITH this, collect(DISTINCT this_content_Comment0) as this_content_Comment0_to_delete
+            WITH this, collect(DISTINCT this_content_Comment0) AS this_content_Comment0_to_delete
             CALL {
             	WITH this_content_Comment0_to_delete
             	UNWIND this_content_Comment0_to_delete AS x
@@ -566,7 +566,7 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
             WHERE (exists((this_content_Post0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_content_Post0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content_Post0auth_param0)))
-            WITH this, collect(DISTINCT this_content_Post0) as this_content_Post0_to_delete
+            WITH this, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
             CALL {
             	WITH this_content_Post0_to_delete
             	UNWIND this_content_Post0_to_delete AS x
@@ -617,25 +617,35 @@ describe("Cypher Auth Where", () => {
             	CALL {
             		WITH *
             		WITH collect(this0_content_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		UNWIND parentNodes as this0
-            		UNWIND connectedNodes as this0_content_connect0_node
-            		MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_content_connect0_node
+            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this0, this0_content_connect0_node
             	RETURN count(*) AS connect_this0_content_connect_Comment
             }
             CALL {
             		WITH this0
-            	OPTIONAL MATCH (this0_content_connect0_node:Post)
-            	WHERE (exists((this0_content_connect0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this0_content_connect0_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this0_content_connect0_nodeauth_param0)))
+            	OPTIONAL MATCH (this0_content_connect1_node:Post)
+            	WHERE (exists((this0_content_connect1_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this0_content_connect1_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this0_content_connect1_nodeauth_param0)))
             	CALL {
             		WITH *
-            		WITH collect(this0_content_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		UNWIND parentNodes as this0
-            		UNWIND connectedNodes as this0_content_connect0_node
-            		MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            		WITH collect(this0_content_connect1_node) as connectedNodes, collect(this0) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_content_connect1_node
+            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect1_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this0, this0_content_connect1_node
             	RETURN count(*) AS connect_this0_content_connect_Post
             }
             RETURN this0
@@ -649,7 +659,7 @@ describe("Cypher Auth Where", () => {
                 \\"this0_id\\": \\"123\\",
                 \\"this0_name\\": \\"Bob\\",
                 \\"this0_password\\": \\"password\\",
-                \\"this0_content_connect0_nodeauth_param0\\": \\"id-01\\",
+                \\"this0_content_connect1_nodeauth_param0\\": \\"id-01\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -694,25 +704,35 @@ describe("Cypher Auth Where", () => {
             	CALL {
             		WITH *
             		WITH collect(this0_content_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		UNWIND parentNodes as this0
-            		UNWIND connectedNodes as this0_content_connect0_node
-            		MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_content_connect0_node
+            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this0, this0_content_connect0_node
             	RETURN count(*) AS connect_this0_content_connect_Comment
             }
             CALL {
             		WITH this0
-            	OPTIONAL MATCH (this0_content_connect0_node:Post)
-            	WHERE this0_content_connect0_node.id = $this0_content_connect0_node_param0 AND (exists((this0_content_connect0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this0_content_connect0_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this0_content_connect0_nodeauth_param0)))
+            	OPTIONAL MATCH (this0_content_connect1_node:Post)
+            	WHERE this0_content_connect1_node.id = $this0_content_connect1_node_param0 AND (exists((this0_content_connect1_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this0_content_connect1_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this0_content_connect1_nodeauth_param0)))
             	CALL {
             		WITH *
-            		WITH collect(this0_content_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		UNWIND parentNodes as this0
-            		UNWIND connectedNodes as this0_content_connect0_node
-            		MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            		WITH collect(this0_content_connect1_node) as connectedNodes, collect(this0) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_content_connect1_node
+            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect1_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this0, this0_content_connect1_node
             	RETURN count(*) AS connect_this0_content_connect_Post
             }
             RETURN this0
@@ -727,7 +747,8 @@ describe("Cypher Auth Where", () => {
                 \\"this0_name\\": \\"Bob\\",
                 \\"this0_password\\": \\"password\\",
                 \\"this0_content_connect0_node_param0\\": \\"post-id\\",
-                \\"this0_content_connect0_nodeauth_param0\\": \\"id-01\\",
+                \\"this0_content_connect1_node_param0\\": \\"post-id\\",
+                \\"this0_content_connect1_nodeauth_param0\\": \\"id-01\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -764,11 +785,16 @@ describe("Cypher Auth Where", () => {
             	CALL {
             		WITH *
             		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_content0_connect0_node
-            		MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_content0_connect0_node
+            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_content0_connect0_node
             	RETURN count(*) AS connect_this_content0_connect_Comment
             }
             RETURN count(*) AS update_this_Comment
@@ -785,11 +811,16 @@ describe("Cypher Auth Where", () => {
             	CALL {
             		WITH *
             		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_content0_connect0_node
-            		MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_content0_connect0_node
+            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_content0_connect0_node
             	RETURN count(*) AS connect_this_content0_connect_Post
             }
             RETURN count(*) AS update_this_Post
@@ -839,11 +870,16 @@ describe("Cypher Auth Where", () => {
             	CALL {
             		WITH *
             		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_content0_connect0_node
-            		MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_content0_connect0_node
+            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_content0_connect0_node
             	RETURN count(*) AS connect_this_content0_connect_Comment
             }
             RETURN count(*) AS update_this_Comment
@@ -860,11 +896,16 @@ describe("Cypher Auth Where", () => {
             	CALL {
             		WITH *
             		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_content0_connect0_node
-            		MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_content0_connect0_node
+            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_content0_connect0_node
             	RETURN count(*) AS connect_this_content0_connect_Post
             }
             RETURN count(*) AS update_this_Post
@@ -911,25 +952,35 @@ describe("Cypher Auth Where", () => {
             	CALL {
             		WITH *
             		WITH collect(this_connect_content0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_connect_content0_node
-            		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_content0_node
+            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_connect_content0_node
             	RETURN count(*) AS connect_this_connect_content_Comment
             }
             CALL {
             		WITH this
-            	OPTIONAL MATCH (this_connect_content0_node:Post)
-            	WHERE (exists((this_connect_content0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_content0_nodeauth_param0)))
+            	OPTIONAL MATCH (this_connect_content1_node:Post)
+            	WHERE (exists((this_connect_content1_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_content1_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_content1_nodeauth_param0)))
             	CALL {
             		WITH *
-            		WITH collect(this_connect_content0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_connect_content0_node
-            		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		WITH collect(this_connect_content1_node) as connectedNodes, collect(this) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_content1_node
+            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content1_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_connect_content1_node
             	RETURN count(*) AS connect_this_connect_content_Post
             }
             WITH *
@@ -940,7 +991,7 @@ describe("Cypher Auth Where", () => {
             "{
                 \\"auth_param0\\": \\"id-01\\",
                 \\"thisauth_param0\\": \\"id-01\\",
-                \\"this_connect_content0_nodeauth_param0\\": \\"id-01\\",
+                \\"this_connect_content1_nodeauth_param0\\": \\"id-01\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -975,25 +1026,35 @@ describe("Cypher Auth Where", () => {
             	CALL {
             		WITH *
             		WITH collect(this_connect_content0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_connect_content0_node
-            		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_content0_node
+            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_connect_content0_node
             	RETURN count(*) AS connect_this_connect_content_Comment
             }
             CALL {
             		WITH this
-            	OPTIONAL MATCH (this_connect_content0_node:Post)
-            	WHERE this_connect_content0_node.id = $this_connect_content0_node_param0 AND (exists((this_connect_content0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_content0_nodeauth_param0)))
+            	OPTIONAL MATCH (this_connect_content1_node:Post)
+            	WHERE this_connect_content1_node.id = $this_connect_content1_node_param0 AND (exists((this_connect_content1_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_content1_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_content1_nodeauth_param0)))
             	CALL {
             		WITH *
-            		WITH collect(this_connect_content0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_connect_content0_node
-            		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		WITH collect(this_connect_content1_node) as connectedNodes, collect(this) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_content1_node
+            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content1_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_connect_content1_node
             	RETURN count(*) AS connect_this_connect_content_Post
             }
             WITH *
@@ -1005,7 +1066,8 @@ describe("Cypher Auth Where", () => {
                 \\"auth_param0\\": \\"id-01\\",
                 \\"thisauth_param0\\": \\"id-01\\",
                 \\"this_connect_content0_node_param0\\": \\"some-id\\",
-                \\"this_connect_content0_nodeauth_param0\\": \\"id-01\\",
+                \\"this_connect_content1_node_param0\\": \\"some-id\\",
+                \\"this_connect_content1_nodeauth_param0\\": \\"id-01\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -1040,8 +1102,8 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Comment)
             CALL {
-            	WITH this_content0_disconnect0, this_content0_disconnect0_rel
-            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel
+            	WITH this_content0_disconnect0, this_content0_disconnect0_rel, this
+            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel, this
             	UNWIND this_content0_disconnect0 as x
             	DELETE this_content0_disconnect0_rel
             	RETURN count(*) AS _
@@ -1060,8 +1122,8 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
             WHERE (exists((this_content0_disconnect0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content0_disconnect0auth_param0)))
             CALL {
-            	WITH this_content0_disconnect0, this_content0_disconnect0_rel
-            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel
+            	WITH this_content0_disconnect0, this_content0_disconnect0_rel, this
+            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel, this
             	UNWIND this_content0_disconnect0 as x
             	DELETE this_content0_disconnect0_rel
             	RETURN count(*) AS _
@@ -1113,8 +1175,8 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Comment)
             WHERE this_content0_disconnect0.id = $updateUsers_args_update_content0_disconnect0_where_Commentparam0
             CALL {
-            	WITH this_content0_disconnect0, this_content0_disconnect0_rel
-            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel
+            	WITH this_content0_disconnect0, this_content0_disconnect0_rel, this
+            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel, this
             	UNWIND this_content0_disconnect0 as x
             	DELETE this_content0_disconnect0_rel
             	RETURN count(*) AS _
@@ -1133,8 +1195,8 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
             WHERE this_content0_disconnect0.id = $updateUsers_args_update_content0_disconnect0_where_Postparam0 AND (exists((this_content0_disconnect0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content0_disconnect0auth_param0)))
             CALL {
-            	WITH this_content0_disconnect0, this_content0_disconnect0_rel
-            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel
+            	WITH this_content0_disconnect0, this_content0_disconnect0_rel, this
+            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel, this
             	UNWIND this_content0_disconnect0 as x
             	DELETE this_content0_disconnect0_rel
             	RETURN count(*) AS _
@@ -1203,8 +1265,8 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
             CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
             	RETURN count(*) AS _
@@ -1216,8 +1278,8 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WHERE (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_content0auth_param0)))
             CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
             	RETURN count(*) AS _
@@ -1276,8 +1338,8 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
             WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Commentparam0
             CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
             	RETURN count(*) AS _
@@ -1289,8 +1351,8 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Postparam0 AND (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_content0auth_param0)))
             CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
             	RETURN count(*) AS _

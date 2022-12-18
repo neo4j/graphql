@@ -56,3 +56,10 @@ query SortDeeplyNestedFields {
         }
     }
 }
+
+query SortWithTopLevelCypher {
+    movies(options: { limit: 5, sort: { title: ASC, oneActorName: DESC } }) {
+        title
+        oneActorName
+    }
+}

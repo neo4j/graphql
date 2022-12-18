@@ -29,6 +29,7 @@ export interface JWTPluginInput {
     noVerify?: boolean;
     globalAuthentication?: boolean;
     rolesPath?: string;
+    bindPredicate?: "all" | "any";
 }
 
 class Neo4jGraphQLAuthJWTPlugin {
@@ -37,6 +38,8 @@ class Neo4jGraphQLAuthJWTPlugin {
     rolesPath?: string;
     isGlobalAuthenticationEnabled?: boolean;
     input: JWTPluginInput;
+    bindPredicate: "all" | "any";
+
     constructor(input: JWTPluginInput) {
         this.input = input;
 
@@ -44,6 +47,7 @@ class Neo4jGraphQLAuthJWTPlugin {
         this.noVerify = input.noVerify;
         this.rolesPath = input.rolesPath;
         this.isGlobalAuthenticationEnabled = input.globalAuthentication || false;
+        this.bindPredicate = input.bindPredicate || "all";
 
         if (this.noVerify && this.isGlobalAuthenticationEnabled) {
             throw new Error(

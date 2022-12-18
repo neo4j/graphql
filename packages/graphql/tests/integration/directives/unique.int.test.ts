@@ -42,7 +42,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
         databaseName = generate({ readable: true, charset: "alphabetic" });
 
-        const cypher = `CREATE DATABASE ${databaseName}`;
+        const cypher = `CREATE DATABASE ${databaseName} WAIT`;
         const session = driver.session();
 
         try {
@@ -382,6 +382,313 @@ describe("assertIndexesAndConstraints/unique", () => {
                                 record.properties.includes("internationalStandardBookNumber")
                         )
                 ).toHaveLength(1);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should not throw if constraint exists on an additional label", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            const baseType = generateUniqueType("Base");
+            const additionalType = generateUniqueType("Additional");
+
+            const typeDefs = `
+                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
+                    someIntProperty: Int!
+                    title: String! @unique
+                }
+            `;
+
+            const createConstraintCypher = `
+                CREATE CONSTRAINT ${baseType.name}_unique_title ${dbInfo.gte("4.4") ? "FOR" : "ON"} (r:${
+                additionalType.name
+            })
+                ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.title IS UNIQUE;
+            `;
+
+            const session = driver.session({ database: databaseName });
+
+            try {
+                await session.run(createConstraintCypher);
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await neoSchema.getSchema();
+
+                await expect(
+                    neoSchema.assertIndexesAndConstraints({
+                        driver,
+                        driverConfig: { database: databaseName },
+                    })
+                ).resolves.not.toThrow();
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should not create new constraint if constraint exists on an additional label", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            const baseType = generateUniqueType("Base");
+            const additionalType = generateUniqueType("Additional");
+            const typeDefs = `
+                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
+                    someIntProperty: Int!
+                    title: String! @unique
+                }
+            `;
+
+            const createConstraintCypher = `
+                CREATE CONSTRAINT ${baseType.name}_unique_title ${dbInfo.gte("4.4") ? "FOR" : "ON"} (r:${
+                additionalType.name
+            })
+                ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.title IS UNIQUE;
+            `;
+
+            const showConstraintsCypher = "SHOW UNIQUE CONSTRAINTS";
+
+            const session = driver.session({ database: databaseName });
+
+            try {
+                await session.run(createConstraintCypher);
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await neoSchema.getSchema();
+
+                await expect(
+                    neoSchema.assertIndexesAndConstraints({
+                        driver,
+                        driverConfig: { database: databaseName },
+                        options: { create: true },
+                    })
+                ).resolves.not.toThrow();
+
+                const dbConstraintsResult = (await session.run(showConstraintsCypher)).records.map((record) => {
+                    return record.toObject();
+                });
+
+                expect(
+                    dbConstraintsResult.filter(
+                        (record) => record.labelsOrTypes.includes(baseType.name) && record.properties.includes("title")
+                    )
+                ).toHaveLength(0);
+
+                expect(
+                    dbConstraintsResult.filter(
+                        (record) =>
+                            record.labelsOrTypes.includes(additionalType.name) && record.properties.includes("title")
+                    )
+                ).toHaveLength(1);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should not allow creating duplicate @unique properties when constraint is on an additional label", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            const baseType = generateUniqueType("Base");
+            const additionalType = generateUniqueType("Additional");
+            const typeDefs = `
+                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
+                    someStringProperty: String! @unique @alias(property: "someAlias")
+                    title: String!
+                }
+            `;
+
+            const createConstraintCypher = `
+                CREATE CONSTRAINT ${baseType.name}_unique_someAlias ${dbInfo.gte("4.4") ? "FOR" : "ON"} (r:${
+                additionalType.name
+            })
+                ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.someAlias IS UNIQUE;
+            `;
+
+            const session = driver.session({ database: databaseName });
+
+            try {
+                await session.run(createConstraintCypher);
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const generatedSchema = await neoSchema.getSchema();
+
+                const mutation = `
+                    mutation {
+                        ${baseType.operations.create}(input: [
+                            {
+                                someStringProperty: "notUnique",
+                                title: "someTitle"
+                            },
+                            {
+                                someStringProperty: "notUnique",
+                                title: "someTitle2"
+                            },
+                        ]) {
+                            ${baseType.plural} {
+                                someStringProperty
+                            }
+                        }
+                    }
+                `;
+
+                const query = `
+                    query {
+                        ${baseType.plural} {
+                            someStringProperty
+                        }
+                    }
+                `;
+
+                const mutationGqlResult = await graphql({
+                    schema: generatedSchema,
+                    source: mutation,
+                    contextValue: {
+                        driver,
+                        driverConfig: { database: databaseName },
+                    },
+                });
+
+                const queryGqlResult = await graphql({
+                    schema: generatedSchema,
+                    source: query,
+                    contextValue: {
+                        driver,
+                        driverConfig: { database: databaseName },
+                    },
+                });
+
+                expect((mutationGqlResult?.errors as any[])[0].message).toBe("Constraint validation failed");
+
+                expect(queryGqlResult.errors).toBeFalsy();
+                expect(queryGqlResult.data?.[baseType.plural]).toBeArrayOfSize(0);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should not allow updating to duplicate @unique properties when constraint is on an additional label", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            const baseType = generateUniqueType("Base");
+            const additionalType = generateUniqueType("Additional");
+            const typeDefs = `
+                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
+                    someStringProperty: String! @unique @alias(property: "someAlias")
+                    title: String!
+                }
+            `;
+
+            const createConstraintCypher = `
+                CREATE CONSTRAINT ${baseType.name}_unique_someAlias ${dbInfo.gte("4.4") ? "FOR" : "ON"} (r:${
+                additionalType.name
+            })
+                ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.someAlias IS UNIQUE;
+            `;
+
+            const session = driver.session({ database: databaseName });
+
+            try {
+                await session.run(createConstraintCypher);
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const generatedSchema = await neoSchema.getSchema();
+
+                const uniqueVal1 = "someVal1";
+                const uniqueVal2 = "someUniqueVal2";
+
+                const createMutation = `
+                    mutation {
+                        ${baseType.operations.create}(input: [
+                            {
+                                someStringProperty: "${uniqueVal1}",
+                                title: "someTitle"
+                            },
+                            {
+                                someStringProperty: "${uniqueVal2}",
+                                title: "someTitle2"
+                            },
+                        ]) {
+                            ${baseType.plural} {
+                                someStringProperty
+                            }
+                        }
+                    }
+                `;
+
+                const updateMutation = `
+                    mutation {
+                        ${baseType.operations.update}(update: {
+                            someStringProperty: "notUnique"
+                        }) {
+                            ${baseType.plural} {
+                                someStringProperty
+                            }
+                        }
+                    }
+                `;
+
+                const query = `
+                    query {
+                        ${baseType.plural} {
+                            someStringProperty
+                        }
+                    }
+                `;
+
+                const createGqlResult = await graphql({
+                    schema: generatedSchema,
+                    source: createMutation,
+                    contextValue: {
+                        driver,
+                        driverConfig: { database: databaseName },
+                    },
+                });
+
+                const updateGqlResult = await graphql({
+                    schema: generatedSchema,
+                    source: updateMutation,
+                    contextValue: {
+                        driver,
+                        driverConfig: { database: databaseName },
+                    },
+                });
+
+                const queryGqlResult = await graphql({
+                    schema: generatedSchema,
+                    source: query,
+                    contextValue: {
+                        driver,
+                        driverConfig: { database: databaseName },
+                    },
+                });
+
+                expect(createGqlResult?.errors).toBeFalsy();
+                expect((updateGqlResult?.errors as any[])[0].message).toBe("Constraint validation failed");
+
+                expect(queryGqlResult.errors).toBeFalsy();
+                expect(queryGqlResult.data?.[baseType.plural]).toIncludeSameMembers([
+                    {
+                        someStringProperty: uniqueVal1,
+                    },
+                    {
+                        someStringProperty: uniqueVal2,
+                    },
+                ]);
             } finally {
                 await session.close();
             }
@@ -742,6 +1049,111 @@ describe("assertIndexesAndConstraints/unique", () => {
                                 record.labelsOrTypes.includes(type.name) && record.properties.includes("identifier")
                         )
                 ).toHaveLength(0);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should not throw if constraint exists on an additional label", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            const baseType = generateUniqueType("Base");
+            const additionalType = generateUniqueType("Additional");
+            const typeDefs = `
+                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
+                    someIdProperty: ID! @id @alias(property: "someAlias")
+                    title: String!
+                }
+            `;
+
+            const createConstraintCypher = `
+                CREATE CONSTRAINT ${baseType.name}_unique_someAlias ${dbInfo.gte("4.4") ? "FOR" : "ON"} (r:${
+                additionalType.name
+            })
+                ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.someAlias IS UNIQUE;
+            `;
+            const session = driver.session({ database: databaseName });
+
+            try {
+                await session.run(createConstraintCypher);
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await neoSchema.getSchema();
+
+                await expect(
+                    neoSchema.assertIndexesAndConstraints({
+                        driver,
+                        driverConfig: { database: databaseName },
+                    })
+                ).resolves.not.toThrow();
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should not create new constraint if constraint exists on an additional label", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            const baseType = generateUniqueType("Base");
+            const additionalType = generateUniqueType("Additional");
+            const typeDefs = `
+                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
+                    someIdProperty: ID! @id @alias(property: "someAlias")
+                    title: String!
+                }
+            `;
+
+            const createConstraintCypher = `
+                CREATE CONSTRAINT ${baseType.name}_unique_someAlias ${dbInfo.gte("4.4") ? "FOR" : "ON"} (r:${
+                additionalType.name
+            })
+                ${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} r.someAlias IS UNIQUE;
+            `;
+
+            const showConstraintsCypher = "SHOW UNIQUE CONSTRAINTS";
+
+            const session = driver.session({ database: databaseName });
+
+            try {
+                await session.run(createConstraintCypher);
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                await neoSchema.getSchema();
+
+                await expect(
+                    neoSchema.assertIndexesAndConstraints({
+                        driver,
+                        driverConfig: { database: databaseName },
+                        options: { create: true },
+                    })
+                ).resolves.not.toThrow();
+
+                const dbConstraintsResult = (await session.run(showConstraintsCypher)).records.map((record) => {
+                    return record.toObject();
+                });
+
+                expect(
+                    dbConstraintsResult.filter(
+                        (record) =>
+                            record.labelsOrTypes.includes(baseType.name) && record.properties.includes("someAlias")
+                    )
+                ).toHaveLength(0);
+
+                expect(
+                    dbConstraintsResult.filter(
+                        (record) =>
+                            record.labelsOrTypes.includes(additionalType.name) &&
+                            record.properties.includes("someAlias")
+                    )
+                ).toHaveLength(1);
             } finally {
                 await session.close();
             }

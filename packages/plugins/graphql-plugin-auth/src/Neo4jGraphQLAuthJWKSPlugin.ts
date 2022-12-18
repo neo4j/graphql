@@ -30,6 +30,7 @@ export interface JWKSPluginInput {
     jwksEndpoint: string | ((req: RequestLike) => string);
     rolesPath?: string;
     globalAuthentication?: boolean;
+    bindPredicate?: "all" | "any";
 }
 
 class Neo4jGraphQLAuthJWKSPlugin {
@@ -37,6 +38,7 @@ class Neo4jGraphQLAuthJWKSPlugin {
     isGlobalAuthenticationEnabled?: boolean;
     client: JwksClient | null = null;
     options!: JwksRsa.Options;
+    bindPredicate: "all" | "any";
     input: JWKSPluginInput;
     constructor(input: JWKSPluginInput) {
 
@@ -45,8 +47,9 @@ class Neo4jGraphQLAuthJWKSPlugin {
 
         this.rolesPath = input.rolesPath;
         this.isGlobalAuthenticationEnabled = input.globalAuthentication || false;
+        this.bindPredicate = input.bindPredicate || "all";
 
-        //It will be empty string is the endpoint is a function
+        //It will be empty string if the endpoint is a function
         //This means the value will be calculated later
         const jwksEndpoint = typeof input.jwksEndpoint === 'string' ? input.jwksEndpoint : '';
 

@@ -69,7 +69,7 @@ module.exports = class GraphQLServerApi {
     }
 
     onClosed(cb) {
-        this.wsClient.on("error", ()=>{
+        this.wsClient.on("error", () => {
             cb();
         });
         this.wsClient.on("closed", () => {
@@ -110,7 +110,7 @@ module.exports = class GraphQLServerApi {
 
 
         this.client = createClient({
-            url: "/graphql",
+            url: this.url,
             exchanges: [
                 ...defaultExchanges,
                 subscriptionExchange({

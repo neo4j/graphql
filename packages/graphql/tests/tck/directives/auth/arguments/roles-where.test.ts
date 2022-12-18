@@ -302,7 +302,7 @@ describe("Cypher Auth Where with Roles", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_postsConnectionthis0:HAS_POST]->(this_Post:\`Post\`)
-                WHERE ((this_Post.id = $this_connection_postsConnectionparam0 AND ((any(this_connection_postsConnectionvar2 IN [\\"user\\"] WHERE any(this_connection_postsConnectionvar1 IN $auth.roles WHERE this_connection_postsConnectionvar1 = this_connection_postsConnectionvar2)) AND (exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND all(this_connection_postsConnectionthis3 IN [(this_Post)<-[:HAS_POST]-(this_connection_postsConnectionthis3:\`User\`) | this_connection_postsConnectionthis3] WHERE (this_connection_postsConnectionthis3.id IS NOT NULL AND this_connection_postsConnectionthis3.id = $this_connection_postsConnectionparam2)))) OR any(this_connection_postsConnectionvar5 IN [\\"admin\\"] WHERE any(this_connection_postsConnectionvar4 IN $auth.roles WHERE this_connection_postsConnectionvar4 = this_connection_postsConnectionvar5)))) AND apoc.util.validatePredicate(NOT ((any(this_connection_postsConnectionvar7 IN [\\"user\\"] WHERE any(this_connection_postsConnectionvar6 IN $auth.roles WHERE this_connection_postsConnectionvar6 = this_connection_postsConnectionvar7)) OR any(this_connection_postsConnectionvar9 IN [\\"admin\\"] WHERE any(this_connection_postsConnectionvar8 IN $auth.roles WHERE this_connection_postsConnectionvar8 = this_connection_postsConnectionvar9)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WHERE (this_Post.id = $this_connection_postsConnectionparam0 AND ((any(this_connection_postsConnectionvar2 IN [\\"user\\"] WHERE any(this_connection_postsConnectionvar1 IN $auth.roles WHERE this_connection_postsConnectionvar1 = this_connection_postsConnectionvar2)) AND (exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND all(this_connection_postsConnectionthis3 IN [(this_Post)<-[:HAS_POST]-(this_connection_postsConnectionthis3:\`User\`) | this_connection_postsConnectionthis3] WHERE (this_connection_postsConnectionthis3.id IS NOT NULL AND this_connection_postsConnectionthis3.id = $this_connection_postsConnectionparam2)))) OR any(this_connection_postsConnectionvar5 IN [\\"admin\\"] WHERE any(this_connection_postsConnectionvar4 IN $auth.roles WHERE this_connection_postsConnectionvar4 = this_connection_postsConnectionvar5))) AND apoc.util.validatePredicate(NOT ((any(this_connection_postsConnectionvar7 IN [\\"user\\"] WHERE any(this_connection_postsConnectionvar6 IN $auth.roles WHERE this_connection_postsConnectionvar6 = this_connection_postsConnectionvar7)) OR any(this_connection_postsConnectionvar9 IN [\\"admin\\"] WHERE any(this_connection_postsConnectionvar8 IN $auth.roles WHERE this_connection_postsConnectionvar8 = this_connection_postsConnectionvar9)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 WITH { node: { content: this_Post.content } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -355,7 +355,7 @@ describe("Cypher Auth Where with Roles", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this4:HAS_POST]->(this_posts:\`Post\`)
-                WHERE ((this_posts.content = $param3 AND ((any(var6 IN [\\"user\\"] WHERE any(var5 IN $auth.roles WHERE var5 = var6)) AND (exists((this_posts)<-[:HAS_POST]-(:\`User\`)) AND all(this7 IN [(this_posts)<-[:HAS_POST]-(this7:\`User\`) | this7] WHERE (this7.id IS NOT NULL AND this7.id = $param5)))) OR any(var9 IN [\\"admin\\"] WHERE any(var8 IN $auth.roles WHERE var8 = var9)))) AND apoc.util.validatePredicate(NOT ((any(var11 IN [\\"user\\"] WHERE any(var10 IN $auth.roles WHERE var10 = var11)) OR any(var13 IN [\\"admin\\"] WHERE any(var12 IN $auth.roles WHERE var12 = var13)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WHERE (this_posts.content = $param3 AND ((any(var6 IN [\\"user\\"] WHERE any(var5 IN $auth.roles WHERE var5 = var6)) AND (exists((this_posts)<-[:HAS_POST]-(:\`User\`)) AND all(this7 IN [(this_posts)<-[:HAS_POST]-(this7:\`User\`) | this7] WHERE (this7.id IS NOT NULL AND this7.id = $param5)))) OR any(var9 IN [\\"admin\\"] WHERE any(var8 IN $auth.roles WHERE var8 = var9))) AND apoc.util.validatePredicate(NOT ((any(var11 IN [\\"user\\"] WHERE any(var10 IN $auth.roles WHERE var10 = var11)) OR any(var13 IN [\\"admin\\"] WHERE any(var12 IN $auth.roles WHERE var12 = var13)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 WITH this_posts { .content } AS this_posts
                 RETURN collect(this_posts) AS this_posts
             }
@@ -533,7 +533,7 @@ describe("Cypher Auth Where with Roles", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis0:HAS_POST]->(this_Post:\`Post\`)
-                    WHERE ((this_Post.id = $this_connection_contentConnectionparam0 AND ((any(this_connection_contentConnectionvar2 IN [\\"user\\"] WHERE any(this_connection_contentConnectionvar1 IN $auth.roles WHERE this_connection_contentConnectionvar1 = this_connection_contentConnectionvar2)) AND (exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND all(this_connection_contentConnectionthis3 IN [(this_Post)<-[:HAS_POST]-(this_connection_contentConnectionthis3:\`User\`) | this_connection_contentConnectionthis3] WHERE (this_connection_contentConnectionthis3.id IS NOT NULL AND this_connection_contentConnectionthis3.id = $this_connection_contentConnectionparam2)))) OR any(this_connection_contentConnectionvar5 IN [\\"admin\\"] WHERE any(this_connection_contentConnectionvar4 IN $auth.roles WHERE this_connection_contentConnectionvar4 = this_connection_contentConnectionvar5)))) AND apoc.util.validatePredicate(NOT ((any(this_connection_contentConnectionvar7 IN [\\"user\\"] WHERE any(this_connection_contentConnectionvar6 IN $auth.roles WHERE this_connection_contentConnectionvar6 = this_connection_contentConnectionvar7)) OR any(this_connection_contentConnectionvar9 IN [\\"admin\\"] WHERE any(this_connection_contentConnectionvar8 IN $auth.roles WHERE this_connection_contentConnectionvar8 = this_connection_contentConnectionvar9)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    WHERE (this_Post.id = $this_connection_contentConnectionparam0 AND ((any(this_connection_contentConnectionvar2 IN [\\"user\\"] WHERE any(this_connection_contentConnectionvar1 IN $auth.roles WHERE this_connection_contentConnectionvar1 = this_connection_contentConnectionvar2)) AND (exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND all(this_connection_contentConnectionthis3 IN [(this_Post)<-[:HAS_POST]-(this_connection_contentConnectionthis3:\`User\`) | this_connection_contentConnectionthis3] WHERE (this_connection_contentConnectionthis3.id IS NOT NULL AND this_connection_contentConnectionthis3.id = $this_connection_contentConnectionparam2)))) OR any(this_connection_contentConnectionvar5 IN [\\"admin\\"] WHERE any(this_connection_contentConnectionvar4 IN $auth.roles WHERE this_connection_contentConnectionvar4 = this_connection_contentConnectionvar5))) AND apoc.util.validatePredicate(NOT ((any(this_connection_contentConnectionvar7 IN [\\"user\\"] WHERE any(this_connection_contentConnectionvar6 IN $auth.roles WHERE this_connection_contentConnectionvar6 = this_connection_contentConnectionvar7)) OR any(this_connection_contentConnectionvar9 IN [\\"admin\\"] WHERE any(this_connection_contentConnectionvar8 IN $auth.roles WHERE this_connection_contentConnectionvar8 = this_connection_contentConnectionvar9)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
                     RETURN edge
                 }
@@ -812,7 +812,7 @@ describe("Cypher Auth Where with Roles", () => {
             WHERE ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (exists((this_posts0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this2 IN [(this_posts0)<-[:HAS_POST]-(auth_this2:\`User\`) | auth_this2] WHERE (auth_this2.id IS NOT NULL AND auth_this2.id = $this_posts0auth_param1)))) OR any(auth_var4 IN [\\"admin\\"] WHERE any(auth_var3 IN $auth.roles WHERE auth_var3 = auth_var4)))
             WITH this, this_posts0
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this, collect(DISTINCT this_posts0) as this_posts0_to_delete
+            WITH this, collect(DISTINCT this_posts0) AS this_posts0_to_delete
             CALL {
             	WITH this_posts0_to_delete
             	UNWIND this_posts0_to_delete AS x
@@ -880,11 +880,16 @@ describe("Cypher Auth Where with Roles", () => {
             	CALL {
             		WITH *
             		WITH collect(this0_posts_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		UNWIND parentNodes as this0
-            		UNWIND connectedNodes as this0_posts_connect0_node
-            		MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_posts_connect0_node
+            			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this0, this0_posts_connect0_node
             	RETURN count(*) AS connect_this0_posts_connect_Post
             }
             RETURN this0
@@ -957,11 +962,16 @@ describe("Cypher Auth Where with Roles", () => {
             	CALL {
             		WITH *
             		WITH collect(this0_posts_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		UNWIND parentNodes as this0
-            		UNWIND connectedNodes as this0_posts_connect0_node
-            		MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_posts_connect0_node
+            			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this0, this0_posts_connect0_node
             	RETURN count(*) AS connect_this0_posts_connect_Post
             }
             RETURN this0
@@ -1027,11 +1037,16 @@ describe("Cypher Auth Where with Roles", () => {
             	CALL {
             		WITH *
             		WITH collect(this_posts0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_posts0_connect0_node
-            		MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_posts0_connect0_node
+            			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_posts0_connect0_node
             	RETURN count(*) AS connect_this_posts0_connect_Post
             }
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -1092,11 +1107,16 @@ describe("Cypher Auth Where with Roles", () => {
             	CALL {
             		WITH *
             		WITH collect(this_posts0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_posts0_connect0_node
-            		MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_posts0_connect0_node
+            			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_posts0_connect0_node
             	RETURN count(*) AS connect_this_posts0_connect_Post
             }
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -1156,11 +1176,16 @@ describe("Cypher Auth Where with Roles", () => {
             	CALL {
             		WITH *
             		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_connect_posts0_node
-            		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_posts0_node
+            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_connect_posts0_node
             	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
@@ -1220,11 +1245,16 @@ describe("Cypher Auth Where with Roles", () => {
             	CALL {
             		WITH *
             		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_connect_posts0_node
-            		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_posts0_node
+            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            			RETURN count(*) AS _
+            		}
             		RETURN count(*) AS _
             	}
+            WITH this, this_connect_posts0_node
             	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
@@ -1285,8 +1315,8 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this, this_posts0_disconnect0, this_posts0_disconnect0_rel
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3))) AND (any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
-            	WITH this_posts0_disconnect0, this_posts0_disconnect0_rel
-            	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel
+            	WITH this_posts0_disconnect0, this_posts0_disconnect0_rel, this
+            	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel, this
             	UNWIND this_posts0_disconnect0 as x
             	DELETE this_posts0_disconnect0_rel
             	RETURN count(*) AS _
@@ -1349,8 +1379,8 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this, this_posts0_disconnect0, this_posts0_disconnect0_rel
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3))) AND (any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
-            	WITH this_posts0_disconnect0, this_posts0_disconnect0_rel
-            	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel
+            	WITH this_posts0_disconnect0, this_posts0_disconnect0_rel, this
+            	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel, this
             	UNWIND this_posts0_disconnect0 as x
             	DELETE this_posts0_disconnect0_rel
             	RETURN count(*) AS _
@@ -1431,8 +1461,8 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3))) AND (any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
-            	WITH this_disconnect_posts0, this_disconnect_posts0_rel
-            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
+            	WITH this_disconnect_posts0, this_disconnect_posts0_rel, this
+            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel, this
             	UNWIND this_disconnect_posts0 as x
             	DELETE this_disconnect_posts0_rel
             	RETURN count(*) AS _
@@ -1505,8 +1535,8 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3))) AND (any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
-            	WITH this_disconnect_posts0, this_disconnect_posts0_rel
-            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
+            	WITH this_disconnect_posts0, this_disconnect_posts0_rel, this
+            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel, this
             	UNWIND this_disconnect_posts0 as x
             	DELETE this_disconnect_posts0_rel
             	RETURN count(*) AS _

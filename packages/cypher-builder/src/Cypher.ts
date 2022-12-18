@@ -33,19 +33,21 @@ export { Foreach } from "./clauses/Foreach";
 export { concat } from "./clauses/utils/concat";
 
 // Variables and references
-export { NodeRef as Node, NamedNode } from "./variables/NodeRef";
-export { RelationshipRef as Relationship } from "./variables/RelationshipRef";
-export { Param, NamedParam } from "./variables/Param";
-export { NamedVariable, Variable } from "./variables/Variable";
-export { Literal, CypherNull as Null } from "./variables/Literal";
+export { NodeRef as Node, NamedNode } from "./references/NodeRef";
+export { RelationshipRef as Relationship } from "./references/RelationshipRef";
+export { Param, NamedParam } from "./references/Param";
+export { NamedVariable, Variable } from "./references/Variable";
+export { Literal, CypherNull as Null } from "./references/Literal";
 
 // Expressions
 export { Exists } from "./expressions/Exists";
 export { Case } from "./expressions/Case";
 
 // --Procedures
-export * as db from "./expressions/procedures/db";
-export * as apoc from "./expressions/procedures/apoc/apoc";
+export * as db from "./procedures/db";
+
+// --Apoc
+export * as apoc from "./apoc/apoc";
 
 // --Lists
 export { ListComprehension } from "./expressions/list/ListComprehension";
@@ -75,6 +77,8 @@ export {
 export { plus, minus } from "./expressions/operations/math";
 
 // --Functions
+export { CypherFunction as Function } from "./expressions/functions/CypherFunction";
+
 export {
     coalesce,
     point,
@@ -91,20 +95,22 @@ export {
     max,
     avg,
     sum,
-    randomUUID
+    randomUUID,
 } from "./expressions/functions/CypherFunction";
+
+export * from "./expressions/functions/StringFunctions";
+
 export * from "./expressions/functions/ListFunctions";
 export { any, all, exists, single } from "./expressions/functions/PredicateFunctions";
 
 // Types
 export type { CypherResult } from "./types";
-export type { PropertyRef } from "./variables/PropertyRef";
+export type { PropertyRef } from "./references/PropertyRef";
 export type { Clause } from "./clauses/Clause";
 export type { CypherEnvironment as Environment } from "./Environment";
 export type { ComparisonOp } from "./expressions/operations/comparison";
 export type { BooleanOp } from "./expressions/operations/boolean";
-export type { Expr, Predicate, Operation } from "./types";
-export type { CypherFunction as Function } from "./expressions/functions/CypherFunction";
+export type { Expr, Predicate, Operation, Procedure } from "./types";
 export type { ProjectionColumn } from "./clauses/sub-clauses/Projection";
 export type { SetParam } from "./clauses/sub-clauses/Set";
 export type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
@@ -113,8 +119,5 @@ export type { Pattern } from "./Pattern";
 export type { CompositeClause } from "./clauses/utils/concat";
 
 // utils
-import { escapeLabel } from "./utils/escape-label";
-
-export const utils = {
-    escapeLabel
-};
+// --Procedures
+export * as utils from "./utils/utils";

@@ -36,7 +36,7 @@ import type {
 import { Kind } from "graphql";
 import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
-import getCypherMeta from "./get-cypher-meta";
+import { getCypherMeta } from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCustomResolverMeta from "./get-custom-resolver-meta";
 import getRelationshipMeta from "./get-relationship-meta";
@@ -63,6 +63,11 @@ import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
 import { upperFirst } from "../utils/upper-first";
 import { getCallbackMeta, getPopulatedByMeta } from "./get-populated-by-meta";
+
+const deprecationWarning =
+    "The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead." +
+    "More information can be found at " +
+    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby.";
 
 export interface ObjectFields {
     relationFields: RelationField[];
@@ -148,7 +153,7 @@ function getObjFieldMeta({
                 fieldName: field.name.value,
                 dbPropertyName: field.name.value,
                 typeMeta,
-                otherDirectives: (field.directives || []).filter(
+                otherDirectives: (directives || []).filter(
                     (x) =>
                         ![
                             "relationship",
@@ -290,7 +295,7 @@ function getObjFieldMeta({
                             },
                         },
                     },
-                    otherDirectives: [],
+                    otherDirectives: baseField.otherDirectives,
                     arguments: [...(field.arguments || [])],
                     description: field.description?.value,
                     relationship: relationField,
@@ -462,9 +467,7 @@ function getObjFieldMeta({
 
                     if (callbackDirective) {
                         if (!callbackDeprecatedWarningShown) {
-                            console.warn(
-                                "The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead."
-                            );
+                            console.warn(deprecationWarning);
                             callbackDeprecatedWarningShown = true;
                         }
                         const callback = getCallbackMeta(callbackDirective, callbacks);

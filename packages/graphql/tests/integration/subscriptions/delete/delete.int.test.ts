@@ -143,7 +143,7 @@ describe("Subscriptions delete", () => {
         expect(gqlResult.data[typeMovie.operations.delete].nodesDeleted).toBe(5);
 
         expect(plugin.eventList).toEqual(
-            expect.toIncludeSameMembers([
+            expect.arrayContaining([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -221,7 +221,7 @@ describe("Subscriptions delete", () => {
         expect(gqlResult.data[typeMovie.operations.delete].nodesDeleted).toBe(4);
 
         expect(plugin.eventList).toEqual(
-            expect.toIncludeSameMembers([
+            expect.arrayContaining([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
