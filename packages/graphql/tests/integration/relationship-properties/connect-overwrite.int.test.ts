@@ -25,9 +25,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
 
-// TODO: rename tests
-// TODO: fix expect error messgae
-describe("Relationship properties - connect with and without `overwrite`", () => {
+describe("Relationship properties - connect with and without `overwrite` argument", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let typeDefs: DocumentNode;
@@ -36,7 +34,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
     let typeActor: UniqueType;
     let typeMovie: UniqueType;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
     });
@@ -45,14 +43,18 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         const session = await neo4j.getSession();
         await session.run(`MATCH (n) DETACH DELETE n;`);
         await session.close();
-    });
-
-    afterAll(async () => {
         await driver.close();
     });
 
     describe("Effect on other relationships", () => {
         let session: Session;
+
+        let movieTitle: string;
+        let actorName: string;
+        let directorName: string;
+        let year: number;
+        let screenTime: number;
+        let screenTimeUpdate: number;
 
         beforeEach(async () => {
             typeActor = generateUniqueType("Actor");
@@ -82,6 +84,21 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 typeDefs,
             });
             session = await neo4j.getSession();
+
+            movieTitle = "Movie 1";
+            actorName = "Actor 1";
+            directorName = "Director 1";
+            year = 2010;
+            screenTime = 123;
+            screenTimeUpdate = 134;
+
+            await session.run(
+                `
+                        CREATE (:${typeActor.name} {name:$actorName})
+                        CREATE (:${typeActor.name} {name:$directorName})
+                    `,
+                { actorName: "Actor 1", directorName: "Director 1" }
+            );
         });
 
         afterEach(async () => {
@@ -89,7 +106,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             await session.close();
         });
 
-        test("should be length 1 and not overwritten with duplicate bc overwrite=false - other field does not get updated bc of error", async () => {
+        test("should return error when overwrite is false, other field does not get updated because of error even if it's first", async () => {
             const source = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!, $year: Int!, $directorName: String!) {
                     ${typeMovie.operations.create}(
@@ -186,13 +203,6 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const directorName = "Director 1";
-            const year = 2010;
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 screenTime,
@@ -201,14 +211,6 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 year,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                        CREATE (:${typeActor.name} {name:$actorName})
-                        CREATE (:${typeActor.name} {name:$directorName})
-                    `,
-                { actorName: "Actor 1", directorName: "Director 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -225,17 +227,14 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, directorName, year: 2011, actorName, screenTime: screenTimeUpdate },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // [[GraphQLError: Movie.actors required exactly once for a specific Actor]]
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -255,7 +254,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(directorOverwritten.records).toHaveLength(0);
         });
 
-        test("should be length 1 and not overwritten with duplicate bc overwrite=false - other field overwrite is ignored bc not duplicate", async () => {
+        test("should return error when overwrite is false, other field does not get connected because of error", async () => {
             const source = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                     ${typeMovie.operations.create}(
@@ -347,13 +346,6 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const directorName = "Director 1";
-            const year = 2010;
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 screenTime,
@@ -362,14 +354,6 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 year,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                        CREATE (:${typeActor.name} {name:$actorName})
-                        CREATE (:${typeActor.name} {name:$directorName})
-                    `,
-                { actorName: "Actor 1", directorName: "Director 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -386,21 +370,14 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, directorName, year, actorName, screenTime: screenTimeUpdate },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -421,8 +398,15 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         });
     });
 
-    describe("Relationships of type 1:*", () => {
+    describe("Relationships of type 1:n", () => {
         let session: Session;
+
+        let movieTitle: string;
+        let movieOtherTitle: string;
+        let actorName: string;
+        let screenTime: number;
+        let screenTimeUpdate: number;
+        let screenTimeOther: number;
 
         beforeEach(async () => {
             typeActor = generateUniqueType("Actor");
@@ -447,6 +431,14 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 typeDefs,
             });
             session = await neo4j.getSession();
+
+            movieTitle = "Movie 1";
+            movieOtherTitle = "Movie 2";
+            actorName = "Actor 1";
+            screenTime = 123;
+            screenTimeUpdate = 134;
+            screenTimeOther = 156;
+            await session.run(`CREATE (:${typeActor.name} {name:$actorName})`, { actorName });
         });
 
         afterEach(async () => {
@@ -455,74 +447,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         });
 
         // update + update + connect
-        test("should be length 1", async () => {
-            const source = `
-                mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
-                    ${typeMovie.operations.create}(
-                        input: [
-                            {
-                                title: $movieTitle
-                                actors: {
-                                    connect: {
-                                        where: { node: { name: $actorName } },
-                                        edge: { screenTime: $screenTime },
-                                    }
-                                }
-                            }
-                        ]
-                    ) {
-                        ${typeMovie.plural} {
-                            title
-                            actorsConnection {
-                                edges {
-                                    screenTime
-                                    node {
-                                        name
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            `;
-
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-
-            await session.run(
-                `
-                    CREATE (:${typeActor.name} {name:$actorName})
-                `,
-                { actorName: "Actor 1" }
-            );
-
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                variableValues: { movieTitle, actorName, screenTime },
-            });
-            expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any)?.[typeMovie.operations.create][typeMovie.plural]).toEqual([
-                {
-                    title: movieTitle,
-                    actorsConnection: { edges: [{ screenTime, node: { name: actorName } }] },
-                },
-            ]);
-
-            const cypher = `
-                MATCH (m:${typeMovie.name} {title: $movieTitle})
-                        <-[:ACTED_IN {screenTime: $screenTime}]-
-                            (:${typeActor.name} {name: $actorName})
-                RETURN m
-            `;
-
-            const neo4jResult = await session.run(cypher, { movieTitle, screenTime, actorName });
-            expect(neo4jResult.records).toHaveLength(1);
-        });
-
-        test("should be length 1 overwritten with duplicate", async () => {
+        test("should overwrite existing relationship with new properties: connect in nested update", async () => {
             const source = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                     ${typeMovie.operations.create}(
@@ -590,20 +515,8 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-
             const neo4jInitialResult = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                    CREATE (:${typeActor.name} {name:$actorName})
-                `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -619,15 +532,14 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
-            expect(gqlResult2.errors).toBeFalsy();
-
-            expect((gqlResult2.data as any)?.[typeMovie.operations.update][typeMovie.plural]).toEqual([
+            expect(gqlResultUpdate.errors).toBeFalsy();
+            expect((gqlResultUpdate.data as any)?.[typeMovie.operations.update][typeMovie.plural]).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: { edges: [{ screenTime: screenTimeUpdate, node: { name: actorName } }] },
@@ -640,7 +552,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(neo4jResult.records).toHaveLength(1);
         });
 
-        test("should be length 1 and not overwritten with duplicate bc overwrite=false", async () => {
+        test("should return error because overwrite set to false: connect in nested update", async () => {
             const source = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                     ${typeMovie.operations.create}(
@@ -709,20 +621,8 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-
             const neo4jInitialResult = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                    CREATE (:${typeActor.name} {name:$actorName})
-                `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -738,16 +638,14 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -760,7 +658,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         });
 
         // update + connect
-        test("update-connect 1:* : should be length 1 and not overwritten", async () => {
+        test("should return error because overwrite set to false, when relationship field has cardinality 1: connect in update", async () => {
             const source = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                     ${typeMovie.operations.create}(
@@ -827,24 +725,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 screenTime,
                 actorName,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                        CREATE (:${typeActor.name} {name:$actorName})
-                    `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -860,21 +746,14 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -886,7 +765,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(neo4jResultOverwritten.records).toHaveLength(0);
         });
 
-        test("update-connect 1:* : should be length 1 and overwritten", async () => {
+        test("should overwrite existing relationship with new properties when relationship field has cardinality 1: connect in update", async () => {
             const source = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                     ${typeMovie.operations.create}(
@@ -953,24 +832,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 screenTime,
                 actorName,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                        CREATE (:${typeActor.name} {name:$actorName})
-                    `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -986,21 +853,19 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
-            // expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            expect(gqlResult2.errors).toBeFalsy();
-
-            // expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors).toBeFalsy();
+            expect((gqlResultUpdate.data as any)?.[typeMovie.operations.update][typeMovie.plural]).toEqual([
+                {
+                    title: movieTitle,
+                    actorsConnection: { edges: [{ screenTime: screenTimeUpdate, node: { name: actorName } }] },
+                },
+            ]);
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
@@ -1012,7 +877,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(neo4jResultOverwritten.records).toHaveLength(1);
         });
 
-        test("update-connect *:1 : should be length 1 and not overwritten", async () => {
+        test("should return error because overwrite set to false, when relationship field has cardinality n: connect in update", async () => {
             const source = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                     ${typeMovie.operations.create}(
@@ -1079,24 +944,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 screenTime,
                 actorName,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                        CREATE (:${typeActor.name} {name:$actorName})
-                    `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -1112,21 +965,16 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+                `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`
+            );
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -1138,7 +986,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(neo4jResultOverwritten.records).toHaveLength(0);
         });
 
-        test("update-connect *:1 : should be length 1 and overwritten", async () => {
+        test("should overwrite existing relationship with new properties when relationship field has cardinality n: connect in update", async () => {
             const source = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                     ${typeMovie.operations.create}(
@@ -1204,24 +1052,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 screenTime,
                 actorName,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                        CREATE (:${typeActor.name} {name:$actorName})
-                    `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -1237,21 +1073,13 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
-            // expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            expect(gqlResult2.errors).toBeFalsy();
-
-            // expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
@@ -1264,7 +1092,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         });
 
         // update + update + connectOrCreate
-        test("connectOrCreate: overwrite not an option - should be length 1 and not overwritten", async () => {
+        test("update with connectOrCreate is a no-op when relationship field has cardinality 1, overwrite not an option", async () => {
             typeDefs = gql`
                 type ${typeMovie.name} {
                     title: String!
@@ -1281,6 +1109,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     screenTime: Int!
                 }
             `;
+            const actorId = 1;
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
             });
@@ -1352,12 +1181,6 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 RETURN m
             `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const actorId = 1;
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 screenTime,
@@ -1367,8 +1190,9 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(neo4jInitialResult.records).toHaveLength(0);
 
             await session.run(
-                `
-                    CREATE (:${typeActor.name} {name:$actorName, id:$actorId})
+                ` 
+                    MATCH (a:${typeActor.name} {name:$actorName})
+                    SET a.id=$actorId
                 `,
                 { actorName: "Actor 1", actorId }
             );
@@ -1387,21 +1211,13 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, actorId },
             });
-            // expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            expect(gqlResult2.errors).toBeFalsy();
-
-            // expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName, actorId });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -1415,7 +1231,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         });
 
         // create + connect
-        test("create-connect 1:* : should be length 1 and not overwritten", async () => {
+        test("should return error because overwrite set to false: connect in create", async () => {
             const source = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                     ${typeMovie.operations.create}(
@@ -1483,24 +1299,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 screenTime,
                 actorName,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                    CREATE (:${typeActor.name} {name:$actorName})
-                `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -1516,21 +1320,14 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -1543,7 +1340,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         });
 
         // ?? breaking?
-        test.skip("create-connect 1:* : should be length 1 and overwritten", async () => {
+        test.skip("should return error  because overwrite set to false: connect in create", async () => {
             const source = `
             mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                 ${typeMovie.operations.create}(
@@ -1609,10 +1406,6 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                             (:${typeActor.name} {name: $actorName})
                 RETURN r
             `;
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
 
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
@@ -1620,13 +1413,6 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 actorName,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                    CREATE (:${typeActor.name} {name:$actorName})
-                `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -1642,21 +1428,14 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -1669,7 +1448,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         });
 
         // nested connect-connect
-        test("create-nested connect 1:* : should be length 1 and not overwritten", async () => {
+        test("should return error because overwrite set to false, when relationship field has cardinality n: nested connect in create", async () => {
             const source = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                     ${typeMovie.operations.create}(
@@ -1743,25 +1522,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const movieOtherTitle = "Movie 2";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 screenTime,
                 actorName,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                    CREATE (:${typeActor.name} {name:$actorName})
-                `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -1777,21 +1543,16 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, movieOtherTitle },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+                `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`
+            );
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -1803,7 +1564,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(neo4jResultOverwritten.records).toHaveLength(0);
         });
 
-        test("create-nested connect 1:* : should be length 1 and overwritten", async () => {
+        test("should overwrite existing relationship with new properties, when relationship field has cardinality n: nested connect in create", async () => {
             const source = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                     ${typeMovie.operations.create}(
@@ -1876,25 +1637,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const movieOtherTitle = "Movie 2";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 screenTime,
                 actorName,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                    CREATE (:${typeActor.name} {name:$actorName})
-                `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -1910,21 +1658,13 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, movieOtherTitle },
             });
-            // expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            expect(gqlResult2.errors).toBeFalsy();
-
-            // expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
@@ -1936,7 +1676,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(neo4jResultOverwritten.records).toHaveLength(1);
         });
 
-        test("create-nested connect 1:1 : should be length 1 and overwritten", async () => {
+        test("should overwrite existing relationship with new properties when relationship field has cardinality 1: nested connect in create", async () => {
             const source = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                     ${typeMovie.operations.create}(
@@ -2015,25 +1755,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const movieOtherTitle = "Movie 2";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 screenTime,
                 actorName,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                    CREATE (:${typeActor.name} {name:$actorName})
-                `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -2049,21 +1776,13 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, movieOtherTitle },
             });
-            // expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            expect(gqlResult2.errors).toBeFalsy();
-
-            // expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
@@ -2075,7 +1794,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(neo4jResultOverwritten.records).toHaveLength(1);
         });
 
-        test("create-nested connect 1:1 : should be length 1 and not overwritten", async () => {
+        test("should return error because overwrite set to false, when relationship field has cardinality 1: nested connect in create", async () => {
             const source = `
             mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                 ${typeMovie.operations.create}(
@@ -2155,25 +1874,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 RETURN m
             `;
 
-            const movieTitle = "Movie 1";
-            const movieOtherTitle = "Movie 2";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 screenTime,
                 actorName,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                    CREATE (:${typeActor.name} {name:$actorName})
-                `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -2189,21 +1895,14 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, movieOtherTitle },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -2216,7 +1915,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         });
 
         // update connect-connect
-        test("update-nested connect 1:* : should be length 1 and overwritten twice", async () => {
+        test("should overwrite existing relationship with new properties: nested connect in nested update", async () => {
             const source = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                     ${typeMovie.operations.create}(
@@ -2287,25 +1986,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-            const screenTimeOther = 156;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 screenTime,
                 actorName,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                    CREATE (:${typeActor.name} {name:$actorName})
-                `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -2321,21 +2007,13 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, screenTimeOther },
             });
-            // expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            expect(gqlResult2.errors).toBeFalsy();
-
-            // expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
@@ -2353,7 +2031,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(neo4jResultOverwrittenTwice.records).toHaveLength(1);
         });
 
-        test("update-nested connect 1:* : should be length 1 and not overwritten", async () => {
+        test("should return error because overwrite set to false: nested connect in nested update", async () => {
             const source = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                     ${typeMovie.operations.create}(
@@ -2438,13 +2116,6 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
 
-            await session.run(
-                `
-                    CREATE (:${typeActor.name} {name:$actorName})
-                `,
-                { actorName: "Actor 1" }
-            );
-
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
@@ -2459,159 +2130,16 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, screenTimeOther },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
-
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
-            expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwrittenOnce = await session.run(cypher, {
-                movieTitle,
-                screenTime: screenTimeUpdate,
-                actorName,
-            });
-            expect(neo4jResultOverwrittenOnce.records).toHaveLength(0);
-            const neo4jResultOverwrittenTwice = await session.run(cypher, {
-                movieTitle,
-                screenTime: screenTimeOther,
-                actorName,
-            });
-            expect(neo4jResultOverwrittenTwice.records).toHaveLength(0);
-        });
-
-        test("update-nested connect 1:* : should be length 1 and not overwritten bc entire mutation fails", async () => {
-            const source = `
-                mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
-                    ${typeMovie.operations.create}(
-                        input: [
-                            {
-                                title: $movieTitle
-                                actors: {
-                                    connect: {
-                                        where: { node: { name: $actorName } },
-                                        edge: { screenTime: $screenTime },
-                                    }
-                                }
-                            }
-                        ]
-                    ) {
-                        ${typeMovie.plural} {
-                            title
-                            actorsConnection {
-                                edges {
-                                    screenTime
-                                    node {
-                                        name
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            `;
-            const update = `
-                mutation($screenTimeOther: Int!, $movieTitle: String!, $screenTime: Int!, $actorName: String!) {
-                    ${typeMovie.operations.update}(
-                        where: {
-                            title: $movieTitle
-                        },
-                        connect: {
-                            actors: {
-                                where: { node: { name: $actorName  } },
-                                edge: { screenTime: $screenTime },
-                                connect: {
-                                    movies: [{
-                                        where: { node: { title: $movieTitle  } },
-                                        edge: { screenTime: $screenTimeOther },
-                                        overwrite: false
-                                    }]
-                                }
-                            }
-                        }  
-                    ) {
-                        ${typeMovie.plural} {
-                            title
-                            actorsConnection {
-                                edges {
-                                    screenTime
-                                    node {
-                                        name
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            `;
-
-            const cypher = `
-                MATCH (m:${typeMovie.name} {title: $movieTitle})
-                        <-[:ACTED_IN {screenTime: $screenTime}]-
-                            (:${typeActor.name} {name: $actorName})
-                RETURN m
-            `;
-
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-            const screenTimeOther = 156;
-
-            const neo4jInitialResult = await session.run(cypher, {
-                movieTitle,
-                screenTime,
-                actorName,
-            });
-            expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                    CREATE (:${typeActor.name} {name:$actorName})
-                `,
-                { actorName: "Actor 1" }
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+                `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`
             );
-
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                variableValues: { movieTitle, actorName, screenTime },
-            });
-            expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any)?.[typeMovie.operations.create][typeMovie.plural]).toEqual([
-                {
-                    title: movieTitle,
-                    actorsConnection: { edges: [{ screenTime, node: { name: actorName } }] },
-                },
-            ]);
-
-            const gqlResult2 = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, screenTimeOther },
-            });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -2630,7 +2158,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         });
 
         // update - create - connect
-        test("update-create-nested connect 1:* : should be length 1 and not overwritten", async () => {
+        test("should return error because overwrite set to false: update-create-nested connect", async () => {
             const source = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                     ${typeMovie.operations.create}(
@@ -2661,7 +2189,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 }
             `;
             const update = `
-                mutation($screenTimeOther: Int!, $movieTitle: String!, $movieTitleOther: String!, $screenTime: Int!, $actorName: String!) {
+                mutation($screenTimeOther: Int!, $movieTitle: String!, $movieOtherTitle: String!, $screenTime: Int!, $actorName: String!) {
                     ${typeActor.operations.update}(
                         where: {
                             name: $actorName
@@ -2671,7 +2199,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                                 {
                                     edge: { screenTime: $screenTime },
                                     node: {
-                                        title: $movieTitleOther
+                                        title: $movieOtherTitle
                                         actors: {
                                             connect: {
                                                 where: { node: { name: $actorName  } },
@@ -2712,26 +2240,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const movieTitleOther = "Movie 2";
-            const actorName = "Actor 1";
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-            const screenTimeOther = 156;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 screenTime,
                 actorName,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                    CREATE (:${typeActor.name} {name:$actorName})
-                `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -2747,7 +2261,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
@@ -2756,18 +2270,13 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     actorName,
                     screenTime: screenTimeUpdate,
                     screenTimeOther,
-                    movieTitleOther,
+                    movieOtherTitle,
                 },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            // expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+                `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`
+            );
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -2780,8 +2289,14 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         });
     });
 
-    describe("Relationships of type *:*", () => {
+    describe("Relationships of type n:n", () => {
         let session: Session;
+        let movieTitle: string;
+        let movieOtherTitle: string;
+        let actorName: string;
+        let actorNameOther: string;
+        let year: number;
+        let yearOther: number;
 
         beforeEach(async () => {
             typeActor = generateUniqueType("Actor");
@@ -2806,6 +2321,14 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 typeDefs,
             });
             session = await neo4j.getSession();
+
+            movieTitle = "Movie 1";
+            movieOtherTitle = "Movie 2";
+            actorName = "Actor 1";
+            actorNameOther = "Actor 2";
+            year = 2010;
+            yearOther = 2011;
+            await session.run(`CREATE (:${typeActor.name} {name:$actorName})`, { actorName });
         });
 
         afterEach(async () => {
@@ -2814,7 +2337,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         });
 
         // update + update + connect
-        test("*:* - should be length 1 and not overwritten with duplicate bc overwrite=false", async () => {
+        test("should return error because overwrite set to false", async () => {
             const source = `
                 mutation($movieTitle: String!, $actorName: String!, $year: Int!) {
                     ${typeMovie.operations.create}(
@@ -2882,24 +2405,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const year = 2010;
-            const yearOther = 2011;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 actorName,
                 year,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                        CREATE (:${typeActor.name} {name:$actorName})
-                    `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -2915,21 +2426,16 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+                `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`
+            );
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -2941,7 +2447,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(neo4jResultOverwritten.records).toHaveLength(0);
         });
 
-        test("*:* - should be length 1 and overwritten", async () => {
+        test("should overwrite existing relationship with new properties", async () => {
             const source = `
                 mutation($movieTitle: String!, $actorName: String!, $year: Int!) {
                     ${typeMovie.operations.create}(
@@ -3008,24 +2514,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const year = 2010;
-            const yearOther = 2011;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 actorName,
                 year,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                        CREATE (:${typeActor.name} {name:$actorName})
-                    `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -3041,21 +2535,13 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
-            // expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            expect(gqlResult2.errors).toBeFalsy();
-
-            // expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
@@ -3068,7 +2554,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         });
 
         // update + connect
-        test("update-connect *:* - should be length 1 and overwritten", async () => {
+        test("should overwrite existing relationship with new properties: connect in update", async () => {
             const source = `
                 mutation($movieTitle: String!, $actorName: String!, $year: Int!) {
                     ${typeMovie.operations.create}(
@@ -3133,24 +2619,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const year = 2010;
-            const yearOther = 2011;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 actorName,
                 year,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                        CREATE (:${typeActor.name} {name:$actorName})
-                    `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -3166,21 +2640,13 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
-            // expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            expect(gqlResult2.errors).toBeFalsy();
-
-            // expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
@@ -3192,7 +2658,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(neo4jResultOverwritten.records).toHaveLength(1);
         });
 
-        test("update-connect *:* - should be length 1 and not overwritten", async () => {
+        test("should return error because overwrite set to false: connect in update", async () => {
             const source = `
                 mutation($movieTitle: String!, $actorName: String!, $year: Int!) {
                     ${typeMovie.operations.create}(
@@ -3258,24 +2724,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const year = 2010;
-            const yearOther = 2011;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 actorName,
                 year,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                        CREATE (:${typeActor.name} {name:$actorName})
-                    `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -3291,21 +2745,16 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+                `${typeActor.name}.directed required exactly once for a specific ${typeMovie.name}`
+            );
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -3318,7 +2767,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         });
 
         // create + connect
-        test("create-connect *:* - should be length 1 and not overwritten", async () => {
+        test("should return error because overwrite set to false: connect in create", async () => {
             const source = `
                     mutation($movieTitle: String!, $actorName: String!, $year: Int!) {
                         ${typeMovie.operations.create}(
@@ -3392,25 +2841,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                         RETURN m
                     `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const actorNameOther = "Actor 2";
-            const year = 2010;
-            const yearOther = 2011;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 actorName,
                 year,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                            CREATE (:${typeActor.name} {name:$actorName})
-                        `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -3426,21 +2862,16 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, year, yearOther, actorName: actorNameOther },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+                `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`
+            );
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -3452,7 +2883,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(neo4jResultOverwritten.records).toHaveLength(0);
         });
 
-        test("create-connect *:* - should be length 1 and overwritten", async () => {
+        test("should overwrite existing relationship with new properties: connect in create", async () => {
             const source = `
                     mutation($movieTitle: String!, $actorName: String!, $year: Int!) {
                         ${typeMovie.operations.create}(
@@ -3525,25 +2956,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                         RETURN m
                     `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const actorNameOther = "Actor 2";
-            const year = 2010;
-            const yearOther = 2011;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 actorName,
                 year,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                            CREATE (:${typeActor.name} {name:$actorName})
-                        `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -3559,21 +2977,13 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, year, yearOther, actorName: actorNameOther },
             });
-            // expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            expect(gqlResult2.errors).toBeFalsy();
-
-            // expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName: actorNameOther });
             expect(neo4jResultInitial.records).toHaveLength(0);
@@ -3586,7 +2996,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         });
 
         // nested connect-connect
-        test("create-nested connect *:* - should be length 1 and not overwritten", async () => {
+        test("should return error because overwrite set to false: nested connect in create", async () => {
             const source = `
                     mutation($movieTitle: String!, $actorName: String!, $year: Int!) {
                         ${typeMovie.operations.create}(
@@ -3666,25 +3076,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const movieOtherTitle = "Movie 2";
-            const year = 2010;
-            const yearOther = 2011;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 actorName,
                 year,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                            CREATE (:${typeActor.name} {name:$actorName})
-                        `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -3700,21 +3097,16 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, movieOtherTitle, year: yearOther, actorName },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+                `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`
+            );
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -3726,7 +3118,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(neo4jResultOverwritten.records).toHaveLength(0);
         });
 
-        test("create-nested connect *:* - should be length 1 and overwritten", async () => {
+        test("should overwrite existing relationship with new properties: nested connect in create", async () => {
             const source = `
                     mutation($movieTitle: String!, $actorName: String!, $year: Int!) {
                         ${typeMovie.operations.create}(
@@ -3805,25 +3197,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                         RETURN m
                     `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const movieOtherTitle = "Movie 2";
-            const year = 2010;
-            const yearOther = 2011;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 actorName,
                 year,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                            CREATE (:${typeActor.name} {name:$actorName})
-                        `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -3839,21 +3218,13 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, movieOtherTitle, year: yearOther, actorName },
             });
-            // expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            expect(gqlResult2.errors).toBeFalsy();
-
-            // expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
@@ -3866,7 +3237,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
         });
 
         // update connect-connect
-        test("update-nested connect *:* - should be length 1 and not overwritten", async () => {
+        test("should return error because overwrite set to false on last level: nested connect in update", async () => {
             const source = `
                 mutation($movieTitle: String!, $actorName: String!, $year: Int!) {
                     ${typeMovie.operations.create}(
@@ -3938,25 +3309,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const movieOtherTitle = "Movie 2";
-            const year = 2010;
-            const yearOther = 2011;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 actorName,
                 year,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                        CREATE (:${typeActor.name} {name:$actorName})
-                    `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -3972,21 +3330,16 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, movieOtherTitle, year, yearOther, actorName },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+                `${typeActor.name}.directed required exactly once for a specific ${typeMovie.name}`
+            );
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -3998,7 +3351,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(neo4jResultOverwritten.records).toHaveLength(0);
         });
 
-        test("2update-nested connect *:* - should be length 1 and not overwritten", async () => {
+        test("should return error because overwrite set to false on inner level: nested connect in update", async () => {
             const source = `
                 mutation($movieTitle: String!, $actorName: String!, $year: Int!) {
                     ${typeMovie.operations.create}(
@@ -4070,25 +3423,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                     RETURN m
                 `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const movieOtherTitle = "Movie 2";
-            const year = 2010;
-            const yearOther = 2011;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 actorName,
                 year,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                        CREATE (:${typeActor.name} {name:$actorName})
-                    `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -4104,21 +3444,16 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, movieOtherTitle, year, yearOther, actorName },
             });
-            expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            // expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+                `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`
+            );
+            expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(1);
@@ -4130,7 +3465,7 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             expect(neo4jResultOverwritten.records).toHaveLength(0);
         });
 
-        test("update-nested connect *:* - should be length 1 and overwritten", async () => {
+        test("should overwrite existing relationship with new properties: nested connect in update", async () => {
             const source = `
                 mutation($movieTitle: String!, $actorName: String!, $year: Int!) {
                     ${typeMovie.operations.create}(
@@ -4201,25 +3536,12 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                         RETURN m
                     `;
 
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const movieOtherTitle = "Movie 2";
-            const year = 2010;
-            const yearOther = 2011;
-
             const neo4jInitialResult = await session.run(cypher, {
                 movieTitle,
                 actorName,
                 year,
             });
             expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                        CREATE (:${typeActor.name} {name:$actorName})
-                    `,
-                { actorName: "Actor 1" }
-            );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -4235,21 +3557,13 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
                 },
             ]);
 
-            const gqlResult2 = await graphql({
+            const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, movieOtherTitle, year, yearOther, actorName },
             });
-            // expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            // expect(gqlResult2.errors).toIncludeAllMembers([
-            //     "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            // ]);
-
-            expect(gqlResult2.errors).toBeFalsy();
-
-            // expect(gqlResult2.data).toBeFalsy();
+            expect(gqlResultUpdate.errors).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, year, actorName });
             expect(neo4jResultInitial.records).toHaveLength(0);
@@ -4260,203 +3574,5 @@ describe("Relationship properties - connect with and without `overwrite`", () =>
             });
             expect(neo4jResultOverwritten.records).toHaveLength(1);
         });
-    });
-
-    test.skip("connect via update-connect - 1:1", async () => {
-        const typeDefs = gql`
-            type Movie {
-                title: String!
-                directors: [Actor!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
-                actors: Actor! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
-            }
-
-            type Actor {
-                name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
-                directed: [Movie!]! @relationship(type: "DIRECTED", properties: "Directed", direction: OUT)
-            }
-
-            interface ActedIn {
-                screenTime: Int!
-            }
-            interface Directed {
-                year: Int!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-        });
-
-        const session = await neo4j.getSession();
-
-        const source = `
-            mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
-                createMovies(
-                    input: [
-                        {
-                            title: $movieTitle
-                            actors: {
-                                connect: [{
-                                    where: { node: { name: $actorName } },
-                                    edge: { screenTime: $screenTime },
-                                }]
-                            }
-                        }
-                    ]
-                ) {
-                    movies {
-                        title
-                        actorsConnection {
-                            edges {
-                                screenTime
-                                node {
-                                    name
-                                }
-                            }
-                        }
-                        directorsConnection {
-                            edges {
-                                year
-                                node {
-                                    name
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-        const update = `
-            mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!, $year: Int!, $directorName: String!) {
-                updateMovies(
-                    where: {
-                        title: $movieTitle
-                    },
-                    update: {
-                        directors: {
-                            connect: {
-                                where: { node: { name: $directorName } },
-                                edge: { year: $year },
-                                overwrite: false
-                            }
-                        },
-                        actors: {
-                            connect: {
-                                where: { node: { name: $actorName } },
-                                edge: { screenTime: $screenTime },
-                                overwrite: false
-                            }
-                        }
-                    }
-                    
-                ) {
-                    movies {
-                        title
-                        directorsConnection {
-                            edges {
-                                year
-                                node {
-                                    name
-                                }
-                            }
-                        }
-                        actorsConnection {
-                            edges {
-                                screenTime
-                                node {
-                                    name
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        try {
-            const cypher = `
-            MATCH (m:Movie {title: $movieTitle})
-                    <-[:ACTED_IN {screenTime: $screenTime}]-
-                        (:Actor {name: $actorName})
-            RETURN m
-        `;
-
-            const movieTitle = "Movie 1";
-            const actorName = "Actor 1";
-            const directorName = "Director 1";
-            const year = 2010;
-            const screenTime = 123;
-            const screenTimeUpdate = 134;
-
-            await session.run(`MATCH (n) DETACH DELETE n;`);
-            const neo4jInitialResult = await session.run(cypher, {
-                movieTitle,
-                screenTime,
-                actorName,
-                directorName,
-                year,
-            });
-            expect(neo4jInitialResult.records).toHaveLength(0);
-
-            await session.run(
-                `
-                    CREATE (:Actor {name:$actorName})
-                    CREATE (:Actor {name:$directorName})
-                `,
-                { actorName: "Actor 1", directorName: "Director 1" }
-            );
-
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                variableValues: { movieTitle, actorName, screenTime },
-            });
-            expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any)?.createMovies.movies).toEqual([
-                {
-                    title: movieTitle,
-                    actorsConnection: { edges: [{ screenTime, node: { name: actorName } }] },
-                    directorsConnection: { edges: [] },
-                },
-            ]);
-
-            const gqlResult2 = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                variableValues: { movieTitle, directorName, year, actorName, screenTime: screenTimeUpdate },
-            });
-            // expect(gqlResult2.errors).toBeDefined();
-            // TODO: ???
-            expect(gqlResult2.errors).toIncludeAllMembers([
-                "[[GraphQLError: Movie.actors required exactly once for a specific Actor]]",
-            ]);
-
-            expect(gqlResult2.errors).toBeFalsy();
-
-            expect(gqlResult2.data).toBeFalsy();
-
-            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
-            expect(neo4jResultInitial.records).toHaveLength(1);
-            const neo4jResultOverwritten = await session.run(cypher, {
-                movieTitle,
-                screenTime: screenTimeUpdate,
-                actorName,
-            });
-            expect(neo4jResultOverwritten.records).toHaveLength(0);
-            const directorOverwritten = await session.run(
-                `MATCH (m:Movie {title: $movieTitle})
-                        <-[:DIRECTED {year: $year}]-
-                            (d:Actor {name: $directorName})
-                RETURN d `,
-                { movieTitle, year: 2011, directorName }
-            );
-            expect(directorOverwritten.records).toHaveLength(0);
-        } finally {
-            await session.run(`MATCH (n) DETACH DELETE n;`);
-            await session.close();
-        }
     });
 });
