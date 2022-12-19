@@ -35,6 +35,9 @@ import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import { overwrite } from "./fields/overwrite";
 
+// TODO:
+// PR #1. to be included in relationship validation flow,
+// PR #2. to support `overwrite` argument based on the relationship validation flow
 function createRelationshipFields({
     relationshipFields,
     schemaComposer,
@@ -138,7 +141,7 @@ function createRelationshipFields({
                             ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
                             : {}),
                         where: connectWhere,
-                        // overwrite: "Boolean", // :HERE
+                        overwrite,
                     });
                 }
             );
@@ -375,7 +378,7 @@ function createRelationshipFields({
                                       }`,
                                   }
                                 : {}),
-                            // overwrite: "Boolean", // TODO: make this a Field :HERE
+                            overwrite,
                         },
                     });
 
@@ -767,7 +770,7 @@ function createRelationshipFields({
                 ...(hasNonGeneratedProperties
                     ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
                     : {}),
-                overwrite, // :HERE
+                overwrite,
             });
         });
 
