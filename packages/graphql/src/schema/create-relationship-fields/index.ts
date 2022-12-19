@@ -33,6 +33,7 @@ import { FieldAggregationComposer } from "../aggregations/field-aggregation-comp
 import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
+import { overwrite } from "./fields/overwrite";
 
 function createRelationshipFields({
     relationshipFields,
@@ -137,7 +138,7 @@ function createRelationshipFields({
                             ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
                             : {}),
                         where: connectWhere,
-                        overwrite: "Boolean", // :HERE
+                        // overwrite: "Boolean", // :HERE
                     });
                 }
             );
@@ -374,7 +375,7 @@ function createRelationshipFields({
                                       }`,
                                   }
                                 : {}),
-                            overwrite: "Boolean", // TODO: make this a Field
+                            // overwrite: "Boolean", // TODO: make this a Field :HERE
                         },
                     });
 
@@ -766,7 +767,7 @@ function createRelationshipFields({
                 ...(hasNonGeneratedProperties
                     ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
                     : {}),
-                overwrite: "Boolean", // :HERE
+                overwrite, // :HERE
             });
         });
 
