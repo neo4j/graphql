@@ -139,6 +139,10 @@ describe("Enums", () => {
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: MovieConnectWhere
             }
 
@@ -342,6 +346,10 @@ describe("Enums", () => {
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: ActorConnectWhere
             }
 

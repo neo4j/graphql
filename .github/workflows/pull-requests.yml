@@ -9,6 +9,7 @@ on:
     branches:
       - dev
       - master
+      - 4.0.0
     paths-ignore:
       - "docs/**"
 

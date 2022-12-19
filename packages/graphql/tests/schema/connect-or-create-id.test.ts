@@ -104,6 +104,10 @@ describe("connect or create with id", () => {
             }
 
             input ActorMoviesConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: MovieConnectWhere
             }
 
@@ -560,6 +564,10 @@ describe("connect or create with id", () => {
 
             input PostCreatorConnectFieldInput {
               connect: UserConnectInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: UserConnectWhere
             }
 
@@ -884,6 +892,10 @@ describe("connect or create with id", () => {
 
             input UserPostsConnectFieldInput {
               connect: [PostConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: PostConnectWhere
             }
 

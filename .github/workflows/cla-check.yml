@@ -5,6 +5,7 @@ on:
     branches:
       - dev
       - master
+      - 4.0.0
 
 jobs:
   cla-check:

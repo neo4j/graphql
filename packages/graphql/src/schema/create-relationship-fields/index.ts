@@ -138,7 +138,6 @@ function createRelationshipFields({
                             ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
                             : {}),
                         where: connectWhere,
-                        // overwrite: "Boolean", // :HERE
                     });
                 }
             );
@@ -375,7 +374,6 @@ function createRelationshipFields({
                                       }`,
                                   }
                                 : {}),
-                            // overwrite: "Boolean", // TODO: make this a Field :HERE
                         },
                     });
 
@@ -519,15 +517,9 @@ function createRelationshipFields({
             });
 
             if (!(composeNode instanceof InterfaceTypeComposer)) {
-                if (rel.typeMeta.array || !rel.typeMeta.required) {
-                    nodeCreateInput.addFields({
-                        [rel.fieldName]: unionCreateInput,
-                    });
-                } else {
-                    nodeCreateInput.addFields({
-                        [rel.fieldName]: unionCreateInput.NonNull,
-                    });
-                }
+                nodeCreateInput.addFields({
+                    [rel.fieldName]: unionCreateInput,
+                });
             }
 
             nodeRelationInput.addFields({
@@ -767,7 +759,7 @@ function createRelationshipFields({
                 ...(hasNonGeneratedProperties
                     ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
                     : {}),
-                overwrite, // :HERE
+                overwrite,
             });
         });
 

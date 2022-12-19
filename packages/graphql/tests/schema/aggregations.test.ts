@@ -734,6 +734,10 @@ describe("Aggregations", () => {
 
             input PostLikesConnectFieldInput {
               edge: LikesCreateInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: UserConnectWhere
             }
 

@@ -166,6 +166,10 @@ describe("Relationship-properties", () => {
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: MovieConnectWhere
             }
 
@@ -417,6 +421,10 @@ describe("Relationship-properties", () => {
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: ActorConnectWhere
             }
 
@@ -838,6 +846,10 @@ describe("Relationship-properties", () => {
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: MovieConnectWhere
             }
 
@@ -1117,6 +1129,10 @@ describe("Relationship-properties", () => {
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: ActorConnectWhere
             }
 
@@ -1531,6 +1547,10 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: MovieConnectWhere
             }
 
@@ -1773,6 +1793,10 @@ describe("Relationship-properties", () => {
 
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: ActorConnectWhere
             }
 

@@ -10,7 +10,9 @@
         "docs",
         "packages/*",
         "examples/migration",
+        "examples/neo-place",
         "examples/neo-push/*",
+        "examples/subscriptions/*",
         "packages/plugins/*"
     ],
     "scripts": {
@@ -23,6 +25,7 @@
         "test-docker": "docker-compose up --build --abort-on-container-exit",
         "prepare": "husky install",
         "changeset-version": "changeset version && yarn",
+        "changeset-version-4.0.0": "changeset version --since 4.0.0 && yarn",
         "changeset-version-master": "changeset version --since master && yarn",
         "release": "yarn build && changeset publish"
     },
@@ -32,13 +35,13 @@
         "@typescript-eslint/parser": "5.46.1",
         "concurrently": "7.6.0",
         "dotenv": "16.0.3",
-        "eslint": "8.29.0",
+        "eslint": "8.30.0",
         "eslint-config-prettier": "8.5.0",
         "eslint-formatter-summary": "1.1.0",
         "eslint-import-resolver-typescript": "3.5.2",
         "eslint-plugin-eslint-comments": "3.2.0",
         "eslint-plugin-import": "2.26.0",
-        "eslint-plugin-jest": "27.1.6",
+        "eslint-plugin-jest": "27.1.7",
         "eslint-plugin-jsx-a11y": "6.6.1",
         "eslint-plugin-react": "7.31.11",
         "graphql": "16.6.0",
@@ -54,7 +57,7 @@
     },
     "packageManager": "yarn@3.3.0",
     "dependencies": {
-        "@changesets/changelog-github": "0.4.7",
-        "@changesets/cli": "2.25.2"
+        "@changesets/changelog-github": "0.4.8",
+        "@changesets/cli": "2.26.0"
     }
 }

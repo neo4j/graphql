@@ -72,6 +72,10 @@ describe("Alias", () => {
 
             input ActorActedInConnectFieldInput {
               edge: ActorActedInPropsCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: MovieConnectWhere
             }
 

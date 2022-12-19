@@ -1,5 +1,14 @@
 # @neo4j/graphql-ogm
 
+## 3.14.1
+
+### Patch Changes
+
+-   [#2579](https://github.com/neo4j/graphql/pull/2579) [`7f4a3981d`](https://github.com/neo4j/graphql/commit/7f4a3981df423ab39417333e9deec9c328e13e63) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed the `fulltext` argument in OGM queries
+
+-   Updated dependencies [[`95ecaf7c3`](https://github.com/neo4j/graphql/commit/95ecaf7c37b3e6e69bf025d49b5ad00ad44dcb39), [`05280d0f1`](https://github.com/neo4j/graphql/commit/05280d0f16792e8e004c732ab039152d4dd32707), [`26d8a0045`](https://github.com/neo4j/graphql/commit/26d8a00453b03fa14328bcc2f5f4685e7b5e3ba3), [`189352546`](https://github.com/neo4j/graphql/commit/18935254652240c1ad826c3c85a5be873c4dbd20), [`9243fb3af`](https://github.com/neo4j/graphql/commit/9243fb3afc0c04408bf78c1ba581856ccb0e51fc), [`95ecaf7c3`](https://github.com/neo4j/graphql/commit/95ecaf7c37b3e6e69bf025d49b5ad00ad44dcb39), [`95ecaf7c3`](https://github.com/neo4j/graphql/commit/95ecaf7c37b3e6e69bf025d49b5ad00ad44dcb39), [`1b2913803`](https://github.com/neo4j/graphql/commit/1b2913803880bd1e8e1f1b7f79262ae20b1585e3), [`cd4f57a5d`](https://github.com/neo4j/graphql/commit/cd4f57a5ddc67660f7c41fd67e2006e68a8a0e1d), [`88d2cdfc1`](https://github.com/neo4j/graphql/commit/88d2cdfc1265f8a45c384872d32704bf452d36df)]:
+    -   @neo4j/graphql@3.14.1
+
 ## 3.14.0
 
 ### Patch Changes

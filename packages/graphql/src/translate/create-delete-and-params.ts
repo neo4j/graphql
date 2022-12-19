@@ -25,6 +25,8 @@ import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import { createEventMetaObject } from "./subscriptions/create-event-meta";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import Cypher from "@neo4j/cypher-builder";
+import { caseWhere } from "../utils/case-where";
 
 interface Res {
     strs: string[];
@@ -92,10 +94,24 @@ function createDeleteAndParams({
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
                     const withRelationshipStr = context.subscriptionsEnabled ? `, ${relationshipVariable}` : "";
 
+                    if (withVars) {
+                        res.strs.push(`WITH ${withVars.join(", ")}`);
+                    }
+
+                    const labels = refNode.getLabelString(context);
+                    res.strs.push(
+                        `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
+                    );
+
                     const whereStrs: string[] = [];
+                    let aggregationWhere = false;
                     if (d.where) {
                         try {
-                            const whereAndParams = createConnectionWhereAndParams({
+                            const {
+                                cypher: whereCypher,
+                                subquery: preComputedSubqueries,
+                                params: whereParams,
+                            } = createConnectionWhereAndParams({
                                 nodeVariable: variableName,
                                 whereInput: d.where,
                                 node: refNode,
@@ -106,23 +122,18 @@ function createDeleteAndParams({
                                     relationField.union ? `.${refNode.name}` : ""
                                 }${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
                             });
-                            if (whereAndParams[0]) {
-                                whereStrs.push(whereAndParams[0]);
-                                res.params = { ...res.params, ...whereAndParams[1] };
+                            if (whereCypher) {
+                                whereStrs.push(whereCypher);
+                                res.params = { ...res.params, ...whereParams };
+                                if (preComputedSubqueries) {
+                                    res.strs.push(preComputedSubqueries);
+                                    aggregationWhere = true;
+                                }
                             }
                         } catch {
                             return;
                         }
                     }
-
-                    if (withVars) {
-                        res.strs.push(`WITH ${withVars.join(", ")}`);
-                    }
-
-                    const labels = refNode.getLabelString(context);
-                    res.strs.push(
-                        `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
-                    );
 
                     const whereAuth = createAuthAndParams({
                         operations: "DELETE",
@@ -135,7 +146,18 @@ function createDeleteAndParams({
                         res.params = { ...res.params, ...whereAuth[1] };
                     }
                     if (whereStrs.length) {
-                        res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
+                        const predicate = `${whereStrs.join(" AND ")}`;
+                        if (aggregationWhere) {
+                            const columns = [
+                                new Cypher.NamedVariable(relationshipVariable),
+                                new Cypher.NamedVariable(variableName),
+                            ];
+                            const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
+                            const { cypher } = caseWhereClause.build("aggregateWhereFilter");
+                            res.strs.push(cypher);
+                        } else {
+                            res.strs.push(`WHERE ${predicate}`);
+                        }
                     }
 
                     const allowAuth = createAuthAndParams({
@@ -225,6 +247,12 @@ function createDeleteAndParams({
                             ", "
                         )}${withRelationshipStr}`
                     );
+
+                    /**
+                     * This ORDER BY is required to prevent hitting the "Node with id 2 has been deleted in this transaction"
+                     * bug. TODO - remove once the bug has bee fixed.
+                     */
+                    if (aggregationWhere) res.strs.push(`ORDER BY ${nodeToDelete} DESC`);
 
                     if (context.subscriptionsEnabled) {
                         const metaObjectStr = createEventMetaObject({
