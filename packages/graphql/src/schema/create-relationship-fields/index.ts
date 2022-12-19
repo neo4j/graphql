@@ -138,7 +138,7 @@ function createRelationshipFields({
                             ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
                             : {}),
                         where: connectWhere,
-                        // overwrite: "Boolean", // :HERE
+                        overwrite,
                     });
                 }
             );
@@ -375,7 +375,7 @@ function createRelationshipFields({
                                       }`,
                                   }
                                 : {}),
-                            // overwrite: "Boolean", // TODO: make this a Field :HERE
+                            overwrite,
                         },
                     });
 
@@ -767,7 +767,7 @@ function createRelationshipFields({
                 ...(hasNonGeneratedProperties
                     ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
                     : {}),
-                overwrite, // :HERE
+                overwrite,
             });
         });
 
