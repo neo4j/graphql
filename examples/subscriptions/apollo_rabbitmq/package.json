@@ -1,23 +1,23 @@
 {
-  "name": "apollo-suscriptions-server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js 4000",
-    "server2": "node server.js 4001"
-  },
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "@neo4j/graphql": "^3.1.0",
-    "@neo4j/graphql-plugin-subscriptions-amqp": "^0.4.0",
-    "amqplib": "^0.8.0",
-    "apollo-server-core": "^3.6.7",
-    "apollo-server-express": "^3.6.7",
-    "express": "^4.17.3",
-    "graphql-ws": "^5.7.0",
-    "neo4j-driver": "^4.4.5",
-    "ws": "^8.5.0"
-  }
+    "name": "apollo-suscriptions-server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js 4000",
+        "server2": "node server.js 4001"
+    },
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "@neo4j/graphql": "^3.1.0",
+        "@neo4j/graphql-plugin-subscriptions-amqp": "^1.0.0",
+        "amqplib": "^0.8.0",
+        "apollo-server-core": "^3.6.7",
+        "apollo-server-express": "^3.6.7",
+        "express": "^4.17.3",
+        "graphql-ws": "^5.7.0",
+        "neo4j-driver": "^4.4.5",
+        "ws": "^8.5.0"
+    }
 }

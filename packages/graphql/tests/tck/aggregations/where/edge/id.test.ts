@@ -72,14 +72,13 @@ describe("Cypher Aggregations where edge with ID", () => {
                 RETURN any(var2 IN collect(this0.id) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"10\\",
-                \\"param1\\": true
+                \\"param0\\": \\"10\\"
             }"
         `);
     });
@@ -106,14 +105,13 @@ describe("Cypher Aggregations where edge with ID", () => {
                 RETURN any(var2 IN collect(this0.someIdAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"10\\",
-                \\"param1\\": true
+                \\"param0\\": \\"10\\"
             }"
         `);
     });

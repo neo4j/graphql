@@ -72,7 +72,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN any(var2 IN collect(this0.someTime) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -84,8 +84,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -112,7 +111,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN any(var2 IN collect(this0.someTimeAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -124,8 +123,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -152,7 +150,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN any(var2 IN collect(this0.someTime) WHERE var2 > $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -164,8 +162,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -192,7 +189,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN any(var2 IN collect(this0.someTime) WHERE var2 >= $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -204,8 +201,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -232,7 +228,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN any(var2 IN collect(this0.someTime) WHERE var2 < $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -244,8 +240,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -272,7 +267,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN any(var2 IN collect(this0.someTime) WHERE var2 <= $param0) AS var3
             }
             WITH *
-            WHERE var3 = $param1
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -284,8 +279,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -312,7 +306,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN min(this0.someTime) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -324,8 +318,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -352,7 +345,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN min(this0.someTime) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -364,8 +357,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -392,7 +384,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN min(this0.someTime) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -404,8 +396,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -432,7 +423,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN min(this0.someTime) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -444,8 +435,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -472,7 +462,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN min(this0.someTime) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -484,8 +474,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -512,7 +501,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN max(this0.someTime) = $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -524,8 +513,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -552,7 +540,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN max(this0.someTime) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -564,8 +552,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -592,7 +579,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN max(this0.someTime) >= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -604,8 +591,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -632,7 +618,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN max(this0.someTime) < $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -644,8 +630,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
@@ -672,7 +657,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 RETURN max(this0.someTime) <= $param0 AS var2
             }
             WITH *
-            WHERE var2 = $param1
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -684,8 +669,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": true
+                }
             }"
         `);
     });
