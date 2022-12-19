@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { RelationField } from "../../dist";
 import type { Node } from "../classes";
 import { RELATIONSHIP_REQUIREMENT_PREFIX } from "../constants";
 import type { Context } from "../types";
@@ -37,7 +38,28 @@ function createRelationshipValidationString({
     node.relationFields.forEach((field) => {
         const isArray = field.typeMeta.array;
         const isUnionOrInterface = Boolean(field.union) || Boolean(field.interface);
+
         if (isUnionOrInterface) {
+            const concreteTypes: string[] = [];
+            if (field.union) {
+                concreteTypes.push(...(field.union?.nodes || []));
+            }
+            if (field.interface) {
+                concreteTypes.push(...(field.interface?.implementations || []));
+            }
+            const toNodes = context.nodes.filter((n) => concreteTypes.includes(n.name));
+            const matchClause =
+                `\tMATCH ` +
+                toNodes
+                    .map(
+                        (toNode, i) =>
+                            `(${varName})${inStr}[${relVarname}_${i}:${field.type}]${outStr}(${toNode.getLabelString(
+                                context
+                            )})`
+                    )
+                    .join(",");
+            const withClause = `\tWITH ` + toNodes.map((_, i) => `count(${relVarname}_${i})`).join("+") + `as c`;
+            // use match and with clauses to make the subquery
             return;
         }
 
@@ -90,6 +112,37 @@ function createRelationshipValidationString({
     });
 
     return strs.join("\n");
+}
+
+// WIP
+function makeValidationString({
+    field,
+    toNodeLabel,
+    toNodeName,
+    varName,
+    predicate,
+    errorMsg,
+}: {
+    field: RelationField;
+    toNodeLabel: string;
+    toNodeName: string;
+    varName: string;
+    predicate: string;
+    errorMsg: string;
+}): string {
+    const inStr = field.direction === "IN" ? "<-" : "-";
+    const outStr = field.direction === "OUT" ? "->" : "-";
+    const relVarname = `${varName}_${field.fieldName}_${toNodeName}_unique`;
+
+    return [
+        `CALL {`,
+        `\tWITH ${varName}`,
+        `\tMATCH (${varName})${inStr}[${relVarname}:${field.type}]${outStr}(other${toNodeLabel})`,
+        `\tWITH count(${relVarname}) as c, other`,
+        `\tCALL apoc.util.validate(NOT (${predicate}), '${errorMsg}', [0])`,
+        `\tRETURN collect(c) AS ${relVarname}_ignored`,
+        `}`,
+    ].join("\n");
 }
 
 export default createRelationshipValidationString;
