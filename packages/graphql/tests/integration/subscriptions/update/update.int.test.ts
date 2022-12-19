@@ -26,6 +26,7 @@ import type { UniqueType } from "../../../utils/graphql-types";
 import { generateUniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import Neo4j from "../../neo4j";
+import { generate } from "randomstring";
 
 describe("Subscriptions update", () => {
     let driver: Driver;
@@ -80,6 +81,112 @@ describe("Subscriptions update", () => {
 
     afterAll(async () => {
         await driver.close();
+    });
+
+    test("should delete a nested actor and one of their nested movies, within an update block abc", async () => {
+        const session = await neo4j.getSession();
+
+        const typeDefs = gql`
+                type ${typeActor.name} {
+                    name: String
+                    movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+    
+                type ${typeMovie.name} {
+                    id: ID
+                    actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+            `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                subscriptions: plugin,
+            },
+        });
+
+        const movieId1 = generate({
+            charset: "alphabetic",
+        });
+
+        const movieId2 = generate({
+            charset: "alphabetic",
+        });
+
+        const actorName1 = generate({
+            charset: "alphabetic",
+        });
+
+        const actorName2 = generate({
+            charset: "alphabetic",
+        });
+
+        const mutation = `
+                mutation($movieId1: ID, $actorName1: String, $movieId2: ID) {
+                    ${typeMovie.operations.update}(
+                        where: { id: $movieId1 }
+                        update: {
+                            actors: { delete: { where: { node: { name: $actorName1 } }, delete: { movies: { where: { node: { id: $movieId2 } } } } } }
+                        }
+                    ) {
+                        ${typeMovie.plural} {
+                            id
+                            actors {
+                                name
+                            }
+                        }
+                    }
+                }
+            `;
+
+        try {
+            await session.run(
+                `
+                    CREATE (m1:${typeMovie.name} {id: $movieId1})
+                    CREATE (m2:${typeMovie.name} {id: $movieId2})
+    
+                    CREATE (a1:${typeActor.name} {name: $actorName1})
+                    CREATE (a2:${typeActor.name} {name: $actorName2})
+    
+                    MERGE (a1)-[:ACTED_IN]->(m1)
+                    MERGE (a1)-[:ACTED_IN]->(m2)
+    
+                    MERGE (a2)-[:ACTED_IN]->(m1)
+                    MERGE (a2)-[:ACTED_IN]->(m2)
+                `,
+                {
+                    movieId1,
+                    actorName1,
+                    actorName2,
+                    movieId2,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: mutation,
+                variableValues: { movieId1, actorName1, movieId2 },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.[typeMovie.operations.update]).toEqual({
+                [typeMovie.plural]: [{ id: movieId1, actors: [{ name: actorName2 }] }],
+            });
+
+            const movie2 = await session.run(
+                `
+                  MATCH (m:${typeMovie.name} {id: $id})
+                  RETURN m
+                `,
+                { id: movieId2 }
+            );
+
+            expect(movie2.records).toHaveLength(0);
+        } finally {
+            await session.close();
+        }
     });
 
     test("simple update with subscriptions enabled", async () => {
