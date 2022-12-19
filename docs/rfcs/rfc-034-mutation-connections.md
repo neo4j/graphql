@@ -2,7 +2,7 @@
 
 ## Problem
 
-To support better the logic separation between connections described in the RFC-033, this RFC proposes to introduce the support for root connections fields for Mutation query.
+To support better the logic separation between connections described in the RFC-033, this RFC proposes to introduce support for the top-level connections field in the Mutation responses.
 
 Given the following Type definitions:
 
@@ -55,7 +55,7 @@ mutation CreateActors($input: [ActorCreateInput!]!) {
 ## Proposed Solution
 
 This solution proposes to add `ActorsConnection` to the types `CreateActorsMutationResponse` and `UpdateActorsMutationResponse`,
-as well as the type `MoviesConnection` to the type `CreateMoviesMutationResponse` and `UpdateMoviesMutationResponse`.
+as well as the types `MoviesConnection` to the type `CreateMoviesMutationResponse` and `UpdateMoviesMutationResponse`.
 
 ## Risks
 
