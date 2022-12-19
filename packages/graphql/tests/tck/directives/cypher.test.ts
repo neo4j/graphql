@@ -736,6 +736,7 @@ describe("Cypher directive", () => {
                     WITH this
                     CALL {
                         WITH this
+                        WITH this AS this
                         MATCH (m:Movie {title: $title})
                         RETURN m
                     }
