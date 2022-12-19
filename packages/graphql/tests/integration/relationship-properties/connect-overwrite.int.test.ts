@@ -1339,6 +1339,113 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             expect(neo4jResultOverwritten.records).toHaveLength(0);
         });
 
+        test("should return error  because overwrite set to false: connect in create", async () => {
+            const source = `
+                    mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
+                        ${typeMovie.operations.create}(
+                            input: [
+                                {
+                                    title: $movieTitle
+                                    actors: {
+                                        connect: {
+                                            where: { node: { name: $actorName } },
+                                            edge: { screenTime: $screenTime },
+                                        }
+                                    }
+                                }
+                            ]
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                                actorsConnection {
+                                    edges {
+                                        screenTime
+                                        node {
+                                            name
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+            const update = `
+                    mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
+                        ${typeActor.operations.create}(
+                            input: [
+                                {
+                                    name: $actorName,
+                                    movies: {
+                                        connect: {
+                                            where: { node: { title: $movieTitle } },
+                                            edge: { screenTime: $screenTime },
+                                        }
+                                    }
+                                }
+                            ]    
+                        ) {
+                            ${typeActor.plural} {
+                                name
+                                moviesConnection {
+                                    edges {
+                                        screenTime
+                                        node {
+                                            title
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+            const cypher = `
+                        MATCH (m:${typeMovie.name} {title: $movieTitle})
+                                <-[r:ACTED_IN {screenTime: $screenTime}]-
+                                    (:${typeActor.name} {name: $actorName})
+                        RETURN r
+                    `;
+
+            const neo4jInitialResult = await session.run(cypher, {
+                movieTitle,
+                screenTime,
+                actorName,
+            });
+            expect(neo4jInitialResult.records).toHaveLength(0);
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                variableValues: { movieTitle, actorName, screenTime },
+            });
+            expect(gqlResult.errors).toBeFalsy();
+            expect((gqlResult.data as any)?.[typeMovie.operations.create][typeMovie.plural]).toEqual([
+                {
+                    title: movieTitle,
+                    actorsConnection: { edges: [{ screenTime, node: { name: actorName } }] },
+                },
+            ]);
+
+            const gqlResultUpdate = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: update,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
+            });
+            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
+            expect(gqlResultUpdate.data).toBeFalsy();
+
+            const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
+            expect(neo4jResultInitial.records).toHaveLength(1);
+            const neo4jResultOverwritten = await session.run(cypher, {
+                movieTitle,
+                screenTime: screenTimeUpdate,
+                actorName,
+            });
+            expect(neo4jResultOverwritten.records).toHaveLength(0);
+        });
+
         // nested connect-connect
         test("should return error because overwrite set to false, when relationship field has cardinality n: nested connect in create", async () => {
             const source = `
