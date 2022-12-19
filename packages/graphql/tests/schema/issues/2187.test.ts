@@ -139,6 +139,10 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input GenreMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: MovieConnectWhere
             }
 
@@ -407,6 +411,10 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input MovieGenresConnectFieldInput {
               connect: [GenreConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: GenreConnectWhere
             }
 

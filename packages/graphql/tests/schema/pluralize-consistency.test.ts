@@ -236,6 +236,10 @@ describe("Pluralize consistency", () => {
             }
 
             input super_userMy_friendConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: super_friendConnectWhere
             }
 

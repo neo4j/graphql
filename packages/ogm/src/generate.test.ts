@@ -1224,6 +1224,8 @@ describe("generate", () => {
             export type MovieActorsConnectFieldInput = {
               where?: InputMaybe<PersonConnectWhere>;
               edge: ActedInCreateInput;
+              /** Whether or not to overwrite any matching relationship with the new properties. */
+              overwrite?: InputMaybe<Scalars[\\"Boolean\\"]>;
             };
 
             export type MovieActorsConnectionSort = {

@@ -195,6 +195,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             input ResourceContainedByConnectFieldInput {
               connect: [ResourceConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean
               where: ResourceConnectWhere
             }
 

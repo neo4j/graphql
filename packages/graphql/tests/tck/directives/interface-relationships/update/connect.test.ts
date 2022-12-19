@@ -206,6 +206,14 @@ describe("Interface Relationships - Update connect", () => {
             		}
             		RETURN count(*) AS _
             	}
+            	WITH this, this_connect_actedIn0_node, this_connect_actedIn0_node_actors0_node
+            CALL {
+            	WITH this_connect_actedIn0_node
+            	MATCH (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_actors_Actor_unique:ACTED_IN]-(other:Actor)
+            	WITH count(this_connect_actedIn0_node_actors_Actor_unique) as c, other
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required exactly once for a specific Actor', [0])
+            	RETURN collect(c) AS this_connect_actedIn0_node_actors_Actor_unique_ignored
+            }
             WITH this, this_connect_actedIn0_node, this_connect_actedIn0_node_actors0_node
             	RETURN count(*) AS connect_this_connect_actedIn0_node_actors_Actor
             }
@@ -246,6 +254,14 @@ describe("Interface Relationships - Update connect", () => {
             		}
             		RETURN count(*) AS _
             	}
+            	WITH this, this_connect_actedIn1_node, this_connect_actedIn1_node_actors0_node
+            CALL {
+            	WITH this_connect_actedIn1_node
+            	MATCH (this_connect_actedIn1_node)<-[this_connect_actedIn1_node_actors_Actor_unique:ACTED_IN]-(other:Actor)
+            	WITH count(this_connect_actedIn1_node_actors_Actor_unique) as c, other
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDSeries.actors required exactly once for a specific Actor', [0])
+            	RETURN collect(c) AS this_connect_actedIn1_node_actors_Actor_unique_ignored
+            }
             WITH this, this_connect_actedIn1_node, this_connect_actedIn1_node_actors0_node
             	RETURN count(*) AS connect_this_connect_actedIn1_node_actors_Actor
             }
@@ -511,6 +527,14 @@ describe("Interface Relationships - Update connect", () => {
             		}
             		RETURN count(*) AS _
             	}
+            	WITH this, this_connect_actedIn1_node, this_connect_actedIn1_node_actors0_node
+            CALL {
+            	WITH this_connect_actedIn1_node
+            	MATCH (this_connect_actedIn1_node)<-[this_connect_actedIn1_node_actors_Actor_unique:ACTED_IN]-(other:Actor)
+            	WITH count(this_connect_actedIn1_node_actors_Actor_unique) as c, other
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDSeries.actors required exactly once for a specific Actor', [0])
+            	RETURN collect(c) AS this_connect_actedIn1_node_actors_Actor_unique_ignored
+            }
             WITH this, this_connect_actedIn1_node, this_connect_actedIn1_node_actors0_node
             	RETURN count(*) AS connect_this_connect_actedIn1_node_actors_Actor
             }
