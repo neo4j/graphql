@@ -779,7 +779,7 @@ describe("Algebraic", () => {
             }
 
             type Movie {
-              directedBy: Director
+              directedBy(directed: Boolean = true, options: DirectorOptions, where: DirectorWhere): Director
               directedByAggregate(directed: Boolean = true, where: DirectorWhere): MovieDirectorDirectedByAggregationSelection
               directedByConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieDirectedByConnectionSort!], where: MovieDirectedByConnectionWhere): MovieDirectedByConnection!
               id: ID

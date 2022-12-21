@@ -33,6 +33,7 @@ import { FieldAggregationComposer } from "../aggregations/field-aggregation-comp
 import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
+import type { Subgraph } from "../../classes/Subgraph";
 
 function createRelationshipFields({
     relationshipFields,
@@ -42,6 +43,7 @@ function createRelationshipFields({
     sourceName,
     nodes,
     relationshipPropertyFields,
+    subgraph,
 }: {
     relationshipFields: RelationField[];
     schemaComposer: SchemaComposer;
@@ -49,6 +51,7 @@ function createRelationshipFields({
     sourceName: string;
     nodes: Node[];
     relationshipPropertyFields: Map<string, ObjectFields>;
+    subgraph?: Subgraph;
 }): void {
     const whereInput = schemaComposer.getITC(`${sourceName}Where`);
     const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
@@ -768,7 +771,8 @@ function createRelationshipFields({
                 directives: graphqlDirectivesToCompose(rel.otherDirectives),
             };
 
-            if (rel.typeMeta.array) {
+            // Subgraph schemas do not support arguments on relationship fields
+            if (!(subgraph && !rel.typeMeta.array)) {
                 const nodeFieldsBaseArgs = {
                     where: `${rel.typeMeta.name}Where`,
                     options: `${rel.typeMeta.name}Options`,
@@ -783,7 +787,7 @@ function createRelationshipFields({
 
             if (composeNode instanceof ObjectTypeComposer) {
                 const baseTypeName = `${sourceName}${n.name}${upperFirst(rel.fieldName)}`;
-                const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer);
+                const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer, subgraph);
 
                 const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(
                     baseTypeName,

@@ -511,7 +511,7 @@ describe("connect or create with id", () => {
             type Post {
               content: String!
               createdAt: DateTime!
-              creator: User!
+              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
               creatorAggregate(directed: Boolean = true, where: UserWhere): PostUserCreatorAggregationSelection
               creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostCreatorConnectionSort!], where: PostCreatorConnectionWhere): PostCreatorConnection!
               id: ID!

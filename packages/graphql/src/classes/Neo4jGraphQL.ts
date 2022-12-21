@@ -46,6 +46,12 @@ import { Executor, ExecutorConstructorParam } from "./Executor";
 import { getDocument } from "../schema/get-document";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import { forEachField, TypeSource } from "@graphql-tools/utils";
+import { buildSubgraphSchema } from "@apollo/subgraph";
+import { Subgraph } from "./Subgraph";
+import { validateDocument } from "../schema/validation";
+
+export type SchemaType = "executableSchema" | "subgraphSchema";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
@@ -56,11 +62,14 @@ export interface Neo4jGraphQLConfig {
     callbacks?: Neo4jGraphQLCallbacks;
 }
 
-export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
+export interface Neo4jGraphQLConstructor {
+    typeDefs: TypeSource;
+    resolvers?: IExecutableSchemaDefinition["resolvers"];
     features?: Neo4jFeaturesSettings;
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
     plugins?: Omit<Neo4jGraphQLPlugins, "federation">;
+    schemaType?: SchemaType;
 }
 
 export type SchemaDefinition = {
@@ -69,10 +78,14 @@ export type SchemaDefinition = {
 };
 
 class Neo4jGraphQL {
+    private typeDefs: TypeSource;
+    private resolvers?: IExecutableSchemaDefinition["resolvers"];
+
+    private schemaType: SchemaType;
+
     private config: Neo4jGraphQLConfig;
     private driver?: Driver;
     private features?: Neo4jFeaturesSettings;
-    private schemaDefinition: IExecutableSchemaDefinition;
 
     private _nodes?: Node[];
     private _relationships?: Relationship[];
@@ -86,13 +99,21 @@ class Neo4jGraphQL {
     private dbInfo?: Neo4jDatabaseInfo;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, plugins, features, ...schemaDefinition } = input;
+        const { config = {}, driver, plugins, features, typeDefs, resolvers, schemaType = "executableSchema" } = input;
+
+        this.typeDefs = typeDefs;
+        this.resolvers = resolvers;
+
+        this.schemaType = schemaType;
+
+        if (schemaType === "subgraphSchema" && !driver) {
+            throw new Error("Driver must be provided when running in subgraph mode");
+        }
 
         this.driver = driver;
         this.config = config;
         this.plugins = plugins;
         this.features = features;
-        this.schemaDefinition = schemaDefinition;
 
         this.checkEnableDebug();
     }
@@ -115,18 +136,27 @@ class Neo4jGraphQL {
         return this._relationships;
     }
 
-    public async getSchemaDefinition(): Promise<SchemaDefinition> {
-        if (!this.outputSchemaDefinition) {
-            this.outputSchemaDefinition = this.generateSchemaDefinition();
-            await this.pluginsSetup();
-        }
+    // public async getSchemaDefinition(): Promise<SchemaDefinition> {
+    //     if (!this.outputSchemaDefinition) {
+    //         this.outputSchemaDefinition = this.generateSchemaDefinition();
+    //         await this.pluginsSetup();
+    //     }
 
-        return this.outputSchemaDefinition;
-    }
+    //     return this.outputSchemaDefinition;
+    // }
 
     public async getSchema(): Promise<GraphQLSchema> {
         if (!this.schema) {
-            this.schema = this.generateSchema();
+            switch (this.schemaType) {
+                case "executableSchema":
+                    this.schema = this.generateExecutableSchema();
+                    break;
+                case "subgraphSchema":
+                    this.schema = this.generateSubgraphSchema();
+                    break;
+            }
+
+            await this.pluginsSetup();
         }
 
         return this.schema;
@@ -150,7 +180,8 @@ class Neo4jGraphQL {
     public async assertIndexesAndConstraints(
         input: { driver?: Driver; driverConfig?: DriverConfig; options?: AssertIndexesAndConstraintsOptions } = {}
     ): Promise<void> {
-        if (!(this.schema || this.schemaDefinition)) {
+        // if (!(this.schema || this.schemaDefinition)) {
+        if (!this.schema) {
             throw new Error(
                 "You must await `.getSchema()` or `.getSchemaDefinition()` before `.assertIndexesAndConstraints()`"
             );
@@ -210,6 +241,16 @@ class Neo4jGraphQL {
         return resolvers;
     }
 
+    private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
+        forEachField(schema, (field) => {
+            if (!field.resolve) {
+                field.resolve = defaultFieldResolver;
+            }
+        });
+
+        return schema;
+    }
+
     private checkEnableDebug(): void {
         if (this.config.enableDebug === true || this.config.enableDebug === false) {
             if (this.config.enableDebug) {
@@ -258,51 +299,124 @@ class Neo4jGraphQL {
             "Query.*": [wrapResolver(wrapResolverArgs)],
             "Mutation.*": [wrapResolver(wrapResolverArgs)],
             "Subscription.*": [wrapSubscription(wrapResolverArgs)],
+            "*.__resolveReference": [wrapResolver(wrapResolverArgs)],
         };
 
         // Merge generated and custom resolvers
-        const mergedResolvers = mergeResolvers([...asArray(resolvers), ...asArray(this.schemaDefinition.resolvers)]);
+        const mergedResolvers = mergeResolvers([...asArray(resolvers), ...asArray(this.resolvers)]);
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
-    private generateSchemaDefinition(): Promise<SchemaDefinition> {
+    // private generateSchemaDefinition(): Promise<SchemaDefinition> {
+    //     return new Promise((resolve) => {
+    //         const pluginResolvers: IExecutableSchemaDefinition["resolvers"] = [];
+
+    //         if (this.plugins?.federation) {
+    //             const { resolvers: federationResolvers } = this.plugins.federation.augmentSchemaDefinition(
+    //                 this.schemaDefinition.typeDefs
+    //             );
+
+    //             if (federationResolvers) {
+    //                 if (Array.isArray(federationResolvers)) {
+    //                     for (const r of federationResolvers) {
+    //                         pluginResolvers.push(r);
+    //                     }
+    //                 } else {
+    //                     pluginResolvers.push(federationResolvers);
+    //                 }
+    //             }
+    //         }
+
+    //         const document = getDocument(this.typeDefs);
+
+    //         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
+    //             features: this.features,
+    //             enableRegex: this.config?.enableRegex,
+    //             skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
+    //             generateSubscriptions: Boolean(this.plugins?.subscriptions),
+    //             callbacks: this.config.callbacks,
+    //             userCustomResolvers: this.resolvers,
+    //         });
+
+    //         const schemaModel = generateModel(document);
+
+    //         let pluginTypeDefs = typeDefs;
+
+    //         if (this.plugins?.federation) {
+    //             pluginTypeDefs = this.plugins.federation.augmentGeneratedSchemaDefinition(typeDefs);
+    //         }
+
+    //         this._nodes = nodes;
+    //         this._relationships = relationships;
+
+    //         this.schemaModel = schemaModel;
+
+    //         // Wrap the generated and custom resolvers, which adds a context including the schema to every request
+    //         const wrappedResolvers = this.wrapResolvers([resolvers, ...pluginResolvers]);
+
+    //         const resolversWithDefaults = this.addDefaultFieldResolversToResolvers(pluginTypeDefs, wrappedResolvers);
+
+    //         resolve({ typeDefs: pluginTypeDefs, resolvers: resolversWithDefaults });
+    //     });
+    // }
+
+    private generateSubgraphSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
-            const pluginResolvers: IExecutableSchemaDefinition["resolvers"] = [];
+            const document = getDocument(this.typeDefs);
+            const subgraph = new Subgraph(this.typeDefs);
 
-            if (this.plugins?.federation) {
-                const { resolvers: federationResolvers } = this.plugins.federation.augmentSchemaDefinition(
-                    this.schemaDefinition.typeDefs
-                );
+            const { directives, types } = subgraph.getValidationDefinitions();
 
-                if (federationResolvers) {
-                    if (Array.isArray(federationResolvers)) {
-                        for (const r of federationResolvers) {
-                            pluginResolvers.push(r);
-                        }
-                    } else {
-                        pluginResolvers.push(federationResolvers);
-                    }
-                }
+            if (!this.config?.skipValidateTypeDefs) {
+                validateDocument(document, directives, types);
             }
-
-            const document = getDocument(this.schemaDefinition.typeDefs);
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
                 enableRegex: this.config?.enableRegex,
-                skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
                 callbacks: this.config.callbacks,
-                userCustomResolvers: this.schemaDefinition.resolvers,
+                userCustomResolvers: this.resolvers,
+                subgraph,
             });
 
             const schemaModel = generateModel(document);
 
-            let pluginTypeDefs = typeDefs;
+            this._nodes = nodes;
+            this._relationships = relationships;
 
-            if (this.plugins?.federation) {
-                pluginTypeDefs = this.plugins.federation.augmentGeneratedSchemaDefinition(typeDefs);
+            this.schemaModel = schemaModel;
+
+            const referenceResolvers = subgraph.getReferenceResolvers(this._nodes, this.driver as Driver);
+            const subgraphTypeDefs = subgraph.augmentGeneratedSchemaDefinition(typeDefs);
+            const wrappedResolvers = this.wrapResolvers([resolvers, referenceResolvers]);
+
+            const schema = buildSubgraphSchema({
+                typeDefs: subgraphTypeDefs,
+                resolvers: wrappedResolvers as Record<string, any>,
+            });
+
+            resolve(this.addDefaultFieldResolvers(schema));
+        });
+    }
+
+    private generateExecutableSchema(): Promise<GraphQLSchema> {
+        return new Promise((resolve) => {
+            const document = getDocument(this.typeDefs);
+
+            if (!this.config?.skipValidateTypeDefs) {
+                validateDocument(document);
             }
+
+            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
+                features: this.features,
+                enableRegex: this.config?.enableRegex,
+                generateSubscriptions: Boolean(this.plugins?.subscriptions),
+                callbacks: this.config.callbacks,
+                userCustomResolvers: this.resolvers,
+            });
+
+            const schemaModel = generateModel(document);
 
             this._nodes = nodes;
             this._relationships = relationships;
@@ -310,25 +424,14 @@ class Neo4jGraphQL {
             this.schemaModel = schemaModel;
 
             // Wrap the generated and custom resolvers, which adds a context including the schema to every request
-            const wrappedResolvers = this.wrapResolvers([resolvers, ...pluginResolvers]);
+            const wrappedResolvers = this.wrapResolvers(resolvers);
 
-            const resolversWithDefaults = this.addDefaultFieldResolversToResolvers(pluginTypeDefs, wrappedResolvers);
-
-            resolve({ typeDefs: pluginTypeDefs, resolvers: resolversWithDefaults });
-        });
-    }
-
-    private async generateSchema(): Promise<GraphQLSchema> {
-        const { typeDefs, resolvers } = await this.getSchemaDefinition();
-
-        return new Promise((resolve) => {
             const schema = makeExecutableSchema({
-                ...this.schemaDefinition,
                 typeDefs,
-                resolvers,
+                resolvers: wrappedResolvers,
             });
 
-            resolve(schema);
+            resolve(this.addDefaultFieldResolvers(schema));
         });
     }
 

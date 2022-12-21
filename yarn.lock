@@ -470,7 +470,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/subgraph@npm:^2.2.1":
+"@apollo/subgraph@npm:^2.2.1, @apollo/subgraph@npm:^2.2.2":
   version: 2.2.2
   resolution: "@apollo/subgraph@npm:2.2.2"
   dependencies:
@@ -3207,6 +3207,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
+    "@apollo/subgraph": ^2.2.2
     "@faker-js/faker": 7.6.0
     "@graphql-tools/merge": ^8.3.3
     "@graphql-tools/resolvers-composition": ^6.5.3
