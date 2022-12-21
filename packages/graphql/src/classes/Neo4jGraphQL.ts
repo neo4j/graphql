@@ -112,7 +112,7 @@ class Neo4jGraphQL {
 
     public get nodes(): Node[] {
         if (!this._nodes) {
-            throw new Error("You must call `.getSchema()` before accessing `nodes`");
+            throw new Error("You must await `.getSchema()` before accessing `nodes`");
         }
 
         return this._nodes;
@@ -120,7 +120,7 @@ class Neo4jGraphQL {
 
     public get relationships(): Relationship[] {
         if (!this._relationships) {
-            throw new Error("You must call `.getSchema()` before accessing `relationships`");
+            throw new Error("You must await `.getSchema()` before accessing `relationships`");
         }
 
         return this._relationships;
@@ -162,10 +162,10 @@ class Neo4jGraphQL {
         input: { driver?: Driver; driverConfig?: DriverConfig; options?: AssertIndexesAndConstraintsOptions } = {}
     ): Promise<void> {
         if (!this.schema) {
-            throw new Error("You must call `.getSchema()` before `.assertIndexesAndConstraints()`");
+            throw new Error("You must await `.getSchema()` before `.assertIndexesAndConstraints()`");
         }
 
-        await this.getSchema();
+        await this.schema;
 
         const driver = input.driver || this.driver;
         const driverConfig = input.driverConfig || this.config?.driverConfig;
@@ -319,6 +319,7 @@ class Neo4jGraphQL {
             const wrappedResolvers = this.wrapResolvers(resolvers);
 
             const schema = makeExecutableSchema({
+                ...this.schemaDefinition,
                 typeDefs,
                 resolvers: wrappedResolvers,
             });
