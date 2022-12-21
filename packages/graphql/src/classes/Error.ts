@@ -31,6 +31,8 @@ export class Neo4jGraphQLError extends Error {
 }
 
 export class Neo4jGraphQLForbiddenError extends Neo4jGraphQLError {
+    readonly name;
+
     constructor(message: string) {
         super(message);
 
@@ -39,6 +41,8 @@ export class Neo4jGraphQLForbiddenError extends Neo4jGraphQLError {
 }
 
 export class Neo4jGraphQLAuthenticationError extends Neo4jGraphQLError {
+    readonly name;
+
     constructor(message: string) {
         super(message);
 
@@ -47,6 +51,8 @@ export class Neo4jGraphQLAuthenticationError extends Neo4jGraphQLError {
 }
 
 export class Neo4jGraphQLConstraintValidationError extends Neo4jGraphQLError {
+    readonly name;
+
     constructor(message: string) {
         super(message);
 
@@ -55,6 +61,8 @@ export class Neo4jGraphQLConstraintValidationError extends Neo4jGraphQLError {
 }
 
 export class Neo4jGraphQLCypherBuilderError extends Neo4jGraphQLError {
+    readonly name;
+
     constructor(message: string) {
         super(message);
 
@@ -63,6 +71,8 @@ export class Neo4jGraphQLCypherBuilderError extends Neo4jGraphQLError {
 }
 
 export class Neo4jGraphQLRelationshipValidationError extends Neo4jGraphQLError {
+    readonly name;
+
     constructor(message: string) {
         super(message);
 

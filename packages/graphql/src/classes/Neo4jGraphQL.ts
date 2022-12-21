@@ -18,7 +18,7 @@
  */
 
 import type { Driver } from "neo4j-driver";
-import { DocumentNode, GraphQLSchema, Kind } from "graphql";
+import type { DocumentNode, GraphQLSchema } from "graphql";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
@@ -94,7 +94,6 @@ class Neo4jGraphQL {
     private schemaModel?: Neo4jGraphQLSchemaModel;
 
     private schema?: Promise<GraphQLSchema>;
-    private outputSchemaDefinition?: Promise<SchemaDefinition>;
 
     private dbInfo?: Neo4jDatabaseInfo;
 
@@ -120,7 +119,7 @@ class Neo4jGraphQL {
 
     public get nodes(): Node[] {
         if (!this._nodes) {
-            throw new Error("You must await `.getSchema()` or `.getSchemaDefinition()` before accessing `nodes`");
+            throw new Error("You must await `.getSchema()` before accessing `nodes`");
         }
 
         return this._nodes;
@@ -128,22 +127,11 @@ class Neo4jGraphQL {
 
     public get relationships(): Relationship[] {
         if (!this._relationships) {
-            throw new Error(
-                "You must await `.getSchema()` or `.getSchemaDefinition()` before accessing `relationships`"
-            );
+            throw new Error("You must await `.getSchema()` before accessing `relationships`");
         }
 
         return this._relationships;
     }
-
-    // public async getSchemaDefinition(): Promise<SchemaDefinition> {
-    //     if (!this.outputSchemaDefinition) {
-    //         this.outputSchemaDefinition = this.generateSchemaDefinition();
-    //         await this.pluginsSetup();
-    //     }
-
-    //     return this.outputSchemaDefinition;
-    // }
 
     public async getSchema(): Promise<GraphQLSchema> {
         if (!this.schema) {
@@ -180,11 +168,8 @@ class Neo4jGraphQL {
     public async assertIndexesAndConstraints(
         input: { driver?: Driver; driverConfig?: DriverConfig; options?: AssertIndexesAndConstraintsOptions } = {}
     ): Promise<void> {
-        // if (!(this.schema || this.schemaDefinition)) {
         if (!this.schema) {
-            throw new Error(
-                "You must await `.getSchema()` or `.getSchemaDefinition()` before `.assertIndexesAndConstraints()`"
-            );
+            throw new Error("You must await `.getSchema()` before `.assertIndexesAndConstraints()`");
         }
 
         await this.getSchema();
@@ -207,38 +192,6 @@ class Neo4jGraphQL {
             options: input.options,
             dbInfo: this.dbInfo,
         });
-    }
-
-    /**
-     * Based on the same logic as forEachField from graphql-tools which operates on schema objects
-     * @link https://github.com/ardatan/graphql-tools/blob/master/packages/utils/src/forEachField.ts
-     */
-
-    private addDefaultFieldResolversToResolvers(
-        typeDefs: DocumentNode,
-        resolvers: IExecutableSchemaDefinition["resolvers"]
-    ): IExecutableSchemaDefinition["resolvers"] {
-        if (!resolvers) {
-            return resolvers;
-        }
-
-        for (const definition of typeDefs.definitions) {
-            if (definition.kind === Kind.OBJECT_TYPE_DEFINITION && !definition.name.value.startsWith("__")) {
-                if (definition.fields) {
-                    if (!resolvers[definition.name.value]) {
-                        resolvers[definition.name.value] = {};
-                    }
-
-                    for (const field of definition.fields) {
-                        if (!resolvers[definition.name.value][field.name.value]) {
-                            resolvers[definition.name.value][field.name.value] = defaultFieldResolver;
-                        }
-                    }
-                }
-            }
-        }
-
-        return resolvers;
     }
 
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
@@ -306,59 +259,6 @@ class Neo4jGraphQL {
         const mergedResolvers = mergeResolvers([...asArray(resolvers), ...asArray(this.resolvers)]);
         return composeResolvers(mergedResolvers, resolversComposition);
     }
-
-    // private generateSchemaDefinition(): Promise<SchemaDefinition> {
-    //     return new Promise((resolve) => {
-    //         const pluginResolvers: IExecutableSchemaDefinition["resolvers"] = [];
-
-    //         if (this.plugins?.federation) {
-    //             const { resolvers: federationResolvers } = this.plugins.federation.augmentSchemaDefinition(
-    //                 this.schemaDefinition.typeDefs
-    //             );
-
-    //             if (federationResolvers) {
-    //                 if (Array.isArray(federationResolvers)) {
-    //                     for (const r of federationResolvers) {
-    //                         pluginResolvers.push(r);
-    //                     }
-    //                 } else {
-    //                     pluginResolvers.push(federationResolvers);
-    //                 }
-    //             }
-    //         }
-
-    //         const document = getDocument(this.typeDefs);
-
-    //         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
-    //             features: this.features,
-    //             enableRegex: this.config?.enableRegex,
-    //             skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
-    //             generateSubscriptions: Boolean(this.plugins?.subscriptions),
-    //             callbacks: this.config.callbacks,
-    //             userCustomResolvers: this.resolvers,
-    //         });
-
-    //         const schemaModel = generateModel(document);
-
-    //         let pluginTypeDefs = typeDefs;
-
-    //         if (this.plugins?.federation) {
-    //             pluginTypeDefs = this.plugins.federation.augmentGeneratedSchemaDefinition(typeDefs);
-    //         }
-
-    //         this._nodes = nodes;
-    //         this._relationships = relationships;
-
-    //         this.schemaModel = schemaModel;
-
-    //         // Wrap the generated and custom resolvers, which adds a context including the schema to every request
-    //         const wrappedResolvers = this.wrapResolvers([resolvers, ...pluginResolvers]);
-
-    //         const resolversWithDefaults = this.addDefaultFieldResolversToResolvers(pluginTypeDefs, wrappedResolvers);
-
-    //         resolve({ typeDefs: pluginTypeDefs, resolvers: resolversWithDefaults });
-    //     });
-    // }
 
     private generateSubgraphSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
