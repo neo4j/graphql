@@ -27,7 +27,6 @@ import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 describe("https://github.com/neo4j/graphql/issues/2560", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let neoSchema: Neo4jGraphQL;
     let session: Session;
 
     let User: UniqueType;
@@ -70,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/2560", () => {
             },
         ];
 
-        neoSchema = new Neo4jGraphQL({
+        const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
             resolvers,
@@ -144,7 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/2560", () => {
             },
         ];
 
-        neoSchema = new Neo4jGraphQL({
+        const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
             resolvers,
