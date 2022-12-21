@@ -79,11 +79,8 @@ jobs:
   cypher-builder-tests:
     uses: ./.github/workflows/reusable-cypher-builder-tests.yml
 
-  e2e-tests-subscriptions-amqp:
+  e2e-tests-plugins:
     uses: ./.github/workflows/reusable-subscriptions-plugin-amqp-e2e-test.yml
-
-  e2e-tests-federation:
-    uses: ./.github/workflows/reusable-federation-e2e-test.yml
 
   api-library-tests:
     uses: ./.github/workflows/reusable-api-library-tests.yml
@@ -105,8 +102,7 @@ jobs:
       - neo-push-tests
       - license-header-check
       - unit-tests
-      - e2e-tests-subscriptions-amqp
-      - e2e-tests-federation
+      - e2e-tests-plugins
       - api-library-tests
       - toolbox-tests
       - integration-tests-on-prem
