@@ -119,6 +119,13 @@ function getNodes(
             nodeDirective = parseNodeDirective(nodeDirectiveDefinition);
         }
 
+        let customResolvers = options.userCustomResolvers?.[definition.name.value];
+        if (Array.isArray(options.userCustomResolvers)) {
+            customResolvers = options.userCustomResolvers.find((r) => !!r[definition.name.value])?.[
+                definition.name.value
+            ];
+        }
+
         const nodeFields = getObjFieldMeta({
             obj: definition,
             enums: definitionNodes.enumTypes,
@@ -127,7 +134,7 @@ function getNodes(
             scalars: definitionNodes.scalarTypes,
             unions: definitionNodes.unionTypes,
             callbacks: options.callbacks,
-            customResolvers: options.userCustomResolvers?.[definition.name.value],
+            customResolvers,
         });
 
         // Ensure that all required fields are returning either a scalar type or an enum
