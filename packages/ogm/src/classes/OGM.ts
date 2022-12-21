@@ -102,7 +102,6 @@ class OGM<ModelMap = unknown> {
 
         const selectionSet = `
                     {
-                        __typename
                         ${[node.primitiveFields, node.scalarFields, node.enumFields, node.temporalFields].reduce(
                             (res: string[], v) => [...res, ...v.map((x) => x.fieldName)],
                             []
