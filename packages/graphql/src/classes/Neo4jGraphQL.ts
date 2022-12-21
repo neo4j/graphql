@@ -46,7 +46,7 @@ import { Executor, ExecutorConstructorParam } from "./Executor";
 import { getDocument } from "../schema/get-document";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
-import { forEachField, TypeSource } from "@graphql-tools/utils";
+import { forEachField } from "@graphql-tools/utils";
 import { buildSubgraphSchema } from "@apollo/subgraph";
 import { Subgraph } from "./Subgraph";
 import { validateDocument } from "../schema/validation";
@@ -62,13 +62,11 @@ export interface Neo4jGraphQLConfig {
     callbacks?: Neo4jGraphQLCallbacks;
 }
 
-export interface Neo4jGraphQLConstructor {
-    typeDefs: TypeSource;
-    resolvers?: IExecutableSchemaDefinition["resolvers"];
+export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
     features?: Neo4jFeaturesSettings;
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
-    plugins?: Omit<Neo4jGraphQLPlugins, "federation">;
+    plugins?: Neo4jGraphQLPlugins;
     schemaType?: SchemaType;
 }
 
@@ -78,14 +76,12 @@ export type SchemaDefinition = {
 };
 
 class Neo4jGraphQL {
-    private typeDefs: TypeSource;
-    private resolvers?: IExecutableSchemaDefinition["resolvers"];
-
     private schemaType: SchemaType;
 
     private config: Neo4jGraphQLConfig;
     private driver?: Driver;
     private features?: Neo4jFeaturesSettings;
+    private schemaDefinition: IExecutableSchemaDefinition;
 
     private _nodes?: Node[];
     private _relationships?: Relationship[];
@@ -98,12 +94,7 @@ class Neo4jGraphQL {
     private dbInfo?: Neo4jDatabaseInfo;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, plugins, features, typeDefs, resolvers, schemaType = "executableSchema" } = input;
-
-        this.typeDefs = typeDefs;
-        this.resolvers = resolvers;
-
-        this.schemaType = schemaType;
+        const { config = {}, driver, plugins, features, schemaType = "executableSchema", ...schemaDefinition } = input;
 
         if (schemaType === "subgraphSchema" && !driver) {
             throw new Error("Driver must be provided when running in subgraph mode");
@@ -113,13 +104,15 @@ class Neo4jGraphQL {
         this.config = config;
         this.plugins = plugins;
         this.features = features;
+        this.schemaDefinition = schemaDefinition;
+        this.schemaType = schemaType;
 
         this.checkEnableDebug();
     }
 
     public get nodes(): Node[] {
         if (!this._nodes) {
-            throw new Error("You must await `.getSchema()` before accessing `nodes`");
+            throw new Error("You must call `.getSchema()` before accessing `nodes`");
         }
 
         return this._nodes;
@@ -127,7 +120,7 @@ class Neo4jGraphQL {
 
     public get relationships(): Relationship[] {
         if (!this._relationships) {
-            throw new Error("You must await `.getSchema()` before accessing `relationships`");
+            throw new Error("You must call `.getSchema()` before accessing `relationships`");
         }
 
         return this._relationships;
@@ -169,7 +162,7 @@ class Neo4jGraphQL {
         input: { driver?: Driver; driverConfig?: DriverConfig; options?: AssertIndexesAndConstraintsOptions } = {}
     ): Promise<void> {
         if (!this.schema) {
-            throw new Error("You must await `.getSchema()` before `.assertIndexesAndConstraints()`");
+            throw new Error("You must call `.getSchema()` before `.assertIndexesAndConstraints()`");
         }
 
         await this.getSchema();
@@ -252,18 +245,17 @@ class Neo4jGraphQL {
             "Query.*": [wrapResolver(wrapResolverArgs)],
             "Mutation.*": [wrapResolver(wrapResolverArgs)],
             "Subscription.*": [wrapSubscription(wrapResolverArgs)],
-            "*.__resolveReference": [wrapResolver(wrapResolverArgs)],
         };
 
         // Merge generated and custom resolvers
-        const mergedResolvers = mergeResolvers([...asArray(resolvers), ...asArray(this.resolvers)]);
+        const mergedResolvers = mergeResolvers([...asArray(resolvers), ...asArray(this.schemaDefinition.resolvers)]);
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
     private generateSubgraphSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
-            const document = getDocument(this.typeDefs);
-            const subgraph = new Subgraph(this.typeDefs);
+            const document = getDocument(this.schemaDefinition.typeDefs);
+            const subgraph = new Subgraph(this.schemaDefinition.typeDefs);
 
             const { directives, types } = subgraph.getValidationDefinitions();
 
@@ -276,7 +268,7 @@ class Neo4jGraphQL {
                 enableRegex: this.config?.enableRegex,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
                 callbacks: this.config.callbacks,
-                userCustomResolvers: this.resolvers,
+                userCustomResolvers: this.schemaDefinition.resolvers,
                 subgraph,
             });
 
@@ -302,7 +294,7 @@ class Neo4jGraphQL {
 
     private generateExecutableSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
-            const document = getDocument(this.typeDefs);
+            const document = getDocument(this.schemaDefinition.typeDefs);
 
             if (!this.config?.skipValidateTypeDefs) {
                 validateDocument(document);
@@ -313,7 +305,7 @@ class Neo4jGraphQL {
                 enableRegex: this.config?.enableRegex,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
                 callbacks: this.config.callbacks,
-                userCustomResolvers: this.resolvers,
+                userCustomResolvers: this.schemaDefinition.resolvers,
             });
 
             const schemaModel = generateModel(document);
@@ -335,23 +327,14 @@ class Neo4jGraphQL {
         });
     }
 
-    private async pluginsSetup(): Promise<void[]> {
-        const initializers: Promise<void>[] = [];
-
+    private async pluginsSetup(): Promise<void> {
         const subscriptionsPlugin = this.plugins?.subscriptions;
         if (subscriptionsPlugin) {
             subscriptionsPlugin.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
             if (subscriptionsPlugin.init) {
-                initializers.push(subscriptionsPlugin.init());
+                await subscriptionsPlugin.init();
             }
         }
-
-        const federationPlugin = this.plugins?.federation;
-        if (federationPlugin) {
-            initializers.push(federationPlugin.init());
-        }
-
-        return Promise.all(initializers);
     }
 }
 
