@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/2560", () => {
             }
         `;
 
-        // Pass resolvers as an array of objects instead of an object
+        // Pass resolvers as an array of objects instead of just an object
         const resolvers = [
             {
                 [User.name]: {
@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/2560", () => {
         await driver.close();
     });
 
-    test("should accept resolvers as an array of objects", async () => {
+    test("should accept resolvers which are an array of objects", async () => {
         const mutation = `
             mutation {
                 ${User.operations.create}(input: [{ firstName: "Tom", lastName: "Hanks" }]) {
