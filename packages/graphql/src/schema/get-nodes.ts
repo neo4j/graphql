@@ -32,6 +32,7 @@ import parseNodeDirective from "./parse-node-directive";
 import parseExcludeDirective from "./parse-exclude-directive";
 import getAuth from "./get-auth";
 import type { DefinitionNodes } from "./get-definition-nodes";
+import { asArray } from "../utils/utils";
 
 type Nodes = {
     nodes: Node[];
@@ -119,12 +120,10 @@ function getNodes(
             nodeDirective = parseNodeDirective(nodeDirectiveDefinition);
         }
 
-        let customResolvers = options.userCustomResolvers?.[definition.name.value];
-        if (Array.isArray(options.userCustomResolvers)) {
-            customResolvers = options.userCustomResolvers.find((r) => !!r[definition.name.value])?.[
-                definition.name.value
-            ];
-        }
+        const userCustomResolvers = asArray(options.userCustomResolvers);
+        const customResolvers = userCustomResolvers.find((r) => !!r[definition.name.value])?.[
+            definition.name.value
+        ] as IResolvers;
 
         const nodeFields = getObjFieldMeta({
             obj: definition,
