@@ -18,7 +18,7 @@
  */
 
 import type { EventEmitter } from "events";
-import type { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema, DocumentNode } from "graphql";
+import type { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Driver, Integer, Session, Transaction } from "neo4j-driver";
 import type { Node, Relationship } from "./classes";
@@ -26,8 +26,6 @@ import type { Neo4jDatabaseInfo } from "./classes/Neo4jDatabaseInfo";
 import type { RelationshipQueryDirectionOption } from "./constants";
 import type { Executor } from "./classes/Executor";
 import type { Directive } from "graphql-compose";
-import type { SchemaDefinition } from "./classes/Neo4jGraphQL";
-import type { TypeSource } from "@graphql-tools/utils";
 import type { Neo4jGraphQLSchemaModel } from "./schema-model/Neo4jGraphQLSchemaModel";
 
 export { Node } from "./classes";
@@ -369,12 +367,6 @@ export interface Neo4jGraphQLAuthPlugin {
     decode<T>(token: string): Promise<T | undefined>;
 }
 
-interface Neo4jGraphQLPlugin {
-    init(): Promise<void>;
-    augmentSchemaDefinition(typeDefs: TypeSource): SchemaDefinition;
-    augmentGeneratedSchemaDefinition(typeDefs: DocumentNode): DocumentNode;
-}
-
 /** Raw event metadata returned from queries */
 export type NodeSubscriptionMeta = {
     event: "create" | "update" | "delete";
@@ -488,7 +480,6 @@ export interface Neo4jGraphQLSubscriptionsPlugin {
 
 export interface Neo4jGraphQLPlugins {
     auth?: Neo4jGraphQLAuthPlugin;
-    federation?: Neo4jGraphQLPlugin;
     subscriptions?: Neo4jGraphQLSubscriptionsPlugin;
 }
 
