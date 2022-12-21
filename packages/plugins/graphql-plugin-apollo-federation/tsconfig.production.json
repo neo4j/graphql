@@ -1,9 +1,0 @@
-{
-    "extends": "./tsconfig.json",
-    "compilerOptions": {
-        "rootDir": "src"
-    },
-    "exclude": ["src/**/*.test.ts"],
-    "include": ["src/**/*"],
-    "references": [{ "path": "../../ogm/tsconfig.json" }]
-}
