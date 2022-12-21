@@ -31,13 +31,23 @@ describe("https://github.com/neo4j/graphql/issues/2560", () => {
     let session: Session;
 
     let User: UniqueType;
+    let Person: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
     });
 
-    beforeEach(async () => {
+    afterEach(async () => {
+        await cleanNodes(session, [User, Person]);
+        await session.close();
+    });
+
+    afterAll(async () => {
+        await driver.close();
+    });
+
+    test("should accept resolvers which are an array of objects - one resolver object", async () => {
         session = await neo4j.getSession();
         User = generateUniqueType("User");
 
@@ -65,18 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/2560", () => {
             driver,
             resolvers,
         });
-    });
 
-    afterEach(async () => {
-        await cleanNodes(session, [User]);
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
-    });
-
-    test("should accept resolvers which are an array of objects", async () => {
         const mutation = `
             mutation {
                 ${User.operations.create}(input: [{ firstName: "Tom", lastName: "Hanks" }]) {
@@ -103,6 +102,78 @@ describe("https://github.com/neo4j/graphql/issues/2560", () => {
                         firstName: "Tom",
                         lastName: "Hanks",
                         fullName: "Tom Hanks",
+                    },
+                ],
+            },
+        });
+    });
+
+    test("should accept resolvers which are an array of objects - two resolver objects", async () => {
+        session = await neo4j.getSession();
+        User = generateUniqueType("User");
+        Person = generateUniqueType("Person");
+
+        const typeDefs = `
+            type ${User} {
+                firstName: String!
+                lastName: String!
+                fullName: String! @customResolver(requires: ["firstName", "lastName"])
+            }
+
+            type ${Person} {
+                firstName: String!
+                secondName: String! @customResolver(requires: ["firstName"])
+            }
+        `;
+
+        // Pass resolvers as an array of objects instead of just an object
+        const resolvers = [
+            {
+                [User.name]: {
+                    fullName(source) {
+                        return `${source.firstName} ${source.lastName}`;
+                    },
+                },
+            },
+            {
+                [Person.name]: {
+                    secondName(source) {
+                        return `${source.firstName.toUpperCase()}`;
+                    },
+                },
+            },
+        ];
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+            resolvers,
+        });
+
+        const mutation = `
+            mutation {
+                ${Person.operations.create}(input: [{ firstName: "Tom", }]) {
+                    ${Person.plural} {
+                        firstName
+                        secondName
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: mutation,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Person.operations.create]: {
+                [Person.plural]: [
+                    {
+                        firstName: "Tom",
+                        secondName: "TOM",
                     },
                 ],
             },
