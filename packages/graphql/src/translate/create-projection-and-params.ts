@@ -21,7 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { mergeDeep } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
-import type { GraphQLOptionsArg, GraphQLWhereArg, Context, RelationField } from "../types";
+import type { GraphQLOptionsArg, GraphQLWhereArg, Context, RelationField, GraphQLSortArg } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
@@ -392,6 +392,13 @@ export default function createProjectionAndParams({
     };
 }
 
+function getSortArgs(resolveTree: ResolveTree): GraphQLSortArg[] {
+    const connectionArgs = resolveTree.args.sort as GraphQLSortArg[] | undefined;
+    const optionsArgs = (resolveTree.args.options as GraphQLOptionsArg)?.sort;
+
+    return connectionArgs || optionsArgs || [];
+}
+
 // Generates any missing fields required for sorting
 const generateMissingOrAliasedSortFields = ({
     selection,
@@ -400,9 +407,8 @@ const generateMissingOrAliasedSortFields = ({
     selection: Record<string, ResolveTree>;
     resolveTree: ResolveTree;
 }): Record<string, ResolveTree> => {
-    const sortFieldNames = removeDuplicates(
-        ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat()
-    );
+    const sortArgs = getSortArgs(resolveTree);
+    const sortFieldNames = removeDuplicates(sortArgs.map(Object.keys).flat());
 
     return generateMissingOrAliasedFields({ fieldNames: sortFieldNames, selection });
 };
