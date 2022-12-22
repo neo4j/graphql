@@ -12,9 +12,9 @@ jobs:
           - "^15.0.0"
           - "^16.0.0"
         neo4j-version:
-          - 4.3-enterprise
+          - 4.3.22-enterprise
           #   - 4.4-community
-          - 4.4-enterprise
+          - 4.4.15-enterprise
           #   - 5-community
           - 5-enterprise
     services:
