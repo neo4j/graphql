@@ -23,7 +23,7 @@ import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
 
-describe("579", () => {
+describe("2620", () => {
     let driver: Driver;
     let neo4j: Neo4j;
 
