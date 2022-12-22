@@ -44,65 +44,55 @@ describe("579", () => {
             id: ID!
           }
 
-          type Outer {
-            related: [Related!]! @relationship(type: "OUTER", direction: OUT)
-          }
-
-          type Type1 implements HasId {
+          type Post {
             id: ID! @id
-            text: String!
-          }
-          type Type2 implements HasId {
-            id: ID! @id
-            otherText: String!
+            subject: PostSubject! @relationship(type: "POST_FOR", direction: OUT)
           }
 
-          union Types = Type1 | Type2
-
-          type Related implements HasId {
+          type User implements HasId {
             id: ID! @id
 
-            related: Types! @relationship(type: "RELATED", direction: OUT)
+            post: Post! @relationship(type: "POST_FOR", direction: IN)
           }
+          type Group implements HasId {
+            id: ID! @id
+          }
+
+          union PostSubject = User | Group
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const type1Id = generate({
-            charset: "alphabetic",
-        });
-        const relatedId = generate({
-            charset: "alphabetic",
-        });
-
         const query = `
           query {
-            outers {
-            related {
-              id
-              related {
-                ... on HasId {
-                  __isHasId: __typename
-                  id
+              posts {
+                id
+                subject {
+                  ... on HasId {
+                    id
+                  }
                 }
               }
-            }
-            }
           }
         `;
+
+        const userId = generate({
+            charset: "alphabetic",
+        });
+        const postId = generate({
+            charset: "alphabetic",
+        });
 
         try {
             await session.run(
                 `
-                    CREATE (outer:Outer)
-                    CREATE (type1:Type1 { id: $type1Id, text: "test" })
-                    CREATE (related:Related { id: $relatedId })
-                    MERGE (outer)-[:OUTER]->(related)
-                    MERGE (related)-[:RELATED]->(type1)
+                    CREATE (post:Post { id: $postId })
+                    CREATE (user:User { id: $userId })
+                    MERGE (post)-[:POST_FOR]->(user)
             `,
                 {
-                    type1Id,
-                    relatedId,
+                    userId,
+                    postId,
                 }
             );
 
@@ -116,6 +106,8 @@ describe("579", () => {
             expect(gqlResult.errors).toBeFalsy();
 
             console.dir(gqlResult, { depth: 10 });
+
+            expect((gqlResult.data as any)?.[0]?.subject?.id).toBe(userId);
         } finally {
             await session.close();
         }
