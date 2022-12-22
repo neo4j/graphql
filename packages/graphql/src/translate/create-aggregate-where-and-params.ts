@@ -22,11 +22,11 @@ import type { Node } from "../classes";
 import type { RelationField, Context, GraphQLWhereArg } from "../types";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
-import { NODE_OR_EDGE_KEYS, LOGICAL_OPERATORS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
+import { NODE_OR_EDGE_KEYS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
+import { getCypherLogicalOperator, isLogicalOperator, LogicalOperator } from "./utils/logical-operators";
 
-type logicalOperator = "AND" | "OR";
 
-type WhereFilter = Record<string | logicalOperator, any>;
+type WhereFilter = Record<string | LogicalOperator, any>;
 
 export type AggregateWhereInput = {
     count: number;
@@ -101,8 +101,8 @@ export function aggregateWhere(
             );
             returnProjections.push(...innerReturnProjections);
             predicates.push(...innerPredicates);
-        } else if (LOGICAL_OPERATORS.includes(key)) {
-            const logicalOperator = key === "AND" ? Cypher.and : Cypher.or;
+        } else if (isLogicalOperator(key)) {
+            const cypherBuilderFunction = getCypherLogicalOperator(key);
             const logicalPredicates: Cypher.Predicate[] = [];
             value.forEach((whereInput) => {
                 const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateWhere(
@@ -114,7 +114,7 @@ export function aggregateWhere(
                 returnProjections.push(...innerReturnProjections);
                 logicalPredicates.push(...innerPredicates);
             });
-            predicates.push(logicalOperator(...logicalPredicates));
+            predicates.push(cypherBuilderFunction(...logicalPredicates));
         }
     });
     return {
@@ -154,8 +154,8 @@ function aggregateEntityWhere(
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
     const predicates: Cypher.Predicate[] = [];
     Object.entries(aggregateEntityWhereInput).forEach(([key, value]) => {
-        if (LOGICAL_OPERATORS.includes(key)) {
-            const logicalOperator = key === "AND" ? Cypher.and : Cypher.or;
+        if (isLogicalOperator(key)) {
+            const cypherBuilderFunction = getCypherLogicalOperator(key);
             const logicalPredicates: Cypher.Predicate[] = [];
             value.forEach((whereInput) => {
                 const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateEntityWhere(
@@ -166,7 +166,7 @@ function aggregateEntityWhere(
                 returnProjections.push(...innerReturnProjections);
                 logicalPredicates.push(...innerPredicates);
             });
-            predicates.push(logicalOperator(...logicalPredicates));
+            predicates.push(cypherBuilderFunction(...logicalPredicates));
         } else {
             const operation = createEntityOperation(refNode, target, key, value);
             const operationVar = new Cypher.Variable();

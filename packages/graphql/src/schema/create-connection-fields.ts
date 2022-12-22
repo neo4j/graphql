@@ -64,6 +64,7 @@ function createConnectionFields({
             connectionWhere.addFields({
                 AND: `[${connectionWhereName}!]`,
                 OR: `[${connectionWhereName}!]`,
+                NOT: connectionWhereName,
             });
         }
 
@@ -84,11 +85,17 @@ function createConnectionFields({
                 edge: `${connectionField.relationship.properties}Where`,
                 edge_NOT: `${connectionField.relationship.properties}Where`,
             });
+            connectionWhere.setFieldDirectiveByName("edge_NOT", "deprecated", {
+                reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
+            });
         }
 
         whereInput.addFields({
             [connectionField.fieldName]: connectionWhere,
             [`${connectionField.fieldName}_NOT`]: connectionWhere,
+        });
+        whereInput.setFieldDirectiveByName(`${connectionField.fieldName}_NOT`, "deprecated", {
+            reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
         });
 
         // n..m Relationships
@@ -145,8 +152,12 @@ function createConnectionFields({
             connectionWhere.addFields({
                 OR: connectionWhere.NonNull.List,
                 AND: connectionWhere.NonNull.List,
+                NOT: connectionWhereName,
                 node: `${connectionField.relationship.typeMeta.name}Where`,
                 node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
+            });
+            connectionWhere.setFieldDirectiveByName("node_NOT", "deprecated", {
+                reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
             });
 
             if (schemaComposer.has(`${connectionField.relationship.typeMeta.name}Sort`)) {
@@ -168,6 +179,10 @@ function createConnectionFields({
                     edge: `${connectionField.relationship.properties}Where`,
                     edge_NOT: `${connectionField.relationship.properties}Where`,
                 });
+
+                connectionWhere.setFieldDirectiveByName("edge_NOT", "deprecated", {
+                    reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
+                });
             }
         } else if (connectionField.relationship.union) {
             const relatedNodes = nodes.filter((n) => connectionField.relationship.union?.nodes?.includes(n.name));
@@ -185,12 +200,16 @@ function createConnectionFields({
                     fields: {
                         OR: `[${unionWhereName}!]`,
                         AND: `[${unionWhereName}!]`,
+                        NOT: unionWhereName
                     },
                 });
 
                 unionWhere.addFields({
                     node: `${n.name}Where`,
                     node_NOT: `${n.name}Where`,
+                });
+                unionWhere.setFieldDirectiveByName("node_NOT", "deprecated", {
+                    reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
                 });
 
                 if (connectionField.relationship.properties) {
@@ -201,6 +220,9 @@ function createConnectionFields({
                     unionWhere.addFields({
                         edge: `${connectionField.relationship.properties}Where`,
                         edge_NOT: `${connectionField.relationship.properties}Where`,
+                    });
+                    unionWhere.setFieldDirectiveByName("edge_NOT", "deprecated", {
+                        reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
                     });
                 }
 
@@ -214,6 +236,10 @@ function createConnectionFields({
             connectionWhere.addFields({
                 node: `${connectionField.relationship.typeMeta.name}Where`,
                 node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
+            });
+
+            connectionWhere.setFieldDirectiveByName("node_NOT", "deprecated", {
+                reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
             });
 
             if (getSortableFields(relatedNode).length) {

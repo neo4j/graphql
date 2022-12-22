@@ -437,13 +437,14 @@ function createRelationshipFields({
                     fields: fieldInputFields,
                 });
 
-                schemaComposer.createInputTC({
+                const whereInputTC = schemaComposer.createInputTC({
                     name: whereName,
                     fields: {
                         node: `${n.name}Where`,
                         node_NOT: `${n.name}Where`,
                         AND: `[${whereName}!]`,
                         OR: `[${whereName}!]`,
+                        NOT: whereName,
                         ...(rel.properties
                             ? {
                                   edge: `${rel.properties}Where`,
@@ -452,6 +453,17 @@ function createRelationshipFields({
                             : {}),
                     },
                 });
+                
+                whereInputTC.setFieldDirectiveByName("node_NOT", "deprecated", {
+                    reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
+                });
+
+                if (rel.properties) {
+                    whereInputTC.setFieldDirectiveByName("edge_NOT", "deprecated", {
+                        reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
+                    });
+                }
+
 
                 if (!schemaComposer.has(deleteName)) {
                     schemaComposer.createInputTC({
@@ -585,6 +597,7 @@ function createRelationshipFields({
                 fields: {
                     AND: `[${name}!]`,
                     OR: `[${name}!]`,
+                    NOT: name
                 },
             });
 
@@ -668,10 +681,18 @@ function createRelationshipFields({
                 count_GTE: "Int",
                 AND: `[${relationshipWhereTypeInputName}!]`,
                 OR: `[${relationshipWhereTypeInputName}!]`,
+                NOT: relationshipWhereTypeInputName,
                 ...(nodeWhereAggregationInput ? { node: nodeWhereAggregationInput } : {}),
                 ...(edgeWhereAggregationInput ? { edge: edgeWhereAggregationInput } : {}),
             },
         });
+
+        const deprecates_NOT = {
+            name: "deprecated",
+            args: {
+                reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
+            }
+        };
 
         whereInput.addFields({
             ...{
@@ -681,7 +702,7 @@ function createRelationshipFields({
                 },
                 [`${rel.fieldName}_NOT`]: {
                     type: `${n.name}Where`,
-                    directives: deprecatedDirectives,
+                    directives: [...deprecatedDirectives, deprecates_NOT],
                 },
                 [`${rel.fieldName}Aggregate`]: {
                     type: whereAggregateInput,
@@ -727,6 +748,7 @@ function createRelationshipFields({
                     },
                 },
             ]);
+           
         }
 
         const createName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}CreateFieldInput`;

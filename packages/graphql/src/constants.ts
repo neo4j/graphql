@@ -74,7 +74,7 @@ export const SCALAR_TYPES = [
 
 export const NODE_OR_EDGE_KEYS = ["node", "edge"];
 
-export const LOGICAL_OPERATORS = ["AND", "OR"];
+export const LOGICAL_OPERATORS = ["AND", "OR", "NOT"] as const;
 
 // aggregation
 export const AGGREGATION_COMPARISON_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];
