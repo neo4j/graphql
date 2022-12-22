@@ -40,8 +40,8 @@ describe("579", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-          interface HasId {
-            id: ID!
+          interface HasName {
+            name: String!
           }
 
           type Post {
@@ -49,13 +49,11 @@ describe("579", () => {
             subject: PostSubject! @relationship(type: "POST_FOR", direction: OUT)
           }
 
-          type User implements HasId {
-            id: ID! @id
-
-            post: Post! @relationship(type: "POST_FOR", direction: IN)
+          type User implements HasName {
+            name: String!
           }
-          type Group implements HasId {
-            id: ID! @id
+          type Group implements HasName {
+            name: String!
           }
 
           union PostSubject = User | Group
@@ -68,8 +66,8 @@ describe("579", () => {
               posts {
                 id
                 subject {
-                  ... on HasId {
-                    id
+                  ... on HasName {
+                    name
                   }
                 }
               }
@@ -87,7 +85,7 @@ describe("579", () => {
             await session.run(
                 `
                     CREATE (post:Post { id: $postId })
-                    CREATE (user:User { id: $userId })
+                    CREATE (user:User { id: $userId, name: "user-name" })
                     MERGE (post)-[:POST_FOR]->(user)
             `,
                 {
@@ -105,9 +103,7 @@ describe("579", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            console.dir(gqlResult, { depth: 10 });
-
-            expect((gqlResult.data as any)?.[0]?.subject?.id).toBe(userId);
+            expect((gqlResult.data as any)?.posts?.[0]?.subject?.id).toBe(userId);
         } finally {
             await session.close();
         }
