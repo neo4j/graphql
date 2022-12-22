@@ -44,6 +44,10 @@ describe("579", () => {
             id: ID!
           }
 
+          type Outer {
+            related: [Related!]! @relationship(type: "OUTER", direction: OUT)
+          }
+
           type Type1 implements HasId {
             id: ID! @id
             text: String!
@@ -73,13 +77,16 @@ describe("579", () => {
 
         const query = `
           query {
-            relateds {
+            outers {
+            related {
+              id
               related {
-                __typename
                 ... on HasId {
+                  __isHasId: __typename
                   id
                 }
               }
+            }
             }
           }
         `;
@@ -87,8 +94,10 @@ describe("579", () => {
         try {
             await session.run(
                 `
+                    CREATE (outer:Outer)
                     CREATE (type1:Type1 { id: $type1Id, text: "test" })
                     CREATE (related:Related { id: $relatedId })
+                    MERGE (outer)-[:OUTER]->(related)
                     MERGE (related)-[:RELATED]->(type1)
             `,
                 {
