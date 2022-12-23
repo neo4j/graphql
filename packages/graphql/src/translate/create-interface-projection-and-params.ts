@@ -121,7 +121,7 @@ function createInterfaceSubquery({
 
     const param = `${nodeVariable}_${refNode.name}`;
     const relatedNode = new Cypher.NamedNode(param, {
-        labels: [refNode.getMainLabel()],
+        labels: [refNode.getLabels(context)],
     });
 
     const relationshipRef = new Cypher.Relationship({
