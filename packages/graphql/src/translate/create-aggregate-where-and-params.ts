@@ -104,6 +104,7 @@ export function aggregateWhere(
         } else if (isLogicalOperator(key)) {
             const cypherBuilderFunction = getCypherLogicalOperator(key);
             const logicalPredicates: Cypher.Predicate[] = [];
+            value =  Array.isArray(value) ? value : [value];
             value.forEach((whereInput) => {
                 const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateWhere(
                     whereInput,
@@ -157,6 +158,7 @@ function aggregateEntityWhere(
         if (isLogicalOperator(key)) {
             const cypherBuilderFunction = getCypherLogicalOperator(key);
             const logicalPredicates: Cypher.Predicate[] = [];
+            value = Array.isArray(value) ? value : [value];
             value.forEach((whereInput) => {
                 const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateEntityWhere(
                     whereInput,

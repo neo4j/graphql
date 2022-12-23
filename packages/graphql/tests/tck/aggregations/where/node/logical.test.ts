@@ -114,4 +114,37 @@ describe("Cypher Aggregations where node with Logical AND + OR", () => {
             }"
         `);
     });
+
+    test("NOT", async () => {
+        const query = gql`
+            {
+                posts(where: { likesAggregate: { node: { NOT: { someFloat_EQUAL: 10 } } } }) {
+                    content
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Post\`)
+            CALL {
+                WITH this
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                RETURN any(var2 IN collect(this1.someFloat) WHERE var2 = $param0) AS var3
+            }
+            WITH *
+            WHERE NOT (var3 = true)
+            RETURN this { .content } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": 10
+            }"
+        `);
+    });
 });
