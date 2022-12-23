@@ -39,7 +39,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [ "lts/*", 19 ]
+        node: [ "lts/*", "latest"]
         packages:
           [
             { package: "ogm", shard: 1/1 },
