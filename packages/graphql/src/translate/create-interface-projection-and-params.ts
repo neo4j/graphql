@@ -119,9 +119,10 @@ function createInterfaceSubquery({
 }): Cypher.Clause {
     const whereInput = resolveTree.args.where as InterfaceWhereArg;
 
+    // here
     const param = `${nodeVariable}_${refNode.name}`;
     const relatedNode = new Cypher.NamedNode(param, {
-        labels: [refNode.name], // NOTE: should this be labels?
+        labels: [refNode.getMainLabel()], // NOTE: should this be labels?
     });
 
     const relationshipRef = new Cypher.Relationship({

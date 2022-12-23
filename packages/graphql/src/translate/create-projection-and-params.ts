@@ -139,6 +139,7 @@ export default function createProjectionAndParams({
                 const relationshipField = node.relationFields.find(
                     (x) => x.fieldName === interfaceResolveTree.name
                 ) as RelationField;
+                // here
                 const interfaceProjection = createInterfaceProjectionAndParams({
                     resolveTree: interfaceResolveTree,
                     field: relationshipField,
@@ -146,6 +147,7 @@ export default function createProjectionAndParams({
                     nodeVariable: varName,
                     withVars: prevRelationshipFields,
                 });
+
                 res.subqueries.push(interfaceProjection);
                 res.projection.push(`${field.alias}: ${varName}_${field.name}`);
 
@@ -158,7 +160,6 @@ export default function createProjectionAndParams({
                         relationField.union?.nodes?.includes(x.name) &&
                         (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name))
                 );
-
                 const parentNode = new Cypher.NamedNode(chainStr || varName);
 
                 const unionSubqueries: Cypher.Clause[] = [];
