@@ -2767,7 +2767,7 @@ __metadata:
     camelcase: 6.3.0
     graphql-tag: 2.12.6
     jest: 29.3.1
-    jsonwebtoken: 8.5.1
+    jsonwebtoken: 9.0.0
     libnpmsearch: 6.0.1
     npm-run-all: 4.1.5
     pluralize: 8.0.0
@@ -2792,7 +2792,7 @@ __metadata:
     "@types/node": 18.11.10
     debug: ^4.3.4
     jest: 29.3.1
-    jsonwebtoken: ^8.5.1
+    jsonwebtoken: ^9.0.0
     jwks-rsa: ^3.0.0
     ts-jest: 29.0.3
     typescript: 4.9.4
@@ -13624,7 +13624,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:8.5.1, jsonwebtoken@npm:^8.5.1":
+"jsonwebtoken@npm:9.0.0, jsonwebtoken@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "jsonwebtoken@npm:9.0.0"
+  dependencies:
+    jws: ^3.2.2
+    lodash: ^4.17.21
+    ms: ^2.1.1
+    semver: ^7.3.8
+  checksum: b9181cecf9df99f1dc0253f91ba000a1aa4d91f5816d1608c0dba61a5623726a0bfe200b51df25de18c1a6000825d231ad7ce2788aa54fd48dcb760ad9eb9514
+  languageName: node
+  linkType: hard
+
+"jsonwebtoken@npm:^8.5.1":
   version: 8.5.1
   resolution: "jsonwebtoken@npm:8.5.1"
   dependencies:
@@ -15704,7 +15716,7 @@ __metadata:
     express-rate-limit: ^6.5.2
     graphql: 16.6.0
     jest: 29.3.1
-    jsonwebtoken: 8.5.1
+    jsonwebtoken: 9.0.0
     neo4j-driver: 5.3.0
     nodemon: 2.0.20
     randomstring: 1.2.3
