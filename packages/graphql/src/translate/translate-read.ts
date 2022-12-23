@@ -56,7 +56,6 @@ export function translateRead(
         operation: "READ",
     });
 
-    // here
     const projection = createProjectionAndParams({
         node,
         context,

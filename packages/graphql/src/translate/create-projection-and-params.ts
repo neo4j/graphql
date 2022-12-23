@@ -139,7 +139,6 @@ export default function createProjectionAndParams({
                 const relationshipField = node.relationFields.find(
                     (x) => x.fieldName === interfaceResolveTree.name
                 ) as RelationField;
-                // here
                 const interfaceProjection = createInterfaceProjectionAndParams({
                     resolveTree: interfaceResolveTree,
                     field: relationshipField,
