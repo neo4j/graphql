@@ -2804,7 +2804,7 @@ __metadata:
   resolution: "@neo4j/graphql-plugin-subscriptions-amqp@workspace:packages/plugins/graphql-plugin-subscriptions-amqp"
   dependencies:
     "@neo4j/graphql": ^3.14.0
-    "@types/amqplib": 0.10.0
+    "@types/amqplib": 0.10.1
     "@types/debug": 4.1.7
     "@types/jest": 29.2.4
     "@types/node": 18.11.10
@@ -4055,12 +4055,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/amqplib@npm:0.10.0":
-  version: 0.10.0
-  resolution: "@types/amqplib@npm:0.10.0"
+"@types/amqplib@npm:0.10.1":
+  version: 0.10.1
+  resolution: "@types/amqplib@npm:0.10.1"
   dependencies:
     "@types/node": "*"
-  checksum: 68615a9477e226cde4bf41f4135bc9b55fc60d36f47c94edb3ca22788c5cb00fbd23286523e2549b3c747455eaf53377b25f91b00e58336fa1bece540319cd4e
+  checksum: 9f7dd964d15df82f73c26e84f028a5fe91ee96878e34625cf09d0153079007d3d506fcf9d327463227e6e30a357e0220bfb0848fb40c121ccd795154004d3733
   languageName: node
   linkType: hard
 
@@ -5475,7 +5475,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"amqplib@npm:0.10.3":
+"amqplib@npm:0.10.3, amqplib@npm:^0.10.0":
   version: 0.10.3
   resolution: "amqplib@npm:0.10.3"
   dependencies:
@@ -5484,20 +5484,6 @@ __metadata:
     readable-stream: 1.x >=1.1.9
     url-parse: ~1.5.10
   checksum: 999f0fae748fd29d4d4ec1067c389ecb8cb03f9c060f854a4cab757e911e9690da643419553b0291ec45693996a959b87ec87ae7e72268b818be0e284e60da7a
-  languageName: node
-  linkType: hard
-
-"amqplib@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "amqplib@npm:0.8.0"
-  dependencies:
-    bitsyntax: ~0.1.0
-    bluebird: ^3.7.2
-    buffer-more-ints: ~1.0.0
-    readable-stream: 1.x >=1.1.9
-    safe-buffer: ~5.2.1
-    url-parse: ~1.5.1
-  checksum: fc8f227769f0d3a731eeeb9732b862b651810cef763ddf402b97a923bb1818b6739dc6a031cabe8ee0940192b5f3949e2320f76a87ed8f71425a429512c8d4d1
   languageName: node
   linkType: hard
 
@@ -5782,7 +5768,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^3.1.0
     "@neo4j/graphql-plugin-subscriptions-amqp": ^1.0.0
-    amqplib: ^0.8.0
+    amqplib: ^0.10.0
     apollo-server-core: ^3.6.7
     apollo-server-express: ^3.6.7
     express: ^4.17.3
@@ -6456,17 +6442,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bitsyntax@npm:~0.1.0":
-  version: 0.1.0
-  resolution: "bitsyntax@npm:0.1.0"
-  dependencies:
-    buffer-more-ints: ~1.0.0
-    debug: ~2.6.9
-    safe-buffer: ~5.1.2
-  checksum: b9f1548eeea950a59021b58bd2caf0bc402de94e2797fa274ed5a57dfc54240a9acbf2115b342e698c7e398949c6a13e87fb9da15388e9d007411080dd195f07
-  languageName: node
-  linkType: hard
-
 "bluebird@npm:2.9.34":
   version: 2.9.34
   resolution: "bluebird@npm:2.9.34"
@@ -6474,7 +6449,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bluebird@npm:^3.5.1, bluebird@npm:^3.7.2":
+"bluebird@npm:^3.5.1":
   version: 3.7.2
   resolution: "bluebird@npm:3.7.2"
   checksum: 869417503c722e7dc54ca46715f70e15f4d9c602a423a02c825570862d12935be59ed9c7ba34a9b31f186c017c23cac6b54e35446f8353059c101da73eac22ef
@@ -8361,7 +8336,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:2.6.9, debug@npm:^2.6.9, debug@npm:~2.6.9":
+"debug@npm:2.6.9, debug@npm:^2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
   dependencies:
@@ -19231,7 +19206,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:5.2.1, safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.1.1, safe-buffer@npm:^5.1.2, safe-buffer@npm:^5.2.0, safe-buffer@npm:~5.2.0, safe-buffer@npm:~5.2.1":
+"safe-buffer@npm:5.2.1, safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.1.1, safe-buffer@npm:^5.1.2, safe-buffer@npm:^5.2.0, safe-buffer@npm:~5.2.0":
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
   checksum: b99c4b41fdd67a6aaf280fcd05e9ffb0813654894223afb78a31f14a19ad220bba8aba1cb14eddce1fcfb037155fe6de4e861784eb434f7d11ed58d1e70dd491
@@ -21768,7 +21743,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"url-parse@npm:^1.5.3, url-parse@npm:~1.5.1, url-parse@npm:~1.5.10":
+"url-parse@npm:^1.5.3, url-parse@npm:~1.5.10":
   version: 1.5.10
   resolution: "url-parse@npm:1.5.10"
   dependencies:
