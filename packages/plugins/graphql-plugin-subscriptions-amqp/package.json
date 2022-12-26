@@ -34,7 +34,7 @@
     "author": "Neo4j Inc.",
     "devDependencies": {
         "@neo4j/graphql": "^3.14.0",
-        "@types/amqplib": "0.10.0",
+        "@types/amqplib": "0.10.1",
         "@types/debug": "4.1.7",
         "@types/jest": "29.2.4",
         "@types/node": "18.11.10",

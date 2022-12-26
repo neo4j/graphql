@@ -2767,7 +2767,7 @@ __metadata:
     camelcase: 6.3.0
     graphql-tag: 2.12.6
     jest: 29.3.1
-    jsonwebtoken: 8.5.1
+    jsonwebtoken: 9.0.0
     libnpmsearch: 6.0.1
     npm-run-all: 4.1.5
     pluralize: 8.0.0
@@ -2792,7 +2792,7 @@ __metadata:
     "@types/node": 18.11.10
     debug: ^4.3.4
     jest: 29.3.1
-    jsonwebtoken: ^8.5.1
+    jsonwebtoken: ^9.0.0
     jwks-rsa: ^3.0.0
     ts-jest: 29.0.3
     typescript: 4.9.4
@@ -2804,7 +2804,7 @@ __metadata:
   resolution: "@neo4j/graphql-plugin-subscriptions-amqp@workspace:packages/plugins/graphql-plugin-subscriptions-amqp"
   dependencies:
     "@neo4j/graphql": ^3.14.0
-    "@types/amqplib": 0.10.0
+    "@types/amqplib": 0.10.1
     "@types/debug": 4.1.7
     "@types/jest": 29.2.4
     "@types/node": 18.11.10
@@ -2840,7 +2840,7 @@ __metadata:
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 12.2.3
     "@types/prettier": 2.7.2
-    "@types/react-dom": 18.0.9
+    "@types/react-dom": 18.0.10
     "@types/webpack": 5.28.0
     autoprefixer: 10.4.13
     codemirror: 5.65.11
@@ -2863,7 +2863,7 @@ __metadata:
     markdown-it: 13.0.1
     neo4j-driver: 5.3.0
     node-polyfill-webpack-plugin: 2.0.1
-    parse5: 5.1.1
+    parse5: 7.1.2
     postcss: 8.4.20
     postcss-loader: 7.0.2
     prettier: 2.8.1
@@ -2928,7 +2928,7 @@ __metadata:
     koa-jwt: 4.0.3
     koa-router: 12.0.0
     libnpmsearch: 6.0.1
-    mock-jwks: 1.0.8
+    mock-jwks: 1.0.9
     nock: 13.2.9
     npm-run-all: 4.1.5
     pluralize: ^8.0.0
@@ -3858,10 +3858,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@remix-run/router@npm:1.2.0"
-  checksum: faa5d0095e4ce1c5d1ec75db11e0fa77ac29db609187a562f69f90d9c1703095ac4dde25fd14dd33317c7658e52e358bdf31de8b57354ca693b51f047fbe88dd
+"@remix-run/router@npm:1.2.1":
+  version: 1.2.1
+  resolution: "@remix-run/router@npm:1.2.1"
+  checksum: 71c947f83e130bf006226332aca395f626ad599b6d35dfe936f6a8f139cf37278bc1b36bce38c30f6062724402358296329f31c385b11ae59b13b76a2716d701
   languageName: node
   linkType: hard
 
@@ -4055,12 +4055,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/amqplib@npm:0.10.0":
-  version: 0.10.0
-  resolution: "@types/amqplib@npm:0.10.0"
+"@types/amqplib@npm:0.10.1":
+  version: 0.10.1
+  resolution: "@types/amqplib@npm:0.10.1"
   dependencies:
     "@types/node": "*"
-  checksum: 68615a9477e226cde4bf41f4135bc9b55fc60d36f47c94edb3ca22788c5cb00fbd23286523e2549b3c747455eaf53377b25f91b00e58336fa1bece540319cd4e
+  checksum: 9f7dd964d15df82f73c26e84f028a5fe91ee96878e34625cf09d0153079007d3d506fcf9d327463227e6e30a357e0220bfb0848fb40c121ccd795154004d3733
   languageName: node
   linkType: hard
 
@@ -4591,12 +4591,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.0.9":
-  version: 18.0.9
-  resolution: "@types/react-dom@npm:18.0.9"
+"@types/react-dom@npm:18.0.10":
+  version: 18.0.10
+  resolution: "@types/react-dom@npm:18.0.10"
   dependencies:
     "@types/react": "*"
-  checksum: e744e3feba25fc43733289d4df4d9c0e59fcca7f34e8c89d75f81a339accb2bd70236d69382d47d2c0ad06a1529b2e56aa6171fe175854d60e07156ddceedfcb
+  checksum: ff8282d5005a0b1cd95fb65bf79d3d8485e4cfe2aaf052129033a178684b940014a3f4536bc20d573f8a01cf4c6f4770c74988cef7c2b5cac3041d9f172647e3
   languageName: node
   linkType: hard
 
@@ -5475,7 +5475,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"amqplib@npm:0.10.3":
+"amqplib@npm:0.10.3, amqplib@npm:^0.10.3":
   version: 0.10.3
   resolution: "amqplib@npm:0.10.3"
   dependencies:
@@ -5484,20 +5484,6 @@ __metadata:
     readable-stream: 1.x >=1.1.9
     url-parse: ~1.5.10
   checksum: 999f0fae748fd29d4d4ec1067c389ecb8cb03f9c060f854a4cab757e911e9690da643419553b0291ec45693996a959b87ec87ae7e72268b818be0e284e60da7a
-  languageName: node
-  linkType: hard
-
-"amqplib@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "amqplib@npm:0.8.0"
-  dependencies:
-    bitsyntax: ~0.1.0
-    bluebird: ^3.7.2
-    buffer-more-ints: ~1.0.0
-    readable-stream: 1.x >=1.1.9
-    safe-buffer: ~5.2.1
-    url-parse: ~1.5.1
-  checksum: fc8f227769f0d3a731eeeb9732b862b651810cef763ddf402b97a923bb1818b6739dc6a031cabe8ee0940192b5f3949e2320f76a87ed8f71425a429512c8d4d1
   languageName: node
   linkType: hard
 
@@ -5782,7 +5768,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^3.1.0
     "@neo4j/graphql-plugin-subscriptions-amqp": ^1.0.0
-    amqplib: ^0.8.0
+    amqplib: ^0.10.3
     apollo-server-core: ^3.6.7
     apollo-server-express: ^3.6.7
     express: ^4.17.3
@@ -6456,17 +6442,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bitsyntax@npm:~0.1.0":
-  version: 0.1.0
-  resolution: "bitsyntax@npm:0.1.0"
-  dependencies:
-    buffer-more-ints: ~1.0.0
-    debug: ~2.6.9
-    safe-buffer: ~5.1.2
-  checksum: b9f1548eeea950a59021b58bd2caf0bc402de94e2797fa274ed5a57dfc54240a9acbf2115b342e698c7e398949c6a13e87fb9da15388e9d007411080dd195f07
-  languageName: node
-  linkType: hard
-
 "bluebird@npm:2.9.34":
   version: 2.9.34
   resolution: "bluebird@npm:2.9.34"
@@ -6474,7 +6449,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bluebird@npm:^3.5.1, bluebird@npm:^3.7.2":
+"bluebird@npm:^3.5.1":
   version: 3.7.2
   resolution: "bluebird@npm:3.7.2"
   checksum: 869417503c722e7dc54ca46715f70e15f4d9c602a423a02c825570862d12935be59ed9c7ba34a9b31f186c017c23cac6b54e35446f8353059c101da73eac22ef
@@ -8361,7 +8336,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:2.6.9, debug@npm:^2.6.9, debug@npm:~2.6.9":
+"debug@npm:2.6.9, debug@npm:^2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
   dependencies:
@@ -13624,7 +13599,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:8.5.1, jsonwebtoken@npm:^8.5.1":
+"jsonwebtoken@npm:9.0.0, jsonwebtoken@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "jsonwebtoken@npm:9.0.0"
+  dependencies:
+    jws: ^3.2.2
+    lodash: ^4.17.21
+    ms: ^2.1.1
+    semver: ^7.3.8
+  checksum: b9181cecf9df99f1dc0253f91ba000a1aa4d91f5816d1608c0dba61a5623726a0bfe200b51df25de18c1a6000825d231ad7ce2788aa54fd48dcb760ad9eb9514
+  languageName: node
+  linkType: hard
+
+"jsonwebtoken@npm:^8.5.1":
   version: 8.5.1
   resolution: "jsonwebtoken@npm:8.5.1"
   dependencies:
@@ -15448,17 +15435,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mock-jwks@npm:1.0.8":
-  version: 1.0.8
-  resolution: "mock-jwks@npm:1.0.8"
+"mock-jwks@npm:1.0.9":
+  version: 1.0.9
+  resolution: "mock-jwks@npm:1.0.9"
   dependencies:
     base64-url: ^2.3.3
-    jsonwebtoken: ^8.5.1
+    jsonwebtoken: ^9.0.0
     node-forge: ^1.3.1
     node-rsa: ^1.1.1
   peerDependencies:
     nock: ^11 || ^12 || ^13
-  checksum: b28e3c2e57e67d4a0ca55ff594d544829056fdf3b9c2161924c75f926e1a8590904503cd0b0ef6a25ffa3f43b9d96b6a03890c2041c53e800cae8f5e9bc62efc
+  checksum: 9545292a0d8e3bdde301b70a8c15f7432b233a0c04e5fb7f60b4c02abe69e318873b0f6a7e31055e06d02a2ff5588cab00fe818c3298f0ae50aca069d2f079b5
   languageName: node
   linkType: hard
 
@@ -15656,7 +15643,7 @@ __metadata:
     "@fortawesome/free-solid-svg-icons": 6.2.1
     "@fortawesome/react-fontawesome": 0.2.0
     "@tsconfig/create-react-app": 1.0.3
-    "@types/react-dom": 18.0.9
+    "@types/react-dom": 18.0.10
     "@types/react-router-dom": 5.3.3
     "@types/showdown": 2.0.0
     "@webpack-cli/serve": 2.0.1
@@ -15669,7 +15656,7 @@ __metadata:
     react-dom: 18.2.0
     react-markdown: 8.0.4
     react-mde: 11.5.0
-    react-router-dom: 6.6.0
+    react-router-dom: 6.6.1
     showdown: 2.1.0
     style-loader: 3.3.1
     ts-loader: 9.4.2
@@ -15704,7 +15691,7 @@ __metadata:
     express-rate-limit: ^6.5.2
     graphql: 16.6.0
     jest: 29.3.1
-    jsonwebtoken: 8.5.1
+    jsonwebtoken: 9.0.0
     neo4j-driver: 5.3.0
     nodemon: 2.0.20
     randomstring: 1.2.3
@@ -16979,13 +16966,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse5@npm:5.1.1":
-  version: 5.1.1
-  resolution: "parse5@npm:5.1.1"
-  checksum: 613a714af4c1101d1cb9f7cece2558e35b9ae8a0c03518223a4a1e35494624d9a9ad5fad4c13eab66a0e0adccd9aa3d522fc8f5f9cc19789e0579f3fa0bdfc65
-  languageName: node
-  linkType: hard
-
 "parse5@npm:6.0.1":
   version: 6.0.1
   resolution: "parse5@npm:6.0.1"
@@ -16993,7 +16973,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse5@npm:^7.0.0, parse5@npm:^7.1.1":
+"parse5@npm:7.1.2, parse5@npm:^7.0.0, parse5@npm:^7.1.1":
   version: 7.1.2
   resolution: "parse5@npm:7.1.2"
   dependencies:
@@ -18480,27 +18460,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:6.6.0":
-  version: 6.6.0
-  resolution: "react-router-dom@npm:6.6.0"
+"react-router-dom@npm:6.6.1":
+  version: 6.6.1
+  resolution: "react-router-dom@npm:6.6.1"
   dependencies:
-    "@remix-run/router": 1.2.0
-    react-router: 6.6.0
+    "@remix-run/router": 1.2.1
+    react-router: 6.6.1
   peerDependencies:
     react: ">=16.8"
     react-dom: ">=16.8"
-  checksum: 93e949ede779fbc205c6716c304f83a5e62156064a1784365e3e756713126cc25ac1d774cd0d0cb3c3deebe5819c56345466159c8f95b9ed3788ee7915070687
+  checksum: 68a4419c203add0df0203ac2a58e5832949105e0c0561a0850f74cac8e3108507fd8d9c62baeb10ea5ce4cb8eaddea9475bcb3787bdabb3ede23b55564b835ae
   languageName: node
   linkType: hard
 
-"react-router@npm:6.6.0":
-  version: 6.6.0
-  resolution: "react-router@npm:6.6.0"
+"react-router@npm:6.6.1":
+  version: 6.6.1
+  resolution: "react-router@npm:6.6.1"
   dependencies:
-    "@remix-run/router": 1.2.0
+    "@remix-run/router": 1.2.1
   peerDependencies:
     react: ">=16.8"
-  checksum: 29580dfa0a156c81f96782a592b0af9599cb7c38e01dac86a5c050ad63dc89c6898b4e5f84fc0ab513f8b17ed776ed68b7d296b1b43225f24ce8cb699e48c653
+  checksum: 58f0ad29123e2854d547915a1ae1cc2687504e396d71db50fe8f36ad733d7940a2914d45868a8478b6138536e119fa5e3303212b7c7b1d81d80cd5b0bbefdfa2
   languageName: node
   linkType: hard
 
@@ -19231,7 +19211,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:5.2.1, safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.1.1, safe-buffer@npm:^5.1.2, safe-buffer@npm:^5.2.0, safe-buffer@npm:~5.2.0, safe-buffer@npm:~5.2.1":
+"safe-buffer@npm:5.2.1, safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.1.1, safe-buffer@npm:^5.1.2, safe-buffer@npm:^5.2.0, safe-buffer@npm:~5.2.0":
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
   checksum: b99c4b41fdd67a6aaf280fcd05e9ffb0813654894223afb78a31f14a19ad220bba8aba1cb14eddce1fcfb037155fe6de4e861784eb434f7d11ed58d1e70dd491
@@ -21768,7 +21748,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"url-parse@npm:^1.5.3, url-parse@npm:~1.5.1, url-parse@npm:~1.5.10":
+"url-parse@npm:^1.5.3, url-parse@npm:~1.5.10":
   version: 1.5.10
   resolution: "url-parse@npm:1.5.10"
   dependencies:
