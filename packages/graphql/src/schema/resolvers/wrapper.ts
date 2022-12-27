@@ -143,7 +143,9 @@ export const wrapSubscription =
             plugin: plugins.subscriptions,
         };
 
-        if (!context?.jwt && contextParams.authorization) {
+        if (context?.jwt) {
+            subscriptionContext.jwt = context.jwt;
+        } else if (!context?.jwt && contextParams.authorization) {
             const token = parseBearerToken(contextParams.authorization);
             subscriptionContext.jwt = await decodeToken(token, plugins.auth);
         }
