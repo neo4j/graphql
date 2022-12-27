@@ -8954,17 +8954,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv-webpack@npm:7.1.1":
-  version: 7.1.1
-  resolution: "dotenv-webpack@npm:7.1.1"
-  dependencies:
-    dotenv-defaults: ^2.0.2
-  peerDependencies:
-    webpack: ^4 || ^5
-  checksum: 5022e0c52d04980cc04469131baf7104e59563c9562df53baca32a9313f7d711559de8392087233ba028fef38403982b7155570a6bd9adaeb0826db79a61d6ed
-  languageName: node
-  linkType: hard
-
 "dotenv-webpack@npm:8.0.1":
   version: 8.0.1
   resolution: "dotenv-webpack@npm:8.0.1"
@@ -15648,7 +15637,7 @@ __metadata:
     "@types/showdown": 2.0.0
     "@webpack-cli/serve": 2.0.1
     css-loader: 6.7.3
-    dotenv-webpack: 7.1.1
+    dotenv-webpack: 8.0.1
     graphql: 16.6.0
     html-webpack-plugin: 5.5.0
     react: 18.2.0
