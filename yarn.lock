@@ -5782,7 +5782,7 @@ __metadata:
     apollo-server-express: ^3.6.7
     express: ^4.17.3
     graphql-ws: ^5.7.0
-    neo4j-driver: ^4.4.5
+    neo4j-driver: ^5.0.0
     ws: ^8.5.0
   languageName: unknown
   linkType: soft
@@ -15700,17 +15700,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"neo4j-driver-bolt-connection@npm:^4.4.10":
-  version: 4.4.10
-  resolution: "neo4j-driver-bolt-connection@npm:4.4.10"
-  dependencies:
-    buffer: ^6.0.3
-    neo4j-driver-core: ^4.4.10
-    string_decoder: ^1.3.0
-  checksum: e7bdb00c57c6287cb558d20321966871e4cbe6988497e546693255a4ce20f2030b618f50bf5cee10cf5330d699501a0b0547bc0de6a38c512955985b7783aca1
-  languageName: node
-  linkType: hard
-
 "neo4j-driver-bolt-connection@npm:^5.3.0":
   version: 5.3.0
   resolution: "neo4j-driver-bolt-connection@npm:5.3.0"
@@ -15722,13 +15711,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"neo4j-driver-core@npm:^4.4.10":
-  version: 4.4.10
-  resolution: "neo4j-driver-core@npm:4.4.10"
-  checksum: 649658dcbe03415946c0621393e9e3cd601682c76a558ec884f7b5c65df58826b37a9a6c6c22f8710c75e1cea0272ed76fcb480b55e6c8d9eb46e022c6a9476b
-  languageName: node
-  linkType: hard
-
 "neo4j-driver-core@npm:^5.3.0":
   version: 5.3.0
   resolution: "neo4j-driver-core@npm:5.3.0"
@@ -15736,7 +15718,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"neo4j-driver@npm:5.3.0, neo4j-driver@npm:^5.3.0":
+"neo4j-driver@npm:5.3.0, neo4j-driver@npm:^5.0.0, neo4j-driver@npm:^5.3.0":
   version: 5.3.0
   resolution: "neo4j-driver@npm:5.3.0"
   dependencies:
@@ -15745,18 +15727,6 @@ __metadata:
     neo4j-driver-core: ^5.3.0
     rxjs: ^7.5.5
   checksum: 0a702e9bfd7b492b416487970ab028ac32d48bd0a967f6d491a651b9b0142553aa16ade2d91864bdbeeb4f77d8462af9ff6f83bb50349d739846620984823889
-  languageName: node
-  linkType: hard
-
-"neo4j-driver@npm:^4.4.5":
-  version: 4.4.10
-  resolution: "neo4j-driver@npm:4.4.10"
-  dependencies:
-    "@babel/runtime": ^7.5.5
-    neo4j-driver-bolt-connection: ^4.4.10
-    neo4j-driver-core: ^4.4.10
-    rxjs: ^6.6.3
-  checksum: d7d42bbff40a5014817f2e00d3ceea83985d30fbb4135ae16f6cdb7c9e5fd5bc25a87dea2b000a0bd8604889320ec85f8335e394b7a1ccd5a9614e6d043a6db4
   languageName: node
   linkType: hard
 
