@@ -2788,7 +2788,7 @@ __metadata:
   dependencies:
     "@types/debug": 4.1.7
     "@types/jest": 29.2.4
-    "@types/jsonwebtoken": 8.5.9
+    "@types/jsonwebtoken": 9.0.0
     "@types/node": 18.11.10
     debug: ^4.3.4
     jest: 29.3.1
@@ -2901,7 +2901,7 @@ __metadata:
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
     "@types/jest": 29.2.4
-    "@types/jsonwebtoken": 8.5.9
+    "@types/jsonwebtoken": 9.0.0
     "@types/node": 18.11.10
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
@@ -4412,7 +4412,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:8.5.9, @types/jsonwebtoken@npm:^8.5.9":
+"@types/jsonwebtoken@npm:9.0.0":
+  version: 9.0.0
+  resolution: "@types/jsonwebtoken@npm:9.0.0"
+  dependencies:
+    "@types/node": "*"
+  checksum: c7791354ba895759524c18ba609ea04efdc576e2b660bd6f80d5b917db8dc4b01acd4d1bc115a62d35406a82e627067973d475c4b36035dabaa27862b141ae49
+  languageName: node
+  linkType: hard
+
+"@types/jsonwebtoken@npm:^8.5.9":
   version: 8.5.9
   resolution: "@types/jsonwebtoken@npm:8.5.9"
   dependencies:
@@ -15669,7 +15678,7 @@ __metadata:
     "@types/dotenv": 8.2.0
     "@types/express": 4.17.15
     "@types/jest": 29.2.4
-    "@types/jsonwebtoken": 8.5.9
+    "@types/jsonwebtoken": 9.0.0
     "@types/node": 18.11.10
     apollo-server-express: 3.11.1
     bcrypt: 5.1.0
