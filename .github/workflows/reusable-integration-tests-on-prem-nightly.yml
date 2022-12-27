@@ -39,6 +39,7 @@ jobs:
 
     strategy:
       matrix:
+        node: [ "lts/*", "latest"]
         packages:
           [
             { package: "ogm", shard: 1/1 },
@@ -70,9 +71,10 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Setting up Node.js with version ${{ matrix.node }}
+        uses: actions/setup-node@v3
         with:
-          node-version: lts/*
+          node-version: ${{ matrix.node }}
           cache: yarn
       - name: Login to ECR
         uses: docker/login-action@v2
