@@ -87,7 +87,7 @@ jobs:
   api-library-tests:
     uses: ./.github/workflows/reusable-api-library-tests.yml
     secrets:
-      CODECOV_TOKEN: ${{ github.event_name == 'schedule' && secrets.CODECOV_TOKEN }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   # nextjs-app-setup:
   #   uses: ./.github/workflows/reusable-nextjs-app-setup.yml
