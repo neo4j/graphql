@@ -75,6 +75,8 @@ jobs:
 
   unit-tests:
     uses: ./.github/workflows/reusable-unit-tests.yml
+    secrets:
+      CODECOV_TOKEN: ${{ github.event_name != 'schedule' && secrets.CODECOV_TOKEN }}
 
   cypher-builder-tests:
     uses: ./.github/workflows/reusable-cypher-builder-tests.yml
@@ -84,6 +86,8 @@ jobs:
 
   api-library-tests:
     uses: ./.github/workflows/reusable-api-library-tests.yml
+    secrets:
+      CODECOV_TOKEN: ${{ github.event_name == 'schedule' && secrets.CODECOV_TOKEN }}
 
   # nextjs-app-setup:
   #   uses: ./.github/workflows/reusable-nextjs-app-setup.yml
