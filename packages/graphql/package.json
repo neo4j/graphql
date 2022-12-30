@@ -58,7 +58,7 @@
         "@types/randomstring": "1.1.8",
         "@types/semver": "7.3.13",
         "@types/supertest": "2.0.12",
-        "@types/ws": "8.5.3",
+        "@types/ws": "8.5.4",
         "apollo-server": "3.11.1",
         "apollo-server-express": "3.11.1",
         "dedent": "0.7.0",

@@ -2907,7 +2907,7 @@ __metadata:
     "@types/randomstring": 1.1.8
     "@types/semver": 7.3.13
     "@types/supertest": 2.0.12
-    "@types/ws": 8.5.3
+    "@types/ws": 8.5.4
     apollo-server: 3.11.1
     apollo-server-express: 3.11.1
     camelcase: ^6.3.0
@@ -4789,7 +4789,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:8.5.3, @types/ws@npm:^8.5.1":
+"@types/ws@npm:8.5.4":
+  version: 8.5.4
+  resolution: "@types/ws@npm:8.5.4"
+  dependencies:
+    "@types/node": "*"
+  checksum: fefbad20d211929bb996285c4e6f699b12192548afedbe4930ab4384f8a94577c9cd421acaad163cacd36b88649509970a05a0b8f20615b30c501ed5269038d1
+  languageName: node
+  linkType: hard
+
+"@types/ws@npm:^8.5.1":
   version: 8.5.3
   resolution: "@types/ws@npm:8.5.3"
   dependencies:
