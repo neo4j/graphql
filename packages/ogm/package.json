@@ -44,7 +44,7 @@
     },
     "devDependencies": {
         "@neo4j/graphql-plugin-auth": "^1.1.1",
-        "@types/jest": "29.2.4",
+        "@types/jest": "29.2.5",
         "@types/node": "18.11.10",
         "camelcase": "6.3.0",
         "graphql-tag": "2.12.6",
