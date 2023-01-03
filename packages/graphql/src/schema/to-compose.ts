@@ -127,6 +127,11 @@ export function objectFieldsToSubscriptionsWhereInputFields(
         const ifAnyTypeExceptArrayAndBoolean = !f.typeMeta.array && f.typeMeta.name !== "Boolean";
         const isOneOfNumberTypes = ["Int", "Float", "BigInt"].includes(f.typeMeta.name) && !f.typeMeta.array;
         const isOneOfStringTypes = ["String", "ID"].includes(f.typeMeta.name) && !f.typeMeta.array;
+
+        let inputTypeName = f.typeMeta.name;
+        if (inputTypeName === "Point" || inputTypeName === "CartesianPoint") {
+            inputTypeName = `${inputTypeName}Input`;
+        }
         return {
             ...res,
             AND: `[${typeName}SubscriptionWhere!]`,
@@ -134,12 +139,12 @@ export function objectFieldsToSubscriptionsWhereInputFields(
             [f.fieldName]: fieldType,
             [`${f.fieldName}_NOT`]: fieldType,
             ...(ifArrayOfAnyTypeExceptBoolean && {
-                [`${f.fieldName}_INCLUDES`]: f.typeMeta.name,
-                [`${f.fieldName}_NOT_INCLUDES`]: f.typeMeta.name,
+                [`${f.fieldName}_INCLUDES`]: inputTypeName,
+                [`${f.fieldName}_NOT_INCLUDES`]: inputTypeName,
             }),
             ...(ifAnyTypeExceptArrayAndBoolean && {
-                [`${f.fieldName}_IN`]: `[${f.typeMeta.name}]`,
-                [`${f.fieldName}_NOT_IN`]: `[${f.typeMeta.name}]`,
+                [`${f.fieldName}_IN`]: `[${inputTypeName}]`,
+                [`${f.fieldName}_NOT_IN`]: `[${inputTypeName}]`,
             }),
             ...(isOneOfNumberTypes && {
                 [`${f.fieldName}_LT`]: fieldType,
