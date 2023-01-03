@@ -34,7 +34,6 @@ describe("Subscriptions to spatial types", () => {
     let neoSchema: Neo4jGraphQL;
     let plugin: TestSubscriptionsPlugin;
 
-    const typeActor = generateUniqueType("Actor");
     const typeMovie = generateUniqueType("Movie");
 
     beforeEach(async () => {
