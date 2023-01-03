@@ -121,15 +121,16 @@ export function objectFieldsToSubscriptionsWhereInputFields(
     fields: BaseField[]
 ): Record<string, InputField> {
     return fields.reduce((res, f) => {
-        const fieldType = f.typeMeta.input.update.pretty;
+        const fieldType = f.typeMeta.input.where.pretty;
 
         const ifArrayOfAnyTypeExceptBoolean = f.typeMeta.array && f.typeMeta.name !== "Boolean";
         const ifAnyTypeExceptArrayAndBoolean = !f.typeMeta.array && f.typeMeta.name !== "Boolean";
         const isOneOfNumberTypes = ["Int", "Float", "BigInt"].includes(f.typeMeta.name) && !f.typeMeta.array;
         const isOneOfStringTypes = ["String", "ID"].includes(f.typeMeta.name) && !f.typeMeta.array;
+        const isOneOfSpatialTypes = ["Point", "CartesianPoint"].includes(f.typeMeta.name);
 
         let inputTypeName = f.typeMeta.name;
-        if (inputTypeName === "Point" || inputTypeName === "CartesianPoint") {
+        if (isOneOfSpatialTypes) {
             inputTypeName = `${inputTypeName}Input`;
         }
         return {
