@@ -831,4 +831,68 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
             ]),
         });
     });
+
+    test("should should apply AVERAGE filter to a string edge property correctly when node has a node has a property with the same name but different type", async () => {
+        userType = generateUniqueType("User");
+        postType = generateUniqueType("Post");
+        likesInterface = generateUniqueType("Likes");
+
+        const typeDefs = `
+            type ${userType} {
+                someProperty: Int!
+            }
+            type ${postType} {
+                someProperty: Int!
+                likes: [${userType}!]! @relationship(type: "LIKES", direction: IN, properties: "${likesInterface}")
+            }
+            interface ${likesInterface} {
+                someProperty: String!
+            }    
+        `;
+
+        await session.run(`
+            CREATE (p:${postType} { someProperty: 1 })<-[:LIKES { someProperty: "${someString1}" }]-(:${userType} { someProperty: 1 })
+            CREATE (p)<-[:LIKES { someProperty: "${someString2}" }]-(:${userType} { someProperty: 2 })
+            CREATE (:${postType} { someProperty: 2 })<-[:LIKES { someProperty: "${someString3}" }]-(:${userType} { someProperty: 3 })
+        `);
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+        });
+
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someProperty_AVERAGE_EQUAL: ${post1Average} } } }) {
+                    someProperty
+                    likes {
+                        someProperty
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: [
+                {
+                    someProperty: 1,
+                    likes: expect.toIncludeSameMembers([
+                        {
+                            someProperty: 1,
+                        },
+                        {
+                            someProperty: 2,
+                        },
+                    ]),
+                },
+            ],
+        });
+    });
 });
