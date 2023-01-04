@@ -464,4 +464,186 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
             ]),
         });
     });
+
+    test("should return posts where an edge like String LONGEST_EQUAL", async () => {
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_LONGEST_EQUAL: ${someString1.length} } } }) {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: [
+                {
+                    content: content1,
+                    likes: expect.toIncludeSameMembers([
+                        {
+                            name: name1,
+                        },
+                        {
+                            name: name2,
+                        },
+                    ]),
+                },
+            ],
+        });
+    });
+
+    test("should return posts where an edge like String LONGEST_LT", async () => {
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_LONGEST_LT: ${someString3.length} } } }) {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: [
+                {
+                    content: content1,
+                    likes: expect.toIncludeSameMembers([
+                        {
+                            name: name1,
+                        },
+                        {
+                            name: name2,
+                        },
+                    ]),
+                },
+            ],
+        });
+    });
+
+    test("should return posts where an edge like String LONGEST_LTE", async () => {
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_LONGEST_LTE: ${someString3.length} } } }) {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: expect.toIncludeSameMembers([
+                {
+                    content: content2,
+                    likes: [
+                        {
+                            name: name3,
+                        },
+                    ],
+                },
+                {
+                    content: content1,
+                    likes: expect.toIncludeSameMembers([
+                        {
+                            name: name1,
+                        },
+                        {
+                            name: name2,
+                        },
+                    ]),
+                },
+            ]),
+        });
+    });
+
+    test("should return posts where an edge like String LONGEST_GT", async () => {
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_LONGEST_GT: ${someString1.length} } } }) {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: [
+                {
+                    content: content2,
+                    likes: expect.toIncludeSameMembers([
+                        {
+                            name: name3,
+                        },
+                    ]),
+                },
+            ],
+        });
+    });
+
+    test("should return posts where an edge like String LONGEST_GTE", async () => {
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_LONGEST_GTE: ${someString3.length} } } }) {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: [
+                {
+                    content: content2,
+                    likes: expect.toIncludeSameMembers([
+                        {
+                            name: name3,
+                        },
+                    ]),
+                },
+            ],
+        });
+    });
 });
