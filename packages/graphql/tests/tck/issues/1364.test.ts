@@ -101,20 +101,21 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH COLLECT(this) as edges
-            WITH edges, size(edges) as totalCount
-            UNWIND edges as this
+            WITH collect(this) AS edges
+            WITH edges, size(edges) AS totalCount
+            UNWIND edges AS this
             WITH this, totalCount
+            WITH *
+            ORDER BY this.title ASC
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                 RETURN count(DISTINCT genre)\\", { this: this, auth: $auth }) AS this_totalGenres
-                RETURN this_totalGenres AS this_totalGenres
+                RETURN head(collect(this_totalGenres)) AS this_totalGenres
             }
-            WITH { node: this { .title, totalGenres: this_totalGenres } } as edge, totalCount, this
-            ORDER BY this.title ASC
-            WITH COLLECT(edge) as edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } as this"
+            WITH { node: this { .title, totalGenres: this_totalGenres } } AS edge, totalCount, this
+            WITH collect(edge) AS edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
     });
 
@@ -137,20 +138,21 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH COLLECT(this) as edges
-            WITH edges, size(edges) as totalCount
-            UNWIND edges as this
+            WITH collect(this) AS edges
+            WITH edges, size(edges) AS totalCount
+            UNWIND edges AS this
             WITH this, totalCount
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                 RETURN count(DISTINCT genre)\\", { this: this, auth: $auth }) AS this_totalGenres
-                RETURN this_totalGenres AS this_totalGenres
+                RETURN head(collect(this_totalGenres)) AS this_totalGenres
             }
-            WITH { node: this { .title, totalGenres: this_totalGenres } } as edge, totalCount, this
-            ORDER BY edge.node.totalGenres ASC
-            WITH COLLECT(edge) as edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } as this"
+            WITH *
+            ORDER BY this_totalGenres ASC
+            WITH { node: this { .title, totalGenres: this_totalGenres } } AS edge, totalCount, this
+            WITH collect(edge) AS edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
     });
 
@@ -174,26 +176,27 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH COLLECT(this) as edges
-            WITH edges, size(edges) as totalCount
-            UNWIND edges as this
+            WITH collect(this) AS edges
+            WITH edges, size(edges) AS totalCount
+            UNWIND edges AS this
             WITH this, totalCount
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                 RETURN count(DISTINCT genre)\\", { this: this, auth: $auth }) AS this_totalGenres
-                RETURN this_totalGenres AS this_totalGenres
+                RETURN head(collect(this_totalGenres)) AS this_totalGenres
             }
+            WITH *
+            ORDER BY this_totalGenres ASC
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                 RETURN count(DISTINCT actor)\\", { this: this, auth: $auth }) AS this_totalActors
-                RETURN this_totalActors AS this_totalActors
+                RETURN head(collect(this_totalActors)) AS this_totalActors
             }
-            WITH { node: this { .title, totalGenres: this_totalGenres, totalActors: this_totalActors } } as edge, totalCount, this
-            ORDER BY edge.node.totalGenres ASC
-            WITH COLLECT(edge) as edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } as this"
+            WITH { node: this { .title, totalGenres: this_totalGenres, totalActors: this_totalActors } } AS edge, totalCount, this
+            WITH collect(edge) AS edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
     });
 });

@@ -48,33 +48,36 @@ class Neo4j {
             return this.driver;
         }
 
-        const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
+        const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
         if (process.env.NEO_WAIT && !this.driver) {
             await util.promisify(setTimeout)(Number(process.env.NEO_WAIT));
         }
 
         const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
-        this.driver = neo4j.driver(NEO_URL, auth);
+        const driver = neo4j.driver(NEO_URL, auth);
 
         try {
-            await this.driver.verifyConnectivity({ database: INT_TEST_DB_NAME });
+            await driver.verifyConnectivity({ database: INT_TEST_DB_NAME });
             this.hasIntegrationTestDb = true;
         } catch (error: any) {
             if (
                 error.message.includes("Could not perform discovery. No routing servers available.") ||
                 error.message.includes(
                     `Unable to get a routing table for database '${INT_TEST_DB_NAME}' because this database does not exist`
-                )
+                ) ||
+                error.message.includes(`Database does not exist. Database name: '${INT_TEST_DB_NAME}'`)
             ) {
-                await this.checkConnectivityToDefaultDatabase(this.driver, NEO_URL);
+                await this.checkConnectivityToDefaultDatabase(driver, NEO_URL);
             } else {
+                await driver.close();
                 throw new Error(
                     `Could not connect to neo4j @ ${NEO_URL}, database ${INT_TEST_DB_NAME}, Error: ${error.message}`
                 );
             }
         }
 
+        this.driver = driver;
         return this.driver;
     }
 

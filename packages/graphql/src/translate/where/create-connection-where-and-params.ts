@@ -19,7 +19,7 @@
 
 import type { Node, Relationship } from "../../classes";
 import type { ConnectionWhereArg, Context } from "../../types";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { createConnectionWherePropertyOperation } from "./property-operations/create-connection-operation";
 
 export default function createConnectionWhereAndParams({
@@ -38,11 +38,11 @@ export default function createConnectionWhereAndParams({
     relationship: Relationship;
     relationshipVariable: string;
     parameterPrefix: string;
-}): [string, any] {
-    const nodeRef = new CypherBuilder.NamedNode(nodeVariable);
-    const edgeRef = new CypherBuilder.NamedVariable(relationshipVariable);
+}): { cypher: string; subquery: string; params: Record<string, any> } {
+    const nodeRef = new Cypher.NamedNode(nodeVariable);
+    const edgeRef = new Cypher.NamedVariable(relationshipVariable);
 
-    const andOp = createConnectionWherePropertyOperation({
+    const { predicate: andOp, preComputedSubqueries } = createConnectionWherePropertyOperation({
         context,
         whereInput,
         edgeRef,
@@ -51,13 +51,16 @@ export default function createConnectionWhereAndParams({
         edge: relationship,
     });
 
-    const whereCypher = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+    let subquery = "";
+    const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
         const cypher = andOp?.getCypher(env) || "";
-
+        if (preComputedSubqueries) {
+            subquery = preComputedSubqueries.getCypher(env);
+        }
         return [cypher, {}];
     });
 
     // NOTE: the following prefix is just to avoid collision until this is refactored into a single cypher ast
     const result = whereCypher.build(`${parameterPrefix.replace(/\./g, "_").replace(/\[|\]/g, "")}_${node.name}`);
-    return [result.cypher, result.params];
+    return { cypher: result.cypher, subquery, params: result.params };
 }

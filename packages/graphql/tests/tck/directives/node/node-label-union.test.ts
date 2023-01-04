@@ -84,31 +84,39 @@ describe("Node directive with unions", () => {
             CALL {
                 WITH this
                 CALL {
-                    WITH this
-                    MATCH (this)-[thisthis0:SEARCH]->(this_search:\`Category\`:\`ExtraLabel1\`:\`ExtraLabel2\`)
-                    WHERE this_search.name = $thisparam0
+                    WITH *
+                    MATCH (this)-[this0:SEARCH]->(this_search:\`Category\`:\`ExtraLabel1\`:\`ExtraLabel2\`)
+                    WHERE this_search.name = $param1
                     WITH this_search  { __resolveType: \\"Genre\\",  .name } AS this_search
                     RETURN this_search AS this_search
                     UNION
-                    WITH this
-                    MATCH (this)-[thisthis1:SEARCH]->(this_search:\`Film\`)
-                    WHERE this_search.title = $thisparam1
+                    WITH *
+                    MATCH (this)-[this1:SEARCH]->(this_search:\`Film\`)
+                    WHERE this_search.title = $param2
                     WITH this_search  { __resolveType: \\"Movie\\",  .title } AS this_search
                     RETURN this_search AS this_search
                 }
                 WITH this_search
-                SKIP 1
-                LIMIT 10
+                SKIP $param3
+                LIMIT $param4
                 RETURN collect(this_search) AS this_search
             }
-            RETURN this { search: this_search } as this"
+            RETURN this { search: this_search } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some title\\",
-                \\"thisparam0\\": \\"Horror\\",
-                \\"thisparam1\\": \\"The Matrix\\"
+                \\"param1\\": \\"Horror\\",
+                \\"param2\\": \\"The Matrix\\",
+                \\"param3\\": {
+                    \\"low\\": 1,
+                    \\"high\\": 0
+                },
+                \\"param4\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
             }"
         `);
     });

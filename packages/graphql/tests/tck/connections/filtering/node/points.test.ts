@@ -59,6 +59,13 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
     });
 
     test("DISTANCE", async () => {
+        let verifyTCK;
+
+        if (process.env.VERIFY_TCK) {
+            verifyTCK = process.env.VERIFY_TCK;
+            delete process.env.VERIFY_TCK;
+        }
+
         const query = gql`
             query {
                 movies {
@@ -102,9 +109,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
                 END) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection: actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -118,5 +125,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
                 }
             }"
         `);
+
+        if (verifyTCK) {
+            process.env.VERIFY_TCK = verifyTCK;
+        }
     });
 });

@@ -372,6 +372,53 @@ describe("auth/roles", () => {
                 await session.close();
             }
         });
+
+        test("should not throw if missing role on field definition if is not specified in the request", async () => {
+            const session = await neo4j.getSession();
+
+            const typeDefs = `
+                type ${typeUser} {
+                    id: ID
+                    password: String @auth(rules: [{
+                        operations: [CREATE],
+                        roles: ["admin"]
+                    }])
+                }
+            `;
+
+            const query = `
+                mutation {
+                    ${typeUser.operations.create}(input: [{ id: "1" }]) {
+                        ${typeUser.plural} {
+                            password
+                        }
+                    }
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
+
+            try {
+                const req = createJwtRequest(secret);
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                });
+
+                expect(gqlResult.errors).toBeFalsy();
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("update", () => {

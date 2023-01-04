@@ -50,12 +50,9 @@ describe("Cypher -> fulltext -> Match", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(
-                \\"MovieTitle\\",
-                $param0
-            ) YIELD node as this
-                        WHERE \\"Movie\\" IN labels(this)
-            RETURN this { .title } as this"
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
+            WHERE \\"Movie\\" IN labels(this)
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -80,18 +77,15 @@ describe("Cypher -> fulltext -> Match", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(
-                \\"MovieTitle\\",
-                $param1
-            ) YIELD node as this
-                        WHERE (\\"Movie\\" IN labels(this) AND this.title = $param0)
-            RETURN this { .title } as this"
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
+            WHERE (this.title = $param1 AND \\"Movie\\" IN labels(this))
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"some-title\\",
-                \\"param1\\": \\"something AND something\\"
+                \\"param0\\": \\"something AND something\\",
+                \\"param1\\": \\"some-title\\"
             }"
         `);
     });

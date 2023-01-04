@@ -90,7 +90,7 @@ describe("Cypher Fragment", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            RETURN this { .id, .username } as this"
+            RETURN this { .id, .username } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -121,20 +121,20 @@ describe("Cypher Fragment", () => {
             CALL {
                 WITH this
                 CALL {
-                    WITH this
-                    MATCH (this)-[thisthis0:OWNS]->(this_owns:\`Tile\`)
+                    WITH *
+                    MATCH (this)-[this0:OWNS]->(this_owns:\`Tile\`)
                     WITH this_owns { __resolveType: \\"Tile\\" } AS this_owns
                     RETURN this_owns AS this_owns
                     UNION
-                    WITH this
-                    MATCH (this)-[thisthis1:OWNS]->(this_owns:\`Character\`)
+                    WITH *
+                    MATCH (this)-[this1:OWNS]->(this_owns:\`Character\`)
                     WITH this_owns { __resolveType: \\"Character\\" } AS this_owns
                     RETURN this_owns AS this_owns
                 }
                 WITH this_owns
                 RETURN collect(this_owns) AS this_owns
             }
-            RETURN this { .id, owns: this_owns } as this"
+            RETURN this { .id, owns: this_owns } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -161,7 +161,7 @@ describe("Cypher Fragment", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            RETURN this { .id, .username } as this"
+            RETURN this { .id, .username } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

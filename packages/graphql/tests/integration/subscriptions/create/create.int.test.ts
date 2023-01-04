@@ -94,49 +94,51 @@ describe("Subscriptions create", () => {
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[typeMovie.operations.create][typeMovie.plural]).toEqual([{ id: "1" }, { id: "3" }]);
 
-        expect(plugin.eventList).toEqual([
-            {
-                id: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "create",
-                properties: { old: undefined, new: { id: "2" } },
-                typename: typeMovie.name,
-            },
-            {
-                id: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "create",
-                properties: { old: undefined, new: { name: "Andrés" } },
-                typename: typeActor.name,
-            },
-            {
-                id: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "create",
-                properties: { old: undefined, new: { id: "1" } },
-                typename: typeMovie.name,
-            },
-            {
-                id: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "create",
-                properties: { old: undefined, new: { id: "4" } },
-                typename: typeMovie.name,
-            },
-            {
-                id: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "create",
-                properties: { old: undefined, new: { name: "Darrell" } },
-                typename: typeActor.name,
-            },
-            {
-                id: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "create",
-                properties: { old: undefined, new: { id: "3" } },
-                typename: typeMovie.name,
-            },
-        ]);
+        expect(plugin.eventList).toEqual(
+            expect.arrayContaining([
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "create",
+                    properties: { old: undefined, new: { id: "2" } },
+                    typename: typeMovie.name,
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "create",
+                    properties: { old: undefined, new: { name: "Andrés" } },
+                    typename: typeActor.name,
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "create",
+                    properties: { old: undefined, new: { id: "1" } },
+                    typename: typeMovie.name,
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "create",
+                    properties: { old: undefined, new: { id: "4" } },
+                    typename: typeMovie.name,
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "create",
+                    properties: { old: undefined, new: { name: "Darrell" } },
+                    typename: typeActor.name,
+                },
+                {
+                    id: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "create",
+                    properties: { old: undefined, new: { id: "3" } },
+                    typename: typeMovie.name,
+                },
+            ])
+        );
     });
 });

@@ -66,11 +66,11 @@ describe("#402", () => {
             "MATCH (this:\`Event\`)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:HAPPENS_IN]->(this_area:\`Area\`)
+                MATCH (this)-[this0:HAPPENS_IN]->(this_area:\`Area\`)
                 WITH this_area { .id } AS this_area
                 RETURN head(collect(this_area)) AS this_area
             }
-            RETURN this { .id, area: this_area } as this"
+            RETURN this { .id, area: this_area } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

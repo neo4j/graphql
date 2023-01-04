@@ -21,6 +21,8 @@ import type { EditorFromTextArea } from "codemirror";
 import prettier from "prettier/standalone";
 import prettierBabel from "prettier/parser-babel";
 import parserGraphQL from "prettier/parser-graphql";
+import { getComplexity, simpleEstimator } from "graphql-query-complexity";
+import { GraphQLSchema, parse } from "graphql";
 
 export enum ParserOptions {
     GRAPH_QL,
@@ -76,5 +78,22 @@ export const safeParse = (str: string | null | undefined, fallback: Record<strin
         return JSON.parse(str);
     } catch (e) {
         return fallback;
+    }
+};
+
+export const calculateQueryComplexity = (schema: GraphQLSchema, query: string, variables: string): number => {
+    try {
+        const complexity = getComplexity({
+            estimators: [simpleEstimator({ defaultComplexity: 1 })],
+            schema,
+            query: parse(query),
+            variables: safeParse(variables, {}),
+        });
+
+        console.log("Query complexity: ", complexity);
+        return complexity;
+    } catch (error) {
+        console.log("Query complexity calculation failed");
+        return -1;
     }
 };

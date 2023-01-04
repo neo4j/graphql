@@ -122,21 +122,35 @@ describe("Cypher Connect", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_colors_connect0_node:Color)
             	WHERE this0_colors_connect0_node.name = $this0_colors_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_colors_connect0_node IS NULL THEN [] ELSE [1] END |
+            	CALL {
+            		WITH *
+            		WITH collect(this0_colors_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_colors_connect0_node
             			MERGE (this0)-[:HAS_COLOR]->(this0_colors_connect0_node)
-            		)
-            	)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
             WITH this0, this0_colors_connect0_node
             CALL {
             	WITH this0, this0_colors_connect0_node
             	OPTIONAL MATCH (this0_colors_connect0_node_photos0_node:Photo)
             	WHERE this0_colors_connect0_node_photos0_node.id = $this0_colors_connect0_node_photos0_node_param0
-            	FOREACH(_ IN CASE WHEN this0_colors_connect0_node IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_colors_connect0_node_photos0_node IS NULL THEN [] ELSE [1] END |
+            	CALL {
+            		WITH *
+            		WITH this0, collect(this0_colors_connect0_node_photos0_node) as connectedNodes, collect(this0_colors_connect0_node) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0_colors_connect0_node
+            			UNWIND connectedNodes as this0_colors_connect0_node_photos0_node
             			MERGE (this0_colors_connect0_node)<-[:OF_COLOR]-(this0_colors_connect0_node_photos0_node)
-            		)
-            	)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
             	WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node
             CALL {
             	WITH this0_colors_connect0_node_photos0_node
@@ -150,11 +164,18 @@ describe("Cypher Connect", () => {
             	WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node
             	OPTIONAL MATCH (this0_colors_connect0_node_photos0_node_color0_node:Color)
             	WHERE this0_colors_connect0_node_photos0_node_color0_node.id = $this0_colors_connect0_node_photos0_node_color0_node_param0
-            	FOREACH(_ IN CASE WHEN this0_colors_connect0_node_photos0_node IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_colors_connect0_node_photos0_node_color0_node IS NULL THEN [] ELSE [1] END |
+            	CALL {
+            		WITH *
+            		WITH this0, this0_colors_connect0_node, collect(this0_colors_connect0_node_photos0_node_color0_node) as connectedNodes, collect(this0_colors_connect0_node_photos0_node) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0_colors_connect0_node_photos0_node
+            			UNWIND connectedNodes as this0_colors_connect0_node_photos0_node_color0_node
             			MERGE (this0_colors_connect0_node_photos0_node)-[:OF_COLOR]->(this0_colors_connect0_node_photos0_node_color0_node)
-            		)
-            	)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
             	WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node, this0_colors_connect0_node_photos0_node_color0_node
             CALL {
             	WITH this0_colors_connect0_node_photos0_node
@@ -163,6 +184,7 @@ describe("Cypher Connect", () => {
             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
             	RETURN c AS this0_colors_connect0_node_photos0_node_color_Color_unique_ignored
             }
+            WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node, this0_colors_connect0_node_photos0_node_color0_node
             	RETURN count(*) AS connect_this0_colors_connect0_node_photos0_node_color_Color
             }
             	RETURN count(*) AS connect_this0_colors_connect0_node_photos_Photo
@@ -174,21 +196,35 @@ describe("Cypher Connect", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_photos_connect0_node:Photo)
             	WHERE this0_photos_connect0_node.id = $this0_photos_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_photos_connect0_node IS NULL THEN [] ELSE [1] END |
+            	CALL {
+            		WITH *
+            		WITH collect(this0_photos_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_photos_connect0_node
             			MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect0_node)
-            		)
-            	)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
             WITH this0, this0_photos_connect0_node
             CALL {
             	WITH this0, this0_photos_connect0_node
             	OPTIONAL MATCH (this0_photos_connect0_node_color0_node:Color)
             	WHERE this0_photos_connect0_node_color0_node.name = $this0_photos_connect0_node_color0_node_param0
-            	FOREACH(_ IN CASE WHEN this0_photos_connect0_node IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_photos_connect0_node_color0_node IS NULL THEN [] ELSE [1] END |
+            	CALL {
+            		WITH *
+            		WITH this0, collect(this0_photos_connect0_node_color0_node) as connectedNodes, collect(this0_photos_connect0_node) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0_photos_connect0_node
+            			UNWIND connectedNodes as this0_photos_connect0_node_color0_node
             			MERGE (this0_photos_connect0_node)-[:OF_COLOR]->(this0_photos_connect0_node_color0_node)
-            		)
-            	)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
             	WITH this0, this0_photos_connect0_node, this0_photos_connect0_node_color0_node
             CALL {
             	WITH this0_photos_connect0_node
@@ -197,6 +233,7 @@ describe("Cypher Connect", () => {
             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
             	RETURN c AS this0_photos_connect0_node_color_Color_unique_ignored
             }
+            WITH this0, this0_photos_connect0_node, this0_photos_connect0_node_color0_node
             	RETURN count(*) AS connect_this0_photos_connect0_node_color_Color
             }
             	RETURN count(*) AS connect_this0_photos_connect_Photo
@@ -206,21 +243,35 @@ describe("Cypher Connect", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_photos_connect1_node:Photo)
             	WHERE this0_photos_connect1_node.id = $this0_photos_connect1_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_photos_connect1_node IS NULL THEN [] ELSE [1] END |
+            	CALL {
+            		WITH *
+            		WITH collect(this0_photos_connect1_node) as connectedNodes, collect(this0) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_photos_connect1_node
             			MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect1_node)
-            		)
-            	)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
             WITH this0, this0_photos_connect1_node
             CALL {
             	WITH this0, this0_photos_connect1_node
             	OPTIONAL MATCH (this0_photos_connect1_node_color0_node:Color)
             	WHERE this0_photos_connect1_node_color0_node.name = $this0_photos_connect1_node_color0_node_param0
-            	FOREACH(_ IN CASE WHEN this0_photos_connect1_node IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_photos_connect1_node_color0_node IS NULL THEN [] ELSE [1] END |
+            	CALL {
+            		WITH *
+            		WITH this0, collect(this0_photos_connect1_node_color0_node) as connectedNodes, collect(this0_photos_connect1_node) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0_photos_connect1_node
+            			UNWIND connectedNodes as this0_photos_connect1_node_color0_node
             			MERGE (this0_photos_connect1_node)-[:OF_COLOR]->(this0_photos_connect1_node_color0_node)
-            		)
-            	)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
             	WITH this0, this0_photos_connect1_node, this0_photos_connect1_node_color0_node
             CALL {
             	WITH this0_photos_connect1_node
@@ -229,6 +280,7 @@ describe("Cypher Connect", () => {
             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
             	RETURN c AS this0_photos_connect1_node_color_Color_unique_ignored
             }
+            WITH this0, this0_photos_connect1_node, this0_photos_connect1_node_color0_node
             	RETURN count(*) AS connect_this0_photos_connect1_node_color_Color
             }
             	RETURN count(*) AS connect_this0_photos_connect_Photo

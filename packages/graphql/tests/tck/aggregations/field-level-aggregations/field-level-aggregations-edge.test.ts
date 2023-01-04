@@ -76,8 +76,12 @@ describe("Field Level Aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { actorsAggregate: { edge: { screentime: head(apoc.cypher.runFirstColumnMany(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)
-                    RETURN {min: min(r.screentime), max: max(r.screentime), average: avg(r.screentime), sum: sum(r.screentime)}\\", { this: this })) } } } as this"
+            CALL {
+                WITH this
+                MATCH (this_actorsAggregate_this1:\`Actor\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
+                RETURN { min: min(this_actorsAggregate_this0.screentime), max: max(this_actorsAggregate_this0.screentime), average: avg(this_actorsAggregate_this0.screentime), sum: sum(this_actorsAggregate_this0.screentime) }  AS this_actorsAggregate_var2
+            }
+            RETURN this { actorsAggregate: { edge: { screentime: this_actorsAggregate_var2 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

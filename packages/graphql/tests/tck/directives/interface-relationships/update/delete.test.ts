@@ -83,13 +83,23 @@ describe("Interface Relationships - Update delete", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_delete_actedIn_Movie0_relationship:ACTED_IN]->(this_delete_actedIn_Movie0:Movie)
             WHERE this_delete_actedIn_Movie0.title STARTS WITH $updateActors_args_delete_actedIn0_where_Movieparam0
-            WITH this, collect(DISTINCT this_delete_actedIn_Movie0) as this_delete_actedIn_Movie0_to_delete
-            FOREACH(x IN this_delete_actedIn_Movie0_to_delete | DETACH DELETE x)
+            WITH this, collect(DISTINCT this_delete_actedIn_Movie0) AS this_delete_actedIn_Movie0_to_delete
+            CALL {
+            	WITH this_delete_actedIn_Movie0_to_delete
+            	UNWIND this_delete_actedIn_Movie0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
             WITH this
             OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:ACTED_IN]->(this_delete_actedIn_Series0:Series)
             WHERE this_delete_actedIn_Series0.title STARTS WITH $updateActors_args_delete_actedIn0_where_Seriesparam0
-            WITH this, collect(DISTINCT this_delete_actedIn_Series0) as this_delete_actedIn_Series0_to_delete
-            FOREACH(x IN this_delete_actedIn_Series0_to_delete | DETACH DELETE x)
+            WITH this, collect(DISTINCT this_delete_actedIn_Series0) AS this_delete_actedIn_Series0_to_delete
+            CALL {
+            	WITH this_delete_actedIn_Series0_to_delete
+            	UNWIND this_delete_actedIn_Series0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -149,20 +159,40 @@ describe("Interface Relationships - Update delete", () => {
             WITH this, this_delete_actedIn_Movie0
             OPTIONAL MATCH (this_delete_actedIn_Movie0)<-[this_delete_actedIn_Movie0_actors0_relationship:ACTED_IN]-(this_delete_actedIn_Movie0_actors0:Actor)
             WHERE this_delete_actedIn_Movie0_actors0.name = $updateActors_args_delete_actedIn0_delete_actors0_where_Actorparam0
-            WITH this, this_delete_actedIn_Movie0, collect(DISTINCT this_delete_actedIn_Movie0_actors0) as this_delete_actedIn_Movie0_actors0_to_delete
-            FOREACH(x IN this_delete_actedIn_Movie0_actors0_to_delete | DETACH DELETE x)
-            WITH this, collect(DISTINCT this_delete_actedIn_Movie0) as this_delete_actedIn_Movie0_to_delete
-            FOREACH(x IN this_delete_actedIn_Movie0_to_delete | DETACH DELETE x)
+            WITH this, this_delete_actedIn_Movie0, collect(DISTINCT this_delete_actedIn_Movie0_actors0) AS this_delete_actedIn_Movie0_actors0_to_delete
+            CALL {
+            	WITH this_delete_actedIn_Movie0_actors0_to_delete
+            	UNWIND this_delete_actedIn_Movie0_actors0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
+            WITH this, collect(DISTINCT this_delete_actedIn_Movie0) AS this_delete_actedIn_Movie0_to_delete
+            CALL {
+            	WITH this_delete_actedIn_Movie0_to_delete
+            	UNWIND this_delete_actedIn_Movie0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
             WITH this
             OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:ACTED_IN]->(this_delete_actedIn_Series0:Series)
             WHERE this_delete_actedIn_Series0.title STARTS WITH $updateActors_args_delete_actedIn0_where_Seriesparam0
             WITH this, this_delete_actedIn_Series0
             OPTIONAL MATCH (this_delete_actedIn_Series0)<-[this_delete_actedIn_Series0_actors0_relationship:ACTED_IN]-(this_delete_actedIn_Series0_actors0:Actor)
             WHERE this_delete_actedIn_Series0_actors0.name = $updateActors_args_delete_actedIn0_delete_actors0_where_Actorparam0
-            WITH this, this_delete_actedIn_Series0, collect(DISTINCT this_delete_actedIn_Series0_actors0) as this_delete_actedIn_Series0_actors0_to_delete
-            FOREACH(x IN this_delete_actedIn_Series0_actors0_to_delete | DETACH DELETE x)
-            WITH this, collect(DISTINCT this_delete_actedIn_Series0) as this_delete_actedIn_Series0_to_delete
-            FOREACH(x IN this_delete_actedIn_Series0_to_delete | DETACH DELETE x)
+            WITH this, this_delete_actedIn_Series0, collect(DISTINCT this_delete_actedIn_Series0_actors0) AS this_delete_actedIn_Series0_actors0_to_delete
+            CALL {
+            	WITH this_delete_actedIn_Series0_actors0_to_delete
+            	UNWIND this_delete_actedIn_Series0_actors0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
+            WITH this, collect(DISTINCT this_delete_actedIn_Series0) AS this_delete_actedIn_Series0_to_delete
+            CALL {
+            	WITH this_delete_actedIn_Series0_to_delete
+            	UNWIND this_delete_actedIn_Series0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -234,15 +264,30 @@ describe("Interface Relationships - Update delete", () => {
             WITH this, this_delete_actedIn_Movie0
             OPTIONAL MATCH (this_delete_actedIn_Movie0)<-[this_delete_actedIn_Movie0_actors0_relationship:ACTED_IN]-(this_delete_actedIn_Movie0_actors0:Actor)
             WHERE this_delete_actedIn_Movie0_actors0.name = $updateActors_args_delete_actedIn0_delete__on_Movie0_actors0_where_Actorparam0
-            WITH this, this_delete_actedIn_Movie0, collect(DISTINCT this_delete_actedIn_Movie0_actors0) as this_delete_actedIn_Movie0_actors0_to_delete
-            FOREACH(x IN this_delete_actedIn_Movie0_actors0_to_delete | DETACH DELETE x)
-            WITH this, collect(DISTINCT this_delete_actedIn_Movie0) as this_delete_actedIn_Movie0_to_delete
-            FOREACH(x IN this_delete_actedIn_Movie0_to_delete | DETACH DELETE x)
+            WITH this, this_delete_actedIn_Movie0, collect(DISTINCT this_delete_actedIn_Movie0_actors0) AS this_delete_actedIn_Movie0_actors0_to_delete
+            CALL {
+            	WITH this_delete_actedIn_Movie0_actors0_to_delete
+            	UNWIND this_delete_actedIn_Movie0_actors0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
+            WITH this, collect(DISTINCT this_delete_actedIn_Movie0) AS this_delete_actedIn_Movie0_to_delete
+            CALL {
+            	WITH this_delete_actedIn_Movie0_to_delete
+            	UNWIND this_delete_actedIn_Movie0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
             WITH this
             OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:ACTED_IN]->(this_delete_actedIn_Series0:Series)
             WHERE this_delete_actedIn_Series0.title STARTS WITH $updateActors_args_delete_actedIn0_where_Seriesparam0
-            WITH this, collect(DISTINCT this_delete_actedIn_Series0) as this_delete_actedIn_Series0_to_delete
-            FOREACH(x IN this_delete_actedIn_Series0_to_delete | DETACH DELETE x)
+            WITH this, collect(DISTINCT this_delete_actedIn_Series0) AS this_delete_actedIn_Series0_to_delete
+            CALL {
+            	WITH this_delete_actedIn_Series0_to_delete
+            	UNWIND this_delete_actedIn_Series0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -323,20 +368,40 @@ describe("Interface Relationships - Update delete", () => {
             WITH this, this_delete_actedIn_Movie0
             OPTIONAL MATCH (this_delete_actedIn_Movie0)<-[this_delete_actedIn_Movie0_actors0_relationship:ACTED_IN]-(this_delete_actedIn_Movie0_actors0:Actor)
             WHERE this_delete_actedIn_Movie0_actors0.name = $updateActors_args_delete_actedIn0_delete__on_Movie0_actors0_where_Actorparam0
-            WITH this, this_delete_actedIn_Movie0, collect(DISTINCT this_delete_actedIn_Movie0_actors0) as this_delete_actedIn_Movie0_actors0_to_delete
-            FOREACH(x IN this_delete_actedIn_Movie0_actors0_to_delete | DETACH DELETE x)
-            WITH this, collect(DISTINCT this_delete_actedIn_Movie0) as this_delete_actedIn_Movie0_to_delete
-            FOREACH(x IN this_delete_actedIn_Movie0_to_delete | DETACH DELETE x)
+            WITH this, this_delete_actedIn_Movie0, collect(DISTINCT this_delete_actedIn_Movie0_actors0) AS this_delete_actedIn_Movie0_actors0_to_delete
+            CALL {
+            	WITH this_delete_actedIn_Movie0_actors0_to_delete
+            	UNWIND this_delete_actedIn_Movie0_actors0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
+            WITH this, collect(DISTINCT this_delete_actedIn_Movie0) AS this_delete_actedIn_Movie0_to_delete
+            CALL {
+            	WITH this_delete_actedIn_Movie0_to_delete
+            	UNWIND this_delete_actedIn_Movie0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
             WITH this
             OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:ACTED_IN]->(this_delete_actedIn_Series0:Series)
             WHERE this_delete_actedIn_Series0.title STARTS WITH $updateActors_args_delete_actedIn0_where_Seriesparam0
             WITH this, this_delete_actedIn_Series0
             OPTIONAL MATCH (this_delete_actedIn_Series0)<-[this_delete_actedIn_Series0_actors0_relationship:ACTED_IN]-(this_delete_actedIn_Series0_actors0:Actor)
             WHERE this_delete_actedIn_Series0_actors0.name = $updateActors_args_delete_actedIn0_delete_actors0_where_Actorparam0
-            WITH this, this_delete_actedIn_Series0, collect(DISTINCT this_delete_actedIn_Series0_actors0) as this_delete_actedIn_Series0_actors0_to_delete
-            FOREACH(x IN this_delete_actedIn_Series0_actors0_to_delete | DETACH DELETE x)
-            WITH this, collect(DISTINCT this_delete_actedIn_Series0) as this_delete_actedIn_Series0_to_delete
-            FOREACH(x IN this_delete_actedIn_Series0_to_delete | DETACH DELETE x)
+            WITH this, this_delete_actedIn_Series0, collect(DISTINCT this_delete_actedIn_Series0_actors0) AS this_delete_actedIn_Series0_actors0_to_delete
+            CALL {
+            	WITH this_delete_actedIn_Series0_actors0_to_delete
+            	UNWIND this_delete_actedIn_Series0_actors0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
+            WITH this, collect(DISTINCT this_delete_actedIn_Series0) AS this_delete_actedIn_Series0_to_delete
+            CALL {
+            	WITH this_delete_actedIn_Series0_to_delete
+            	UNWIND this_delete_actedIn_Series0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
         `);

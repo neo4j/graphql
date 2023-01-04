@@ -24,7 +24,7 @@ import type {
     CypherField,
     CustomScalarField,
     TemporalField,
-    ComputedField,
+    CustomResolverField,
 } from "../types";
 import { GraphElement } from "./GraphElement";
 
@@ -39,7 +39,7 @@ export interface RelationshipConstructor {
     enumFields?: CustomEnumField[];
     temporalFields?: TemporalField[];
     pointFields?: PointField[];
-    computedFields?: ComputedField[];
+    customResolverFields?: CustomResolverField[];
 }
 
 class Relationship extends GraphElement {
@@ -55,7 +55,7 @@ class Relationship extends GraphElement {
             enumFields: input.enumFields || [],
             temporalFields: input.temporalFields || [],
             pointFields: input.pointFields || [],
-            computedFields: input.computedFields || [],
+            customResolverFields: input.customResolverFields || [],
         });
 
         this.properties = input.properties;

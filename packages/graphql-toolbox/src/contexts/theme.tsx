@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Storage } from "../utils/storage";
 import { LOCAL_STATE_EDITOR_THEME } from "../constants";
 
@@ -34,14 +34,6 @@ export interface State {
 export const ThemeContext = React.createContext({} as State);
 
 export function ThemeProvider(props: React.PropsWithChildren<any>) {
-    let value: State | undefined;
-    let setValue: Dispatch<SetStateAction<State>>;
-
-    const _setTheme = (theme: Theme) => {
-        setValue((values) => ({ ...values, theme }));
-        Storage.store(LOCAL_STATE_EDITOR_THEME, theme.toString());
-    };
-
     const loadEditorTheme = () => {
         const storedTheme = Storage.retrieve(LOCAL_STATE_EDITOR_THEME);
         if (storedTheme) {
@@ -51,7 +43,7 @@ export function ThemeProvider(props: React.PropsWithChildren<any>) {
         return Theme.DARK;
     };
 
-    [value, setValue] = useState<State>({
+    const [value, setValue] = useState<State>({
         theme: loadEditorTheme(),
         setTheme: (theme: Theme) => _setTheme(theme),
     });
@@ -68,5 +60,10 @@ export function ThemeProvider(props: React.PropsWithChildren<any>) {
         }
     }, []);
 
-    return <ThemeContext.Provider value={value as State}>{props.children}</ThemeContext.Provider>;
+    const _setTheme = (theme: Theme) => {
+        setValue((values) => ({ ...values, theme }));
+        Storage.store(LOCAL_STATE_EDITOR_THEME, theme.toString());
+    };
+
+    return <ThemeContext.Provider value={value}>{props.children}</ThemeContext.Provider>;
 }

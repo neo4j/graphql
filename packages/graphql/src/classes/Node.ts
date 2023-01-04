@@ -28,7 +28,6 @@ import type {
     CustomScalarField,
     CypherField,
     FullText,
-    ComputedField,
     InterfaceField,
     ObjectField,
     PointField,
@@ -41,7 +40,7 @@ import type Exclude from "./Exclude";
 import type { GraphElementConstructor } from "./GraphElement";
 import { GraphElement } from "./GraphElement";
 import type { NodeDirective } from "./NodeDirective";
-import type { DecodedGlobalId} from "../utils/global-ids";
+import type { DecodedGlobalId } from "../utils/global-ids";
 import { fromGlobalId, toGlobalId } from "../utils/global-ids";
 import type { QueryOptionsDirective } from "./QueryOptionsDirective";
 import { upperFirst } from "../utils/upper-first";
@@ -62,7 +61,7 @@ export interface NodeConstructor extends GraphElementConstructor {
     objectFields: ObjectField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
-    computedFields: ComputedField[];
+    plural?: string;
     auth?: Auth;
     fulltextDirective?: FullText;
     exclude?: Exclude;
@@ -106,7 +105,15 @@ export type RootTypeFieldNames = {
         created: string;
         updated: string;
         deleted: string;
+        relationship_created: string;
+        relationship_deleted: string;
     };
+};
+
+export type FulltextTypeNames = {
+    result: string;
+    where: string;
+    sort: string;
 };
 
 export type AggregateTypeNames = {
@@ -123,6 +130,8 @@ export type SubscriptionEvents = {
     create: string;
     update: string;
     delete: string;
+    create_relationship: string;
+    delete_relationship: string;
 };
 
 class Node extends GraphElement {
@@ -165,7 +174,7 @@ class Node extends GraphElement {
         this._idField = input.globalIdField;
         this._idFieldIsInt = input.globalIdFieldIsInt;
         this.singular = this.generateSingular();
-        this.plural = this.generatePlural();
+        this.plural = this.generatePlural(input.plural);
     }
 
     // Fields you can set in a create or update mutation
@@ -232,7 +241,17 @@ class Node extends GraphElement {
                 created: `${this.singular}Created`,
                 updated: `${this.singular}Updated`,
                 deleted: `${this.singular}Deleted`,
+                relationship_created: `${this.singular}RelationshipCreated`,
+                relationship_deleted: `${this.singular}RelationshipDeleted`,
             },
+        };
+    }
+
+    public get fulltextTypeNames(): FulltextTypeNames {
+        return {
+            result: `${this.pascalCaseSingular}FulltextResult`,
+            where: `${this.pascalCaseSingular}FulltextWhere`,
+            sort: `${this.pascalCaseSingular}FulltextSort`,
         };
     }
 
@@ -259,6 +278,8 @@ class Node extends GraphElement {
             create: `${pascalCaseSingular}CreatedEvent`,
             update: `${pascalCaseSingular}UpdatedEvent`,
             delete: `${pascalCaseSingular}DeletedEvent`,
+            create_relationship: `${pascalCaseSingular}RelationshipCreatedEvent`,
+            delete_relationship: `${pascalCaseSingular}RelationshipDeletedEvent`,
         };
     }
 
@@ -269,6 +290,8 @@ class Node extends GraphElement {
             create: `created${pascalCaseSingular}`,
             update: `updated${pascalCaseSingular}`,
             delete: `deleted${pascalCaseSingular}`,
+            create_relationship: `${this.singular}`,
+            delete_relationship: `${this.singular}`,
         };
     }
 
@@ -309,9 +332,9 @@ class Node extends GraphElement {
         return `${this.leadingUnderscores(this.name)}${singular}`;
     }
 
-    private generatePlural(): string {
-        const name = this.nodeDirective?.plural || this.name;
-        const plural = this.nodeDirective?.plural ? camelcase(name) : pluralize(camelcase(name));
+    private generatePlural(inputPlural: string | undefined): string {
+        const name = inputPlural || this.nodeDirective?.plural || this.name;
+        const plural = inputPlural || this.nodeDirective?.plural ? camelcase(name) : pluralize(camelcase(name));
 
         return `${this.leadingUnderscores(name)}${plural}`;
     }

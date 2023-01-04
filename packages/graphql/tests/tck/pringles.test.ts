@@ -167,11 +167,19 @@ describe("Cypher Create Pringles", () => {
             	WITH this0, this0_photos1_node
             	OPTIONAL MATCH (this0_photos1_node_color_connect0_node:Color)
             	WHERE this0_photos1_node_color_connect0_node.id = $this0_photos1_node_color_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0_photos1_node IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_photos1_node_color_connect0_node IS NULL THEN [] ELSE [1] END |
+            	CALL {
+            		WITH *
+            		WITH this0, collect(this0_photos1_node_color_connect0_node) as connectedNodes, collect(this0_photos1_node) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0_photos1_node
+            			UNWIND connectedNodes as this0_photos1_node_color_connect0_node
             			MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
-            		)
-            	)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this0, this0_photos1_node, this0_photos1_node_color_connect0_node
             	RETURN count(*) AS connect_this0_photos1_node_color_connect_Color
             }
             MERGE (this0)-[:HAS_PHOTO]->(this0_photos1_node)
@@ -193,11 +201,19 @@ describe("Cypher Create Pringles", () => {
             	WITH this0, this0_photos2_node
             	OPTIONAL MATCH (this0_photos2_node_color_connect0_node:Color)
             	WHERE this0_photos2_node_color_connect0_node.id = $this0_photos2_node_color_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0_photos2_node IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_photos2_node_color_connect0_node IS NULL THEN [] ELSE [1] END |
+            	CALL {
+            		WITH *
+            		WITH this0, collect(this0_photos2_node_color_connect0_node) as connectedNodes, collect(this0_photos2_node) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0_photos2_node
+            			UNWIND connectedNodes as this0_photos2_node_color_connect0_node
             			MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
-            		)
-            	)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this0, this0_photos2_node, this0_photos2_node_color_connect0_node
             	RETURN count(*) AS connect_this0_photos2_node_color_connect_Color
             }
             MERGE (this0)-[:HAS_PHOTO]->(this0_photos2_node)
@@ -290,9 +306,13 @@ describe("Cypher Create Pringles", () => {
             WITH this, this_photos0
             OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
             WHERE this_photos0_color0_disconnect0.name = $updateProducts_args_update_photos0_update_node_color_disconnect_where_Colorparam0
-            FOREACH(_ IN CASE WHEN this_photos0_color0_disconnect0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_photos0_color0_disconnect0_rel
-            )
+            CALL {
+            	WITH this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
+            	WITH collect(this_photos0_color0_disconnect0) as this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
+            	UNWIND this_photos0_color0_disconnect0 as x
+            	DELETE this_photos0_color0_disconnect0_rel
+            	RETURN count(*) AS _
+            }
             RETURN count(*) AS disconnect_this_photos0_color0_disconnect_Color
             }
             WITH this, this_photos0
@@ -300,11 +320,19 @@ describe("Cypher Create Pringles", () => {
             	WITH this, this_photos0
             	OPTIONAL MATCH (this_photos0_color0_connect0_node:Color)
             	WHERE this_photos0_color0_connect0_node.name = $this_photos0_color0_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this_photos0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_photos0_color0_connect0_node IS NULL THEN [] ELSE [1] END |
+            	CALL {
+            		WITH *
+            		WITH this, collect(this_photos0_color0_connect0_node) as connectedNodes, collect(this_photos0) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this_photos0
+            			UNWIND connectedNodes as this_photos0_color0_connect0_node
             			MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
-            		)
-            	)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this, this_photos0, this_photos0_color0_connect0_node
             	RETURN count(*) AS connect_this_photos0_color0_connect_Color
             }
             WITH this, this_photos0

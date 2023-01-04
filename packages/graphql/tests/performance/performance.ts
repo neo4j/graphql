@@ -19,15 +19,18 @@
 
 import type { Driver } from "neo4j-driver";
 import path from "path";
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import { gql } from "apollo-server";
 import neo4j from "./utils/neo4j";
 import { setupDatabase, cleanDatabase } from "./utils/setup-database";
 import { Neo4jGraphQL } from "../../src";
 import { collectTests, collectCypherTests } from "./utils/collect-test-files";
 import { ResultsWriter } from "./utils/ResultsWriter";
-import { ResultsDisplay } from "./utils/ResultsDisplay";
 import { TestRunner } from "./utils/TestRunner";
+import type * as Performance from "./types";
+import { schemaPerformance } from "./schema-performance";
+import { MarkdownFormatter } from "./utils/formatters/MarkdownFormatter";
+import { TTYFormatter } from "./utils/formatters/TTYFormatter";
 
 let driver: Driver;
 
@@ -44,7 +47,12 @@ const typeDefs = gql`
         likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
     }
 
-    type Movie {
+    type Movie
+        @fulltext(
+            indexes: [
+                { queryName: "movieTaglineFulltextQuery", name: "MovieTaglineFulltextIndex", fields: ["tagline"] }
+            ]
+        ) {
         id: ID!
         title: String!
         tagline: String
@@ -61,6 +69,26 @@ const typeDefs = gql`
         name: String!
         likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
     }
+
+    type Query {
+        customCypher: [Person]
+            @cypher(
+                statement: """
+                MATCH(m:Movie)--(p:Person)
+                WHERE m.released > 2000
+                RETURN p
+                """
+            )
+        experimentalCustomCypher: [Person]
+            @cypher(
+                statement: """
+                MATCH(m:Movie)--(p:Person)
+                WHERE m.released > 2000
+                RETURN p
+                """
+                columnName: "p"
+            )
+    }
 `;
 
 let neoSchema: Neo4jGraphQL;
@@ -70,7 +98,17 @@ async function beforeAll() {
     neoSchema = new Neo4jGraphQL({
         typeDefs,
     });
-    await dbReset();
+    await resetDb();
+}
+
+function beforeEach(): Promise<void> {
+    return Promise.resolve();
+}
+
+async function afterEach(testInfo: Performance.TestInfo): Promise<void> {
+    if (testInfo.type === "mutation") {
+        await resetDb();
+    }
 }
 
 async function afterAll() {
@@ -84,6 +122,14 @@ async function afterAll() {
 }
 
 async function main() {
+    if (process.argv.includes("--schema")) {
+        await schemaPerformance();
+    } else {
+        await queryPerformance();
+    }
+}
+
+async function queryPerformance() {
     try {
         await beforeAll();
         const resultsWriter = new ResultsWriter(path.join(__dirname, "/performance.json"));
@@ -93,12 +139,18 @@ async function main() {
 
         const results = await runTests(withCypher);
 
-        const resultsDisplay = new ResultsDisplay();
-        await resultsDisplay.display(results, oldResults);
+        if (process.argv.includes("--markdown")) {
+            const resultsDisplay = new MarkdownFormatter();
+            console.log(resultsDisplay.format(results, oldResults));
+        } else {
+            const resultsDisplay = new TTYFormatter();
+            console.table(resultsDisplay.format(results, oldResults));
+        }
 
         const updateSnapshot = process.argv.includes("-u");
         if (updateSnapshot) {
             await resultsWriter.writeResult(results);
+            console.log(`Performance snapshot written at ${resultsWriter.path}`);
         }
     } finally {
         await afterAll();
@@ -112,17 +164,20 @@ async function runTests(cypher: boolean) {
     const gqltests = await collectTests(path.join(__dirname, "graphql"));
     const runner = new TestRunner(driver, neoSchema);
 
-    const gqlTestsResuts = await runner.runTests(gqltests);
+    const gqlTestsResuts = await runner.runTests(gqltests, { beforeEach, afterEach });
     if (cypher) {
         const cypherTests = await collectCypherTests(path.join(__dirname, "cypher"));
-        const cypherTestsResults = await runner.runCypherTests(cypherTests);
+        const cypherTestsResults = await runner.runCypherTests(cypherTests, {
+            beforeEach,
+            afterEach,
+        });
         return [...gqlTestsResuts, ...cypherTestsResults];
     }
 
     return gqlTestsResuts;
 }
 
-async function dbReset() {
+async function resetDb() {
     const session = driver.session();
     try {
         await setupDatabase(session);

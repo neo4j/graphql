@@ -66,15 +66,19 @@ describe("Cypher Aggregations where edge with ID", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
-            RETURN aggr_edge.id = $aggr_edge_id_EQUAL
-            \\", { this: this, aggr_edge_id_EQUAL: $aggr_edge_id_EQUAL })
-            RETURN this { .content } as this"
+            CALL {
+                WITH this
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                RETURN any(var2 IN collect(this0.id) WHERE var2 = $param0) AS var3
+            }
+            WITH *
+            WHERE var3 = true
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"aggr_edge_id_EQUAL\\": \\"10\\"
+                \\"param0\\": \\"10\\"
             }"
         `);
     });
@@ -95,15 +99,19 @@ describe("Cypher Aggregations where edge with ID", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
-            RETURN aggr_edge._someIdAlias = $aggr_edge_someIdAlias_EQUAL
-            \\", { this: this, aggr_edge_someIdAlias_EQUAL: $aggr_edge_someIdAlias_EQUAL })
-            RETURN this { .content } as this"
+            CALL {
+                WITH this
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                RETURN any(var2 IN collect(this0.someIdAlias) WHERE var2 = $param0) AS var3
+            }
+            WITH *
+            WHERE var3 = true
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"aggr_edge_someIdAlias_EQUAL\\": \\"10\\"
+                \\"param0\\": \\"10\\"
             }"
         `);
     });

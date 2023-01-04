@@ -86,18 +86,22 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
                     WITH this_Movie
                     UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:ACTED_IN]-(ac:Person)
                     RETURN count(ac)\\", { this: this_Movie, auth: $auth }) AS this_Movie_actorsCount
-                    RETURN this_Movie_actorsCount AS this_Movie_actorsCount
+                    RETURN head(collect(this_Movie_actorsCount)) AS this_Movie_actorsCount
                 }
                 WITH { node: { title: this_Movie.title, actorsCount: this_Movie_actorsCount } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                UNWIND edges AS edge
-                WITH edge, totalCount
-                ORDER BY edge.node.actorsCount DESC
-                WITH collect(edge) AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge
+                    ORDER BY edge.node.actorsCount DESC
+                    RETURN collect(edge) AS this_connection_moviesConnectionvar1
+                }
+                WITH this_connection_moviesConnectionvar1 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_moviesConnection
             }
-            RETURN this { moviesConnection: moviesConnection } as this"
+            RETURN this { moviesConnection: this_moviesConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

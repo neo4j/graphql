@@ -1,0 +1,19 @@
+query TopLevelCypherDirective {
+    customCypher {
+        name
+        born
+        movies {
+            title
+        }
+    }
+}
+
+query TopLevelCypherDirectiveWithColumnName {
+    experimentalCustomCypher {
+        name
+        born
+        movies {
+            title
+        }
+    }
+}

@@ -24,6 +24,7 @@ import { Login } from "../pages/Login";
 import { TopBar } from "../pages/TopBar";
 import { SchemaEditor } from "../pages/SchemaEditor";
 import { SchemaSettings } from "../pages/SchemaSettings";
+import { ApplicationSettings } from "../pages/ApplicationSettings";
 
 type Pages = {
     editorPage: Editor;
@@ -31,36 +32,41 @@ type Pages = {
     loginPage: Login;
     schemaEditorPage: SchemaEditor;
     schemaSettingsPage: SchemaSettings;
+    applicationSettingsPage: ApplicationSettings;
     topBarPage: TopBar;
 };
 
 const test = base.test.extend<Pages>({
     editorPage: async ({ page }, use) => {
-        use(new Editor(page));
+        await use(new Editor(page));
     },
     helpDrawerPage: async ({ page }, use) => {
-        use(new HelpDrawer(page));
+        await use(new HelpDrawer(page));
     },
     loginPage: async ({ page }, use) => {
         await page.goto("/");
-        const loginPage = await new Login(page);
+        const loginPage = new Login(page);
         await use(loginPage);
-        if (!(await loginPage.getIsLoginWindowVisible)) {
+        if (!loginPage.getIsLoginWindowVisible) {
             await loginPage.logout();
         }
     },
     schemaEditorPage: async ({ page }, use) => {
-        use(new SchemaEditor(page));
+        await use(new SchemaEditor(page));
     },
     schemaSettingsPage: async ({ page }, use) => {
-        use(new SchemaSettings(page));
+        await use(new SchemaSettings(page));
+    },
+    applicationSettingsPage: async ({ page }, use) => {
+        await use(new ApplicationSettings(page));
     },
     topBarPage: async ({ page }, use) => {
-        use(new TopBar(page));
+        await use(new TopBar(page));
     },
 });
 
 const { expect } = base;
-const { describe, beforeAll, beforeEach, afterAll, afterEach } = base.test;
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { beforeAll, beforeEach, afterAll, afterEach } = base.test;
 
-export { expect, test, describe, beforeAll, beforeEach, afterAll, afterEach };
+export { expect, test, beforeAll, beforeEach, afterAll, afterEach };

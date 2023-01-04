@@ -272,9 +272,9 @@ describe("Math operators", () => {
                 WITH { pay: this_connection_actedInConnectionthis0.pay } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
             }
-            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection: actedInConnection }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection: this_actedInConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -321,6 +321,7 @@ describe("Math operators", () => {
             "MATCH (this:\`Actor\`)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             OPTIONAL MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
             CALL apoc.do.when(this_marriedWith0 IS NOT NULL, \\"
@@ -347,7 +348,7 @@ describe("Math operators", () => {
             RETURN count(*) AS update_this_Star
             }
             WITH *
-            WITH this
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:MARRIED_WITH]->(this_Star:\`Star\`)
@@ -411,6 +412,7 @@ describe("Math operators", () => {
             "MATCH (this:\`Actor\`)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             OPTIONAL MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
             CALL apoc.do.when(this_marriedWith0 IS NOT NULL, \\"
@@ -437,7 +439,7 @@ describe("Math operators", () => {
             RETURN count(*) AS update_this_Star
             }
             WITH *
-            WITH this
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:MARRIED_WITH]->(this_Star:\`Star\`)

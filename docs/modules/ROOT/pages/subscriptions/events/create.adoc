@@ -1,8 +1,6 @@
 [[create]]
 = Create Subscriptions
 
-WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
-
 Subscriptions to `CREATE` events will listen to newly created nodes. A new event will be triggered for each new node.
 The event will contain the node's properties.
 

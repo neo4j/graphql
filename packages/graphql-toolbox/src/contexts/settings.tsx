@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { Dispatch, useState, SetStateAction } from "react";
+import React, { useState } from "react";
 
 export interface State {
     isShowSettingsDrawer: boolean;
@@ -29,10 +29,7 @@ export interface State {
 export const SettingsContext = React.createContext({} as State);
 
 export function SettingsProvider(props: React.PropsWithChildren<any>) {
-    let value: State | undefined;
-    let setValue: Dispatch<SetStateAction<State>>;
-
-    [value, setValue] = useState<State>({
+    const [value, setValue] = useState<State>({
         isShowSettingsDrawer: false,
         isShowHelpDrawer: false,
         setIsShowSettingsDrawer: (isShowSettingsDrawer: boolean) => {
@@ -53,5 +50,5 @@ export function SettingsProvider(props: React.PropsWithChildren<any>) {
         },
     });
 
-    return <SettingsContext.Provider value={value as State}>{props.children}</SettingsContext.Provider>;
+    return <SettingsContext.Provider value={value}>{props.children}</SettingsContext.Provider>;
 }

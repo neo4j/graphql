@@ -58,7 +58,7 @@ describe("Cypher Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.time = $param0
-            RETURN this { .time } as this"
+            RETURN this { .time } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -91,7 +91,7 @@ describe("Cypher Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.time >= $param0
-            RETURN this { .time } as this"
+            RETURN this { .time } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -124,24 +124,30 @@ describe("Cypher Time", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.time = $this0_time
-            RETURN this0
+            "UNWIND $create_param0 AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.time = create_var1.time
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .time }] AS data"
+            RETURN collect(create_this0 { .time }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_time\\": {
-                    \\"hour\\": 22,
-                    \\"minute\\": 0,
-                    \\"second\\": 15,
-                    \\"nanosecond\\": 555000000,
-                    \\"timeZoneOffsetSeconds\\": -3600
-                },
+                \\"create_param0\\": [
+                    {
+                        \\"time\\": {
+                            \\"hour\\": 22,
+                            \\"minute\\": 0,
+                            \\"second\\": 15,
+                            \\"nanosecond\\": 555000000,
+                            \\"timeZoneOffsetSeconds\\": -3600
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -201,24 +207,30 @@ describe("Cypher Time", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.time = $this0_time
-            RETURN this0
+            "UNWIND $create_param0 AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.time = create_var1.time
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .time }] AS data"
+            RETURN collect(create_this0 { .time }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_time\\": {
-                    \\"hour\\": 22,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                },
+                \\"create_param0\\": [
+                    {
+                        \\"time\\": {
+                            \\"hour\\": 22,
+                            \\"minute\\": 0,
+                            \\"second\\": 0,
+                            \\"nanosecond\\": 0,
+                            \\"timeZoneOffsetSeconds\\": 0
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

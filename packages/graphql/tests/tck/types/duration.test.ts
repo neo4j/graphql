@@ -58,7 +58,7 @@ describe("Cypher Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.duration = $param0
-            RETURN this { .duration } as this"
+            RETURN this { .duration } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -96,7 +96,7 @@ describe("Cypher Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE datetime() + this.duration >= datetime() + $param0
-            RETURN this { .duration } as this"
+            RETURN this { .duration } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -134,29 +134,35 @@ describe("Cypher Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.duration = $this0_duration
-            RETURN this0
+            "UNWIND $create_param0 AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.duration = create_var1.duration
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .duration }] AS data"
+            RETURN collect(create_this0 { .duration }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_duration\\": {
-                    \\"months\\": 24,
-                    \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
+                \\"create_param0\\": [
+                    {
+                        \\"duration\\": {
+                            \\"months\\": 24,
+                            \\"days\\": 0,
+                            \\"seconds\\": {
+                                \\"low\\": 0,
+                                \\"high\\": 0
+                            },
+                            \\"nanoseconds\\": {
+                                \\"low\\": 0,
+                                \\"high\\": 0
+                            }
+                        }
                     }
-                },
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);

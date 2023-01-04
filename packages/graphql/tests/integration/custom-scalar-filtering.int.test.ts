@@ -75,7 +75,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -124,13 +124,19 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
                 expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
-                expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value1);
-                expect((gqlResult.data as any)[randomType.plural][1].property).toEqual(value2);
+                expect((gqlResult.data as any)[randomType.plural]).toIncludeSameMembers([
+                    {
+                        property: value1,
+                    },
+                    {
+                        property: value2,
+                    },
+                ]);
             } finally {
                 await session.close();
             }
@@ -170,7 +176,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -207,7 +213,7 @@ describe("Custom Scalar Filtering", () => {
 
                 const query = `
                     {
-                        ${randomType.plural}(where: { 
+                        ${randomType.plural}(where: {
                                 property_IN: ["${value}", "${unknownValue1}", "${unknownValue2}"]
                         }) {
                             property
@@ -218,7 +224,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -243,7 +249,7 @@ describe("Custom Scalar Filtering", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const value1 = "someValue";
-            const value2 = "someOtherValue"
+            const value2 = "someOtherValue";
             const unwantedValue = "foo";
 
             try {
@@ -258,7 +264,7 @@ describe("Custom Scalar Filtering", () => {
 
                 const query = `
                     {
-                        ${randomType.plural}(where: { 
+                        ${randomType.plural}(where: {
                                 property_IN: ["${value1}", "${value2}"]
                         }) {
                             property
@@ -269,13 +275,19 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
                 expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
-                expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value1);
-                expect((gqlResult.data as any)[randomType.plural][1].property).toEqual(value2);
+                expect((gqlResult.data as any)[randomType.plural]).toIncludeSameMembers([
+                    {
+                        property: value1,
+                    },
+                    {
+                        property: value2,
+                    },
+                ]);
             } finally {
                 await session.close();
             }
@@ -316,7 +328,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -364,7 +376,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -413,13 +425,19 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
                 expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
-                expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value1);
-                expect((gqlResult.data as any)[randomType.plural][1].property).toEqual(value2);
+                expect((gqlResult.data as any)[randomType.plural]).toIncludeSameMembers([
+                    {
+                        property: value1,
+                    },
+                    {
+                        property: value2,
+                    },
+                ]);
             } finally {
                 await session.close();
             }
@@ -459,7 +477,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -507,7 +525,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { unwantedValue },
                 });
 
@@ -557,14 +575,20 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { unwantedValue },
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
                 expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
-                expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value1);
-                expect((gqlResult.data as any)[randomType.plural][1].property).toEqual(value2);
+                expect((gqlResult.data as any)[randomType.plural]).toIncludeSameMembers([
+                    {
+                        property: value1,
+                    },
+                    {
+                        property: value2,
+                    },
+                ]);
             } finally {
                 await session.close();
             }
@@ -604,7 +628,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { value },
                 });
 
@@ -651,7 +675,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -700,13 +724,19 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
                 expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
-                expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value1);
-                expect((gqlResult.data as any)[randomType.plural][1].property).toEqual(value2);
+                expect((gqlResult.data as any)[randomType.plural]).toIncludeSameMembers([
+                    {
+                        property: value1,
+                    },
+                    {
+                        property: value2,
+                    },
+                ]);
             } finally {
                 await session.close();
             }
@@ -747,7 +777,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -793,7 +823,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -842,13 +872,19 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
                 expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
-                expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value1);
-                expect((gqlResult.data as any)[randomType.plural][1].property).toEqual(value2);
+                expect((gqlResult.data as any)[randomType.plural]).toIncludeSameMembers([
+                    {
+                        property: value1,
+                    },
+                    {
+                        property: value2,
+                    },
+                ]);
             } finally {
                 await session.close();
             }
@@ -888,7 +924,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();

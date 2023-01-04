@@ -5,5 +5,8 @@
     },
     "exclude": ["src/**/*.test.ts"],
     "include": ["src/**/*"],
-    "references": [{ "path": "../../graphql/src/tsconfig.production.json" }]
+    "references": [
+        { "path": "../../cypher-builder/tsconfig.production.json" },
+        { "path": "../../graphql/src/tsconfig.production.json" }
+    ]
 }

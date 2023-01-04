@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import { test, describe } from "./utils/pagemodel";
+import * as base from "@playwright/test";
+import { test } from "./utils/pagemodel";
 
-describe("drawer", () => {
+base.test.describe("drawer", () => {
     const typeDefs = `
         type Movie {
             name: String!

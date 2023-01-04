@@ -19,7 +19,7 @@
 
 import type { Neo4jDatabaseInfo } from "../../../classes/Neo4jDatabaseInfo";
 import type { PointField, PrimitiveField } from "../../../types";
-import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { createPointComparisonOperation } from "./create-point-comparison-operation";
 
 /** Translates an atomic comparison operation (e.g. "this0 <= $param0") */
@@ -32,12 +32,12 @@ export function createComparisonOperation({
     neo4jDatabaseInfo,
 }: {
     operator: string | undefined;
-    propertyRefOrCoalesce: CypherBuilder.PropertyRef | CypherBuilder.Function;
-    param: CypherBuilder.Param;
+    propertyRefOrCoalesce: Cypher.PropertyRef | Cypher.Function;
+    param: Cypher.Param;
     durationField: PrimitiveField | undefined;
     pointField: PointField | undefined;
     neo4jDatabaseInfo: Neo4jDatabaseInfo;
-}): CypherBuilder.ComparisonOp {
+}): Cypher.ComparisonOp {
     if (pointField) {
         return createPointComparisonOperation({
             operator,
@@ -67,11 +67,11 @@ function createDurationOperation({
     param,
 }: {
     operator: string;
-    property: CypherBuilder.Expr;
-    param: CypherBuilder.Expr;
+    property: Cypher.Expr;
+    param: Cypher.Expr;
 }) {
-    const variable = CypherBuilder.plus(CypherBuilder.datetime(), param);
-    const propertyRef = CypherBuilder.plus(CypherBuilder.datetime(), property);
+    const variable = Cypher.plus(Cypher.datetime(), param);
+    const propertyRef = Cypher.plus(Cypher.datetime(), property);
 
     return createBaseOperation({
         operator,
@@ -80,44 +80,45 @@ function createDurationOperation({
     });
 }
 
-function createBaseOperation({
+export function createBaseOperation({
     operator,
     property,
     param,
 }: {
     operator: string;
-    property: CypherBuilder.Expr;
-    param: CypherBuilder.Expr;
-}): CypherBuilder.ComparisonOp {
+    property: Cypher.Expr;
+    param: Cypher.Expr;
+}): Cypher.ComparisonOp {
     switch (operator) {
         case "LT":
-            return CypherBuilder.lt(property, param);
+            return Cypher.lt(property, param);
         case "LTE":
-            return CypherBuilder.lte(property, param);
+            return Cypher.lte(property, param);
         case "GT":
-            return CypherBuilder.gt(property, param);
+            return Cypher.gt(property, param);
         case "GTE":
-            return CypherBuilder.gte(property, param);
+            return Cypher.gte(property, param);
         case "ENDS_WITH":
         case "NOT_ENDS_WITH":
-            return CypherBuilder.endsWith(property, param);
+            return Cypher.endsWith(property, param);
         case "STARTS_WITH":
         case "NOT_STARTS_WITH":
-            return CypherBuilder.startsWith(property, param);
+            return Cypher.startsWith(property, param);
         case "MATCHES":
-            return CypherBuilder.matches(property, param);
+            return Cypher.matches(property, param);
         case "CONTAINS":
         case "NOT_CONTAINS":
-            return CypherBuilder.contains(property, param);
+            return Cypher.contains(property, param);
         case "IN":
         case "NOT_IN":
-            return CypherBuilder.in(property, param);
+            return Cypher.in(property, param);
         case "INCLUDES":
         case "NOT_INCLUDES":
-            return CypherBuilder.in(param, property);
+            return Cypher.in(param, property);
         case "EQ":
+        case "EQUAL":
         case "NOT":
-            return CypherBuilder.eq(property, param);
+            return Cypher.eq(property, param);
         default:
             throw new Error(`Invalid operator ${operator}`);
     }

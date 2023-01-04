@@ -17,13 +17,17 @@
  * limitations under the License.
  */
 
-import type { FieldDefinitionNode } from "graphql";
+import type { DirectiveNode, FieldDefinitionNode } from "graphql";
 
 type CypherMeta = {
     statement: string;
+    columnName?: string;
 };
 
-function getCypherMeta(field: FieldDefinitionNode, interfaceField?: FieldDefinitionNode): CypherMeta | undefined {
+export function getCypherMeta(
+    field: FieldDefinitionNode,
+    interfaceField?: FieldDefinitionNode
+): CypherMeta | undefined {
     const directive =
         field.directives?.find((x) => x.name.value === "cypher") ||
         interfaceField?.directives?.find((x) => x.name.value === "cypher");
@@ -31,19 +35,32 @@ function getCypherMeta(field: FieldDefinitionNode, interfaceField?: FieldDefinit
         return undefined;
     }
 
+    return {
+        statement: parseStatementFlag(directive),
+        columnName: parseColumnNameFlag(directive),
+    };
+}
+
+function parseStatementFlag(directive: DirectiveNode): string {
     const stmtArg = directive.arguments?.find((x) => x.name.value === "statement");
     if (!stmtArg) {
         throw new Error("@cypher statement required");
     }
     if (stmtArg.value.kind !== "StringValue") {
-        throw new Error("@cypher statement not a string");
+        throw new Error("@cypher statement is not a string");
     }
 
-    const statement = stmtArg.value.value;
-
-    return {
-        statement,
-    };
+    return stmtArg.value.value;
 }
 
-export default getCypherMeta;
+function parseColumnNameFlag(directive: DirectiveNode): string | undefined {
+    const stmtArg = directive.arguments?.find((x) => x.name.value === "columnName");
+    if (!stmtArg) {
+        return undefined;
+    }
+    if (stmtArg.value.kind !== "StringValue") {
+        throw new Error("@cypher columnName is not a string");
+    }
+
+    return stmtArg.value.value;
+}

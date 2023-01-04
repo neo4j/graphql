@@ -35,7 +35,7 @@ import { Extension, FileName } from "../../components/Filename";
 import { ThemeContext, Theme } from "../../contexts/theme";
 import { Storage } from "../../utils/storage";
 import { AppSettingsContext } from "../../contexts/appsettings";
-import { ProTooltip } from "src/components/ProTooltip";
+import { ProTooltip } from "../../components/ProTooltip";
 
 export interface Props {
     loading: boolean;
@@ -66,7 +66,7 @@ export const SchemaEditor = ({
 
         const schemaForLintAndAutocompletion = getSchemaForLintAndAutocompletion();
 
-        const element = ref.current as HTMLTextAreaElement;
+        const element = ref.current;
 
         const showHint = () => {
             mirror.showHint({
@@ -90,7 +90,7 @@ export const SchemaEditor = ({
                 minFoldSize: 4,
             },
             lint: {
-                // @ts-ignore
+                // @ts-ignore - Mismatch of types, can be ignored
                 schema: schemaForLintAndAutocompletion,
                 validationRules: [],
             },
@@ -182,6 +182,7 @@ export const SchemaEditor = ({
                                 color="primary"
                                 fill="outlined"
                                 buttonSize="small"
+                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                                 onClick={introspect}
                                 disabled={loading}
                                 loading={isIntrospecting}

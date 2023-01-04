@@ -16,14 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* eslint-disable import/no-extraneous-dependencies */
+
 import ws from "ws";
 import type { Client } from "graphql-ws";
 import { createClient } from "graphql-ws";
 
 export class WebSocketTestClient {
-    public events: Array<any> = [];
-    public errors: Array<any> = [];
+    public events: Array<unknown> = [];
+    public errors: Array<unknown> = [];
 
     private path: string;
     private client: Client;
@@ -63,7 +63,8 @@ export class WebSocketTestClient {
                             this.onEvent = undefined;
                         }
                     },
-                    error(err) {
+                    error: (err: Array<unknown>) => {
+                        this.errors.push(...err);
                         if (callback) {
                             // hack to be able to expect errors on bad subscriptions
                             // bc. resolve() happens before below reject()
@@ -71,7 +72,7 @@ export class WebSocketTestClient {
                         }
                         reject(err);
                     },
-                    complete() {},
+                    complete: () => true,
                 }
             );
 
@@ -92,4 +93,3 @@ export class WebSocketTestClient {
         this.errors = [];
     }
 }
-/* eslint-enable import/no-extraneous-dependencies */

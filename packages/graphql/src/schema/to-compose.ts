@@ -95,14 +95,21 @@ export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<str
         .reduce((res, f) => {
             const fieldType = f.typeMeta.input.create.pretty;
             const defaultValue = (f as PrimitiveField)?.defaultValue;
+            const deprecatedDirectives = graphqlDirectivesToCompose(
+                f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+            );
 
             if (defaultValue !== undefined) {
                 res[f.fieldName] = {
                     type: fieldType,
                     defaultValue,
+                    directives: deprecatedDirectives,
                 };
             } else {
-                res[f.fieldName] = fieldType;
+                res[f.fieldName] = {
+                    type: fieldType,
+                    directives: deprecatedDirectives,
+                };
             }
 
             return res;
@@ -114,13 +121,18 @@ export function objectFieldsToSubscriptionsWhereInputFields(
     fields: BaseField[]
 ): Record<string, InputField> {
     return fields.reduce((res, f) => {
-        const fieldType = f.typeMeta.input.update.pretty;
+        const fieldType = f.typeMeta.input.where.pretty;
 
         const ifArrayOfAnyTypeExceptBoolean = f.typeMeta.array && f.typeMeta.name !== "Boolean";
         const ifAnyTypeExceptArrayAndBoolean = !f.typeMeta.array && f.typeMeta.name !== "Boolean";
         const isOneOfNumberTypes = ["Int", "Float", "BigInt"].includes(f.typeMeta.name) && !f.typeMeta.array;
         const isOneOfStringTypes = ["String", "ID"].includes(f.typeMeta.name) && !f.typeMeta.array;
+        const isOneOfSpatialTypes = ["Point", "CartesianPoint"].includes(f.typeMeta.name);
 
+        let inputTypeName = f.typeMeta.name;
+        if (isOneOfSpatialTypes) {
+            inputTypeName = `${inputTypeName}Input`;
+        }
         return {
             ...res,
             AND: `[${typeName}SubscriptionWhere!]`,
@@ -128,12 +140,12 @@ export function objectFieldsToSubscriptionsWhereInputFields(
             [f.fieldName]: fieldType,
             [`${f.fieldName}_NOT`]: fieldType,
             ...(ifArrayOfAnyTypeExceptBoolean && {
-                [`${f.fieldName}_INCLUDES`]: f.typeMeta.name,
-                [`${f.fieldName}_NOT_INCLUDES`]: f.typeMeta.name,
+                [`${f.fieldName}_INCLUDES`]: inputTypeName,
+                [`${f.fieldName}_NOT_INCLUDES`]: inputTypeName,
             }),
             ...(ifAnyTypeExceptArrayAndBoolean && {
-                [`${f.fieldName}_IN`]: `[${f.typeMeta.name}]`,
-                [`${f.fieldName}_NOT_IN`]: `[${f.typeMeta.name}]`,
+                [`${f.fieldName}_IN`]: `[${inputTypeName}]`,
+                [`${f.fieldName}_NOT_IN`]: `[${inputTypeName}]`,
             }),
             ...(isOneOfNumberTypes && {
                 [`${f.fieldName}_LT`]: fieldType,
@@ -155,6 +167,9 @@ export function objectFieldsToSubscriptionsWhereInputFields(
 
 export function objectFieldsToUpdateInputFields(fields: BaseField[]): Record<string, InputField> {
     return fields.reduce((res, f) => {
+        const deprecatedDirectives = graphqlDirectivesToCompose(
+            f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+        );
         const staticField = f.readonly || (f as PrimitiveField)?.autogenerate;
         if (staticField) {
             return res;
@@ -162,7 +177,10 @@ export function objectFieldsToUpdateInputFields(fields: BaseField[]): Record<str
 
         const fieldType = f.typeMeta.input.update.pretty;
 
-        res[f.fieldName] = fieldType;
+        res[f.fieldName] = {
+            type: fieldType,
+            directives: deprecatedDirectives,
+        };
 
         return res;
     }, {});

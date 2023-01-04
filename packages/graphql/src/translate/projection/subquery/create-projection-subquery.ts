@@ -19,7 +19,7 @@
 
 import type { Node } from "../../../classes";
 import type { Context, GraphQLOptionsArg, GraphQLWhereArg, RelationField } from "../../../types";
-import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../../where/create-where-predicate";
 import type { RelationshipDirection } from "../../../utils/get-relationship-direction";
 import { createAuthPredicates } from "../../create-auth-and-params";
@@ -41,26 +41,26 @@ export function createProjectionSubquery({
     addSkipAndLimit = true,
     collect = true,
 }: {
-    parentNode: CypherBuilder.Node;
+    parentNode: Cypher.Node;
     whereInput?: GraphQLWhereArg;
     node: Node;
     context: Context;
     alias: string; // TODO: this should be output variable instead
     nestedProjection: string;
-    nestedSubqueries: CypherBuilder.Clause[];
+    nestedSubqueries: Cypher.Clause[];
     relationField: RelationField;
     relationshipDirection: RelationshipDirection;
     optionsInput: GraphQLOptionsArg;
     authValidateStrs: string[] | undefined;
     addSkipAndLimit?: boolean;
     collect?: boolean;
-}): CypherBuilder.Clause {
+}): Cypher.Clause {
     const isArray = relationField.typeMeta.array;
-    const targetNode = new CypherBuilder.NamedNode(alias, {
+    const targetNode = new Cypher.NamedNode(alias, {
         labels: node.getLabels(context),
     });
 
-    const relationship = new CypherBuilder.Relationship({
+    const relationship = new Cypher.Relationship({
         source: parentNode,
         target: targetNode,
         type: relationField.type,
@@ -72,21 +72,25 @@ export function createProjectionSubquery({
     const isUndirected = relationshipDirection === "undirected";
     const pattern = relationship.pattern({ directed: !isUndirected });
 
-    const subqueryMatch = new CypherBuilder.Match(pattern);
+    const subqueryMatch = new Cypher.Match(pattern);
+    const predicates: Cypher.Predicate[] = [];
 
-    const projection = new CypherBuilder.RawCypher((env) => {
+    const projection = new Cypher.RawCypher((env) => {
         // TODO: use MapProjection
         return `${targetNode.getCypher(env)} ${nestedProjection}`;
     });
 
+    let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
+
     if (whereInput) {
-        const wherePredicate = createWherePredicate({
+        const { predicate: wherePredicate, preComputedSubqueries } = createWherePredicate({
             element: node,
             context,
             whereInput,
             targetElement: targetNode,
         });
-        if (wherePredicate) subqueryMatch.where(wherePredicate);
+        if (wherePredicate) predicates.push(wherePredicate);
+        preComputedWhereFieldSubqueries = preComputedSubqueries;
     }
 
     const whereAuth = createAuthPredicates({
@@ -100,7 +104,7 @@ export function createProjectionSubquery({
     });
 
     if (whereAuth) {
-        subqueryMatch.and(whereAuth);
+        predicates.push(whereAuth);
     }
 
     const preAuth = createAuthPredicates({
@@ -114,24 +118,24 @@ export function createProjectionSubquery({
     });
 
     if (preAuth) {
-        const allowAuth = new CypherBuilder.apoc.ValidatePredicate(CypherBuilder.not(preAuth), AUTH_FORBIDDEN_ERROR);
-        subqueryMatch.and(allowAuth);
+        const allowAuth = new Cypher.apoc.ValidatePredicate(Cypher.not(preAuth), AUTH_FORBIDDEN_ERROR);
+        predicates.push(allowAuth);
     }
 
     if (authValidateStrs?.length) {
-        const authValidateStatements = authValidateStrs.map((str) => new CypherBuilder.RawCypher(str));
-        const authValidatePredicate = CypherBuilder.and(...authValidateStatements);
+        const authValidateStatements = authValidateStrs.map((str) => new Cypher.RawCypher(str));
+        const authValidatePredicate = Cypher.and(...authValidateStatements);
 
-        const authStatement = new CypherBuilder.apoc.ValidatePredicate(
-            CypherBuilder.not(authValidatePredicate),
+        const authStatement = new Cypher.apoc.ValidatePredicate(
+            Cypher.not(authValidatePredicate),
             AUTH_FORBIDDEN_ERROR
         );
 
-        subqueryMatch.and(authStatement);
+        predicates.push(authStatement);
     }
 
-    const returnVariable = new CypherBuilder.NamedVariable(alias);
-    const withStatement: CypherBuilder.With = new CypherBuilder.With([projection, returnVariable]); // This only works if nestedProjection is a map
+    const returnVariable = new Cypher.NamedVariable(alias);
+    const withStatement: Cypher.With = new Cypher.With([projection, returnVariable]); // This only works if nestedProjection is a map
     if (addSkipAndLimit) {
         addSortAndLimitOptionsToClause({
             optionsInput,
@@ -140,17 +144,30 @@ export function createProjectionSubquery({
         });
     }
 
-    let returnProjection: CypherBuilder.Expr = targetNode;
+    let returnProjection: Cypher.Expr = targetNode;
     if (collect) {
-        returnProjection = CypherBuilder.collect(targetNode);
+        returnProjection = Cypher.collect(targetNode);
         if (!isArray) {
-            returnProjection = CypherBuilder.head(returnProjection);
+            returnProjection = Cypher.head(returnProjection);
         }
     }
 
-    const returnStatement = new CypherBuilder.Return([returnProjection, returnVariable]);
+    const returnStatement = new Cypher.Return([returnProjection, returnVariable]);
 
-    const subquery = CypherBuilder.concat(subqueryMatch, ...nestedSubqueries, withStatement, returnStatement);
+    if (preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty) {
+        const preComputedSubqueryWith = new Cypher.With("*");
+        preComputedSubqueryWith.where(Cypher.and(...predicates));
+        return Cypher.concat(
+            subqueryMatch,
+            preComputedWhereFieldSubqueries,
+            preComputedSubqueryWith,
+            ...nestedSubqueries,
+            withStatement,
+            returnStatement
+        );
+    }
 
-    return subquery;
+    subqueryMatch.where(Cypher.and(...predicates));
+
+    return Cypher.concat(subqueryMatch, ...nestedSubqueries, withStatement, returnStatement);
 }

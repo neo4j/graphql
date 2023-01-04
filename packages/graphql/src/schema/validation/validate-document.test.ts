@@ -379,7 +379,7 @@ describe("validateDocument", () => {
                         @cypher(
                             statement: "MATCH (this)-[:SHIPS_TO]->(a:Address) RETURN round(0.01 * distance(a.location, Point({latitude: 40.7128, longitude: -74.0060})) / 1000, 2)"
                         )
-                    estimatedDelivery: DateTime @computed
+                    estimatedDelivery: DateTime @customResolver
                 }
 
                 type Customer {
@@ -649,6 +649,27 @@ describe("validateDocument", () => {
             const doc = gql`
                 type Deprecated {
                     deprecatedField: String @deprecated
+                }
+            `;
+
+            const res = validateDocument(doc);
+            expect(res).toBeUndefined();
+        });
+    });
+
+    describe("https://github.com/neo4j/graphql/issues/2325 - SortDirection", () => {
+        test("should not throw error when using SortDirection", () => {
+            const doc = gql`
+                type Movie {
+                    title: String
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+                type Actor {
+                    name: String
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+                type Mutation {
+                    hello(direction: SortDirection): Boolean!
                 }
             `;
 

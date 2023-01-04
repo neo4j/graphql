@@ -18,14 +18,16 @@
  */
 
 import type { RelationField, Context, PrimitiveField } from "../types";
-import type { Node, Relationship } from "../classes";
+import { Neo4jGraphQLError, Node, Relationship } from "../classes";
 import type { CallbackBucket } from "../classes/CallbackBucket";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { asArray, omitFields } from "../utils/utils";
-import * as CypherBuilder from "./cypher-builder/CypherBuilder";
-import { convertToCypherParams } from "./cypher-builder/utils/convert-to-cypher-params";
+import Cypher from "@neo4j/cypher-builder";
 import { addCallbackAndSetParamCypher } from "./utils/callback-utils";
+import { findConflictingProperties } from "../utils/is-property-clash";
+import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 
 type CreateOrConnectInput = {
     where?: {
@@ -43,6 +45,7 @@ export function createConnectOrCreateAndParams({
     parentVar,
     relationField,
     refNode,
+    node,
     context,
     withVars,
     callbackBucket,
@@ -52,11 +55,26 @@ export function createConnectOrCreateAndParams({
     parentVar: string;
     relationField: RelationField;
     refNode: Node;
+    node: Node;
     context: Context;
     withVars: string[];
     callbackBucket: CallbackBucket;
-}): CypherBuilder.CypherResult {
-    const withVarsVariables = withVars.map((name) => new CypherBuilder.NamedVariable(name));
+}): Cypher.CypherResult {
+    asArray(input).forEach((connectOrCreateItem) => {
+        const conflictingProperties = findConflictingProperties({
+            node: refNode,
+            input: connectOrCreateItem.onCreate?.node,
+        });
+        if (conflictingProperties.length > 0) {
+            throw new Neo4jGraphQLError(
+                `Conflicting modification of ${conflictingProperties.map((n) => `[[${n}]]`).join(", ")} on type ${
+                    refNode.name
+                }`
+            );
+        }
+    });
+
+    const withVarsVariables = withVars.map((name) => new Cypher.NamedVariable(name));
 
     const statements = asArray(input).map((inputItem, index) => {
         const subqueryBaseName = `${varName}${index}`;
@@ -66,25 +84,36 @@ export function createConnectOrCreateAndParams({
             parentVar,
             relationField,
             refNode,
+            node,
             context,
-            varName,
             callbackBucket,
+            withVars,
         });
         return result;
     });
 
     const wrappedQueries = statements.map((statement) => {
-        const countResult = new CypherBuilder.RawCypher(() => "COUNT(*) AS _");
-        const returnStatement = new CypherBuilder.Return(countResult);
-        const withStatement = new CypherBuilder.With(...withVarsVariables);
-        const callStatement = new CypherBuilder.Call(CypherBuilder.concat(statement, returnStatement)).innerWith(
+        const countResult = new Cypher.RawCypher(() => {
+            if (context.subscriptionsEnabled) {
+                return "meta as update_meta";
+            }
+            return "COUNT(*) AS _";
+        });
+        const returnStatement = new Cypher.Return(countResult);
+        const withStatement = new Cypher.With(...withVarsVariables);
+        const callStatement = new Cypher.Call(Cypher.concat(statement, returnStatement)).innerWith(
             ...withVarsVariables
         );
+        const subqueryClause = Cypher.concat(withStatement, callStatement);
+        if (context.subscriptionsEnabled) {
+            const afterCallWithStatement = new Cypher.With("*", [new Cypher.NamedVariable("update_meta"), "meta"]);
+            Cypher.concat(subqueryClause, afterCallWithStatement);
+        }
 
-        return CypherBuilder.concat(withStatement, callStatement);
+        return subqueryClause;
     });
 
-    const query = CypherBuilder.concat(...wrappedQueries);
+    const query = Cypher.concat(...wrappedQueries);
 
     return query.build(`${varName}_`);
 }
@@ -95,27 +124,31 @@ function createConnectOrCreatePartialStatement({
     parentVar,
     relationField,
     refNode,
+    node,
     context,
-    varName,
     callbackBucket,
+    withVars,
 }: {
     input: CreateOrConnectInput;
     baseName: string;
     parentVar: string;
     relationField: RelationField;
     refNode: Node;
+    node: Node;
     context: Context;
-    varName: string;
     callbackBucket: CallbackBucket;
-}): CypherBuilder.Clause {
+    withVars: string[];
+}): Cypher.Clause {
     const mergeQuery = mergeStatement({
         input,
         refNode,
+        parentRefNode: node,
         context,
         relationField,
-        parentNode: new CypherBuilder.NamedNode(parentVar),
-        varName,
+        parentNode: new Cypher.NamedNode(parentVar),
+        varName: baseName,
         callbackBucket,
+        withVars,
     });
 
     const authQuery = createAuthStatement({
@@ -125,7 +158,7 @@ function createConnectOrCreatePartialStatement({
     });
 
     if (authQuery) {
-        return CypherBuilder.concat(authQuery, mergeQuery);
+        return Cypher.concat(mergeQuery, new Cypher.With("*"), authQuery);
     }
     return mergeQuery;
 }
@@ -133,25 +166,29 @@ function createConnectOrCreatePartialStatement({
 function mergeStatement({
     input,
     refNode,
+    parentRefNode,
     context,
     relationField,
     parentNode,
     varName,
     callbackBucket,
+    withVars,
 }: {
     input: CreateOrConnectInput;
     refNode: Node;
+    parentRefNode: Node;
     context: Context;
     relationField: RelationField;
-    parentNode: CypherBuilder.Node;
+    parentNode: Cypher.Node;
     varName: string;
     callbackBucket: CallbackBucket;
-}): CypherBuilder.Clause {
+    withVars: string[];
+}): Cypher.Clause {
     const whereNodeParameters = getCypherParameters(input.where?.node, refNode);
     const onCreateNodeParameters = getCypherParameters(input.onCreate?.node, refNode);
 
     const autogeneratedParams = getAutogeneratedParams(refNode);
-    const node = new CypherBuilder.Node({
+    const node = new Cypher.NamedNode(varName, {
         labels: refNode.getLabels(context),
     });
 
@@ -159,8 +196,8 @@ function mergeStatement({
     const callbackFields = getCallbackFields(refNode);
 
     const callbackParams = callbackFields
-        .map((callbackField): [CypherBuilder.PropertyRef, CypherBuilder.RawCypher] | [] => {
-            const varNameVariable = new CypherBuilder.NamedVariable(varName);
+        .map((callbackField): [Cypher.PropertyRef, Cypher.RawCypher] | [] => {
+            const varNameVariable = new Cypher.NamedVariable(varName);
             return addCallbackAndSetParamCypher(
                 callbackField,
                 varNameVariable,
@@ -170,20 +207,18 @@ function mergeStatement({
                 node
             );
         })
-        .filter((tuple) => tuple.length !== 0) as [CypherBuilder.PropertyRef, CypherBuilder.RawCypher][];
+        .filter((tuple) => tuple.length !== 0) as [Cypher.PropertyRef, Cypher.RawCypher][];
 
     const rawNodeParams = {
         ...unsetAutogeneratedParams,
         ...onCreateNodeParameters,
     };
 
-    const onCreateParams = Object.entries(rawNodeParams).map(
-        ([key, param]): [CypherBuilder.PropertyRef, CypherBuilder.Param] => {
-            return [node.property(key), param];
-        }
-    );
+    const onCreateParams = Object.entries(rawNodeParams).map(([key, param]): [Cypher.PropertyRef, Cypher.Param] => {
+        return [node.property(key), param];
+    });
 
-    const merge = new CypherBuilder.Merge(node, whereNodeParameters).onCreate(...onCreateParams, ...callbackParams);
+    const merge = new Cypher.Merge(node, whereNodeParameters).onCreate(...onCreateParams, ...callbackParams);
 
     const relationshipFields = context.relationships.find((x) => x.properties === relationField.properties);
     const autogeneratedRelationshipParams = relationshipFields ? getAutogeneratedParams(relationshipFields) : {};
@@ -194,20 +229,40 @@ function mergeStatement({
         ...rawOnCreateRelationshipParams,
     };
 
-    const relationship = new CypherBuilder.Relationship({
+    const relationship = new Cypher.Relationship({
         source: relationField.direction === "IN" ? node : parentNode,
         target: relationField.direction === "IN" ? parentNode : node,
         type: relationField.type,
     });
 
     const onCreateRelationshipParams = Object.entries(rawRelationshipParams).map(
-        ([key, param]): [CypherBuilder.PropertyRef, CypherBuilder.Param] => {
+        ([key, param]): [Cypher.PropertyRef, Cypher.Param] => {
             return [relationship.property(key), param];
         }
     );
 
-    const relationshipMerge = new CypherBuilder.Merge(relationship).onCreate(...onCreateRelationshipParams);
-    return CypherBuilder.concat(merge, relationshipMerge);
+    const relationshipMerge = new Cypher.Merge(relationship).onCreate(...onCreateRelationshipParams);
+
+    let withClause: Cypher.Clause | undefined;
+    if (context.subscriptionsEnabled) {
+        const [fromTypename, toTypename] =
+            relationField.direction === "IN" ? [refNode.name, parentRefNode.name] : [parentRefNode.name, refNode.name];
+
+        withClause = new Cypher.RawCypher((env: Cypher.Environment) => {
+            const eventWithMetaStr = createConnectionEventMeta({
+                event: "create_relationship",
+                relVariable: relationship.getCypher(env),
+                fromVariable: relationship.source.getCypher(env),
+                toVariable: relationship.target.getCypher(env),
+                typename: relationField.type,
+                fromTypename,
+                toTypename,
+            });
+            return `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, varName]).join(", ")}`;
+        });
+    }
+
+    return Cypher.concat(merge, relationshipMerge, withClause);
 }
 
 function createAuthStatement({
@@ -218,7 +273,7 @@ function createAuthStatement({
     node: Node;
     context: Context;
     nodeName: string;
-}): CypherBuilder.Clause | undefined {
+}): Cypher.Clause | undefined {
     if (!node.auth) return undefined;
 
     const auth = createAuthAndParams({
@@ -229,7 +284,9 @@ function createAuthStatement({
         escapeQuotes: false,
     });
 
-    return new CypherBuilder.RawCypher((env) => {
+    if (!auth[0]) return undefined;
+
+    return new Cypher.RawCypher(() => {
         const predicate = `NOT (${auth[0]})`;
         const message = AUTH_FORBIDDEN_ERROR;
 
@@ -245,12 +302,12 @@ function getCallbackFields(node: Node | Relationship): PrimitiveField[] {
 }
 
 // Helper for compatibility reasons
-function getAutogeneratedParams(node: Node | Relationship): Record<string, CypherBuilder.Param<any>> {
+function getAutogeneratedParams(node: Node | Relationship): Record<string, Cypher.Param<any>> {
     const autogeneratedFields = node.primitiveFields
         .filter((f) => f.autogenerate)
         .reduce((acc, field) => {
             if (field.dbPropertyName) {
-                acc[field.dbPropertyName] = new CypherBuilder.RawCypher("randomUUID()");
+                acc[field.dbPropertyName] = new Cypher.RawCypher("randomUUID()");
             }
             return acc;
         }, {});
@@ -259,17 +316,14 @@ function getAutogeneratedParams(node: Node | Relationship): Record<string, Cyphe
         .filter((field) => ["DateTime", "Time"].includes(field.typeMeta.name) && field.timestamps?.includes("CREATE"))
         .reduce((acc, field) => {
             if (field.dbPropertyName) {
-                acc[field.dbPropertyName] = new CypherBuilder.RawCypher(`${field.typeMeta.name.toLowerCase()}()`);
+                acc[field.dbPropertyName] = new Cypher.RawCypher(`${field.typeMeta.name.toLowerCase()}()`);
             }
             return acc;
         }, {});
     return { ...autogeneratedTemporalFields, ...autogeneratedFields };
 }
 
-function getCypherParameters(
-    onCreateParams: Record<string, any> = {},
-    node?: Node
-): Record<string, CypherBuilder.Param<any>> {
+function getCypherParameters(onCreateParams: Record<string, any> = {}, node?: Node): Record<string, Cypher.Param<any>> {
     const params = Object.entries(onCreateParams).reduce((acc, [key, value]) => {
         const nodeField = node?.constrainableFields.find((f) => f.fieldName === key);
         const nodeFieldName = nodeField?.dbPropertyName || nodeField?.fieldName;
@@ -279,4 +333,12 @@ function getCypherParameters(
         return acc;
     }, {});
     return convertToCypherParams(params);
+}
+
+// Based on cypher builder convertToCypherParams
+function convertToCypherParams<T>(original: Record<string, T>): Record<string, Cypher.Param<T>> {
+    return Object.entries(original).reduce((acc, [key, value]) => {
+        acc[key] = new Cypher.Param(value);
+        return acc;
+    }, {});
 }

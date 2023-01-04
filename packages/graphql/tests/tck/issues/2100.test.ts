@@ -22,7 +22,7 @@ import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
-describe("https://github.com/neo4j/graphql/issues/2022", () => {
+describe("https://github.com/neo4j/graphql/issues/2100", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -112,35 +112,34 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Bacenta\`)
-            WHERE this.id = $param0
-            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(:ServiceLog)-[:HAS_BUSSING]->(records:BussingRecord)-[:BUSSED_ON]->(date:TimeGraph)
                 WITH DISTINCT records, date LIMIT $limit
-                RETURN records ORDER BY date.date DESC\\", { limit: $thisparam0, this: this, auth: $auth }) AS this_bussing
+                RETURN records ORDER BY date.date DESC\\", { limit: $param2, this: this, auth: $auth }) AS this_bussing
                 CALL {
                     WITH this_bussing
                     UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
                     RETURN COUNT(member) > 0 AS markedAttendance\\", { this: this_bussing, auth: $auth }) AS this_bussing_markedAttendance
-                    RETURN this_bussing_markedAttendance AS this_bussing_markedAttendance
+                    RETURN head(collect(this_bussing_markedAttendance)) AS this_bussing_markedAttendance
                 }
                 CALL {
                     WITH this_bussing
-                    MATCH (this_bussing)-[thisthis0:BUSSED_ON]->(this_bussing_serviceDate:\`TimeGraph\`)
+                    MATCH (this_bussing)-[this0:BUSSED_ON]->(this_bussing_serviceDate:\`TimeGraph\`)
                     WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this_bussing_serviceDate { .date } AS this_bussing_serviceDate
                     RETURN head(collect(this_bussing_serviceDate)) AS this_bussing_serviceDate
                 }
                 RETURN collect(this_bussing { .id, .attendance, markedAttendance: this_bussing_markedAttendance, serviceDate: this_bussing_serviceDate }) AS this_bussing
             }
-            RETURN this { .id, .name, bussing: this_bussing } as this"
+            RETURN this { .id, .name, bussing: this_bussing } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"thisparam0\\": {
+                \\"param2\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },

@@ -19,7 +19,7 @@
 
 import type { ValueNode } from "graphql";
 import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
-import neo4j, { isDateTime } from "neo4j-driver";
+import neo4j, { isDateTime, DateTime, Integer } from "neo4j-driver";
 
 export const GraphQLDateTime = new GraphQLScalarType({
     name: "DateTime",
@@ -36,11 +36,15 @@ export const GraphQLDateTime = new GraphQLScalarType({
         throw new GraphQLError(`DateTime cannot represent value: ${outputValue}`);
     },
     parseValue: (inputValue: unknown) => {
-        if (typeof inputValue !== "string") {
-            throw new GraphQLError(`DateTime cannot represent non string value: ${inputValue}`);
+        if (typeof inputValue === "string") {
+            return neo4j.types.DateTime.fromStandardDate(new Date(inputValue));
         }
 
-        return neo4j.types.DateTime.fromStandardDate(new Date(inputValue));
+        if (isDateTime(inputValue as object)) {
+            return inputValue as DateTime<Integer>;
+        }
+
+        throw new GraphQLError(`DateTime cannot represent non string value: ${inputValue}`);
     },
     parseLiteral(ast: ValueNode) {
         if (ast.kind !== Kind.STRING) {

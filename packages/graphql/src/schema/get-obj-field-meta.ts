@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { IResolvers } from "@graphql-tools/utils";
 import type {
     BooleanValueNode,
     EnumTypeDefinitionNode,
@@ -35,9 +36,9 @@ import type {
 import { Kind } from "graphql";
 import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
-import getCypherMeta from "./get-cypher-meta";
+import { getCypherMeta } from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
-import getComputedMeta from "./get-computed-meta";
+import getCustomResolverMeta from "./get-custom-resolver-meta";
 import getRelationshipMeta from "./get-relationship-meta";
 import getUniqueMeta from "./parse/get-unique-meta";
 import { SCALAR_TYPES } from "../constants";
@@ -55,13 +56,18 @@ import type {
     PointField,
     TimeStampOperations,
     ConnectionField,
-    ComputedField,
+    CustomResolverField,
     Neo4jGraphQLCallbacks,
 } from "../types";
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
 import { upperFirst } from "../utils/upper-first";
-import getCallbackMeta from "./get-callback-meta";
+import { getCallbackMeta, getPopulatedByMeta } from "./get-populated-by-meta";
+
+const deprecationWarning =
+    "The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead." +
+    "More information can be found at " +
+    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby.";
 
 export interface ObjectFields {
     relationFields: RelationField[];
@@ -75,8 +81,10 @@ export interface ObjectFields {
     objectFields: ObjectField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
-    computedFields: ComputedField[];
+    customResolverFields: CustomResolverField[];
 }
+
+let callbackDeprecatedWarningShown = false;
 
 function getObjFieldMeta({
     obj,
@@ -86,6 +94,7 @@ function getObjFieldMeta({
     unions,
     enums,
     callbacks,
+    customResolvers,
 }: {
     obj: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
@@ -94,6 +103,7 @@ function getObjFieldMeta({
     scalars: ScalarTypeDefinitionNode[];
     enums: EnumTypeDefinitionNode[];
     callbacks?: Neo4jGraphQLCallbacks;
+    customResolvers?: IResolvers | Array<IResolvers>;
 }) {
     const objInterfaceNames = [...(obj.interfaces || [])] as NamedTypeNode[];
     const objInterfaces = interfaces.filter((i) => objInterfaceNames.map((n) => n.name.value).includes(i.name.value));
@@ -120,7 +130,7 @@ function getObjFieldMeta({
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
-            const computedMeta = getComputedMeta(field, interfaceField);
+            const customResolverMeta = getCustomResolverMeta(field, obj, customResolvers, interfaceField);
             const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
@@ -129,6 +139,7 @@ function getObjFieldMeta({
             const timestampDirective = directives.find((x) => x.name.value === "timestamp");
             const aliasDirective = directives.find((x) => x.name.value === "alias");
             const callbackDirective = directives.find((x) => x.name.value === "callback");
+            const populatedByDirective = directives.find((x) => x.name.value === "populatedBy");
 
             const unique = getUniqueMeta(directives, obj, field.name.value);
 
@@ -142,7 +153,7 @@ function getObjFieldMeta({
                 fieldName: field.name.value,
                 dbPropertyName: field.name.value,
                 typeMeta,
-                otherDirectives: (field.directives || []).filter(
+                otherDirectives: (directives || []).filter(
                     (x) =>
                         ![
                             "relationship",
@@ -152,12 +163,14 @@ function getObjFieldMeta({
                             "readonly",
                             "writeonly",
                             "computed",
+                            "customResolver",
                             "default",
                             "coalesce",
                             "timestamp",
                             "alias",
                             "unique",
                             "callback",
+                            "populatedBy",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
@@ -282,7 +295,7 @@ function getObjFieldMeta({
                             },
                         },
                     },
-                    otherDirectives: [],
+                    otherDirectives: baseField.otherDirectives,
                     arguments: [...(field.arguments || [])],
                     description: field.description?.value,
                     relationship: relationField,
@@ -311,8 +324,8 @@ function getObjFieldMeta({
                     isScalar: !!fieldScalar || SCALAR_TYPES.includes(typeMeta.name),
                 };
                 res.cypherFields.push(cypherField);
-            } else if (computedMeta) {
-                res.computedFields.push({ ...baseField, ...computedMeta });
+            } else if (customResolverMeta) {
+                res.customResolverFields.push({ ...baseField, ...customResolverMeta });
             } else if (fieldScalar) {
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
@@ -388,7 +401,6 @@ function getObjFieldMeta({
                 };
                 res.objectFields.push(objectField);
             } else {
-                // eslint-disable-next-line no-lonely-if
                 if (["DateTime", "Date", "Time", "LocalDateTime", "LocalTime"].includes(typeMeta.name)) {
                     const temporalField: TemporalField = {
                         ...baseField,
@@ -448,7 +460,16 @@ function getObjFieldMeta({
                         ...baseField,
                     };
 
+                    if (populatedByDirective) {
+                        const callback = getPopulatedByMeta(populatedByDirective, callbacks);
+                        primitiveField.callback = callback;
+                    }
+
                     if (callbackDirective) {
+                        if (!callbackDeprecatedWarningShown) {
+                            console.warn(deprecationWarning);
+                            callbackDeprecatedWarningShown = true;
+                        }
                         const callback = getCallbackMeta(callbackDirective, callbacks);
                         primitiveField.callback = callback;
                     }
@@ -562,7 +583,7 @@ function getObjFieldMeta({
             objectFields: [],
             temporalFields: [],
             pointFields: [],
-            computedFields: [],
+            customResolverFields: [],
         }
     ) as ObjectFields;
 }

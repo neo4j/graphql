@@ -71,7 +71,7 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -99,12 +99,12 @@ describe("Label in Node directive", () => {
             WHERE this.age > $param0
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:ACTED_IN]->(this_movies:\`Film\`)
-                WHERE this_movies.title = $thisparam0
+                MATCH (this)-[this0:ACTED_IN]->(this_movies:\`Film\`)
+                WHERE this_movies.title = $param1
                 WITH this_movies { .title } AS this_movies
                 RETURN collect(this_movies) AS this_movies
             }
-            RETURN this { .name, movies: this_movies } as this"
+            RETURN this { .name, movies: this_movies } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -113,7 +113,7 @@ describe("Label in Node directive", () => {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"thisparam0\\": \\"terminator\\"
+                \\"param1\\": \\"terminator\\"
             }"
         `);
     });
@@ -135,18 +135,24 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:\`Film\`)
-            SET this0.title = $this0_title
-            RETURN this0
+            "UNWIND $create_param0 AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Film\`)
+                SET
+                    create_this0.title = create_var1.title
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .title }] AS data"
+            RETURN collect(create_this0 { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_title\\": \\"Titanic\\",
+                \\"create_param0\\": [
+                    {
+                        \\"title\\": \\"Titanic\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {}
             }"
         `);
