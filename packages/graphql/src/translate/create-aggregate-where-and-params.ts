@@ -18,11 +18,12 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Node } from "../classes";
+import type { Node, Relationship } from "../classes";
 import type { RelationField, Context, GraphQLWhereArg } from "../types";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
 import { NODE_OR_EDGE_KEYS, LOGICAL_OPERATORS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
+import mapToDbProperty from "../utils/map-to-db-property";
 
 type logicalOperator = "AND" | "OR";
 
@@ -52,7 +53,13 @@ export function aggregatePreComputedWhereFields(
     predicate: Cypher.Predicate | undefined;
     preComputedSubquery: Cypher.Call;
 } {
+    console.log("In aggregate");
     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+    let relationship: Relationship | undefined;
+    if (relationField.properties) {
+        relationship = context.relationships.find((x) => x.properties === relationField.properties);
+    }
+
     const direction = relationField.direction;
     const aggregationTarget = new Cypher.Node({ labels: refNode.getLabels(context) });
     const cypherRelation = new Cypher.Relationship({
@@ -67,6 +74,7 @@ export function aggregatePreComputedWhereFields(
     const { returnProjections, predicates } = aggregateWhere(
         value as AggregateWhereInput,
         refNode,
+        relationship,
         aggregationTarget,
         cypherRelation
     );
@@ -81,12 +89,14 @@ export function aggregatePreComputedWhereFields(
 export function aggregateWhere(
     aggregateWhereInput: AggregateWhereInput,
     refNode: Node,
+    refRelationship: Relationship | undefined,
     aggregationTarget: Cypher.Node,
     cypherRelation: Cypher.Relationship
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
     const predicates: Cypher.Predicate[] = [];
     Object.entries(aggregateWhereInput).forEach(([key, value]) => {
+        console.log("aggregate where", key, value);
         if (AGGREGATION_AGGREGATE_COUNT_OPERATORS.includes(key)) {
             const { returnProjection: innerReturnProjection, predicate: innerPredicate } =
                 createCountPredicateAndProjection(aggregationTarget, key, value);
@@ -96,7 +106,7 @@ export function aggregateWhere(
             const target = key === "edge" ? cypherRelation : aggregationTarget;
             const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateEntityWhere(
                 value,
-                refNode,
+                key === "edge" ? (refRelationship as Relationship) : refNode,
                 target
             );
             returnProjections.push(...innerReturnProjections);
@@ -108,6 +118,7 @@ export function aggregateWhere(
                 const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateWhere(
                     whereInput,
                     refNode,
+                    refRelationship,
                     aggregationTarget,
                     cypherRelation
                 );
@@ -148,7 +159,8 @@ function createCountPredicateAndProjection(
 
 function aggregateEntityWhere(
     aggregateEntityWhereInput: WhereFilter,
-    refNode: Node,
+    refNode: Node | Relationship,
+
     target: Cypher.Node | Cypher.Relationship
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
@@ -179,9 +191,8 @@ function aggregateEntityWhere(
         predicates,
     };
 }
-
 function createEntityOperation(
-    refNode: Node,
+    graphElement: Node | Relationship,
     target: Cypher.Node | Cypher.Relationship,
     aggregationInputField: string,
     aggregationInputValue: any
@@ -190,7 +201,8 @@ function createEntityOperation(
     const regexResult = aggregationFieldRegEx.exec(aggregationInputField)?.groups as AggregationFieldRegexGroups;
     const { logicalOperator } = regexResult;
     const { fieldName, aggregationOperator } = regexResult;
-    const fieldType = refNode.primitiveFields.find((name) => name.fieldName === fieldName)?.typeMeta.name;
+
+    const fieldType = graphElement.primitiveFields.find((name) => name.fieldName === fieldName)?.typeMeta.name;
 
     if (fieldType === "String" && aggregationOperator) {
         return createBaseOperation({
@@ -212,10 +224,11 @@ function createEntityOperation(
             param: paramName,
         });
 
+        const dbFieldName = mapToDbProperty(graphElement, fieldName);
         const collectedProperty =
             fieldType === "String" && logicalOperator !== "EQUAL"
-                ? Cypher.collect(Cypher.size(target.property(fieldName)))
-                : Cypher.collect(target.property(fieldName));
+                ? Cypher.collect(Cypher.size(target.property(dbFieldName)))
+                : Cypher.collect(target.property(dbFieldName));
         return Cypher.any(innerVar, collectedProperty, innerOperation);
     }
 }
