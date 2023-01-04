@@ -43,6 +43,8 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
     const name2 = "This is a long username;";
     const name3 = "Another name";
 
+    const post1Average = (someString1.length + someString2.length) / 2;
+
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
@@ -238,6 +240,191 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
         const query = `
             {
                 ${postType.plural}(where: { likesAggregate: { edge: { someString_LTE: ${someString3.length} } } }) {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: expect.toIncludeSameMembers([
+                {
+                    content: content2,
+                    likes: [
+                        {
+                            name: name3,
+                        },
+                    ],
+                },
+                {
+                    content: content1,
+                    likes: expect.toIncludeSameMembers([
+                        {
+                            name: name1,
+                        },
+                        {
+                            name: name2,
+                        },
+                    ]),
+                },
+            ]),
+        });
+    });
+
+    test("should return posts where an edge like String AVERAGE_EQUAL", async () => {
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_AVERAGE_EQUAL: ${post1Average} } } }) {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: [
+                {
+                    content: content1,
+                    likes: expect.toIncludeSameMembers([
+                        {
+                            name: name1,
+                        },
+                        {
+                            name: name2,
+                        },
+                    ]),
+                },
+            ],
+        });
+    });
+
+    test("should return posts where an edge like String AVERAGE_LT", async () => {
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_AVERAGE_LT: ${someString3.length} } } }) {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: [
+                {
+                    content: content1,
+                    likes: expect.toIncludeSameMembers([
+                        {
+                            name: name1,
+                        },
+                        {
+                            name: name2,
+                        },
+                    ]),
+                },
+            ],
+        });
+    });
+
+    test("should return posts where an edge like String AVERAGE_LTE", async () => {
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_AVERAGE_LTE: ${post1Average} } } }) {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: [
+                {
+                    content: content1,
+                    likes: expect.toIncludeSameMembers([
+                        {
+                            name: name1,
+                        },
+                        {
+                            name: name2,
+                        },
+                    ]),
+                },
+            ],
+        });
+    });
+
+    test("should return posts where an edge like String AVERAGE_GT", async () => {
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_AVERAGE_GT: ${post1Average} } } }) {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: [
+                {
+                    content: content2,
+                    likes: [
+                        {
+                            name: name3,
+                        },
+                    ],
+                },
+            ],
+        });
+    });
+
+    test("should return posts where an edge like String AVERAGE_GTE", async () => {
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_AVERAGE_GTE: ${post1Average} } } }) {
                     content
                     likes {
                         name
