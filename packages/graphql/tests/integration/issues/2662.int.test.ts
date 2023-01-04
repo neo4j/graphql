@@ -91,7 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
         await driver.close();
     });
 
-    test("should return posts where an edge like String is EQUAL to", async () => {
+    test("should return posts where an edge like String EQUAL", async () => {
         const query = `
             {
                 ${postType.plural}(where: { likesAggregate: { edge: { someString_EQUAL: "${someString3}" } } }) {
@@ -644,6 +644,191 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
                     ]),
                 },
             ],
+        });
+    });
+
+    test("should return posts where an edge like String SHORTEST_EQUAL", async () => {
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_SHORTEST_EQUAL: ${someString2.length} } } }) {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: [
+                {
+                    content: content1,
+                    likes: expect.toIncludeSameMembers([
+                        {
+                            name: name1,
+                        },
+                        {
+                            name: name2,
+                        },
+                    ]),
+                },
+            ],
+        });
+    });
+
+    test("should return posts where an edge like String SHORTEST_LT", async () => {
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_SHORTEST_LT: ${someString1.length} } } }) {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: [
+                {
+                    content: content1,
+                    likes: expect.toIncludeSameMembers([
+                        {
+                            name: name1,
+                        },
+                        {
+                            name: name2,
+                        },
+                    ]),
+                },
+            ],
+        });
+    });
+
+    test("should return posts where an edge like String SHORTEST_LTE", async () => {
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_SHORTEST_LTE: ${someString2.length} } } }) {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: [
+                {
+                    content: content1,
+                    likes: expect.toIncludeSameMembers([
+                        {
+                            name: name1,
+                        },
+                        {
+                            name: name2,
+                        },
+                    ]),
+                },
+            ],
+        });
+    });
+
+    test("should return posts where an edge like String SHORTEST_GT", async () => {
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_SHORTEST_GT: ${someString2.length} } } }) {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: [
+                {
+                    content: content2,
+                    likes: expect.toIncludeSameMembers([
+                        {
+                            name: name3,
+                        },
+                    ]),
+                },
+            ],
+        });
+    });
+
+    test("should return posts where an edge like String SHORTEST_GTE", async () => {
+        const query = `
+            {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_SHORTEST_GTE: ${someString2.length} } } }) {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [postType.plural]: expect.toIncludeSameMembers([
+                {
+                    content: content2,
+                    likes: [
+                        {
+                            name: name3,
+                        },
+                    ],
+                },
+                {
+                    content: content1,
+                    likes: expect.toIncludeSameMembers([
+                        {
+                            name: name1,
+                        },
+                        {
+                            name: name2,
+                        },
+                    ]),
+                },
+            ]),
         });
     });
 });
