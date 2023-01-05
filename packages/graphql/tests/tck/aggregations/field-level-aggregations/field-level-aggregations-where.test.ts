@@ -72,7 +72,7 @@ describe("Field Level Aggregations Where", () => {
                 WITH this
                 MATCH (this_actorsAggregate_this1:\`Person\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
                 WHERE this_actorsAggregate_this1.age > $this_actorsAggregate_param0
-                RETURN count(this) AS this_actorsAggregate_var2
+                RETURN count(this_actorsAggregate_this1) AS this_actorsAggregate_var2
             }
             RETURN this { .title, actorsAggregate: { count: this_actorsAggregate_var2 } } AS this"
         `);
@@ -113,13 +113,13 @@ describe("Field Level Aggregations Where", () => {
                 WITH this
                 MATCH (this_actorsAggregate_this1:\`Person\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
                 WHERE this_actorsAggregate_this1.name CONTAINS $this_actorsAggregate_param0
-                RETURN count(this) AS this_actorsAggregate_var2
+                RETURN count(this_actorsAggregate_this1) AS this_actorsAggregate_var2
             }
             CALL {
                 WITH this
                 MATCH (this_directorsAggregate_this1:\`Person\`)-[this_directorsAggregate_this0:DIRECTED]->(this)
                 WHERE this_directorsAggregate_this1.name CONTAINS $this_directorsAggregate_param0
-                RETURN count(this) AS this_directorsAggregate_var2
+                RETURN count(this_directorsAggregate_this1) AS this_directorsAggregate_var2
             }
             RETURN this { .title, actorsAggregate: { count: this_actorsAggregate_var2 }, directorsAggregate: { count: this_directorsAggregate_var2 } } AS this"
         `);

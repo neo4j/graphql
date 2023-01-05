@@ -104,7 +104,7 @@ export function createFieldAggregation({
     let countFunction: Cypher.Function | undefined;
 
     if (aggregationFields.count) {
-        countFunction = Cypher.count(sourceRef);
+        countFunction = Cypher.count(targetRef);
         projectionMap.set({
             count: countRef,
         });
