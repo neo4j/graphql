@@ -70,7 +70,7 @@ describe("Field Level Aggregations", () => {
             CALL {
                 WITH this
                 MATCH (this_actorsAggregate_this1:\`Actor\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
-                RETURN count(this) AS this_actorsAggregate_var2
+                RETURN count(this_actorsAggregate_this1) AS this_actorsAggregate_var2
             }
             RETURN this { .title, actorsAggregate: { count: this_actorsAggregate_var2 } } AS this"
         `);
@@ -105,7 +105,7 @@ describe("Field Level Aggregations", () => {
             CALL {
                 WITH this
                 MATCH (this_actorsAggregate_this1:\`Actor\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
-                RETURN count(this) AS this_actorsAggregate_var2
+                RETURN count(this_actorsAggregate_this1) AS this_actorsAggregate_var2
             }
             CALL {
                 WITH this
