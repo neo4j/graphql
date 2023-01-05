@@ -26,11 +26,8 @@ Filtering of spatial types is different to filtering of numerical types and also
 The following case-sensitive comparison operators are only available for use on `String` and `ID` types:
 
 * `_STARTS_WITH`
-* `_NOT_STARTS_WITH`
 * `_ENDS_WITH`
-* `_NOT_ENDS_WITH`
 * `_CONTAINS`
-* `_NOT_CONTAINS`
 
 The following operators are disabled by default:
 
@@ -87,12 +84,9 @@ To enable the inclusion of this filter, set the config option `enableRegex` to `
 The following two comparison operators are available on non-array fields, and accept an array argument:
 
 * `_IN`
-* `_NOT_IN`
-
 Conversely, the following operators are available on array fields, and accept a single argument:
 
 * `_INCLUDES`
-* `_NOT_INCLUDES`
 
 These four operators are available for all types apart from `Boolean`.
 
@@ -120,9 +114,9 @@ query {
 
 === Combining operators
 
-All above-mentioned operators can be combined using the `AND`/`OR` operators. 
+All above-mentioned operators can be combined using the `AND`/`OR`/`NOT` operators. 
 They accept an array argument with items of the same format as the `where` argument, which means they can also be nested to form complex combinations.
-As an example, the below query matches all actors by the name of either "Keanu" or belonging to the "Pantoliano" family, that played in "The Matrix" movie.
+As an example, the below query matches all actors by the name of either "Keanu" or not belonging to the "Pantoliano" family, that played in "The Matrix" movie.
 
 [source, graphql, indent=0]
 ----
@@ -132,7 +126,7 @@ query {
             { 
                 OR: [
                     { name_CONTAINS: "Keanu" },
-                    { name_ENDS_WITH: "Pantoliano" }
+                    { NOT: { name_ENDS_WITH: "Pantoliano" } }
                 ]
             },
             {
@@ -167,13 +161,12 @@ query {
 
 == Relationship Filtering
 
-For each relationship field, `field`, a set of filters are available depending on whether the relationship is `n..1` or `n..m`. In the case of `n..1`, filtering is done on equality or inequality of the related node by specifying a filter on `field` or `field_NOT`, respectively. In the case of `n..m`, filtering is done on the list of related nodes and is based on the https://neo4j.com/docs/cypher-manual/current/functions/predicate/[List Predicates] available in Cypher.
+For each relationship field, `field`, a set of filters are available depending on whether the relationship is `n..1` or `n..m`. In the case of `n..1`, filtering is done on equality or inequality of the related node by specifying a filter on `field`, respectively. In the case of `n..m`, filtering is done on the list of related nodes and is based on the https://neo4j.com/docs/cypher-manual/current/functions/predicate/[List Predicates] available in Cypher.
 
 === Available Filters
 
 `n..1`::
     ** `field` - equality
-    ** `field_NOT` - inequality
 
 `n..m`::
     ** `field_ALL` - https://neo4j.com/docs/cypher-manual/current/functions/predicate/#functions-all[all]
@@ -202,7 +195,7 @@ type Post {
 }
 ----
 === `n..1` Relationships
-In the above, an `author` represents a `n..1` relationship on `Post` where a given `Post` is authored by one, and only one, `author`. The available filters here will be `author` and `author_NOT`.
+In the above, an `author` represents a `n..1` relationship on `Post` where a given `Post` is authored by one, and only one, `author`. The available filters here will be `author`.
 
 ==== Find all posts by a desired author
 [source, graphql, indent=0]
@@ -217,7 +210,7 @@ query {
 [source, graphql, indent=0]
 ----
 query {
-    posts(where: { author_NOT: { id: "7CF1D9D6-E527-4ACD-9C2A-207AE0F5CB8C" } }) {
+    posts(where: { NOT: { author: { id: "7CF1D9D6-E527-4ACD-9C2A-207AE0F5CB8C" } } }) {
         content
     }
 }

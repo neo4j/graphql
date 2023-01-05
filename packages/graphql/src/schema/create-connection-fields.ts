@@ -86,7 +86,7 @@ function createConnectionFields({
                 edge_NOT: `${connectionField.relationship.properties}Where`,
             });
             connectionWhere.setFieldDirectiveByName("edge_NOT", "deprecated", {
-                reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
+                reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
             });
         }
 
@@ -95,7 +95,7 @@ function createConnectionFields({
             [`${connectionField.fieldName}_NOT`]: connectionWhere,
         });
         whereInput.setFieldDirectiveByName(`${connectionField.fieldName}_NOT`, "deprecated", {
-            reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
+            reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
         });
 
         // n..m Relationships
@@ -107,7 +107,7 @@ function createConnectionFields({
                         ...acc,
                         [`${connectionField.fieldName}_${filter}`]: {
                             type: connectionWhere,
-                            directives: deprecatedDirectives
+                            directives: deprecatedDirectives,
                         },
                     }),
                     {}
@@ -157,7 +157,7 @@ function createConnectionFields({
                 node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
             });
             connectionWhere.setFieldDirectiveByName("node_NOT", "deprecated", {
-                reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
+                reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
             });
 
             if (schemaComposer.has(`${connectionField.relationship.typeMeta.name}Sort`)) {
@@ -181,7 +181,7 @@ function createConnectionFields({
                 });
 
                 connectionWhere.setFieldDirectiveByName("edge_NOT", "deprecated", {
-                    reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
+                    reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
                 });
             }
         } else if (connectionField.relationship.union) {
@@ -200,7 +200,7 @@ function createConnectionFields({
                     fields: {
                         OR: `[${unionWhereName}!]`,
                         AND: `[${unionWhereName}!]`,
-                        NOT: unionWhereName
+                        NOT: unionWhereName,
                     },
                 });
 
@@ -209,7 +209,7 @@ function createConnectionFields({
                     node_NOT: `${n.name}Where`,
                 });
                 unionWhere.setFieldDirectiveByName("node_NOT", "deprecated", {
-                    reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
+                    reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
                 });
 
                 if (connectionField.relationship.properties) {
@@ -222,7 +222,7 @@ function createConnectionFields({
                         edge_NOT: `${connectionField.relationship.properties}Where`,
                     });
                     unionWhere.setFieldDirectiveByName("edge_NOT", "deprecated", {
-                        reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
+                        reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
                     });
                 }
 
@@ -239,7 +239,7 @@ function createConnectionFields({
             });
 
             connectionWhere.setFieldDirectiveByName("node_NOT", "deprecated", {
-                reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
+                reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
             });
 
             if (getSortableFields(relatedNode).length) {

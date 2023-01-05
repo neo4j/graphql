@@ -453,17 +453,16 @@ function createRelationshipFields({
                             : {}),
                     },
                 });
-                
+
                 whereInputTC.setFieldDirectiveByName("node_NOT", "deprecated", {
-                    reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
+                    reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
                 });
 
                 if (rel.properties) {
                     whereInputTC.setFieldDirectiveByName("edge_NOT", "deprecated", {
-                        reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
+                        reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
                     });
                 }
-
 
                 if (!schemaComposer.has(deleteName)) {
                     schemaComposer.createInputTC({
@@ -597,7 +596,7 @@ function createRelationshipFields({
                 fields: {
                     AND: `[${name}!]`,
                     OR: `[${name}!]`,
-                    NOT: name
+                    NOT: name,
                 },
             });
 
@@ -690,8 +689,8 @@ function createRelationshipFields({
         const deprecates_NOT = {
             name: "deprecated",
             args: {
-                reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
-            }
+                reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
+            },
         };
 
         whereInput.addFields({
@@ -748,7 +747,6 @@ function createRelationshipFields({
                     },
                 },
             ]);
-           
         }
 
         const createName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}CreateFieldInput`;

@@ -38,9 +38,9 @@ interface Fields {
 const deprecates_NOT = {
     name: "deprecated",
     args: {
-        reason: `THIS_IS_A_PLACEHOLDER_CHANGE_TO_PROPER_DEPRECATED_DESCRIPTION`,
-    }
-}
+        reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
+    },
+};
 
 function getWhereFields({
     typeName,
@@ -80,7 +80,7 @@ function getWhereFields({
             if (f.typeMeta.name === "Boolean") {
                 return res;
             }
-            
+
             if (f.typeMeta.array) {
                 res[`${f.fieldName}_INCLUDES`] = {
                     type: f.typeMeta.input.where.type,
@@ -136,17 +136,9 @@ function getWhereFields({
                     res[`${f.fieldName}_MATCHES`] = { type: "String", directives: deprecatedDirectives };
                 }
 
-                const stringWhereOperators = [
-                    "_CONTAINS",
-                    "_STARTS_WITH",
-                    "_ENDS_WITH"
-                ];
+                const stringWhereOperators = ["_CONTAINS", "_STARTS_WITH", "_ENDS_WITH"];
 
-                const stringWhereOperatorsNegate = [
-                    "_NOT_CONTAINS",
-                    "_NOT_STARTS_WITH",
-                    "_NOT_ENDS_WITH",
-                ];
+                const stringWhereOperatorsNegate = ["_NOT_CONTAINS", "_NOT_STARTS_WITH", "_NOT_ENDS_WITH"];
 
                 Object.entries(features?.filters?.String || {}).forEach(([key, value]) => {
                     if (value) {
@@ -158,7 +150,10 @@ function getWhereFields({
                 });
 
                 stringWhereOperatorsNegate.forEach((comparator) => {
-                    res[`${f.fieldName}${comparator}`] = { type: f.typeMeta.name, directives: [...deprecatedDirectives, deprecates_NOT] };
+                    res[`${f.fieldName}${comparator}`] = {
+                        type: f.typeMeta.name,
+                        directives: [...deprecatedDirectives, deprecates_NOT],
+                    };
                 });
                 return res;
             }
