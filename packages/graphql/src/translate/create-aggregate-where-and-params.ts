@@ -23,6 +23,7 @@ import type { RelationField, Context, GraphQLWhereArg } from "../types";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
 import { NODE_OR_EDGE_KEYS, LOGICAL_OPERATORS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
+import mapToDbProperty from "../utils/map-to-db-property";
 
 type logicalOperator = "AND" | "OR";
 
@@ -98,6 +99,7 @@ export function aggregateWhere(
         } else if (NODE_OR_EDGE_KEYS.includes(key)) {
             const target = key === "edge" ? cypherRelation : aggregationTarget;
             const refNodeOrRelation = key === "edge" ? relationship : refNode;
+            if (!refNodeOrRelation) throw new Error(`Edge filter ${key} on undefined relationship`);
             const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateEntityWhere(
                 value,
                 refNodeOrRelation,
@@ -153,7 +155,7 @@ function createCountPredicateAndProjection(
 
 function aggregateEntityWhere(
     aggregateEntityWhereInput: WhereFilter,
-    refNodeOrRelation: Node | Relationship | undefined,
+    refNodeOrRelation: Node | Relationship,
     target: Cypher.Node | Cypher.Relationship
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
@@ -186,7 +188,7 @@ function aggregateEntityWhere(
 }
 
 function createEntityOperation(
-    refNodeOrRelation: Node | Relationship | undefined,
+    refNodeOrRelation: Node | Relationship,
     target: Cypher.Node | Cypher.Relationship,
     aggregationInputField: string,
     aggregationInputValue: any
@@ -217,10 +219,11 @@ function createEntityOperation(
             param: paramName,
         });
 
+        const dbFieldName = mapToDbProperty(refNodeOrRelation, fieldName);
         const collectedProperty =
             fieldType === "String" && logicalOperator !== "EQUAL"
-                ? Cypher.collect(Cypher.size(target.property(fieldName)))
-                : Cypher.collect(target.property(fieldName));
+                ? Cypher.collect(Cypher.size(target.property(dbFieldName)))
+                : Cypher.collect(target.property(dbFieldName));
         return Cypher.any(innerVar, collectedProperty, innerOperation);
     }
 }
