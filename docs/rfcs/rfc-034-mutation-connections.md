@@ -36,7 +36,7 @@ mutation CreateActors($input: [ActorCreateInput!]!) {
 }
 ```
 
-This RFC proposes to make connection fields queryable directly in the Selection Set.
+This RFC proposes to make connection fields queryable directly in the Selection Set of the mutations response.
 For instance:
 
 ```graphql
