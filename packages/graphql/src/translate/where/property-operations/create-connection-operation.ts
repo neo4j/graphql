@@ -42,7 +42,7 @@ export function createConnectionOperation({
     operator: string | undefined;
 }): {
     predicate: Cypher.BooleanOp | Cypher.RawCypher | undefined;
-    preComputedSubqueries: Cypher.CompositeClause | undefined;
+    preComputedSubquery: Cypher.CompositeClause | undefined;
 } {
     let nodeEntries: Record<string, any>;
 
@@ -100,10 +100,12 @@ export function createConnectionOperation({
         });
 
         subqueries = Cypher.concat(subqueries, preComputedSubqueries);
+        if (context.nodes.some((innerNode) => innerNode.plural === context.resolveTree.name) && preComputedSubqueries && !preComputedSubqueries.empty)
+            subqueries = Cypher.concat(new Cypher.OptionalMatch(matchPattern), subqueries);
         operations.push(subquery);
     });
 
-    return { predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined, preComputedSubqueries: subqueries };
+    return { predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined, preComputedSubquery: subqueries };
 }
 
 export function createConnectionWherePropertyOperation({
@@ -194,7 +196,7 @@ export function createConnectionWherePropertyOperation({
     });
     return {
         predicate: Cypher.and(...filterTruthy(params)),
-        preComputedSubqueries: Cypher.concat(...preComputedSubqueriesResult),
+        preComputedSubqueries: preComputedSubqueriesResult.length ? Cypher.concat(...preComputedSubqueriesResult) : undefined,
     };
 }
 
