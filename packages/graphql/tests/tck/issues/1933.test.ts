@@ -90,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_projectsAggregate_this0:PARTICIPATES]->(this_projectsAggregate_this1:\`Project\`)
-                RETURN count(this) AS this_projectsAggregate_var2
+                RETURN count(this_projectsAggregate_this1) AS this_projectsAggregate_var2
             }
             CALL {
                 WITH this
@@ -143,7 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_projectsAggregate_this0:PARTICIPATES]->(this_projectsAggregate_this1:\`Project\`)
-                RETURN count(this) AS this_projectsAggregate_var2
+                RETURN count(this_projectsAggregate_this1) AS this_projectsAggregate_var2
             }
             CALL {
                 WITH this
