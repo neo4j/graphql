@@ -18,6 +18,7 @@
  */
 
 import Cypher from "../src";
+import { TestClause } from "../src/utils/TestClause";
 
 describe("Params", () => {
     test("Ignore unused parameters", () => {
@@ -40,5 +41,21 @@ describe("Params", () => {
               "param0": 1999,
             }
         `);
+    });
+
+    test("use named param twice", () => {
+        const param1 = new Cypher.NamedParam("auth");
+        const var1 = new Cypher.Variable();
+
+        const clause1 = new TestClause(param1, var1);
+        const var2 = new Cypher.Variable();
+        const clause2 = new TestClause(param1, var2);
+        const { cypher, params } = Cypher.concat(clause1, clause2).build();
+
+        expect(cypher).toMatchInlineSnapshot(`
+            "$authvar0
+            $authvar1"
+        `);
+        expect(params).toMatchInlineSnapshot(`Object {}`);
     });
 });
