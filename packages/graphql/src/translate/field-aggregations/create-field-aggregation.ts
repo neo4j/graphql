@@ -18,7 +18,7 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { Node } from "../../classes";
+import type { GraphElement, Node } from "../../classes";
 import type { Context, GraphQLWhereArg } from "../../types";
 import { getFieldType, AggregationType, getReferenceNode, getFieldByName, getReferenceRelation } from "./utils";
 import * as AggregationSubQueries from "./aggregation-sub-queries";
@@ -104,7 +104,7 @@ export function createFieldAggregation({
     let countFunction: Cypher.Function | undefined;
 
     if (aggregationFields.count) {
-        countFunction = Cypher.count(sourceRef);
+        countFunction = Cypher.count(targetRef);
         projectionMap.set({
             count: countRef,
         });
@@ -116,7 +116,7 @@ export function createFieldAggregation({
     if (nodeFields) {
         const { innerProjectionMap: nodeProjectionMap, innerProjectionSubqueries } =
             getAggregationProjectionAndSubqueries({
-                referenceNode,
+                referenceNodeOrRelationship: referenceNode,
                 matchWherePattern,
                 targetRef,
                 sourceRef,
@@ -129,7 +129,7 @@ export function createFieldAggregation({
     if (edgeFields) {
         const { innerProjectionMap: edgeProjectionMap, innerProjectionSubqueries } =
             getAggregationProjectionAndSubqueries({
-                referenceNode,
+                referenceNodeOrRelationship: referenceRelation,
                 matchWherePattern,
                 targetRef: targetPattern,
                 sourceRef,
@@ -155,13 +155,13 @@ export function createFieldAggregation({
 }
 
 function getAggregationProjectionAndSubqueries({
-    referenceNode,
+    referenceNodeOrRelationship,
     matchWherePattern,
     targetRef,
     sourceRef,
     fields,
 }: {
-    referenceNode: Node;
+    referenceNodeOrRelationship: GraphElement;
     matchWherePattern: Cypher.Clause;
     targetRef: Cypher.Node | Cypher.Relationship;
     sourceRef: Cypher.Node;
@@ -171,11 +171,11 @@ function getAggregationProjectionAndSubqueries({
     const innerProjectionMap = new Cypher.Map();
 
     Object.values(fields).forEach((field) => {
-        const dbProperty = mapToDbProperty(referenceNode, field.name);
+        const dbProperty = mapToDbProperty(referenceNodeOrRelationship, field.name);
         const fieldType = getFieldType(field);
         const fieldName = dbProperty || field.name;
         const fieldRef = new Cypher.Variable();
-        innerProjectionMap.set(fieldName, fieldRef);
+        innerProjectionMap.set(field.name, fieldRef);
         const subquery = getAggregationSubquery({
             matchWherePattern,
             fieldName,

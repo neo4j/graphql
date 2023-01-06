@@ -71,7 +71,7 @@ jobs:
     if: always()
 
     steps:
-      - uses: martialonline/workflow-status@616a9642a17fa15d9b0c5b4483b82244f74446d6 # tag=v3
+      - uses: martialonline/workflow-status@fe13c6a4716673e224038aa1b02387352fb35e13 # v4
         id: check
       - name: Send Slack announcement of pipeline failure
         if: steps.check.outputs.status == 'failure' && github.event_name == 'schedule'
