@@ -8,9 +8,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
         neo4j-version:
           - 4.3.22-enterprise
           #   - 4.4-community
@@ -44,8 +41,6 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run packages/plugins/graphql-plugin-subscriptions-amqp e2e tests
         run: yarn run test:e2e --coverage
         working-directory: packages/plugins/graphql-plugin-subscriptions-amqp

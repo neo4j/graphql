@@ -39,7 +39,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [ "lts/*", "latest"]
+        node: ["lts/*", "latest"]
         packages:
           [
             { package: "ogm", shard: 1/1 },
@@ -49,9 +49,6 @@ jobs:
             { package: "graphql", shard: 3/4 },
             { package: "graphql", shard: 4/4 },
           ]
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
 
     runs-on: ubuntu-latest
 
@@ -97,8 +94,6 @@ jobs:
           535893049302.dkr.ecr.eu-west-1.amazonaws.com/neo4j-dev:nightly-enterprise
       - name: Install dependencies
         run: yarn --immutable
-      - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --shard=${{ matrix.packages.shard }} --coverage

@@ -16,12 +16,6 @@ jobs:
         ports:
           - 7687:7687
 
-    strategy:
-      matrix:
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
-
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -41,7 +35,6 @@ jobs:
         run: |
           chmod +x ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh && ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh
           npm install ../graphql/package.tgz
-          npm install graphql@${{ matrix.graphql-version }}
         working-directory: packages/neo4j-graphql-nextjs
       - name: Copy .env file
         run: cp docs/modules/ROOT/examples/code-partials/nextjs/env.example packages/neo4j-graphql-nextjs/.env.local

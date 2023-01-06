@@ -29,9 +29,6 @@ jobs:
           - 4.4.15-enterprise
           #   - 5-community
           - 5-enterprise
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
 
     runs-on: ubuntu-latest
 
@@ -54,8 +51,6 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --shard=${{ matrix.packages.shard }} --coverage
