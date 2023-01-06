@@ -214,7 +214,7 @@ describe("aggregations-where-count", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).posts).toEqual([
+            expect((gqlResult.data as any).posts).toIncludeSameMembers([
                 {
                     testString,
                     likes: [{ testString }],

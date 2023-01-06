@@ -200,6 +200,5 @@ export function translateRead(
         projectionSubqueries,
         projectionClause
     );
-
     return readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
 }
