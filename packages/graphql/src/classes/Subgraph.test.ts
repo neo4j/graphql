@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import { print } from "graphql";
+import type { ConstDirectiveNode } from "graphql";
 import gql from "graphql-tag";
 import { Subgraph } from "./Subgraph";
 
 describe("Subgraph", () => {
-    describe("findFederationLinkDirective", () => {
+    describe("findFederationLinkMeta", () => {
         test("can find link directive in schema definition", () => {
             const typeDefs = gql`
                 type Query {
@@ -42,15 +42,13 @@ describe("Subgraph", () => {
                     photo: String!
                 }
 
-                schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"]) {
-                    query: Query
-                }
+                extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
             `;
 
             // @ts-ignore
-            const plugin = new Subgraph(typeDefs, undefined);
+            const plugin = new Subgraph(typeDefs);
 
-            expect(plugin["findFederationLinkDirective"](typeDefs)?.name.value).toBe("link");
+            expect(plugin["findFederationLinkMeta"](typeDefs)?.directive.name.value).toBe("link");
         });
 
         test("can find link directive in schema extension", () => {
@@ -76,9 +74,9 @@ describe("Subgraph", () => {
             `;
 
             // @ts-ignore
-            const plugin = new Subgraph(typeDefs, undefined);
+            const plugin = new Subgraph(typeDefs);
 
-            expect(plugin["findFederationLinkDirective"](typeDefs)?.name.value).toBe("link");
+            expect(plugin["findFederationLinkMeta"](typeDefs)?.directive.name.value).toBe("link");
         });
 
         test("returns undefined if link directive imports non-Federation schema", () => {
@@ -107,9 +105,9 @@ describe("Subgraph", () => {
                 }
             `;
 
-            // findFederationLinkDirective called in constructor
+            // findFederationLinkMeta called in constructor
             // @ts-ignore
-            expect(() => new Subgraph(typeDefs, undefined)).toThrow(
+            expect(() => new Subgraph(typeDefs)).toThrow(
                 "typeDefs must contain `@link` schema extension to be used with Apollo Federation"
             );
         });
@@ -134,9 +132,9 @@ describe("Subgraph", () => {
                 }
             `;
 
-            // findFederationLinkDirective called in constructor
+            // findFederationLinkMeta called in constructor
             // @ts-ignore
-            expect(() => new Subgraph(typeDefs, undefined)).toThrow(
+            expect(() => new Subgraph(typeDefs)).toThrow(
                 "typeDefs must contain `@link` schema extension to be used with Apollo Federation"
             );
         });
@@ -175,23 +173,24 @@ describe("Subgraph", () => {
             `;
 
             // @ts-ignore
-            const plugin = new Subgraph(typeDefs, undefined);
+            const plugin = new Subgraph(typeDefs);
 
-            const directive = plugin["findFederationLinkDirective"](typeDefs);
+            const directive = plugin["findFederationLinkMeta"](typeDefs)?.directive;
             expect(directive).toBeDefined();
 
-            plugin["parseLinkImportArgument"](directive);
+            plugin["parseLinkImportArgument"](directive as ConstDirectiveNode);
 
             expect(plugin["importArgument"]).toEqual(
                 new Map([
-                    ["@key", "@key"],
-                    ["@shareable", "@shared"],
-                    ["@inaccessible", "@federation__inaccessible"],
-                    ["@override", "@federation__override"],
-                    ["@external", "@ext"],
-                    ["@provides", "@federation__provides"],
-                    ["@requires", "@requires"],
-                    ["@tag", "@federation__tag"],
+                    ["key", "key"],
+                    ["shareable", "shared"],
+                    ["inaccessible", "federation__inaccessible"],
+                    ["override", "federation__override"],
+                    ["external", "ext"],
+                    ["provides", "federation__provides"],
+                    ["requires", "requires"],
+                    ["tag", "federation__tag"],
+                    ["extends", "federation__extends"],
                 ])
             );
         });
@@ -229,9 +228,7 @@ describe("Subgraph", () => {
 
             // parseLinkImportArgument called in constructor
             // @ts-ignore
-            expect(() => new Subgraph(typeDefs, undefined)).toThrow(
-                "Encountered unknown Apollo Federation directive @banana"
-            );
+            expect(() => new Subgraph(typeDefs)).toThrow("Encountered unknown Apollo Federation directive @banana");
         });
 
         test("throws an error alias of non-string type", () => {
@@ -267,58 +264,7 @@ describe("Subgraph", () => {
 
             // parseLinkImportArgument called in constructor
             // @ts-ignore
-            expect(() => new Subgraph(typeDefs, undefined)).toThrow(
-                "Alias for directive @external is not of type string"
-            );
-        });
-    });
-
-    describe("filterFederationDirectives", () => {
-        test("filters @link and @key directives", () => {
-            const typeDefs = gql`
-                extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
-
-                type Query {
-                    "The full list of locations presented by the Interplanetary Space Tourism department"
-                    locations: [Location!]!
-                    "The details of a specific location"
-                    location(id: ID!): Location
-                }
-
-                type Location @key(fields: "id") {
-                    id: ID!
-                    "The name of the location"
-                    name: String!
-                    "A short description about the location"
-                    description: String!
-                    "The location's main photo as a URL"
-                    photo: String!
-                }
-            `;
-
-            // @ts-ignore
-            const plugin = new Subgraph(typeDefs, undefined);
-
-            const filteredTypeDefs = plugin["filterFederationDirectives"](typeDefs);
-
-            expect(print(filteredTypeDefs)).toMatchInlineSnapshot(`
-                "type Query {
-                  \\"The full list of locations presented by the Interplanetary Space Tourism department\\"
-                  locations: [Location!]!
-                  \\"The details of a specific location\\"
-                  location(id: ID!): Location
-                }
-
-                type Location {
-                  id: ID!
-                  \\"The name of the location\\"
-                  name: String!
-                  \\"A short description about the location\\"
-                  description: String!
-                  \\"The location's main photo as a URL\\"
-                  photo: String!
-                }"
-            `);
+            expect(() => new Subgraph(typeDefs)).toThrow("Alias for directive @external is not of type string");
         });
     });
 });
