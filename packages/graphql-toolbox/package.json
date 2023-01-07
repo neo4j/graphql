@@ -80,7 +80,7 @@
         "jest-environment-jsdom": "29.3.1",
         "node-polyfill-webpack-plugin": "2.0.1",
         "parse5": "7.1.2",
-        "postcss": "8.4.20",
+        "postcss": "8.4.21",
         "postcss-loader": "7.0.2",
         "randomstring": "1.2.3",
         "style-loader": "3.3.1",
