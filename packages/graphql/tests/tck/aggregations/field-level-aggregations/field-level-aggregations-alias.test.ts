@@ -81,7 +81,7 @@ describe("Field Level Aggregations Alias", () => {
                 WITH collect(this_actorsAggregate_this0.name) AS list
                 RETURN { longest: head(list), shortest: last(list) } AS this_actorsAggregate_var2
             }
-            RETURN this { actorsAggregate: { node: { name: this_actorsAggregate_var2 } } } AS this"
+            RETURN this { actorsAggregate: { node: { myName: this_actorsAggregate_var2 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -112,7 +112,7 @@ describe("Field Level Aggregations Alias", () => {
             CALL {
                 WITH this
                 MATCH (this_actorsAggregate_this1:\`Actor\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
-                RETURN { min: min(this_actorsAggregate_this0.time), max: max(this_actorsAggregate_this0.time), average: avg(this_actorsAggregate_this0.time), sum: sum(this_actorsAggregate_this0.time) }  AS this_actorsAggregate_var2
+                RETURN { min: min(this_actorsAggregate_this0.screentime), max: max(this_actorsAggregate_this0.screentime), average: avg(this_actorsAggregate_this0.screentime), sum: sum(this_actorsAggregate_this0.screentime) }  AS this_actorsAggregate_var2
             }
             RETURN this { actorsAggregate: { edge: { time: this_actorsAggregate_var2 } } } AS this"
         `);

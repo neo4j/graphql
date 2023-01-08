@@ -77,7 +77,7 @@ describe("Field Level Aggregations", () => {
             CALL {
                 WITH this
                 MATCH (this_actorsAggregate_this1:\`Actor\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
-                RETURN count(this) AS this_actorsAggregate_var2
+                RETURN count(this_actorsAggregate_this1) AS this_actorsAggregate_var2
             }
             RETURN this { .title, actorsAggregate: { count: this_actorsAggregate_var2 } } AS this"
         `);
@@ -119,7 +119,7 @@ describe("Field Level Aggregations", () => {
                 WITH this
                 MATCH (this)-[this_moviesAggregate_this0:ACTED_IN]->(this_moviesAggregate_this1:\`Movie\`)
                 WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN count(this) AS this_moviesAggregate_var2
+                RETURN count(this_moviesAggregate_this1) AS this_moviesAggregate_var2
             }
             RETURN this { .name, moviesAggregate: { count: this_moviesAggregate_var2 } } AS this"
         `);
