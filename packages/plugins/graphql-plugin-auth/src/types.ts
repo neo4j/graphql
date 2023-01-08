@@ -3,4 +3,4 @@ type RequestLike = {
     cookies?: { token?: string };
 };
 
-export { RequestLike }
+export { RequestLike };

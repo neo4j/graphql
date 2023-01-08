@@ -41,7 +41,6 @@ class Neo4jGraphQLAuthJWKSPlugin {
     bindPredicate: "all" | "any";
     input: JWKSPluginInput;
     constructor(input: JWKSPluginInput) {
-
         //We are going to use this input later, so we need to save it here.
         this.input = input;
 
@@ -51,7 +50,7 @@ class Neo4jGraphQLAuthJWKSPlugin {
 
         //It will be empty string if the endpoint is a function
         //This means the value will be calculated later
-        const jwksEndpoint = typeof input.jwksEndpoint === 'string' ? input.jwksEndpoint : '';
+        const jwksEndpoint = typeof input.jwksEndpoint === "string" ? input.jwksEndpoint : "";
 
         this.options = {
             jwksUri: jwksEndpoint,
@@ -63,12 +62,11 @@ class Neo4jGraphQLAuthJWKSPlugin {
         };
 
         //If the endpoint is set in the constructor directly we can create th client immediately here
-        if (jwksEndpoint !== '')
-            this.client = new JwksClient(this.options);
+        if (jwksEndpoint !== "") this.client = new JwksClient(this.options);
     }
 
     tryToResolveKeys(req: RequestLike): void {
-        if (typeof this.input.jwksEndpoint === 'string') return;
+        if (typeof this.input.jwksEndpoint === "string") return;
 
         //The url will be computed based on the jwksEndpoint implementation
         this.options.jwksUri = this.input.jwksEndpoint(req);
@@ -97,7 +95,9 @@ class Neo4jGraphQLAuthJWKSPlugin {
     private async verifyJWKS<T>({ token }: { token: string }): Promise<T> {
         const getKey: jsonwebtoken.GetPublicKeyOrSecret = (header, callback) => {
             if (!this.client) {
-                debug("JwksClient should NOT be empty! Make sure the 'tryToResolveKeys' method is called before decoding");
+                debug(
+                    "JwksClient should NOT be empty! Make sure the 'tryToResolveKeys' method is called before decoding"
+                );
                 return;
             }
             const kid: string = header.kid || "";
@@ -109,7 +109,10 @@ class Neo4jGraphQLAuthJWKSPlugin {
         };
 
         return new Promise((resolve, reject) => {
-            if (!this.client) reject("JwksClient should not be empty! Make sure the 'tryToResolveKeys' method is called before decoding");
+            if (!this.client)
+                reject(
+                    "JwksClient should not be empty! Make sure the 'tryToResolveKeys' method is called before decoding"
+                );
             jsonwebtoken.verify(
                 token,
                 getKey,

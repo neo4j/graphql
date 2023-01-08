@@ -32,7 +32,7 @@ describe("Neo4jGraphQLAuthJWKSPlugin", () => {
         const plugin = new Neo4jGraphQLAuthJWKSPlugin({
             jwksEndpoint: () => {
                 return "https://my-dummy-identity:8080/tenant1";
-            }
+            },
         });
         expect(plugin.client).toBeNull();
     });
@@ -41,13 +41,13 @@ describe("Neo4jGraphQLAuthJWKSPlugin", () => {
         const plugin = new Neo4jGraphQLAuthJWKSPlugin({
             jwksEndpoint: () => {
                 return expectedEndpoint;
-            }
+            },
         });
         //How we use the headers or request inside the jwksFunction is not the logic of `tryToResolveKeys` method
         plugin.tryToResolveKeys({
             headers: {
-                "test": "test_header"
-            }
+                test: "test_header",
+            },
         });
 
         expect(plugin.options.jwksUri).toBe(expectedEndpoint);

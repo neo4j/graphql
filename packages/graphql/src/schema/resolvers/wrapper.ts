@@ -54,31 +54,31 @@ export const wrapResolver =
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
         const { driverConfig } = config;
 
-                if (debug.enabled) {
-                    const query = print(info.operation);
+        if (debug.enabled) {
+            const query = print(info.operation);
 
-                    debug(
-                        "%s",
-                        `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(info.variableValues, null, 2)}`
+            debug(
+                "%s",
+                `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(info.variableValues, null, 2)}`
+            );
+        }
+
+        if (!context?.executionContext) {
+            if (context?.driver) {
+                context.executionContext = context.driver;
+            } else {
+                if (!driver) {
+                    throw new Error(
+                        "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or a driver, session or transaction passed as context.executionContext in each request."
                     );
                 }
+                context.executionContext = driver;
+            }
+        }
 
-                if (!context?.executionContext) {
-                    if (context?.driver) {
-                        context.executionContext = context.driver;
-                    } else {
-                        if (!driver) {
-                            throw new Error(
-                                "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or a driver, session or transaction passed as context.executionContext in each request."
-                            );
-                        }
-                        context.executionContext = driver;
-                    }
-                }
-
-                if (!context?.driverConfig) {
-                    context.driverConfig = driverConfig;
-                }
+        if (!context?.driverConfig) {
+            context.driverConfig = driverConfig;
+        }
 
         context.nodes = nodes;
         context.relationships = relationships;
@@ -87,72 +87,74 @@ export const wrapResolver =
         context.subscriptionsEnabled = Boolean(context.plugins?.subscriptions);
         context.callbacks = config.callbacks;
 
-                if (!context.jwt) {
-                    if (context.plugins.auth)
-                        //Here we will try to compute the generic Secret or the generic jwksEndpoint
-                        context.plugins.auth.tryToResolveKeys(context instanceof IncomingMessage ? context : context.req || context.request);
-                    const token = getToken(context);
-                    context.jwt = await decodeToken(token, context.plugins.auth);
-                }
+        if (!context.jwt) {
+            if (context.plugins.auth)
+                //Here we will try to compute the generic Secret or the generic jwksEndpoint
+                context.plugins.auth.tryToResolveKeys(
+                    context instanceof IncomingMessage ? context : context.req || context.request
+                );
+            const token = getToken(context);
+            context.jwt = await decodeToken(token, context.plugins.auth);
+        }
 
-                verifyGlobalAuthentication(context, context.plugins?.auth);
+        verifyGlobalAuthentication(context, context.plugins?.auth);
 
-                context.auth = createAuthParam({ context });
+        context.auth = createAuthParam({ context });
 
-                const executorConstructorParam: ExecutorConstructorParam = {
-                    executionContext: context.executionContext,
-                    auth: context.auth,
-                };
+        const executorConstructorParam: ExecutorConstructorParam = {
+            executionContext: context.executionContext,
+            auth: context.auth,
+        };
 
-                if (config.queryOptions) {
-                    executorConstructorParam.queryOptions = config.queryOptions;
-                }
+        if (config.queryOptions) {
+            executorConstructorParam.queryOptions = config.queryOptions;
+        }
 
-                if (context.driverConfig?.database) {
-                    executorConstructorParam.database = context.driverConfig?.database;
-                }
+        if (context.driverConfig?.database) {
+            executorConstructorParam.database = context.driverConfig?.database;
+        }
 
-                if (context.driverConfig?.bookmarks) {
-                    executorConstructorParam.bookmarks = context.driverConfig?.bookmarks;
-                }
+        if (context.driverConfig?.bookmarks) {
+            executorConstructorParam.bookmarks = context.driverConfig?.bookmarks;
+        }
 
-                context.executor = new Executor(executorConstructorParam);
+        context.executor = new Executor(executorConstructorParam);
 
-                if (!context.neo4jDatabaseInfo?.version) {
-                    if (dbInfo) {
-                        neo4jDatabaseInfo = dbInfo;
-                    }
-                    if (!neo4jDatabaseInfo?.version) {
-                        neo4jDatabaseInfo = await getNeo4jDatabaseInfo(context.executor);
-                    }
-                    context.neo4jDatabaseInfo = neo4jDatabaseInfo;
-                }
+        if (!context.neo4jDatabaseInfo?.version) {
+            if (dbInfo) {
+                neo4jDatabaseInfo = dbInfo;
+            }
+            if (!neo4jDatabaseInfo?.version) {
+                neo4jDatabaseInfo = await getNeo4jDatabaseInfo(context.executor);
+            }
+            context.neo4jDatabaseInfo = neo4jDatabaseInfo;
+        }
 
-                return next(root, args, context, info);
-            };
+        return next(root, args, context, info);
+    };
 
 export const wrapSubscription =
     (resolverArgs: WrapResolverArguments) =>
-        (next) =>
-            async (root: any, args: any, context: SubscriptionConnectionContext | undefined, info: GraphQLResolveInfo) => {
-                const plugins = resolverArgs?.plugins || {};
-                const contextParams = context?.connectionParams || {};
+    (next) =>
+    async (root: any, args: any, context: SubscriptionConnectionContext | undefined, info: GraphQLResolveInfo) => {
+        const plugins = resolverArgs?.plugins || {};
+        const contextParams = context?.connectionParams || {};
 
-                if (!plugins.subscriptions) {
-                    debug("Subscription Plugin not set");
-                    return next(root, args, context, info);
-                }
+        if (!plugins.subscriptions) {
+            debug("Subscription Plugin not set");
+            return next(root, args, context, info);
+        }
 
-                const subscriptionContext: SubscriptionContext = {
-                    plugin: plugins.subscriptions,
-                };
+        const subscriptionContext: SubscriptionContext = {
+            plugin: plugins.subscriptions,
+        };
 
-                if (!context?.jwt && contextParams.authorization) {
-                    const token = parseBearerToken(contextParams.authorization);
-                    subscriptionContext.jwt = await decodeToken(token, plugins.auth);
-                }
+        if (!context?.jwt && contextParams.authorization) {
+            const token = parseBearerToken(contextParams.authorization);
+            subscriptionContext.jwt = await decodeToken(token, plugins.auth);
+        }
 
-                verifyGlobalAuthentication(subscriptionContext, plugins.auth);
+        verifyGlobalAuthentication(subscriptionContext, plugins.auth);
 
-                return next(root, args, { ...context, ...contextParams, ...subscriptionContext }, info);
-            };
+        return next(root, args, { ...context, ...contextParams, ...subscriptionContext }, info);
+    };

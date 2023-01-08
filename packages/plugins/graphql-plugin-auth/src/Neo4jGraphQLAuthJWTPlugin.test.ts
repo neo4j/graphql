@@ -54,14 +54,14 @@ describe("Neo4jGraphQLAuthJWTPlugin", () => {
 
         plugin.tryToResolveKeys({
             headers: {
-                "test": "test-header"
-            }
+                test: "test-header",
+            },
         });
 
         const decoded = await plugin.decode(encoded);
 
         expect(decoded).toMatchObject(payload);
-    })
+    });
 
     test("should decode token when using noVerify", async () => {
         const payload = {
