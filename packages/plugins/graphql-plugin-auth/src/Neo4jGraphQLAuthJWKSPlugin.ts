@@ -109,7 +109,7 @@ class Neo4jGraphQLAuthJWKSPlugin {
         };
 
         return new Promise((resolve, reject) => {
-            if (!this.client) reject("JwksClient should NOT be empty! Make sure the 'tryToResolveKeys' method is called before decoding");
+            if (!this.client) reject("JwksClient should not be empty! Make sure the 'tryToResolveKeys' method is called before decoding");
             jsonwebtoken.verify(
                 token,
                 getKey,
