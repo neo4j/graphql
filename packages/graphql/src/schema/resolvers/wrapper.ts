@@ -88,11 +88,11 @@ export const wrapResolver =
         context.callbacks = config.callbacks;
 
         if (!context.jwt) {
-            if (context.plugins.auth)
-                //Here we will try to compute the generic Secret or the generic jwksEndpoint
-                context.plugins.auth.tryToResolveKeys(
-                    context instanceof IncomingMessage ? context : context.req || context.request
-                );
+            if (context.plugins.auth) {
+                // Here we will try to compute the generic Secret or the generic jwksEndpoint
+                const contextRequest = context.req || context.request;
+                context.plugins.auth.tryToResolveKeys(context instanceof IncomingMessage ? context : contextRequest);
+            }
             const token = getToken(context);
             context.jwt = await decodeToken(token, context.plugins.auth);
         }
