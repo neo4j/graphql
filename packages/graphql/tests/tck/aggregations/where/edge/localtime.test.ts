@@ -107,7 +107,7 @@ describe("Cypher Aggregations where edge with LocalTime", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN any(var2 IN collect(this0.someLocalTimeAlias) WHERE var2 = $param0) AS var3
+                RETURN any(var2 IN collect(this0._someLocalTimeAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
             WHERE var3 = true
