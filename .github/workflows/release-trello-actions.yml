@@ -28,7 +28,7 @@ jobs:
             --data-urlencode "idList=${LIST}" \
             --data-urlencode "name=Changelog" \
             --data-urlencode "desc=${{ github.event.release.body }}" \
-            --data-urlencode "idLabels=${{ secrets.CHANGELOG_LABEL }}" \
+            --data-urlencode "idLabels=${{ secrets.CHANGELOG_LABEL }},${{ secrets.EXCLUDE_FROM_METRICS_LABEL }}" \
             --data-urlencode "key=${{ secrets.TRELLO_API_KEY }}" \
             --data-urlencode "token=${{ secrets.TRELLO_API_TOKEN }}" \
             --url "https://api.trello.com/1/cards" | jq -r .id )

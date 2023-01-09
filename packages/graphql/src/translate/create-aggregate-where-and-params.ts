@@ -18,11 +18,12 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Node } from "../classes";
+import type { Node, Relationship } from "../classes";
 import type { RelationField, Context, GraphQLWhereArg } from "../types";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
 import { NODE_OR_EDGE_KEYS, LOGICAL_OPERATORS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
+import mapToDbProperty from "../utils/map-to-db-property";
 
 type logicalOperator = "AND" | "OR";
 
@@ -46,6 +47,7 @@ type AggregateWhereReturn = {
 export function aggregatePreComputedWhereFields(
     value: GraphQLWhereArg,
     relationField: RelationField,
+    relationship: Relationship | undefined,
     context: Context,
     matchNode: Cypher.Variable
 ): {
@@ -67,6 +69,7 @@ export function aggregatePreComputedWhereFields(
     const { returnProjections, predicates } = aggregateWhere(
         value as AggregateWhereInput,
         refNode,
+        relationship,
         aggregationTarget,
         cypherRelation
     );
@@ -81,6 +84,7 @@ export function aggregatePreComputedWhereFields(
 export function aggregateWhere(
     aggregateWhereInput: AggregateWhereInput,
     refNode: Node,
+    relationship: Relationship | undefined,
     aggregationTarget: Cypher.Node,
     cypherRelation: Cypher.Relationship
 ): AggregateWhereReturn {
@@ -94,9 +98,11 @@ export function aggregateWhere(
             predicates.push(innerPredicate);
         } else if (NODE_OR_EDGE_KEYS.includes(key)) {
             const target = key === "edge" ? cypherRelation : aggregationTarget;
+            const refNodeOrRelation = key === "edge" ? relationship : refNode;
+            if (!refNodeOrRelation) throw new Error(`Edge filter ${key} on undefined relationship`);
             const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateEntityWhere(
                 value,
-                refNode,
+                refNodeOrRelation,
                 target
             );
             returnProjections.push(...innerReturnProjections);
@@ -108,6 +114,7 @@ export function aggregateWhere(
                 const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateWhere(
                     whereInput,
                     refNode,
+                    relationship,
                     aggregationTarget,
                     cypherRelation
                 );
@@ -148,7 +155,7 @@ function createCountPredicateAndProjection(
 
 function aggregateEntityWhere(
     aggregateEntityWhereInput: WhereFilter,
-    refNode: Node,
+    refNodeOrRelation: Node | Relationship,
     target: Cypher.Node | Cypher.Relationship
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
@@ -160,7 +167,7 @@ function aggregateEntityWhere(
             value.forEach((whereInput) => {
                 const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateEntityWhere(
                     whereInput,
-                    refNode,
+                    refNodeOrRelation,
                     target
                 );
                 returnProjections.push(...innerReturnProjections);
@@ -168,7 +175,7 @@ function aggregateEntityWhere(
             });
             predicates.push(logicalOperator(...logicalPredicates));
         } else {
-            const operation = createEntityOperation(refNode, target, key, value);
+            const operation = createEntityOperation(refNodeOrRelation, target, key, value);
             const operationVar = new Cypher.Variable();
             returnProjections.push([operation, operationVar]);
             predicates.push(Cypher.eq(operationVar, new Cypher.Literal(true)));
@@ -181,7 +188,7 @@ function aggregateEntityWhere(
 }
 
 function createEntityOperation(
-    refNode: Node,
+    refNodeOrRelation: Node | Relationship,
     target: Cypher.Node | Cypher.Relationship,
     aggregationInputField: string,
     aggregationInputValue: any
@@ -190,7 +197,7 @@ function createEntityOperation(
     const regexResult = aggregationFieldRegEx.exec(aggregationInputField)?.groups as AggregationFieldRegexGroups;
     const { logicalOperator } = regexResult;
     const { fieldName, aggregationOperator } = regexResult;
-    const fieldType = refNode.primitiveFields.find((name) => name.fieldName === fieldName)?.typeMeta.name;
+    const fieldType = refNodeOrRelation?.primitiveFields.find((name) => name.fieldName === fieldName)?.typeMeta.name;
 
     if (fieldType === "String" && aggregationOperator) {
         return createBaseOperation({
@@ -212,10 +219,11 @@ function createEntityOperation(
             param: paramName,
         });
 
+        const dbFieldName = mapToDbProperty(refNodeOrRelation, fieldName);
         const collectedProperty =
             fieldType === "String" && logicalOperator !== "EQUAL"
-                ? Cypher.collect(Cypher.size(target.property(fieldName)))
-                : Cypher.collect(target.property(fieldName));
+                ? Cypher.collect(Cypher.size(target.property(dbFieldName)))
+                : Cypher.collect(target.property(dbFieldName));
         return Cypher.any(innerVar, collectedProperty, innerOperation);
     }
 }
