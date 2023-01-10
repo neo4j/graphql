@@ -32,6 +32,19 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
 
     let movieType: UniqueType;
     let genreType: UniqueType;
+    let inGenreInterface: UniqueType;
+
+    const movieTitle1 = "A title";
+    const movieTitle2 = "Exciting new film!";
+    const movieTitle3 = "short";
+    const genreName1 = "Action";
+    const genreName2 = "Horror";
+    const intValue1 = 1;
+    const intValue2 = 101;
+    const intValue3 = 983;
+    const intValue4 = 0;
+    const intValue5 = 42;
+    const genre2AverageTitleLength = (movieTitle1.length + movieTitle2.length) / 2;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -43,22 +56,35 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
 
         movieType = generateUniqueType("Movie");
         genreType = generateUniqueType("Genre");
+        inGenreInterface = generateUniqueType("InGenre");
 
         const typeDefs = `
-            type Movie {
+            type ${movieType.name} {
                 title: String
-                genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
+                genres: [${genreType.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "${inGenreInterface.name}")
             }
-            type Genre {
+            type ${genreType.name} {
                 name: String
-                movies: [Movie!]! @relationship(type: "IN_GENRE", direction: IN)
-            }  
+                movies: [${movieType.name}!]! @relationship(type: "IN_GENRE", direction: IN, properties: "${inGenreInterface.name}")
+            }
+
+            interface ${inGenreInterface.name} {
+                intValue: Int!
+            }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
         });
+
+        await session.run(`
+            CREATE (m1:${movieType.name} { title: "${movieTitle1}" })-[:IN_GENRE { intValue: ${intValue1} }]->(g1:${genreType.name} { name: "${genreName1}" })
+            CREATE (m2:${movieType.name} { title: "${movieTitle2}" })-[:IN_GENRE { intValue: ${intValue2} }]->(g1)
+            CREATE (m3:${movieType.name} { title: "${movieTitle3}" })-[:IN_GENRE { intValue: ${intValue3} }]->(g1)
+            CREATE (m2)-[:IN_GENRE { intValue: ${intValue4} }]->(g2:${genreType.name} { name: "${genreName2}" })
+            CREATE (m1)-[:IN_GENRE { intValue: ${intValue5} }]->(g2)
+        `);
     });
 
     afterEach(async () => {
@@ -73,7 +99,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
     test("should not throw error", async () => {
         const query = `
             {
-                movies(where: { genresConnection: { node: { moviesAggregate: { count_GT: 10 } } } }) {
+                ${movieType.plural}(where: { genresConnection: { node: { moviesAggregate: { count_GT: 10 } } } }) {
                     title
                 }
             }
@@ -86,5 +112,210 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         });
 
         expect(result.errors).toBeFalsy();
+    });
+
+    test("should find where moviesAggregate count equal", async () => {
+        const query = `
+            {
+                ${movieType.plural}(where: { genresConnection: { node: { moviesAggregate: { count: 2 } } } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [movieType.plural]: expect.toIncludeSameMembers([
+                {
+                    title: movieTitle1,
+                },
+                {
+                    title: movieTitle2,
+                },
+            ]),
+        });
+    });
+
+    test("should find where moviesAggregate count_LT", async () => {
+        const query = `
+            {
+                ${movieType.plural}(where: { genresConnection: { node: { moviesAggregate: { count_LT: 3 } } } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [movieType.plural]: expect.toIncludeSameMembers([
+                {
+                    title: movieTitle1,
+                },
+                {
+                    title: movieTitle2,
+                },
+            ]),
+        });
+    });
+
+    test("should find where moviesAggregate count_GT", async () => {
+        const query = `
+            {
+                ${movieType.plural}(where: { genresConnection: { node: { moviesAggregate: { count_GT: 2 } } } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [movieType.plural]: expect.toIncludeSameMembers([
+                {
+                    title: movieTitle1,
+                },
+                {
+                    title: movieTitle2,
+                },
+                {
+                    title: movieTitle3,
+                },
+            ]),
+        });
+    });
+
+    test("should find where moviesAggregate node property SHORTEST", async () => {
+        const query = `
+            {
+                ${movieType.plural}(where: { genresConnection: { node: { moviesAggregate: { node: { title_SHORTEST_EQUAL: ${movieTitle3.length} } } } } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [movieType.plural]: expect.toIncludeSameMembers([
+                {
+                    title: movieTitle1,
+                },
+                {
+                    title: movieTitle2,
+                },
+                {
+                    title: movieTitle3,
+                },
+            ]),
+        });
+    });
+
+    test("should find where moviesAggregate node property AVERAGE", async () => {
+        const query = `
+            {
+                ${movieType.plural}(where: { genresConnection: { node: { moviesAggregate: { node: { title_AVERAGE_EQUAL: ${genre2AverageTitleLength} } } } } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [movieType.plural]: expect.toIncludeSameMembers([
+                {
+                    title: movieTitle1,
+                },
+                {
+                    title: movieTitle2,
+                },
+            ]),
+        });
+    });
+
+    test("should find where moviesAggregate edge property MAX_LT", async () => {
+        const query = `
+            {
+                ${movieType.plural}(where: { genresConnection: { node: { moviesAggregate: { edge: { intValue_MAX_LT: ${intValue3} } } } } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [movieType.plural]: expect.toIncludeSameMembers([
+                {
+                    title: movieTitle1,
+                },
+                {
+                    title: movieTitle2,
+                },
+            ]),
+        });
+    });
+
+    test("should find where moviesAggregate edge property MIN_EQUAL", async () => {
+        const query = `
+            {
+                ${movieType.plural}(where: { genresConnection: { node: { moviesAggregate: { edge: { intValue_MIN_EQUAL: ${intValue1} } } } } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [movieType.plural]: expect.toIncludeSameMembers([
+                {
+                    title: movieTitle1,
+                },
+                {
+                    title: movieTitle2,
+                },
+                {
+                    title: movieTitle3,
+                },
+            ]),
+        });
     });
 });
