@@ -42,27 +42,6 @@ export const Login = () => {
     const showWarningToolTip =
         window.location.protocol.includes("https") && !getURLProtocolFromText(url).includes("+s");
 
-    // useEffect(() => {
-    //     async function tryAutoLoginWithURLSearchParams() {
-    //         // Note: execute this here to display an error message in case the (auto) login fails.
-    //         if (searchParamUrl && searchParamUsername && searchParamPassword) {
-    //             setLoading(true);
-    //             try {
-    //                 await auth.login({
-    //                     username: searchParamUsername,
-    //                     password: searchParamPassword,
-    //                     url: searchParamUrl,
-    //                 });
-    //             } catch (error) {
-    //                 setError((error as Error).message);
-    //             } finally {
-    //                 setLoading(false);
-    //             }
-    //         }
-    //     }
-    //     void tryAutoLoginWithURLSearchParams();
-    // }, []);
-
     const onSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();

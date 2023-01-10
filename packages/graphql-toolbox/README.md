@@ -58,6 +58,7 @@ The query string is preceded by a question mark (?) and contains key-value pairs
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------- |
 | connectURL    | Form: scheme://username@bolt-url:port; Used at login, pre-populates the Username and Connection URI input field with the provided value                | bolt://admin@localhost:7687 |
 | db            | Only applicable for multi-database supported Neo4j DBMSs. The provided value is used as the selected database name. This will be applied _after_ login | neo4j                       |
+| pw            | Used at login, pre-populates the password input field with the provided value. IMPORTANT: Use only for _temporary_ or _test_ databases!!               | your-temporary-db-password  |
 
 An example with the URL parameters `connectURL` and `db`:
 
@@ -66,6 +67,12 @@ An example with the URL parameters `connectURL` and `db`:
 This will pre-fill the login window input fields `Username` with `testuser` and `Connect URI` with `bolt+s://xxxx.databases.neo4j.io`. After a successful login, the selected database will be set according to the provided `db` parameter.
 
 Note: The plus symbol (+) in the connectURL needs to be URL encoded to become `%2B`. For example `bolt+s` becomes `bolt%2Bs`.
+
+The URL parameter `pw` is additionally available to provide the database password.
+
+> IMPORTANT: Please use the URL parameter `pw` only for _temporary_ or _test_ databases! Never for production databases or databases that contain valuable or sensitive information!
+
+If both the `connectURL` and `pw` URL parameters are provided, one auto login attempt is started on load of the application.
 
 ## License
 
