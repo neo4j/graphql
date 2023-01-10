@@ -19,7 +19,7 @@
 
 import { useCallback, useContext, useState } from "react";
 import { FormInput } from "./FormInput";
-import { Button, HeroIcon } from "@neo4j-ndl/react";
+import { Button, HeroIcon, LoadingSpinner } from "@neo4j-ndl/react";
 import { DEFAULT_BOLT_URL, DEFAULT_USERNAME, PASSWORD_PARAM_NAME } from "../../constants";
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
@@ -79,6 +79,14 @@ export const Login = () => {
             </ProTooltip>
         );
     };
+
+    if (auth.isInitiating) {
+        return (
+            <div className="h-screen flex justify-center items-center n-bg-neutral-90">
+                <LoadingSpinner size="large" />;
+            </div>
+        );
+    }
 
     return (
         <div data-test-login-form className="grid place-items-center h-screen n-bg-neutral-90">

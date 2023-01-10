@@ -45,6 +45,7 @@ interface LoginOptions {
 }
 
 export interface State {
+    isInitiating?: boolean;
     driver?: neo4j.Driver;
     connectUrl?: string;
     username?: string;
@@ -57,6 +58,7 @@ export interface State {
     logout: () => void;
     setSelectedDatabaseName: (databaseName: string) => void;
     setShowIntrospectionPrompt: (nextState: boolean) => void;
+    setIsInitiating: (nextState: boolean) => void;
 }
 
 export const AuthContext = React.createContext({} as State);
@@ -65,6 +67,7 @@ export function AuthProvider(props: any) {
     let intervalId: number;
 
     const [value, setValue] = useState<State>({
+        isInitiating: true,
         login: async (options: LoginOptions) => {
             const auth = neo4j.auth.basic(options.username, options.password);
             const protocol = getURLProtocolFromText(options.url);
@@ -128,15 +131,28 @@ export function AuthProvider(props: any) {
         setShowIntrospectionPrompt: (nextState: boolean) => {
             setValue((values) => ({ ...values, showIntrospectionPrompt: nextState }));
         },
+        setIsInitiating: (nextState: boolean) => {
+            setValue((values) => ({ ...values, isInitiating: nextState }));
+        },
     });
 
     useEffect(() => {
-        const autoLoginContent = checkAutoLoginContent();
-        if (autoLoginContent) {
-            value.login({ ...autoLoginContent }).catch((error) => console.log(error));
-        } else {
-            resolveNeo4jDesktopLoginPayload().then(processLoginPayload.bind(null, value)).catch(console.error);
+        async function startup() {
+            try {
+                const autoLoginContent = checkAutoLoginContent();
+                if (autoLoginContent) {
+                    await value.login({ ...autoLoginContent }).catch((error) => console.log(error));
+                } else {
+                    const loginPayload = await resolveNeo4jDesktopLoginPayload();
+                    await processLoginPayload(value, loginPayload);
+                }
+            } catch (error) {
+                console.error("Startup error occurred: ", error);
+            } finally {
+                value.setIsInitiating(false);
+            }
         }
+        void startup();
     }, []);
 
     const checkForDatabaseUpdates = async (driver: neo4j.Driver, setValue: any) => {
@@ -149,27 +165,16 @@ export function AuthProvider(props: any) {
         }
     };
 
-    const processLoginPayload = (value: State | undefined, loginPayloadFromDesktop: LoginPayload | null) => {
-        let loginPayload: LoginPayload | null = null;
-        if (loginPayloadFromDesktop) {
-            loginPayload = loginPayloadFromDesktop;
+    const processLoginPayload = async (value: State | undefined, loginPayloadFromNeo4jDesktop: LoginPayload | null) => {
+        if (loginPayloadFromNeo4jDesktop) {
             setValue((values) => ({ ...values, isNeo4jDesktop: true }));
-        } else {
-            const storedConnectionUsername = Storage.retrieve(LOCAL_STATE_CONNECTION_USERNAME);
-            const storedConnectionUrl = Storage.retrieve(LOCAL_STATE_CONNECTION_URL);
-            if (storedConnectionUrl && storedConnectionUsername) {
-                loginPayload = {
-                    username: storedConnectionUsername,
-                    url: storedConnectionUrl,
-                };
-            }
         }
-        if (loginPayload?.password && value && !value.driver) {
-            value
+
+        if (loginPayloadFromNeo4jDesktop?.password && value && !value.driver) {
+            await value
                 .login({
-                    username: loginPayload.username,
-                    password: loginPayload.password,
-                    url: loginPayload.url,
+                    ...loginPayloadFromNeo4jDesktop,
+                    password: loginPayloadFromNeo4jDesktop.password,
                 })
                 .catch((error) => console.log(error));
         }
