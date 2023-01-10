@@ -25,6 +25,7 @@ import {
     DATABASE_PARAM_NAME,
     DEFAULT_DATABASE_NAME,
     LOCAL_STATE_SELECTED_DATABASE_NAME,
+    PASSWORD_PARAM_NAME,
 } from "../constants";
 
 const isMultiDbUnsupportedError = (e: Error) => {
@@ -150,6 +151,17 @@ export const getConnectUrlSearchParamValue = (): {
         return { protocol, username: null, url: `${protocol}://${host}` };
     }
     return { protocol, username, url: `${protocol}://${href}` };
+};
+
+export const checkAutoLoginContent = (): {
+    url: string;
+    username: string;
+    password: string;
+} | null => {
+    const { url, username } = getConnectUrlSearchParamValue() || {};
+    const password = getUrlSearchParam(PASSWORD_PARAM_NAME);
+    if (!url || !username || !password) return null;
+    return { url, username, password };
 };
 
 export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string => {

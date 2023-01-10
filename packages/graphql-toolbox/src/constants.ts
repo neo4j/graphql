@@ -74,3 +74,4 @@ export const DEFAULT_USERNAME = "neo4j";
 
 export const CONNECT_URL_PARAM_NAME = "connectURL";
 export const DATABASE_PARAM_NAME = "db";
+export const PASSWORD_PARAM_NAME = "pw";

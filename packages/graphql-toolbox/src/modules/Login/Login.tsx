@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { FormInput } from "./FormInput";
 import { Button, HeroIcon } from "@neo4j-ndl/react";
-import { DEFAULT_BOLT_URL, DEFAULT_USERNAME } from "../../constants";
+import { DEFAULT_BOLT_URL, DEFAULT_USERNAME, PASSWORD_PARAM_NAME } from "../../constants";
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
 import { AuthContext } from "../../contexts/auth";
-import { getConnectUrlSearchParamValue } from "../../contexts/utils";
+import { getConnectUrlSearchParamValue, getUrlSearchParam } from "../../contexts/utils";
 import { ProTooltip } from "../../components/ProTooltip";
 import { getURLProtocolFromText } from "../../utils/utils";
 
@@ -32,11 +32,38 @@ export const Login = () => {
     const auth = useContext(AuthContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
+
     const { url: searchParamUrl, username: searchParamUsername } = getConnectUrlSearchParamValue() || {};
+    const searchParamPassword = getUrlSearchParam(PASSWORD_PARAM_NAME);
     const [url, setUrl] = useState<string>(searchParamUrl || DEFAULT_BOLT_URL);
     const [username, setUsername] = useState<string>(searchParamUsername || DEFAULT_USERNAME);
+    const [password, setPassword] = useState<string>(searchParamPassword || "");
+
     const showWarningToolTip =
         window.location.protocol.includes("https") && !getURLProtocolFromText(url).includes("+s");
+
+    useEffect(() => {
+        async function test() {
+            const { url, username } = getConnectUrlSearchParamValue() || {};
+            const password = getUrlSearchParam(PASSWORD_PARAM_NAME);
+            if (url && username && password) {
+                setLoading(true);
+
+                try {
+                    await auth.login({
+                        username,
+                        password,
+                        url,
+                    });
+                } catch (error) {
+                    setError((error as Error).message);
+                } finally {
+                    setLoading(false);
+                }
+            }
+        }
+        void test();
+    }, []);
 
     const onSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {
@@ -103,6 +130,8 @@ export const Login = () => {
                         label="Password"
                         name="password"
                         placeholder="password"
+                        value={password}
+                        onChange={(event) => setPassword(event.currentTarget.value)}
                         required={true}
                         type="password"
                         disabled={loading}
