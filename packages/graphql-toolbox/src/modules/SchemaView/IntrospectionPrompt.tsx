@@ -38,7 +38,12 @@ export const IntrospectionPrompt = ({ open, onClose, onDisconnect, onIntrospect 
         >
             <div className="flex w-full">
                 <span className="h4">Generate type definitions</span>
-                <IconButton className="mr-0 ml-auto" onClick={() => onClose()} clean>
+                <IconButton
+                    aria-label="Close introspection prompt"
+                    className="mr-0 ml-auto"
+                    onClick={() => onClose()}
+                    clean
+                >
                     <HeroIcon iconName="XIcon" />
                 </IconButton>
             </div>

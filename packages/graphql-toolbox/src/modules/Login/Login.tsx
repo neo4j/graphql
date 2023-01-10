@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { FormInput } from "./FormInput";
 import { Button, HeroIcon } from "@neo4j-ndl/react";
 import { DEFAULT_BOLT_URL, DEFAULT_USERNAME, PASSWORD_PARAM_NAME } from "../../constants";
@@ -42,28 +42,26 @@ export const Login = () => {
     const showWarningToolTip =
         window.location.protocol.includes("https") && !getURLProtocolFromText(url).includes("+s");
 
-    useEffect(() => {
-        async function test() {
-            const { url, username } = getConnectUrlSearchParamValue() || {};
-            const password = getUrlSearchParam(PASSWORD_PARAM_NAME);
-            if (url && username && password) {
-                setLoading(true);
-
-                try {
-                    await auth.login({
-                        username,
-                        password,
-                        url,
-                    });
-                } catch (error) {
-                    setError((error as Error).message);
-                } finally {
-                    setLoading(false);
-                }
-            }
-        }
-        void test();
-    }, []);
+    // useEffect(() => {
+    //     async function tryAutoLoginWithURLSearchParams() {
+    //         // Note: execute this here to display an error message in case the (auto) login fails.
+    //         if (searchParamUrl && searchParamUsername && searchParamPassword) {
+    //             setLoading(true);
+    //             try {
+    //                 await auth.login({
+    //                     username: searchParamUsername,
+    //                     password: searchParamPassword,
+    //                     url: searchParamUrl,
+    //                 });
+    //             } catch (error) {
+    //                 setError((error as Error).message);
+    //             } finally {
+    //                 setLoading(false);
+    //             }
+    //         }
+    //     }
+    //     void tryAutoLoginWithURLSearchParams();
+    // }, []);
 
     const onSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {

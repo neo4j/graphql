@@ -28,6 +28,7 @@ import {
     VERIFY_CONNECTION_INTERVAL_MS,
 } from "../constants";
 import {
+    checkAutoLoginContent,
     checkDatabaseHasData,
     getDatabases,
     resolveNeo4jDesktopLoginPayload,
@@ -130,7 +131,12 @@ export function AuthProvider(props: any) {
     });
 
     useEffect(() => {
-        resolveNeo4jDesktopLoginPayload().then(processLoginPayload.bind(null, value)).catch(console.error);
+        const autoLoginContent = checkAutoLoginContent();
+        if (autoLoginContent) {
+            value.login({ ...autoLoginContent }).catch((error) => console.log(error));
+        } else {
+            resolveNeo4jDesktopLoginPayload().then(processLoginPayload.bind(null, value)).catch(console.error);
+        }
     }, []);
 
     const checkForDatabaseUpdates = async (driver: neo4j.Driver, setValue: any) => {
