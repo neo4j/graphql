@@ -37,6 +37,11 @@ export class Login extends Screen {
         await this.page.fill("[data-test-login-password]", password);
     }
 
+    public async getPassword(): Promise<string> {
+        await this.page.waitForSelector("[data-test-login-password]");
+        return await this.page.inputValue("[data-test-login-password]");
+    }
+
     public async setURL(url: string) {
         await this.page.waitForSelector("[data-test-login-url]");
         await this.page.fill("[data-test-login-url]", url);

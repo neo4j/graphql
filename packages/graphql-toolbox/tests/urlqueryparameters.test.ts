@@ -18,10 +18,13 @@
  */
 
 import * as neo4j from "neo4j-driver";
+import * as dotenv from "dotenv";
 import * as base from "@playwright/test";
 import { generate } from "randomstring";
 import { Login } from "./pages/Login";
 import { test, expect, beforeAll, afterAll } from "./utils/pagemodel";
+
+dotenv.config();
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
@@ -83,6 +86,35 @@ base.test.describe("URL query parameters", () => {
 
         expect(username).toEqual("neo4j");
         expect(connectURI).toEqual("bolt+s://abcd22.databases.neo4j.io");
+    });
+
+    test("should pre-fill password input field from url query parameter, incorrect password provided as url query parameter", async ({
+        page,
+    }) => {
+        await page.goto("/?connectURL=bolt%2Bs://abcd22.databases.neo4j.io&pw=myincorrectpassword");
+        const login = new Login(page);
+
+        const username = await login.getUsername();
+        const password = await login.getPassword();
+        const connectURI = await login.getURL();
+
+        expect(username).toEqual("neo4j");
+        expect(password).toEqual("myincorrectpassword");
+        expect(connectURI).toEqual("bolt+s://abcd22.databases.neo4j.io");
+    });
+
+    test("should auto-login when providing correct connectURL and pw url query parameters", async ({ page }) => {
+        const [protocol, host] = NEO_URL.split(/:\/\//);
+        if (!protocol || !host) {
+            throw new Error(`Invalid NEO_URL value. Got "${NEO_URL}"`);
+        }
+        const connectURL = encodeURIComponent(`${protocol}://${NEO_USER}@${host}`);
+
+        await page.goto(`/?connectURL=${connectURL}&pw=${NEO_PASSWORD}`);
+        const login = new Login(page);
+
+        await login.dismissIntrospectionPrompt();
+        await login.awaitSuccess();
     });
 
     test("should select the database from provided url query parameter", async ({ page, topBarPage }) => {
