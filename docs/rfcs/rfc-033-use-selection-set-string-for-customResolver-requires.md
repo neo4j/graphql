@@ -139,20 +139,34 @@ const resolvers = {
 };
 ```
 
-
 ### Documentation Updates
 
 There is not currently documentation for using the `requires` argument. This needs to be added to document the new possibilities.
 
 ## Risks
 
-What risks might cause us to go over the appetite described above?
+### Edge cases that require testing
+
+#### Related unions
+
+Example:
+
+Cypher:
+
+#### Related interfaces
+
+Example:
+
+Cypher:
+
+####
 
 ### Security consideration
 
-Please take some time to think about potential security issues/considerations for the proposed solution.
-For example: How can a malicious user abuse this? How can we prevent that in such case?
+#### Do `@auth` rules on the related nodes/fields still need to be applied?
 
-## Out of Scope
+Tests to validate
 
-What are we definitely not going to implement in this solution?
+#### Can `@exclude` nodes/fields be required?
+
+Tests to validate
