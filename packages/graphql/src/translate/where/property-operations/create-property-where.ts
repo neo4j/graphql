@@ -94,10 +94,8 @@ export function createPropertyWhere({
         }
 
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
-        const relationTypeName = node.connectionFields.find(
-            (x) => x.relationship.fieldName === fieldName
-        )?.relationshipTypeName;
-        const relationship = context.relationships.find((x) => x.name === relationTypeName);
+        const relationTypeName = node.connectionFields.find((x) => x.relationship.fieldName === fieldName)?.relationshipTypeName;
+        const relationship = context.relationships.find(x => x.name === relationTypeName);
 
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
