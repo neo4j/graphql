@@ -21,7 +21,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
-describe("REPLACE ME -----------------------", () => {
+describe("https://github.com/neo4j/graphql/issues/2709", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
@@ -92,7 +92,7 @@ describe("REPLACE ME -----------------------", () => {
         });
     });
 
-    test("should use the correct label for connection rel - Netflix", async () => {
+    test("should use the correct node label for connection rel when defined in node _on - Netflix label", async () => {
         const query = gql`
             query {
                 movies(
@@ -117,11 +117,11 @@ describe("REPLACE ME -----------------------", () => {
         `);
     });
 
-    test("should use the correct label for connection rel - Dishney", async () => {
+    test("should use the correct node label for connection rel when defined in node _on - Dishney label", async () => {
         const query = gql`
             query {
                 movies(
-                    where: { OR: [{ distributionConnection_SOME: { node: { _on: { Dishney: {} }, name: "test" } } }] }
+                    where: { OR: [{ distributionConnection_SOME: { node: { _on: { Dishney: {} }, name: "test2" } } }] }
                 ) {
                     title
                 }
@@ -137,7 +137,7 @@ describe("REPLACE ME -----------------------", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"test\\"
+                \\"param0\\": \\"test2\\"
             }"
         `);
     });
