@@ -56,29 +56,18 @@ export function createConnectionOperation({
     const operations: (Cypher.BooleanOp | Cypher.RawCypher | undefined)[] = [];
 
     Object.entries(nodeEntries).forEach((entry) => {
-        console.log("entry", entry[1]);
-
-        let test;
-        const t = entry[1]?.node?._on;
-        if (t) {
-            test = Object.keys(t)[0] || undefined;
+        let nodeOnValue: string | undefined = undefined;
+        const nodeOnObj = entry[1]?.node?._on;
+        if (nodeOnObj) {
+            nodeOnValue = Object.keys(nodeOnObj)[0];
         }
-        console.log("test", test);
 
-        // the refNode is wrong!
-        // const refNode = context.nodes.find((x) => {
-
-        //     if (x.name === test) return;
-        //     return x.interfaces.some((i) => i.name.value === entry[0]);
-        // }) as Node;
-        let refNode = context.nodes.find((x) => x.name === test || x.name === entry[0]) as Node;
+        let refNode = context.nodes.find((x) => x.name === nodeOnValue || x.name === entry[0]) as Node;
         if (!refNode) {
             refNode = context.nodes.find((x) => x.interfaces.some((i) => i.name.value === entry[0])) as Node;
         }
 
         const relationField = connectionField.relationship;
-        // console.log("relationField", relationField);
-        console.log("refNode", refNode.name);
 
         const childNode = new Cypher.Node({ labels: refNode.getLabels(context) });
         const relationship = new Cypher.Relationship({

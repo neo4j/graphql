@@ -117,7 +117,6 @@ export function createPropertyWhere({
 
         const connectionField = node.connectionFields.find((x) => x.fieldName === fieldName);
         if (connectionField) {
-            // here!
             return createConnectionOperation({
                 value,
                 connectionField,
