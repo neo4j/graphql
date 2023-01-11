@@ -100,6 +100,46 @@ RETURN this { .fullName, address: this_address, .firstName, .lastName } AS this
 Note this is the same cypher as when the firstName, lastName, address city and fullName are manually selected.
 
 
+#### Fetching from a double nested related node
+
+Type Defs:
+
+```gql
+type City {
+    name: String!
+    population: Int
+}
+
+type AddressType {
+    street: String!
+    city: City! @relationship(type: "IN_CITY", direction: OUT)
+}
+
+type User {
+    id: ID!
+    firstName: String!
+    lastName: String!
+    address: AddressType @relationship(type: "LIVES_AT", direction: OUT)
+    fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
+}
+```
+
+Resolver:
+
+```js
+const resolvers = {
+    User: {
+        fullName: ({ firstName, lastName, address }) => {
+            if (address.city.population) {
+                return `${firstName} ${lastName} from ${address.city.name} with population of ${address.city.population}`;
+            }
+            return `${firstName} ${lastName} from ${address.city.name}`;
+        },
+    },
+};
+```
+
+
 ### Documentation Updates
 
 There is not currently documentation for using the `requires` argument. This needs to be added to document the new possibilities.
