@@ -1,4 +1,4 @@
-# Example Title
+# Change the `requires` input of `@customResolver` from an array of fields to a selection set
 
 ## Problem
 
