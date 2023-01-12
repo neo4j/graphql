@@ -32,12 +32,14 @@ export function createRelationshipOperation({
     parentNode,
     operator,
     value,
+    isNot,
 }: {
     relationField: RelationField;
     context: Context;
     parentNode: Cypher.Node;
     operator: string | undefined;
     value: GraphQLWhereArg;
+    isNot: boolean;
 }): { predicate: Cypher.Predicate | undefined; preComputedSubquery?: Cypher.CompositeClause | undefined } {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
@@ -57,15 +59,15 @@ export function createRelationshipOperation({
     });
 
     // TODO: check null in return projection
-    // if (value === null) {
-    //     const existsSubquery = new Cypher.Match(matchPattern, {});
-    //     const exists = new Cypher.Exists(existsSubquery);
-    //     if (!isNot) {
-    //         // Bit confusing, but basically checking for not null is the same as checking for relationship exists
-    //         return { predicate: Cypher.not(exists) };
-    //     }
-    //     return { predicate: exists };
-    // }
+    if (value === null) {
+        const existsSubquery = new Cypher.Match(matchPattern, {});
+        const exists = new Cypher.Exists(existsSubquery);
+        if (!isNot) {
+            // Bit confusing, but basically checking for not null is the same as checking for relationship exists
+            return { predicate: Cypher.not(exists) };
+        }
+        return { predicate: exists };
+    }
 
     const { predicate: relationOperator, preComputedSubqueries } = createWherePredicate({
         // Nested properties here
