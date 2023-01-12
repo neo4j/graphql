@@ -56,7 +56,6 @@ export function createConnectionOperation({
     const operations: (Cypher.BooleanOp | Cypher.RawCypher | undefined)[] = [];
 
     Object.entries(nodeEntries).forEach((entry) => {
-        console.log("entry", entry);
         let nodeOnValue: string | undefined = undefined;
         const nodeOnObj = entry[1]?.node?._on;
         if (nodeOnObj) {
