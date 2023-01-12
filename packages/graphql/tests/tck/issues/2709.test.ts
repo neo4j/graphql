@@ -165,7 +165,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
         `);
     });
 
-    test("should not use a node label to cover all nodes implementing the interface for connection rel", async () => {
+    test("should not use a node label so it covers all nodes implementing the interface for connection rel", async () => {
         const query = gql`
             query {
                 movies(where: { distributionConnection_SOME: { node: { name: "test4" } } }) {

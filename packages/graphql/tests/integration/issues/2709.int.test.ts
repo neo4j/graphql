@@ -234,4 +234,31 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
             ],
         });
     });
+
+    test("should query the correct DistributionHouses when no _on present - Netflix type", async () => {
+        const query = `
+            query {
+                ${Movie.plural}(
+                    where: { distributionConnection_SOME: { node: { name: "Netflix" } } }
+                ) {
+                    title
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [Movie.plural]: [
+                {
+                    title: "A Netflix movie",
+                },
+            ],
+        });
+    });
 });
