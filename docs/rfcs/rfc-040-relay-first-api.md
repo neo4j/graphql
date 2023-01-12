@@ -25,6 +25,11 @@ To solve this, the GraphQL API will be redesign to be [Relay](https://relay.dev/
 -   Update operations
 -   Mutations return "...Connection" types?
 -   Sorting on mutation responses?
+-   Same operations regardless of how you got through traversal in mutation
+-   UpdateOrCreate / CreateOrUpdate
+-   Query unions
+-   ConnectOrCreate
+
 
 ## Type naming conventions
 
