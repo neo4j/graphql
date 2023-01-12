@@ -95,16 +95,29 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
-            WHERE (size([(this)-[this0:HAS_MANUFACTURER]->(this1:\`Series\`) WHERE (this0.current = $param0 AND this1.name = $param1) | 1]) = 1 OR size([(this)-[this2:HAS_BRAND]->(this3:\`Series\`) WHERE (this2.current = $param2 AND this3.name = $param3) | 1]) = 1)
             CALL {
                 WITH this
-                MATCH (this)-[this4:HAS_BRAND]->(this_brand:\`Series\`)
+                MATCH (this)-[this0:HAS_MANUFACTURER]->(this1:\`Series\`)
+                WHERE (this0.current = $param0 AND this1.name = $param1)
+                RETURN count(this0) AS var2
+            }
+            CALL {
+                WITH this
+                MATCH (this)-[this3:HAS_BRAND]->(this4:\`Series\`)
+                WHERE (this3.current = $param2 AND this4.name = $param3)
+                RETURN count(this3) AS var5
+            }
+            WITH *
+            WHERE (var2 = 1 OR var5 = 1)
+            CALL {
+                WITH this
+                MATCH (this)-[this6:HAS_BRAND]->(this_brand:\`Series\`)
                 WITH this_brand { .name } AS this_brand
                 RETURN head(collect(this_brand)) AS this_brand
             }
             CALL {
                 WITH this
-                MATCH (this)-[this5:HAS_MANUFACTURER]->(this_manufacturer:\`Series\`)
+                MATCH (this)-[this7:HAS_MANUFACTURER]->(this_manufacturer:\`Series\`)
                 WITH this_manufacturer { .name } AS this_manufacturer
                 RETURN head(collect(this_manufacturer)) AS this_manufacturer
             }

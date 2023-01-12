@@ -65,7 +65,7 @@ export function createWherePredicate({
         const { predicate, preComputedSubquery } = createPropertyWhere({ key, value, element, targetElement, context });
         if (predicate) {
             predicates.push(predicate);
-            if (preComputedSubquery) subqueries = Cypher.concat(subqueries, preComputedSubquery);
+            if (preComputedSubquery && !preComputedSubquery.empty) subqueries = Cypher.concat(subqueries, preComputedSubquery);
             return;
         }
     });
