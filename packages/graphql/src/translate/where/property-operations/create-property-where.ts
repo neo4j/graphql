@@ -109,7 +109,6 @@ export function createPropertyWhere({
                 parentNode: targetElement as Cypher.Node,
                 operator,
                 value,
-                isNot,
             });
         }
 

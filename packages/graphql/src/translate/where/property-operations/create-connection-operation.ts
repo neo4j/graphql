@@ -123,7 +123,7 @@ export function createConnectionOperation({
     return { predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined, preComputedSubquery: subqueries };
 }
 
-function getCountOperation(listPredicate: string, countRef: Cypher.Variable): Cypher.Predicate {
+export function getCountOperation(listPredicate: string, countRef: Cypher.Variable): Cypher.Predicate {
     switch (listPredicate) {
         case "all":
             return Cypher.eq(countRef, new Cypher.Literal(0));

@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             CREATE (m2:${movieType.name} { title: "${movieTitle2}" })-[:IN_GENRE { intValue: ${intValue2} }]->(g1)
             CREATE (m3:${movieType.name} { title: "${movieTitle3}" })-[:IN_GENRE { intValue: ${intValue3} }]->(g1)
             CREATE (m2)-[:IN_GENRE { intValue: ${intValue4} }]->(g2:${genreType.name} { name: "${genreName2}" })
-            CREATE (m1)-[:IN_GENRE { intValue: ${intValue5} }]->(g2)
+            CREATE (m4 :${movieType.name} { title: "${movieTitle4}" })-[:IN_GENRE { intValue: ${intValue5} }]->(g2)
         `);
     });
 

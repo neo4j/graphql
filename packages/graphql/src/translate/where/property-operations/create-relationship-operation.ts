@@ -22,6 +22,9 @@ import Cypher from "@neo4j/cypher-builder";
 // Recursive function
 
 import { createWherePredicate } from "../create-where-predicate";
+import { getCountOperation } from "./create-connection-operation";
+import { getListPredicate } from "../utils";
+import type { WhereOperator } from "../types";
 
 export function createRelationshipOperation({
     relationField,
@@ -29,15 +32,13 @@ export function createRelationshipOperation({
     parentNode,
     operator,
     value,
-    isNot,
 }: {
     relationField: RelationField;
     context: Context;
     parentNode: Cypher.Node;
     operator: string | undefined;
     value: GraphQLWhereArg;
-    isNot: boolean;
-}): { predicate: Cypher.Predicate | undefined; preComputedSubqueries?: Cypher.CompositeClause | undefined } {
+}): { predicate: Cypher.Predicate | undefined; preComputedSubquery?: Cypher.CompositeClause | undefined } {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
 
@@ -52,19 +53,19 @@ export function createRelationshipOperation({
     const matchPattern = relationship.pattern({
         source: relationField.direction === "IN" ? { variable: true } : { labels: false },
         target: relationField.direction === "IN" ? { labels: false } : { variable: true },
-        relationship: { variable: false },
+        relationship: { variable: true },
     });
 
     // TODO: check null in return projection
-    if (value === null) {
-        const existsSubquery = new Cypher.Match(matchPattern, {});
-        const exists = new Cypher.Exists(existsSubquery);
-        if (!isNot) {
-            // Bit confusing, but basically checking for not null is the same as checking for relationship exists
-            return { predicate: Cypher.not(exists) };
-        }
-        return { predicate: exists };
-    }
+    // if (value === null) {
+    //     const existsSubquery = new Cypher.Match(matchPattern, {});
+    //     const exists = new Cypher.Exists(existsSubquery);
+    //     if (!isNot) {
+    //         // Bit confusing, but basically checking for not null is the same as checking for relationship exists
+    //         return { predicate: Cypher.not(exists) };
+    //     }
+    //     return { predicate: exists };
+    // }
 
     const { predicate: relationOperator, preComputedSubqueries } = createWherePredicate({
         // Nested properties here
@@ -78,35 +79,68 @@ export function createRelationshipOperation({
         return { predicate: undefined };
     }
 
-    // TODO: use EXISTS in top-level where
-    switch (operator) {
-        case "ALL": {
-            // Testing "ALL" requires testing that at least one element exists and that no elements not matching the filter exists
-            const existsMatch = new Cypher.Match(matchPattern).where(relationOperator);
-            const existsMatchNot = new Cypher.Match(matchPattern).where(Cypher.not(relationOperator));
-            return {
-                predicate: Cypher.and(new Cypher.Exists(existsMatch), Cypher.not(new Cypher.Exists(existsMatchNot))),
-                preComputedSubqueries,
-            };
-        }
-        case "NOT":
-        case "NONE": {
-            const relationshipMatch = new Cypher.Match(matchPattern).where(relationOperator);
-            const existsPredicate = new Cypher.Exists(relationshipMatch);
-            return { predicate: Cypher.not(existsPredicate), preComputedSubqueries };
-        }
-        case "SINGLE": {
-            const patternComprehension = new Cypher.PatternComprehension(matchPattern, childNode);
-            return {
-                predicate: Cypher.single(childNode, patternComprehension, relationOperator),
-                preComputedSubqueries,
-            };
-        }
-        case "SOME":
-        default: {
-            const relationshipMatch = new Cypher.Match(matchPattern).where(relationOperator);
-            const existsPredicate = new Cypher.Exists(relationshipMatch);
-            return { predicate: existsPredicate, preComputedSubqueries };
-        }
+    const matchClause = new Cypher.Match(matchPattern);
+    const countRef = new Cypher.Variable();
+
+    let whereClause: Cypher.Match | Cypher.With = matchClause;
+    let innerSubqueriesAndWhereClause: Cypher.CompositeClause | undefined;
+
+    if (preComputedSubqueries && !preComputedSubqueries.empty) {
+        whereClause = new Cypher.With("*");
+        innerSubqueriesAndWhereClause = Cypher.concat(preComputedSubqueries, whereClause);
     }
+
+    let listPredicateStr = getListPredicate(operator as WhereOperator);
+
+    if (listPredicateStr === "any" && !relationField.typeMeta.array) {
+        listPredicateStr = "single";
+    }
+
+    const newWhereOperator = listPredicateStr === "all" ? Cypher.not(relationOperator) : relationOperator;
+    whereClause.where(newWhereOperator);
+
+    const subqueryContents = Cypher.concat(
+        matchClause,
+        innerSubqueriesAndWhereClause,
+        new Cypher.Return([Cypher.count(relationship), countRef])
+    );
+
+    const subqueryCall = new Cypher.Call(subqueryContents).innerWith(parentNode);
+
+    return {
+        predicate: getCountOperation(listPredicateStr, countRef),
+        preComputedSubquery: Cypher.concat(subqueryCall),
+    };
+
+    // TODO: use EXISTS in top-level where
+    // switch (operator) {
+    //     case "ALL": {
+    //         // Testing "ALL" requires testing that at least one element exists and that no elements not matching the filter exists
+    //         const existsMatch = new Cypher.Match(matchPattern).where(relationOperator);
+    //         const existsMatchNot = new Cypher.Match(matchPattern).where(Cypher.not(relationOperator));
+    //         return {
+    //             predicate: Cypher.and(new Cypher.Exists(existsMatch), Cypher.not(new Cypher.Exists(existsMatchNot))),
+    //             preComputedSubquery,
+    //         };
+    //     }
+    //     case "NOT":
+    //     case "NONE": {
+    //         const relationshipMatch = new Cypher.Match(matchPattern).where(relationOperator);
+    //         const existsPredicate = new Cypher.Exists(relationshipMatch);
+    //         return { predicate: Cypher.not(existsPredicate), preComputedSubquery };
+    //     }
+    //     case "SINGLE": {
+    //         const patternComprehension = new Cypher.PatternComprehension(matchPattern, childNode);
+    //         return {
+    //             predicate: Cypher.single(childNode, patternComprehension, relationOperator),
+    //             preComputedSubquery,
+    //         };
+    //     }
+    //     case "SOME":
+    //     default: {
+    //         const relationshipMatch = new Cypher.Match(matchPattern).where(relationOperator);
+    //         const existsPredicate = new Cypher.Exists(relationshipMatch);
+    //         return { predicate: existsPredicate, preComputedSubquery };
+    //     }
+    // }
 }
