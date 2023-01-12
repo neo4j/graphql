@@ -56,6 +56,7 @@ export function createConnectionOperation({
     const operations: (Cypher.BooleanOp | Cypher.RawCypher | undefined)[] = [];
 
     Object.entries(nodeEntries).forEach((entry) => {
+        console.log("entry", entry);
         let nodeOnValue: string | undefined = undefined;
         const nodeOnObj = entry[1]?.node?._on;
         if (nodeOnObj) {
@@ -69,7 +70,20 @@ export function createConnectionOperation({
 
         const relationField = connectionField.relationship;
 
-        const childNode = new Cypher.Node({ labels: refNode.getLabels(context) });
+        let labels = refNode.getLabels(context);
+        if (entry[1]?.node && !nodeOnObj) {
+            const nodesImplementingInterface = context.nodes.filter((x) =>
+                x.interfaces.some((i) => i.name.value === entry[0])
+            );
+            const theLabels = nodesImplementingInterface.map((n) => n.getLabels(context)).flat();
+            console.log(theLabels);
+            if (theLabels.length) {
+                labels = theLabels;
+            }
+            // What about no label at all? Nope that does not work
+        }
+        // here
+        const childNode = new Cypher.Node({ labels });
         const relationship = new Cypher.Relationship({
             source: relationField.direction === "IN" ? childNode : parentNode,
             target: relationField.direction === "IN" ? parentNode : childNode,

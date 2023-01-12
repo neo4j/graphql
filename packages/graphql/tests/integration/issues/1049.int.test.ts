@@ -61,6 +61,15 @@ describe("https://github.com/neo4j/graphql/issues/1049", () => {
                     )
             }
 
+            type ${Film.name} implements ${Media.name} @node(additionalLabels: ["${Media.name}"]) {
+                id: ID!
+                title: String!
+                likedBy: [${Person.name}!]!
+                similar: [${Media.name}!]!
+
+                runTime: Int!
+            }
+
             type ${Book.name} implements ${Media.name} @node(additionalLabels: ["${Media.name}"]) {
                 id: ID!
                 title: String!
@@ -70,14 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/1049", () => {
                 pageCount: Int!
             }
 
-            type ${Film.name} implements ${Media.name} @node(additionalLabels: ["${Media.name}"]) {
-                id: ID!
-                title: String!
-                likedBy: [${Person.name}!]!
-                similar: [${Media.name}!]!
 
-                runTime: Int!
-            }
 
             type ${Person.name} {
                 name: String

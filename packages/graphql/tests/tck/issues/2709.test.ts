@@ -141,4 +141,50 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
             }"
         `);
     });
+
+    test("should use the correct node label for connection rel when defined in node _on - without OR operator", async () => {
+        const query = gql`
+            query {
+                movies(where: { distributionConnection_SOME: { node: { _on: { Dishney: {} }, name: "test3" } } }) {
+                    title
+                }
+            }
+        `;
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Film\`)
+            WHERE size([(this1:\`Dishney\`)-[this0:DISTRIBUTED_BY]->(this) WHERE this1.name = $param0 | 1]) > 0
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"test3\\"
+            }"
+        `);
+    });
+
+    test("should use all labels of nodes implementing the interface for connection rel", async () => {
+        const query = gql`
+            query {
+                movies(where: { distributionConnection_SOME: { node: { name: "test4" } } }) {
+                    title
+                }
+            }
+        `;
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Film\`)
+            WHERE size([(this1)-[this0:DISTRIBUTED_BY]->(this) WHERE this1.name = $param0 | 1]) > 0
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"test4\\"
+            }"
+        `);
+    });
 });
