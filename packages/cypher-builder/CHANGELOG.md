@@ -1,5 +1,11 @@
 # @neo4j/cypher-builder
 
+## 0.1.9
+
+### Patch Changes
+
+-   [#2678](https://github.com/neo4j/graphql/pull/2678) [`ddf51ccfe`](https://github.com/neo4j/graphql/commit/ddf51ccfeec896b64ee943e910e59ac4e2f62869) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix variable name generation when reusing named params
+
 ## 0.1.8
 
 ### Patch Changes

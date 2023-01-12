@@ -148,7 +148,6 @@ export default function createProjectionAndParams({
                 });
                 res.subqueries.push(interfaceProjection);
                 res.projection.push(`${field.alias}: ${varName}_${field.name}`);
-
                 return res;
             }
 

@@ -132,8 +132,8 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
             WITH *
             ORDER BY this_relatedId ASC
-            SKIP $param4
-            LIMIT $param5
+            SKIP $param3
+            LIMIT $param4
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_NameDetails:\`NameDetails\`)
@@ -176,11 +176,11 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
-                \\"param4\\": {
+                \\"param3\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
                 },
-                \\"param5\\": {
+                \\"param4\\": {
                     \\"low\\": 50,
                     \\"high\\": 0
                 },
