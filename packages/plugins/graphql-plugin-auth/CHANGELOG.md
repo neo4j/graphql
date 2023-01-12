@@ -1,5 +1,11 @@
 # @neo4j/graphql-plugin-auth
 
+## 2.0.0
+
+### Major Changes
+
+-   [#2710](https://github.com/neo4j/graphql/pull/2710) [`b081bec45`](https://github.com/neo4j/graphql/commit/b081bec4543abc3c66adf5588933632588cb0ce2) Thanks [@darrellwarde](https://github.com/darrellwarde)! - #2622 bumped the internal version of `jsonwebtoken`, which could cause some breaking changes in the authorization plugin.
+
 ## 1.1.1
 
 ### Patch Changes

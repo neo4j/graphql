@@ -43,7 +43,7 @@
         "neo4j-driver": "^4.1.0 || ^5.0.0"
     },
     "devDependencies": {
-        "@neo4j/graphql-plugin-auth": "^1.1.1",
+        "@neo4j/graphql-plugin-auth": "^2.0.0",
         "@types/jest": "29.2.5",
         "@types/node": "18.11.17",
         "camelcase": "6.3.0",

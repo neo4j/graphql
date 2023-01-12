@@ -2760,7 +2760,7 @@ __metadata:
     "@graphql-codegen/typescript": ^2.6.0
     "@graphql-tools/merge": ^8.3.3
     "@neo4j/graphql": ^3.14.2
-    "@neo4j/graphql-plugin-auth": ^1.1.1
+    "@neo4j/graphql-plugin-auth": ^2.0.0
     "@types/jest": 29.2.5
     "@types/node": 18.11.17
     camelcase: 6.3.0
@@ -2781,7 +2781,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql-plugin-auth@^1.0.0, @neo4j/graphql-plugin-auth@^1.1.0, @neo4j/graphql-plugin-auth@^1.1.1, @neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth":
+"@neo4j/graphql-plugin-auth@^2.0.0, @neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth"
   dependencies:
@@ -2896,7 +2896,7 @@ __metadata:
     "@graphql-tools/schema": 9.0.12
     "@graphql-tools/utils": ^9.0.0
     "@neo4j/cypher-builder": ~0.1.9
-    "@neo4j/graphql-plugin-auth": ^1.1.1
+    "@neo4j/graphql-plugin-auth": ^2.0.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
     "@types/jest": 29.2.5
@@ -15577,7 +15577,7 @@ __metadata:
   resolution: "neo-place@workspace:examples/neo-place"
   dependencies:
     "@neo4j/graphql": ^3.13.0
-    "@neo4j/graphql-plugin-auth": ^1.1.0
+    "@neo4j/graphql-plugin-auth": ^2.0.0
     "@neo4j/graphql-plugin-subscriptions-amqp": ^1.0.0
     apollo-server-core: ^3.11.1
     apollo-server-express: ^3.11.1
@@ -15635,7 +15635,7 @@ __metadata:
     "@faker-js/faker": 7.6.0
     "@neo4j/graphql": ^3.5.0
     "@neo4j/graphql-ogm": ^3.5.0
-    "@neo4j/graphql-plugin-auth": ^1.0.0
+    "@neo4j/graphql-plugin-auth": ^2.0.0
     "@types/bcrypt": 5.0.0
     "@types/debug": 4.1.7
     "@types/dotenv": 8.2.0

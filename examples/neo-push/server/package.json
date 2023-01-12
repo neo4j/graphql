@@ -1,6 +1,6 @@
 {
     "name": "neo-push-server",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "private": true,
     "description": "",
     "main": "./dist/src/index.js",
@@ -15,7 +15,7 @@
     "dependencies": {
         "@neo4j/graphql": "^3.5.0",
         "@neo4j/graphql-ogm": "^3.5.0",
-        "@neo4j/graphql-plugin-auth": "^1.0.0",
+        "@neo4j/graphql-plugin-auth": "^2.0.0",
         "apollo-server-express": "3.11.1",
         "bcrypt": "5.1.0",
         "debug": "4.3.4",
