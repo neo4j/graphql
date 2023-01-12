@@ -139,34 +139,179 @@ const resolvers = {
 };
 ```
 
+#### Requiring a related UNION
+
+Type Defs:
+
+```gql
+union Publication = Book | Journal
+
+type Author {
+    name: String!
+    publications: [Publication!]! @relationship(type: "WROTE", direction: OUT)
+    publicationsWithAuthor: [String!]! @customResolver(requires: "name publications { ...on Book { title } ... on Journal { subject } }")
+}
+
+type Book {
+    title: String!
+    author: [Author!]! @relationship(type: "WROTE", direction: IN)
+}
+
+type Journal {
+    subject: String!
+    author: [Author!]! @relationship(type: "WROTE", direction: IN)
+}
+```
+
+Resolver:
+
+```js
+const resolvers = {
+    Author: {
+        publicationsWithAuthor: ({ name, publications }) =>
+            publications.map((publication) => `${publication.title || publication.subject} by ${name}`),
+    },
+};
+```
+
+Cypher:
+
+```
+MATCH (this:`Author`)
+CALL {
+    WITH this
+    CALL {
+        WITH *
+        MATCH (this)-[this0:WROTE]->(this_publications:`Book`)
+        WITH this_publications  { __resolveType: "Book",  .title } AS this_publications
+        RETURN this_publications AS this_publications
+        UNION
+        WITH *
+        MATCH (this)-[this1:WROTE]->(this_publications:`Journal`)
+        WITH this_publications  { __resolveType: "Journal",  .subject } AS this_publications
+        RETURN this_publications AS this_publications
+    }
+    WITH this_publications
+    RETURN collect(this_publications) AS this_publications
+}
+RETURN this { .name, publications: this_publications, .publicationsWithAuthor } AS this
+```
+
+Note this is the same cypher as requesting the fields manually using the following query:
+
+```gql
+query Query {
+  authors {
+    name
+    publications {
+      ... on Book {
+        title
+      }
+      ... on Journal {
+        subject
+      }
+    }
+    publicationsWithAuthor
+  }
+}
+```
+
+#### Requiring a related interface
+
+Type Defs:
+
+```gql
+interface Publication {
+    publicationYear: Int!
+}
+
+type Author {
+    name: String!
+    publications: [Publication!]! @relationship(type: "WROTE", direction: OUT)
+    publicationsWithAuthor: [String!]! @customResolver(requires: "name publications { publicationYear ...on Book { title } ... on Journal { subject } }")
+}
+
+type Book implements Publication {
+    title: String!
+    publicationYear: Int!
+    author: [Author!]! @relationship(type: "WROTE", direction: IN)
+}
+
+type Journal implements Publication {
+    subject: String!
+    publicationYear: Int!
+    author: [Author!]! @relationship(type: "WROTE", direction: IN)
+}
+```
+
+Resolver:
+
+```js
+const resolvers = {
+    Author: {
+        publicationsWithAuthor: ({ name, publications }) =>
+            publications.map((publication) => `${publication.title || publication.subject} by ${name} in ${publication.publicationYear}`),
+    },
+};
+```
+
+Cypher:
+
+```
+MATCH (this:`Author`)
+WITH *
+CALL {
+WITH *
+CALL {
+    WITH this
+    MATCH (this)-[this0:WROTE]->(this_Book:`Book`)
+    
+    RETURN { __resolveType: "Book", title: this_Book.title, publicationYear: this_Book.publicationYear } AS this_publications
+    UNION
+    WITH this
+    MATCH (this)-[this1:WROTE]->(this_Journal:`Journal`)
+    
+    RETURN { __resolveType: "Journal", subject: this_Journal.subject, publicationYear: this_Journal.publicationYear } AS this_publications
+}
+RETURN collect(this_publications) AS this_publications
+}
+RETURN this { .name, publications: this_publications, .publicationsWithAuthor } AS this
+```
+
+Note the same as the cypher for the following query:
+
+```gql
+query Query {
+  authors {
+    name
+    publications {
+      ... on Book {
+        title
+      }
+      ... on Journal {
+        subject
+      }
+      publicationYear
+    }
+    publicationsWithAuthor
+  }
+}
+```
+
 ### Documentation Updates
 
-There is not currently documentation for using the `requires` argument. This needs to be added to document the new possibilities.
+There is not currently documentation for using the `requires` argument. This needs to be added to document the new possibilities. Consider using the above examples for simple tutorials on using this feature.
 
 ## Risks
-
-### Edge cases that require testing
-
-#### Related unions
-
-Example:
-
-Cypher:
-
-#### Related interfaces
-
-Example:
-
-Cypher:
-
-####
 
 ### Security consideration
 
 #### Do `@auth` rules on the related nodes/fields still need to be applied?
 
-Tests to validate
+Yes. These auth rules will likely still apply in the majority of cases. We could consider adding an option to `@customResolver` to disable these checks where they are not required. However, this is out of the scope of this work.
 
-#### Can `@exclude` nodes/fields be required?
+This behaviour needs to be validated by integration tests.
 
-Tests to validate
+#### Can `@exclude`/`@readonly`/`@writeonly` nodes/fields be required?
+
+It should be possible to require these fields as clients cannot directly access them.
