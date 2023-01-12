@@ -181,7 +181,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
         });
     });
 
-    test("should query all DistributionHouses when no _on present", async () => {
+    test("should query the correct DistributionHouses when no _on present - Netflix", async () => {
         const query = `
             query {
                 ${Movie.plural}(
@@ -203,6 +203,33 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
             [Movie.plural]: [
                 {
                     title: "A Netflix movie",
+                },
+            ],
+        });
+    });
+
+    test("should query the correct DistributionHouses when no _on present - Dishney", async () => {
+        const query = `
+            query {
+                ${Movie.plural}(
+                    where: { distributionConnection_SOME: { node: { name: "Dishney" } } }
+                ) {
+                    title
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [Movie.plural]: [
+                {
+                    title: "A Dishney movie",
                 },
             ],
         });

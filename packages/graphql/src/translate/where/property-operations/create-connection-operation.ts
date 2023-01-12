@@ -71,18 +71,16 @@ export function createConnectionOperation({
         const relationField = connectionField.relationship;
 
         let labels = refNode.getLabels(context);
-        if (entry[1]?.node && !nodeOnObj) {
+        const hasOnlyNodeObjectFilter = entry[1]?.node && !nodeOnObj;
+        if (hasOnlyNodeObjectFilter) {
             const nodesImplementingInterface = context.nodes.filter((x) =>
                 x.interfaces.some((i) => i.name.value === entry[0])
             );
-            const theLabels = nodesImplementingInterface.map((n) => n.getLabels(context)).flat();
-            console.log(theLabels);
-            if (theLabels.length) {
-                labels = theLabels;
+            if (nodesImplementingInterface.length) {
+                // remove the labels so we check all possibilities and not just the one label of the refNode
+                labels = [];
             }
-            // What about no label at all? Nope that does not work
         }
-        // here
         const childNode = new Cypher.Node({ labels });
         const relationship = new Cypher.Relationship({
             source: relationField.direction === "IN" ? childNode : parentNode,
