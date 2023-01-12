@@ -108,7 +108,7 @@ jobs:
           NEO_USER: neo4j
           NEO_PASSWORD: password
           NEO_URL: neo4j://localhost:7687
-      - if: ${{ env.CODECOV_TOKEN != '' && matrix.packages.package == 'graphql' }}
+      - if: ${{ env.CODECOV_TOKEN != '' && env.CODECOV_TOKEN != 'false' && matrix.packages.package == 'graphql' }}
         name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -116,7 +116,7 @@ jobs:
           directory: ./packages/${{ matrix.packages.package }}/coverage-nightly/
           flags: ${{ matrix.packages.package }},nightly,integration
           fail_ci_if_error: true
-      - if: ${{ env.CODECOV_TOKEN != '' && matrix.packages.package == 'graphql' }}
+      - if: ${{ env.CODECOV_TOKEN != '' && env.CODECOV_TOKEN != 'false' && matrix.packages.package == 'graphql' }}
         name: Archive coverage report
         uses: actions/upload-artifact@v3
         with:
