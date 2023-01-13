@@ -154,6 +154,28 @@ input PostLikesNodeAggregationWhereInput {
 }
 ```
 
+And then these can be used as follow:
+
+**Posts where content contains Matrix**
+
+```graphql
+query Posts {
+    posts(where: { content_CONTAINS: "The Matrix" }) {
+        content
+    }
+}
+```
+
+**Posts with more than 10 likes**
+
+```graphql
+query Posts {
+    posts(where: { likesAggregate: { count_GT: 10 } }) {
+        content
+    }
+}
+```
+
 ## Proposed Solution
 
 As part of the new API design, this RFC wants to discuss a new approach to access these operators.
