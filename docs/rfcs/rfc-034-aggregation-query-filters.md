@@ -246,7 +246,8 @@ RETURN this { .name } AS this
 ## Risks
 
 - Schema size increase.
-- Even if there is a reason for this filters, the usage of these filters could be confusing.
+- Even if there is a reason for this filters, having two type of filters in aggregation could be confusing.
+- This is a breaking change, potentially could be revisited with the new knowledge obtained by the API uniformity work to avoid unnecessary breaking changes.
 
 ### Security consideration
 
