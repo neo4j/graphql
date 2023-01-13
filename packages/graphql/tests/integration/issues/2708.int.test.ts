@@ -38,6 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
     const movieTitle2 = "Exciting new film!";
     const movieTitle3 = "short";
     const movieTitle4 = "a fourth title";
+    const movieTitle5 = "an unconnected movie"
     const genreName1 = "Action";
     const genreName2 = "Horror";
     const intValue1 = 1;
@@ -83,7 +84,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             CREATE (m2:${movieType.name} { title: "${movieTitle2}" })-[:IN_GENRE { intValue: ${intValue2} }]->(g1)
             CREATE (m3:${movieType.name} { title: "${movieTitle3}" })-[:IN_GENRE { intValue: ${intValue3} }]->(g1)
             CREATE (m2)-[:IN_GENRE { intValue: ${intValue4} }]->(g2:${genreType.name} { name: "${genreName2}" })
-            CREATE (m4 :${movieType.name} { title: "${movieTitle4}" })-[:IN_GENRE { intValue: ${intValue5} }]->(g2)
+            CREATE (m4:${movieType.name} { title: "${movieTitle4}" })-[:IN_GENRE { intValue: ${intValue5} }]->(g2)
+            CREATE (m5:${movieType.name} { title: "${movieTitle5}" })
         `);
     });
 
@@ -459,7 +461,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
     test("should not find genres_ALL where NONE true", async () => {
         const query = `
             {
-                ${movieType.plural}(where: { genres_NOT: { moviesAggregate: { count: 2 } } }) {
+                ${movieType.plural}(where: { genres_ALL: { moviesAggregate: { count: 0 } } }) {
                     title
                 }
             }
@@ -472,6 +474,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         });
 
         expect(result.errors).toBeFalsy();
-        expect(result.data).toEqual(false);
+        expect(result.data).toEqual({
+            [movieType.plural]: []
+        });
     });
 });
