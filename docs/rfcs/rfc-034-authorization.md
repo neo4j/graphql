@@ -1,97 +1,147 @@
 # Authorization
 
+## Outstanding questions
+
+* Are we only going to allow for fixed JWT fields (for example, `roles`), or are we going to allow arbitrary fields? How do we do typing?
+
 ## Problem
 
 Authorization is currently bundled into the `@auth` directive, alongside authentication, as well as additional functionality such as `bind`. Combining these behaviours is often unclear.
 
 ## Solution
 
-Break out authorization into its own directive. Authentication will be _implied_, and data validation (`bind`) will be specified in a different directive. This just leaves `allow` (which throws an error if a predicate cannot be validated) and `where` (which filters data based on a predicate).
+### Directive
 
-```gql
-directive @authorization(
-  rules: [<Type varies based on type applied to>]
-) on OBJECT | FIELD_DEFINITION | SCHEMA | INTERFACE
-```
+The proposed directive is a complex dynamic type which will be generated purely for the purposes of schema validation, but will not be included in the output schema.
 
-### Use cases
-
-All examples use the following base type definitions:
+`<Type>` is the typename of each of a user's types. For instance, given the following type:
 
 ```gql
 type User {
   id: ID!
-  active: Boolean!
-}
-
-type Post {
-  content: String!
-  author: User! @relationship(type: "WROTE", direction: IN)
 }
 ```
 
-#### Throwing an error if a simple predicate cannot be validated
+`<Type>` below will be `User`.
 
 ```gql
-extend type User @authorization(rules: [{ where: { id: "$jwt.sub" } }])
-```
-
-Given the folowing query is executed:
-
-```gql
-{
-  users {
-    id
-  }
+enum AuthorizationOperation {
+  CREATE
+  READ
+  UPDATE
+  DELETE
+  CONNECT
+  DISCONNECT
 }
-```
 
-If the `id` property of _any_ of the returned users is _not_ equal to the JWT subject, the complete query will throw an error.
-
-#### Throwing an error if a predicate using JWT roles cannot be validated
-
-User must have role "user":
-
-```gql
-extend type User @authorization(rules: [{ where: { roles_INCLUDES: "user" } }])
-
-#### TODO: Better document what this use case is - more advanced
-
-```gql
-# Winner winner chicken dinner
-type User @authorization(
-    # rules combined with OR operator
-    rules: [
-      {
-        operations: [UPDATE],
-        where: {     # UserWhere
-            OR: [
-              {
-                AND: [
-                  { id: "$jwt.id" },
-                  { admin: false }
-                ]
-              },
-              { admin: true }
-            ]
-          }
-      },
-      {
-        operations: [READ],
-        where: {     # UserWhere
-            admin: false
-          }
-      },
-      {
-        operations: [UPDATE, READ],
-        where: {     # UserWhere
-            superAdmin: true
-          }
-      },
-    ]
-) {
-    id: ID!
-    name: String!
-    admin: Boolean!
+input JWTPayload {
+  roles
 }
+
+input <Type>AuthorizationWhere {
+  ... <Type>Where
+
+}
+
+input <Type>AuthorizationRule {
+  operations: [AuthorizationOperation!]! = [CREATE, READ, UPDATE, DELETE, CONNECT, DISCONNECT]
+  requireAuthentication: Boolean! = true
+  where: <Type>AuthorizationWhere!
+}
+
+input <Type>AuthorizationValidate {
+  pre: [<Type>AuthorizationRule!]
+  post: [<Type>AuthorizationRule!]
+}
+
+directive @authorization(
+  filter: [<Type>AuthorizationRule!]
+  validate: <Type>AuthorizationValidate
+) on OBJECT | FIELD_DEFINITION | SCHEMA | INTERFACE
 ```
+
+#### User input validation
+
+Validation of user input of `@authorization` directives will be performed on a per-type basis.
+
+For example, given the `User` type above, this will be extracted out with its `@authorization` directive, the above type generated, and then validation performed against that type only.
+
+### Roles
+
+Roles will be available for all rule types. They will be nested within the `where` field to allow for complex logic with node properties.
+
+### Rules
+
+Each category of rule can be seen as being applied with an `AND`. Within each rule set, rules are combined with an `OR`, in that we will fall through the rules until we get a hit (or not).
+
+#### Filter rules
+
+Filter rules will be applied immediately after node `MATCH`, and then combined with user input (filters specified in GraphQL input) using an `AND`.
+
+#### Validate rules
+
+##### Pre
+
+These rules are applied prior to return for a Query, or before the execution of a write operation for a Mutation.
+
+##### Post
+
+These rules are applied following a write operation for Mutations, before the return of data.
+
+### Query
+
+Rule support:
+
+* Filter
+* Validate (pre)
+
+![query](images/auth-query.excalidraw.png)
+
+### Mutation
+
+#### Create
+
+Rule support:
+
+* Validate (post)
+
+![query](images/auth-create.excalidraw.png)
+
+#### Delete
+
+Rule support:
+
+* Filter
+* Validate (pre)
+
+![query](images/auth-delete.excalidraw.png)
+
+#### Update
+
+Rule support:
+
+* Filter
+* Validate (pre)
+* Validate (post)
+
+![query](images/auth-update.excalidraw.png)
+
+##### Connect
+
+Rule support:
+
+* Filter
+* Validate (pre)
+* Validate (post)
+
+![query](images/auth-update-connect.excalidraw.png)
+
+##### Disconnect
+
+Rule support:
+
+* Filter
+* Validate (pre)
+* Validate (post)
+
+![query](images/auth-update-disconnect.excalidraw.png)
