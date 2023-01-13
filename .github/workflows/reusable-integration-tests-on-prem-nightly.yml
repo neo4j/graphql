@@ -2,7 +2,7 @@ name: "Integration tests (on-prem, Neo4j nightly build)"
 
 on:
   workflow_call:
-    input:
+    inputs:
       disable-code-cov-upload:
         description: "Whether or not to upload the test coverage to CodeCov"
         required: false

@@ -2,7 +2,7 @@ name: "@neo4j/graphql specific tests"
 
 on:
   workflow_call:
-    input:
+    inputs:
       disable-code-cov-upload:
         description: "Whether or not to upload the test coverage to CodeCov"
         required: false
