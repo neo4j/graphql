@@ -69,13 +69,17 @@ describe("#190", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE EXISTS {
-                MATCH (this)-[:HAS_DEMOGRAPHIC]->(this0:\`UserDemographics\`)
-                WHERE (this0.type = $param0 AND this0.value = $param1)
-            }
             CALL {
                 WITH this
-                MATCH (this)-[this1:HAS_DEMOGRAPHIC]->(this_demographics:\`UserDemographics\`)
+                MATCH (this)-[this0:HAS_DEMOGRAPHIC]->(this1:\`UserDemographics\`)
+                WHERE (this1.type = $param0 AND this1.value = $param1)
+                RETURN count(this0) AS var2
+            }
+            WITH *
+            WHERE var2 > 0
+            CALL {
+                WITH this
+                MATCH (this)-[this3:HAS_DEMOGRAPHIC]->(this_demographics:\`UserDemographics\`)
                 WITH this_demographics { .type, .value } AS this_demographics
                 RETURN collect(this_demographics) AS this_demographics
             }
@@ -114,13 +118,17 @@ describe("#190", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE EXISTS {
-                MATCH (this)-[:HAS_DEMOGRAPHIC]->(this0:\`UserDemographics\`)
-                WHERE ((this0.type = $param0 AND this0.value = $param1) OR this0.type = $param2 OR this0.type = $param3)
-            }
             CALL {
                 WITH this
-                MATCH (this)-[this1:HAS_DEMOGRAPHIC]->(this_demographics:\`UserDemographics\`)
+                MATCH (this)-[this0:HAS_DEMOGRAPHIC]->(this1:\`UserDemographics\`)
+                WHERE ((this1.type = $param0 AND this1.value = $param1) OR this1.type = $param2 OR this1.type = $param3)
+                RETURN count(this0) AS var2
+            }
+            WITH *
+            WHERE var2 > 0
+            CALL {
+                WITH this
+                MATCH (this)-[this3:HAS_DEMOGRAPHIC]->(this_demographics:\`UserDemographics\`)
                 WITH this_demographics { .type, .value } AS this_demographics
                 RETURN collect(this_demographics) AS this_demographics
             }
