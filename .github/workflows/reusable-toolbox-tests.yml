@@ -18,6 +18,9 @@ jobs:
           - 7687:7687
 
     steps:
+      - name: Update system (Ubuntu)
+        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-18.04'
+        run: sudo apt update && sudo apt upgrade -y
       - name: Check out repository code
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
