@@ -54,10 +54,10 @@ yarn start
 The GraphQL Toolbox supports some URL parameters defined in the query string, see below. These URL parameters are optional and can be provided for convenience.
 The query string is preceded by a question mark (?) and contains key-value pairs separated by an ampersand (&).
 
-| URL parameter | Description                                                                                                                                                                 | Example                     |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
-| connectURL    | Form: scheme://username:password@bolt-url:port; Used at login, pre-populates the Username, if provided the password, and Connection URI input field with the provided value | bolt://admin@localhost:7687 |
-| db            | Only applicable for multi-database supported Neo4j DBMSs. The provided value is used as the selected database name. This will be applied _after_ login                      | neo4j                       |
+| URL parameter | Description                                                                                                                                            | Example                     |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------- |
+| connectURL    | Form: scheme://username@bolt-url:port; Used at login, pre-populates the Username and Connection URI input field with the provided value                | bolt://admin@localhost:7687 |
+| db            | Only applicable for multi-database supported Neo4j DBMSs. The provided value is used as the selected database name. This will be applied _after_ login | neo4j                       |
 
 An example with the URL parameters `connectURL` and `db`:
 
@@ -66,12 +66,6 @@ An example with the URL parameters `connectURL` and `db`:
 This will pre-fill the login window input fields `Username` with `testuser` and `Connect URI` with `bolt+s://xxxx.databases.neo4j.io`. After a successful login, the selected database will be set according to the provided `db` parameter.
 
 Note: The plus symbol (+) in the connectURL needs to be URL encoded to become `%2B`. For example `bolt+s` becomes `bolt%2Bs`.
-
-The `connectURL` URL parameter can additionally be used to provide the database password, see form above in table.
-
-> IMPORTANT: Please use the `connectURL` URL parameter with the password value only for _temporary_ or _test_ databases! Never for production databases or databases that contain valuable or sensitive information!
-
-If the `connectURL` URL parameter including the password is provided, one auto login attempt is started on load of the application.
 
 ## License
 
