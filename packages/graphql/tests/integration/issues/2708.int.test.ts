@@ -455,4 +455,23 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             ]),
         });
     });
+
+    test("should not find genres_ALL where NONE true", async () => {
+        const query = `
+            {
+                ${movieType.plural}(where: { genres_NOT: { moviesAggregate: { count: 2 } } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual(false);
+    });
 });

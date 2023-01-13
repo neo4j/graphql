@@ -26,6 +26,7 @@ import type { WhereOperator } from "../types";
 
 import { createWherePredicate } from "../create-where-predicate";
 import { filterTruthy } from "../../../utils/utils";
+import { createRelationshipSubqueryAndPredicate } from "./create-relationship-operation";
 
 export function createConnectionOperation({
     connectionField,
@@ -79,7 +80,7 @@ export function createConnectionOperation({
         const contextRelationship = context.relationships.find(
             (x) => x.name === connectionField.relationshipTypeName
         ) as Relationship;
-        const { predicate: whereOperator, preComputedSubqueries } = createConnectionWherePropertyOperation({
+        const innerOperation = createConnectionWherePropertyOperation({
             context,
             whereInput: entry[1],
             edgeRef: relationship,
@@ -91,51 +92,22 @@ export function createConnectionOperation({
         if (listPredicateStr === "any" && !connectionField.relationship.typeMeta.array) {
             listPredicateStr = "single";
         }
-
-        const matchClause = new Cypher.Match(matchPattern);
         const countRef = new Cypher.Variable();
 
-        let whereClause: Cypher.Match | Cypher.With = matchClause;
-        let innerSubqueriesAndWhereClause: Cypher.CompositeClause | undefined;
+        const { predicate, preComputedSubquery } = createRelationshipSubqueryAndPredicate({
+            matchPattern,
+            listPredicateStr,
+            relationship,
+            parentNode,
+            countRef,
+            innerOperation,
+        });
 
-        if (preComputedSubqueries && !preComputedSubqueries.empty) {
-            whereClause = new Cypher.With("*");
-            innerSubqueriesAndWhereClause = Cypher.concat(preComputedSubqueries, whereClause);
-        }
-
-        if (whereOperator) {
-            const newWhereOperator = listPredicateStr === "all" ? Cypher.not(whereOperator) : whereOperator;
-            whereClause.where(newWhereOperator);
-        }
-
-        const subqueryContents = Cypher.concat(
-            matchClause,
-            innerSubqueriesAndWhereClause,
-            new Cypher.Return([Cypher.count(relationship), countRef])
-        );
-
-        const subqueryCall = new Cypher.Call(subqueryContents).innerWith(parentNode);
-
-        operations.push(getCountOperation(listPredicateStr, countRef));
-        subqueries = Cypher.concat(subqueryCall);
+        operations.push(predicate);
+        subqueries = Cypher.concat(subqueries, preComputedSubquery);
     });
 
     return { predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined, preComputedSubquery: subqueries };
-}
-
-export function getCountOperation(listPredicate: string, countRef: Cypher.Variable): Cypher.Predicate {
-    switch (listPredicate) {
-        case "all":
-            return Cypher.eq(countRef, new Cypher.Literal(0));
-        case "any":
-            return Cypher.gt(countRef, new Cypher.Literal(0));
-        case "none":
-            return Cypher.eq(countRef, new Cypher.Literal(0));
-        case "single":
-            return Cypher.eq(countRef, new Cypher.Literal(1));
-        default:
-            throw new Error(`Unknown predicate ${listPredicate}`);
-    }
 }
 
 export function createConnectionWherePropertyOperation({
