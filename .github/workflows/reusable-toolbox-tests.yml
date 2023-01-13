@@ -19,8 +19,16 @@ jobs:
 
     steps:
       - name: Update system (Ubuntu)
-        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-18.04'
-        run: sudo apt update && sudo apt upgrade -y
+        run: |
+          # use apt-spy2 to select closest apt mirror,
+          # which helps avoid connectivity issues in Azure;
+          # see https://github.com/actions/virtual-environments/issues/675
+          sudo gem install apt-spy2
+          sudo apt-spy2 check
+          sudo apt-spy2 fix --commit
+          # end of apt-spy2 workaround
+          sudo apt-get update
+          sudo apt upgrade -y
       - name: Check out repository code
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
