@@ -92,14 +92,12 @@ export function createConnectionOperation({
         if (listPredicateStr === "any" && !connectionField.relationship.typeMeta.array) {
             listPredicateStr = "single";
         }
-        const countRef = new Cypher.Variable();
 
         const { predicate, preComputedSubquery } = createRelationshipSubqueryAndPredicate({
             matchPattern,
             listPredicateStr,
             relationship,
             parentNode,
-            countRef,
             innerOperation,
         });
 

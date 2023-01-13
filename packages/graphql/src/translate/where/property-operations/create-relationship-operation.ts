@@ -67,8 +67,6 @@ export function createRelationshipOperation({
         return { predicate: exists };
     }
 
-    const countRef = new Cypher.Variable();
-
     let listPredicateStr = getListPredicate(operator as WhereOperator);
 
     if (listPredicateStr === "any" && !relationField.typeMeta.array) {
@@ -87,13 +85,10 @@ export function createRelationshipOperation({
         matchPattern,
         listPredicateStr,
         relationship,
-        countRef,
         innerOperation,
     });
 
     if (listPredicateStr === "all") {
-        const secondCountRef = new Cypher.Variable();
-
         const secondInnerOperation = createWherePredicate({
             // Nested properties here
             whereInput: value,
@@ -108,7 +103,6 @@ export function createRelationshipOperation({
                 matchPattern,
                 listPredicateStr: "none",
                 relationship,
-                countRef: secondCountRef,
                 innerOperation: secondInnerOperation,
             });
 
@@ -131,14 +125,12 @@ export function createRelationshipSubqueryAndPredicate({
     listPredicateStr,
     relationship,
     parentNode,
-    countRef,
     innerOperation,
 }: {
     matchPattern: Cypher.Pattern;
     listPredicateStr: string;
     relationship: Cypher.Relationship;
     parentNode: Cypher.Node;
-    countRef: Cypher.Variable;
     innerOperation: {
         predicate: Cypher.Predicate | undefined;
         preComputedSubqueries?: Cypher.CompositeClause | undefined;
@@ -151,6 +143,7 @@ export function createRelationshipSubqueryAndPredicate({
     }
 
     const matchClause = new Cypher.Match(matchPattern);
+    const countRef = new Cypher.Variable();
 
     let whereClause: Cypher.Match | Cypher.With = matchClause;
     let innerSubqueriesAndWhereClause: Cypher.CompositeClause | undefined;
