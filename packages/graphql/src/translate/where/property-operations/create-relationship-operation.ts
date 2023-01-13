@@ -89,7 +89,8 @@ export function createRelationshipOperation({
     });
 
     if (listPredicateStr === "all") {
-        const secondInnerOperation = createWherePredicate({
+        // When checking all we also need to make sure it is not none
+        const notNoneInnerPredicates = createWherePredicate({
             // Nested properties here
             whereInput: value,
             targetElement: childNode,
@@ -97,19 +98,19 @@ export function createRelationshipOperation({
             context,
         });
 
-        const { predicate: secondPredicate, preComputedSubquery: secondSubquery } =
+        const { predicate: notNonePredicate, preComputedSubquery: notNoneSubquery } =
             createRelationshipSubqueryAndPredicate({
                 parentNode,
                 matchPattern,
                 listPredicateStr: "none",
                 relationship,
-                innerOperation: secondInnerOperation,
+                innerOperation: notNoneInnerPredicates,
             });
 
-        if (secondPredicate) {
+        if (notNonePredicate) {
             return {
-                predicate: Cypher.and(predicate, Cypher.not(secondPredicate)),
-                preComputedSubquery: Cypher.concat(preComputedSubquery, secondSubquery),
+                predicate: Cypher.and(predicate, Cypher.not(notNonePredicate)),
+                preComputedSubquery: Cypher.concat(preComputedSubquery, notNoneSubquery),
             };
         }
     }
