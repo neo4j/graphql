@@ -20,11 +20,11 @@
 import { useCallback, useContext, useState } from "react";
 import { FormInput } from "./FormInput";
 import { Button, HeroIcon, LoadingSpinner } from "@neo4j-ndl/react";
-import { DEFAULT_BOLT_URL, DEFAULT_USERNAME, PASSWORD_PARAM_NAME } from "../../constants";
+import { DEFAULT_BOLT_URL, DEFAULT_USERNAME } from "../../constants";
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
 import { AuthContext } from "../../contexts/auth";
-import { getConnectUrlSearchParamValue, getUrlSearchParam } from "../../contexts/utils";
+import { getConnectUrlSearchParamValue } from "../../contexts/utils";
 import { ProTooltip } from "../../components/ProTooltip";
 import { getURLProtocolFromText } from "../../utils/utils";
 
@@ -33,8 +33,11 @@ export const Login = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
-    const { url: searchParamUrl, username: searchParamUsername } = getConnectUrlSearchParamValue() || {};
-    const searchParamPassword = getUrlSearchParam(PASSWORD_PARAM_NAME);
+    const {
+        url: searchParamUrl,
+        username: searchParamUsername,
+        password: searchParamPassword,
+    } = getConnectUrlSearchParamValue() || {};
     const [url, setUrl] = useState<string>(searchParamUrl || DEFAULT_BOLT_URL);
     const [username, setUsername] = useState<string>(searchParamUsername || DEFAULT_USERNAME);
     const [password, setPassword] = useState<string>(searchParamPassword || "");

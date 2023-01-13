@@ -20,23 +20,47 @@
 import { getConnectUrlSearchParamValue } from "./utils";
 
 describe("getConnectUrlSearchParamValue", () => {
-    test("should process connectURL query param with username present", () => {
+    test("should process connectURL query param with only username present", () => {
         const tmpOriginalWindowLocationHref = "http://localhost?connectURL=bolt://testuser1@localhost:3333";
         window.history.replaceState({}, "", tmpOriginalWindowLocationHref);
 
-        const { url, username, protocol } = getConnectUrlSearchParamValue() || {};
+        const { url, username, password, protocol } = getConnectUrlSearchParamValue() || {};
         expect(url).toBe("bolt://localhost:3333");
         expect(username).toBe("testuser1");
+        expect(password).toBeNull();
         expect(protocol).toBe("bolt");
     });
 
-    test("should process connectURL query param without username present", () => {
+    test("should process connectURL query param with username and password present", () => {
+        const tmpOriginalWindowLocationHref = "http://localhost?connectURL=bolt://testuser1:password@localhost:3333";
+        window.history.replaceState({}, "", tmpOriginalWindowLocationHref);
+
+        const { url, username, password, protocol } = getConnectUrlSearchParamValue() || {};
+        expect(url).toBe("bolt://localhost:3333");
+        expect(username).toBe("testuser1");
+        expect(password).toBe("password");
+        expect(protocol).toBe("bolt");
+    });
+
+    test("should process connectURL query param without username or password present", () => {
         const tmpOriginalWindowLocationHref = "http://localhost?connectURL=bolt://localhost:3333";
         window.history.replaceState({}, "", tmpOriginalWindowLocationHref);
 
-        const { url, username, protocol } = getConnectUrlSearchParamValue() || {};
+        const { url, username, password, protocol } = getConnectUrlSearchParamValue() || {};
         expect(url).toBe("bolt://localhost:3333");
         expect(username).toBeNull();
+        expect(password).toBeNull();
         expect(protocol).toBe("bolt");
+    });
+
+    test("should process connectURL query param with secure bolt protocol", () => {
+        const tmpOriginalWindowLocationHref = "http://localhost?connectURL=bolt%2Bs://localhost:3333";
+        window.history.replaceState({}, "", tmpOriginalWindowLocationHref);
+
+        const { url, username, password, protocol } = getConnectUrlSearchParamValue() || {};
+        expect(url).toBe("bolt+s://localhost:3333");
+        expect(username).toBeNull();
+        expect(password).toBeNull();
+        expect(protocol).toBe("bolt+s");
     });
 });

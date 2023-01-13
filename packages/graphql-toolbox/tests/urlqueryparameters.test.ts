@@ -88,10 +88,10 @@ base.test.describe("URL query parameters", () => {
         expect(connectURI).toEqual("bolt+s://abcd22.databases.neo4j.io");
     });
 
-    test("should pre-fill password input field from url query parameter, incorrect password provided as url query parameter", async ({
+    test("should pre-fill password input field from url query parameter, incorrect password provided", async ({
         page,
     }) => {
-        await page.goto("/?connectURL=bolt%2Bs://abcd22.databases.neo4j.io&pw=myincorrectpassword");
+        await page.goto("/?connectURL=bolt%2Bs://neo4j:myincorrectpassword@abcd22.databases.neo4j.io");
         const login = new Login(page);
 
         const username = await login.getUsername();
@@ -103,14 +103,14 @@ base.test.describe("URL query parameters", () => {
         expect(connectURI).toEqual("bolt+s://abcd22.databases.neo4j.io");
     });
 
-    test("should auto-login when providing correct connectURL and pw url query parameters", async ({ page }) => {
+    test("should auto-login when providing complete connectURL parameter including password", async ({ page }) => {
         const [protocol, host] = NEO_URL.split(/:\/\//);
         if (!protocol || !host) {
             throw new Error(`Invalid NEO_URL value. Got "${NEO_URL}"`);
         }
-        const connectURL = encodeURIComponent(`${protocol}://${NEO_USER}@${host}`);
+        const connectURL = encodeURIComponent(`${protocol}://${NEO_USER}:${NEO_PASSWORD}@${host}`);
 
-        await page.goto(`/?connectURL=${connectURL}&pw=${NEO_PASSWORD}`);
+        await page.goto(`/?connectURL=${connectURL}`);
         const login = new Login(page);
 
         await login.dismissIntrospectionPrompt();

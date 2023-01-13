@@ -25,7 +25,6 @@ import {
     DATABASE_PARAM_NAME,
     DEFAULT_DATABASE_NAME,
     LOCAL_STATE_SELECTED_DATABASE_NAME,
-    PASSWORD_PARAM_NAME,
 } from "../constants";
 
 const isMultiDbUnsupportedError = (e: Error) => {
@@ -128,7 +127,7 @@ export const checkDatabaseHasData = async (driver: neo4j.Driver, selectedDatabas
     }
 };
 
-export const getUrlSearchParam = (paramName: string): string | null => {
+const getUrlSearchParam = (paramName: string): string | null => {
     const queryString = window.location.search;
     if (!queryString) return null;
     const urlParams = new URLSearchParams(queryString);
@@ -138,6 +137,7 @@ export const getUrlSearchParam = (paramName: string): string | null => {
 export const getConnectUrlSearchParamValue = (): {
     url: string;
     username: string | null;
+    password: string | null;
     protocol: string;
 } | null => {
     const dbmsParam = getUrlSearchParam(CONNECT_URL_PARAM_NAME as string);
@@ -146,11 +146,12 @@ export const getConnectUrlSearchParamValue = (): {
     const [protocol, host] = dbmsParam.split(/:\/\//);
     if (!protocol || !host) return null;
 
-    const [username, href] = host.split(/@/);
-    if (!username || !href) {
-        return { protocol, username: null, url: `${protocol}://${host}` };
+    const [userPasswordChunk, href] = host.split(/@/);
+    if (!userPasswordChunk || !href) {
+        return { protocol, username: null, password: null, url: `${protocol}://${host}` };
     }
-    return { protocol, username, url: `${protocol}://${href}` };
+    const [user, password] = userPasswordChunk.split(/:/);
+    return { protocol, username: user || null, password: password || null, url: `${protocol}://${href}` };
 };
 
 export const checkAutoLoginContent = (): {
@@ -158,8 +159,7 @@ export const checkAutoLoginContent = (): {
     username: string;
     password: string;
 } | null => {
-    const { url, username } = getConnectUrlSearchParamValue() || {};
-    const password = getUrlSearchParam(PASSWORD_PARAM_NAME);
+    const { url, password, username } = getConnectUrlSearchParamValue() || {};
     if (!url || !username || !password) return null;
     return { url, username, password };
 };
