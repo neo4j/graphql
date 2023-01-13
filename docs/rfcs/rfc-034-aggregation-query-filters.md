@@ -217,7 +217,9 @@ query {
                 count_LT: 10
             },
             {
-                count_LT: 10
+                node: {
+                  title_LONGEST_GT: 10
+                }
             },
         ]
         
