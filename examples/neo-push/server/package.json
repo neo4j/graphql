@@ -24,7 +24,7 @@
         "express-rate-limit": "^6.5.2",
         "graphql": "16.6.0",
         "jsonwebtoken": "9.0.0",
-        "neo4j-driver": "5.3.0"
+        "neo4j-driver": "5.4.0"
     },
     "devDependencies": {
         "@faker-js/faker": "7.6.0",
@@ -33,7 +33,7 @@
         "@types/dotenv": "8.2.0",
         "@types/express": "4.17.15",
         "@types/jest": "29.2.5",
-        "@types/jsonwebtoken": "9.0.0",
+        "@types/jsonwebtoken": "9.0.1",
         "@types/node": "18.11.17",
         "cross-env": "7.0.3",
         "jest": "29.3.1",
