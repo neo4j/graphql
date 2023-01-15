@@ -21,6 +21,7 @@ import jsonwebtoken from "jsonwebtoken";
 import Debug from "debug";
 import { DEBUG_PREFIX } from "./constants";
 import type { RequestLike } from "./types";
+import { AUTH_JWT_PLUGIN_NULL_SECRET_EXCEPTION } from "./exceptions";
 
 const debug = Debug(DEBUG_PREFIX);
 
@@ -80,11 +81,15 @@ class Neo4jGraphQLAuthJWTPlugin {
                 result = jsonwebtoken.verify(token, this.secret, {
                     algorithms: ["HS256", "RS256"],
                 }) as unknown as T;
-            } else {
-                debug("'secret' should NOT be null, make sure the 'tryToResolveKeys' is ran before the decode method.");
+            } else if (typeof this.input.secret === "function" && !this.secret) {
+                debug("'secret' should not be null, make sure the 'tryToResolveKeys' is ran before the decode method.");
+                throw AUTH_JWT_PLUGIN_NULL_SECRET_EXCEPTION;
             }
         } catch (error) {
             debug("%s", error);
+            if (error === AUTH_JWT_PLUGIN_NULL_SECRET_EXCEPTION) {
+                throw error;
+            }
         }
 
         return result;
