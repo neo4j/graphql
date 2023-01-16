@@ -2,6 +2,12 @@ name: "@neo4j/graphql specific tests"
 
 on:
   workflow_call:
+    inputs:
+      disable-code-cov-upload:
+        description: "Whether or not to upload the test coverage to CodeCov"
+        required: false
+        default: false
+        type: boolean
     secrets:
       CODECOV_TOKEN:
         description: "API token for Codecov, if it is available in the current context"
@@ -56,7 +62,7 @@ jobs:
         env:
           VERIFY_TCK: true
           NEO_USER: neo4j
-      - if: ${{ env.CODECOV_TOKEN != '' && env.CODECOV_TOKEN != 'false' }}
+      - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload }}
         name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -78,7 +84,7 @@ jobs:
         run: yarn
       - name: Run Schema tests
         run: yarn --cwd packages/graphql run test:schema --coverage
-      - if: ${{ env.CODECOV_TOKEN != '' && env.CODECOV_TOKEN != 'false' }}
+      - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload }}
         name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -86,7 +92,7 @@ jobs:
           directory: ./packages/graphql/coverage/
           flags: graphql,schema
           fail_ci_if_error: true
-      - if: ${{ env.CODECOV_TOKEN != '' && env.CODECOV_TOKEN != 'false' }}
+      - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload }}
         name: Archive coverage report
         uses: actions/upload-artifact@v3
         with:
