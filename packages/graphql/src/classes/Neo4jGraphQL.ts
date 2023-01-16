@@ -32,6 +32,7 @@ import type {
     Neo4jGraphQLPlugins,
     Neo4jGraphQLCallbacks,
     Neo4jFeaturesSettings,
+    StartupValidationConfig,
 } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import type Node from "./Node";
@@ -53,7 +54,12 @@ export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
     enableRegex?: boolean;
     enableDebug?: boolean;
+    /**
+     * @deprecated This argument has been deprecated and will be removed in v4.0.0.
+     * Please use startupValidation instead.
+     */
     skipValidateTypeDefs?: boolean;
+    startupValidation?: StartupValidationConfig;
     queryOptions?: CypherQueryOptions;
     callbacks?: Neo4jGraphQLCallbacks;
 }
