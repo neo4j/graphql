@@ -8,20 +8,54 @@ The current API is inconsistent and not fit for more complex behaviour.
 
 To solve this, the GraphQL API will be redesign to be [Relay](https://relay.dev/graphql/) first. Some sugar syntax will be added as well to support simple behaviour with less verbosity.
 
+Assuming the following types:
+
+```graphql
+# Original types
+type Movie @fulltext(indexes: [{ indexName: "MovieTitle", fields: ["title"] }]) {
+    title: String!
+    released: Int
+    actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+    director: Person! @relationship(type: "DIRECTED", direction: IN)
+}
+
+type Person {
+    name: String!
+    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+    directed: Movie @relationship(type: "DIRECTED", direction: OUT)
+}
+
+interface ActedIn @relationshipProperties {
+    year: Int
+}
+```
+
+-   Backwards pagination - new feature
+
+-   Filter operations: Equal for strings, eq for numbers
+-   Optionally, replace cursor pagination by skip based pagination
+-   Simple sugar syntax
+
+## Simple API
+
+### Pagination
+
+Cursor based pagination does not fit within the simple API.
+
+1. Disable pagination altogether
+2. Only allow pagination if the user has configured limit based pagination
+3. Add cursor (probably as `_cursor`) in the return type
+4. Like it is now (limit pagination always available for simple API)
+
 ### Further discussion point
 
--   Implement backwards pagination (last, before)
--   Should edges have the relationship fields directly or under "fields" property?
--   Should aggregations have `edge` on top?
--   Should input where use `edge` or `edges`?
--   \_EQUAL vs \_EQ - Equal for string and eq for numbers
 -   1-1 relationship types: should these follow "edges"?
--   "Base" types do not match user types - We should generate new types
--   Aggregation types: Should be plural or singular? (MovieAggregationNode vs MoviesAggregationNode)
--   How to add skip based pagination
--   Aggregations for edges vs nodes
--   TODO: Remove aggregations from operations and move them to connection result
--   How to support granular filter operations?
+-   Node aggregation vs edge aggregation
+-   Sort by aggregations and 1-\* relationship
+-   should nested relationships be named \*Connection?
+-   Sugar syntax for top level edge
+-   Union / interfaces
+-   1-\* edges filter on edge
 
 ## Type naming conventions
 
@@ -63,7 +97,7 @@ interface ActedIn @relationshipProperties {
 
 ```graphql
 type Query {
-    movies(
+    moviesConnection(
         first: Int
         after: String
         last: Int
@@ -72,7 +106,12 @@ type Query {
         # phrase: String # Only available if fulltext is defined
         sort: [MovieConnectionSort]
     ): MoviesConnection!
-    people(first: Int, after: String, where: PersonConnectionWhere, sort: [PersonConnectionSort]): PeopleConnection!
+    peopleConnection(
+        first: Int
+        after: String
+        where: PersonConnectionWhere
+        sort: [PersonConnectionSort]
+    ): PeopleConnection!
 }
 
 ## "Top Level" Connection Types
@@ -96,16 +135,16 @@ type PeopleConnection {
 
 type MovieEdge {
     cursor: String! # Required by relay
-    node: Movie! # Required by relay
+    node: MovieNode! # Required by relay
 }
 
 type PersonEdge {
     cursor: String! # Required by relay
-    node: Person! # Required by relay
+    node: PersonNode! # Required by relay
 }
 
-## "Basic" Types
-type Movie {
+## "Node" Types
+type MovieNode {
     title: String!
     released: Int
     actors(
@@ -123,7 +162,7 @@ type Movie {
     ): MovieDirectorConnection!
 }
 
-type Person {
+type PersonNode {
     name: String!
     movies(
         where: PersonMoviesConnectionWhere
@@ -172,24 +211,24 @@ type PersonDirectedConnection {
 
 type MovieActorsEdge {
     cursor: String! # Required by Relay
-    node: Person! # Required by Relay
+    node: PersonNode! # Required by Relay
     fields: ActedIn
 }
 
 type PersonMoviesEdge {
     cursor: String! # Required by Relay
-    node: Movie! # Required by Relay
+    node: MovieNode! # Required by Relay
     fields: ActedIn
 }
 
 type PersonDirectedEdge {
     cursor: String! # Required by Relay
-    node: Movie! # Required by Relay
+    node: MovieNode! # Required by Relay
 }
 
 type MovieDirectorEdge {
     cursor: String!
-    node: Person!
+    node: PersonNode!
 }
 
 ## Relationship fields
@@ -261,56 +300,55 @@ input MovieEdgeWhere {
     AND: [MovieEdgeWhere!]
     OR: [MovieEdgeWhere!]
     NOT: MovieEdgeWhere
-    node: MovieWhere
+    node: MovieNodeWhere
 }
 
 input PersonEdgeWhere {
     AND: [PersonEdgeWhere!]
     OR: [PersonEdgeWhere!]
     NOT: PersonEdgeWhere
-    node: PersonWhere
+    node: PersonNodeWhere
 }
 
 ## Basic fields where
 
-input MovieWhere {
-    OR: [MovieWhere!]
-    AND: [MovieWhere!]
-    NOT: MovieWhere
+input MovieNodeWhere {
+    OR: [MovieNodeWhere!]
+    AND: [MovieNodeWhere!]
+    NOT: MovieNodeWhere
     title: StringWhere
     released: IntWhere
-    actors: MovieActorsWhere
+    actors: MovieActorsConnectionWhere
     director: MovieDirectorConnectionWhere
 }
 
-input PersonWhere {
-    OR: [PersonWhere!]
-    AND: [PersonWhere!]
-    NOT: PersonWhere
+input PersonNodeWhere {
+    OR: [PersonNodeWhere!]
+    AND: [PersonNodeWhere!]
+    NOT: PersonNodeWhere
     name: StringWhere
-    movies: MovieActorsConnectionWhere
+    movies: PersonMoviesConnectionWhere
     directed: PersonDirectedConnectionWhere
 }
 
 ## Relationship Connection Where
 
-input MovieActorsWhere {
-    AND: [MovieActorsWhere!]
-    OR: [MovieActorsWhere!]
-    NOT: MovieActorsWhere
-    all: MovieActorsConnectionWhere
-    none: MovieActorsConnectionWhere
-    single: MovieActorsConnectionWhere
-    some: MovieActorsConnectionWhere
-    aggregation: MovieActorsAggregationEdgeWhere
-}
-
 input MovieActorsConnectionWhere {
     AND: [MovieActorsConnectionWhere!]
     OR: [MovieActorsConnectionWhere!]
     NOT: MovieActorsConnectionWhere
-    edges: MovieActorsEdgeWhere
+    edges: MovieActorsWhereFilters
     aggregation: MovieActorsAggregationEdgeWhere
+}
+
+input MovieActorsWhereFilters {
+    AND: [MovieActorsWhereFilters!]
+    OR: [MovieActorsWhereFilters!]
+    NOT: MovieActorsWhereFilters
+    all: MovieActorsEdgeWhere
+    none: MovieActorsEdgeWhere
+    single: MovieActorsEdgeWhere
+    some: MovieActorsEdgeWhere
 }
 
 input MovieDirectorConnectionWhere {
@@ -324,8 +362,18 @@ input PersonMoviesConnectionWhere {
     AND: [PersonMoviesConnectionWhere!]
     OR: [PersonMoviesConnectionWhere!]
     NOT: PersonMoviesConnectionWhere
-    edges: PersonMoviesEdgeWhere
+    edges: PersonMoviesWhereFilters
     aggregation: PersonMoviesAggregationEdgeWhere
+}
+
+input PersonMoviesWhereFilters {
+    AND: [PersonMoviesWhereFilters!]
+    OR: [PersonMoviesWhereFilters!]
+    NOT: PersonMoviesWhereFilters
+    all: PersonMoviesEdgeWhere
+    none: PersonMoviesEdgeWhere
+    single: PersonMoviesEdgeWhere
+    some: PersonMoviesEdgeWhere
 }
 
 input PersonDirectedConnectionWhere {
@@ -341,7 +389,7 @@ input MovieActorsEdgeWhere {
     AND: [MovieActorsEdgeWhere!]
     OR: [MovieActorsEdgeWhere!]
     NOT: MovieActorsEdgeWhere
-    node: PersonWhere
+    node: PersonNodeWhere
     fields: ActedInWhere
 }
 
@@ -349,7 +397,7 @@ input MovieDirectorEdgeWhere {
     AND: [MovieDirectorEdgeWhere!]
     OR: [MovieDirectorEdgeWhere!]
     NOT: MovieDirectorEdgeWhere
-    node: PersonWhere
+    node: PersonNodeWhere
     fields: ActedInWhere
 }
 
@@ -357,7 +405,7 @@ input PersonMoviesEdgeWhere {
     AND: [PersonMoviesEdgeWhere!]
     OR: [PersonMoviesEdgeWhere!]
     NOT: PersonMoviesEdgeWhere
-    node: MovieWhere
+    node: MovieNodeWhere
     fields: ActedInWhere
 }
 
@@ -365,7 +413,7 @@ input PersonDirectedEdgeWhere {
     AND: [PersonDirectedEdgeWhere!]
     OR: [PersonDirectedEdgeWhere!]
     NOT: PersonDirectedEdgeWhere
-    node: MovieWhere
+    node: MovieNodeWhere
 }
 
 ## Relationship fields where
@@ -495,7 +543,7 @@ type PageInfo {
 type IntAggregateSelectionNullable {
     max: Int
     min: Int
-    average: Float
+    avg: Float
     sum: Int
 }
 
@@ -512,14 +560,14 @@ input StringAggregateSelectionNonNullableWhere {
 }
 
 input IntAggregateSelectionNullableWhere {
-    average: FloatWhere
+    avg: FloatWhere
     min: IntWhere
     max: IntWhere
     sum: IntWhere
 }
 
 input IntAggregateSelectionNonNullableWhere {
-    average: FloatWhere!
+    avg: FloatWhere!
     min: IntWhere!
     max: IntWhere!
     sum: IntWhere!
@@ -529,7 +577,7 @@ input StringWhere {
     OR: [StringWhere!]
     AND: [StringWhere!]
     NOT: StringWhere
-    equal: String
+    equals: String
     in: [String!]
     matches: String
     contains: String
@@ -553,7 +601,7 @@ input FloatWhere {
     OR: [FloatWhere!]
     AND: [FloatWhere!]
     NOT: FloatWhere
-    equal: Float
+    eq: Float
     in: [Float]
     lt: Float
     lte: Float
