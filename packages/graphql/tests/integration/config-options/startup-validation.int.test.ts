@@ -275,4 +275,47 @@ describe("Startup Validation", () => {
 
         await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
+
+    test("should only throw an error for missing custom resolvers when startupValidation.typeDefs is false", async () => {
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs: invalidAndCustomResolverTypeDefs,
+            driver,
+            config: {
+                startupValidation: {
+                    typeDefs: false,
+                },
+            },
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(missingCustomResolverError);
+    });
+
+    test("should only throw an error for invalid type defs when startupValidation.customResolvers is false", async () => {
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs: invalidAndCustomResolverTypeDefs,
+            driver,
+            config: {
+                startupValidation: {
+                    customResolver: false,
+                },
+            },
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(invalidTypeDefsError);
+    });
+
+    test("should throw no errors when both startupValidation.customResolver and startupValidation.typeDefs are false", async () => {
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs: invalidAndCustomResolverTypeDefs,
+            driver,
+            config: {
+                startupValidation: {
+                    customResolver: false,
+                    typeDefs: false,
+                },
+            },
+        });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
+    });
 });
