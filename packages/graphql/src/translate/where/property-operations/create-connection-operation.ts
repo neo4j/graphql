@@ -152,6 +152,7 @@ export function createConnectionOperation({
         const subqueryCall = new Cypher.Call(subqueryContents).innerWith(parentNode);
 
         operations.push(getCountOperation(listPredicateStr, countRef));
+        // A Cypher.concat is used here because a Cypher.CompositeClause is required by createWherePredicate
         subqueries = Cypher.concat(subqueryCall);
     });
 
