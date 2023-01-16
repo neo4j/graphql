@@ -86,7 +86,21 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
-            WHERE (this.current = $param0 AND size([(this)-[this0:ARCHITECTURE]->(this1:\`MasterData\`) WHERE size([(this1)-[this2:HAS_NAME]->(this3:\`NameDetails\`) WHERE this3.fullName = $param1 | 1]) = 1 | 1]) = 1)
+            CALL {
+                WITH this
+                MATCH (this)-[this0:ARCHITECTURE]->(this1:\`MasterData\`)
+                CALL {
+                    WITH this1
+                    MATCH (this1)-[this2:HAS_NAME]->(this3:\`NameDetails\`)
+                    WHERE this3.fullName = $param0
+                    RETURN count(this2) AS var4
+                }
+                WITH *
+                WHERE var4 = 1
+                RETURN count(this0) AS var5
+            }
+            WITH *
+            WHERE (this.current = $param1 AND var5 = 1)
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_architectureConnectionthis0:ARCHITECTURE]->(this_MasterData:\`MasterData\`)
@@ -110,8 +124,8 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": true,
-                \\"param1\\": \\"MHA\\",
+                \\"param0\\": \\"MHA\\",
+                \\"param1\\": true,
                 \\"this_connection_architectureConnectionparam0\\": true,
                 \\"this_MasterData_connection_nameDetailsConnectionparam0\\": true
             }"
@@ -194,7 +208,28 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Main\`)
-            WHERE (this.current = $param0 AND size([(this)-[this0:MAIN]->(this1:\`Series\`) WHERE size([(this1)-[this2:ARCHITECTURE]->(this3:\`MasterData\`) WHERE size([(this3)-[this4:HAS_NAME]->(this5:\`NameDetails\`) WHERE this5.fullName = $param1 | 1]) = 1 | 1]) > 0 | 1]) = 1)
+            CALL {
+                WITH this
+                MATCH (this)-[this0:MAIN]->(this1:\`Series\`)
+                CALL {
+                    WITH this1
+                    MATCH (this1)-[this2:ARCHITECTURE]->(this3:\`MasterData\`)
+                    CALL {
+                        WITH this3
+                        MATCH (this3)-[this4:HAS_NAME]->(this5:\`NameDetails\`)
+                        WHERE this5.fullName = $param0
+                        RETURN count(this4) AS var6
+                    }
+                    WITH *
+                    WHERE var6 = 1
+                    RETURN count(this2) AS var7
+                }
+                WITH *
+                WHERE var7 > 0
+                RETURN count(this0) AS var8
+            }
+            WITH *
+            WHERE (this.current = $param1 AND var8 = 1)
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_mainConnectionthis0:MAIN]->(this_Series:\`Series\`)
@@ -227,8 +262,8 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": true,
-                \\"param1\\": \\"MHA\\",
+                \\"param0\\": \\"MHA\\",
+                \\"param1\\": true,
                 \\"this_connection_mainConnectionparam0\\": true,
                 \\"this_Series_connection_architectureConnectionparam0\\": true,
                 \\"this_Series_MasterData_connection_nameDetailsConnectionparam0\\": true
