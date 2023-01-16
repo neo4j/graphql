@@ -300,9 +300,32 @@ query Posts {
 }
 ```
 
+**Posts with at least a like from Simone**
+
+```graphql
+query Posts {
+  posts(where: {
+    likes: {
+        some: {
+            node: {
+                name: "Simone"
+            }
+        }
+    }
+  }) {
+    content
+  }
+}
+```
+
 ## Risks
 
-As a breaking change, this could slow down the adoption from previous users.
+- As a breaking change, this could slow down the adoption from previous users.
+- Apart from the style of the API, this will lead to a tradeoff between more types and fewer fields.
+
+## Out of Scope
+
+- This RFC describes the style conceptually, declaring an operator from a new type rather than using a suffix in the field. Some operations and operators are not described in this RFC but they will be impacted as well.
 
 ### Security consideration
 
