@@ -69,18 +69,30 @@ export function createConnectionOperation({
 
         const relationField = connectionField.relationship;
 
+        let labelsOfNodesImplementingInterface;
         let labels = refNode.getLabels(context);
+
         const hasOnlyNodeObjectFilter = entry[1]?.node && !nodeOnObj;
         if (hasOnlyNodeObjectFilter) {
             const nodesImplementingInterface = context.nodes.filter((x) =>
                 x.interfaces.some((i) => i.name.value === entry[0])
             );
-            if (nodesImplementingInterface.length) {
-                // remove the labels so we check all possibilities and not just the one label of the refNode
+            labelsOfNodesImplementingInterface = nodesImplementingInterface.map((n) => n.getLabels(context)).flat();
+            if (labelsOfNodesImplementingInterface?.length) {
+                // set labels to an empty array. We check for the possible interface implementations in the WHERE clause instead (that is Neo4j 4.x safe)
                 labels = [];
             }
         }
+
         const childNode = new Cypher.Node({ labels });
+
+        let orOperatorMultipleNodeLabels;
+        if (labelsOfNodesImplementingInterface?.length) {
+            orOperatorMultipleNodeLabels = Cypher.or(
+                ...labelsOfNodesImplementingInterface.map((label: string) => childNode.hasLabel(label))
+            );
+        }
+
         const relationship = new Cypher.Relationship({
             source: relationField.direction === "IN" ? childNode : parentNode,
             target: relationField.direction === "IN" ? parentNode : childNode,
@@ -112,7 +124,14 @@ export function createConnectionOperation({
         }
         const subquery = new Cypher.RawCypher((env: Cypher.Environment) => {
             const patternStr = matchPattern.getCypher(env);
-            const whereStr = whereOperator ? whereOperator.getCypher(env) : "";
+
+            let whereStr = "";
+            if (whereOperator && orOperatorMultipleNodeLabels) {
+                whereStr = Cypher.and(whereOperator, orOperatorMultipleNodeLabels).getCypher(env);
+            } else if (whereOperator) {
+                whereStr = whereOperator.getCypher(env);
+            }
+
             const clause = listPredicateToSizeFunction(listPredicateStr, patternStr, whereStr);
             return [clause, {}];
         });
