@@ -149,7 +149,7 @@ describe("Startup Validation", () => {
         await expect(neoSchema.getSchema()).rejects.toThrow(invalidTypeDefsError);
     });
 
-    test("should throw an error for invalid type defs by default when startupValidation is an object", async () => {
+    test("when startupValidation is an object, should throw an error for invalid type defs by default", async () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs: invalidTypeDefs,
             driver,
@@ -269,7 +269,7 @@ describe("Startup Validation", () => {
             typeDefs: invalidAndCustomResolverTypeDefs,
             driver,
             config: {
-                startupValidation: true,
+                startupValidation: false,
             },
         });
 

@@ -233,10 +233,20 @@ class Neo4jGraphQL {
         return new Promise((resolve) => {
             const document = getDocument(this.schemaDefinition.typeDefs);
 
+            let validateTypeDefs =
+                this.config?.startupValidation === undefined ? true : Boolean(this.config?.startupValidation);
+            if (typeof this.config?.startupValidation === "object") {
+                validateTypeDefs =
+                    this.config.startupValidation.typeDefs === undefined
+                        ? true
+                        : Boolean(this.config.startupValidation.typeDefs);
+            }
+
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
                 enableRegex: this.config?.enableRegex,
                 skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
+                validateTypeDefs,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
                 callbacks: this.config.callbacks,
                 userCustomResolvers: this.schemaDefinition.resolvers,

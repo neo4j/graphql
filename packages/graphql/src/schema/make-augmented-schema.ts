@@ -92,6 +92,7 @@ function makeAugmentedSchema(
         features,
         enableRegex,
         skipValidateTypeDefs,
+        validateTypeDefs,
         generateSubscriptions,
         callbacks,
         userCustomResolvers,
@@ -99,6 +100,7 @@ function makeAugmentedSchema(
         features?: Neo4jFeaturesSettings;
         enableRegex?: boolean;
         skipValidateTypeDefs?: boolean;
+        validateTypeDefs?: boolean;
         generateSubscriptions?: boolean;
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
@@ -109,7 +111,7 @@ function makeAugmentedSchema(
     typeDefs: DocumentNode;
     resolvers: IResolvers;
 } {
-    if (!skipValidateTypeDefs) {
+    if (validateTypeDefs || skipValidateTypeDefs === false) {
         validateDocument(document);
     }
 
