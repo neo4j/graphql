@@ -122,8 +122,6 @@ export function createConnectionOperation({
             listPredicateStr = "single";
         }
 
-        const clause = listPredicateToSizeFunction(listPredicateStr, patternStr, whereStr);
-
         const matchClause = new Cypher.Match(matchPattern);
         const countRef = new Cypher.Variable();
 
@@ -135,10 +133,14 @@ export function createConnectionOperation({
             innerSubqueriesAndWhereClause = Cypher.concat(preComputedSubqueries, whereClause);
         }
 
-        if (whereOperator) {
-            let newWhereOperator = orOperatorMultipleNodeLabels ? Cypher.and(whereOperator, orOperatorMultipleNodeLabels) : whereOperator
-            newWhereOperator = listPredicateStr === "all" ? Cypher.not(whereOperator) : whereOperator;
-            whereClause.where(newWhereOperator);
+        if (whereOperator || orOperatorMultipleNodeLabels) {
+            let newWhereOperator = orOperatorMultipleNodeLabels
+                ? Cypher.and(whereOperator, orOperatorMultipleNodeLabels)
+                : whereOperator;
+            if (newWhereOperator) {
+                newWhereOperator = listPredicateStr === "all" ? Cypher.not(newWhereOperator) : newWhereOperator;
+                whereClause.where(newWhereOperator);
+            }
         }
 
         const subqueryContents = Cypher.concat(
