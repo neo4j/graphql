@@ -106,7 +106,14 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE size([(this1:\`Netflix\`)-[this0:DISTRIBUTED_BY]->(this) WHERE this1.name = $param0 | 1]) > 0
+            CALL {
+                WITH this
+                MATCH (this1:\`Netflix\`)-[this0:DISTRIBUTED_BY]->(this)
+                WHERE this1.name = $param0
+                RETURN count(this0) AS var2
+            }
+            WITH *
+            WHERE var2 > 0
             RETURN this { .title } AS this"
         `);
 
@@ -131,7 +138,14 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE size([(this1:\`Dishney\`)-[this0:DISTRIBUTED_BY]->(this) WHERE this1.name = $param0 | 1]) > 0
+            CALL {
+                WITH this
+                MATCH (this1:\`Dishney\`)-[this0:DISTRIBUTED_BY]->(this)
+                WHERE this1.name = $param0
+                RETURN count(this0) AS var2
+            }
+            WITH *
+            WHERE var2 > 0
             RETURN this { .title } AS this"
         `);
 
@@ -154,7 +168,14 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE size([(this1:\`Dishney\`)-[this0:DISTRIBUTED_BY]->(this) WHERE this1.name = $param0 | 1]) > 0
+            CALL {
+                WITH this
+                MATCH (this1:\`Dishney\`)-[this0:DISTRIBUTED_BY]->(this)
+                WHERE this1.name = $param0
+                RETURN count(this0) AS var2
+            }
+            WITH *
+            WHERE var2 > 0
             RETURN this { .title } AS this"
         `);
 
@@ -177,7 +198,14 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE size([(this1)-[this0:DISTRIBUTED_BY]->(this) WHERE (this1.name = $param0 AND (this1:\`Dishney\` OR this1:\`Prime\` OR this1:\`Netflix\`)) | 1]) > 0
+            CALL {
+                WITH this
+                MATCH (this1)-[this0:DISTRIBUTED_BY]->(this)
+                WHERE (this1.name = $param0 AND (this1:\`Dishney\` OR this1:\`Prime\` OR this1:\`Netflix\`))
+                RETURN count(this0) AS var2
+            }
+            WITH *
+            WHERE var2 > 0
             RETURN this { .title } AS this"
         `);
 
