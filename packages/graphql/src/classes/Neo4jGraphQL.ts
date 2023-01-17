@@ -235,9 +235,15 @@ class Neo4jGraphQL {
 
             let validateTypeDefs =
                 this.config?.startupValidation === undefined ? true : Boolean(this.config?.startupValidation);
+            let validateCustomResolvers =
+                this.config?.startupValidation === undefined ? true : Boolean(this.config?.startupValidation);
             if (typeof this.config?.startupValidation === "object") {
                 validateTypeDefs =
                     this.config.startupValidation.typeDefs === undefined
+                        ? true
+                        : Boolean(this.config.startupValidation.typeDefs);
+                validateCustomResolvers =
+                    this.config.startupValidation.customResolver === undefined
                         ? true
                         : Boolean(this.config.startupValidation.typeDefs);
             }
@@ -247,6 +253,7 @@ class Neo4jGraphQL {
                 enableRegex: this.config?.enableRegex,
                 skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
                 validateTypeDefs,
+                validateCustomResolvers,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
                 callbacks: this.config.callbacks,
                 userCustomResolvers: this.schemaDefinition.resolvers,

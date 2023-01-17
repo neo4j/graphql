@@ -42,6 +42,7 @@ let deprecationWarningShown = false;
 function getCustomResolverMeta(
     field: FieldDefinitionNode,
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    validateCustomResolvers: boolean,
     customResolvers?: IResolvers | IResolvers[],
     interfaceField?: FieldDefinitionNode
 ): CustomResolverMeta | undefined {
@@ -63,7 +64,12 @@ function getCustomResolverMeta(
     }
 
     // TODO: remove check for directive when removing @computed
-    if (object.kind !== Kind.INTERFACE_TYPE_DEFINITION && directive && !customResolvers?.[field.name.value]) {
+    if (
+        validateCustomResolvers &&
+        object.kind !== Kind.INTERFACE_TYPE_DEFINITION &&
+        directive &&
+        !customResolvers?.[field.name.value]
+    ) {
         throw new Error(`Custom resolver for ${field.name.value} has not been provided`);
     }
 

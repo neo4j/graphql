@@ -189,7 +189,7 @@ describe("Startup Validation", () => {
             typeDefs: customResolverTypeDefs,
             driver,
             config: {
-                startupValidation: false,
+                startupValidation: true,
             },
         });
 

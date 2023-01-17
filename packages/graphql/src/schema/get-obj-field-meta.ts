@@ -95,6 +95,7 @@ function getObjFieldMeta({
     enums,
     callbacks,
     customResolvers,
+    validateCustomResolvers,
 }: {
     obj: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
@@ -102,6 +103,7 @@ function getObjFieldMeta({
     unions: UnionTypeDefinitionNode[];
     scalars: ScalarTypeDefinitionNode[];
     enums: EnumTypeDefinitionNode[];
+    validateCustomResolvers: boolean;
     callbacks?: Neo4jGraphQLCallbacks;
     customResolvers?: IResolvers | Array<IResolvers>;
 }) {
@@ -130,7 +132,13 @@ function getObjFieldMeta({
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
-            const customResolverMeta = getCustomResolverMeta(field, obj, customResolvers, interfaceField);
+            const customResolverMeta = getCustomResolverMeta(
+                field,
+                obj,
+                validateCustomResolvers,
+                customResolvers,
+                interfaceField
+            );
             const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
