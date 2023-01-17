@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import jsonwebtoken from "jsonwebtoken";
+import type { Secret, GetPublicKeyOrSecret, VerifyOptions, VerifyErrors } from "jsonwebtoken";
+import { decode, verify } from "jsonwebtoken";
 import Debug from "debug";
 import { DEBUG_PREFIX } from "./constants";
 import type { RequestLike } from "./types";
@@ -26,29 +27,35 @@ import { AUTH_JWT_PLUGIN_NULL_SECRET_EXCEPTION } from "./exceptions";
 const debug = Debug(DEBUG_PREFIX);
 
 export interface JWTPluginInput {
-    secret: jsonwebtoken.Secret | ((req: RequestLike) => jsonwebtoken.Secret);
-    noVerify?: boolean;
-    globalAuthentication?: boolean;
-    rolesPath?: string;
-    bindPredicate?: "all" | "any";
+    secret: Secret | ((req: RequestLike) => Secret)
+    noVerify?: boolean
+    verifyOptions?: VerifyOptions
+
+    rolesPath?: string
+    globalAuthentication?: boolean
+    bindPredicate?: "all" | "any"
 }
 
 class Neo4jGraphQLAuthJWTPlugin {
-    private secret: jsonwebtoken.Secret | null = null;
+    private secret: Secret | ((req: RequestLike) => Secret);
     private noVerify?: boolean;
+    private verifyOptions?: VerifyOptions;
     rolesPath?: string;
-    isGlobalAuthenticationEnabled?: boolean;
-    input: JWTPluginInput;
-    bindPredicate: "all" | "any";
+    isGlobalAuthenticationEnabled: boolean; // default: false
+    bindPredicate: "all" | "any"; // default: 'all'
 
     constructor(input: JWTPluginInput) {
-        this.input = input;
-
-        this.secret = typeof input.secret === "function" ? null : input.secret;
+        this.secret = input.secret;
         this.noVerify = input.noVerify;
         this.rolesPath = input.rolesPath;
         this.isGlobalAuthenticationEnabled = input.globalAuthentication || false;
         this.bindPredicate = input.bindPredicate || "all";
+
+        // Specify Verify Options
+        this.verifyOptions = {
+            ...input.verifyOptions,
+            algorithms: input.verifyOptions?.algorithms ?? ["HS256", "RS256"],
+        }
 
         if (this.noVerify && this.isGlobalAuthenticationEnabled) {
             throw new Error(
@@ -58,32 +65,34 @@ class Neo4jGraphQLAuthJWTPlugin {
     }
 
     tryToResolveKeys(req: RequestLike): void {
-        if (typeof this.input.secret !== "function") return;
-
-        this.secret = this.input.secret(req);
-
-        return;
+        if (typeof this.secret === "function") {
+            this.secret = this.secret(req)
+        }
     }
 
-    /* eslint-disable @typescript-eslint/require-await */
     async decode<T>(token: string): Promise<T | undefined> {
-        let result: T | undefined;
-
         try {
             if (this.noVerify) {
-                debug("Skipping verifying JWT as noVerify is not set");
-
-                result = jsonwebtoken.decode(token, { json: true }) as unknown as T;
+                debug("Decoding JWT without verifying");
+                return decode(token, { json: true }) as unknown as T;
             }
-            if (this.secret) {
-                debug("Verifying JWT using secret");
 
-                result = jsonwebtoken.verify(token, this.secret, {
-                    algorithms: ["HS256", "RS256"],
-                }) as unknown as T;
-            } else if (typeof this.input.secret === "function" && !this.secret) {
-                debug("'secret' should not be null, make sure the 'tryToResolveKeys' is ran before the decode method.");
-                throw AUTH_JWT_PLUGIN_NULL_SECRET_EXCEPTION;
+            else if (this.secret) {
+                debug("Asyncronously decodes and verifies JWT using secret");
+                return new Promise((resolve, reject) => {
+                    if (typeof this.secret === "function") {
+                        debug("'secret' should not be null, make sure the 'tryToResolveKeys' is ran before the decode method.");
+                        throw AUTH_JWT_PLUGIN_NULL_SECRET_EXCEPTION;
+                    }
+                    verify(
+                        token,
+                        this.secret,
+                        this.verifyOptions,
+                        (err, decoded) => {
+                            err ? reject(err) : resolve(decoded as unknown as T);
+                        }
+                    );
+                });
             }
         } catch (error) {
             debug("%s", error);
@@ -91,10 +100,7 @@ class Neo4jGraphQLAuthJWTPlugin {
                 throw error;
             }
         }
-
-        return result;
     }
-    /* eslint-enable @typescript-eslint/require-await */
 }
 
 export default Neo4jGraphQLAuthJWTPlugin;

@@ -20,29 +20,45 @@
 import Neo4jGraphQLAuthJWKSPlugin from "./Neo4jGraphQLAuthJWKSPlugin";
 
 describe("Neo4jGraphQLAuthJWKSPlugin", () => {
-    test("should construct", () => {
+    test("should construct using URI string", () => {
         const plugin = new Neo4jGraphQLAuthJWKSPlugin({
-            jwksEndpoint: "endpoint.com",
+            jwksOptions: {
+                jwksUri: "endpoint.com"
+            }
         });
 
+        expect(plugin.isClientSet()).toBeTruthy()
         expect(plugin).toBeInstanceOf(Neo4jGraphQLAuthJWKSPlugin);
-        expect(plugin.client).not.toBeNull();
     });
-    test("client should be null when jwksEndpoint is a function", () => {
+    test("should construct using a request like function", () => {
         const plugin = new Neo4jGraphQLAuthJWKSPlugin({
-            jwksEndpoint: () => {
-                return "https://my-dummy-identity:8080/tenant1";
+            jwksOptions: {
+                jwksUri: () => "endpoint.com"
+            }
+        });
+
+        expect(plugin.isClientSet()).toBeFalsy()
+        expect(plugin).toBeInstanceOf(Neo4jGraphQLAuthJWKSPlugin);
+    });
+    test("client should fail when jwks uri is a function and tryToResolveKeys was never called", async () => {
+        const plugin = new Neo4jGraphQLAuthJWKSPlugin({
+            jwksOptions: {
+                jwksUri: () => "https://my-dummy-identity:8080/tenant1"
             },
         });
-        expect(plugin.client).toBeNull();
+        const token = await plugin.decode<string>('Bearer abc.123.xyz')
+        expect(token).toBeFalsy();
     });
     test("tryToResolveKeys should run the jwksEndpoint as function", () => {
         const expectedEndpoint = "https://my-dummy-identity:8080/tenant1";
         const plugin = new Neo4jGraphQLAuthJWKSPlugin({
-            jwksEndpoint: () => {
-                return expectedEndpoint;
+            jwksOptions: {
+                jwksUri: () => {
+                    return expectedEndpoint;
+                }
             },
         });
+
         //How we use the headers or request inside the jwksFunction is not the logic of `tryToResolveKeys` method
         plugin.tryToResolveKeys({
             headers: {
@@ -50,7 +66,6 @@ describe("Neo4jGraphQLAuthJWKSPlugin", () => {
             },
         });
 
-        expect(plugin.options.jwksUri).toBe(expectedEndpoint);
-        expect(plugin.client).not.toBeNull();
+        expect(plugin.isClientSet).toBeTruthy()
     });
 });

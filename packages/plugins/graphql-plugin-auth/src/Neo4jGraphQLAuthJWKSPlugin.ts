@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import jsonwebtoken from "jsonwebtoken";
-import type JwksRsa from "jwks-rsa";
+import type { VerifyOptions, GetPublicKeyOrSecret } from "jsonwebtoken";
+import { verify } from "jsonwebtoken";
+import type { Options as JwksOptions} from "jwks-rsa";
 import { JwksClient } from "jwks-rsa";
 import Debug from "debug";
 import { DEBUG_PREFIX } from "./constants";
@@ -26,54 +27,67 @@ import type { RequestLike } from "./types";
 
 const debug = Debug(DEBUG_PREFIX);
 
-export interface JWKSPluginInput {
-    jwksEndpoint: string | ((req: RequestLike) => string);
-    rolesPath?: string;
-    globalAuthentication?: boolean;
-    bindPredicate?: "all" | "any";
+export type JwksPluginOptions = Omit<JwksOptions, 'jwksUri'> & {
+    jwksUri: string | ((req: RequestLike) => string)
+};
+
+export interface JwksPluginInput {
+    jwksOptions: JwksPluginOptions
+    verifyOptions?: VerifyOptions
+
+    rolesPath?: string
+    globalAuthentication?: boolean
+    bindPredicate?: "all" | "any"
 }
 
 class Neo4jGraphQLAuthJWKSPlugin {
+    client?: JwksClient = undefined;
+    private options: JwksPluginOptions;
+    private verifyOptions?: VerifyOptions;
     rolesPath?: string;
-    isGlobalAuthenticationEnabled?: boolean;
-    client: JwksClient | null = null;
-    options!: JwksRsa.Options;
-    bindPredicate: "all" | "any";
-    input: JWKSPluginInput;
-    constructor(input: JWKSPluginInput) {
-        //We are going to use this input later, so we need to save it here.
-        this.input = input;
+    isGlobalAuthenticationEnabled: boolean; // default: false
+    bindPredicate: "all" | "any"; // default: 'all'
 
+    constructor(input: JwksPluginInput) {
         this.rolesPath = input.rolesPath;
         this.isGlobalAuthenticationEnabled = input.globalAuthentication || false;
         this.bindPredicate = input.bindPredicate || "all";
 
-        //It will be empty string if the endpoint is a function
-        //This means the value will be calculated later
-        const jwksEndpoint = typeof input.jwksEndpoint === "string" ? input.jwksEndpoint : "";
-
+        // Include Default JwksRsa if option was not specified
         this.options = {
-            jwksUri: jwksEndpoint,
-            rateLimit: true,
-            jwksRequestsPerMinute: 10,
-            cache: true,
-            cacheMaxEntries: 5,
-            cacheMaxAge: 600000,
-        };
+            ...input.jwksOptions,
+            jwksUri: input.jwksOptions.jwksUri,
+            rateLimit: input.jwksOptions.rateLimit ?? true,
+            jwksRequestsPerMinute: input.jwksOptions.jwksRequestsPerMinute ?? 10,
+            cache: input.jwksOptions.cache ?? true,
+            cacheMaxEntries: input.jwksOptions.cacheMaxEntries ?? 5,
+            cacheMaxAge: input.jwksOptions.cacheMaxAge ?? 600000,
+        }
 
-        //If the endpoint is set in the constructor directly we can create th client immediately here
-        if (jwksEndpoint !== "") this.client = new JwksClient(this.options);
+        // Specify Verify Options
+        this.verifyOptions = {
+            ...input.verifyOptions,
+            algorithms: input.verifyOptions?.algorithms ?? ["HS256", "RS256"],
+        }
+
+        //If the endpoint is set in the constructor directly we can create the client immediately here
+        if (typeof this.options.jwksUri === "string") {
+            this.client = new JwksClient(this.options as JwksOptions);
+        }
+    }
+
+    isClientSet(): boolean {
+        return this.client !== undefined
     }
 
     tryToResolveKeys(req: RequestLike): void {
-        if (typeof this.input.jwksEndpoint === "string") return;
-
-        //The url will be computed based on the jwksEndpoint implementation
-        this.options.jwksUri = this.input.jwksEndpoint(req);
-
-        this.client = new JwksClient(this.options);
-
-        return;
+        // Compute the url using the Request Implementation
+        if (typeof this.options.jwksUri === "function") {
+            this.client = new JwksClient({
+                ...this.options,
+                jwksUri: this.options.jwksUri(req),
+            });
+        }
     }
 
     async decode<T>(token: string): Promise<T | undefined> {
@@ -81,10 +95,7 @@ class Neo4jGraphQLAuthJWKSPlugin {
 
         try {
             debug("Verifying JWT using OpenID Public Key Set Endpoint");
-
-            result = await this.verifyJWKS<T>({
-                token,
-            });
+            result = await this.verifyJWKS<T>(token);
         } catch (error) {
             debug("%s", error);
         }
@@ -92,39 +103,27 @@ class Neo4jGraphQLAuthJWKSPlugin {
         return result;
     }
 
-    private async verifyJWKS<T>({ token }: { token: string }): Promise<T> {
-        const getKey: jsonwebtoken.GetPublicKeyOrSecret = (header, callback) => {
-            if (!this.client) {
-                debug(
-                    "JwksClient should NOT be empty! Make sure the 'tryToResolveKeys' method is called before decoding"
-                );
-                return;
-            }
-            const kid: string = header.kid || "";
+    // Verifies the JWKS asynchronously, returns Promise
+    private async verifyJWKS<T>(token: string): Promise<T> {
+        if (!this.client) {
+            debug("Client not created. Make sure the 'tryToResolveKeys' method is called before decoding")
+        }
 
-            this.client.getSigningKey(kid, (err, key) => {
-                const signingKey = key?.getPublicKey();
+        const getKey: GetPublicKeyOrSecret = (header, callback) => {
+            this.client?.getSigningKey(header.kid, (err, key) => {
+                var signingKey = key?.getPublicKey();
                 callback(err, signingKey);
             });
         };
 
+        // Returns a Promise with verification result or error
         return new Promise((resolve, reject) => {
-            if (!this.client)
-                reject(
-                    "JwksClient should not be empty! Make sure the 'tryToResolveKeys' method is called before decoding"
-                );
-            jsonwebtoken.verify(
+            verify(
                 token,
                 getKey,
-                {
-                    algorithms: ["HS256", "RS256"],
-                },
+                this.verifyOptions,
                 (err, decoded) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(decoded as unknown as T);
-                    }
+                    err ? reject(err) : resolve(decoded as unknown as T);
                 }
             );
         });
