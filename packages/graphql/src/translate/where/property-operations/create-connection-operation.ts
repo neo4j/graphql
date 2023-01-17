@@ -134,8 +134,8 @@ export function createConnectionOperation({
             parentNode,
             innerOperation,
         });
+        
         operations.push(predicate);
-
         subqueries = Cypher.concat(subqueries, preComputedSubquery);
     });
 

@@ -117,6 +117,8 @@ export function createRelationshipOperation({
 
     return {
         predicate,
+        // A Cypher.concat is used here as the value is passed directly to createWherePredicate which expects a
+        // composite clause
         preComputedSubquery: Cypher.concat(preComputedSubquery),
     };
 }
