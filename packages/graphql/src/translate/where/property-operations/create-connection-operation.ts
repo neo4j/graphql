@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { ConnectionField, ConnectionWhereArg, Context } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
+import type { ConnectionField, ConnectionWhereArg, Context } from "../../../types";
 import type { Node, Relationship } from "../../../classes";
 import { getListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
@@ -119,6 +119,10 @@ export function createConnectionOperation({
             node: refNode,
         });
 
+        if (orOperatorMultipleNodeLabels) {
+            innerOperation.predicate = Cypher.and(innerOperation.predicate, orOperatorMultipleNodeLabels);
+        }
+
         if (listPredicateStr === "any" && !connectionField.relationship.typeMeta.array) {
             listPredicateStr = "single";
         }
@@ -130,8 +134,8 @@ export function createConnectionOperation({
             parentNode,
             innerOperation,
         });
-
         operations.push(predicate);
+
         subqueries = Cypher.concat(subqueries, preComputedSubquery);
     });
 
