@@ -88,10 +88,10 @@ export function createRelationshipOperation({
         innerOperation,
     });
 
+    // Testing "ALL" requires testing that at least one element exists and that no elements not matching the filter
+    // exists
     if (listPredicateStr === "all") {
-        // When checking all we also need to make sure it is not none
         const notNoneInnerPredicates = createWherePredicate({
-            // Nested properties here
             whereInput: value,
             targetElement: childNode,
             element: refNode,
