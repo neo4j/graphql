@@ -350,4 +350,57 @@ describe("getCustomResolverMeta", () => {
             `Custom resolver for ${fieldName} has not been provided`
         );
     });
+
+    test("Check does not throw error if validateCustomResolvers false", () => {
+        const requiredFields = ["field1", "field2", "field3"];
+        const field: FieldDefinitionNode = {
+            directives: [
+                {
+                    // @ts-ignore
+                    name: {
+                        value: "customResolver",
+                        // @ts-ignore
+                    },
+                    arguments: [
+                        {
+                            // @ts-ignore
+                            name: { value: "requires" },
+                            // @ts-ignore
+                            value: {
+                                kind: Kind.LIST,
+                                values: requiredFields.map((requiredField) => ({
+                                    kind: Kind.STRING,
+                                    value: requiredField,
+                                })),
+                            },
+                        },
+                    ],
+                },
+                {
+                    // @ts-ignore
+                    name: { value: "RANDOM 2" },
+                },
+                {
+                    // @ts-ignore
+                    name: { value: "RANDOM 3" },
+                },
+                {
+                    // @ts-ignore
+                    name: { value: "RANDOM 4" },
+                },
+            ],
+            name: {
+                kind: Kind.NAME,
+                value: fieldName,
+            },
+        };
+
+        const resolvers = {
+            [interfaceName]: {
+                [fieldName]: () => "Hello World!",
+            },
+        };
+
+        expect(() => getCustomResolverMeta(field, object, false, resolvers)).not.toThrow();
+    });
 });
