@@ -50,13 +50,15 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs,
     plugins: {
         auth: new Neo4jGraphQLAuthJWKSPlugin({
-            jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json",
+            jwksOptions: {
+                jwksUri: "https://YOUR_DOMAIN/well-known/jwks.json",
+            }
         })
     }
 });
 ----
 
-Or you can pass a function as `jskwsEndpoint` to compute the endpoint when the request comes in.
+Or you can pass a function as `jwksEndpoint` to compute the endpoint when the request comes in.
 
 [source, javascript, indent=0]
 ----
@@ -67,16 +69,26 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs,
     plugins: {
         auth: new Neo4jGraphQLAuthJWKSPlugin({
-            jwksEndpoint: (req) => {
-                let url = "https://YOUR_DOMAIN/well-known/{file}.json";
-                const fileHeader = req.headers["file"];
-                url = url.replace("{file}", fileHeader);
-                return url;
+            jwksOptions: {
+                jwksUri: (req) => {
+                    let url = "https://YOUR_DOMAIN/well-known/{file}.json";
+                    const fileHeader = req.headers["file"];
+                    url = url.replace("{file}", fileHeader);
+                    return url;
+                }
             },
         }),
     }
 });
 ----
+
+Verification is provided using the [jsonwebtoken package](https://github.com/auth0/node-jsonwebtoken).
+- All verify options are exposed and follow their [documentation](https://github.com/auth0/node-jsonwebtoken).
+- By default, if verification is enabled, the code verifies uses the "HS256" and "RS256" algorithms.
+
+Jwks validation is provided using the [jwks-rsa package](https://www.npmjs.com/package/jwks-rsa).
+- All Jwks options are exposed and follow their [types](https://github.com/auth0/node-jwks-rsa/tree/9574b04ed621744c1aeac05f9138d074a0ab23a4#readme)
+- Note that JwksEndpoint is now named jwksOptions.JwksUri to avoid duplication of variables.
 
 If you need to create your own auth plugin then ensure it adheres to the following interface:
 
@@ -90,7 +102,7 @@ interface Neo4jGraphQLAuthPlugin {
 }
 ----
 
-It is also possible to pass in JWTs which have already been decoded, in which case the `jwt` option is _not necessary_. This is covered in the section xref::auth/setup.adoc#auth-setup-passing-in[Passing in JWTs] below. Note that the plugin's base decode method only supports HS256 and RS256 algorithms.
+It is also possible to pass in JWTs which have already been decoded, in which case the `jwt` option is _not necessary_. This is covered in the section xref::auth/setup.adoc#auth-setup-passing-in[Passing in JWTs] below.
 
 === Auth Roles Object Paths
 
