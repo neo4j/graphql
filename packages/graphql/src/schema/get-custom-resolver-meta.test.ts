@@ -72,7 +72,7 @@ describe("getCustomResolverMeta", () => {
             },
         };
 
-        const result = getCustomResolverMeta(field, object, resolvers);
+        const result = getCustomResolverMeta(field, object, true, resolvers);
 
         expect(result).toBeUndefined();
     });
@@ -113,7 +113,7 @@ describe("getCustomResolverMeta", () => {
             },
         };
 
-        expect(() => getCustomResolverMeta(field, object, resolvers)).toThrow(ERROR_MESSAGE);
+        expect(() => getCustomResolverMeta(field, object, true, resolvers)).toThrow(ERROR_MESSAGE);
     });
     test("should throw if requires not a list of strings", () => {
         const field: FieldDefinitionNode = {
@@ -159,7 +159,7 @@ describe("getCustomResolverMeta", () => {
             },
         };
 
-        expect(() => getCustomResolverMeta(field, object, resolvers)).toThrow(ERROR_MESSAGE);
+        expect(() => getCustomResolverMeta(field, object, true, resolvers)).toThrow(ERROR_MESSAGE);
     });
     test("should return the correct meta if no requires argument", () => {
         const field: FieldDefinitionNode = {
@@ -190,7 +190,7 @@ describe("getCustomResolverMeta", () => {
             },
         };
 
-        const result = getCustomResolverMeta(field, object, resolvers);
+        const result = getCustomResolverMeta(field, object, true, resolvers);
 
         expect(result).toMatchObject({
             requiredFields: [],
@@ -240,7 +240,7 @@ describe("getCustomResolverMeta", () => {
             },
         };
 
-        const result = getCustomResolverMeta(field, object, resolvers);
+        const result = getCustomResolverMeta(field, object, true, resolvers);
 
         expect(result).toMatchObject({
             requiredFields,
@@ -292,7 +292,7 @@ describe("getCustomResolverMeta", () => {
 
         const resolvers = {};
 
-        expect(() => getCustomResolverMeta(field, object, resolvers)).toThrow(
+        expect(() => getCustomResolverMeta(field, object, true, resolvers)).toThrow(
             `Custom resolver for ${fieldName} has not been provided`
         );
     });
@@ -346,7 +346,7 @@ describe("getCustomResolverMeta", () => {
             },
         };
 
-        expect(() => getCustomResolverMeta(field, object, resolvers)).toThrow(
+        expect(() => getCustomResolverMeta(field, object, true, resolvers)).toThrow(
             `Custom resolver for ${fieldName} has not been provided`
         );
     });

@@ -26,7 +26,9 @@ describe("parseFulltextDirective", () => {
     test("should throw error when directive has duplicate name", () => {
         const typeDefs = gql`
             type Movie
-                @fulltext(indexes: [{ indexName: "MyIndex", fields: ["title"] }, { indexName: "MyIndex", fields: ["title"] }]) {
+                @fulltext(
+                    indexes: [{ indexName: "MyIndex", fields: ["title"] }, { indexName: "MyIndex", fields: ["title"] }]
+                ) {
                 title: String
                 description: String
             }
@@ -42,6 +44,7 @@ describe("parseFulltextDirective", () => {
             scalars: [],
             unions: [],
             objects: [],
+            validateCustomResolvers: true,
         });
 
         expect(() =>
@@ -71,6 +74,7 @@ describe("parseFulltextDirective", () => {
             scalars: [],
             unions: [],
             objects: [],
+            validateCustomResolvers: true,
         });
 
         expect(() =>
@@ -108,6 +112,7 @@ describe("parseFulltextDirective", () => {
             scalars: [],
             unions: [],
             objects: [],
+            validateCustomResolvers: true,
         });
 
         const result = parseFulltextDirective({
