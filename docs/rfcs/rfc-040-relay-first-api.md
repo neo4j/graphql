@@ -14,6 +14,7 @@ Assuming the following types:
 # Original types
 type Movie @fulltext(indexes: [{ indexName: "MovieTitle", fields: ["title"] }]) {
     title: String!
+    alternativeTitles: [String!]!
     released: Int
     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
     director: Person! @relationship(type: "DIRECTED", direction: IN)
@@ -38,6 +39,12 @@ interface ActedIn @relationshipProperties {
 
 ## Simple API
 
+### Limitations
+
+-   No edges/Connections
+-   No aggregations
+-   Pagination ?
+
 ### Pagination
 
 Cursor based pagination does not fit within the simple API.
@@ -46,16 +53,22 @@ Cursor based pagination does not fit within the simple API.
 2. Only allow pagination if the user has configured limit based pagination
 3. Add cursor (probably as `_cursor`) in the return type
 4. Like it is now (limit pagination always available for simple API)
+    - Simple API uses limit based pagination always.
+    - Relay API uses cursor based pagination, but may be configured to use limit based.
 
 ### Further discussion point
 
 -   1-1 relationship types: should these follow "edges"?
 -   Node aggregation vs edge aggregation
 -   Sort by aggregations and 1-\* relationship
--   should nested relationships be named \*Connection?
--   Sugar syntax for top level edge
+-   should nested relationships be named \*Connection? - Yes, but what about filters?
 -   Union / interfaces
 -   1-\* edges filter on edge
+-   Could we reuse MovieActorsWhere (as MoviePersonWhere) in the simple API?
+-   Should we have a `nodes` shortcut on connections? - not for now
+-   Scalar array operators
+
+Nodes/node shortcut for a single node relationship
 
 ## Type naming conventions
 
@@ -77,6 +90,7 @@ These are some loose conventions on type and input naming:
 # Original types
 type Movie @fulltext(indexes: [{ indexName: "MovieTitle", fields: ["title"] }]) {
     title: String!
+    alternativeTitles: [String!]!
     released: Int
     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
     director: Person! @relationship(type: "DIRECTED", direction: IN)
@@ -147,6 +161,7 @@ type PersonEdge {
 type MovieNode {
     title: String!
     released: Int
+    alternativeTitles: [String!]!
     actors(
         where: MovieActorsConnectionWhere
         first: Int
@@ -318,6 +333,7 @@ input MovieNodeWhere {
     NOT: MovieNodeWhere
     title: StringWhere
     released: IntWhere
+    alternativeTitles: StringListWhere
     actors: MovieActorsConnectionWhere
     director: MovieDirectorConnectionWhere
 }
@@ -608,13 +624,91 @@ input FloatWhere {
     gt: Float
     gte: Float
 }
+
+input StringListWhere {
+    AND: [StringListWhere!]
+    OR: [StringListWhere!]
+    NOT: StringListWhere
+    all: StringWhere
+    none: StringWhere
+    single: StringWhere
+    some: StringWhere
+}
+```
+
+### Simple API
+
+```graphql
+## Simple API
+type Movie {
+    title: String!
+    alternativeTitles: [String!]!
+    released: Int
+    actors(where: PersonWhere, sort: [PersonSortNode], directed: Boolean = true): [Person!]!
+    director(where: PersonWhere, sort: [PersonSortNode], directed: Boolean = true): Person!
+}
+
+type Person {
+    name: String!
+    movies(where: MovieWhere, sort: [MovieSortNode], directed: Boolean = true): [Movie!]!
+    directed(where: MovieWhere, sort: [MovieSortNode], directed: Boolean = true): Movie
+}
+
+## Query
+
+type Query {
+    movies(where: MovieWhere, sort: [MovieSortNode]): [Movie!]!
+    people(where: PersonWhere, sort: [PersonSortNode]): [Person!]!
+}
+
+## Where filtering
+
+input MovieWhere {
+    OR: [MovieWhere!]
+    AND: [MovieWhere!]
+    NOT: MovieWhere
+    title: StringWhere # Optionally, this could be a string an only support equal
+    alternativeTitles: StringListWhere
+    released: IntWhere
+    actors: PersonListWhere
+    director: PersonWhere
+}
+
+input PersonListWhere { # Should this be reused across all Person/Movie types?
+    AND: [PersonListWhere!]
+    OR: [PersonListWhere!]
+    NOT: PersonListWhere
+    all: PersonWhere
+    none: PersonWhere
+    single: PersonWhere
+    some: PersonWhere
+}
+
+input PersonWhere {
+    OR: [PersonWhere!]
+    AND: [PersonWhere!]
+    NOT: PersonWhere
+    name: StringWhere
+    movies: MovieListWhere
+    directed: PersonWhere
+}
+
+input MovieListWhere {
+    AND: [MovieListWhere!]
+    OR: [MovieListWhere!]
+    NOT: MovieListWhere
+    all: MovieWhere
+    none: MovieWhere
+    single: MovieWhere
+    some: MovieWhere
+}
 ```
 
 ### Example queries
 
 ```graphql
 query MoviesTitleAndAggregation {
-    movies(where: { edges: { node: { title: { contains: "Matrix" } } } }) {
+    moviesConnection(where: { edges: { node: { title: { contains: "Matrix" } } } }) {
         edges {
             node {
                 title
@@ -632,7 +726,7 @@ query MoviesTitleAndAggregation {
 
 # Aggregation
 query MoviesWithMoreThan10ActorNodes {
-    movies(where: { edges: { node: { actors: { aggregation: { node: { count: { gt: 10 } } } } } } }) {
+    moviesConnection(where: { edges: { node: { actors: { aggregation: { node: { count: { gt: 10 } } } } } } }) {
         edges {
             node {
                 actors {
@@ -653,7 +747,7 @@ query MoviesWithMoreThan10ActorNodes {
 }
 
 query MoviesWithMoreThan10ActorEdges {
-    movies(where: { edges: { node: { actors: { aggregation: { count: { gt: 10 } } } } } }) {
+    moviesConnection(where: { edges: { node: { actors: { aggregation: { count: { gt: 10 } } } } } }) {
         edges {
             node {
                 actors {
@@ -676,7 +770,7 @@ query MoviesWithMoreThan10ActorEdges {
 # Pagination
 
 query GetMoviesPaginatedIn10 {
-    movies(sort: { edges: { node: { title: DESC } } }, first: 10, after: "asdf") {
+    moviesConnection(sort: { edges: { node: { title: DESC } } }, first: 10, after: "asdf") {
         edges {
             node {
                 title
@@ -690,13 +784,56 @@ query GetMoviesPaginatedIn10 {
 }
 
 query PaginateActorsInMovie {
-    movies(where: { edges: { node: { title: { equal: "The Matrix" } } } }) {
+    moviesConnection(where: { edges: { node: { title: { equal: "The Matrix" } } } }) {
         edges {
             node {
                 actors(sort: [{ edges: { fields: { year: DESC } } }, { edges: { node: { name: ASC } } }], first: 20) {
                     pageInfo {
                         endCursor
                         hasNextPage
+                    }
+                }
+            }
+        }
+    }
+}
+
+query MoviesTitleAndAggregation {
+    moviesConnection(where: { edges: { node: { title: { contains: "Matrix" } } } }) {
+        edges {
+            node {
+                title
+                actors {
+                    edges {
+                        node {
+                            name
+                        }
+                    }
+                }
+            }
+        }
+        aggregation {
+            node {
+                title {
+                    longest
+                }
+            }
+        }
+    }
+}
+
+query MoviesWithAllActorsNamedKeanuReeves {
+    moviesConnection(
+        where: { edges: { node: { actors: { edges: { all: { node: { name: { equals: "Keanu Reeves" } } } } } } } }
+    ) {
+        edges {
+            node {
+                title
+                actors {
+                    edges {
+                        node {
+                            name
+                        }
                     }
                 }
             }
