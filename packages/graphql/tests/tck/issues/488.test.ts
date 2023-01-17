@@ -80,22 +80,29 @@ describe("#488", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Journalist\`)
-            WHERE size([(this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`) WHERE this1.type = $param0 | 1]) > 0
+            CALL {
+                WITH this
+                MATCH (this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`)
+                WHERE this1.type = $param0
+                RETURN count(this0) AS var2
+            }
+            WITH *
+            WHERE var2 > 0
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this2:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
+                    MATCH (this)-[this3:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
                     WITH this_keywords  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords
                     RETURN this_keywords AS this_keywords
                     UNION
                     WITH *
-                    MATCH (this)-[this3:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
+                    MATCH (this)-[this4:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
                     WITH this_keywords { __resolveType: \\"Hashtag\\" } AS this_keywords
                     RETURN this_keywords AS this_keywords
                     UNION
                     WITH *
-                    MATCH (this)-[this4:HAS_KEYWORD]->(this_keywords:\`Text\`)
+                    MATCH (this)-[this5:HAS_KEYWORD]->(this_keywords:\`Text\`)
                     WITH this_keywords { __resolveType: \\"Text\\" } AS this_keywords
                     RETURN this_keywords AS this_keywords
                 }
@@ -134,22 +141,29 @@ describe("#488", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Journalist\`)
-            WHERE size([(this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`) WHERE this1.type = $param0 | 1]) = 0
+            CALL {
+                WITH this
+                MATCH (this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`)
+                WHERE this1.type = $param0
+                RETURN count(this0) AS var2
+            }
+            WITH *
+            WHERE var2 = 0
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this2:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
+                    MATCH (this)-[this3:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
                     WITH this_keywords  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords
                     RETURN this_keywords AS this_keywords
                     UNION
                     WITH *
-                    MATCH (this)-[this3:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
+                    MATCH (this)-[this4:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
                     WITH this_keywords { __resolveType: \\"Hashtag\\" } AS this_keywords
                     RETURN this_keywords AS this_keywords
                     UNION
                     WITH *
-                    MATCH (this)-[this4:HAS_KEYWORD]->(this_keywords:\`Text\`)
+                    MATCH (this)-[this5:HAS_KEYWORD]->(this_keywords:\`Text\`)
                     WITH this_keywords { __resolveType: \\"Text\\" } AS this_keywords
                     RETURN this_keywords AS this_keywords
                 }
