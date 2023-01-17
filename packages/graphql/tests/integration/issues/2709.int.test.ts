@@ -368,18 +368,18 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
-            [Movie.plural]: [
+            [Movie.plural]: expect.toIncludeSameMembers([
                 {
                     title: "A Netflix movie",
                 },
                 {
                     title: "A Dishney movie",
                 },
-            ],
+            ]),
         });
         // Note: to not equal
         expect(result.data as any).not.toEqual({
-            [Movie.plural]: [
+            [Movie.plural]: expect.toIncludeSameMembers([
                 {
                     title: "A Netflix movie",
                 },
@@ -389,7 +389,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
                 {
                     title: "A Publisher movie",
                 },
-            ],
+            ]),
         });
     });
 });
