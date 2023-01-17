@@ -971,13 +971,20 @@ describe("Cypher Advanced Filtering", () => {
                         WHERE NOT (this1.name = $param0)
                         RETURN count(this0) AS var2
                     }
+                    CALL {
+                        WITH this
+                        MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
+                        WHERE this1.name = $param1
+                        RETURN count(this0) AS var3
+                    }
                     WITH *
-                    WHERE var2 = 0
+                    WHERE (var2 = 0 AND NOT (var3 = 0))
                     RETURN this { .actorCount } AS this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"param0\\": \\"some genre\\"
+                        \\"param0\\": \\"some genre\\",
+                        \\"param1\\": \\"some genre\\"
                     }"
                 `);
             });
