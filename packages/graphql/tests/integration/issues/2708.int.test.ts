@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
     const movieTitle2 = "Exciting new film!";
     const movieTitle3 = "short";
     const movieTitle4 = "a fourth title";
-    const movieTitle5 = "an unconnected movie"
+    const movieTitle5 = "an unconnected movie";
     const genreName1 = "Action";
     const genreName2 = "Horror";
     const intValue1 = 1;
@@ -373,6 +373,9 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
                 {
                     title: movieTitle3,
                 },
+                {
+                    title: movieTitle5,
+                },
             ]),
         });
     });
@@ -454,6 +457,9 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
                 {
                     title: movieTitle3,
                 },
+                {
+                    title: movieTitle5,
+                },
             ]),
         });
     });
@@ -475,7 +481,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [movieType.plural]: []
+            [movieType.plural]: [],
         });
     });
 });
