@@ -2943,7 +2943,7 @@ __metadata:
     npm-run-all: 4.1.5
     pluralize: ^8.0.0
     randomstring: 1.2.3
-    rimraf: 4.0.7
+    rimraf: 4.1.0
     semver: ^7.3.7
     supertest: 6.3.3
     ts-jest: 29.0.5
@@ -2981,7 +2981,7 @@ __metadata:
   resolution: "@neo4j/package-tests@workspace:packages/package-tests"
   dependencies:
     npm-run-all: 4.1.5
-    rimraf: 4.0.7
+    rimraf: 4.1.0
     upper-case-first: ^2.0.2
   languageName: unknown
   linkType: soft
@@ -19086,12 +19086,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:4.0.7, rimraf@npm:^4.0.0":
-  version: 4.0.7
-  resolution: "rimraf@npm:4.0.7"
+"rimraf@npm:4.1.0":
+  version: 4.1.0
+  resolution: "rimraf@npm:4.1.0"
   bin:
     rimraf: dist/cjs/src/bin.js
-  checksum: 294ae526198eadac7b57e7b43782aaa0be5d5c2a606ee65c26d9cd2fdddc320d80cc43c3c1c0b9562e88aa265f67c4c00f70af2b4d065e76ce03d9d7a2a5c901
+  checksum: da4849802779a8c8cbe3aa1fbdf817b1ec41f7e95fb82074de3129e0030cd4e6e1f512a732344f0062c1cea59569c8113c78c3f50267cc469e8e9bfbe7622cb5
   languageName: node
   linkType: hard
 
@@ -19103,6 +19103,15 @@ __metadata:
   bin:
     rimraf: bin.js
   checksum: 87f4164e396f0171b0a3386cc1877a817f572148ee13a7e113b238e48e8a9f2f31d009a92ec38a591ff1567d9662c6b67fd8818a2dbbaed74bc26a87a2a4a9a0
+  languageName: node
+  linkType: hard
+
+"rimraf@npm:^4.0.0":
+  version: 4.0.7
+  resolution: "rimraf@npm:4.0.7"
+  bin:
+    rimraf: dist/cjs/src/bin.js
+  checksum: 294ae526198eadac7b57e7b43782aaa0be5d5c2a606ee65c26d9cd2fdddc320d80cc43c3c1c0b9562e88aa265f67c4c00f70af2b4d065e76ce03d9d7a2a5c901
   languageName: node
   linkType: hard
 
