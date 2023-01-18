@@ -212,19 +212,19 @@ input MoviesLikesWhere {
     # For simplicity the standard filters are substituted by the connections filters as discussed in the API uniformity piece.
 }
 
-input IntArrayWhere {
-    OR: [IntArrayWhere!]
-    AND: [IntArrayWhere!]
-    NOT: IntArrayWhere
-    equal: [Int!]
-    includes: Int
+input IntListWhere {
+    OR: [IntListWhere!]
+    AND: [IntListWhere!]
+    NOT: IntListWhere
+    all: [Int!]
+    some: Int
 }
 
 input StringWhere {
     OR: [StringWhere!]
     AND: [StringWhere!]
     NOT: StringWhere
-    equal: String
+    equals: String
     in: [String!]
     matches: String
     contains: String
@@ -236,7 +236,7 @@ input FloatWhere {
     OR: [FloatWhere!]
     AND: [FloatWhere!]
     NOT: FloatWhere
-    equal: Float
+    equals: Float
     in: [Float]
     lt: Float
     lte: Float
@@ -361,7 +361,7 @@ Applying the new design principle it would look like this:
 ```graphql
 input UserUpdateInput {
     someFloat: FloatUpdate
-    someArr: IntArrayUpdate
+    someArr: IntListUpdate
     name: StringUpdate
 }
 
@@ -373,7 +373,7 @@ input FloatUpdate {
     multiply: Float
 }
 
-input IntArrayUpdate {
+input IntListUpdate {
     set: [Int!]
     pop: Int
     push: [Int!]
@@ -437,7 +437,7 @@ input UserUpdateInput {
     someFloat: Float
     someFloat_OPERATORS: FloatUpdate
     someArr: [Int!]
-    someArr_OPERATORS: IntArrayUpdate
+    someArr_OPERATORS: IntListUpdate
     name: String
     name_OPERATORS: StringUpdate
 }
@@ -450,7 +450,7 @@ input FloatUpdate {
     multiply: Float
 }
 
-input IntArrayUpdate {
+input IntListUpdate {
     set: [Int!]
     pop: Int
     push: [Int!]
