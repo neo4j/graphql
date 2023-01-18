@@ -101,7 +101,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN any(var2 IN collect(this1.someBigIntAlias) WHERE var2 = $param0) AS var3
+                RETURN any(var2 IN collect(this1._someBigIntAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
             WHERE var3 = true

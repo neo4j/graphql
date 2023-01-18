@@ -66,7 +66,7 @@ describe("QueryDirection in relationships aggregations", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_friendsAggregate_this0:FRIENDS_WITH]-(this_friendsAggregate_this1:\`User\`)
-                RETURN count(this) AS this_friendsAggregate_var2
+                RETURN count(this_friendsAggregate_this1) AS this_friendsAggregate_var2
             }
             RETURN this { friendsAggregate: { count: this_friendsAggregate_var2 } } AS this"
         `);
@@ -109,7 +109,7 @@ describe("QueryDirection in relationships aggregations", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_friendsAggregate_this0:FRIENDS_WITH]->(this_friendsAggregate_this1:\`User\`)
-                RETURN count(this) AS this_friendsAggregate_var2
+                RETURN count(this_friendsAggregate_this1) AS this_friendsAggregate_var2
             }
             RETURN this { friendsAggregate: { count: this_friendsAggregate_var2 } } AS this"
         `);
@@ -152,7 +152,7 @@ describe("QueryDirection in relationships aggregations", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_friendsAggregate_this0:FRIENDS_WITH]-(this_friendsAggregate_this1:\`User\`)
-                RETURN count(this) AS this_friendsAggregate_var2
+                RETURN count(this_friendsAggregate_this1) AS this_friendsAggregate_var2
             }
             RETURN this { friendsAggregate: { count: this_friendsAggregate_var2 } } AS this"
         `);
