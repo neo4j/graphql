@@ -56,6 +56,7 @@ export function createConnectionOperation({
     let subqueries: Cypher.CompositeClause | undefined;
     const operations: (Cypher.Predicate | undefined)[] = [];
     const returnVariables: Cypher.Variable[] = [];
+    const matchPatterns: Cypher.Pattern[] = [];
 
     Object.entries(nodeEntries).forEach((entry) => {
         let nodeOnValue: string | undefined = undefined;
@@ -139,12 +140,9 @@ export function createConnectionOperation({
         });
 
         operations.push(predicate);
-        subqueries = Cypher.concat(
-            new Cypher.OptionalMatch(matchPattern),
-            subqueries,
-            innerOperation.preComputedSubqueries
-        );
+        subqueries = Cypher.concat(subqueries, innerOperation.preComputedSubqueries);
         returnVariables.push(...innerOperation.returnVariables);
+        matchPatterns.push(matchPattern);
     });
 
     if (returnVariables && returnVariables.length) {
@@ -156,6 +154,7 @@ export function createConnectionOperation({
         return {
             predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined,
             preComputedSubquery: Cypher.concat(
+                ...matchPatterns.map((matchPattern) => new Cypher.OptionalMatch(matchPattern)),
                 subqueries,
                 aggregatingWithClause
             ),
@@ -207,7 +206,7 @@ export function createConnectionWherePropertyOperation({
                     targetNode,
                     node,
                     edge,
-                    listPredicateStr
+                    listPredicateStr,
                 });
                 subOperations.push(predicate);
                 if (preComputedSubqueries && !preComputedSubqueries.empty)
@@ -235,7 +234,7 @@ export function createConnectionWherePropertyOperation({
                 whereInput: nestedProperties,
                 context,
                 element: edge,
-                listPredicateStr
+                listPredicateStr,
             });
 
             params.push(result);
@@ -268,7 +267,7 @@ export function createConnectionWherePropertyOperation({
                 whereInput: nestedProperties,
                 context,
                 element: node,
-                listPredicateStr
+                listPredicateStr,
             });
 
             // NOTE: _NOT is handled by the size()=0
