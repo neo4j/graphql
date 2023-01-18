@@ -41,10 +41,14 @@ export function createWherePredicate({
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
-}): { predicate: Cypher.Predicate | undefined; preComputedSubqueries?: Cypher.CompositeClause | undefined } {
+}): {
+    predicate: Cypher.Predicate | undefined;
+    preComputedSubqueries?: Cypher.CompositeClause | undefined;
+    returnVariables: Cypher.Variable[];
+} {
     const whereFields = Object.entries(whereInput);
-
     const predicates: Cypher.Predicate[] = [];
+    const returnVariables: Cypher.Variable[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
     whereFields.forEach(([key, value]) => {
         if (isWhereOperator(key)) {
@@ -62,15 +66,21 @@ export function createWherePredicate({
             }
             return;
         }
-        const { predicate, preComputedSubquery } = createPropertyWhere({ key, value, element, targetElement, context });
+        const {
+            predicate,
+            preComputedSubquery,
+            returnVariables: innerReturnVariables,
+        } = createPropertyWhere({ key, value, element, targetElement, context });
         if (predicate) {
             predicates.push(predicate);
-            if (preComputedSubquery && !preComputedSubquery.empty) subqueries = Cypher.concat(subqueries, preComputedSubquery);
+            if (preComputedSubquery && !preComputedSubquery.empty)
+                subqueries = Cypher.concat(subqueries, preComputedSubquery);
+            if (innerReturnVariables && innerReturnVariables.length) returnVariables.push(...innerReturnVariables);
             return;
         }
     });
     // Implicit AND
-    return { predicate: Cypher.and(...predicates), preComputedSubqueries: subqueries };
+    return { predicate: Cypher.and(...predicates), preComputedSubqueries: subqueries, returnVariables };
 }
 
 function createNestedPredicate({
@@ -85,11 +95,20 @@ function createNestedPredicate({
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
-}): { predicate: Cypher.Predicate | undefined; preComputedSubqueries?: Cypher.CompositeClause | undefined } {
+}): {
+    predicate: Cypher.Predicate | undefined;
+    preComputedSubqueries?: Cypher.CompositeClause | undefined;
+    returnVariables: Cypher.Variable[];
+} {
     const nested: Cypher.Predicate[] = [];
+    const returnVariables: Cypher.Variable[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
     value.forEach((v) => {
-        const { predicate, preComputedSubqueries } = createWherePredicate({
+        const {
+            predicate,
+            preComputedSubqueries,
+            returnVariables: innerReturnVariables,
+        } = createWherePredicate({
             whereInput: v,
             element,
             targetElement,
@@ -100,9 +119,10 @@ function createNestedPredicate({
         }
         if (preComputedSubqueries && !preComputedSubqueries.empty)
             subqueries = Cypher.concat(subqueries, preComputedSubqueries);
+        if (innerReturnVariables && innerReturnVariables.length) returnVariables.push(...innerReturnVariables);
     });
     if (key === "OR") {
-        return { predicate: Cypher.or(...nested), preComputedSubqueries: subqueries };
+        return { predicate: Cypher.or(...nested), preComputedSubqueries: subqueries, returnVariables };
     }
-    return { predicate: Cypher.and(...nested), preComputedSubqueries: subqueries };
+    return { predicate: Cypher.and(...nested), preComputedSubqueries: subqueries, returnVariables };
 }

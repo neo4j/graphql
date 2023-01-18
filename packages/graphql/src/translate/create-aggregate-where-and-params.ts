@@ -42,6 +42,7 @@ export type AggregateWhereInput = {
 type AggregateWhereReturn = {
     returnProjections: ("*" | Cypher.ProjectionColumn)[];
     predicates: Cypher.Predicate[];
+    returnVariables: Cypher.Variable[];
 };
 
 export function aggregatePreComputedWhereFields(
@@ -53,6 +54,7 @@ export function aggregatePreComputedWhereFields(
 ): {
     predicate: Cypher.Predicate | undefined;
     preComputedSubquery: Cypher.CompositeClause;
+    returnVariables: Cypher.Variable[];
 } {
     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
     const direction = relationField.direction;
@@ -66,7 +68,7 @@ export function aggregatePreComputedWhereFields(
         cypherRelation.reverse();
     }
     const matchQuery = new Cypher.Match(cypherRelation);
-    const { returnProjections, predicates } = aggregateWhere(
+    const { returnProjections, predicates, returnVariables } = aggregateWhere(
         value as AggregateWhereInput,
         refNode,
         relationship,
@@ -78,6 +80,7 @@ export function aggregatePreComputedWhereFields(
     return {
         predicate: Cypher.and(...predicates),
         preComputedSubquery: Cypher.concat(subquery),
+        returnVariables,
     };
 }
 
@@ -90,36 +93,43 @@ export function aggregateWhere(
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
     const predicates: Cypher.Predicate[] = [];
+    const returnVariables: Cypher.Variable[] = [];
     Object.entries(aggregateWhereInput).forEach(([key, value]) => {
         if (AGGREGATION_AGGREGATE_COUNT_OPERATORS.includes(key)) {
-            const { returnProjection: innerReturnProjection, predicate: innerPredicate } =
-                createCountPredicateAndProjection(aggregationTarget, key, value);
+            const {
+                returnProjection: innerReturnProjection,
+                predicate: innerPredicate,
+                returnVariable: innerReturnVariable,
+            } = createCountPredicateAndProjection(aggregationTarget, key, value);
             returnProjections.push(innerReturnProjection);
             predicates.push(innerPredicate);
+            returnVariables.push(innerReturnVariable);
         } else if (NODE_OR_EDGE_KEYS.includes(key)) {
             const target = key === "edge" ? cypherRelation : aggregationTarget;
             const refNodeOrRelation = key === "edge" ? relationship : refNode;
             if (!refNodeOrRelation) throw new Error(`Edge filter ${key} on undefined relationship`);
-            const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateEntityWhere(
-                value,
-                refNodeOrRelation,
-                target
-            );
+            const {
+                returnProjections: innerReturnProjections,
+                predicates: innerPredicates,
+                returnVariables: innerReturnVariables,
+            } = aggregateEntityWhere(value, refNodeOrRelation, target);
             returnProjections.push(...innerReturnProjections);
             predicates.push(...innerPredicates);
+            returnVariables.push(...innerReturnVariables);
         } else if (LOGICAL_OPERATORS.includes(key)) {
             const logicalOperator = key === "AND" ? Cypher.and : Cypher.or;
             const logicalPredicates: Cypher.Predicate[] = [];
             value.forEach((whereInput) => {
-                const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateWhere(
-                    whereInput,
-                    refNode,
-                    relationship,
-                    aggregationTarget,
-                    cypherRelation
-                );
+                const {
+                    returnProjections: innerReturnProjections,
+                    predicates: innerPredicates,
+                    returnVariables: innerReturnVariables,
+                } = aggregateWhere(whereInput, refNode, relationship, aggregationTarget, cypherRelation);
                 returnProjections.push(...innerReturnProjections);
                 logicalPredicates.push(...innerPredicates);
+                returnProjections.push(...innerReturnProjections);
+                predicates.push(...innerPredicates);
+                returnVariables.push(...innerReturnVariables);
             });
             predicates.push(logicalOperator(...logicalPredicates));
         }
@@ -127,6 +137,7 @@ export function aggregateWhere(
     return {
         returnProjections,
         predicates,
+        returnVariables,
     };
 }
 
@@ -137,6 +148,7 @@ function createCountPredicateAndProjection(
 ): {
     returnProjection: "*" | Cypher.ProjectionColumn;
     predicate: Cypher.Predicate;
+    returnVariable: Cypher.Variable;
 } {
     const paramName = new Cypher.Param(filterValue);
     const count = Cypher.count(aggregationTarget);
@@ -150,6 +162,7 @@ function createCountPredicateAndProjection(
     return {
         returnProjection: [operation, operationVar],
         predicate: Cypher.eq(operationVar, new Cypher.Literal(true)),
+        returnVariable: operationVar,
     };
 }
 
@@ -160,18 +173,20 @@ function aggregateEntityWhere(
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
     const predicates: Cypher.Predicate[] = [];
+    const returnVariables: Cypher.Variable[] = [];
     Object.entries(aggregateEntityWhereInput).forEach(([key, value]) => {
         if (LOGICAL_OPERATORS.includes(key)) {
             const logicalOperator = key === "AND" ? Cypher.and : Cypher.or;
             const logicalPredicates: Cypher.Predicate[] = [];
             value.forEach((whereInput) => {
-                const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateEntityWhere(
-                    whereInput,
-                    refNodeOrRelation,
-                    target
-                );
+                const {
+                    returnProjections: innerReturnProjections,
+                    predicates: innerPredicates,
+                    returnVariables: innerReturnVariables,
+                } = aggregateEntityWhere(whereInput, refNodeOrRelation, target);
                 returnProjections.push(...innerReturnProjections);
                 logicalPredicates.push(...innerPredicates);
+                returnVariables.push(...innerReturnVariables);
             });
             predicates.push(logicalOperator(...logicalPredicates));
         } else {
@@ -179,11 +194,13 @@ function aggregateEntityWhere(
             const operationVar = new Cypher.Variable();
             returnProjections.push([operation, operationVar]);
             predicates.push(Cypher.eq(operationVar, new Cypher.Literal(true)));
+            returnVariables.push(operationVar);
         }
     });
     return {
         returnProjections,
         predicates,
+        returnVariables,
     };
 }
 

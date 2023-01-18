@@ -62,13 +62,14 @@ export type AggregationFieldRegexGroups = {
     logicalOperator?: string;
 }
 
-export type ListPredicate = "all" | "none" | "single" | "any";
+export type ListPredicate = "all" | "none" | "single" | "any" | "not";
 
 export const getListPredicate = (operator?: WhereOperator): ListPredicate => {
     switch (operator) {
         case "ALL":
             return "all";
         case "NOT":
+            return "not";
         case "NONE":
             return "none";
         case "SINGLE":

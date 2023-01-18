@@ -127,43 +127,17 @@ export function createConnectionOperation({
             listPredicateStr = "single";
         }
 
-        const { predicate, preComputedSubquery } = createRelationshipSubqueryAndPredicate({
+        const predicate = createRelationshipSubqueryAndPredicate({
             matchPattern,
             listPredicateStr,
-            relationship,
-            parentNode,
-            innerOperation,
+            childNode,
+            innerOperation: innerOperation.predicate,
+            returnVariables: []
         });
 
-        // Testing "ALL" requires testing that at least one element exists and that no elements not matching the filter
-        // exists
-        if (listPredicateStr === "all") {
-            const notNoneInnerPredicates = createConnectionWherePropertyOperation({
-                context,
-                whereInput: entry[1],
-                edgeRef: relationship,
-                targetNode: childNode,
-                edge: contextRelationship,
-                node: refNode,
-            });
-
-            const { predicate: notNonePredicate, preComputedSubquery: notNoneSubquery } =
-                createRelationshipSubqueryAndPredicate({
-                    parentNode,
-                    matchPattern,
-                    listPredicateStr: "none",
-                    relationship,
-                    innerOperation: notNoneInnerPredicates,
-                });
-
-            if (notNonePredicate) {
-                operations.push(Cypher.and(predicate, Cypher.not(notNonePredicate)));
-                subqueries = Cypher.concat(subqueries, preComputedSubquery, notNoneSubquery);
-            }
-        } else {
-            operations.push(predicate);
-            subqueries = Cypher.concat(subqueries, preComputedSubquery);
-        }
+        
+        operations.push(predicate);
+        subqueries = Cypher.concat(subqueries, innerOperation.preComputedSubqueries);
     });
 
     return { predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined, preComputedSubquery: subqueries };

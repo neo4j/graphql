@@ -79,7 +79,7 @@ export function all(variable: Variable, listExpr: Expr, whereFilter?: Predicate)
  * @group Expressions
  * @category Cypher Functions
  */
-export function single(variable: Variable, listExpr: Expr, whereFilter: Predicate): PredicateFunction {
+export function single(variable: Variable, listExpr: Expr, whereFilter?: Predicate): PredicateFunction {
     return new ListPredicateFunction("single", variable, listExpr, whereFilter);
 }
 
