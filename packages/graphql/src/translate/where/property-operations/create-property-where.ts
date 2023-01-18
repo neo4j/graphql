@@ -20,7 +20,7 @@
 import type { Context } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 import { GraphElement, Node } from "../../../classes";
-import { whereRegEx, WhereRegexGroups } from "../utils";
+import { ListPredicate, whereRegEx, WhereRegexGroups } from "../utils";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createGlobalNodeOperation } from "./create-global-node-operation";
 // Recursive function
@@ -39,12 +39,14 @@ export function createPropertyWhere({
     element,
     targetElement,
     context,
+    listPredicateStr,
 }: {
     key: string;
     value: any;
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
+    listPredicateStr?: ListPredicate;
 }): {
     predicate: Cypher.Predicate | undefined;
     preComputedSubquery?: Cypher.CompositeClause | undefined;
@@ -102,7 +104,7 @@ export function createPropertyWhere({
 
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
-            return aggregatePreComputedWhereFields(value, relationField, relationship, context, targetElement);
+            return aggregatePreComputedWhereFields(value, relationField, relationship, context, targetElement, listPredicateStr);
         }
 
         if (relationField) {

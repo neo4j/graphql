@@ -23,6 +23,7 @@ import Cypher from "@neo4j/cypher-builder";
 // Recursive function
 
 import { createPropertyWhere } from "./property-operations/create-property-where";
+import type { ListPredicate } from "./utils";
 
 type WhereOperators = "OR" | "AND";
 
@@ -36,11 +37,13 @@ export function createWherePredicate({
     whereInput,
     context,
     element,
+    listPredicateStr,
 }: {
     targetElement: Cypher.Variable;
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
+    listPredicateStr?: ListPredicate;
 }): {
     predicate: Cypher.Predicate | undefined;
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
@@ -58,6 +61,7 @@ export function createWherePredicate({
                 targetElement,
                 context,
                 value,
+                listPredicateStr,
             });
             if (predicate) {
                 predicates.push(predicate);
@@ -70,7 +74,7 @@ export function createWherePredicate({
             predicate,
             preComputedSubquery,
             returnVariables: innerReturnVariables,
-        } = createPropertyWhere({ key, value, element, targetElement, context });
+        } = createPropertyWhere({ key, value, element, targetElement, context, listPredicateStr });
         if (predicate) {
             predicates.push(predicate);
             if (preComputedSubquery && !preComputedSubquery.empty)
@@ -89,12 +93,14 @@ function createNestedPredicate({
     targetElement,
     context,
     value,
+    listPredicateStr,
 }: {
     key: WhereOperators;
     value: Array<GraphQLWhereArg>;
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
+    listPredicateStr?: ListPredicate;
 }): {
     predicate: Cypher.Predicate | undefined;
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
@@ -113,6 +119,7 @@ function createNestedPredicate({
             element,
             targetElement,
             context,
+            listPredicateStr,
         });
         if (predicate) {
             nested.push(predicate);
