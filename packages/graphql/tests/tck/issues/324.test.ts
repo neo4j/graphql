@@ -95,55 +95,63 @@ describe("#324", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Person\`)
             WHERE this.identifier = $param0
-            WITH this
-            OPTIONAL MATCH (this)-[this_car0_relationship:CAR]->(this_car0:Car)
-            CALL apoc.do.when(this_car0 IS NOT NULL, \\"
-            WITH this, this_car0
-            OPTIONAL MATCH (this_car0)-[this_car0_manufacturer0_relationship:MANUFACTURER]->(this_car0_manufacturer0:Manufacturer)
-            CALL apoc.do.when(this_car0_manufacturer0 IS NOT NULL, \\\\\\"
-            SET this_car0_manufacturer0.name = $this_update_car0_manufacturer0_name
-            WITH this, this_car0, this_car0_manufacturer0
+            WITH *
             CALL {
-            	WITH this, this_car0, this_car0_manufacturer0
-            	OPTIONAL MATCH (this_car0_manufacturer0_logo0_connect0_node:Logo)
-            	WHERE this_car0_manufacturer0_logo0_connect0_node.identifier = $this_car0_manufacturer0_logo0_connect0_node_param0
+            	WITH this
+            	MATCH (this)-[this_car0_relationship:CAR]->(this_car0:Car)
             	CALL {
+            		WITH this, this_car0
             		WITH *
-            		WITH this, this_car0, collect(this_car0_manufacturer0_logo0_connect0_node) as connectedNodes, collect(this_car0_manufacturer0) as parentNodes
             		CALL {
-            			WITH connectedNodes, parentNodes
-            			UNWIND parentNodes as this_car0_manufacturer0
-            			UNWIND connectedNodes as this_car0_manufacturer0_logo0_connect0_node
-            			MERGE (this_car0_manufacturer0)-[:LOGO]->(this_car0_manufacturer0_logo0_connect0_node)
-            			RETURN count(*) AS _
+            			WITH this, this_car0
+            			MATCH (this_car0)-[this_car0_manufacturer0_relationship:MANUFACTURER]->(this_car0_manufacturer0:Manufacturer)
+            			CALL {
+            				WITH this, this_car0, this_car0_manufacturer0
+            				SET this_car0_manufacturer0.name = $this_update_car0_manufacturer0_name
+            				WITH this, this_car0, this_car0_manufacturer0
+            				CALL {
+            					WITH this, this_car0, this_car0_manufacturer0
+            					OPTIONAL MATCH (this_car0_manufacturer0_logo0_connect0_node:Logo)
+            					WHERE this_car0_manufacturer0_logo0_connect0_node.identifier = $this_car0_manufacturer0_logo0_connect0_node_param0
+            					CALL {
+            						WITH *
+            						WITH this, this_car0, collect(this_car0_manufacturer0_logo0_connect0_node) as connectedNodes, collect(this_car0_manufacturer0) as parentNodes
+            						CALL {
+            							WITH connectedNodes, parentNodes
+            							UNWIND parentNodes as this_car0_manufacturer0
+            							UNWIND connectedNodes as this_car0_manufacturer0_logo0_connect0_node
+            							MERGE (this_car0_manufacturer0)-[:LOGO]->(this_car0_manufacturer0_logo0_connect0_node)
+            							RETURN count(*) AS _
+            						}
+            						RETURN count(*) AS _
+            					}
+            				WITH this, this_car0, this_car0_manufacturer0, this_car0_manufacturer0_logo0_connect0_node
+            					RETURN count(*) AS connect_this_car0_manufacturer0_logo0_connect_Logo
+            				}
+            				WITH this, this_car0, this_car0_manufacturer0
+            				CALL {
+            					WITH this_car0_manufacturer0
+            					MATCH (this_car0_manufacturer0)-[this_car0_manufacturer0_logo_Logo_unique:LOGO]->(:Logo)
+            					WITH count(this_car0_manufacturer0_logo_Logo_unique) as c
+            					CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDManufacturer.logo required', [0])
+            					RETURN c AS this_car0_manufacturer0_logo_Logo_unique_ignored
+            				}
+            				RETURN count(*) AS update_this_car0_manufacturer0
+            			}
+            			RETURN count(*) AS update_this_car0_manufacturer0
             		}
-            		RETURN count(*) AS _
+            		WITH this, this_car0
+            		CALL {
+            			WITH this_car0
+            			MATCH (this_car0)-[this_car0_manufacturer_Manufacturer_unique:MANUFACTURER]->(:Manufacturer)
+            			WITH count(this_car0_manufacturer_Manufacturer_unique) as c
+            			CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDCar.manufacturer required', [0])
+            			RETURN c AS this_car0_manufacturer_Manufacturer_unique_ignored
+            		}
+            		RETURN count(*) AS update_this_car0
             	}
-            WITH this, this_car0, this_car0_manufacturer0, this_car0_manufacturer0_logo0_connect0_node
-            	RETURN count(*) AS connect_this_car0_manufacturer0_logo0_connect_Logo
+            	RETURN count(*) AS update_this_car0
             }
-            WITH this, this_car0, this_car0_manufacturer0
-            CALL {
-            	WITH this_car0_manufacturer0
-            	MATCH (this_car0_manufacturer0)-[this_car0_manufacturer0_logo_Logo_unique:LOGO]->(:Logo)
-            	WITH count(this_car0_manufacturer0_logo_Logo_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDManufacturer.logo required', [0])
-            	RETURN c AS this_car0_manufacturer0_logo_Logo_unique_ignored
-            }
-            RETURN count(*) AS _
-            \\\\\\", \\\\\\"\\\\\\", {this:this, this_car0:this_car0, updatePeople: $updatePeople, this_car0_manufacturer0:this_car0_manufacturer0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_param0:$this_car0_manufacturer0_logo0_connect0_node_param0})
-            YIELD value AS _
-            WITH this, this_car0
-            CALL {
-            	WITH this_car0
-            	MATCH (this_car0)-[this_car0_manufacturer_Manufacturer_unique:MANUFACTURER]->(:Manufacturer)
-            	WITH count(this_car0_manufacturer_Manufacturer_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDCar.manufacturer required', [0])
-            	RETURN c AS this_car0_manufacturer_Manufacturer_unique_ignored
-            }
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updatePeople: $updatePeople, this_car0:this_car0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_param0:$this_car0_manufacturer0_logo0_connect0_node_param0})
-            YIELD value AS _
             WITH this
             CALL {
             	WITH this
@@ -160,38 +168,6 @@ describe("#324", () => {
                 \\"param0\\": \\"Someone\\",
                 \\"this_update_car0_manufacturer0_name\\": \\"Manufacturer\\",
                 \\"this_car0_manufacturer0_logo0_connect0_node_param0\\": \\"Opel Logo\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                },
-                \\"updatePeople\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"car\\": {
-                                \\"update\\": {
-                                    \\"node\\": {
-                                        \\"manufacturer\\": {
-                                            \\"update\\": {
-                                                \\"node\\": {
-                                                    \\"name\\": \\"Manufacturer\\",
-                                                    \\"logo\\": {
-                                                        \\"connect\\": {
-                                                            \\"where\\": {
-                                                                \\"node\\": {
-                                                                    \\"identifier\\": \\"Opel Logo\\"
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
                 \\"resolvedCallbacks\\": {}
             }"
         `);

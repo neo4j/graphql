@@ -22,6 +22,7 @@ import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 
 describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
     let typeDefs: DocumentNode;
@@ -46,6 +47,9 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
+            plugins: {
+                subscriptions: new TestSubscriptionsPlugin(),
+            },
             config: { enableRegex: true },
         });
     });
@@ -72,17 +76,32 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "WITH [] AS meta
+            MATCH (this:\`Movie\`)
             WHERE this.title = $param0
-            WITH this
-            OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
-            SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies, resolvedCallbacks: $resolvedCallbacks})
-            YIELD value AS this_acted_in0_relationship_actors0_edge
-            RETURN collect(DISTINCT this { .title }) AS data"
+            WITH this { .* } AS oldProps, this, meta
+            CALL {
+            	WITH *
+            	WITH *
+            CALL {
+            	WITH this, meta
+            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
+            	CALL {
+            		WITH this, meta, this_acted_in0_relationship
+            		SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
+            		RETURN count(*) AS _
+            	}
+            	RETURN [] as update_meta
+            }
+            WITH *, REDUCE(m=meta, n IN update_meta | m + n) AS meta
+            	RETURN meta as update_meta
+            }
+            WITH *, update_meta as meta
+            WITH this, meta + { event: \\"update\\", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
+            WITH *
+            UNWIND (CASE meta WHEN [] then [null] else meta end) AS m
+            RETURN collect(DISTINCT this { .title }) AS data, collect(DISTINCT m) as meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -144,22 +163,44 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "WITH [] AS meta
+            MATCH (this:\`Movie\`)
             WHERE this.title = $param0
-            WITH this
-            OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
-            SET this_actors0.name = $this_update_actors0_name
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
-            YIELD value AS _
-            CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
-            SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies, resolvedCallbacks: $resolvedCallbacks})
-            YIELD value AS this_acted_in0_relationship_actors0_edge
-            RETURN collect(DISTINCT this { .title }) AS data"
+            WITH this { .* } AS oldProps, this, meta
+            CALL {
+            	WITH *
+            	WITH *
+            CALL {
+            	WITH this, meta
+            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
+            	CALL {
+            		WITH this, meta, this_actors0
+            		WITH this_actors0 { .* } AS oldProps, this, meta, this_actors0
+            		CALL {
+            			WITH *
+            			SET this_actors0.name = $this_update_actors0_name
+            			RETURN meta as update_meta
+            		}
+            		WITH *, update_meta as meta
+            		WITH this, this_actors0, meta + { event: \\"update\\", id: id(this_actors0), properties: { old: oldProps, new: this_actors0 { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta
+            		RETURN meta as update_meta
+            	}
+            	CALL {
+            		WITH this, meta, this_acted_in0_relationship
+            		SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
+            		RETURN count(*) AS _
+            	}
+            	RETURN collect(update_meta) as update_meta
+            }
+            WITH *, REDUCE(m=meta, n IN update_meta | m + n) AS meta
+            	RETURN meta as update_meta
+            }
+            WITH *, update_meta as meta
+            WITH this, meta + { event: \\"update\\", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
+            WITH *
+            UNWIND (CASE meta WHEN [] then [null] else meta end) AS m
+            RETURN collect(DISTINCT this { .title }) AS data, collect(DISTINCT m) as meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -167,10 +208,6 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
                 \\"param0\\": \\"Forrest Gump\\",
                 \\"updateMovies_args_update_actors0_where_Actorparam0\\": \\"Tom Hanks\\",
                 \\"this_update_actors0_name\\": \\"Tom Hanks\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                },
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {

@@ -497,7 +497,7 @@ describe("Arrays Methods", () => {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
-            
+
             type Actor {
                 id: ID!
                 name: String!
@@ -545,13 +545,17 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
             WHERE this.id = $param0
-            WITH this
-            OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
-            SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_PUSH
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, resolvedCallbacks: $resolvedCallbacks})
-            YIELD value AS this_acted_in0_relationship_actedIn0_edge
+            WITH *
+            CALL {
+            	WITH this
+            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
+            	CALL {
+            		WITH this, this_acted_in0_relationship
+            		SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_PUSH
+            		RETURN count(*) AS _
+            	}
+            	RETURN count(*) AS update_this_actedIn0
+            }
             WITH *
             CALL {
                 WITH this
@@ -601,7 +605,7 @@ describe("Arrays Methods", () => {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
-            
+
             type Actor {
                 id: ID!
                 name: String!
@@ -649,13 +653,17 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
             WHERE this.id = $param0
-            WITH this
-            OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
-            SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay[0..-$updateActors.args.update.actedIn[0].update.edge.pay_POP]
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, resolvedCallbacks: $resolvedCallbacks})
-            YIELD value AS this_acted_in0_relationship_actedIn0_edge
+            WITH *
+            CALL {
+            	WITH this
+            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
+            	CALL {
+            		WITH this, this_acted_in0_relationship
+            		SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay[0..-$updateActors.args.update.actedIn[0].update.edge.pay_POP]
+            		RETURN count(*) AS _
+            	}
+            	RETURN count(*) AS update_this_actedIn0
+            }
             WITH *
             CALL {
                 WITH this

@@ -296,56 +296,60 @@ describe("Cypher Create Pringles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Product\`)
             WHERE this.name = $param0
-            WITH this
-            OPTIONAL MATCH (this)-[this_has_photo0_relationship:HAS_PHOTO]->(this_photos0:Photo)
-            WHERE this_photos0.description = $updateProducts_args_update_photos0_where_Photoparam0
-            CALL apoc.do.when(this_photos0 IS NOT NULL, \\"
-            SET this_photos0.description = $this_update_photos0_description
-            WITH this, this_photos0
+            WITH *
             CALL {
-            WITH this, this_photos0
-            OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
-            WHERE this_photos0_color0_disconnect0.name = $updateProducts_args_update_photos0_update_node_color_disconnect_where_Colorparam0
-            CALL {
-            	WITH this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
-            	WITH collect(this_photos0_color0_disconnect0) as this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
-            	UNWIND this_photos0_color0_disconnect0 as x
-            	DELETE this_photos0_color0_disconnect0_rel
-            	RETURN count(*) AS _
-            }
-            RETURN count(*) AS disconnect_this_photos0_color0_disconnect_Color
-            }
-            WITH this, this_photos0
-            CALL {
-            	WITH this, this_photos0
-            	OPTIONAL MATCH (this_photos0_color0_connect0_node:Color)
-            	WHERE this_photos0_color0_connect0_node.name = $this_photos0_color0_connect0_node_param0
+            	WITH this
+            	MATCH (this)-[this_has_photo0_relationship:HAS_PHOTO]->(this_photos0:Photo)
+            	WHERE this_photos0.description = $updateProducts_args_update_photos0_where_Photoparam0
             	CALL {
-            		WITH *
-            		WITH this, collect(this_photos0_color0_connect0_node) as connectedNodes, collect(this_photos0) as parentNodes
+            		WITH this, this_photos0
+            		SET this_photos0.description = $this_update_photos0_description
+            		WITH this, this_photos0
             		CALL {
-            			WITH connectedNodes, parentNodes
-            			UNWIND parentNodes as this_photos0
-            			UNWIND connectedNodes as this_photos0_color0_connect0_node
-            			MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
+            		WITH this, this_photos0
+            		OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
+            		WHERE this_photos0_color0_disconnect0.name = $updateProducts_args_update_photos0_update_node_color_disconnect_where_Colorparam0
+            		CALL {
+            			WITH this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
+            			WITH collect(this_photos0_color0_disconnect0) as this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
+            			UNWIND this_photos0_color0_disconnect0 as x
+            			DELETE this_photos0_color0_disconnect0_rel
             			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
+            		RETURN count(*) AS disconnect_this_photos0_color0_disconnect_Color
+            		}
+            		WITH this, this_photos0
+            		CALL {
+            			WITH this, this_photos0
+            			OPTIONAL MATCH (this_photos0_color0_connect0_node:Color)
+            			WHERE this_photos0_color0_connect0_node.name = $this_photos0_color0_connect0_node_param0
+            			CALL {
+            				WITH *
+            				WITH this, collect(this_photos0_color0_connect0_node) as connectedNodes, collect(this_photos0) as parentNodes
+            				CALL {
+            					WITH connectedNodes, parentNodes
+            					UNWIND parentNodes as this_photos0
+            					UNWIND connectedNodes as this_photos0_color0_connect0_node
+            					MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
+            					RETURN count(*) AS _
+            				}
+            				RETURN count(*) AS _
+            			}
+            		WITH this, this_photos0, this_photos0_color0_connect0_node
+            			RETURN count(*) AS connect_this_photos0_color0_connect_Color
+            		}
+            		WITH this, this_photos0
+            		CALL {
+            			WITH this_photos0
+            			MATCH (this_photos0)-[this_photos0_color_Color_unique:OF_COLOR]->(:Color)
+            			WITH count(this_photos0_color_Color_unique) as c
+            			CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            			RETURN c AS this_photos0_color_Color_unique_ignored
+            		}
+            		RETURN count(*) AS update_this_photos0
             	}
-            WITH this, this_photos0, this_photos0_color0_connect0_node
-            	RETURN count(*) AS connect_this_photos0_color0_connect_Color
+            	RETURN count(*) AS update_this_photos0
             }
-            WITH this, this_photos0
-            CALL {
-            	WITH this_photos0
-            	MATCH (this_photos0)-[this_photos0_color_Color_unique:OF_COLOR]->(:Color)
-            	WITH count(this_photos0_color_Color_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
-            	RETURN c AS this_photos0_color_Color_unique_ignored
-            }
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateProducts: $updateProducts, this_photos0:this_photos0, auth:$auth,this_update_photos0_description:$this_update_photos0_description,updateProducts_args_update_photos0_update_node_color_disconnect_where_Colorparam0:$updateProducts_args_update_photos0_update_node_color_disconnect_where_Colorparam0,this_photos0_color0_connect0_node_param0:$this_photos0_color0_connect0_node_param0})
-            YIELD value AS _
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -356,13 +360,6 @@ describe("Cypher Create Pringles", () => {
                 \\"this_update_photos0_description\\": \\"Light Green Photo\\",
                 \\"updateProducts_args_update_photos0_update_node_color_disconnect_where_Colorparam0\\": \\"Green\\",
                 \\"this_photos0_color0_connect0_node_param0\\": \\"Light Green\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
-                },
                 \\"updateProducts\\": {
                     \\"args\\": {
                         \\"update\\": {
