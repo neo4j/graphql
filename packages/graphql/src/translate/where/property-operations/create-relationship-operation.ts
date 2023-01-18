@@ -156,7 +156,9 @@ export function createRelationshipSubqueryAndPredicate({
         case "single": {
             const patternComprehension = new Cypher.PatternComprehension(matchPattern, childNode);
             if (innerOperation) {
-                return Cypher.single(childNode, patternComprehension, innerOperation);
+                const test = Cypher.size(new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(innerOperation));
+                return Cypher.eq(test, new Cypher.Literal(1));
+                // return Cypher.single(childNode, patternComprehension, innerOperation);
             }
             return undefined;
         }
@@ -166,6 +168,7 @@ export function createRelationshipSubqueryAndPredicate({
             if (innerOperation) {
                 relationshipMatch.where(innerOperation);
             }
+            // const test = Cypher.size(new Cypher.PatternComprehension(matchPattern), innerOperation);
             const existsPredicate = new Cypher.Exists(relationshipMatch);
             return existsPredicate;
         }
