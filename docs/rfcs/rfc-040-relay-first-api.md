@@ -52,6 +52,7 @@ These are some loose conventions on type and input naming:
 type Movie @fulltext(indexes: [{ indexName: "MovieTitle", fields: ["title"] }]) {
     title: String!
     released: Int
+    alternativeTitles: [String!]!
     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
     director: Person! @relationship(type: "DIRECTED", direction: IN)
 }
@@ -116,6 +117,7 @@ type PersonEdge {
 type Movie {
     title: String!
     released: Int
+    alternativeTitles: [String!]!
     actors(
         where: MovieActorsConnectionWhere
         first: Int
@@ -269,55 +271,53 @@ input MovieEdgeWhere {
     AND: [MovieEdgeWhere!]
     OR: [MovieEdgeWhere!]
     NOT: MovieEdgeWhere
-    node: MovieWhere
+    node: MovieNodeWhere
 }
 
 input PersonEdgeWhere {
     AND: [PersonEdgeWhere!]
     OR: [PersonEdgeWhere!]
     NOT: PersonEdgeWhere
-    node: PersonWhere
+    node: PersonNodeWhere
 }
 
 ## Basic fields where
 
-input MovieWhere {
-    OR: [MovieWhere!]
-    AND: [MovieWhere!]
-    NOT: MovieWhere
+input MovieNodeWhere {
+    OR: [MovieNodeWhere!]
+    AND: [MovieNodeWhere!]
+    NOT: MovieNodeWhere
     title: StringWhere
     released: IntWhere
-    actors: MovieActorsWhere
+    alternativeTitles: StringListWhere
+    actors: MovieActorsConnectionWhere
     director: MovieDirectorConnectionWhere
 }
 
-input PersonWhere {
-    OR: [PersonWhere!]
-    AND: [PersonWhere!]
-    NOT: PersonWhere
+input PersonNodeWhere {
+    OR: [PersonNodeWhere!]
+    AND: [PersonNodeWhere!]
+    NOT: PersonNodeWhere
     name: StringWhere
-    movies: MovieActorsConnectionWhere
+    movies: PersonMoviesConnectionWhere
     directed: PersonDirectedConnectionWhere
 }
-
 ## Relationship Connection Where
 
-input MovieActorsWhere {
-    AND: [MovieActorsWhere!]
-    OR: [MovieActorsWhere!]
-    NOT: MovieActorsWhere
-    all: MovieActorsConnectionWhere
-    none: MovieActorsConnectionWhere
-    single: MovieActorsConnectionWhere
-    some: MovieActorsConnectionWhere
-    aggregation: MovieActorsAggregationEdgeWhere
+input MovieActorsWhereFilters {
+    AND: [MovieActorsWhereFilters!]
+    OR: [MovieActorsWhereFilters!]
+    NOT: MovieActorsWhereFilters
+    all: MovieActorsEdgeWhere
+    none: MovieActorsEdgeWhere
+    single: MovieActorsEdgeWhere
+    some: MovieActorsEdgeWhere
 }
-
 input MovieActorsConnectionWhere {
     AND: [MovieActorsConnectionWhere!]
     OR: [MovieActorsConnectionWhere!]
     NOT: MovieActorsConnectionWhere
-    edges: MovieActorsEdgeWhere
+    edges: MovieActorsWhereFilters
     aggregation: MovieActorsAggregationEdgeWhere
 }
 
@@ -332,8 +332,18 @@ input PersonMoviesConnectionWhere {
     AND: [PersonMoviesConnectionWhere!]
     OR: [PersonMoviesConnectionWhere!]
     NOT: PersonMoviesConnectionWhere
-    edges: PersonMoviesEdgeWhere
+    edges: PersonMoviesWhereFilters
     aggregation: PersonMoviesAggregationEdgeWhere
+}
+
+input PersonMoviesWhereFilters {
+    AND: [PersonMoviesWhereFilters!]
+    OR: [PersonMoviesWhereFilters!]
+    NOT: PersonMoviesWhereFilters
+    all: PersonMoviesEdgeWhere
+    none: PersonMoviesEdgeWhere
+    single: PersonMoviesEdgeWhere
+    some: PersonMoviesEdgeWhere
 }
 
 input PersonDirectedConnectionWhere {
@@ -349,7 +359,7 @@ input MovieActorsEdgeWhere {
     AND: [MovieActorsEdgeWhere!]
     OR: [MovieActorsEdgeWhere!]
     NOT: MovieActorsEdgeWhere
-    node: PersonWhere
+    node: PersonNodeWhere
     fields: ActedInWhere
 }
 
@@ -357,7 +367,7 @@ input MovieDirectorEdgeWhere {
     AND: [MovieDirectorEdgeWhere!]
     OR: [MovieDirectorEdgeWhere!]
     NOT: MovieDirectorEdgeWhere
-    node: PersonWhere
+    node: PersonNodeWhere
     fields: ActedInWhere
 }
 
@@ -365,7 +375,7 @@ input PersonMoviesEdgeWhere {
     AND: [PersonMoviesEdgeWhere!]
     OR: [PersonMoviesEdgeWhere!]
     NOT: PersonMoviesEdgeWhere
-    node: MovieWhere
+    node: MovieNodeWhere
     fields: ActedInWhere
 }
 
@@ -373,7 +383,7 @@ input PersonDirectedEdgeWhere {
     AND: [PersonDirectedEdgeWhere!]
     OR: [PersonDirectedEdgeWhere!]
     NOT: PersonDirectedEdgeWhere
-    node: MovieWhere
+    node: MovieNodeWhere
 }
 
 ## Relationship fields where
@@ -537,12 +547,22 @@ input StringWhere {
     OR: [StringWhere!]
     AND: [StringWhere!]
     NOT: StringWhere
-    equal: String
+    equals: String
     in: [String!]
     matches: String
     contains: String
     startsWith: String
     endsWith: String
+}
+
+input StringListWhere {
+    AND: [StringListWhere!]
+    OR: [StringListWhere!]
+    NOT: StringListWhere
+    all: StringWhere
+    none: StringWhere
+    single: StringWhere
+    some: StringWhere
 }
 
 input IntWhere {
@@ -561,13 +581,14 @@ input FloatWhere {
     OR: [FloatWhere!]
     AND: [FloatWhere!]
     NOT: FloatWhere
-    equal: Float
+    equals: Float
     in: [Float]
     lt: Float
     lte: Float
     gt: Float
     gte: Float
 }
+
 ```
 
 ### Mutations
@@ -575,6 +596,7 @@ input FloatWhere {
 **Create**
 
 ```graphql
+
 type Mutation {
     createMovies(edges: [MovieEdgeCreate!]!): CreateMoviesMutationResponse!
     createPeople(edges: [PersonEdgeCreate!]!): CreatePeopleMutationResponse!
@@ -623,6 +645,7 @@ input PersonEdgeCreate {
 input MovieCreateNode {
     title: String!
     released: Int
+    alternativeTitles: [String!]!
     actors: MovieActorsCreateOperations
     director: MovieDirectorCreateOperations
 }
@@ -807,16 +830,18 @@ input PersonConnectNode {
 input ActedInCreate {
     year: Int
 }
+
 ```
 
 **Update**
 
 ```graphql
+
 type Mutation {
     updateMovies(where: MovieConnectionWhere, edges: [MovieEdgeUpdate!]!): UpdateMoviesMutationResponse!
 
     # updateMovies(
-    #     where: MovieWhere
+    #     where: MovieNodeWhere
     #     update: MovieUpdateInput
     #     connect: MovieConnectInput
     #     disconnect: MovieDisconnectInput
@@ -842,12 +867,24 @@ input MovieEdgeUpdate {
 
 input MovieUpdateNode {
     title: String
-    released: Int
-    released_INCREMENT: Int
-    released_DECREMENT: Int
+    released: IntUpdateOperations
+    alternativeTitles: StringListUpdateOperations
     actors: MovieActorsUpdateOperations
     director: MovieDirectorUpdateOperations
 }
+
+input IntUpdateOperations {
+    set: Int
+    increment: Int
+    decrement: Int
+}
+
+input StringListUpdateOperations {
+    set: Int
+    pop: Int
+    push: [String!]
+}
+
 
 input MovieActorsUpdateOperations {
     create: MovieActorsCreate
@@ -883,9 +920,7 @@ input MovieDirectorEdgeUpdate {
 }
 
 input ActedInUpdate {
-    year: Int
-    year_INCREMENT: Int
-    year_DECREMENT: Int
+    year: IntUpdateOperations
 }
 
 input PersonUpdateNode {
@@ -1026,7 +1061,7 @@ query PaginateActorsInMovie {
 
 ```graphql
 mutation CreateMovie {
-    createMovies(input: { edges: { node: { title: "The Matrix" } } }) {
+    createMovies( edges: { node: { title: "The Matrix" } } ) {
         info {
             nodesCreated
         }
@@ -1038,77 +1073,74 @@ mutation CreateMovie {
     }
 }
 
+
 mutation CreateMovieAndActors {
-    createMovies(
-        input: {
-            edges: {
-                node: {
-                    title: "The Matrix"
-                    actors: {
-                        create: {
-                            edges: [
-                                { node: { name: "Keanu" }, fields: { year: 1999 } }
-                                { node: { name: "Anne" }, fields: { year: 1999 } }
-                            ]
-                        }
-                    }
-                }
-            }
+  createMovies(
+    edges: {
+      node: {
+        title: "The Matrix"
+        actors: {
+          create: {
+            edges: [
+              { node: { name: "Keanu" }, fields: { year: 1999 } }
+              { node: { name: "Anne" }, fields: { year: 1999 } }
+            ]
+          }
         }
-    ) {
-        info {
-            nodesCreated
-        }
-        edges {
-            node {
-                title
-                actors {
-                    edges {
-                        node {
-                            name
-                        }
-                    }
-                }
-            }
-        }
+      }
     }
+  ) {
+    info {
+      nodesCreated
+    }
+    edges {
+      node {
+        title
+        actors {
+          edges {
+            node {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 mutation CreateMovieAndConnectToActors {
-    createMovies(
-        input: {
-            edges: {
-                node: {
-                    title: "The Matrix"
-                    actors: {
-                        connect: {
-                            where: { edges: { node: { name: { contains: "Keanu" } } } }
-                            edges: { fields: { year: 1999 } }
-                        }
-                    }
-                }
-            }
+  createMovies(
+    edges: {
+      node: {
+        title: "The Matrix"
+        actors: {
+          connect: {
+            where: { edges: { node: { name: { contains: "Keanu" } } } }
+            edges: { fields: { year: 1999 } }
+          }
         }
-    ) {
-        info {
-            nodesCreated
-        }
-        edges {
-            node {
-                title
-                actors {
-                    edges {
-                        fields {
-                            year
-                        }
-                        node {
-                            name
-                        }
-                    }
-                }
-            }
-        }
+      }
     }
+  ) {
+    info {
+      nodesCreated
+    }
+    edges {
+      node {
+        title
+        actors {
+          edges {
+            fields {
+              year
+            }
+            node {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 mutation CreateMovieAndConnectToActors {
@@ -1200,38 +1232,40 @@ mutation CreateMoviesAndDeeplyNestedCreateMovies {
 }
 
 mutation CreateMoviesWithDeeplyNestedConnect {
-    createMovies(
-        edges: {
-            node: {
-                title: "The Matrix"
-                actors: {
-                    connect: {
-                        where: { edges: { node: { name: { equal: "Keanu" } } } }
-                        edges: {
-                            fields: { year: 1999 }
-                            node: {
-                                movies: {
-                                    # create: {}
-                                    connect: {
-                                        where: { edges: { node: { title: { equal: "The Matrix 2" } } } }
-                                        edges: { fields: { year: 2001 } }
-                                    }
-                                }
-                            }
-                        }
+  createMovies(
+    edges: {
+      node: {
+        title: "The Matrix"
+        actors: {
+          connect: {
+            where: { edges: { node: { name: { equals: "Keanu" } } } }
+            edges: {
+              fields: { year: 1999 }
+              node: {
+                movies: {
+                  # create: {}
+                  connect: {
+                    where: {
+                      edges: { node: { title: { equals: "The Matrix 2" } } }
                     }
+                    edges: { fields: { year: 2001 } }
+                  }
                 }
+              }
             }
+          }
         }
-    ) {
-        info {
-            nodesCreated
-        }
-        edges {
-            node {
-                title
-            }
-        }
+      }
     }
+  ) {
+    info {
+      nodesCreated
+    }
+    edges {
+      node {
+        title
+      }
+    }
+  }
 }
 ```
