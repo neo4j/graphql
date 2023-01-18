@@ -137,8 +137,6 @@ export function aggregateWhere(
                 );
                 returnProjections.push(...innerReturnProjections);
                 logicalPredicates.push(...innerPredicates);
-                returnProjections.push(...innerReturnProjections);
-                predicates.push(...innerPredicates);
                 returnVariables.push(...innerReturnVariables);
             });
             predicates.push(logicalOperator(...logicalPredicates));
