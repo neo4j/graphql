@@ -95,8 +95,6 @@ export function createRelationshipOperation({
 
     if (returnVariables && returnVariables.length) {
         const aggregatingWithClause = new Cypher.With(
-            // childNode,
-            // relationship,
             parentNode,
             ...(returnVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar]) as any)
         );
@@ -129,7 +127,7 @@ export function createRelationshipSubqueryAndPredicate({
     childNode: Cypher.Node;
     innerOperation: Cypher.Predicate | undefined;
     returnVariables: Cypher.Variable[];
-}): Cypher.Predicate {
+}): Cypher.Predicate | undefined {
     switch (listPredicateStr) {
         case "all": {
             // Testing "ALL" requires testing that at least one element exists and that no elements not matching the filter exists
@@ -150,54 +148,26 @@ export function createRelationshipSubqueryAndPredicate({
                 innerOperation,
                 returnVariables,
             });
-            return Cypher.not(somePredicate);
+            if (somePredicate) {
+                return Cypher.not(somePredicate);
+            }
+            return undefined;
         }
         case "single": {
             const patternComprehension = new Cypher.PatternComprehension(matchPattern, childNode);
-            let foo;
-            // if (returnVariables && returnVariables.length) {
-            //     const baa = new Cypher.Variable();
-            //     foo = Cypher.single(baa, returnVariables[0], Cypher.eq(baa, new Cypher.Literal(true)));
-            // }
-            if (innerOperation || foo) {
-                return Cypher.single(childNode, patternComprehension, Cypher.and(foo, innerOperation));
+            if (innerOperation) {
+                return Cypher.single(childNode, patternComprehension, innerOperation);
             }
-            return Cypher.single(childNode, patternComprehension);
+            return undefined;
         }
         case "some":
         default: {
             const relationshipMatch = new Cypher.Match(matchPattern);
-            let foo;
-            // if (returnVariables && returnVariables.length) {
-            //     const baa = new Cypher.Variable();
-            //     foo = Cypher.any(baa, returnVariables[0], Cypher.eq(baa, new Cypher.Literal(true)));
-            // }
-            if (innerOperation || foo) {
-                const test = Cypher.and(foo, innerOperation);
-                if (test) {
-                    relationshipMatch.where(test);
-                }
+            if (innerOperation) {
+                relationshipMatch.where(innerOperation);
             }
             const existsPredicate = new Cypher.Exists(relationshipMatch);
             return existsPredicate;
         }
     }
 }
-
-// function getCountOperation(
-//     listPredicate: string,
-//     matchClause: Cypher.Match,
-//     predicate: Cypher.Predicate
-// ): Cypher.Predicate {
-//     switch (listPredicate) {
-//         case "all":
-//         case "none":
-//             return Cypher.not(new Cypher.Exists(matchClause));
-//         case "any":
-//             return new Cypher.Exists(matchClause);
-//         case "single":
-//             return Cypher.single(predicate);
-//         default:
-//             throw new Error(`Unknown predicate ${listPredicate}`);
-//     }
-// }

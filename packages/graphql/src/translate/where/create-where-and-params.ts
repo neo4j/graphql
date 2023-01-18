@@ -41,7 +41,11 @@ export default function createWhereAndParams({
 }): [string, string, any] {
     const nodeRef = new Cypher.NamedNode(varName);
 
-    const { predicate: wherePredicate, preComputedSubqueries } = createWherePredicate({
+    const {
+        predicate: wherePredicate,
+        preComputedSubqueries,
+        returnVariables,
+    } = createWherePredicate({
         element: node,
         context,
         whereInput,
@@ -49,9 +53,21 @@ export default function createWhereAndParams({
     });
 
     let preComputedWhereFieldsResult = "";
+    let aggregatingWithClause: Cypher.With | undefined;
+
+    if (returnVariables && returnVariables.length) {
+        aggregatingWithClause = new Cypher.With(
+            nodeRef,
+            ...(returnVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar]) as any)
+        );
+    }
 
     const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
-        preComputedWhereFieldsResult = preComputedSubqueries?.getCypher(env) || "";
+        if (aggregatingWithClause) {
+            preComputedWhereFieldsResult =
+                Cypher.concat(preComputedSubqueries, aggregatingWithClause).getCypher(env) || "";
+        }
+
         const cypher = wherePredicate?.getCypher(env) || "";
 
         return [cypher, {}];

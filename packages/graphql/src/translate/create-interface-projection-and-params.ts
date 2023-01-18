@@ -162,6 +162,7 @@ function createInterfaceSubquery({
     }
 
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
+    let preComputedReturnVariables: Cypher.Variable[] = [];
 
     if (resolveTree.args.where) {
         const whereInput2 = {
@@ -175,7 +176,7 @@ function createInterfaceSubquery({
             ...(whereInput?._on?.[refNode.name] || {}),
         };
 
-        const { predicate: wherePredicate, preComputedSubqueries } = createWherePredicate({
+        const { predicate: wherePredicate, preComputedSubqueries, returnVariables } = createWherePredicate({
             whereInput: whereInput2,
             context,
             targetElement: relatedNode,
@@ -186,6 +187,7 @@ function createInterfaceSubquery({
             predicates.push(wherePredicate);
         }
         preComputedWhereFieldSubqueries = preComputedSubqueries;
+        preComputedReturnVariables = returnVariables;
     }
 
     const whereAuthPredicate = createAuthPredicates({
@@ -219,7 +221,10 @@ function createInterfaceSubquery({
     const returnClause = new Cypher.Return([new Cypher.RawCypher(projectionStr), `${nodeVariable}_${field.fieldName}`]);
 
     if (preComputedWhereFieldSubqueries && preComputedWhereFieldSubqueries?.empty) {
-        const preComputedWhereFieldsWith = new Cypher.With("*");
+        const preComputedWhereFieldsWith = new Cypher.With(
+            parentNode,
+            ...(preComputedReturnVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar]) as any)
+        );
         preComputedWhereFieldsWith.where(Cypher.and(...predicates));
         return Cypher.concat(
             withClause,

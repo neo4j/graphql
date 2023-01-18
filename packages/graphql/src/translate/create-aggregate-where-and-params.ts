@@ -179,7 +179,7 @@ function test(operationVar: Cypher.Variable, listPredicateStr?: ListPredicate) {
         }
         case "single": {
             const baa = new Cypher.Variable();
-            return Cypher.all(baa, operationVar, Cypher.eq(baa, new Cypher.Literal(true)));
+            return Cypher.single(baa, operationVar, Cypher.eq(baa, new Cypher.Literal(true)));
         }
         case "not":
         case "none":
