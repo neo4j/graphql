@@ -31,7 +31,7 @@ export function findResolver({ node }: { node: Node }) {
         context.resolveTree = getNeo4jResolveTree(info, { args });
 
         const { cypher, params } = translateRead({ context, node });
-        console.log(cypher);
+        // console.log(cypher);
         const executeResult = await execute({
             cypher,
             params,

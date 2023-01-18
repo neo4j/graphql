@@ -91,11 +91,7 @@ export function createMatchClause({
     let whereClause: Cypher.Match | Cypher.db.FullTextQueryNodes | Cypher.With = matchClause;
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
     if (whereInput) {
-        const {
-            predicate: whereOp,
-            preComputedSubqueries,
-            returnVariables,
-        } = createWherePredicate({
+        const { predicate: whereOp, preComputedSubqueries } = createWherePredicate({
             targetElement: matchNode,
             whereInput,
             context,
@@ -106,10 +102,7 @@ export function createMatchClause({
 
         whereClause =
             preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty
-                ? new Cypher.With(
-                      matchNode,
-                      ...(returnVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar]) as any)
-                  )
+                ? new Cypher.With("*")
                 : matchClause;
 
         if (whereOp) whereClause.where(whereOp);

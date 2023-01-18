@@ -43,7 +43,7 @@ export function createConnectionOperation({
 }): {
     predicate: Cypher.BooleanOp | Cypher.RawCypher | undefined;
     preComputedSubquery: Cypher.CompositeClause | undefined;
-    returnVariables: Cypher.Variable[];
+    returnVariables?: Cypher.Variable[];
 } {
     let nodeEntries: Record<string, any>;
 
@@ -147,24 +147,24 @@ export function createConnectionOperation({
         returnVariables.push(...innerOperation.returnVariables);
     });
 
-    // if (returnVariables && returnVariables.length) {
-    //     const aggregatingWithClause = new Cypher.With(
-    //         parentNode,
-    //         ...(returnVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar]) as any)
-    //     );
+    if (returnVariables && returnVariables.length) {
+        const aggregatingWithClause = new Cypher.With(
+            parentNode,
+            ...(returnVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar]) as any)
+        );
 
-    //     return {
-    //         predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined,
-    //         preComputedSubquery: Cypher.concat(
-    //             subqueries,
-    //             aggregatingWithClause
-    //         ),
-    //     };
-    // }
+        return {
+            predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined,
+            preComputedSubquery: Cypher.concat(
+                subqueries,
+                aggregatingWithClause
+            ),
+        };
+    }
     return {
         predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined,
         preComputedSubquery: subqueries,
-        returnVariables,
+        // returnVariables,
     };
 }
 

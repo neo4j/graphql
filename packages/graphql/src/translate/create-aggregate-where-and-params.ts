@@ -127,7 +127,14 @@ export function aggregateWhere(
                     returnProjections: innerReturnProjections,
                     predicates: innerPredicates,
                     returnVariables: innerReturnVariables,
-                } = aggregateWhere(whereInput, refNode, relationship, aggregationTarget, cypherRelation, listPredicateStr);
+                } = aggregateWhere(
+                    whereInput,
+                    refNode,
+                    relationship,
+                    aggregationTarget,
+                    cypherRelation,
+                    listPredicateStr
+                );
                 returnProjections.push(...innerReturnProjections);
                 logicalPredicates.push(...innerPredicates);
                 returnProjections.push(...innerReturnProjections);
@@ -183,9 +190,11 @@ function test(operationVar: Cypher.Variable, listPredicateStr?: ListPredicate) {
         }
         case "not":
         case "none":
-        case "any":
-        default: {
+        case "any": {
             return Cypher.in(new Cypher.Literal(true), operationVar);
+        }
+        default: {
+            return Cypher.eq(operationVar, new Cypher.Literal(true));
         }
     }
 }
