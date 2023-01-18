@@ -389,11 +389,7 @@ describe("Cypher Union", () => {
             	WITH this
             	MATCH (this)-[this_search0_relationship:SEARCH]->(this_search_Genre0:Genre)
             	WHERE this_search_Genre0.name = $updateMovies_args_update_search_Genre0_where_Genreparam0
-            	CALL {
-            		WITH this, this_search_Genre0
-            		SET this_search_Genre0.name = $this_update_search_Genre0_name
-            		RETURN count(*) AS update_this_search_Genre0
-            	}
+            	SET this_search_Genre0.name = $this_update_search_Genre0_name
             	RETURN count(*) AS update_this_search_Genre0
             }
             RETURN collect(DISTINCT this { .title }) AS data"

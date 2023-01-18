@@ -322,11 +322,7 @@ describe("Label in Node directive", () => {
             	WITH this
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
             	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            	CALL {
-            		WITH this, this_actors0
-            		SET this_actors0.name = $this_update_actors0_name
-            		RETURN count(*) AS update_this_actors0
-            	}
+            	SET this_actors0.name = $this_update_actors0_name
             	RETURN count(*) AS update_this_actors0
             }
             RETURN collect(DISTINCT this { .id }) AS data"

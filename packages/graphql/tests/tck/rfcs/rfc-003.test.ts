@@ -495,18 +495,14 @@ describe("tck/rfs/003", () => {
                             CALL {
                             	WITH this
                             	MATCH (this)<-[this_directed0_relationship:DIRECTED]-(this_director0:Director)
+                            	SET this_director0.id = $this_update_director0_id
+                            	WITH this, this_director0
                             	CALL {
-                            		WITH this, this_director0
-                            		SET this_director0.id = $this_update_director0_id
-                            		WITH this, this_director0
-                            		CALL {
-                            			WITH this_director0
-                            			MATCH (this_director0)-[this_director0_address_Address_unique:HAS_ADDRESS]->(:Address)
-                            			WITH count(this_director0_address_Address_unique) as c
-                            			CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
-                            			RETURN c AS this_director0_address_Address_unique_ignored
-                            		}
-                            		RETURN count(*) AS update_this_director0
+                            		WITH this_director0
+                            		MATCH (this_director0)-[this_director0_address_Address_unique:HAS_ADDRESS]->(:Address)
+                            		WITH count(this_director0_address_Address_unique) as c
+                            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
+                            		RETURN c AS this_director0_address_Address_unique_ignored
                             	}
                             	RETURN count(*) AS update_this_director0
                             }
@@ -576,18 +572,14 @@ describe("tck/rfs/003", () => {
                             CALL {
                             	WITH this
                             	MATCH (this)<-[this_directed0_relationship:DIRECTED]-(this_director0:Director)
+                            	SET this_director0.id = $this_update_director0_id
+                            	WITH this, this_director0
                             	CALL {
-                            		WITH this, this_director0
-                            		SET this_director0.id = $this_update_director0_id
-                            		WITH this, this_director0
-                            		CALL {
-                            			WITH this_director0
-                            			MATCH (this_director0)-[this_director0_address_Address_unique:HAS_ADDRESS]->(:Address)
-                            			WITH count(this_director0_address_Address_unique) as c
-                            			CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
-                            			RETURN c AS this_director0_address_Address_unique_ignored
-                            		}
-                            		RETURN count(*) AS update_this_director0
+                            		WITH this_director0
+                            		MATCH (this_director0)-[this_director0_address_Address_unique:HAS_ADDRESS]->(:Address)
+                            		WITH count(this_director0_address_Address_unique) as c
+                            		CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
+                            		RETURN c AS this_director0_address_Address_unique_ignored
                             	}
                             	RETURN count(*) AS update_this_director0
                             }

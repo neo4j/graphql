@@ -268,30 +268,22 @@ describe("Cypher Auth Allow", () => {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
             	WHERE this_content0.id = $updateUsers_args_update_content0_where_Commentparam0
+            	WITH *
             	CALL {
             		WITH this, this_content0
-            		WITH *
-            		CALL {
-            			WITH this, this_content0
-            			MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
-            			CALL {
-            				WITH this, this_content0, this_content0_creator0
-            				SET this_content0_creator0.id = $this_update_content0_creator0_id
-            				WITH this, this_content0, this_content0_creator0
-            				CALL apoc.util.validate(NOT ((this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            				RETURN count(*) AS update_this_content0_creator0
-            			}
-            			RETURN count(*) AS update_this_content0_creator0
-            		}
-            		WITH this, this_content0
-            		CALL {
-            			WITH this_content0
-            			MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
-            			WITH count(this_content0_creator_User_unique) as c
-            			CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required', [0])
-            			RETURN c AS this_content0_creator_User_unique_ignored
-            		}
-            		RETURN count(*) AS update_this_content0
+            		MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
+            		SET this_content0_creator0.id = $this_update_content0_creator0_id
+            		WITH this, this_content0, this_content0_creator0
+            		CALL apoc.util.validate(NOT ((this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            		RETURN count(*) AS update_this_content0_creator0
+            	}
+            	WITH this, this_content0
+            	CALL {
+            		WITH this_content0
+            		MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
+            		WITH count(this_content0_creator_User_unique) as c
+            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required', [0])
+            		RETURN c AS this_content0_creator_User_unique_ignored
             	}
             	RETURN count(*) AS update_this_content0
             }
@@ -304,32 +296,24 @@ describe("Cypher Auth Allow", () => {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
             	WHERE this_content0.id = $updateUsers_args_update_content0_where_Postparam0
+            	WITH *
             	CALL {
             		WITH this, this_content0
-            		WITH *
-            		CALL {
-            			WITH this, this_content0
-            			MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
-            			CALL {
-            				WITH this, this_content0, this_content0_creator0
-            				SET this_content0_creator0.id = $this_update_content0_creator0_id
-            				WITH this, this_content0, this_content0_creator0
-            				CALL apoc.util.validate(NOT ((this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            				RETURN count(*) AS update_this_content0_creator0
-            			}
-            			RETURN count(*) AS update_this_content0_creator0
-            		}
-            		WITH this, this_content0
-            		CALL apoc.util.validate(NOT ((exists((this_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            		WITH this, this_content0
-            		CALL {
-            			WITH this_content0
-            			MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
-            			WITH count(this_content0_creator_User_unique) as c
-            			CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
-            			RETURN c AS this_content0_creator_User_unique_ignored
-            		}
-            		RETURN count(*) AS update_this_content0
+            		MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
+            		SET this_content0_creator0.id = $this_update_content0_creator0_id
+            		WITH this, this_content0, this_content0_creator0
+            		CALL apoc.util.validate(NOT ((this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            		RETURN count(*) AS update_this_content0_creator0
+            	}
+            	WITH this, this_content0
+            	CALL apoc.util.validate(NOT ((exists((this_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	WITH this, this_content0
+            	CALL {
+            		WITH this_content0
+            		MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
+            		WITH count(this_content0_creator_User_unique) as c
+            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            		RETURN c AS this_content0_creator_User_unique_ignored
             	}
             	RETURN count(*) AS update_this_content0
             }

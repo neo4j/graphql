@@ -538,18 +538,14 @@ describe("Cypher Auth Where", () => {
             	WITH this
             	MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
             	WHERE (exists((this_posts0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_posts0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0auth_param0)))
+            	SET this_posts0.id = $this_update_posts0_id
+            	WITH this, this_posts0
             	CALL {
-            		WITH this, this_posts0
-            		SET this_posts0.id = $this_update_posts0_id
-            		WITH this, this_posts0
-            		CALL {
-            			WITH this_posts0
-            			MATCH (this_posts0)<-[this_posts0_creator_User_unique:HAS_POST]-(:User)
-            			WITH count(this_posts0_creator_User_unique) as c
-            			CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
-            			RETURN c AS this_posts0_creator_User_unique_ignored
-            		}
-            		RETURN count(*) AS update_this_posts0
+            		WITH this_posts0
+            		MATCH (this_posts0)<-[this_posts0_creator_User_unique:HAS_POST]-(:User)
+            		WITH count(this_posts0_creator_User_unique) as c
+            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            		RETURN c AS this_posts0_creator_User_unique_ignored
             	}
             	RETURN count(*) AS update_this_posts0
             }

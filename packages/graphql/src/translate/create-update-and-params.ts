@@ -211,6 +211,21 @@ export default function createUpdateAndParams({
                             }
                         }
 
+                        if (update.update.edge) {
+                            const setProperties = createSetRelationshipProperties({
+                                properties: update.update.edge,
+                                varName: relationshipVariable,
+                                withVars: withVars,
+                                relationship,
+                                callbackBucket,
+                                operation: "UPDATE",
+                                parameterPrefix: `${parameterPrefix}.${key}${
+                                    relationField.union ? `.${refNode.name}` : ""
+                                }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`,
+                            });
+                            innerUpdate.push(setProperties);
+                        }
+
                         if (update.update.node) {
                             const nestedWithVars = [...withVars, variableName];
 
@@ -248,8 +263,7 @@ export default function createUpdateAndParams({
                                 includeRelationshipValidation: true,
                             });
                             res.params = { ...res.params, ...updateAndParams[1] };
-                            const nodeUpdate = [`WITH ${nestedWithVars.join(`, `)}`];
-                            nodeUpdate.push(updateAndParams[0]);
+                            innerUpdate.push(updateAndParams[0]);
 
                             if (relationField.interface && update.update.node?._on?.[refNode.name]) {
                                 const onUpdateAndParams = createUpdateAndParams({
@@ -270,50 +284,12 @@ export default function createUpdateAndParams({
                                     }`,
                                 });
                                 res.params = { ...res.params, ...onUpdateAndParams[1] };
-                                nodeUpdate.push(onUpdateAndParams[0]);
+                                innerUpdate.push(onUpdateAndParams[0]);
                             }
-                            if (context.subscriptionsEnabled) {
-                                nodeUpdate.push(`RETURN ${META_CYPHER_VARIABLE} as update_meta`);
-                            } else {
-                                nodeUpdate.push(`RETURN count(*) AS update_${variableName}`);
-                            }
-
-                            innerUpdate.push("CALL {");
-                            innerUpdate.push(indentBlock(nodeUpdate.join("\n")));
-                            innerUpdate.push("}");
-                        }
-
-                        if (update.update.edge) {
-                            const setProperties = createSetRelationshipProperties({
-                                properties: update.update.edge,
-                                varName: relationshipVariable,
-                                withVars: withVars,
-                                relationship,
-                                callbackBucket,
-                                operation: "UPDATE",
-                                parameterPrefix: `${parameterPrefix}.${key}${
-                                    relationField.union ? `.${refNode.name}` : ""
-                                }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`,
-                            });
-
-                            const edgeUpdate = [
-                                `WITH ${[...withVars, relationshipVariable].join(`, `)}`,
-                                setProperties,
-                                "RETURN count(*) AS _",
-                            ];
-
-                            innerUpdate.push("CALL {");
-                            innerUpdate.push(indentBlock(edgeUpdate.join("\n")));
-                            innerUpdate.push("}");
                         }
 
                         if (context.subscriptionsEnabled) {
-                            if (update.update.node) {
-                                // update_meta is only available if a node was updated
-                                innerUpdate.push(`RETURN collect(update_meta) as update_meta`);
-                            } else {
-                                innerUpdate.push(`RETURN [] as update_meta`);
-                            }
+                            innerUpdate.push(`RETURN collect(${META_CYPHER_VARIABLE}) as update_meta`);
                             returnMetaStatement = `meta AS update${idx}_meta`;
                             intermediateWithMetaStatements.push(`WITH *, update${idx}_meta AS meta`);
                         } else {

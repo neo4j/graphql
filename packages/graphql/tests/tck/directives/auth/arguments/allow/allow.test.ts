@@ -368,13 +368,9 @@ describe("Cypher Auth Allow", () => {
             CALL {
             	WITH this
             	MATCH (this)<-[this_has_post0_relationship:HAS_POST]-(this_creator0:User)
-            	CALL {
-            		WITH this, this_creator0
-            		WITH this, this_creator0
-            		CALL apoc.util.validate(NOT ((this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            		SET this_creator0.id = $this_update_creator0_id
-            		RETURN count(*) AS update_this_creator0
-            	}
+            	WITH this, this_creator0
+            	CALL apoc.util.validate(NOT ((this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	SET this_creator0.id = $this_update_creator0_id
             	RETURN count(*) AS update_this_creator0
             }
             WITH this
@@ -427,13 +423,9 @@ describe("Cypher Auth Allow", () => {
             CALL {
             	WITH this
             	MATCH (this)<-[this_has_post0_relationship:HAS_POST]-(this_creator0:User)
-            	CALL {
-            		WITH this, this_creator0
-            		WITH this, this_creator0
-            		CALL apoc.util.validate(NOT ((this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0auth_param0) AND (this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            		SET this_creator0.password = $this_update_creator0_password
-            		RETURN count(*) AS update_this_creator0
-            	}
+            	WITH this, this_creator0
+            	CALL apoc.util.validate(NOT ((this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0auth_param0) AND (this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	SET this_creator0.password = $this_update_creator0_password
             	RETURN count(*) AS update_this_creator0
             }
             WITH this

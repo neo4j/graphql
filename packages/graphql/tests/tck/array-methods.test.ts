@@ -549,11 +549,7 @@ describe("Arrays Methods", () => {
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            	CALL {
-            		WITH this, this_acted_in0_relationship
-            		SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_PUSH
-            		RETURN count(*) AS _
-            	}
+            	SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_PUSH
             	RETURN count(*) AS update_this_actedIn0
             }
             WITH *
@@ -657,11 +653,7 @@ describe("Arrays Methods", () => {
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            	CALL {
-            		WITH this, this_acted_in0_relationship
-            		SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay[0..-$updateActors.args.update.actedIn[0].update.edge.pay_POP]
-            		RETURN count(*) AS _
-            	}
+            	SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay[0..-$updateActors.args.update.actedIn[0].update.edge.pay_POP]
             	RETURN count(*) AS update_this_actedIn0
             }
             WITH *

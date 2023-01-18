@@ -112,11 +112,7 @@ describe("Cypher Update", () => {
             	WITH this
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
             	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            	CALL {
-            		WITH this, this_actors0
-            		SET this_actors0.name = $this_update_actors0_name
-            		RETURN count(*) AS update_this_actors0
-            	}
+            	SET this_actors0.name = $this_update_actors0_name
             	RETURN count(*) AS update_this_actors0
             }
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -196,22 +192,14 @@ describe("Cypher Update", () => {
             	WITH this
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
             	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
+            	SET this_actors0.name = $this_update_actors0_name
+            	WITH *
             	CALL {
             		WITH this, this_actors0
-            		SET this_actors0.name = $this_update_actors0_name
-            		WITH *
-            		CALL {
-            			WITH this, this_actors0
-            			MATCH (this_actors0)-[this_actors0_acted_in0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
-            			WHERE this_actors0_movies0.id = $updateMovies_args_update_actors0_update_node_movies0_where_Movieparam0
-            			CALL {
-            				WITH this, this_actors0, this_actors0_movies0
-            				SET this_actors0_movies0.title = $this_update_actors0_movies0_title
-            				RETURN count(*) AS update_this_actors0_movies0
-            			}
-            			RETURN count(*) AS update_this_actors0_movies0
-            		}
-            		RETURN count(*) AS update_this_actors0
+            		MATCH (this_actors0)-[this_actors0_acted_in0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
+            		WHERE this_actors0_movies0.id = $updateMovies_args_update_actors0_update_node_movies0_where_Movieparam0
+            		SET this_actors0_movies0.title = $this_update_actors0_movies0_title
+            		RETURN count(*) AS update_this_actors0_movies0
             	}
             	RETURN count(*) AS update_this_actors0
             }
@@ -808,11 +796,7 @@ describe("Cypher Update", () => {
             	WITH this
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
             	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            	CALL {
-            		WITH this, this_actors0
-            		SET this_actors0.name = $this_update_actors0_name
-            		RETURN count(*) AS update_this_actors0
-            	}
+            	SET this_actors0.name = $this_update_actors0_name
             	RETURN count(*) AS update_this_actors0
             }
             WITH this

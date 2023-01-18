@@ -87,12 +87,8 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             	WITH this, meta
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
             	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            	CALL {
-            		WITH this, meta, this_acted_in0_relationship
-            		SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
-            		RETURN count(*) AS _
-            	}
-            	RETURN [] as update_meta
+            	SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
+            	RETURN collect(meta) as update_meta
             }
             WITH *, REDUCE(m=meta, n IN update_meta | m + n) AS meta
             	RETURN meta as update_meta
@@ -174,24 +170,16 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             	WITH this, meta
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
             	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
+            	SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
+            	WITH this_actors0 { .* } AS oldProps, this, meta, this_actors0
             	CALL {
-            		WITH this, meta, this_actors0
-            		WITH this_actors0 { .* } AS oldProps, this, meta, this_actors0
-            		CALL {
-            			WITH *
-            			SET this_actors0.name = $this_update_actors0_name
-            			RETURN meta as update_meta
-            		}
-            		WITH *, update_meta as meta
-            		WITH this, this_actors0, meta + { event: \\"update\\", id: id(this_actors0), properties: { old: oldProps, new: this_actors0 { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta
+            		WITH *
+            		SET this_actors0.name = $this_update_actors0_name
             		RETURN meta as update_meta
             	}
-            	CALL {
-            		WITH this, meta, this_acted_in0_relationship
-            		SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
-            		RETURN count(*) AS _
-            	}
-            	RETURN collect(update_meta) as update_meta
+            	WITH *, update_meta as meta
+            	WITH this, this_actors0, meta + { event: \\"update\\", id: id(this_actors0), properties: { old: oldProps, new: this_actors0 { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta
+            	RETURN collect(meta) as update_meta
             }
             WITH *, REDUCE(m=meta, n IN update_meta | m + n) AS meta
             	RETURN meta as update_meta
