@@ -1,20 +1,37 @@
 # Relay First API
 
-## Problem
+# Problem
 
-The current API is inconsistent and not fit for more complex behaviour.
+The current API is not consistent, making it harder to learn, understand and use.
 
-## Solution
+For example, the following query mixes Relay spec (`node`, `edge`) with the simple API, as well as cursor and limit based pagination.
 
-To solve this, the GraphQL API will be redesign to be [Relay](https://relay.dev/graphql/) first. Some sugar syntax will be added as well to support simple behaviour with less verbosity.
+```graphql
+query PeopleWithMovies {
+    people(where: { name: "Keanu" }, options: { limit: 10 }) {
+        name
+        moviesConnection(where: { node: { title: "The Matrix" } }, first: 10) {
+            edges {
+                node {
+                    title
+                }
+            }
+        }
+    }
+}
+```
 
-Assuming the following types:
+# Solution
+
+To solve this, the GraphQL API will be redesigned to be [Relay](https://relay.dev/graphql/connections.htm) first. Sugar syntax will be added to support simple operations with less verbosity.
+
+We will use the following types for the examples:
 
 ```graphql
 # Original types
 type Movie @fulltext(indexes: [{ indexName: "MovieTitle", fields: ["title"] }]) {
     title: String!
-    alternativeTitles: [String!]!
+    alternativeTitles: [String!]
     released: Int
     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
     director: Person! @relationship(type: "DIRECTED", direction: IN)
@@ -31,83 +48,9 @@ interface ActedIn @relationshipProperties {
 }
 ```
 
--   Backwards pagination - new feature
+## Connections API - Query
 
--   Filter operations: Equal for strings, eq for numbers
--   Optionally, replace cursor pagination by skip based pagination
--   Simple sugar syntax
-
-## Simple API
-
-### Limitations
-
--   No edges/Connections
--   No aggregations
--   Pagination ?
-
-### Pagination
-
-Cursor based pagination does not fit within the simple API.
-
-1. Disable pagination altogether
-2. Only allow pagination if the user has configured limit based pagination
-3. Add cursor (probably as `_cursor`) in the return type
-4. Like it is now (limit pagination always available for simple API)
-    - Simple API uses limit based pagination always.
-    - Relay API uses cursor based pagination, but may be configured to use limit based.
-
-### Further discussion point
-
--   1-1 relationship types: should these follow "edges"?
--   Node aggregation vs edge aggregation
--   Sort by aggregations and 1-\* relationship
--   should nested relationships be named \*Connection? - Yes, but what about filters?
--   Union / interfaces
--   1-\* edges filter on edge
--   Could we reuse MovieActorsWhere (as MoviePersonWhere) in the simple API?
--   Should we have a `nodes` shortcut on connections? - not for now
--   Scalar array operators
-
-Nodes/node shortcut for a single node relationship
-
-## Type naming conventions
-
-These are some loose conventions on type and input naming:
-
--   Connection: Types containing `edges`
--   Edge: Types containing `node` and, optionally, fields
--   Where: Filtering Types
--   Aggregation: Aggregation Types
--   Operations: Contains Operations (`connect`, `create`...)
-
-> Below there is a working example of the proposed API
-
-## Example Augmented Schema
-
-### Original types
-
-```graphql
-# Original types
-type Movie @fulltext(indexes: [{ indexName: "MovieTitle", fields: ["title"] }]) {
-    title: String!
-    alternativeTitles: [String!]!
-    released: Int
-    actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-    director: Person! @relationship(type: "DIRECTED", direction: IN)
-}
-
-type Person {
-    name: String!
-    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-    directed: Movie @relationship(type: "DIRECTED", direction: OUT)
-}
-
-interface ActedIn @relationshipProperties {
-    year: Int
-}
-```
-
-### Query
+Query will be done with the following operations:
 
 ```graphql
 type Query {
@@ -117,8 +60,443 @@ type Query {
         last: Int
         before: String
         where: MovieConnectionWhere
-        # phrase: String # Only available if fulltext is defined
         sort: [MovieConnectionSort]
+    ): MoviesConnection!
+    peopleConnection(
+        first: Int
+        after: String
+        where: PersonConnectionWhere
+        sort: [PersonConnectionSort]
+    ): PeopleConnection!
+}
+```
+
+The `*Connection` types will be a Relay compliant [Connection Type](https://relay.dev/graphql/connections.htm#sec-Connection-Types). With the following fields:
+
+```graphql
+type MoviesConnection {
+    pageInfo: PageInfo! # Required by relay
+    edges: [MovieEdge!]! # Required by relay
+    totalCount: Int!
+    aggregation: MoviesAggregation
+}
+```
+
+A simple query would look like:
+
+```graphql
+query MoviesTitles {
+    moviesConnection {
+        edges {
+            node {
+                title
+            }
+        }
+    }
+}
+```
+
+### Edges
+
+The `*Edge` types will be a Relay [Edge Type](https://relay.dev/graphql/connections.htm#sec-Edge-Types). These fields will be used to traverse the API and hold the relationship properties, if any:
+
+```graphql
+type MovieActorsEdge {
+    cursor: String! # Required by Relay
+    node: PersonNode! # Required by Relay
+    fields: ActedIn # Fields of the relationship
+}
+```
+
+There will be an Edge type per entity, as well as a different Edge type per relationship, relationship edges may contain the property `fields` that will hold the relationship properties.
+
+A query following an edge and its properties would look like:
+
+```graphql
+query MoviesWithActors {
+    moviesConnection {
+        edges {
+            node {
+                title
+                actors {
+                    edges {
+                        node {
+                            name
+                        }
+                        fields {
+                            year
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+In this example, we get the related Actor name, as well as the property `year` from the relationship.
+
+### Nodes
+
+The Entity (e.g. movies) properties for the projection will be defined in a `*Node` type:
+
+```graphql
+type MovieNode {
+    title: String!
+    released: Int
+    alternativeTitles: [String!]!
+    actors(
+        where: PersonConnectionWhere
+        first: Int
+        after: String
+        last: Int
+        before: String
+        directed: Boolean = true
+        sort: [MovieActorsConnectionSort!]
+    ): MovieActorsConnection!
+    director(where: MovieDirectorConnectionWhere, directed: Boolean = true): MovieDirectorConnection!
+}
+```
+
+Note that this type does **not** contain any operations in itself, it has the same properties as the user-defined entity, with the only difference being the result of the nested `actors` and `director` types, that support the top-level input and return a `*Connection`.
+
+### Filtering
+
+Filtering follows the same structure as projections, following nodes and edges. The operations `AND`, `OR` and `NOT` are available at any level. Comparison operators are present inside each field.
+
+```graphql
+query MatrixMoviesFrom1999 {
+    moviesConnection(
+        where: { edges: { node: { AND: [{ title: { contains: "Matrix" } }, { released: { eq: 1999 } }] } } }
+    ) {
+        edges {
+            node {
+                title
+            }
+        }
+    }
+}
+```
+
+#### Filtering Relationships
+
+For filtering edges, we can use the `fields` property and the array operators if needed:
+
+```graphql
+query PeopleAndMoviesActedAfter2001 {
+    peopleConnection(where: { edges: { node: { movies: { edges: { some: { fields: { year: { gt: 1999 } } } } } } } }) {
+        edges {
+            node {
+                name
+                movies {
+                    edges {
+                        node {
+                            title
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+Both, arrays and relationships with many elements can use the operators `some`, `single`, `none` and `all` to filter.
+
+#### Filter on nested connections
+
+Nested relationships can be filtered in the same fashion as top level connections, in this case only applies to the nested elements:
+
+```graphql
+query PeopleAndMoviesWithNestedFilter {
+    peopleConnection {
+        edges {
+            node {
+                name
+                movies(where: { edges: { node: { title: { equals: "The Matrix" } } } }) {
+                    edges {
+                        node {
+                            title
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+### Sort And Pagination
+
+Pagination, by default, will use `cursor` pagination, according to the Relay spec:
+
+```graphql
+query PaginatedMovies {
+    moviesConnection(first: 10, after: "my-cursor", sort: { edges: { node: { title: DESC } } }) {
+        edges {
+            node {
+                title
+            }
+            cursor
+        }
+        pageInfo {
+            startCursor
+            hasPreviousPage
+            hasNextPage
+            endCursor
+        }
+    }
+}
+```
+
+Following Relay spec, every `*Connection` type has the `pageInfo` property, and each `edge` has a cursor. Note that if limit-based pagination is enabled instead of cursor based, the API will not be Relay compliant.
+
+#### Back pagination
+
+Following Relay spec, the fields `last` and `before` can be used instead of `first` and `after` to do backwards pagination.
+
+### Aggregation
+
+Aggregations have been moved to be part of the projection on connection queries:
+
+```graphql
+query ShortestMovieTitleAndCount {
+    moviesConnection {
+        aggregation {
+            node {
+                title {
+                    shortest
+                }
+                count
+            }
+        }
+    }
+}
+```
+
+This means that a projection can be returned along with the edges. Nested aggregations can be queried in the same fashion. `*Aggregation` types returned in a relationship will have the `node` and `fields` properties with the respective aggregation:
+
+```graphql
+query AggregateActorsPerMovie {
+    moviesConnection {
+        edges {
+            node {
+                actors {
+                    aggregation {
+                        node {
+                            count
+                        }
+                        fields {
+                            year {
+                                min
+                                max
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+> Aggregations are not available for 1-1 relationships
+
+### Fulltext
+
+If fulltext is enable for an entity using the `@fulltext` directive, the `fulltext` input will be available, as well as the `score` fields and filters as a `Float`:
+
+```graphql
+query Query {
+    moviesConnection(
+        fulltext: { phrase: "Test", index: MovieTitle }
+        where: { edges: { fulltext: { score: { gt: 5 } } } }
+    ) {
+        totalCount
+        edges {
+            fulltext {
+                score
+            }
+        }
+    }
+}
+```
+
+> If there is a single index, the index field could be made optional ignored
+
+This approach allows the possibility of having nested fulltext:
+
+```graphql
+query Movies {
+    peopleMoviesWithFulltext {
+        edges {
+            node {
+                movies(
+                    fulltext: { phrase: "Test", index: MovieTitle }
+                    where: { edges: { fulltext: { score: { gt: 5 } } } }
+                ) {
+                    edges {
+                        fulltext {
+                            score
+                        }
+                        node {
+                            title
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+Fulltext can be sorted as a normal field:
+
+```graphql
+query TopLevelFulltext {
+    moviesConnection(
+        fulltext: { phrase: "Matrix", index: MovieTitle }
+        sort: { edges: { fulltext: { score: DESC } } }
+    ) {
+        edges {
+            node {
+                title
+            }
+        }
+    }
+}
+```
+
+> Note that the plain `fulltext` option without `where` may still filter the results.
+
+## Simple API - Query
+
+Relay API, while complete and flexible, is verbose. This may affect onboarding and simple use cases. For this cases, a simplified API can be used. This API is more limited and **cannot** be used along with the Relay API.
+
+The top level queries will be named after the types provided:
+
+```graphql
+type Query {
+    movies(where: MovieWhere, sort: [MovieSortNode]): [Movie!]!
+    people(where: PersonWhere, sort: [PersonSortNode]): [Person!]!
+}
+```
+
+Instead of a custom `*Connection` type, these queries return the type provided by the user directly. This API can be queried as follows:
+
+```graphql
+query Movies {
+    movies {
+        title
+    }
+}
+```
+
+Nested queries are also supported:
+
+```graphql
+query Movies {
+    movies {
+        title
+        actors {
+            name
+        }
+    }
+}
+```
+
+### Filtering
+
+Filtering is supported with all of the operators available in the Connections API. Filtering over edges, aggregations or fulltext is not supported.
+
+```graphql
+query Movies {
+    movies(
+        where: { OR: [{ title: { equals: "The Matrix" } }, { actors: { some: { name: { contains: "Keanu" } } } }] }
+    ) {
+        title
+        actors {
+            name
+        }
+    }
+}
+```
+
+### Sort and Pagination
+
+Sort behaves in the same fashion as the Connections API. Cursor-based pagination, however, is not supported. The simple API uses a _limit_ based pagination:
+
+```graphql
+query Movies {
+    movies(sort: { title: DESC }, limit: 10, offset: 2) {
+        title
+    }
+}
+```
+
+### Limitations
+
+-   Edge fields cannot be queried or filtered
+-   Aggregations are not available
+-   Cursor based pagination is not supported
+-   Fulltext is not supported
+
+## Naming conventions
+
+These are some loose conventions on type and input naming:
+
+-   `Connection`: Types containing `edges` and following Relay spec.
+-   `Edge`: Types containing `node` and, optionally, fields
+-   `Where`: Filtering Types
+-   `Aggregation`: Aggregation Types
+
+*   Types in a relationship will follow the convention `[RootType][fieldName]` at the beginning.
+*   Where possible, input types will mirror normal types. E.g. `PersonNode` will be filtered by `PersonNodeWhere`
+
+### Further discussion points
+
+-   Connections may have a `nodes` fields as a shortcut without passing through `edges`
+-   Node aggregation vs edge aggregation
+-   Sort by aggregations and 1-\* relationship
+-   Union / interfaces
+
+## Examples
+
+Below is an example of an augmented schema produced by this schema:
+
+```graphql
+# Original types
+type Movie @fulltext(indexes: [{ indexName: "MovieTitle", fields: ["title"] }]) {
+    title: String!
+    alternativeTitles: [String!]
+    released: Int
+    actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+    director: Person! @relationship(type: "DIRECTED", direction: IN)
+}
+
+type Person {
+    name: String!
+    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+    directed: Movie @relationship(type: "DIRECTED", direction: OUT)
+}
+
+interface ActedIn @relationshipProperties {
+    year: Int
+}
+```
+
+### Connection API
+
+```graphql
+type Query {
+    moviesConnection(
+        first: Int
+        after: String
+        last: Int
+        before: String
+        where: MovieConnectionWhere
+        sort: [MovieConnectionSort]
+        fulltext: MovieFulltext
     ): MoviesConnection!
     peopleConnection(
         first: Int
@@ -150,6 +528,7 @@ type PeopleConnection {
 type MovieEdge {
     cursor: String! # Required by relay
     node: MovieNode! # Required by relay
+    fulltext: Fulltext
 }
 
 type PersonEdge {
@@ -161,9 +540,9 @@ type PersonEdge {
 type MovieNode {
     title: String!
     released: Int
-    alternativeTitles: [String!]!
+    alternativeTitles: [String!]
     actors(
-        where: MovieActorsConnectionWhere
+        where: PersonConnectionWhere
         first: Int
         after: String
         last: Int
@@ -173,23 +552,21 @@ type MovieNode {
     ): MovieActorsConnection!
     director(
         where: MovieDirectorConnectionWhere
-        directed: Boolean = true # sort: [MovieDirectorConnectionSort!] # Cannot sort 1-1 relationship
+        directed: Boolean = true # Cannot sort 1-1 relationship
     ): MovieDirectorConnection!
 }
 
 type PersonNode {
     name: String!
     movies(
-        where: PersonMoviesConnectionWhere
+        where: MovieConnectionWhere
         first: Int
         after: String
         directed: Boolean = true
         sort: [PersonMoviesConnectionSort!]
+        fulltext: MovieFulltext
     ): PersonMoviesConnection!
-    directed(
-        where: PersonDirectedConnectionWhere
-        directed: Boolean = true # sort: [PersonDirectedConnectionSort!] # Cannot sort 1-1 relationship
-    ): PersonDirectedConnection!
+    directed(where: PersonDirectedConnectionWhere, directed: Boolean = true): PersonDirectedConnection!
 }
 
 ## "Relationship" Connection Types
@@ -206,7 +583,6 @@ type MovieDirectorConnection {
     edges: [MovieDirectorEdge!]!
     totalCount: Int!
     pageInfo: PageInfo!
-    # aggregation: MovieDirectorAggregation # Director is single element, aggregation should not be here
 }
 
 type PersonMoviesConnection {
@@ -233,7 +609,8 @@ type MovieActorsEdge {
 type PersonMoviesEdge {
     cursor: String! # Required by Relay
     node: MovieNode! # Required by Relay
-    fields: ActedIn
+    fields: ActedIn!
+    fulltext: Fulltext
 }
 
 type PersonDirectedEdge {
@@ -299,7 +676,6 @@ input MovieConnectionWhere {
     OR: [MovieConnectionWhere!]
     NOT: MovieConnectionWhere
     edges: MovieEdgeWhere
-    # fulltext
 }
 
 input PersonConnectionWhere {
@@ -316,6 +692,7 @@ input MovieEdgeWhere {
     OR: [MovieEdgeWhere!]
     NOT: MovieEdgeWhere
     node: MovieNodeWhere
+    fulltext: FulltextWhere
 }
 
 input PersonEdgeWhere {
@@ -497,6 +874,7 @@ input PersonConnectionSort {
 
 input MovieSortEdge {
     node: MovieSortNode
+    fulltext: FulltextSort
 }
 
 input PersonSortEdge {
@@ -530,10 +908,22 @@ input MovieActorsSortEdge {
 input PersonMoviesSortEdge {
     node: MovieSortNode
     fields: ActedInSort
+    fulltext: FulltextSort
 }
 
 input ActedInSort {
     year: SortDirection
+}
+
+## Fulltext Types
+
+enum MovieFulltextIndex {
+    MovieTitle
+}
+
+input MovieFulltext {
+    phrase: String!
+    index: MovieFulltextIndex!
 }
 
 ## Common types (not based on user types)
@@ -543,9 +933,17 @@ enum SortDirection {
     DESC
 }
 
-# type FulltextResult {
-#     score: Float! # Fulltext score
-# }
+type Fulltext {
+    score: Float! # Fulltext score
+}
+
+input FulltextWhere {
+    score: FloatWhere!
+}
+
+input FulltextSort {
+    score: SortDirection
+}
 
 type PageInfo {
     hasNextPage: Boolean!
@@ -588,6 +986,8 @@ input IntAggregateSelectionNonNullableWhere {
     max: IntWhere!
     sum: IntWhere!
 }
+
+#### Basic Where types
 
 input StringWhere {
     OR: [StringWhere!]
@@ -638,27 +1038,28 @@ input StringListWhere {
 
 ### Simple API
 
+The following are the specific types that are added when the simple API is enabled:
+
 ```graphql
-## Simple API
 type Movie {
     title: String!
-    alternativeTitles: [String!]!
+    alternativeTitles: [String!]
     released: Int
-    actors(where: PersonWhere, sort: [PersonSortNode], directed: Boolean = true): [Person!]!
-    director(where: PersonWhere, sort: [PersonSortNode], directed: Boolean = true): Person!
+    actors(where: PersonWhere, sort: [PersonSortNode], offset: Int, limit: Int, directed: Boolean = true): [Person!]!
+    director(where: PersonWhere, sort: [PersonSortNode], offset: Int, limit: Int, directed: Boolean = true): Person!
 }
 
 type Person {
     name: String!
-    movies(where: MovieWhere, sort: [MovieSortNode], directed: Boolean = true): [Movie!]!
-    directed(where: MovieWhere, sort: [MovieSortNode], directed: Boolean = true): Movie
+    movies(where: MovieWhere, sort: [MovieSortNode], offset: Int, limit: Int, directed: Boolean = true): [Movie!]!
+    directed(where: MovieWhere, sort: [MovieSortNode], offset: Int, limit: Int, directed: Boolean = true): Movie
 }
 
 ## Query
 
 type Query {
-    movies(where: MovieWhere, sort: [MovieSortNode]): [Movie!]!
-    people(where: PersonWhere, sort: [PersonSortNode]): [Person!]!
+    movies(where: MovieWhere, sort: [MovieSortNode], offset: Int, limit: Int): [Movie!]!
+    people(where: PersonWhere, sort: [PersonSortNode], offset: Int, limit: Int): [Person!]!
 }
 
 ## Where filtering
@@ -706,6 +1107,33 @@ input MovieListWhere {
 
 ### Example queries
 
+The following are some example queries on the previous schema:
+
+**Filtering**
+
+```graphql
+query MoviesWithAllActorsNamedKeanuReeves {
+    moviesConnection(
+        where: { edges: { node: { actors: { edges: { all: { node: { name: { equals: "Keanu Reeves" } } } } } } } }
+    ) {
+        edges {
+            node {
+                title
+                actors {
+                    edges {
+                        node {
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+**Aggregations**
+
 ```graphql
 query MoviesTitleAndAggregation {
     moviesConnection(where: { edges: { node: { title: { contains: "Matrix" } } } }) {
@@ -723,8 +1151,11 @@ query MoviesTitleAndAggregation {
         }
     }
 }
+```
 
-# Aggregation
+**Filter Aggregations**
+
+```graphql
 query MoviesWithMoreThan10ActorNodes {
     moviesConnection(where: { edges: { node: { actors: { aggregation: { node: { count: { gt: 10 } } } } } } }) {
         edges {
@@ -766,9 +1197,11 @@ query MoviesWithMoreThan10ActorEdges {
         }
     }
 }
+```
 
-# Pagination
+**Pagination**
 
+```graphql
 query GetMoviesPaginatedIn10 {
     moviesConnection(sort: { edges: { node: { title: DESC } } }, first: 10, after: "asdf") {
         edges {
@@ -797,42 +1230,48 @@ query PaginateActorsInMovie {
         }
     }
 }
+```
 
-query MoviesTitleAndAggregation {
-    moviesConnection(where: { edges: { node: { title: { contains: "Matrix" } } } }) {
+**Fulltext**
+
+```graphql
+query TopLevelFulltextAndAggregation {
+    moviesConnection(
+        fulltext: { phrase: "Matrix", index: MovieTitle }
+        where: { edges: { node: { released: { eq: 2001 } }, fulltext: { score: { gt: 6 } } } }
+        sort: { edges: { fulltext: { score: DESC } } }
+        first: 10
+    ) {
         edges {
             node {
                 title
-                actors {
-                    edges {
-                        node {
-                            name
-                        }
-                    }
-                }
+            }
+            fulltext {
+                score
             }
         }
         aggregation {
             node {
-                title {
-                    longest
-                }
+                count
             }
         }
     }
 }
 
-query MoviesWithAllActorsNamedKeanuReeves {
-    moviesConnection(
-        where: { edges: { node: { actors: { edges: { all: { node: { name: { equals: "Keanu Reeves" } } } } } } } }
-    ) {
+query NestedFulltext {
+    peopleConnection {
         edges {
             node {
-                title
-                actors {
+                name
+                movies(
+                    fulltext: { phrase: "Matrix", index: MovieTitle }
+                    where: { edges: { node: { released: { eq: 2001 } }, fulltext: { score: { gt: 6 } } } }
+                    sort: { edges: { fulltext: { score: DESC } } }
+                    first: 10
+                ) {
                     edges {
-                        node {
-                            name
+                        fulltext {
+                            score
                         }
                     }
                 }
