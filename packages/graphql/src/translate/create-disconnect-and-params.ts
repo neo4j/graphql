@@ -151,7 +151,7 @@ function createDisconnectAndParams({
                     operations: "DISCONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: node, varName: name, chainStr: `${name}${node.name}${i}_allow` },
+                    allow: { parentNode: node, varName: name },
                 });
 
                 if (!str) {
@@ -356,7 +356,7 @@ function createDisconnectAndParams({
                     escapeQuotes: Boolean(insideDoWhen),
                     skipRoles: true,
                     skipIsAuthenticated: true,
-                    bind: { parentNode: node, varName: variableName, chainStr: `${variableName}${node.name}${i}_bind` },
+                    bind: { parentNode: node, varName: variableName },
                 });
 
                 if (!str) {

@@ -74,14 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this_connection_moviesConnectionthis0:HAS_GENRE]-(this_Movie:\`Movie\`)
-                    CALL {
-                        WITH this_Movie
-                        MATCH (this_Movie)-[this_connection_moviesConnectionthis1:HAS_GENRE]->(this_connection_moviesConnectionthis2:\`Genre\`)
-                        WHERE this_connection_moviesConnectionthis2.name = $this_connection_moviesConnectionparam0
-                        RETURN count(this_connection_moviesConnectionthis1) AS this_connection_moviesConnectionvar3
-                    }
-                    WITH *
-                    WHERE this_connection_moviesConnectionvar3 > 0
+                    WHERE size([(this_Movie)-[this_connection_moviesConnectionthis1:HAS_GENRE]->(this_connection_moviesConnectionthis2:\`Genre\`) WHERE this_connection_moviesConnectionthis2.name = $this_connection_moviesConnectionparam0 | 1]) > 0
                     WITH { node: { __resolveType: \\"Movie\\" } } AS edge
                     RETURN edge
                 }

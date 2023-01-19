@@ -43,7 +43,6 @@ export function createConnectionOperation({
 }): {
     predicate: Cypher.BooleanOp | Cypher.RawCypher | undefined;
     preComputedSubquery: Cypher.CompositeClause | undefined;
-    returnVariables?: Cypher.Variable[];
 } {
     let nodeEntries: Record<string, any>;
 
@@ -163,8 +162,7 @@ export function createConnectionOperation({
     }
     return {
         predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined,
-        preComputedSubquery: subqueries,
-        // returnVariables,
+        preComputedSubquery: subqueries
     };
 }
 
