@@ -162,7 +162,7 @@ export function createConnectionOperation({
     }
     return {
         predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined,
-        preComputedSubquery: subqueries
+        preComputedSubquery: subqueries,
     };
 }
 
