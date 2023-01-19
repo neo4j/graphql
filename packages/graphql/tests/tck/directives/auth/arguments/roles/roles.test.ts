@@ -496,7 +496,7 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Comment\`)
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)<-[this_has_comment0_relationship:HAS_COMMENT]-(this_post0:Post)
@@ -650,7 +650,7 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Comment\`)
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)<-[this_has_comment0_relationship:HAS_COMMENT]-(this_post0:Post)

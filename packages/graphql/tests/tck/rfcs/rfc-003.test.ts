@@ -491,7 +491,7 @@ describe("tck/rfs/003", () => {
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
                             WHERE this.id = $param0
-                            WITH *
+                            WITH this
                             CALL {
                             	WITH this
                             	MATCH (this)<-[this_directed0_relationship:DIRECTED]-(this_director0:Director)
@@ -568,7 +568,7 @@ describe("tck/rfs/003", () => {
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
                             WHERE this.id = $param0
-                            WITH *
+                            WITH this
                             CALL {
                             	WITH this
                             	MATCH (this)<-[this_directed0_relationship:DIRECTED]-(this_director0:Director)

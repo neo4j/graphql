@@ -357,7 +357,7 @@ describe("@auth allow when inherited from interface", () => {
             WHERE this.id = $param0
             WITH this
             CALL apoc.util.validate(NOT ((exists((this)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)<-[this_has_post0_relationship:HAS_POST]-(this_creator0:User)
@@ -412,7 +412,7 @@ describe("@auth allow when inherited from interface", () => {
             WHERE this.id = $param0
             WITH this
             CALL apoc.util.validate(NOT ((exists((this)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)<-[this_has_post0_relationship:HAS_POST]-(this_creator0:User)

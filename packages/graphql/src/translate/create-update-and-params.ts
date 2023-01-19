@@ -296,11 +296,15 @@ export default function createUpdateAndParams({
                             innerUpdate.push(`RETURN count(*) AS update_${variableName}`);
                         }
 
-                        subquery.push("WITH *", "CALL {", indentBlock(innerUpdate.join("\n")), "}");
+                        subquery.push(
+                            `WITH ${withVars.join(", ")}`,
+                            "CALL {",
+                            indentBlock(innerUpdate.join("\n")),
+                            "}"
+                        );
                         if (context.subscriptionsEnabled) {
-                            subquery.push(
-                                `WITH *, REDUCE(m=${META_CYPHER_VARIABLE}, n IN update_meta | m + n) AS ${META_CYPHER_VARIABLE}`
-                            );
+                            const reduceMeta = `REDUCE(m=${META_CYPHER_VARIABLE}, n IN update_meta | m + n) AS ${META_CYPHER_VARIABLE}`;
+                            subquery.push(`WITH ${filterMetaVariable(withVars).join(", ")}, ${reduceMeta}`);
                         }
                     }
 

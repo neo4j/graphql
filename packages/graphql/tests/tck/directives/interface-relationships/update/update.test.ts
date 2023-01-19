@@ -87,7 +87,7 @@ describe("Interface Relationships - Update update", () => {
             WITH this
             CALL {
             	 WITH this
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
@@ -99,7 +99,7 @@ describe("Interface Relationships - Update update", () => {
             }
             CALL {
             	 WITH this
-            	WITH *
+            	WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
@@ -170,12 +170,12 @@ describe("Interface Relationships - Update update", () => {
             WITH this
             CALL {
             	 WITH this
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Movieparam0
-            	WITH *
+            	WITH this, this_actedIn0
             	CALL {
             		WITH this, this_actedIn0
             		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
@@ -188,12 +188,12 @@ describe("Interface Relationships - Update update", () => {
             }
             CALL {
             	 WITH this
-            	WITH *
+            	WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
             	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Seriesparam0
-            	WITH *
+            	WITH this, this_actedIn0
             	CALL {
             		WITH this, this_actedIn0
             		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
@@ -275,12 +275,12 @@ describe("Interface Relationships - Update update", () => {
             WITH this
             CALL {
             	 WITH this
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Movieparam0
-            	WITH *
+            	WITH this, this_actedIn0
             	CALL {
             		WITH this, this_actedIn0
             		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
@@ -293,7 +293,7 @@ describe("Interface Relationships - Update update", () => {
             }
             CALL {
             	 WITH this
-            	WITH *
+            	WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
@@ -380,12 +380,12 @@ describe("Interface Relationships - Update update", () => {
             WITH this
             CALL {
             	 WITH this
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Movieparam0
-            	WITH *
+            	WITH this, this_actedIn0
             	CALL {
             		WITH this, this_actedIn0
             		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
@@ -398,12 +398,12 @@ describe("Interface Relationships - Update update", () => {
             }
             CALL {
             	 WITH this
-            	WITH *
+            	WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
             	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Seriesparam0
-            	WITH *
+            	WITH this, this_actedIn0
             	CALL {
             		WITH this, this_actedIn0
             		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)

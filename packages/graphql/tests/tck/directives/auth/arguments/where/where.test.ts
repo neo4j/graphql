@@ -533,7 +533,7 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)

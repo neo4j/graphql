@@ -545,7 +545,7 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
             WHERE this.id = $param0
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
@@ -649,7 +649,7 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
             WHERE this.id = $param0
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)

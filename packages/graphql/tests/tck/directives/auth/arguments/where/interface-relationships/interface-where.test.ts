@@ -410,7 +410,7 @@ describe("Cypher Auth Where", () => {
             WITH this
             CALL {
             	 WITH this
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
@@ -430,7 +430,7 @@ describe("Cypher Auth Where", () => {
             }
             CALL {
             	 WITH this
-            	WITH *
+            	WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)

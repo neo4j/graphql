@@ -263,12 +263,12 @@ describe("Cypher Auth Allow", () => {
             WITH this
             CALL {
             	 WITH this
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
             	WHERE this_content0.id = $updateUsers_args_update_content0_where_Commentparam0
-            	WITH *
+            	WITH this, this_content0
             	CALL {
             		WITH this, this_content0
             		MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
@@ -291,12 +291,12 @@ describe("Cypher Auth Allow", () => {
             }
             CALL {
             	 WITH this
-            	WITH *
+            	WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
             	WHERE this_content0.id = $updateUsers_args_update_content0_where_Postparam0
-            	WITH *
+            	WITH this, this_content0
             	CALL {
             		WITH this, this_content0
             		MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)

@@ -276,12 +276,12 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE this.id = $param0
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
             	WHERE this_posts0.id = $updateUsers_args_update_posts0_where_Postparam0
-            	WITH *
+            	WITH this, this_posts0
             	CALL {
             		WITH this, this_posts0
             		MATCH (this_posts0)<-[this_posts0_has_post0_relationship:HAS_POST]-(this_posts0_creator0:User)

@@ -162,7 +162,7 @@ describe("Math operators", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
@@ -223,7 +223,7 @@ describe("Math operators", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
@@ -300,7 +300,7 @@ describe("Math operators", () => {
             WITH this
             CALL {
             	 WITH this
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
@@ -371,7 +371,7 @@ describe("Math operators", () => {
             WITH this
             CALL {
             	 WITH this
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)

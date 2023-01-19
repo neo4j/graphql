@@ -107,7 +107,7 @@ describe("Cypher Update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
@@ -187,13 +187,13 @@ describe("Cypher Update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
             	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
             	SET this_actors0.name = $this_update_actors0_name
-            	WITH *
+            	WITH this, this_actors0
             	CALL {
             		WITH this, this_actors0
             		MATCH (this_actors0)-[this_actors0_acted_in0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
@@ -791,7 +791,7 @@ describe("Cypher Update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)

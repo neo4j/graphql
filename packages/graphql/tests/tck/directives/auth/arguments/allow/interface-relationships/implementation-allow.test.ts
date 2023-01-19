@@ -208,7 +208,7 @@ describe("@auth allow on specific interface implementation", () => {
             WITH this
             CALL {
             	 WITH this
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
@@ -234,7 +234,7 @@ describe("@auth allow on specific interface implementation", () => {
             }
             CALL {
             	 WITH this
-            	WITH *
+            	WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)

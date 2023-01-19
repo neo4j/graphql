@@ -296,7 +296,7 @@ describe("Cypher Create Pringles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Product\`)
             WHERE this.name = $param0
-            WITH *
+            WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_has_photo0_relationship:HAS_PHOTO]->(this_photos0:Photo)
