@@ -65,11 +65,11 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
                 WITH this
                 MATCH (this)-[this0:attends]->(this_attends:\`School\`)
                 WHERE (EXISTS {
-                    MATCH (this2:\`Person\`)-[this1:attends]->(this_attends)
-                    WHERE this2.age > $param0
+                    MATCH (this1:\`Person\`)-[:attends]->(this_attends)
+                    WHERE this1.age > $param0
                 } AND NOT (EXISTS {
-                    MATCH (this2:\`Person\`)-[this1:attends]->(this_attends)
-                    WHERE NOT (this2.age > $param0)
+                    MATCH (this1:\`Person\`)-[:attends]->(this_attends)
+                    WHERE NOT (this1.age > $param0)
                 }))
                 WITH this_attends { .name } AS this_attends
                 RETURN collect(this_attends) AS this_attends

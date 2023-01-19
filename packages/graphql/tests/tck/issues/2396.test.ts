@@ -156,14 +156,14 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Mandate\`)
-            WHERE ((this.price >= $param0 AND single(this6 IN [(this)-[this7:HAS_VALUATION]->(this6:\`Valuation\`) | this6] WHERE single(this0 IN [(this6)-[this5:VALUATION_FOR]->(this0:\`Estate\`) | this0] WHERE (this0.area >= $param1 AND this0.floor >= $param2 AND this0.estateType IN $param3 AND single(this3 IN [(this0)-[this4:HAS_ADDRESS]->(this3:\`Address\`) | this3] WHERE single(this1 IN [(this3)-[this2:HAS_POSTAL_CODE]->(this1:\`PostalCode\`) | this1] WHERE this1.number IN $param4)))))) AND this.archivedAt IS NULL)
+            WHERE ((this.price >= $param0 AND single(this3 IN [(this)-[:HAS_VALUATION]->(this3:\`Valuation\`) | this3] WHERE single(this0 IN [(this3)-[:VALUATION_FOR]->(this0:\`Estate\`) | this0] WHERE (this0.area >= $param1 AND this0.floor >= $param2 AND this0.estateType IN $param3 AND single(this2 IN [(this0)-[:HAS_ADDRESS]->(this2:\`Address\`) | this2] WHERE single(this1 IN [(this2)-[:HAS_POSTAL_CODE]->(this1:\`PostalCode\`) | this1] WHERE this1.number IN $param4)))))) AND this.archivedAt IS NULL)
             CALL {
                 WITH this
-                MATCH (this)-[this8:HAS_VALUATION]->(this_valuation:\`Valuation\`)
+                MATCH (this)-[this4:HAS_VALUATION]->(this_valuation:\`Valuation\`)
                 WHERE this_valuation.archivedAt IS NULL
                 CALL {
                     WITH this_valuation
-                    MATCH (this_valuation)-[this9:VALUATION_FOR]->(this_valuation_estate:\`Estate\`)
+                    MATCH (this_valuation)-[this5:VALUATION_FOR]->(this_valuation_estate:\`Estate\`)
                     WHERE this_valuation_estate.archivedAt IS NULL
                     WITH this_valuation_estate { .uuid } AS this_valuation_estate
                     RETURN head(collect(this_valuation_estate)) AS this_valuation_estate
@@ -231,17 +231,17 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Mandate\`)
-            WHERE ((this.price >= $param0 AND single(this6 IN [(this)-[this7:HAS_VALUATION]->(this6:\`Valuation\`) | this6] WHERE single(this0 IN [(this6)-[this5:VALUATION_FOR]->(this0:\`Estate\`) | this0] WHERE (this0.area >= $param1 AND this0.floor >= $param2 AND this0.estateType IN $param3 AND single(this3 IN [(this0)-[this4:HAS_ADDRESS]->(this3:\`Address\`) | this3] WHERE single(this1 IN [(this3)-[this2:HAS_POSTAL_CODE]->(this1:\`PostalCode\`) | this1] WHERE this1.number IN $param4)))))) AND this.archivedAt IS NULL)
+            WHERE ((this.price >= $param0 AND single(this3 IN [(this)-[:HAS_VALUATION]->(this3:\`Valuation\`) | this3] WHERE single(this0 IN [(this3)-[:VALUATION_FOR]->(this0:\`Estate\`) | this0] WHERE (this0.area >= $param1 AND this0.floor >= $param2 AND this0.estateType IN $param3 AND single(this2 IN [(this0)-[:HAS_ADDRESS]->(this2:\`Address\`) | this2] WHERE single(this1 IN [(this2)-[:HAS_POSTAL_CODE]->(this1:\`PostalCode\`) | this1] WHERE this1.number IN $param4)))))) AND this.archivedAt IS NULL)
             WITH *
             SKIP $param5
             LIMIT $param6
             CALL {
                 WITH this
-                MATCH (this)-[this8:HAS_VALUATION]->(this_valuation:\`Valuation\`)
+                MATCH (this)-[this4:HAS_VALUATION]->(this_valuation:\`Valuation\`)
                 WHERE this_valuation.archivedAt IS NULL
                 CALL {
                     WITH this_valuation
-                    MATCH (this_valuation)-[this9:VALUATION_FOR]->(this_valuation_estate:\`Estate\`)
+                    MATCH (this_valuation)-[this5:VALUATION_FOR]->(this_valuation_estate:\`Estate\`)
                     WHERE this_valuation_estate.archivedAt IS NULL
                     WITH this_valuation_estate { .uuid } AS this_valuation_estate
                     RETURN head(collect(this_valuation_estate)) AS this_valuation_estate
@@ -317,17 +317,17 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Mandate\`)
-            WHERE ((this.price >= $param0 AND single(this6 IN [(this)-[this7:HAS_VALUATION]->(this6:\`Valuation\`) | this6] WHERE single(this0 IN [(this6)-[this5:VALUATION_FOR]->(this0:\`Estate\`) | this0] WHERE (this0.area >= $param1 AND this0.floor >= $param2 AND this0.estateType IN $param3 AND single(this3 IN [(this0)-[this4:HAS_ADDRESS]->(this3:\`Address\`) | this3] WHERE single(this1 IN [(this3)-[this2:HAS_POSTAL_CODE]->(this1:\`PostalCode\`) | this1] WHERE this1.number IN $param4)))))) AND this.archivedAt IS NULL)
+            WHERE ((this.price >= $param0 AND single(this3 IN [(this)-[:HAS_VALUATION]->(this3:\`Valuation\`) | this3] WHERE single(this0 IN [(this3)-[:VALUATION_FOR]->(this0:\`Estate\`) | this0] WHERE (this0.area >= $param1 AND this0.floor >= $param2 AND this0.estateType IN $param3 AND single(this2 IN [(this0)-[:HAS_ADDRESS]->(this2:\`Address\`) | this2] WHERE single(this1 IN [(this2)-[:HAS_POSTAL_CODE]->(this1:\`PostalCode\`) | this1] WHERE this1.number IN $param4)))))) AND this.archivedAt IS NULL)
             WITH *
             SKIP $param5
             LIMIT $param6
             CALL {
                 WITH this
-                MATCH (this)-[this8:HAS_VALUATION]->(this_valuation:\`Valuation\`)
+                MATCH (this)-[this4:HAS_VALUATION]->(this_valuation:\`Valuation\`)
                 WHERE this_valuation.archivedAt IS NULL
                 CALL {
                     WITH this_valuation
-                    MATCH (this_valuation)-[this9:VALUATION_FOR]->(this_valuation_estate:\`Estate\`)
+                    MATCH (this_valuation)-[this5:VALUATION_FOR]->(this_valuation_estate:\`Estate\`)
                     WHERE this_valuation_estate.archivedAt IS NULL
                     WITH this_valuation_estate { .uuid } AS this_valuation_estate
                     RETURN head(collect(this_valuation_estate)) AS this_valuation_estate

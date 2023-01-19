@@ -80,8 +80,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
                 WHERE EXISTS {
-                    MATCH (this_Actor)-[this_connection_actorsConnectionthis1:ACTED_IN]->(this_connection_actorsConnectionthis2:\`Movie\`)
-                    WHERE this_connection_actorsConnectionthis2.title = $this_connection_actorsConnectionparam0
+                    MATCH (this_Actor)-[:ACTED_IN]->(this_connection_actorsConnectionthis1:\`Movie\`)
+                    WHERE this_connection_actorsConnectionthis1.title = $this_connection_actorsConnectionparam0
                 }
                 WITH { node: { name: this_Actor.name } } AS edge
                 WITH collect(edge) AS edges

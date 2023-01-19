@@ -53,7 +53,7 @@ export function createRelationshipOperation({
     const matchPattern = relationship.pattern({
         source: relationField.direction === "IN" ? { variable: true } : { labels: false },
         target: relationField.direction === "IN" ? { labels: false } : { variable: true },
-        relationship: { variable: true },
+        relationship: { variable: false },
     });
 
     // TODO: check null in return projection
