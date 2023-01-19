@@ -41,6 +41,7 @@ export function createPropertyWhere({
     targetElement,
     context,
     listPredicateStr,
+    requiredVariables,
 }: {
     key: string;
     value: any;
@@ -48,6 +49,7 @@ export function createPropertyWhere({
     targetElement: Cypher.Variable;
     context: Context;
     listPredicateStr?: ListPredicate;
+    requiredVariables: Cypher.Variable[];
 }): PredicateReturn {
     const match = whereRegEx.exec(key);
     if (!match) {
@@ -83,7 +85,8 @@ export function createPropertyWhere({
                     targetElement,
                     coalesceValue,
                 }),
-                returnVariables: [],
+                requiredVariables: [],
+                aggregatingVariables: [],
             };
         }
 
@@ -120,6 +123,7 @@ export function createPropertyWhere({
                 operator,
                 value,
                 isNot,
+                requiredVariables,
             });
         }
 
@@ -131,6 +135,7 @@ export function createPropertyWhere({
                 context,
                 parentNode: targetElement as Cypher.Node,
                 operator,
+                requiredVariables,
             });
         }
 
@@ -138,12 +143,14 @@ export function createPropertyWhere({
             if (isNot) {
                 return {
                     predicate: Cypher.isNotNull(propertyRef),
-                    returnVariables: []
+                    requiredVariables: [],
+                    aggregatingVariables: [],
                 };
             }
             return {
                 predicate: Cypher.isNull(propertyRef),
-                returnVariables: []
+                requiredVariables: [],
+                aggregatingVariables: [],
             };
         }
     }
@@ -163,8 +170,9 @@ export function createPropertyWhere({
     if (isNot) {
         return {
             predicate: Cypher.not(comparisonOp),
-            returnVariables: []
+            requiredVariables: [],
+            aggregatingVariables: [],
         };
     }
-    return { predicate: comparisonOp, returnVariables: [] };
+    return { predicate: comparisonOp, requiredVariables: [], aggregatingVariables: [] };
 }

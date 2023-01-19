@@ -31,6 +31,7 @@ export function createRelationshipOperation({
     operator,
     value,
     isNot,
+    requiredVariables,
 }: {
     relationField: RelationField;
     context: Context;
@@ -38,6 +39,7 @@ export function createRelationshipOperation({
     operator: string | undefined;
     value: GraphQLWhereArg;
     isNot: boolean;
+    requiredVariables: Cypher.Variable[];
 }): PredicateReturn {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
@@ -62,9 +64,9 @@ export function createRelationshipOperation({
         const exists = new Cypher.Exists(existsSubquery);
         if (!isNot) {
             // Bit confusing, but basically checking for not null is the same as checking for relationship exists
-            return { predicate: Cypher.not(exists), returnVariables: [] };
+            return { predicate: Cypher.not(exists), requiredVariables: [], aggregatingVariables: [] };
         }
-        return { predicate: exists, returnVariables: [] };
+        return { predicate: exists, requiredVariables: [], aggregatingVariables: [] };
     }
 
     let listPredicateStr = getListPredicate(operator as WhereOperator);
@@ -75,7 +77,8 @@ export function createRelationshipOperation({
     const {
         predicate: innerOperation,
         preComputedSubqueries,
-        returnVariables,
+        requiredVariables: innerRequiredVariables,
+        aggregatingVariables,
     } = createWherePredicate({
         // Nested properties here
         whereInput: value,
@@ -85,18 +88,20 @@ export function createRelationshipOperation({
         listPredicateStr,
     });
 
+    requiredVariables = [...requiredVariables, ...innerRequiredVariables];
+
     const predicate = createRelationshipPredicate({
         childNode,
         matchPattern,
         listPredicateStr,
         innerOperation,
-        returnVariables,
     });
 
-    if (returnVariables && returnVariables.length) {
+    if (aggregatingVariables && aggregatingVariables.length) {
         const aggregatingWithClause = new Cypher.With(
             parentNode,
-            ...(returnVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar]) as any)
+            ...requiredVariables,
+            ...(aggregatingVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar]) as any)
         );
 
         return {
@@ -106,14 +111,16 @@ export function createRelationshipOperation({
                 preComputedSubqueries,
                 aggregatingWithClause
             ),
-            returnVariables: [],
+            requiredVariables: [...requiredVariables, ...aggregatingVariables],
+            aggregatingVariables: [],
         };
     }
 
     return {
         predicate,
         preComputedSubqueries: preComputedSubqueries,
-        returnVariables: [],
+        requiredVariables: [],
+        aggregatingVariables: [],
     };
 }
 
@@ -122,14 +129,12 @@ export function createRelationshipPredicate({
     listPredicateStr,
     childNode,
     innerOperation,
-    returnVariables,
     edgePredicate,
 }: {
     matchPattern: Cypher.Pattern;
     listPredicateStr: string;
     childNode: Cypher.Node;
     innerOperation: Cypher.Predicate | undefined;
-    returnVariables: Cypher.Variable[];
     edgePredicate?: boolean;
 }): Cypher.Predicate | undefined {
     if (!innerOperation) return undefined;
@@ -148,7 +153,6 @@ export function createRelationshipPredicate({
                 listPredicateStr: "some",
                 childNode,
                 innerOperation,
-                returnVariables,
             });
             if (somePredicate) {
                 return Cypher.not(somePredicate);

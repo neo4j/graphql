@@ -83,7 +83,8 @@ export function aggregatePreComputedWhereFields(
             predicate: Cypher.and(...predicates),
             // Cypher.concat is used because this is passed to createWherePredicate which expects a Cypher.CompositeClause
             preComputedSubqueries: Cypher.concat(subquery),
-            returnVariables,
+            requiredVariables: [],
+            aggregatingVariables: returnVariables,
         };
     }
 
@@ -91,7 +92,8 @@ export function aggregatePreComputedWhereFields(
         predicate: Cypher.and(...predicates),
         // Cypher.concat is used because this is passed to createWherePredicate which expects a Cypher.CompositeClause
         preComputedSubqueries: Cypher.concat(subquery),
-        returnVariables: [],
+        requiredVariables: returnVariables,
+        aggregatingVariables: [],
     };
 }
 

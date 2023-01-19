@@ -34,12 +34,14 @@ export function createConnectionOperation({
     context,
     parentNode,
     operator,
+    requiredVariables,
 }: {
     connectionField: ConnectionField;
     value: any;
     context: Context;
     parentNode: Cypher.Node;
     operator: string | undefined;
+    requiredVariables: Cypher.Variable[];
 }): PredicateReturn {
     let nodeEntries: Record<string, any>;
 
@@ -51,7 +53,7 @@ export function createConnectionOperation({
 
     let subqueries: Cypher.CompositeClause | undefined;
     const operations: (Cypher.Predicate | undefined)[] = [];
-    const returnVariables: Cypher.Variable[] = [];
+    const aggregatingVariables: Cypher.Variable[] = [];
     const matchPatterns: Cypher.Pattern[] = [];
 
     Object.entries(nodeEntries).forEach((entry) => {
@@ -132,20 +134,23 @@ export function createConnectionOperation({
             listPredicateStr,
             childNode,
             innerOperation: innerOperation.predicate,
-            returnVariables: [],
             edgePredicate: true,
         });
 
         operations.push(predicate);
         subqueries = Cypher.concat(subqueries, innerOperation.preComputedSubqueries);
-        returnVariables.push(...innerOperation.returnVariables);
+        if (innerOperation.requiredVariables && innerOperation.requiredVariables.length)
+            requiredVariables.push(...innerOperation.requiredVariables);
+        if (innerOperation.aggregatingVariables && innerOperation.aggregatingVariables.length)
+            aggregatingVariables.push(...innerOperation.aggregatingVariables);
         matchPatterns.push(matchPattern);
     });
 
-    if (returnVariables && returnVariables.length) {
+    if (aggregatingVariables && aggregatingVariables.length) {
         const aggregatingWithClause = new Cypher.With(
             parentNode,
-            ...(returnVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar]) as any)
+            ...requiredVariables,
+            ...(aggregatingVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar]) as any)
         );
 
         return {
@@ -155,13 +160,15 @@ export function createConnectionOperation({
                 subqueries,
                 aggregatingWithClause
             ),
-            returnVariables: []
+            requiredVariables: [...requiredVariables, ...aggregatingVariables],
+            aggregatingVariables: [],
         };
     }
     return {
         predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined,
         preComputedSubqueries: subqueries,
-        returnVariables: []
+        requiredVariables: requiredVariables,
+        aggregatingVariables: [],
     };
 }
 
@@ -181,12 +188,9 @@ export function createConnectionWherePropertyOperation({
     edgeRef: Cypher.Variable;
     targetNode: Cypher.Node;
     listPredicateStr?: ListPredicate;
-}): {
-    predicate: Cypher.Predicate | undefined;
-    preComputedSubqueries: Cypher.CompositeClause | undefined;
-    returnVariables: Cypher.Variable[];
-} {
-    const returnVariables: Cypher.Variable[] = [];
+}): PredicateReturn {
+    const requiredVariables: Cypher.Variable[] = [];
+    const aggregatingVariables: Cypher.Variable[] = [];
     const preComputedSubqueriesResult: (Cypher.CompositeClause | undefined)[] = [];
     const params: (Cypher.Predicate | undefined)[] = [];
     Object.entries(whereInput).forEach(([key, value]) => {
@@ -196,7 +200,8 @@ export function createConnectionWherePropertyOperation({
                 const {
                     predicate,
                     preComputedSubqueries,
-                    returnVariables: innerReturnVariables,
+                    requiredVariables: innerRequiredVariables,
+                    aggregatingVariables: innerAggregatingVariables,
                 } = createConnectionWherePropertyOperation({
                     context,
                     whereInput: input,
@@ -209,7 +214,10 @@ export function createConnectionWherePropertyOperation({
                 subOperations.push(predicate);
                 if (preComputedSubqueries && !preComputedSubqueries.empty)
                     preComputedSubqueriesResult.push(preComputedSubqueries);
-                returnVariables.push(...innerReturnVariables);
+                if (innerRequiredVariables && innerRequiredVariables.length)
+                    requiredVariables.push(...innerRequiredVariables);
+                if (innerAggregatingVariables && innerAggregatingVariables.length)
+                    aggregatingVariables.push(...innerAggregatingVariables);
             });
             if (key === "AND") {
                 params.push(Cypher.and(...filterTruthy(subOperations)));
@@ -226,7 +234,8 @@ export function createConnectionWherePropertyOperation({
             const {
                 predicate: result,
                 preComputedSubqueries,
-                returnVariables: innerReturnVariables,
+                requiredVariables: innerRequiredVariables,
+                aggregatingVariables: innerAggregatingVariables,
             } = createWherePredicate({
                 targetElement: edgeRef,
                 whereInput: nestedProperties,
@@ -238,7 +247,10 @@ export function createConnectionWherePropertyOperation({
             params.push(result);
             if (preComputedSubqueries && !preComputedSubqueries.empty)
                 preComputedSubqueriesResult.push(preComputedSubqueries);
-            returnVariables.push(...innerReturnVariables);
+            if (innerRequiredVariables && innerRequiredVariables.length)
+                requiredVariables.push(...innerRequiredVariables);
+            if (innerAggregatingVariables && innerAggregatingVariables.length)
+                aggregatingVariables.push(...innerAggregatingVariables);
             return;
         }
 
@@ -259,7 +271,8 @@ export function createConnectionWherePropertyOperation({
             const {
                 predicate: result,
                 preComputedSubqueries,
-                returnVariables: innerReturnVariables,
+                requiredVariables: innerRequiredVariables,
+                aggregatingVariables: innerAggregatingVariables,
             } = createWherePredicate({
                 targetElement: targetNode,
                 whereInput: nestedProperties,
@@ -272,7 +285,10 @@ export function createConnectionWherePropertyOperation({
             params.push(result);
             if (preComputedSubqueries && !preComputedSubqueries.empty)
                 preComputedSubqueriesResult.push(preComputedSubqueries);
-            returnVariables.push(...innerReturnVariables);
+            if (innerRequiredVariables && innerRequiredVariables.length)
+                requiredVariables.push(...innerRequiredVariables);
+            if (innerAggregatingVariables && innerAggregatingVariables.length)
+                aggregatingVariables.push(...innerAggregatingVariables);
             return;
         }
     });
@@ -281,7 +297,8 @@ export function createConnectionWherePropertyOperation({
         preComputedSubqueries: preComputedSubqueriesResult.length
             ? Cypher.concat(...preComputedSubqueriesResult)
             : undefined,
-        returnVariables,
+        requiredVariables,
+        aggregatingVariables,
     };
 }
 
