@@ -104,7 +104,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [movieType, genreType]);
+        await cleanNodes(session, [movieType, genreType, seriesType]);
         await session.close();
     });
 
