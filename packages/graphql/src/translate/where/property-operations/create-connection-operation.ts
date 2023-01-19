@@ -24,7 +24,7 @@ import { getListPredicate, ListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
 // Recursive function
 
-import { createWherePredicate } from "../create-where-predicate";
+import { createWherePredicate, PredicateReturn } from "../create-where-predicate";
 import { filterTruthy } from "../../../utils/utils";
 import { createRelationshipPredicate } from "./create-relationship-operation";
 
@@ -40,10 +40,7 @@ export function createConnectionOperation({
     context: Context;
     parentNode: Cypher.Node;
     operator: string | undefined;
-}): {
-    predicate: Cypher.BooleanOp | Cypher.RawCypher | undefined;
-    preComputedSubquery: Cypher.CompositeClause | undefined;
-} {
+}): PredicateReturn {
     let nodeEntries: Record<string, any>;
 
     if (!connectionField?.relationship.union) {
@@ -153,16 +150,18 @@ export function createConnectionOperation({
 
         return {
             predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined,
-            preComputedSubquery: Cypher.concat(
+            preComputedSubqueries: Cypher.concat(
                 ...matchPatterns.map((matchPattern) => new Cypher.OptionalMatch(matchPattern)),
                 subqueries,
                 aggregatingWithClause
             ),
+            returnVariables: []
         };
     }
     return {
         predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined,
-        preComputedSubquery: subqueries,
+        preComputedSubqueries: subqueries,
+        returnVariables: []
     };
 }
 

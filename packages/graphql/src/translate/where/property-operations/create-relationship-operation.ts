@@ -20,7 +20,7 @@
 import type { Context, GraphQLWhereArg, RelationField } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 
-import { createWherePredicate } from "../create-where-predicate";
+import { createWherePredicate, PredicateReturn } from "../create-where-predicate";
 import { getListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
 
@@ -38,7 +38,7 @@ export function createRelationshipOperation({
     operator: string | undefined;
     value: GraphQLWhereArg;
     isNot: boolean;
-}): { predicate: Cypher.Predicate | undefined; preComputedSubquery?: Cypher.CompositeClause | undefined } {
+}): PredicateReturn {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
 
@@ -62,9 +62,9 @@ export function createRelationshipOperation({
         const exists = new Cypher.Exists(existsSubquery);
         if (!isNot) {
             // Bit confusing, but basically checking for not null is the same as checking for relationship exists
-            return { predicate: Cypher.not(exists) };
+            return { predicate: Cypher.not(exists), returnVariables: [] };
         }
-        return { predicate: exists };
+        return { predicate: exists, returnVariables: [] };
     }
 
     let listPredicateStr = getListPredicate(operator as WhereOperator);
@@ -101,17 +101,19 @@ export function createRelationshipOperation({
 
         return {
             predicate,
-            preComputedSubquery: Cypher.concat(
+            preComputedSubqueries: Cypher.concat(
                 new Cypher.OptionalMatch(matchPattern),
                 preComputedSubqueries,
                 aggregatingWithClause
             ),
+            returnVariables: [],
         };
     }
 
     return {
         predicate,
-        preComputedSubquery: preComputedSubqueries,
+        preComputedSubqueries: preComputedSubqueries,
+        returnVariables: [],
     };
 }
 

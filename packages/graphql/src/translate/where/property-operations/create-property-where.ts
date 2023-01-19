@@ -31,6 +31,7 @@ import { createComparisonOperation } from "./create-comparison-operation";
 
 import { createRelationshipOperation } from "./create-relationship-operation";
 import { aggregatePreComputedWhereFields } from "../../create-aggregate-where-and-params";
+import type { PredicateReturn } from "../create-where-predicate";
 
 /** Translates a property into its predicate filter */
 export function createPropertyWhere({
@@ -47,11 +48,7 @@ export function createPropertyWhere({
     targetElement: Cypher.Variable;
     context: Context;
     listPredicateStr?: ListPredicate;
-}): {
-    predicate: Cypher.Predicate | undefined;
-    preComputedSubquery?: Cypher.CompositeClause | undefined;
-    returnVariables?: Cypher.Variable[];
-} {
+}): PredicateReturn {
     const match = whereRegEx.exec(key);
     if (!match) {
         throw new Error(`Failed to match key in filter: ${key}`);
@@ -86,6 +83,7 @@ export function createPropertyWhere({
                     targetElement,
                     coalesceValue,
                 }),
+                returnVariables: [],
             };
         }
 
@@ -104,7 +102,14 @@ export function createPropertyWhere({
 
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
-            return aggregatePreComputedWhereFields(value, relationField, relationship, context, targetElement, listPredicateStr);
+            return aggregatePreComputedWhereFields(
+                value,
+                relationField,
+                relationship,
+                context,
+                targetElement,
+                listPredicateStr
+            );
         }
 
         if (relationField) {
@@ -133,10 +138,12 @@ export function createPropertyWhere({
             if (isNot) {
                 return {
                     predicate: Cypher.isNotNull(propertyRef),
+                    returnVariables: []
                 };
             }
             return {
                 predicate: Cypher.isNull(propertyRef),
+                returnVariables: []
             };
         }
     }
@@ -156,7 +163,8 @@ export function createPropertyWhere({
     if (isNot) {
         return {
             predicate: Cypher.not(comparisonOp),
+            returnVariables: []
         };
     }
-    return { predicate: comparisonOp };
+    return { predicate: comparisonOp, returnVariables: [] };
 }

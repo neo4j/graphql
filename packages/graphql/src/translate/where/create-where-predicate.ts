@@ -27,6 +27,12 @@ import type { ListPredicate } from "./utils";
 
 type WhereOperators = "OR" | "AND";
 
+export type PredicateReturn = {
+    predicate: Cypher.Predicate | undefined;
+    preComputedSubqueries?: Cypher.CompositeClause | undefined;
+    returnVariables: Cypher.Variable[];
+};
+
 function isWhereOperator(key: string): key is WhereOperators {
     return ["OR", "AND"].includes(key);
 }
@@ -44,11 +50,7 @@ export function createWherePredicate({
     context: Context;
     element: GraphElement;
     listPredicateStr?: ListPredicate;
-}): {
-    predicate: Cypher.Predicate | undefined;
-    preComputedSubqueries?: Cypher.CompositeClause | undefined;
-    returnVariables: Cypher.Variable[];
-} {
+}): PredicateReturn {
     const whereFields = Object.entries(whereInput);
     const predicates: Cypher.Predicate[] = [];
     const returnVariables: Cypher.Variable[] = [];
@@ -77,13 +79,13 @@ export function createWherePredicate({
         }
         const {
             predicate,
-            preComputedSubquery,
+            preComputedSubqueries,
             returnVariables: innerReturnVariables,
         } = createPropertyWhere({ key, value, element, targetElement, context, listPredicateStr });
         if (predicate) {
             predicates.push(predicate);
-            if (preComputedSubquery && !preComputedSubquery.empty)
-                subqueries = Cypher.concat(subqueries, preComputedSubquery);
+            if (preComputedSubqueries && !preComputedSubqueries.empty)
+                subqueries = Cypher.concat(subqueries, preComputedSubqueries);
             if (innerReturnVariables && innerReturnVariables.length) returnVariables.push(...innerReturnVariables);
             return;
         }
@@ -106,11 +108,7 @@ function createNestedPredicate({
     targetElement: Cypher.Variable;
     context: Context;
     listPredicateStr?: ListPredicate;
-}): {
-    predicate: Cypher.Predicate | undefined;
-    preComputedSubqueries?: Cypher.CompositeClause | undefined;
-    returnVariables: Cypher.Variable[];
-} {
+}): PredicateReturn {
     const nested: Cypher.Predicate[] = [];
     const returnVariables: Cypher.Variable[] = [];
     let subqueries: Cypher.CompositeClause | undefined;

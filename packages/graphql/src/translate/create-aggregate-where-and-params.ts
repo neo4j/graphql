@@ -24,6 +24,7 @@ import { aggregationFieldRegEx, AggregationFieldRegexGroups, ListPredicate, wher
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
 import { NODE_OR_EDGE_KEYS, LOGICAL_OPERATORS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
 import mapToDbProperty from "../utils/map-to-db-property";
+import type { PredicateReturn } from "./where/create-where-predicate";
 
 type logicalOperator = "AND" | "OR";
 
@@ -52,11 +53,7 @@ export function aggregatePreComputedWhereFields(
     context: Context,
     matchNode: Cypher.Variable,
     listPredicateStr?: ListPredicate
-): {
-    predicate: Cypher.Predicate | undefined;
-    preComputedSubquery: Cypher.CompositeClause;
-    returnVariables?: Cypher.Variable[];
-} {
+): PredicateReturn {
     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
     const direction = relationField.direction;
     const aggregationTarget = new Cypher.Node({ labels: refNode.getLabels(context) });
@@ -85,7 +82,7 @@ export function aggregatePreComputedWhereFields(
         return {
             predicate: Cypher.and(...predicates),
             // Cypher.concat is used because this is passed to createWherePredicate which expects a Cypher.CompositeClause
-            preComputedSubquery: Cypher.concat(subquery),
+            preComputedSubqueries: Cypher.concat(subquery),
             returnVariables,
         };
     }
@@ -93,7 +90,8 @@ export function aggregatePreComputedWhereFields(
     return {
         predicate: Cypher.and(...predicates),
         // Cypher.concat is used because this is passed to createWherePredicate which expects a Cypher.CompositeClause
-        preComputedSubquery: Cypher.concat(subquery),
+        preComputedSubqueries: Cypher.concat(subquery),
+        returnVariables: [],
     };
 }
 
