@@ -233,20 +233,7 @@ class Neo4jGraphQL {
         return new Promise((resolve) => {
             const document = getDocument(this.schemaDefinition.typeDefs);
 
-            let validateTypeDefs =
-                this.config?.startupValidation === undefined ? true : Boolean(this.config?.startupValidation);
-            let validateCustomResolvers =
-                this.config?.startupValidation === undefined ? true : Boolean(this.config?.startupValidation);
-            if (typeof this.config?.startupValidation === "object") {
-                validateTypeDefs =
-                    this.config.startupValidation.typeDefs === undefined
-                        ? true
-                        : Boolean(this.config.startupValidation.typeDefs);
-                validateCustomResolvers =
-                    this.config.startupValidation.customResolver === undefined
-                        ? true
-                        : Boolean(this.config.startupValidation.typeDefs);
-            }
+            const { validateTypeDefs, validateCustomResolvers } = this.parseStartupValidationConfig();
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
@@ -277,6 +264,31 @@ class Neo4jGraphQL {
 
             resolve(this.addDefaultFieldResolvers(schema));
         });
+    }
+
+    private parseStartupValidationConfig(): {
+        validateTypeDefs: boolean;
+        validateCustomResolvers: boolean;
+    } {
+        let validateTypeDefs = true;
+        let validateCustomResolvers = true;
+
+        if (this.config?.startupValidation === false) {
+            return {
+                validateTypeDefs: false,
+                validateCustomResolvers: false,
+            };
+        }
+
+        if (typeof this.config?.startupValidation === "object") {
+            if (this.config?.startupValidation.typeDefs === false) validateTypeDefs = false;
+            if (this.config?.startupValidation.customResolver === false) validateCustomResolvers = false;
+        }
+
+        return {
+            validateTypeDefs,
+            validateCustomResolvers,
+        };
     }
 
     private async pluginsSetup(): Promise<void> {
