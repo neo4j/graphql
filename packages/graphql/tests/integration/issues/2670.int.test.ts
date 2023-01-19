@@ -386,6 +386,9 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                 {
                     title: movieTitle3,
                 },
+                {
+                    title: movieTitle5,
+                },
             ]),
         });
     });
@@ -463,6 +466,9 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                 },
                 {
                     title: movieTitle3,
+                },
+                {
+                    title: movieTitle5,
                 },
             ]),
         });
