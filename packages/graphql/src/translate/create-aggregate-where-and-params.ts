@@ -20,7 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
 import type { RelationField, Context, GraphQLWhereArg } from "../types";
-import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx } from "./where/utils";
+import { aggregationFieldRegEx, AggregationFieldRegexGroups, ListPredicate, whereRegEx } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
 import { NODE_OR_EDGE_KEYS, LOGICAL_OPERATORS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
 import mapToDbProperty from "../utils/map-to-db-property";
@@ -42,6 +42,7 @@ export type AggregateWhereInput = {
 type AggregateWhereReturn = {
     returnProjections: ("*" | Cypher.ProjectionColumn)[];
     predicates: Cypher.Predicate[];
+    returnVariables: Cypher.Variable[];
 };
 
 export function aggregatePreComputedWhereFields(
@@ -49,10 +50,12 @@ export function aggregatePreComputedWhereFields(
     relationField: RelationField,
     relationship: Relationship | undefined,
     context: Context,
-    matchNode: Cypher.Variable
+    matchNode: Cypher.Variable,
+    listPredicateStr?: ListPredicate
 ): {
     predicate: Cypher.Predicate | undefined;
     preComputedSubquery: Cypher.CompositeClause;
+    returnVariables?: Cypher.Variable[];
 } {
     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
     const direction = relationField.direction;
@@ -66,15 +69,26 @@ export function aggregatePreComputedWhereFields(
         cypherRelation.reverse();
     }
     const matchQuery = new Cypher.Match(cypherRelation);
-    const { returnProjections, predicates } = aggregateWhere(
+    const { returnProjections, predicates, returnVariables } = aggregateWhere(
         value as AggregateWhereInput,
         refNode,
         relationship,
         aggregationTarget,
-        cypherRelation
+        cypherRelation,
+        listPredicateStr
     );
     matchQuery.return(...returnProjections);
     const subquery = new Cypher.Call(matchQuery).innerWith(matchNode);
+
+    // The return values are needed when performing SOME/NONE/ALL/SINGLE operations as they need to be aggregated to perform comparisons
+    if (listPredicateStr) {
+        return {
+            predicate: Cypher.and(...predicates),
+            preComputedSubquery: Cypher.concat(subquery),
+            returnVariables,
+        };
+    }
+
     return {
         predicate: Cypher.and(...predicates),
         preComputedSubquery: Cypher.concat(subquery),
@@ -86,40 +100,53 @@ export function aggregateWhere(
     refNode: Node,
     relationship: Relationship | undefined,
     aggregationTarget: Cypher.Node,
-    cypherRelation: Cypher.Relationship
+    cypherRelation: Cypher.Relationship,
+    listPredicateStr?: ListPredicate
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
     const predicates: Cypher.Predicate[] = [];
+    const returnVariables: Cypher.Variable[] = [];
     Object.entries(aggregateWhereInput).forEach(([key, value]) => {
         if (AGGREGATION_AGGREGATE_COUNT_OPERATORS.includes(key)) {
-            const { returnProjection: innerReturnProjection, predicate: innerPredicate } =
-                createCountPredicateAndProjection(aggregationTarget, key, value);
+            const {
+                returnProjection: innerReturnProjection,
+                predicate: innerPredicate,
+                returnVariable: innerReturnVariable,
+            } = createCountPredicateAndProjection(aggregationTarget, key, value, listPredicateStr);
             returnProjections.push(innerReturnProjection);
-            predicates.push(innerPredicate);
+            if (innerPredicate) predicates.push(innerPredicate);
+            returnVariables.push(innerReturnVariable);
         } else if (NODE_OR_EDGE_KEYS.includes(key)) {
             const target = key === "edge" ? cypherRelation : aggregationTarget;
             const refNodeOrRelation = key === "edge" ? relationship : refNode;
             if (!refNodeOrRelation) throw new Error(`Edge filter ${key} on undefined relationship`);
-            const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateEntityWhere(
-                value,
-                refNodeOrRelation,
-                target
-            );
+            const {
+                returnProjections: innerReturnProjections,
+                predicates: innerPredicates,
+                returnVariables: innerReturnVariables,
+            } = aggregateEntityWhere(value, refNodeOrRelation, target, listPredicateStr);
             returnProjections.push(...innerReturnProjections);
             predicates.push(...innerPredicates);
+            returnVariables.push(...innerReturnVariables);
         } else if (LOGICAL_OPERATORS.includes(key)) {
             const logicalOperator = key === "AND" ? Cypher.and : Cypher.or;
             const logicalPredicates: Cypher.Predicate[] = [];
             value.forEach((whereInput) => {
-                const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateWhere(
+                const {
+                    returnProjections: innerReturnProjections,
+                    predicates: innerPredicates,
+                    returnVariables: innerReturnVariables,
+                } = aggregateWhere(
                     whereInput,
                     refNode,
                     relationship,
                     aggregationTarget,
-                    cypherRelation
+                    cypherRelation,
+                    listPredicateStr
                 );
                 returnProjections.push(...innerReturnProjections);
                 logicalPredicates.push(...innerPredicates);
+                returnVariables.push(...innerReturnVariables);
             });
             predicates.push(logicalOperator(...logicalPredicates));
         }
@@ -127,16 +154,19 @@ export function aggregateWhere(
     return {
         returnProjections,
         predicates,
+        returnVariables,
     };
 }
 
 function createCountPredicateAndProjection(
     aggregationTarget: Cypher.Node,
     filterKey: string,
-    filterValue: number
+    filterValue: number,
+    listPredicateStr?: ListPredicate
 ): {
     returnProjection: "*" | Cypher.ProjectionColumn;
-    predicate: Cypher.Predicate;
+    predicate: Cypher.Predicate | undefined;
+    returnVariable: Cypher.Variable;
 } {
     const paramName = new Cypher.Param(filterValue);
     const count = Cypher.count(aggregationTarget);
@@ -147,43 +177,50 @@ function createCountPredicateAndProjection(
         param: paramName,
     });
     const operationVar = new Cypher.Variable();
+
     return {
         returnProjection: [operation, operationVar],
-        predicate: Cypher.eq(operationVar, new Cypher.Literal(true)),
+        predicate: getReturnValuePredicate(operationVar, listPredicateStr),
+        returnVariable: operationVar,
     };
 }
 
 function aggregateEntityWhere(
     aggregateEntityWhereInput: WhereFilter,
     refNodeOrRelation: Node | Relationship,
-    target: Cypher.Node | Cypher.Relationship
+    target: Cypher.Node | Cypher.Relationship,
+    listPredicateStr?: ListPredicate
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
     const predicates: Cypher.Predicate[] = [];
+    const returnVariables: Cypher.Variable[] = [];
     Object.entries(aggregateEntityWhereInput).forEach(([key, value]) => {
         if (LOGICAL_OPERATORS.includes(key)) {
             const logicalOperator = key === "AND" ? Cypher.and : Cypher.or;
             const logicalPredicates: Cypher.Predicate[] = [];
             value.forEach((whereInput) => {
-                const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateEntityWhere(
-                    whereInput,
-                    refNodeOrRelation,
-                    target
-                );
+                const {
+                    returnProjections: innerReturnProjections,
+                    predicates: innerPredicates,
+                    returnVariables: innerReturnVariables,
+                } = aggregateEntityWhere(whereInput, refNodeOrRelation, target, listPredicateStr);
                 returnProjections.push(...innerReturnProjections);
                 logicalPredicates.push(...innerPredicates);
+                returnVariables.push(...innerReturnVariables);
             });
             predicates.push(logicalOperator(...logicalPredicates));
         } else {
             const operation = createEntityOperation(refNodeOrRelation, target, key, value);
             const operationVar = new Cypher.Variable();
             returnProjections.push([operation, operationVar]);
-            predicates.push(Cypher.eq(operationVar, new Cypher.Literal(true)));
+            predicates.push(getReturnValuePredicate(operationVar, listPredicateStr));
+            returnVariables.push(operationVar);
         }
     });
     return {
         returnProjections,
         predicates,
+        returnVariables,
     };
 }
 
@@ -245,5 +282,26 @@ function getAggregateOperation(
             return Cypher.sum(property);
         default:
             throw new Error(`Invalid operator ${aggregationOperator}`);
+    }
+}
+
+function getReturnValuePredicate(operationVar: Cypher.Variable, listPredicateStr?: ListPredicate) {
+    switch (listPredicateStr) {
+        case "all": {
+            const listVar = new Cypher.Variable();
+            return Cypher.all(listVar, operationVar, Cypher.eq(listVar, new Cypher.Literal(true)));
+        }
+        case "single": {
+            const listVar = new Cypher.Variable();
+            return Cypher.single(listVar, operationVar, Cypher.eq(listVar, new Cypher.Literal(true)));
+        }
+        case "not":
+        case "none":
+        case "any": {
+            return Cypher.in(new Cypher.Literal(true), operationVar);
+        }
+        default: {
+            return Cypher.eq(operationVar, new Cypher.Literal(true));
+        }
     }
 }

@@ -420,9 +420,6 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         expect(result.data).toEqual({
             [movieType.plural]: expect.toIncludeSameMembers([
                 {
-                    title: movieTitle2,
-                },
-                {
                     title: movieTitle4,
                 },
             ]),

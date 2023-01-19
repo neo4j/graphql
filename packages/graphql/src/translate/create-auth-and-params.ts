@@ -32,19 +32,16 @@ import { getOrCreateCypherNode } from "./utils/get-or-create-cypher-variable";
 interface Allow {
     varName: string | Cypher.Node;
     parentNode: Node;
-    chainStr?: string;
 }
 
 interface Bind {
     varName: string | Cypher.Node;
     parentNode: Node;
-    chainStr?: string;
 }
 
 interface Where {
     varName: string | Cypher.Node;
     node: Node;
-    chainStr?: string;
 }
 
 export function createAuthAndParams({

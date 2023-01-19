@@ -72,117 +72,104 @@ export function createRelationshipOperation({
     if (listPredicateStr === "any" && !relationField.typeMeta.array) {
         listPredicateStr = "single";
     }
-    const innerOperation = createWherePredicate({
+    const {
+        predicate: innerOperation,
+        preComputedSubqueries,
+        returnVariables,
+    } = createWherePredicate({
         // Nested properties here
         whereInput: value,
         targetElement: childNode,
         element: refNode,
         context,
+        listPredicateStr,
     });
 
-    const { predicate, preComputedSubquery } = createRelationshipSubqueryAndPredicate({
-        parentNode,
+    const predicate = createRelationshipSubqueryAndPredicate({
+        childNode,
         matchPattern,
         listPredicateStr,
-        relationship,
         innerOperation,
+        returnVariables,
     });
 
-    // Testing "ALL" requires testing that at least one element exists and that no elements not matching the filter
-    // exists
-    if (listPredicateStr === "all") {
-        const notNoneInnerPredicates = createWherePredicate({
-            whereInput: value,
-            targetElement: childNode,
-            element: refNode,
-            context,
-        });
+    if (returnVariables && returnVariables.length) {
+        const aggregatingWithClause = new Cypher.With(
+            parentNode,
+            ...(returnVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar]) as any)
+        );
 
-        const { predicate: notNonePredicate, preComputedSubquery: notNoneSubquery } =
-            createRelationshipSubqueryAndPredicate({
-                parentNode,
-                matchPattern,
-                listPredicateStr: "none",
-                relationship,
-                innerOperation: notNoneInnerPredicates,
-            });
-
-        if (notNonePredicate) {
-            return {
-                predicate: Cypher.and(predicate, Cypher.not(notNonePredicate)),
-                preComputedSubquery: Cypher.concat(preComputedSubquery, notNoneSubquery),
-            };
-        }
+        return {
+            predicate,
+            preComputedSubquery: Cypher.concat(
+                new Cypher.OptionalMatch(matchPattern),
+                preComputedSubqueries,
+                aggregatingWithClause
+            ),
+        };
     }
 
     return {
         predicate,
-        // A Cypher.concat is used here as the value is passed directly to createWherePredicate which expects a
-        // composite clause
-        preComputedSubquery: Cypher.concat(preComputedSubquery),
+        preComputedSubquery: preComputedSubqueries,
     };
 }
 
 export function createRelationshipSubqueryAndPredicate({
     matchPattern,
     listPredicateStr,
-    relationship,
-    parentNode,
+    childNode,
     innerOperation,
+    returnVariables,
+    edgePredicate,
 }: {
     matchPattern: Cypher.Pattern;
     listPredicateStr: string;
-    relationship: Cypher.Relationship;
-    parentNode: Cypher.Node;
-    innerOperation: {
-        predicate: Cypher.Predicate | undefined;
-        preComputedSubqueries?: Cypher.CompositeClause | undefined;
-    };
-}): { predicate: Cypher.Predicate | undefined; preComputedSubquery?: Cypher.Call | undefined } {
-    const { predicate: relationOperator, preComputedSubqueries } = innerOperation;
+    childNode: Cypher.Node;
+    innerOperation: Cypher.Predicate | undefined;
+    returnVariables: Cypher.Variable[];
+    edgePredicate?: boolean;
+}): Cypher.Predicate | undefined {
+    if (!innerOperation) return undefined;
+    const matchClause = new Cypher.Match(matchPattern).where(innerOperation);
 
-    if (!relationOperator) {
-        return { predicate: undefined };
-    }
+    switch (listPredicateStr) {
+        case "all": {
+            // Testing "ALL" requires testing that at least one element exists and that no elements not matching the filter exists
+            const notExistsMatchClause = new Cypher.Match(matchPattern).where(Cypher.not(innerOperation));
+            return Cypher.and(new Cypher.Exists(matchClause), Cypher.not(new Cypher.Exists(notExistsMatchClause)));
+        }
+        case "not":
+        case "none": {
+            const somePredicate = createRelationshipSubqueryAndPredicate({
+                matchPattern,
+                listPredicateStr: "some",
+                childNode,
+                innerOperation,
+                returnVariables,
+            });
+            if (somePredicate) {
+                return Cypher.not(somePredicate);
+            }
+            return undefined;
+        }
+        case "single": {
+            // If there are edge properties used in the innerOperation predicate, it is not possible to use the
+            // more performant single() function. Therefore, we fall back to size()
+            if (edgePredicate) {
+                const sizeFunction = Cypher.size(
+                    new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(innerOperation)
+                );
+                return Cypher.eq(sizeFunction, new Cypher.Literal(1));
+            }
 
-    const matchClause = new Cypher.Match(matchPattern);
-    const countRef = new Cypher.Variable();
-
-    let whereClause: Cypher.Match | Cypher.With = matchClause;
-    let innerSubqueriesAndWhereClause: Cypher.CompositeClause | undefined;
-
-    if (preComputedSubqueries && !preComputedSubqueries.empty) {
-        whereClause = new Cypher.With("*");
-        innerSubqueriesAndWhereClause = Cypher.concat(preComputedSubqueries, whereClause);
-    }
-
-    const newWhereOperator = listPredicateStr === "all" ? Cypher.not(relationOperator) : relationOperator;
-    whereClause.where(newWhereOperator);
-
-    const subqueryContents = Cypher.concat(
-        matchClause,
-        innerSubqueriesAndWhereClause,
-        new Cypher.Return([Cypher.count(relationship), countRef])
-    );
-
-    const subqueryCall = new Cypher.Call(subqueryContents).innerWith(parentNode);
-
-    return {
-        predicate: getCountOperation(listPredicateStr, countRef),
-        preComputedSubquery: subqueryCall,
-    };
-}
-
-function getCountOperation(listPredicate: string, countRef: Cypher.Variable): Cypher.Predicate {
-    switch (listPredicate) {
-        case "all":
-        case "none":
-            return Cypher.eq(countRef, new Cypher.Literal(0));
-        case "any":
-            return Cypher.gt(countRef, new Cypher.Literal(0));
-        case "single":
-            return Cypher.eq(countRef, new Cypher.Literal(1));
-        default:
-            throw new Error(`Unknown predicate ${listPredicate}`);
+            const patternComprehension = new Cypher.PatternComprehension(matchPattern, childNode);
+            return Cypher.single(childNode, patternComprehension, innerOperation);
+        }
+        case "some":
+        default: {
+            const existsPredicate = new Cypher.Exists(matchClause);
+            return existsPredicate;
+        }
     }
 }

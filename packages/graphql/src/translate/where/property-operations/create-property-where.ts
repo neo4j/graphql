@@ -20,7 +20,7 @@
 import type { Context } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 import { GraphElement, Node } from "../../../classes";
-import { whereRegEx, WhereRegexGroups } from "../utils";
+import { ListPredicate, whereRegEx, WhereRegexGroups } from "../utils";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createGlobalNodeOperation } from "./create-global-node-operation";
 // Recursive function
@@ -39,15 +39,18 @@ export function createPropertyWhere({
     element,
     targetElement,
     context,
+    listPredicateStr,
 }: {
     key: string;
     value: any;
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
+    listPredicateStr?: ListPredicate;
 }): {
     predicate: Cypher.Predicate | undefined;
     preComputedSubquery?: Cypher.CompositeClause | undefined;
+    returnVariables?: Cypher.Variable[];
 } {
     const match = whereRegEx.exec(key);
     if (!match) {
@@ -94,12 +97,14 @@ export function createPropertyWhere({
         }
 
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
-        const relationTypeName = node.connectionFields.find((x) => x.relationship.fieldName === fieldName)?.relationshipTypeName;
-        const relationship = context.relationships.find(x => x.name === relationTypeName);
+        const relationTypeName = node.connectionFields.find(
+            (x) => x.relationship.fieldName === fieldName
+        )?.relationshipTypeName;
+        const relationship = context.relationships.find((x) => x.name === relationTypeName);
 
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
-            return aggregatePreComputedWhereFields(value, relationField, relationship, context, targetElement);
+            return aggregatePreComputedWhereFields(value, relationField, relationship, context, targetElement, listPredicateStr);
         }
 
         if (relationField) {
@@ -109,7 +114,7 @@ export function createPropertyWhere({
                 parentNode: targetElement as Cypher.Node,
                 operator,
                 value,
-                isNot
+                isNot,
             });
         }
 

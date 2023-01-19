@@ -23,6 +23,7 @@ import Cypher from "@neo4j/cypher-builder";
 // Recursive function
 
 import { createPropertyWhere } from "./property-operations/create-property-where";
+import type { ListPredicate } from "./utils";
 
 type WhereOperators = "OR" | "AND";
 
@@ -36,15 +37,21 @@ export function createWherePredicate({
     whereInput,
     context,
     element,
+    listPredicateStr,
 }: {
     targetElement: Cypher.Variable;
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
-}): { predicate: Cypher.Predicate | undefined; preComputedSubqueries?: Cypher.CompositeClause | undefined } {
+    listPredicateStr?: ListPredicate;
+}): {
+    predicate: Cypher.Predicate | undefined;
+    preComputedSubqueries?: Cypher.CompositeClause | undefined;
+    returnVariables: Cypher.Variable[];
+} {
     const whereFields = Object.entries(whereInput);
-
     const predicates: Cypher.Predicate[] = [];
+    const returnVariables: Cypher.Variable[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
     whereFields.forEach(([key, value]) => {
         if (isWhereOperator(key)) {
@@ -54,6 +61,7 @@ export function createWherePredicate({
                 targetElement,
                 context,
                 value,
+                listPredicateStr,
             });
             if (predicate) {
                 predicates.push(predicate);
@@ -62,15 +70,21 @@ export function createWherePredicate({
             }
             return;
         }
-        const { predicate, preComputedSubquery } = createPropertyWhere({ key, value, element, targetElement, context });
+        const {
+            predicate,
+            preComputedSubquery,
+            returnVariables: innerReturnVariables,
+        } = createPropertyWhere({ key, value, element, targetElement, context, listPredicateStr });
         if (predicate) {
             predicates.push(predicate);
-            if (preComputedSubquery && !preComputedSubquery.empty) subqueries = Cypher.concat(subqueries, preComputedSubquery);
+            if (preComputedSubquery && !preComputedSubquery.empty)
+                subqueries = Cypher.concat(subqueries, preComputedSubquery);
+            if (innerReturnVariables && innerReturnVariables.length) returnVariables.push(...innerReturnVariables);
             return;
         }
     });
     // Implicit AND
-    return { predicate: Cypher.and(...predicates), preComputedSubqueries: subqueries };
+    return { predicate: Cypher.and(...predicates), preComputedSubqueries: subqueries, returnVariables };
 }
 
 function createNestedPredicate({
@@ -79,30 +93,43 @@ function createNestedPredicate({
     targetElement,
     context,
     value,
+    listPredicateStr,
 }: {
     key: WhereOperators;
     value: Array<GraphQLWhereArg>;
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
-}): { predicate: Cypher.Predicate | undefined; preComputedSubqueries?: Cypher.CompositeClause | undefined } {
+    listPredicateStr?: ListPredicate;
+}): {
+    predicate: Cypher.Predicate | undefined;
+    preComputedSubqueries?: Cypher.CompositeClause | undefined;
+    returnVariables: Cypher.Variable[];
+} {
     const nested: Cypher.Predicate[] = [];
+    const returnVariables: Cypher.Variable[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
     value.forEach((v) => {
-        const { predicate, preComputedSubqueries } = createWherePredicate({
+        const {
+            predicate,
+            preComputedSubqueries,
+            returnVariables: innerReturnVariables,
+        } = createWherePredicate({
             whereInput: v,
             element,
             targetElement,
             context,
+            listPredicateStr,
         });
         if (predicate) {
             nested.push(predicate);
         }
         if (preComputedSubqueries && !preComputedSubqueries.empty)
             subqueries = Cypher.concat(subqueries, preComputedSubqueries);
+        if (innerReturnVariables && innerReturnVariables.length) returnVariables.push(...innerReturnVariables);
     });
     if (key === "OR") {
-        return { predicate: Cypher.or(...nested), preComputedSubqueries: subqueries };
+        return { predicate: Cypher.or(...nested), preComputedSubqueries: subqueries, returnVariables };
     }
-    return { predicate: Cypher.and(...nested), preComputedSubqueries: subqueries };
+    return { predicate: Cypher.and(...nested), preComputedSubqueries: subqueries, returnVariables };
 }
