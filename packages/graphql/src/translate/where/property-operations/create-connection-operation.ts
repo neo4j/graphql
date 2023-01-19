@@ -137,6 +137,7 @@ export function createConnectionOperation({
             childNode,
             innerOperation: innerOperation.predicate,
             returnVariables: [],
+            edgePredicate: true,
         });
 
         operations.push(predicate);
