@@ -73,29 +73,15 @@ describe("#582", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Entity\`)
-            CALL {
-                WITH this
-                MATCH (this)-[this0:EDGE]->(this1:\`Entity\`)
-                CALL {
-                    WITH this1
-                    MATCH (this3:\`Entity\`)-[this2:EDGE]->(this1)
-                    WHERE this3.type = $param0
-                    RETURN count(this2) AS var4
-                }
-                WITH *
-                WHERE (this1.type = $param1 AND var4 > 0)
-                RETURN count(this0) AS var5
-            }
-            WITH *
-            WHERE (this.type = $param2 AND var5 > 0)
+            WHERE (this.type = $param0 AND size([(this)-[this0:EDGE]->(this1:\`Entity\`) WHERE (this1.type = $param1 AND size([(this3:\`Entity\`)-[this2:EDGE]->(this1) WHERE this3.type = $param2 | 1]) > 0) | 1]) > 0)
             RETURN this { .type } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Bird\\",
+                \\"param0\\": \\"Cat\\",
                 \\"param1\\": \\"Dog\\",
-                \\"param2\\": \\"Cat\\"
+                \\"param2\\": \\"Bird\\"
             }"
         `);
     });
@@ -134,37 +120,16 @@ describe("#582", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Entity\`)
-            CALL {
-                WITH this
-                MATCH (this)-[this0:EDGE]->(this1:\`Entity\`)
-                CALL {
-                    WITH this1
-                    MATCH (this3:\`Entity\`)-[this2:EDGE]->(this1)
-                    CALL {
-                        WITH this3
-                        MATCH (this3)-[this4:EDGE]->(this5:\`Entity\`)
-                        WHERE this5.type = $param0
-                        RETURN count(this4) AS var6
-                    }
-                    WITH *
-                    WHERE (this3.type = $param1 AND var6 > 0)
-                    RETURN count(this2) AS var7
-                }
-                WITH *
-                WHERE (this1.type = $param2 AND var7 > 0)
-                RETURN count(this0) AS var8
-            }
-            WITH *
-            WHERE (this.type = $param3 AND var8 > 0)
+            WHERE (this.type = $param0 AND size([(this)-[this0:EDGE]->(this1:\`Entity\`) WHERE (this1.type = $param1 AND size([(this3:\`Entity\`)-[this2:EDGE]->(this1) WHERE (this3.type = $param2 AND size([(this3)-[this4:EDGE]->(this5:\`Entity\`) WHERE this5.type = $param3 | 1]) > 0) | 1]) > 0) | 1]) > 0)
             RETURN this { .type } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Fish\\",
-                \\"param1\\": \\"Bird\\",
-                \\"param2\\": \\"Dog\\",
-                \\"param3\\": \\"Cat\\"
+                \\"param0\\": \\"Cat\\",
+                \\"param1\\": \\"Dog\\",
+                \\"param2\\": \\"Bird\\",
+                \\"param3\\": \\"Fish\\"
             }"
         `);
     });

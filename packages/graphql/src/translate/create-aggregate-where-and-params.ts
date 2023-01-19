@@ -52,7 +52,7 @@ export function aggregatePreComputedWhereFields(
     matchNode: Cypher.Variable
 ): {
     predicate: Cypher.Predicate | undefined;
-    preComputedSubquery: Cypher.CompositeClause;
+    preComputedSubquery: Cypher.Call;
 } {
     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
     const direction = relationField.direction;
@@ -77,7 +77,7 @@ export function aggregatePreComputedWhereFields(
     const subquery = new Cypher.Call(matchQuery).innerWith(matchNode);
     return {
         predicate: Cypher.and(...predicates),
-        preComputedSubquery: Cypher.concat(subquery),
+        preComputedSubquery: subquery,
     };
 }
 

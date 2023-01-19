@@ -47,7 +47,7 @@ export function createPropertyWhere({
     context: Context;
 }): {
     predicate: Cypher.Predicate | undefined;
-    preComputedSubquery?: Cypher.CompositeClause | undefined;
+    preComputedSubquery?: Cypher.Call | undefined;
 } {
     const match = whereRegEx.exec(key);
     if (!match) {
