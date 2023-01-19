@@ -121,27 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
-            CALL {
-                WITH this
-                MATCH (this)-[this0:ARCHITECTURE]->(this1:\`MasterData\`)
-                CALL {
-                    WITH this1
-                    MATCH (this1)-[this2:HAS_NAME]->(this3:\`NameDetails\`)
-                    WHERE (this2.current = $param0 AND this3.fullName = $param1)
-                    RETURN count(this2) AS var4
-                }
-                WITH *
-                WHERE (this0.current = $param2 AND var4 = 1)
-                RETURN count(this0) AS var5
-            }
-            CALL {
-                WITH this
-                MATCH (this)-[this6:HAS_NAME]->(this7:\`NameDetails\`)
-                WHERE (this6.current = $param3 AND this7.fullName CONTAINS $param4)
-                RETURN count(this6) AS var8
-            }
-            WITH *
-            WHERE (this.current = $param5 AND var5 = 1 AND var8 = 1)
+            WHERE (this.current = $param0 AND size([(this)-[this0:ARCHITECTURE]->(this1:\`MasterData\`) WHERE (this0.current = $param1 AND size([(this1)-[this2:HAS_NAME]->(this3:\`NameDetails\`) WHERE (this2.current = $param2 AND this3.fullName = $param3) | 1]) = 1) | 1]) = 1 AND size([(this)-[this4:HAS_NAME]->(this5:\`NameDetails\`) WHERE (this4.current = $param4 AND this5.fullName CONTAINS $param5) | 1]) = 1)
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_NameDetails:\`NameDetails\`)
@@ -175,11 +155,11 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
-                \\"param1\\": \\"MHA\\",
+                \\"param1\\": true,
                 \\"param2\\": true,
-                \\"param3\\": true,
-                \\"param4\\": \\"1\\",
-                \\"param5\\": true,
+                \\"param3\\": \\"MHA\\",
+                \\"param4\\": true,
+                \\"param5\\": \\"1\\",
                 \\"this_connection_nameDetailsConnectionparam0\\": true,
                 \\"this_connection_architectureConnectionparam0\\": true,
                 \\"this_MasterData_connection_nameDetailsConnectionparam0\\": true
