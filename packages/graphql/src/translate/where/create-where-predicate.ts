@@ -75,11 +75,10 @@ export function createWherePredicate({
             });
             if (predicate) {
                 predicates.push(predicate);
+                requiredVariables.push(...innerRequiredVariables);
+                aggregatingVariables.push(...innerAggregatingVariables);
                 if (preComputedSubqueries && !preComputedSubqueries.empty)
                     subqueries = Cypher.concat(subqueries, preComputedSubqueries);
-                if (innerRequiredVariables && innerRequiredVariables) requiredVariables.push(...innerRequiredVariables);
-                if (innerAggregatingVariables && innerAggregatingVariables)
-                    aggregatingVariables.push(...innerAggregatingVariables);
             }
             return;
         }
@@ -91,12 +90,10 @@ export function createWherePredicate({
         } = createPropertyWhere({ key, value, element, targetElement, context, listPredicateStr, requiredVariables });
         if (predicate) {
             predicates.push(predicate);
+            requiredVariables.push(...innerRequiredVariables);
+            aggregatingVariables.push(...innerAggregatingVariables);
             if (preComputedSubqueries && !preComputedSubqueries.empty)
                 subqueries = Cypher.concat(subqueries, preComputedSubqueries);
-            if (innerRequiredVariables && innerRequiredVariables.length)
-                requiredVariables.push(...innerRequiredVariables);
-            if (innerAggregatingVariables && innerAggregatingVariables)
-                aggregatingVariables.push(...innerAggregatingVariables);
             return;
         }
     });
@@ -145,11 +142,10 @@ function createNestedPredicate({
         if (predicate) {
             nested.push(predicate);
         }
+        requiredVariables.push(...innerReturnVariables);
+        aggregatingVariables.push(...innerAggregatingVariables);
         if (preComputedSubqueries && !preComputedSubqueries.empty)
             subqueries = Cypher.concat(subqueries, preComputedSubqueries);
-        if (innerReturnVariables && innerReturnVariables.length) requiredVariables.push(...innerReturnVariables);
-        if (innerAggregatingVariables && innerAggregatingVariables)
-            aggregatingVariables.push(...innerAggregatingVariables);
     });
     if (key === "OR") {
         return {

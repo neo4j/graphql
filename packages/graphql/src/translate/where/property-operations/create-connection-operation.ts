@@ -125,6 +125,11 @@ export function createConnectionOperation({
             innerOperation.predicate = Cypher.and(innerOperation.predicate, orOperatorMultipleNodeLabels);
         }
 
+        subqueries = Cypher.concat(subqueries, innerOperation.preComputedSubqueries);
+        requiredVariables.push(...innerOperation.requiredVariables);
+        aggregatingVariables.push(...innerOperation.aggregatingVariables);
+        matchPatterns.push(matchPattern);
+
         if (listPredicateStr === "any" && !connectionField.relationship.typeMeta.array) {
             listPredicateStr = "single";
         }
@@ -138,12 +143,6 @@ export function createConnectionOperation({
         });
 
         operations.push(predicate);
-        subqueries = Cypher.concat(subqueries, innerOperation.preComputedSubqueries);
-        if (innerOperation.requiredVariables && innerOperation.requiredVariables.length)
-            requiredVariables.push(...innerOperation.requiredVariables);
-        if (innerOperation.aggregatingVariables && innerOperation.aggregatingVariables.length)
-            aggregatingVariables.push(...innerOperation.aggregatingVariables);
-        matchPatterns.push(matchPattern);
     });
 
     if (aggregatingVariables && aggregatingVariables.length) {
@@ -214,10 +213,8 @@ export function createConnectionWherePropertyOperation({
                 subOperations.push(predicate);
                 if (preComputedSubqueries && !preComputedSubqueries.empty)
                     preComputedSubqueriesResult.push(preComputedSubqueries);
-                if (innerRequiredVariables && innerRequiredVariables.length)
-                    requiredVariables.push(...innerRequiredVariables);
-                if (innerAggregatingVariables && innerAggregatingVariables.length)
-                    aggregatingVariables.push(...innerAggregatingVariables);
+                requiredVariables.push(...innerRequiredVariables);
+                aggregatingVariables.push(...innerAggregatingVariables);
             });
             if (key === "AND") {
                 params.push(Cypher.and(...filterTruthy(subOperations)));
@@ -247,10 +244,8 @@ export function createConnectionWherePropertyOperation({
             params.push(result);
             if (preComputedSubqueries && !preComputedSubqueries.empty)
                 preComputedSubqueriesResult.push(preComputedSubqueries);
-            if (innerRequiredVariables && innerRequiredVariables.length)
-                requiredVariables.push(...innerRequiredVariables);
-            if (innerAggregatingVariables && innerAggregatingVariables.length)
-                aggregatingVariables.push(...innerAggregatingVariables);
+            requiredVariables.push(...innerRequiredVariables);
+            aggregatingVariables.push(...innerAggregatingVariables);
             return;
         }
 
@@ -285,10 +280,8 @@ export function createConnectionWherePropertyOperation({
             params.push(result);
             if (preComputedSubqueries && !preComputedSubqueries.empty)
                 preComputedSubqueriesResult.push(preComputedSubqueries);
-            if (innerRequiredVariables && innerRequiredVariables.length)
-                requiredVariables.push(...innerRequiredVariables);
-            if (innerAggregatingVariables && innerAggregatingVariables.length)
-                aggregatingVariables.push(...innerAggregatingVariables);
+            requiredVariables.push(...innerRequiredVariables);
+            aggregatingVariables.push(...innerAggregatingVariables);
             return;
         }
     });

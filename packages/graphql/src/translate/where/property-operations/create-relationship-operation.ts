@@ -119,7 +119,7 @@ export function createRelationshipOperation({
     return {
         predicate,
         preComputedSubqueries: preComputedSubqueries,
-        requiredVariables: [],
+        requiredVariables,
         aggregatingVariables: [],
     };
 }
