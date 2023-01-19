@@ -585,4 +585,32 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             ]),
         });
     });
+
+    test("should find genres with aggregation at the same level", async () => {
+        const query = `
+            {
+                ${movieType.plural}(where: { genres: { moviesAggregate: { count: 3 } }, genresAggregate: { count: 1 } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [movieType.plural]: expect.toIncludeSameMembers([
+                {
+                    title: movieTitle1,
+                },
+                {
+                    title: movieTitle3,
+                },
+            ]),
+        });
+    });
 });
