@@ -26,7 +26,7 @@ import type { WhereOperator } from "../types";
 
 import { createWherePredicate } from "../create-where-predicate";
 import { filterTruthy } from "../../../utils/utils";
-import { createRelationshipSubqueryAndPredicate } from "./create-relationship-operation";
+import { createRelationshipPredicate } from "./create-relationship-operation";
 
 export function createConnectionOperation({
     connectionField,
@@ -130,7 +130,7 @@ export function createConnectionOperation({
             listPredicateStr = "single";
         }
 
-        const predicate = createRelationshipSubqueryAndPredicate({
+        const predicate = createRelationshipPredicate({
             matchPattern,
             listPredicateStr,
             childNode,

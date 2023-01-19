@@ -85,7 +85,7 @@ export function createRelationshipOperation({
         listPredicateStr,
     });
 
-    const predicate = createRelationshipSubqueryAndPredicate({
+    const predicate = createRelationshipPredicate({
         childNode,
         matchPattern,
         listPredicateStr,
@@ -115,7 +115,7 @@ export function createRelationshipOperation({
     };
 }
 
-export function createRelationshipSubqueryAndPredicate({
+export function createRelationshipPredicate({
     matchPattern,
     listPredicateStr,
     childNode,
@@ -141,7 +141,7 @@ export function createRelationshipSubqueryAndPredicate({
         }
         case "not":
         case "none": {
-            const somePredicate = createRelationshipSubqueryAndPredicate({
+            const somePredicate = createRelationshipPredicate({
                 matchPattern,
                 listPredicateStr: "some",
                 childNode,
