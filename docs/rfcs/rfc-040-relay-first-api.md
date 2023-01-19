@@ -463,13 +463,74 @@ type PersonMutationResponse {
     info: MutationInfo!
 }
 
+## Like MovieEdge but without pagination
 type MovieMutationEdge {
-    node: Movie!
+    node: MovieMutationNode!
 }
 
+## Like PersonEdge but without pagination
 type PersonMutationEdge {
-    node: Person!
+    node: PersonMutationNode!
 }
+
+## Like MovieNode but without pagination
+type MovieMutationNode {
+    title: String!
+    id: ID
+    released: Int
+    alternativeTitles: [String!]
+    actors: MovieActorsMutationConnection!
+    director: MovieDirectorMutationConnection!
+}
+
+## Like PersonNode but without pagination
+type PersonMutationNode {
+    name: String!
+    movies: PersonMoviesMutationConnection!
+    directed: PersonDirectedMutationConnection!
+}
+
+## Like MovieActorsConnection but without pagination
+type MovieActorsMutationConnection {
+    edges: [MovieActorsMutationEdge!]!
+}
+
+## Like MovieDirectorConnection but without pagination
+type MovieDirectorMutationConnection {
+    edges: [MovieDirectorMutationEdge!]!
+}
+
+## Like PersonMoviesConnection but without pagination
+type PersonMoviesMutationConnection {
+    edges: [PersonMoviesMutationEdge!]!
+}
+
+## Like PersonDirectedConnection but without pagination
+type PersonDirectedMutationConnection {
+    edges: [PersonDirectedMutationEdge!]!
+}
+
+## "Relationship" edges without pagination and fulltext
+
+type MovieActorsMutationEdge {
+    node: PersonMutationNode!
+    fields: ActedIn
+}
+
+type MovieDirectorMutationEdge {
+    node: PersonMutationNode!
+}
+
+type PersonMoviesMutationEdge {
+    node: MovieMutationNode!
+    fields: ActedIn!
+}
+
+type PersonDirectedMutationEdge {
+    node: MovieMutationNode! 
+}
+
+## Generic Mutation Info
 
 type MutationInfo {
     bookmark: String
@@ -688,6 +749,11 @@ input PersonConnectNode {
     directed: PersonDirectedCreateOperations
 }
 
+# ConnectOrCreate 
+input MovieUniqueWhere {
+    id: ID
+}
+
 # Relationship input types
 
 input ActedInCreate {
@@ -699,7 +765,6 @@ input ActedInCreate {
 **Update**
 
 ```graphql
-
 type Mutation {
     updateMovies(where: MovieConnectionWhere, edges: [MovieEdgeUpdate!]!): MoviesMutationResponse!
     updatePeople(where: PersonConnectionWhere, edges: [PersonEdgeUpdate!]!): PersonMutationResponse!
@@ -814,12 +879,10 @@ input PersonDirectedUpdate {
 input PersonDirectedEdgeUpdate {
     node: MovieUpdateNode
 }
-
 ```
 # Delete Mutaions
 
 ```graphql
-
 # Delete operations
 
 type Mutation {
@@ -847,10 +910,6 @@ input PersonEdgeDelete {
 input PersonEdgeDeleteNode {
     actors: MovieActorsDelete
     director: MovieDirectorDelete
-}
-
-input MovieUniqueWhere {
-    id: ID
 }
 ```
 
