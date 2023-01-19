@@ -1162,34 +1162,34 @@ type MovieMutationNode {
     id: ID
     released: Int
     alternativeTitles: [String!]
-    actors: MovieActorsMutationConnection!
-    director: MovieDirectorMutationConnection!
+    actors: MovieActorsConnectionMutation!
+    director: MovieDirectorConnectionMutation!
 }
 
 ## Like PersonNode but without pagination
 type PersonMutationNode {
     name: String!
-    movies: PersonMoviesMutationConnection!
-    directed: PersonDirectedMutationConnection!
+    movies: PersonMoviesConnectionMutation!
+    directed: PersonDirectedConnectionMutation!
 }
 
 ## Like MovieActorsConnection but without pagination
-type MovieActorsMutationConnection {
+type MovieActorsConnectionMutation {
     edges: [MovieActorsMutationEdge!]!
 }
 
 ## Like MovieDirectorConnection but without pagination
-type MovieDirectorMutationConnection {
+type MovieDirectorConnectionMutation {
     edges: [MovieDirectorMutationEdge!]!
 }
 
 ## Like PersonMoviesConnection but without pagination
-type PersonMoviesMutationConnection {
+type PersonMoviesConnectionMutation {
     edges: [PersonMoviesMutationEdge!]!
 }
 
 ## Like PersonDirectedConnection but without pagination
-type PersonDirectedMutationConnection {
+type PersonDirectedConnectionMutation {
     edges: [PersonDirectedMutationEdge!]!
 }
 
@@ -1535,6 +1535,7 @@ input MovieDirectorUpdateOperations {
 
 input MovieActorsUpdate {
     edges: MovieActorsEdgeUpdate
+    where: PersonConnectionWhere
 }
 
 input MovieDirectorUpdate {
@@ -1568,8 +1569,10 @@ input PersonMoviesUpdateOperations {
     disconnect: PersonMoviesDisconnect
     delete: PersonMoviesDelete
 }
+
 input PersonMoviesUpdate {
     edges: PersonMoviesEdgeUpdate
+    where: MovieConnectionWhere
 }
 
 input PersonMoviesEdgeUpdate {
