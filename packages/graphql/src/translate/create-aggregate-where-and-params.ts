@@ -55,7 +55,7 @@ export function aggregatePreComputedWhereFields(
 ): {
     predicate: Cypher.Predicate | undefined;
     preComputedSubquery: Cypher.CompositeClause;
-    returnVariables: Cypher.Variable[];
+    returnVariables?: Cypher.Variable[];
 } {
     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
     const direction = relationField.direction;
@@ -79,10 +79,19 @@ export function aggregatePreComputedWhereFields(
     );
     matchQuery.return(...returnProjections);
     const subquery = new Cypher.Call(matchQuery).innerWith(matchNode);
+
+    // The return values are needed when performing SOME/NONE/ALL/SINGLE operations as they need to be aggregated to perform comparisons
+    if (listPredicateStr) {
+        return {
+            predicate: Cypher.and(...predicates),
+            preComputedSubquery: Cypher.concat(subquery),
+            returnVariables,
+        };
+    }
+
     return {
         predicate: Cypher.and(...predicates),
         preComputedSubquery: Cypher.concat(subquery),
-        returnVariables,
     };
 }
 
@@ -171,30 +180,9 @@ function createCountPredicateAndProjection(
 
     return {
         returnProjection: [operation, operationVar],
-        predicate: test(operationVar, listPredicateStr),
+        predicate: getReturnValuePredicate(operationVar, listPredicateStr),
         returnVariable: operationVar,
     };
-}
-
-function test(operationVar: Cypher.Variable, listPredicateStr?: ListPredicate) {
-    switch (listPredicateStr) {
-        case "all": {
-            const baa = new Cypher.Variable();
-            return Cypher.all(baa, operationVar, Cypher.eq(baa, new Cypher.Literal(true)));
-        }
-        case "single": {
-            const baa = new Cypher.Variable();
-            return Cypher.single(baa, operationVar, Cypher.eq(baa, new Cypher.Literal(true)));
-        }
-        case "not":
-        case "none":
-        case "any": {
-            return Cypher.in(new Cypher.Literal(true), operationVar);
-        }
-        default: {
-            return Cypher.eq(operationVar, new Cypher.Literal(true));
-        }
-    }
 }
 
 function aggregateEntityWhere(
@@ -225,7 +213,7 @@ function aggregateEntityWhere(
             const operation = createEntityOperation(refNodeOrRelation, target, key, value);
             const operationVar = new Cypher.Variable();
             returnProjections.push([operation, operationVar]);
-            predicates.push(test(operationVar, listPredicateStr));
+            predicates.push(getReturnValuePredicate(operationVar, listPredicateStr));
             returnVariables.push(operationVar);
         }
     });
@@ -294,5 +282,26 @@ function getAggregateOperation(
             return Cypher.sum(property);
         default:
             throw new Error(`Invalid operator ${aggregationOperator}`);
+    }
+}
+
+function getReturnValuePredicate(operationVar: Cypher.Variable, listPredicateStr?: ListPredicate) {
+    switch (listPredicateStr) {
+        case "all": {
+            const listVar = new Cypher.Variable();
+            return Cypher.all(listVar, operationVar, Cypher.eq(listVar, new Cypher.Literal(true)));
+        }
+        case "single": {
+            const listVar = new Cypher.Variable();
+            return Cypher.single(listVar, operationVar, Cypher.eq(listVar, new Cypher.Literal(true)));
+        }
+        case "not":
+        case "none":
+        case "any": {
+            return Cypher.in(new Cypher.Literal(true), operationVar);
+        }
+        default: {
+            return Cypher.eq(operationVar, new Cypher.Literal(true));
+        }
     }
 }

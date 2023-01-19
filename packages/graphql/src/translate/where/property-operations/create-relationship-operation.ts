@@ -128,16 +128,25 @@ export function createRelationshipSubqueryAndPredicate({
     innerOperation: Cypher.Predicate | undefined;
     returnVariables: Cypher.Variable[];
 }): Cypher.Predicate | undefined {
+    let sizeFunction: Cypher.Function;
+    if (innerOperation) {
+        sizeFunction = Cypher.size(
+            new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(innerOperation)
+        );
+    } else {
+        return undefined;
+    }
+
     switch (listPredicateStr) {
         case "all": {
             // Testing "ALL" requires testing that at least one element exists and that no elements not matching the filter exists
-            const existsMatch = new Cypher.Match(matchPattern);
-            const existsMatchNot = new Cypher.Match(matchPattern);
-            if (innerOperation) {
-                existsMatch.where(innerOperation);
-                existsMatchNot.where(Cypher.not(innerOperation));
-            }
-            return Cypher.and(new Cypher.Exists(existsMatch), Cypher.not(new Cypher.Exists(existsMatchNot)));
+            const existsNotSizeFunction = Cypher.size(
+                new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(Cypher.not(innerOperation))
+            );
+            return Cypher.and(
+                Cypher.gt(sizeFunction, new Cypher.Literal(0)),
+                Cypher.eq(existsNotSizeFunction, new Cypher.Literal(0))
+            );
         }
         case "not":
         case "none": {
@@ -154,23 +163,11 @@ export function createRelationshipSubqueryAndPredicate({
             return undefined;
         }
         case "single": {
-            const patternComprehension = new Cypher.PatternComprehension(matchPattern, childNode);
-            if (innerOperation) {
-                const test = Cypher.size(new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(innerOperation));
-                return Cypher.eq(test, new Cypher.Literal(1));
-                // return Cypher.single(childNode, patternComprehension, innerOperation);
-            }
-            return undefined;
+            return Cypher.eq(sizeFunction, new Cypher.Literal(1));
         }
         case "some":
         default: {
-            const relationshipMatch = new Cypher.Match(matchPattern);
-            if (innerOperation) {
-                relationshipMatch.where(innerOperation);
-            }
-            // const test = Cypher.size(new Cypher.PatternComprehension(matchPattern), innerOperation);
-            const existsPredicate = new Cypher.Exists(relationshipMatch);
-            return existsPredicate;
+            return Cypher.gt(sizeFunction, new Cypher.Literal(0));
         }
     }
 }
