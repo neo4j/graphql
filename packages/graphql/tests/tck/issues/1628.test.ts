@@ -62,19 +62,15 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`frbr__Work\`:\`Resource\`)
-            CALL {
-                WITH this
+            WHERE EXISTS {
                 MATCH (this)-[this0:dcterms__title]->(this1:\`dcterms_title\`:\`property\`)
                 WHERE this1.value CONTAINS $param0
-                RETURN count(this0) AS var2
             }
-            WITH *
-            WHERE var2 > 0
             WITH *
             LIMIT $param1
             CALL {
                 WITH this
-                MATCH (this)-[this3:dcterms__title]->(this_dcterms__title:\`dcterms_title\`:\`property\`)
+                MATCH (this)-[this2:dcterms__title]->(this_dcterms__title:\`dcterms_title\`:\`property\`)
                 WHERE this_dcterms__title.value CONTAINS $param2
                 WITH this_dcterms__title { .value } AS this_dcterms__title
                 RETURN collect(this_dcterms__title) AS this_dcterms__title

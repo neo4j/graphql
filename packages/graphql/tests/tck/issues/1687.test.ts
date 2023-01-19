@@ -64,27 +64,19 @@ describe("https://github.com/neo4j/graphql/issues/1687", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Genre\`)
-            CALL {
-                WITH this
+            WHERE (EXISTS {
+                MATCH (this1:\`Movie\`)-[this0:HAS_GENRE]->(this)
+                WHERE this1.title = $param0
+            } AND NOT (EXISTS {
                 MATCH (this1:\`Movie\`)-[this0:HAS_GENRE]->(this)
                 WHERE NOT (this1.title = $param0)
-                RETURN count(this0) AS var2
-            }
-            CALL {
-                WITH this
-                MATCH (this1:\`Movie\`)-[this0:HAS_GENRE]->(this)
-                WHERE this1.title = $param1
-                RETURN count(this0) AS var3
-            }
-            WITH *
-            WHERE (var2 = 0 AND NOT (var3 = 0))
+            }))
             RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Matrix\\",
-                \\"param1\\": \\"Matrix\\"
+                \\"param0\\": \\"Matrix\\"
             }"
         `);
     });

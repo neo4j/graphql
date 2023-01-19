@@ -79,14 +79,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                CALL {
-                    WITH this_Actor
+                WHERE EXISTS {
                     MATCH (this_Actor)-[this_connection_actorsConnectionthis1:ACTED_IN]->(this_connection_actorsConnectionthis2:\`Movie\`)
                     WHERE this_connection_actorsConnectionthis2.title = $this_connection_actorsConnectionparam0
-                    RETURN count(this_connection_actorsConnectionthis1) AS this_connection_actorsConnectionvar3
                 }
-                WITH *
-                WHERE this_connection_actorsConnectionvar3 > 0
                 WITH { node: { name: this_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
