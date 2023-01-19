@@ -441,6 +441,633 @@ query Movies {
 -   Cursor based pagination is not supported
 -   Fulltext is not supported
 
+## Mutations
+
+**Create**
+
+```graphql
+type Mutation {
+    createMovies(edges: [MovieEdgeCreate!]!): MoviesMutationResponse!
+    createPeople(edges: [PersonEdgeCreate!]!): PersonMutationResponse!
+}
+
+# Create
+
+type MoviesMutationResponse {
+    edges: [MovieMutationEdge!]!
+    info: MutationInfo! 
+}
+
+type PersonMutationResponse {
+    edges: [PersonMutationEdge!]!
+    info: MutationInfo!
+}
+
+type MovieMutationEdge {
+    node: Movie!
+}
+
+type PersonMutationEdge {
+    node: Person!
+}
+
+type MutationInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
+}
+
+## Create Input
+
+input MovieEdgeCreate {
+    node: MovieCreateNode
+}
+
+input PersonEdgeCreate {
+    node: PersonCreateNode
+}
+
+# CreateNodes
+
+input MovieCreateNode {
+    title: String!
+    released: Int
+    alternativeTitles: [String!]
+    actors: MovieActorsCreateOperations
+    director: MovieDirectorCreateOperations
+}
+
+input PersonCreateNode {
+    name: String!
+    movies: PersonMoviesCreateOperations
+    directed: PersonDirectedCreateOperations
+}
+
+# ConnectionOperations
+input MovieActorsCreateOperations {
+    create: MovieActorsCreate
+    connect: MovieActorsConnect
+    # TODO: update
+}
+
+input MovieDirectorCreateOperations {
+    create: MovieDirectorCreate
+    connect: MovieDirectorConnect
+}
+
+input PersonMoviesCreateOperations {
+    create: PersonMoviesCreate
+    connect: PersonMoviesConnect
+}
+
+input PersonDirectedCreateOperations {
+    create: PersonDirectedCreate
+    connect: PersonDirectedConnect
+}
+
+# "Nested" create
+input MovieActorsCreate {
+    edges: [MovieActorsEdgeCreate!]
+}
+
+input MovieDirectorCreate {
+    edges: [MovieDirectorEdgeCreate!]
+}
+
+input PersonMoviesCreate {
+    edges: [PersonMoviesEdgeCreate!]
+}
+
+input PersonDirectedCreate {
+    edges: [PersonDirectedEdgeCreate!]
+}
+
+# "Nested" Edge Create
+
+input MovieActorsEdgeCreate {
+    node: PersonCreateNode!
+    fields: ActedInCreate
+}
+
+input MovieDirectorEdgeCreate {
+    node: PersonCreateNode!
+}
+
+input PersonMoviesEdgeCreate {
+    node: MovieCreateNode!
+    fields: ActedInCreate
+}
+
+input PersonDirectedEdgeCreate {
+    node: MovieCreateNode!
+}
+
+# "Nested" connect
+
+input MovieActorsConnect {
+    where: MovieActorsEdgeWhere
+    edges: MovieActorsEdgeConnect
+}
+
+input MovieActorsDisconnect {
+    where: MovieActorsEdgeWhere
+    edges: MovieActorsEdgeDisconnect
+}
+
+input MovieActorsDelete {
+    where: MovieActorsEdgeWhere
+    edges: MovieActorsEdgeDisconnect
+}
+
+input MovieDirectorConnect {
+    where: MovieDirectorEdgeWhere
+    edges: MovieDirectorEdgeConnect
+}
+
+input MovieDirectorDisconnect {
+    where: MovieDirectorEdgeWhere
+    edges: MovieDirectorEdgeDisconnect
+}
+
+input MovieDirectorDelete {
+    where: MovieDirectorEdgeWhere
+    edges: MovieDirectorEdgeDisconnect
+}
+
+input PersonMoviesConnect {
+    where: PersonMoviesEdgeWhere
+    edges: PersonMoviesEdgeConnect
+}
+
+input PersonMoviesConnectOrCreate {
+    where: MoviesConnectOrCreateWhere
+    edges: PersonMoviesEdgeConnect
+}
+
+input PersonDirectedConnectOrCreate {
+    where: MoviesConnectOrCreateWhere
+    edges: PersonDirectedEdgeConnect
+}
+
+input MoviesConnectOrCreateWhere {
+    node: MovieUniqueWhere
+}
+
+input PersonMoviesDisconnect {
+    where: PersonMoviesEdgeWhere
+    edges: PersonMoviesEdgeDisconnect
+}
+
+input PersonMoviesDelete {
+    where: PersonMoviesEdgeWhere
+    edges: PersonMoviesEdgeDisconnect
+}
+
+input PersonDirectedConnect {
+    where: PersonDirectedEdgeWhere
+    edges: PersonDirectedEdgeConnect
+}
+
+input PersonDirectedDisconnect {
+    where: PersonDirectedEdgeWhere
+    edges: PersonDirectedEdgeDisconnect
+}
+
+input PersonDirectedDelete {
+    where: PersonDirectedEdgeWhere
+    edges: PersonDirectedEdgeDisconnect
+}
+
+# Nested Edge Connect
+input MovieActorsEdgeConnect {
+    fields: ActedInCreate
+    node: [PersonConnectNode!]
+}
+
+input MovieActorsEdgeDisconnect {
+    node: [PersonConnectNode!]
+}
+
+input MovieDirectorEdgeConnect {
+    node: [PersonConnectNode!]
+}
+
+input MovieDirectorEdgeDisconnect {
+    node: [PersonConnectNode!]
+}
+
+input PersonMoviesEdgeConnect {
+    fields: ActedInCreate
+    node: [MovieConnectNode!]
+}
+
+input PersonMoviesEdgeDisconnect {
+    node: [MovieConnectNode!]
+}
+
+input PersonDirectedEdgeConnect {
+    node: [MovieConnectNode!]
+}
+
+input PersonDirectedEdgeDisconnect {
+    node: [MovieConnectNode!]
+}
+
+# ConnectNodes
+## Maybe these could be the same as UpdateNode
+
+input MovieConnectNode {
+    actors: MovieActorsCreateOperations
+    director: MovieDirectorCreateOperations
+}
+
+input PersonConnectNode {
+    movies: PersonMoviesCreateOperations
+    directed: PersonDirectedCreateOperations
+}
+
+# Relationship input types
+
+input ActedInCreate {
+    year: Int
+}
+```
+
+
+**Update**
+
+```graphql
+
+type Mutation {
+    updateMovies(where: MovieConnectionWhere, edges: [MovieEdgeUpdate!]!): MoviesMutationResponse!
+    updatePeople(where: PersonConnectionWhere, edges: [PersonEdgeUpdate!]!): PersonMutationResponse!
+}
+
+# Update
+
+## Update Input
+
+input MovieEdgeUpdate {
+    node: MovieUpdateNode
+}
+
+input PersonEdgeUpdate {
+    node: PersonUpdateNode
+}
+# UpdateNodes
+
+input MovieUpdateNode {
+    title: String
+    released: IntUpdateOperations
+    alternativeTitles: StringListUpdateOperations
+    actors: MovieActorsUpdateOperations
+    director: MovieDirectorUpdateOperations
+}
+
+input IntUpdateOperations {
+    set: Int
+    increment: Int
+    decrement: Int
+}
+
+input StringListUpdateOperations {
+    set: Int
+    pop: Int
+    push: [String!]
+}
+
+input MovieActorsUpdateOperations {
+    create: MovieActorsCreate
+    connect: MovieActorsConnect
+    update: MovieActorsUpdate
+    disconnect: MovieActorsDisconnect
+    delete: MovieActorsDelete
+}
+
+input MovieDirectorUpdateOperations {
+    create: MovieDirectorCreate
+    connect: MovieDirectorConnect
+    update: MovieDirectorUpdate
+    disconnect: MovieDirectorDisconnect
+    delete: MovieDirectorDelete
+}
+
+input MovieActorsUpdate {
+    edges: MovieActorsEdgeUpdate
+}
+
+input MovieDirectorUpdate {
+    edges: MovieDirectorEdgeUpdate
+}
+
+input MovieActorsEdgeUpdate {
+    node: PersonUpdateNode
+    fields: ActedInUpdate
+}
+
+input MovieDirectorEdgeUpdate {
+    node: PersonUpdateNode
+}
+
+input ActedInUpdate {
+    year: IntUpdateOperations
+}
+
+input PersonUpdateNode {
+    name: String
+    movies: PersonMoviesUpdateOperations
+    directed: PersonDirectedUpdateOperations
+}
+
+input PersonMoviesUpdateOperations {
+    create: PersonMoviesCreate
+    update: PersonMoviesUpdate
+    connect: PersonMoviesConnect
+    connectOrCreate: PersonMoviesConnectOrCreate
+    disconnect: PersonMoviesDisconnect
+    delete: PersonMoviesDelete
+}
+input PersonMoviesUpdate {
+    edges: PersonMoviesEdgeUpdate
+}
+
+input PersonMoviesEdgeUpdate {
+    node: MovieUpdateNode
+    fields: ActedInUpdate
+}
+
+input PersonDirectedUpdateOperations {
+    create: PersonDirectedCreate
+    connect: PersonDirectedConnect
+    connectOrCreate: PersonDirectedConnectOrCreate
+    update: PersonDirectedUpdate
+    disconnect: PersonDirectedDisconnect
+    delete: PersonDirectedDelete
+}
+
+input PersonDirectedUpdate {
+    edges: PersonDirectedEdgeUpdate
+}
+
+input PersonDirectedEdgeUpdate {
+    node: MovieUpdateNode
+}
+
+```
+# Delete Mutaions
+
+```graphql
+
+# Delete operations
+
+type Mutation {
+    deleteMovies(where: MovieConnectionWhere, edges: [MovieEdgeDelete!]!): DeleteMutationResponse!
+    deletePeople(where: PersonConnectionWhere, edges: [PersonEdgeDelete!]!): DeleteMutationResponse!
+}
+
+type DeleteMutationResponse {
+    info: MutationInfo! 
+}
+
+input MovieEdgeDelete {
+    node: MovieEdgeDeleteNode
+
+}
+input MovieEdgeDeleteNode {
+    actors: MovieActorsDelete
+    director: MovieDirectorDelete
+}
+
+input PersonEdgeDelete {
+    node: PersonEdgeDeleteNode
+}
+
+input PersonEdgeDeleteNode {
+    actors: MovieActorsDelete
+    director: MovieDirectorDelete
+}
+
+input MovieUniqueWhere {
+    id: ID
+}
+```
+
+### Mutations examples
+
+```graphql
+mutation CreateMovie {
+    createMovies( edges: { node: { title: "The Matrix" } } ) {
+        info {
+            nodesCreated
+        }
+        edges {
+            node {
+                title
+            }
+        }
+    }
+}
+
+
+mutation CreateMovieAndActors {
+  createMovies(
+    edges: {
+      node: {
+        title: { equals: "The Matrix" }
+        actors: {
+          create: {
+            edges: [
+              { node: { name: "Keanu" }, fields: { year: 1999 } }
+              { node: { name: "Anne" }, fields: { year: 1999 } }
+            ]
+          }
+        }
+      }
+    }
+  ) {
+    info {
+      nodesCreated
+    }
+    edges {
+      node {
+        title
+        actors {
+          edges {
+            node {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation CreateMovieAndConnectToActors {
+  createMovies(
+    edges: {
+      node: {
+        title: "The Matrix"
+        actors: {
+          connect: {
+            where: { edges: { node: { name: { contains: "Keanu" } } } }
+            edges: { fields: { year: 1999 } }
+          }
+        }
+      }
+    }
+  ) {
+    info {
+      nodesCreated
+    }
+    edges {
+      node {
+        title
+        actors {
+          edges {
+            fields {
+              year
+            }
+            node {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation CreateMovieAndConnectToActors {
+    createMovies(
+        edges: {
+            node: {
+                title: "The Matrix"
+                actors: {
+                    connect: {
+                        where: { edges: { node: { name: { contains: "Keanu" } } } }
+                        edges: { fields: { year: 1999 } }
+                    }
+                }
+            }
+        }
+    ) {
+        info {
+            nodesCreated
+        }
+        edges {
+            node {
+                title
+                actors {
+                    edges {
+                        fields {
+                            year
+                        }
+                        node {
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+# Create with deeply nested
+mutation CreateMoviesAndDeeplyNestedCreateMovies {
+    createMovies(
+        edges: {
+            node: {
+                title: "The Matrix"
+                actors: {
+                    create: {
+                        edges: {
+                            fields: { year: 1999 }
+                            node: {
+                                name: "Keanu"
+                                movies: {
+                                    create: { edges: { fields: { year: 2001 }, node: { title: "The Matrix 2" } } }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ) {
+        info {
+            nodesCreated
+        }
+        edges {
+            node {
+                title
+                actors {
+                    edges {
+                        fields {
+                            year
+                        }
+                        node {
+                            name
+                            movies {
+                                edges {
+                                    fields {
+                                        year
+                                    }
+                                    node {
+                                        title
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+mutation CreateMoviesWithDeeplyNestedConnect {
+  createMovies(
+    edges: {
+      node: {
+        title: "The Matrix"
+        actors: {
+          connect: {
+            where: { edges: { node: { name: { equals: "Keanu" } } } }
+            edges: {
+              fields: { year: 1999 }
+              node: {
+                movies: {
+                  # create: {}
+                  connect: {
+                    where: {
+                      edges: { node: { title: { equals: "The Matrix 2" } } }
+                    }
+                    edges: { fields: { year: 2001 } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ) {
+    info {
+      nodesCreated
+    }
+    edges {
+      node {
+        title
+      }
+    }
+  }
+}
+```
+
+
 ## Naming conventions
 
 These are some loose conventions on type and input naming:
@@ -459,6 +1086,17 @@ These are some loose conventions on type and input naming:
 -   Node aggregation vs edge aggregation
 -   Sort by aggregations and 1-\* relationship
 -   Union / interfaces
+-   Update operations
+-   Mutations return "...Connection" types? cursor is returned in the Connection types, so maybe is worth having separated types
+-   Sorting on mutation responses?
+-   Same operations regardless of how you got through traversal in mutation
+-   UpdateOrCreate / CreateOrUpdate
+-   ConnectOrCreate missing in the nested Connect operation
+-   Should ID types should belong to aggregation and reusing and share the same filtering operators as it is now?
+-   Should ID types be modifiable? or not?
+-   For the ConnectOrCreate purpose should the type MovieUniqueWhere be a generic type and not related to Movie?
+-   As ConnectOrCreate works only based on the node uniqueness property, it has no sense to pass from the edges in the where condition, Although this is inconsistent with the input structure of the other operations.
+
 
 ## Examples
 
@@ -539,6 +1177,7 @@ type PersonEdge {
 ## "Node" Types
 type MovieNode {
     title: String!
+    id: ID
     released: Int
     alternativeTitles: [String!]
     actors(
@@ -708,6 +1347,7 @@ input MovieNodeWhere {
     OR: [MovieNodeWhere!]
     AND: [MovieNodeWhere!]
     NOT: MovieNodeWhere
+    id: StringWhere
     title: StringWhere
     released: IntWhere
     alternativeTitles: StringListWhere
@@ -882,6 +1522,7 @@ input PersonSortEdge {
 }
 
 input MovieSortNode {
+    id: SortDirection
     title: SortDirection
     released: SortDirection
 }
@@ -1042,6 +1683,7 @@ The following are the specific types that are added when the simple API is enabl
 
 ```graphql
 type Movie {
+    id: ID
     title: String!
     alternativeTitles: [String!]
     released: Int
@@ -1068,6 +1710,7 @@ input MovieWhere {
     OR: [MovieWhere!]
     AND: [MovieWhere!]
     NOT: MovieWhere
+    id: StringWhere
     title: StringWhere # Optionally, this could be a string an only support equal
     alternativeTitles: StringListWhere
     released: IntWhere
