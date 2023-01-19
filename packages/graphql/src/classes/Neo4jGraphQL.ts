@@ -238,7 +238,6 @@ class Neo4jGraphQL {
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
                 enableRegex: this.config?.enableRegex,
-                skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
                 validateTypeDefs,
                 validateCustomResolvers,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
@@ -279,6 +278,9 @@ class Neo4jGraphQL {
                 validateCustomResolvers: false,
             };
         }
+
+        // TODO - remove in 4.0.0 when skipValidateTypeDefs is removed
+        if (this.config?.skipValidateTypeDefs === true) validateTypeDefs = false
 
         if (typeof this.config?.startupValidation === "object") {
             if (this.config?.startupValidation.typeDefs === false) validateTypeDefs = false;
