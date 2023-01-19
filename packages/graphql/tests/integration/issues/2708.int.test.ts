@@ -32,6 +32,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
     let movieType: UniqueType;
     let genreType: UniqueType;
+    let seriesType: UniqueType;
     let inGenreInterface: UniqueType;
 
     const movieTitle1 = "A title";
@@ -39,6 +40,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
     const movieTitle3 = "short";
     const movieTitle4 = "a fourth title";
     const movieTitle5 = "an unconnected movie";
+    const seriesName1 = "series 1";
+    const seriesName2 = "second series";
     const genreName1 = "Action";
     const genreName2 = "Horror";
     const intValue1 = 1;
@@ -58,6 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         movieType = generateUniqueType("Movie");
         genreType = generateUniqueType("Genre");
+        seriesType = generateUniqueType("Series");
         inGenreInterface = generateUniqueType("InGenre");
 
         const typeDefs = `
@@ -65,10 +69,18 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
                 title: String
                 genres: [${genreType.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "${inGenreInterface.name}")
             }
+
             type ${genreType.name} {
                 name: String
                 movies: [${movieType.name}!]! @relationship(type: "IN_GENRE", direction: IN, properties: "${inGenreInterface.name}")
+                series: [${seriesType.name}!]! @relationship(type: "IN_GENRE", direction: IN, properties: "${inGenreInterface.name}")
             }
+
+            type ${seriesType} {
+                name: String!
+                genres: [${genreType.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "${inGenreInterface.name}")
+            }
+
             interface ${inGenreInterface.name} {
                 intValue: Int!
             }
@@ -86,6 +98,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             CREATE (m2)-[:IN_GENRE { intValue: ${intValue4} }]->(g2:${genreType.name} { name: "${genreName2}" })
             CREATE (m4:${movieType.name} { title: "${movieTitle4}" })-[:IN_GENRE { intValue: ${intValue5} }]->(g2)
             CREATE (m5:${movieType.name} { title: "${movieTitle5}" })
+            CREATE (s1:${seriesType.name} { name: "${seriesName1}" })-[:IN_GENRE { intValue: ${intValue1} }]->(g2)
+            CREATE (s2:${seriesType.name} { name: "${seriesName2}" })-[:IN_GENRE { intValue: ${intValue2} }]->(g2)
         `);
     });
 
@@ -479,6 +493,96 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [movieType.plural]: [],
+        });
+    });
+
+    test("should find genres with multiple AND aggregates", async () => {
+        const query = `
+            {
+                ${movieType.plural}(where: { genres: { AND: [{ moviesAggregate: { count: 2 } }, { seriesAggregate: { node: { name_SHORTEST_EQUAL: ${seriesName1.length} } } }] } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [movieType.plural]: expect.toIncludeSameMembers([
+                {
+                    title: movieTitle2,
+                },
+                {
+                    title: movieTitle4,
+                },
+            ]),
+        });
+    });
+
+    test("should find genres with multiple OR aggregates", async () => {
+        const query = `
+            {
+                ${movieType.plural}(where: { genres: { OR: [{ moviesAggregate: { count: 3 } }, { seriesAggregate: { node: { name_SHORTEST_EQUAL: ${seriesName1.length} } } }] } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [movieType.plural]: expect.toIncludeSameMembers([
+                {
+                    title: movieTitle1,
+                },
+                {
+                    title: movieTitle2,
+                },
+                {
+                    title: movieTitle3,
+                },
+                {
+                    title: movieTitle4,
+                },
+            ]),
+        });
+    });
+
+    test("should find genres with multiple implicit AND aggregates", async () => {
+        const query = `
+            {
+                ${movieType.plural}(where: { genres: { moviesAggregate: { count: 2 }, seriesAggregate: { node: { name_SHORTEST_EQUAL: ${seriesName1.length} } } } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [movieType.plural]: expect.toIncludeSameMembers([
+                {
+                    title: movieTitle2,
+                },
+                {
+                    title: movieTitle4,
+                },
+            ]),
         });
     });
 });

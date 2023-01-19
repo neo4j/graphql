@@ -55,7 +55,11 @@ export function createWherePredicate({
     let subqueries: Cypher.CompositeClause | undefined;
     whereFields.forEach(([key, value]) => {
         if (isWhereOperator(key)) {
-            const { predicate, preComputedSubqueries } = createNestedPredicate({
+            const {
+                predicate,
+                preComputedSubqueries,
+                returnVariables: innerReturnVariables,
+            } = createNestedPredicate({
                 key,
                 element,
                 targetElement,
@@ -67,6 +71,7 @@ export function createWherePredicate({
                 predicates.push(predicate);
                 if (preComputedSubqueries && !preComputedSubqueries.empty)
                     subqueries = Cypher.concat(subqueries, preComputedSubqueries);
+                if (innerReturnVariables && innerReturnVariables) returnVariables.push(...innerReturnVariables);
             }
             return;
         }
