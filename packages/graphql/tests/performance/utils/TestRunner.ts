@@ -118,6 +118,7 @@ export class TestRunner {
         return `CYPHER
         planner=dp
         runtime=pipelined
+        replan=force
         PROFILE ${query}`;
     }
 
