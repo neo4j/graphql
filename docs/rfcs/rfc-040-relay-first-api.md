@@ -1368,12 +1368,12 @@ input PersonMoviesConnect {
 
 input PersonMoviesConnectOrCreate {
     where: MoviesConnectOrCreateWhere
-    edges: PersonMoviesEdgeConnect
+    edges: PersonMoviesEdgeCreate
 }
 
 input PersonDirectedConnectOrCreate {
     where: MoviesConnectOrCreateWhere
-    edges: PersonDirectedEdgeConnect
+    edge: PersonDirectedEdgeCreate
 }
 
 input MoviesConnectOrCreateWhere {
@@ -1389,6 +1389,7 @@ input PersonMoviesDelete {
     where: PersonMoviesEdgeWhere
     edges: PersonMoviesEdgeDisconnect
 }
+
 
 input PersonDirectedConnectEdgeWhere {
     AND: [PersonDirectedConnectEdgeWhere!]
@@ -1415,36 +1416,36 @@ input PersonDirectedDelete {
 # Nested Edge Connect
 input MovieActorsEdgeConnect {
     fields: ActedInCreate
-    node: [PersonConnectNode!]
+    node: PersonConnectNode
 }
 
 input MovieActorsEdgeDisconnect {
-    node: [PersonConnectNode!]
+    node: PersonConnectNode
 }
 
 input MovieDirectorEdgeConnect {
-    node: [PersonConnectNode!]
+    node: PersonConnectNode
 }
 
 input MovieDirectorEdgeDisconnect {
-    node: [PersonConnectNode!]
+    node: PersonConnectNode
 }
 
 input PersonMoviesEdgeConnect {
     fields: ActedInCreate
-    node: [MovieConnectNode!]
-}
-
-input PersonMoviesEdgeDisconnect {
-    node: [MovieConnectNode!]
+    node: MovieConnectNode
 }
 
 input PersonDirectedEdgeConnect {
-    node: [MovieConnectNode!]
+    node: MovieConnectNode
+}
+
+input PersonMoviesEdgeDisconnect {
+    node: MovieConnectNode
 }
 
 input PersonDirectedEdgeDisconnect {
-    node: [MovieConnectNode!]
+    node: MovieConnectNode
 }
 
 # ConnectNodes
@@ -1476,8 +1477,40 @@ input ActedInCreate {
 
 ```graphql
 type Mutation {
-    updateMovies(where: MovieConnectionWhere!, edges: [MovieEdgeUpdate!]): MoviesMutationResponse!
-    updatePeople(where: PersonConnectionWhere!, edges: [PersonEdgeUpdate!]): PersonMutationResponse!
+    updateMovies(where: MovieConnectionMutationWhere!, edges: [MovieEdgeUpdate!]): MoviesMutationResponse!
+    updatePeople(where: PersonConnectionMutationWhere!, edges: [PersonEdgeUpdate!]): PersonMutationResponse!
+}
+
+# "Top Level" Filtering, This is needed to remove the FullText where from the nested Edge
+
+input MovieConnectionMutationWhere {
+    AND: [MovieConnectionMutationWhere!]
+    OR: [MovieConnectionMutationWhere!]
+    NOT: MovieConnectionMutationWhere
+    edges: MovieEdgeMutationWhere
+}
+
+input PersonConnectionMutationWhere {
+    AND: [PersonConnectionMutationWhere!]
+    OR: [PersonConnectionMutationWhere!]
+    NOT: PersonConnectionMutationWhere
+    edges: PersonEdgeMutationWhere
+}
+
+## "Top Level" Filtering Edge, without the FullText
+
+input MovieEdgeMutationWhere {
+    AND: [MovieEdgeMutationWhere!]
+    OR: [MovieEdgeMutationWhere!]
+    NOT: MovieEdgeMutationWhere
+    node: MovieNodeWhere
+}
+
+input PersonEdgeMutationWhere {
+    AND: [PersonEdgeMutationWhere!]
+    OR: [PersonEdgeMutationWhere!]
+    NOT: PersonEdgeMutationWhere
+    node: PersonNodeWhere
 }
 
 # Update
@@ -1517,25 +1550,9 @@ input StringListUpdateOperations {
     push: [String!]
 }
 
-input MovieActorsUpdateOperations {
-    create: MovieActorsCreate
-    connect: MovieActorsConnect
-    update: MovieActorsUpdate
-    disconnect: MovieActorsDisconnect
-    delete: MovieActorsDelete
-}
-
-input MovieDirectorUpdateOperations {
-    create: MovieDirectorCreate
-    connect: MovieDirectorConnect
-    update: MovieDirectorUpdate
-    disconnect: MovieDirectorDisconnect
-    delete: MovieDirectorDelete
-}
-
 input MovieActorsUpdate {
     edges: MovieActorsEdgeUpdate
-    where: PersonConnectionWhere
+    where: MovieActorsEdgeWhere
 }
 
 input MovieDirectorUpdate {
@@ -1561,6 +1578,24 @@ input PersonUpdateNode {
     directed: PersonDirectedUpdateOperations
 }
 
+# Nested Update Operators Selection
+
+input MovieActorsUpdateOperations {
+    create: MovieActorsCreate
+    connect: MovieActorsConnect
+    update: MovieActorsUpdate
+    disconnect: MovieActorsDisconnect
+    delete: MovieActorsDelete
+}
+
+input MovieDirectorUpdateOperations {
+    create: MovieDirectorCreate
+    connect: MovieDirectorConnect
+    update: MovieDirectorUpdate
+    disconnect: MovieDirectorDisconnect
+    delete: MovieDirectorDelete
+}
+
 input PersonMoviesUpdateOperations {
     create: PersonMoviesCreate
     update: PersonMoviesUpdate
@@ -1568,16 +1603,6 @@ input PersonMoviesUpdateOperations {
     connectOrCreate: PersonMoviesConnectOrCreate
     disconnect: PersonMoviesDisconnect
     delete: PersonMoviesDelete
-}
-
-input PersonMoviesUpdate {
-    edges: PersonMoviesEdgeUpdate
-    where: MovieConnectionWhere
-}
-
-input PersonMoviesEdgeUpdate {
-    node: MovieUpdateNode
-    fields: ActedInUpdate
 }
 
 input PersonDirectedUpdateOperations {
@@ -1589,8 +1614,19 @@ input PersonDirectedUpdateOperations {
     delete: PersonDirectedDelete
 }
 
+## Nested Update operators
+input PersonMoviesUpdate {
+    edges: PersonMoviesEdgeUpdate
+    where: PersonMoviesEdgeWhere
+}
+
 input PersonDirectedUpdate {
     edges: PersonDirectedEdgeUpdate
+}
+
+input PersonMoviesEdgeUpdate {
+    node: MovieUpdateNode
+    fields: ActedInUpdate
 }
 
 input PersonDirectedEdgeUpdate {
@@ -1602,8 +1638,8 @@ input PersonDirectedEdgeUpdate {
 
 ```graphql
 type Mutation {
-    deleteMovies(where: MovieConnectionWhere, edges: [MovieEdgeDelete!]): DeleteMutationResponse!
-    deletePeople(where: PersonConnectionWhere, edges: [PersonEdgeDelete!]): DeleteMutationResponse!
+    deleteMovies(where: MovieConnectionMutationWhere, edges: [MovieEdgeDelete!]): DeleteMutationResponse!
+    deletePeople(where: PersonConnectionMutationWhere, edges: [PersonEdgeDelete!]): DeleteMutationResponse!
 }
 
 type DeleteMutationResponse {
@@ -1615,11 +1651,11 @@ input MovieEdgeDelete {
 }
 
 input MovieActorsDeleteOperations {
-    delete: PersonMoviesDelete
+    delete: MovieActorsDelete
 }
 
 input MovieDirectorDeleteOperations {
-    delete: PersonDirectedDelete
+    delete: MovieDirectorDelete
 }
 
 input MovieEdgeDeleteNode {
@@ -1824,17 +1860,28 @@ query NestedFulltext {
 ### Example Mutations
 
 ```graphql
-mutation CreateMoviesAndConnectToActor {
+
+mutation CreateMovies {
+  createMovies(edges: { node: { title: "The Matrix", released: 2001 } }) {
+    edges {
+      node {
+        title
+      }
+    }
+  }
+}
+
+mutation CreateMoviesAndConnectWithNestedConnect {
     createMovies(
         edges: {
             node: {
-                title: "Test"
+                title: "The Matrix"
                 actors: {
                     connect: {
-                        where: { node: { name: { equals: "TRES" } } }
+                        where: { node: { name: { equals: "Keanu" } } }
                         edge: {
                             fields: { year: 1999 }
-                            node: { movies: { connect: { where: { node: { title: { equals: "Matrix" } } } } } }
+                            node: { movies: { connect: { where: { node: { title: { equals: "Matrix 2" } } } } } }
                         }
                     }
                 }
@@ -1849,10 +1896,24 @@ mutation CreateMoviesAndConnectToActor {
     }
 }
 
+mutation DeleteMovies {
+    deleteMovies(
+        where: { edges: { node: { title: { equals: "The Matrix" } } } }
+    ) {
+        info {
+            relationshipsDeleted
+            relationshipsCreated
+            nodesDeleted
+            nodesCreated
+            bookmark
+        }
+    }
+}
+
 mutation DeleteMoviesAndNestedDirector {
     deleteMovies(
         where: { edges: { node: { title: { equals: "The Matrix" } } } }
-        edges: { node: { director: { delete: { where: { name: "Thingy" } } } } }
+        edges: { node: { director: { delete: { where: { node: { name: { equals: "lana wachowski" }} } } } } }
     ) {
         info {
             relationshipsDeleted
@@ -1877,14 +1938,14 @@ mutation UpdateMovies {
     }
 }
 
-mutation UpdateMovies {
+mutation UpdateMoviesWithNestedCreate {
     updateMovies(
         where: { edges: { node: { title: { equals: "The Matrix" } } } }
         edges: {
             node: {
                 title: { set: "Another title" }
                 released: { set: 1999 }
-                actors: { create: { edges: { node: { name: "Name" }, fields: { year: 100 } } } }
+                actors: { create: { edges: { node: { name: "Name" }, fields: { year: 1999 } } } }
             }
         }
     ) {
@@ -1894,5 +1955,42 @@ mutation UpdateMovies {
             }
         }
     }
+}
+
+mutation UpdatePeopleWithConnectOrCreate {
+  updatePeople(
+    where: { edges: { node: { name: { equals: "Keanu" } } } }
+    edges: {
+      node: {
+        name: { set: "Keanu Reeves" }
+        movies: {
+          connectOrCreate: {
+            where: {
+              node: {
+                id: "ac517f74-e2c9-40f8-a3b9-a87ffd95a29f"
+              }
+            }
+            edges: { node: { title: "The Matrix" }, fields: { year: 1999 } }
+          }
+        }
+      }
+    }
+  ) {
+    edges {
+      node {
+        name
+        movies {
+          edges {
+            fields {
+              year
+            }
+            node {
+              title
+            }
+          }
+        }
+      }
+    }
+  }
 }
 ```
