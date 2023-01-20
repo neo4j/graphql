@@ -22,6 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
+import { generateUniqueType } from "../../../../utils/graphql-types";
 
 describe("aggregations-where-edge-string", () => {
     let driver: Driver;
@@ -47,6 +48,7 @@ describe("aggregations-where-edge-string", () => {
             type Post {
               testString: String!
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
+              someStringAlias: String @alias(property: "_someStringAlias")
             }
 
             interface Likes {
@@ -996,6 +998,57 @@ describe("aggregations-where-edge-string", () => {
             } finally {
                 await session.close();
             }
+        });
+    });
+
+    test("EQUAL with alias", async () => {
+        const Post = generateUniqueType("Post");
+        const User = generateUniqueType("Post");
+
+        const session = await neo4j.getSession();
+
+        const typeDefs = `
+            type ${User} {
+                name: String!
+            }
+            type ${Post} {
+                content: String
+                likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
+            }
+            interface Likes {
+                someStringAlias: String @alias(property: "_someStringAlias")
+            }
+        `;
+
+        const query = `
+            {
+                ${Post.plural}(where: { likesAggregate: { edge: { someStringAlias_EQUAL: "10" } } }) {
+                    content
+                }
+            }
+        `;
+
+        await session.run(
+            `
+            CREATE(p:${Post} {content: "test"})<-[:LIKES {_someStringAlias:"10"}]-(:${User} {name: "a"})
+            CREATE(p2:${Post} {content: "test2"})<-[:LIKES {_someStringAlias:"11"}]-(:${User} {name: "a"})
+            `
+        );
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.data).toEqual({
+            [Post.plural]: [{ content: "test" }],
         });
     });
 });

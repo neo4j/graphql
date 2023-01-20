@@ -117,7 +117,7 @@ function getFieldAuth({
                 entity: authField,
                 operations: "READ",
                 context,
-                allow: { parentNode: node, varName, chainStr: authField.fieldName },
+                allow: { parentNode: node, varName },
                 escapeQuotes: false,
             });
 

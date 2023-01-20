@@ -100,7 +100,7 @@ export default function createProjectionAndParams({
                     entity: authableField,
                     operations: "READ",
                     context,
-                    allow: { parentNode: node, varName, chainStr: param },
+                    allow: { parentNode: node, varName },
                 });
                 if (allowAndParams[0]) {
                     if (!res.meta.authValidateStrs) {
@@ -148,7 +148,6 @@ export default function createProjectionAndParams({
                 });
                 res.subqueries.push(interfaceProjection);
                 res.projection.push(`${field.alias}: ${varName}_${field.name}`);
-
                 return res;
             }
 
