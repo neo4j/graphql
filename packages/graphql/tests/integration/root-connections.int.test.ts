@@ -218,10 +218,10 @@ describe("root-connections", () => {
             expect(result.errors).toBeFalsy();
             expect(result?.data?.[aircraftType.operations.connection]).toEqual({
                 totalCount: 20,
-                edges: expect.toIncludeSameMembers(sortedAircrafts.slice(0, 10).map((node) => ({
+                edges: sortedAircrafts.slice(0, 10).map((node) => ({
                     cursor: expect.any(String),
                     node,
-                }))),
+                })),
                 pageInfo: {
                     hasNextPage: true,
                     endCursor: "YXJyYXljb25uZWN0aW9uOjk=",
@@ -297,10 +297,10 @@ describe("root-connections", () => {
             expect(result.errors).toBeFalsy();
             expect(result?.data?.[aircraftType.operations.connection]).toEqual({
                 totalCount: 20,
-                edges: expect.toIncludeSameMembers(sortedAircrafts.slice(0, 10).map((node) => ({
+                edges: sortedAircrafts.slice(0, 10).map((node) => ({
                     cursor: expect.any(String),
                     node,
-                }))),
+                })),
                 pageInfo: {
                     hasNextPage: true,
                     endCursor: "YXJyYXljb25uZWN0aW9uOjk=",

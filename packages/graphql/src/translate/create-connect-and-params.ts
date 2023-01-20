@@ -187,7 +187,7 @@ function createConnectAndParams({
                 subquery.push(cypher);
             } else {
                 subquery.push(`\tWHERE ${predicate}`);
-            }  
+            }
         }
 
         const nodeMatrix: Array<{ node: Node; name: string }> = [{ node: relatedNode, name: nodeName }];
@@ -204,7 +204,7 @@ function createConnectAndParams({
                     operations: "CONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: node, varName: name, chainStr: `${name}${node.name}${i}_allow` },
+                    allow: { parentNode: node, varName: name },
                 });
 
                 if (!str) {
@@ -466,7 +466,7 @@ function createConnectAndParams({
                     escapeQuotes: Boolean(insideDoWhen),
                     skipIsAuthenticated: true,
                     skipRoles: true,
-                    bind: { parentNode: node, varName: nodeName, chainStr: `${nodeName}${node.name}${i}_bind` },
+                    bind: { parentNode: node, varName: nodeName },
                 });
 
                 if (!str) {
