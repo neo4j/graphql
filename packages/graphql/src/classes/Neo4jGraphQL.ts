@@ -47,8 +47,6 @@ import { getDocument } from "../schema/get-document";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { forEachField } from "@graphql-tools/utils";
-import { buildSubgraphSchema } from "@apollo/subgraph";
-import { Subgraph } from "./Subgraph";
 import { validateDocument } from "../schema/validation";
 
 export type SchemaType = "executableSchema" | "subgraphSchema";
@@ -252,7 +250,9 @@ class Neo4jGraphQL {
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
-    private generateSubgraphSchema(): Promise<GraphQLSchema> {
+    private async generateSubgraphSchema(): Promise<GraphQLSchema> {
+        const { Subgraph } = await import("./Subgraph");
+
         return new Promise((resolve) => {
             const document = getDocument(this.schemaDefinition.typeDefs);
             const subgraph = new Subgraph(this.schemaDefinition.typeDefs);
@@ -283,7 +283,7 @@ class Neo4jGraphQL {
             const subgraphTypeDefs = subgraph.augmentGeneratedSchemaDefinition(typeDefs);
             const wrappedResolvers = this.wrapResolvers([resolvers, referenceResolvers]);
 
-            const schema = buildSubgraphSchema({
+            const schema = subgraph.buildSchema({
                 typeDefs: subgraphTypeDefs,
                 resolvers: wrappedResolvers as Record<string, any>,
             });

@@ -31,6 +31,7 @@ export class SubgraphServer implements Server {
     constructor(schema: GraphQLSchema, port?: number) {
         this.server = new ApolloServer({
             schema,
+            includeStacktraceInErrorResponses: true,
         });
         this.port = port || getPort();
     }

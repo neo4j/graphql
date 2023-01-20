@@ -470,7 +470,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/subgraph@npm:^2.2.2":
+"@apollo/subgraph@npm:^2.2.3":
   version: 2.2.3
   resolution: "@apollo/subgraph@npm:2.2.3"
   dependencies:
@@ -3122,7 +3122,7 @@ __metadata:
   dependencies:
     "@apollo/gateway": ^2.2.2
     "@apollo/server": ^4.3.0
-    "@apollo/subgraph": ^2.2.2
+    "@apollo/subgraph": ^2.2.3
     "@faker-js/faker": 7.6.0
     "@graphql-tools/merge": ^8.3.3
     "@graphql-tools/resolvers-composition": ^6.5.3

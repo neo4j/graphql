@@ -40,7 +40,8 @@ export function translateResolveReference(
     const { resolveTree } = context;
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
 
-    const { ...where } = reference;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { __typename, ...where } = reference;
 
     let projAuth: Cypher.Clause | undefined;
 

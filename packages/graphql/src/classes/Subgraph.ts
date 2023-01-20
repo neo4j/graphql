@@ -138,6 +138,13 @@ export class Subgraph {
         };
     }
 
+    public buildSchema({ typeDefs, resolvers }: { typeDefs: DocumentNode; resolvers: Record<string, any> }) {
+        return buildSubgraphSchema({
+            typeDefs,
+            resolvers,
+        });
+    }
+
     public getReferenceResolvers(nodes: Node[], driver: neo4j.Driver): IResolvers {
         const resolverMap: IResolvers = {};
 
