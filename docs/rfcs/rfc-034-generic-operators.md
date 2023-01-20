@@ -304,7 +304,7 @@ query Posts {
 
 ```graphql
 query Posts {
-    posts(where: { likes: { some: { node: { name: "Simone" } } } }) {
+    posts(where: { likes: { some: { node: { name: { equals: "Simone" } } } } }) {
         content
     }
 }
