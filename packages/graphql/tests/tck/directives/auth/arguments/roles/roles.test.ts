@@ -570,7 +570,8 @@ describe("Cypher Auth Roles", () => {
                                                     \\"node\\": {
                                                         \\"id\\": \\"user-id\\"
                                                     }
-                                                }
+                                                },
+                                                \\"overwrite\\": true
                                             }
                                         }
                                     }

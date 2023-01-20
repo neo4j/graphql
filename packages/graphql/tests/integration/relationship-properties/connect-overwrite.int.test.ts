@@ -40,9 +40,6 @@ describe("Relationship properties - connect with and without `overwrite` argumen
     });
 
     afterEach(async () => {
-        const session = await neo4j.getSession();
-        await session.run(`MATCH (n) DETACH DELETE n;`);
-        await session.close();
         await driver.close();
     });
 
