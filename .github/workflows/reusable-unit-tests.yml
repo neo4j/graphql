@@ -26,6 +26,9 @@ jobs:
           - introspector
           - plugins/graphql-plugin-auth
           - plugins/graphql-plugin-subscriptions-amqp
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
 
     runs-on: ubuntu-latest
 
@@ -37,6 +40,8 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run packages/${{ matrix.package }} unit tests
         run: yarn run test:unit --coverage
         working-directory: packages/${{ matrix.package }}
