@@ -463,16 +463,16 @@ These are some loose conventions on type and input naming:
 -   Nested Create/Connect inside edge ... node?
 -   nested mutation operations before edge relations or after? (delete: { actors} ) vs (actors: {delete})
 
--   Update operations
--   Mutations return "...Connection" types? cursor is returned in the Connection types, so maybe is worth having separated types
--   Sorting on mutation responses?
+
 -   Same operations regardless of how you got through traversal in mutation
 -   UpdateOrCreate / CreateOrUpdate
--   ConnectOrCreate missing in the nested Connect operation
--   Should ID types should belong to aggregation and reusing and share the same filtering operators as it is now?
--   Should ID types be modifiable? or not?
+
 -   For the ConnectOrCreate purpose should the type MovieUniqueWhere be a generic type and not related to Movie?
 -   As ConnectOrCreate works only based on the node uniqueness property, it has no sense to pass from the edges in the where condition, Although this is inconsistent with the input structure of the other operations.
+- The impact of supporting multiple edges between two nodes has to be considered. This has an effect on:
+	- Aggregation on Edges vs Aggregation Node.
+	- 1..1 Relationship Edges
+	- Allow connecting based on existing edges properties, rather than assuming no prior edges exist.
 
 ## Examples
 
@@ -1368,7 +1368,7 @@ input PersonMoviesConnect {
 
 input PersonMoviesConnectOrCreate {
     where: MoviesConnectOrCreateWhere
-    edges: PersonMoviesEdgeCreate
+    edge: PersonMoviesEdgeCreate
 }
 
 input PersonDirectedConnectOrCreate {
@@ -1860,7 +1860,6 @@ query NestedFulltext {
 ### Example Mutations
 
 ```graphql
-
 mutation CreateMovies {
   createMovies(edges: { node: { title: "The Matrix", released: 2001 } }) {
     edges {
