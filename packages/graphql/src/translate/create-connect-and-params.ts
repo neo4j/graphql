@@ -80,6 +80,7 @@ function createConnectAndParams({
         const relTypeStr = `[${relationField.properties || context.subscriptionsEnabled ? relationshipName : ""}:${
             relationField.type
         }]`;
+        const isOverwriteNotAllowed = connect.overwrite === false;
 
         const subquery: string[] = [];
         const labels = relatedNode.getLabelString(context);
@@ -251,11 +252,8 @@ function createConnectAndParams({
         subquery.push("\t\t\tWITH connectedNodes, parentNodes"); //
         subquery.push(`\t\t\tUNWIND parentNodes as ${parentVar}`);
         subquery.push(`\t\t\tUNWIND connectedNodes as ${nodeName}`);
-        if (connect.overwrite === false) {
-            subquery.push(`\t\t\tCREATE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
-        } else {
-            subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
-        }
+        const connectOperator = isOverwriteNotAllowed ? "CREATE" : "MERGE";
+        subquery.push(`\t\t\t${connectOperator} (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
         if (relationField.properties) {
             const relationship = context.relationships.find(
@@ -310,7 +308,7 @@ function createConnectAndParams({
             innerMetaStr = `, connect_meta + meta AS meta`;
         }
 
-        if (includeRelationshipValidation || connect.overwrite === false) {
+        if (includeRelationshipValidation || isOverwriteNotAllowed) {
             const relValidationStrs: string[] = [];
             const matrixItems = [
                 [parentNode, parentVar],
@@ -322,7 +320,7 @@ function createConnectAndParams({
                     node: mi[0],
                     context,
                     varName: mi[1],
-                    overwrite: relationField.fieldName,
+                    relationshipFieldNotOverwritable: relationField.fieldName,
                 });
                 if (relValidationStr) {
                     relValidationStrs.push(relValidationStr);

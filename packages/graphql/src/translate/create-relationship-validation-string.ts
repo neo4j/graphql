@@ -25,12 +25,12 @@ function createRelationshipValidationString({
     node,
     context,
     varName,
-    overwrite,
+    relationshipFieldNotOverwritable,
 }: {
     node: Node;
     context: Context;
     varName: string;
-    overwrite?: string;
+    relationshipFieldNotOverwritable?: string;
 }): string {
     const strs: string[] = [];
 
@@ -50,7 +50,7 @@ function createRelationshipValidationString({
         let errorMsg: string;
         let subQuery: string | undefined;
         if (isArray) {
-            if (overwrite === field.fieldName) {
+            if (relationshipFieldNotOverwritable === field.fieldName) {
                 predicate = `c = 1`;
                 errorMsg = `${RELATIONSHIP_REQUIREMENT_PREFIX}${node.name}.${field.fieldName} required exactly once for a specific ${toNode.name}`;
                 subQuery = [

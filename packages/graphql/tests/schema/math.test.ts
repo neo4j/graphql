@@ -597,9 +597,9 @@ describe("Algebraic", () => {
             input DirectorDirectsConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
               \\"\\"\\"
-              overwrite: Boolean
+              overwrite: Boolean! = true
               where: MovieConnectWhere
             }
 
@@ -828,9 +828,9 @@ describe("Algebraic", () => {
             input MovieDirectedByConnectFieldInput {
               connect: DirectorConnectInput
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
               \\"\\"\\"
-              overwrite: Boolean
+              overwrite: Boolean! = true
               where: DirectorConnectWhere
             }
 
@@ -1240,9 +1240,9 @@ describe("Algebraic", () => {
             input MovieWorkersConnectFieldInput {
               connect: [PersonConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
               \\"\\"\\"
-              overwrite: Boolean
+              overwrite: Boolean! = true
               where: PersonConnectWhere
             }
 
@@ -1737,9 +1737,9 @@ describe("Algebraic", () => {
               connect: [PersonConnectInput!]
               edge: ActedInCreateInput
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
               \\"\\"\\"
-              overwrite: Boolean
+              overwrite: Boolean! = true
               where: PersonConnectWhere
             }
 
@@ -2013,9 +2013,9 @@ describe("Algebraic", () => {
               connect: [MovieConnectInput!]
               edge: ActedInCreateInput
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
               \\"\\"\\"
-              overwrite: Boolean
+              overwrite: Boolean! = true
               where: MovieConnectWhere
             }
 

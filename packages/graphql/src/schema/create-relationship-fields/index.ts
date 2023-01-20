@@ -761,6 +761,7 @@ function createRelationshipFields({
                     : {}),
                 overwrite,
             });
+            tc.makeFieldNonNull("overwrite");
         });
 
         if (!rel.writeonly) {
