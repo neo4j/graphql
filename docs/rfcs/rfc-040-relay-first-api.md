@@ -57,8 +57,6 @@ type Query {
     moviesConnection(
         first: Int
         after: String
-        last: Int
-        before: String
         where: MovieConnectionWhere
         sort: [MovieConnectionSort]
     ): MoviesConnection!
@@ -104,7 +102,7 @@ The `*Edge` types will be a Relay [Edge Type](https://relay.dev/graphql/connecti
 type MovieActorsEdge {
     cursor: String! # Required by Relay
     node: PersonNode! # Required by Relay
-    fields: ActedIn # Fields of the relationship
+    fields: ActedIn! # Fields of the relationship
 }
 ```
 
@@ -146,19 +144,19 @@ type MovieNode {
     released: Int
     alternativeTitles: [String!]!
     actors(
-        where: PersonConnectionWhere
+        where: MovieActorsConnectionNestedWhere
         first: Int
         after: String
-        last: Int
-        before: String
         directed: Boolean = true
         sort: [MovieActorsConnectionSort!]
     ): MovieActorsConnection!
-    director(where: MovieDirectorConnectionWhere, directed: Boolean = true): MovieDirectorConnection!
+    director(where: MovieDirectorConnectionNestedWhere, directed: Boolean = true): MovieDirectorConnection!
 }
 ```
 
 Note that this type does **not** contain any operations in itself, it has the same properties as the user-defined entity, with the only difference being the result of the nested `actors` and `director` types, that support the top-level input and return a `*Connection`.
+
+The `where` filters are of type `ConnectionNestedWhere` as these include edge filtering, but not aggregations.
 
 ### Filtering
 
@@ -249,11 +247,30 @@ query PaginatedMovies {
 }
 ```
 
-Following Relay spec, every `*Connection` type has the `pageInfo` property, and each `edge` has a cursor. Note that if limit-based pagination is enabled instead of cursor based, the API will not be Relay compliant.
+Following Relay spec, every `*Connection` type has the `pageInfo` property, and each `edge` has a cursor.
+
+#### Offset pagination
+
+Offset pagination could be enabled in configuration, in this case the properties `limit` and `offset` would be used. Page info and cursor would not be returned in this case.
+
+```graphql
+query PaginatedMovies {
+    moviesConnection(limit: 10, offset: 5, sort: { edges: { node: { title: DESC } } }) {
+        edges {
+            node {
+                title
+            }
+            cursor
+        }
+    }
+}
+```
+
+Note that if offset-based pagination is enabled instead of cursor based, the API will not be Relay compliant.
 
 #### Back pagination
 
-Following Relay spec, the fields `last` and `before` can be used instead of `first` and `after` to do backwards pagination.
+Following Relay spec, the fields `last` and `before` can be used instead of `first` and `after` to do backwards pagination, this could be toggled in the server configuration.
 
 ### Aggregation
 
@@ -263,7 +280,7 @@ Aggregations have been moved to be part of the projection on connection queries:
 query ShortestMovieTitleAndCount {
     moviesConnection {
         aggregation {
-            node {
+            nodes {
                 title {
                     shortest
                 }
@@ -283,13 +300,15 @@ query AggregateActorsPerMovie {
             node {
                 actors {
                     aggregation {
-                        node {
+                        nodes {
                             count
                         }
-                        fields {
-                            year {
-                                min
-                                max
+                        edges {
+                            fields {
+                                year {
+                                    min
+                                    max
+                                }
                             }
                         }
                     }
@@ -424,7 +443,7 @@ query Movies {
 
 ### Sort and Pagination
 
-Sort behaves in the same fashion as the Connections API. Cursor-based pagination, however, is not supported. The simple API uses a _limit_ based pagination:
+Sort behaves in the same fashion as the Connections API. Cursor-based pagination, however, is not supported. The simple API uses _offset_ based pagination:
 
 ```graphql
 query Movies {
@@ -452,6 +471,7 @@ These are some loose conventions on type and input naming:
 
 *   Types in a relationship will follow the convention `[RootType][fieldName]` at the beginning.
 *   Where possible, input types will mirror normal types. E.g. `PersonNode` will be filtered by `PersonNodeWhere`
+*   Types ending in `*Connection` will follow Relay spec as these are reserved types according to the spec
 
 ### Further discussion points
 
@@ -504,6 +524,8 @@ type Query {
         where: PersonConnectionWhere
         sort: [PersonConnectionSort]
     ): PeopleConnection!
+    movies(where: MovieWhere, sort: [MovieSortNode], offset: Int, limit: Int): [Movie!]!
+    people(where: PersonWhere, sort: [PersonSortNode], offset: Int, limit: Int): [Person!]!
 }
 
 ## "Top Level" Connection Types
@@ -539,10 +561,11 @@ type PersonEdge {
 ## "Node" Types
 type MovieNode {
     title: String!
+    id: ID
     released: Int
     alternativeTitles: [String!]
     actors(
-        where: PersonConnectionWhere
+        where: MovieActorsConnectionNestedWhere
         first: Int
         after: String
         last: Int
@@ -551,7 +574,7 @@ type MovieNode {
         sort: [MovieActorsConnectionSort!]
     ): MovieActorsConnection!
     director(
-        where: MovieDirectorConnectionWhere
+        where: MovieDirectorConnectionNestedWhere
         directed: Boolean = true # Cannot sort 1-1 relationship
     ): MovieDirectorConnection!
 }
@@ -559,14 +582,41 @@ type MovieNode {
 type PersonNode {
     name: String!
     movies(
-        where: MovieConnectionWhere
+        where: PersonMoviesConnectionNestedWhere
         first: Int
         after: String
         directed: Boolean = true
         sort: [PersonMoviesConnectionSort!]
         fulltext: MovieFulltext
     ): PersonMoviesConnection!
-    directed(where: PersonDirectedConnectionWhere, directed: Boolean = true): PersonDirectedConnection!
+    directed(where: PersonDirectedConnectionNestedWhere, directed: Boolean = true): PersonDirectedConnection!
+}
+
+input MovieActorsConnectionNestedWhere { # TODO: improve this name
+    AND: [MovieActorsConnectionNestedWhere!]
+    OR: [MovieActorsConnectionNestedWhere!]
+    NOT: MovieActorsConnectionNestedWhere
+    edges: MovieActorsEdgeWhere
+}
+input PersonMoviesConnectionNestedWhere {
+    AND: [PersonMoviesConnectionNestedWhere!]
+    OR: [PersonMoviesConnectionNestedWhere!]
+    NOT: PersonMoviesConnectionNestedWhere
+    edges: PersonMoviesEdgeWhere
+}
+
+input PersonDirectedConnectionNestedWhere {
+    AND: [PersonDirectedConnectionNestedWhere!]
+    OR: [PersonDirectedConnectionNestedWhere!]
+    NOT: PersonDirectedConnectionNestedWhere
+    edges: PersonDirectedEdgeWhere
+}
+
+input MovieDirectorConnectionNestedWhere {
+    AND: [MovieDirectorConnectionNestedWhere!]
+    OR: [MovieDirectorConnectionNestedWhere!]
+    NOT: MovieDirectorConnectionNestedWhere
+    edges: MovieDirectorEdgeWhere
 }
 
 ## "Relationship" Connection Types
@@ -656,13 +706,23 @@ type PeopleAggregationNode {
 ### "Relationship" aggregations
 
 type MovieActorsAggregation {
-    node: PeopleAggregationNode!
+    nodes: PeopleAggregationNode!
+    edges: MovieActorsEdgeAggregation!
+}
+
+type MovieActorsEdgeAggregation {
     fields: ActedInAggregation!
+    count: Int!
 }
 
 type PersonMoviesAggregation {
-    node: MoviesAggregationNode!
+    nodes: MoviesAggregationNode!
+    edges: PersonMoviesEdgeAggregation!
+}
+
+type PersonMoviesEdgeAggregation {
     fields: ActedInAggregation!
+    count: Int!
 }
 
 type ActedInAggregation {
@@ -708,6 +768,7 @@ input MovieNodeWhere {
     OR: [MovieNodeWhere!]
     AND: [MovieNodeWhere!]
     NOT: MovieNodeWhere
+    id: StringWhere
     title: StringWhere
     released: IntWhere
     alternativeTitles: StringListWhere
@@ -824,18 +885,21 @@ input MovieActorsAggregationEdgeWhere {
     AND: [MovieActorsAggregationEdgeWhere!]
     OR: [MovieActorsAggregationEdgeWhere!]
     NOT: MovieActorsAggregationEdgeWhere
-    count: IntWhere
-    node: PeopleAggregationWhere
-    fields: ActedInAggregationWhere
+    nodes: PeopleAggregationWhere
+    fields: ActedInAggregationEdgeWhere
 }
 
 input PersonMoviesAggregationEdgeWhere {
     AND: [PersonMoviesAggregationEdgeWhere!]
     OR: [PersonMoviesAggregationEdgeWhere!]
     NOT: PersonMoviesAggregationEdgeWhere
-    count: IntWhere
-    node: MoviesAggregationWhere
+    nodes: MoviesAggregationWhere
+    edges: ActedInAggregationEdgeWhere
+}
+
+input ActedInAggregationEdgeWhere {
     fields: ActedInAggregationWhere
+    count: IntWhere
 }
 
 input MoviesAggregationWhere {
@@ -882,6 +946,7 @@ input PersonSortEdge {
 }
 
 input MovieSortNode {
+    id: SortDirection
     title: SortDirection
     released: SortDirection
 }
@@ -1157,7 +1222,7 @@ query MoviesTitleAndAggregation {
 
 ```graphql
 query MoviesWithMoreThan10ActorNodes {
-    moviesConnection(where: { edges: { node: { actors: { aggregation: { node: { count: { gt: 10 } } } } } } }) {
+    moviesConnection(where: { edges: { node: { actors: { aggregation: { nodes: { count: { gt: 10 } } } } } } }) {
         edges {
             node {
                 actors {
@@ -1167,7 +1232,7 @@ query MoviesWithMoreThan10ActorNodes {
                         }
                     }
                     aggregation {
-                        node {
+                        nodes {
                             count
                         }
                     }
