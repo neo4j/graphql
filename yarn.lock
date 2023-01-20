@@ -2721,19 +2721,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:0.16.0, @neo4j-ndl/base@npm:^0.16.0":
-  version: 0.16.0
-  resolution: "@neo4j-ndl/base@npm:0.16.0"
-  checksum: 9bf5a294d3bc12a830a1def887b7e934a5822d83f287844fcf636b1c95a43d97fc723f55d6b82d51ec3db7023b7aa62dd9f0e65c580e44618d6db7fbd3c8a13b
+"@neo4j-ndl/base@npm:0.16.1, @neo4j-ndl/base@npm:^0.16.1":
+  version: 0.16.1
+  resolution: "@neo4j-ndl/base@npm:0.16.1"
+  checksum: d9b593e1915f324171b1e2c8412446439ef307f03ef2e5e66d613f5cb16bcf471b69380613116f95d4adc7ab901bfe51d65c708f2ffaa21724f80bd285c3d261
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:0.17.1":
-  version: 0.17.1
-  resolution: "@neo4j-ndl/react@npm:0.17.1"
+"@neo4j-ndl/react@npm:0.17.2":
+  version: 0.17.2
+  resolution: "@neo4j-ndl/react@npm:0.17.2"
   dependencies:
     "@heroicons/react": ^1.0.5
-    "@neo4j-ndl/base": ^0.16.0
+    "@neo4j-ndl/base": ^0.16.1
     classnames: ^2.3.1
     detect-browser: ^5.3.0
     react-dropzone: ^14.0.0
@@ -2744,7 +2744,7 @@ __metadata:
     tinycolor2: ^1.4.2
   peerDependencies:
     react: 17.x
-  checksum: 331d358ae5ab067dc86db66016a166af408958d2958e813e1783c98cce16c2d707b62edac4b67a2a99ea67fa36a5723c0faa93bd54a93cba97d08e2f3617745d
+  checksum: cebb56623cbf4bcf4298f55b293ef42ce50b684c42620524c8133f9433b009f99676e1ac2d4bf00adc9e0960e39c71038bcacc7be846bb6d9a7b6e18835c7b1d
   languageName: node
   linkType: hard
 
@@ -2840,8 +2840,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@neo4j-ndl/base": 0.16.0
-    "@neo4j-ndl/react": 0.17.1
+    "@neo4j-ndl/base": 0.16.1
+    "@neo4j-ndl/react": 0.17.2
     "@neo4j/graphql": 3.14.2
     "@neo4j/introspector": 1.0.2
     "@playwright/test": 1.29.2
@@ -2854,7 +2854,7 @@ __metadata:
     "@types/webpack": 5.28.0
     autoprefixer: 10.4.13
     codemirror: 5.65.11
-    codemirror-graphql: 2.0.2
+    codemirror-graphql: 2.0.3
     compression-webpack-plugin: 10.0.0
     copy-webpack-plugin: 11.0.0
     cross-env: 7.0.3
@@ -2943,7 +2943,7 @@ __metadata:
     npm-run-all: 4.1.5
     pluralize: ^8.0.0
     randomstring: 1.2.3
-    rimraf: 4.1.0
+    rimraf: 4.1.1
     semver: ^7.3.7
     supertest: 6.3.3
     ts-jest: 29.0.5
@@ -2981,7 +2981,7 @@ __metadata:
   resolution: "@neo4j/package-tests@workspace:packages/package-tests"
   dependencies:
     npm-run-all: 4.1.5
-    rimraf: 4.1.0
+    rimraf: 4.1.1
     upper-case-first: ^2.0.2
   languageName: unknown
   linkType: soft
@@ -3869,10 +3869,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.2.1":
-  version: 1.2.1
-  resolution: "@remix-run/router@npm:1.2.1"
-  checksum: 71c947f83e130bf006226332aca395f626ad599b6d35dfe936f6a8f139cf37278bc1b36bce38c30f6062724402358296329f31c385b11ae59b13b76a2716d701
+"@remix-run/router@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@remix-run/router@npm:1.3.0"
+  checksum: 5141e9703d29cd29334ccb9e5f22ee6973bf121574e06509489b7623a12549bd188cfc322eac1263f913353087f132a641579280e94558f346adc2b0b65080d0
   languageName: node
   linkType: hard
 
@@ -7474,16 +7474,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror-graphql@npm:2.0.2":
-  version: 2.0.2
-  resolution: "codemirror-graphql@npm:2.0.2"
+"codemirror-graphql@npm:2.0.3":
+  version: 2.0.3
+  resolution: "codemirror-graphql@npm:2.0.3"
   dependencies:
-    graphql-language-service: 5.0.6
+    graphql-language-service: 5.1.1
   peerDependencies:
     "@codemirror/language": 6.0.0
     codemirror: ^5.65.3
     graphql: ^15.5.0 || ^16.0.0
-  checksum: e973e6c6468e3c2d36431e6988a6af516d25c96044c7f8ff2c58099ca0498bea40c3fdb73af24e96265d318274008cca3128053ff64275ee3404e7b6415101f5
+  checksum: 81d5537606f32855734a4a15d5fd201b1cdce2a26606d4030dc8fecd67f50dd9247f8ab88a78c1dee1a3f3a4397427c2e65a9321a52c00a81ba3650d7aa6c458
   languageName: node
   linkType: hard
 
@@ -10940,17 +10940,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-language-service@npm:5.0.6":
-  version: 5.0.6
-  resolution: "graphql-language-service@npm:5.0.6"
+"graphql-language-service@npm:5.1.1":
+  version: 5.1.1
+  resolution: "graphql-language-service@npm:5.1.1"
   dependencies:
     nullthrows: ^1.0.0
-    vscode-languageserver-types: ^3.15.1
+    vscode-languageserver-types: ^3.17.1
   peerDependencies:
     graphql: ^15.5.0 || ^16.0.0
   bin:
     graphql: dist/temp-bin.js
-  checksum: a7155ba934aa428278cce0f460fa3b8b12020a26a0355e60738974617a66d9b2f1bb7d41cbd72a1620a29e61f10ca438cbf72cbf2405b8f653edddfc69fec02a
+  checksum: 3e83a9b0846b1298cbdebd5a640a4741e5ce567a19c2b1328e5b8bf1645e0647adab26048b56cc316ab94d8229cb23289370c4ea3d139ecb5d77d62de6c524b5
   languageName: node
   linkType: hard
 
@@ -15630,9 +15630,9 @@ __metadata:
     react: 18.2.0
     react-bootstrap: 2.7.0
     react-dom: 18.2.0
-    react-markdown: 8.0.4
+    react-markdown: 8.0.5
     react-mde: 11.5.0
-    react-router-dom: 6.6.2
+    react-router-dom: 6.7.0
     showdown: 2.1.0
     style-loader: 3.3.1
     ts-loader: 9.4.2
@@ -18361,9 +18361,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-markdown@npm:8.0.4":
-  version: 8.0.4
-  resolution: "react-markdown@npm:8.0.4"
+"react-markdown@npm:8.0.5":
+  version: 8.0.5
+  resolution: "react-markdown@npm:8.0.5"
   dependencies:
     "@types/hast": ^2.0.0
     "@types/prop-types": ^15.0.0
@@ -18376,14 +18376,14 @@ __metadata:
     remark-parse: ^10.0.0
     remark-rehype: ^10.0.0
     space-separated-tokens: ^2.0.0
-    style-to-object: ^0.3.0
+    style-to-object: ^0.4.0
     unified: ^10.0.0
     unist-util-visit: ^4.0.0
     vfile: ^5.0.0
   peerDependencies:
     "@types/react": ">=16"
     react: ">=16"
-  checksum: 9feec3734694ef05f450779a1adac10dbb768b8f3adbf4c81f59ca3cea8fd2f6a578fa4c488183597a7418f972715e5d84705cc76f278b55c86d622e82561bf8
+  checksum: 9d11b7aba16216d590e56b4744e05d2925141bfb0f5885b3d9400ccf006cd24b79ce3b3d20af8a083a01324215b58fa4c5979e44f69d54123ff1dd5dacb0dc89
   languageName: node
   linkType: hard
 
@@ -18416,27 +18416,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:6.6.2":
-  version: 6.6.2
-  resolution: "react-router-dom@npm:6.6.2"
+"react-router-dom@npm:6.7.0":
+  version: 6.7.0
+  resolution: "react-router-dom@npm:6.7.0"
   dependencies:
-    "@remix-run/router": 1.2.1
-    react-router: 6.6.2
+    "@remix-run/router": 1.3.0
+    react-router: 6.7.0
   peerDependencies:
     react: ">=16.8"
     react-dom: ">=16.8"
-  checksum: e0ee89a2b3768d2eb406ecefedfa24b55428145359b4138f6d38b8a99b60a4f275418910f4cdb12c069ed0237711acced3787b0c7febfa6568d7ea9cd624ff3b
+  checksum: b5175b0c0560a45ee5b1f924af038b48bb29711839cbe65e2859a299f74740598bd90db438e205517b9568e7c5e6e6cb22fe1554f9763d60f6e347a8883940f9
   languageName: node
   linkType: hard
 
-"react-router@npm:6.6.2":
-  version: 6.6.2
-  resolution: "react-router@npm:6.6.2"
+"react-router@npm:6.7.0":
+  version: 6.7.0
+  resolution: "react-router@npm:6.7.0"
   dependencies:
-    "@remix-run/router": 1.2.1
+    "@remix-run/router": 1.3.0
   peerDependencies:
     react: ">=16.8"
-  checksum: 5960d774bb3a8f697a57ee2e82a3eb0a300b7186a62b27e02773c94f1682e59435bd876d6162a08cc8daf27cac72aaab66d348fcc4d8f59240a63a911cf0050b
+  checksum: 6dda5f084e04355c8deacb631fcd8472f3590dbd54d19175401aa1ed6bc6a2a244cd4d70cdb4fc81d2d800d75923461189e9e6a853c1838af78eff3021e4efbe
   languageName: node
   linkType: hard
 
@@ -19087,12 +19087,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:4.1.0":
-  version: 4.1.0
-  resolution: "rimraf@npm:4.1.0"
+"rimraf@npm:4.1.1":
+  version: 4.1.1
+  resolution: "rimraf@npm:4.1.1"
   bin:
     rimraf: dist/cjs/src/bin.js
-  checksum: da4849802779a8c8cbe3aa1fbdf817b1ec41f7e95fb82074de3129e0030cd4e6e1f512a732344f0062c1cea59569c8113c78c3f50267cc469e8e9bfbe7622cb5
+  checksum: f52d46f59c1a532b3d0f73cb5228ff8f7df4ee87b9df95cf655788ea186c935b5c6ab4c45b66f8de5ed1e3690f58ff83f9a5b0ba1ae2e76a9bf36415f37732f7
   languageName: node
   linkType: hard
 
@@ -20410,12 +20410,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"style-to-object@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "style-to-object@npm:0.3.0"
+"style-to-object@npm:^0.4.0":
+  version: 0.4.1
+  resolution: "style-to-object@npm:0.4.1"
   dependencies:
     inline-style-parser: 0.1.1
-  checksum: 4d7084015207f2a606dfc10c29cb5ba569f2fe8005551df7396110dd694d6ff650f2debafa95bd5d147dfb4ca50f57868e2a7f91bf5d11ef734fe7ccbd7abf59
+  checksum: 2ea213e98eed21764ae1d1dc9359231a9f2d480d6ba55344c4c15eb275f0809f1845786e66d4caf62414a5cc8f112ce9425a58d251c77224060373e0db48f8c2
   languageName: node
   linkType: hard
 
@@ -22069,7 +22069,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vscode-languageserver-types@npm:^3.15.1":
+"vscode-languageserver-types@npm:^3.17.1":
   version: 3.17.2
   resolution: "vscode-languageserver-types@npm:3.17.2"
   checksum: ef2d862d22f622b64de0f428773d50a5928ec6cdd485960a7564ebe4fd4a3c8bcd956f29eb15bc45a0f353846e62f39f6c764d2ab85ce774b8724411ba84342f
