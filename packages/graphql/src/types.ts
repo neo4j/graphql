@@ -365,6 +365,12 @@ export interface Neo4jGraphQLAuthPlugin {
     bindPredicate: "all" | "any";
 
     decode<T>(token: string): Promise<T | undefined>;
+    /**
+     * This function tries to resolve public or secret keys.
+     * The implementation on how to resolve the keys by the `JWKSEndpoint` or by the `Secret` is set on when the plugin is being initiated.
+     * @param req
+     */
+    tryToResolveKeys(req: unknown): void;
 }
 
 /** Raw event metadata returned from queries */

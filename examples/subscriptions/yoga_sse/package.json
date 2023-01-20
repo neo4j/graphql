@@ -12,6 +12,6 @@
         "@neo4j/graphql": "^3.13.0",
         "graphql": "^16.6.0",
         "graphql-yoga": "^3.1.1",
-        "neo4j-driver": "^5.3.0"
+        "neo4j-driver": "^5.4.0"
     }
 }

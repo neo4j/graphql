@@ -599,7 +599,7 @@ export default function createUpdateAndParams({
                     entity: authableField,
                     operations: "UPDATE",
                     context,
-                    allow: { varName, parentNode: node, chainStr: param },
+                    allow: { varName, parentNode: node },
                 });
                 const postAuth = createAuthAndParams({
                     entity: authableField,
@@ -607,7 +607,7 @@ export default function createUpdateAndParams({
                     skipRoles: true,
                     skipIsAuthenticated: true,
                     context,
-                    bind: { parentNode: node, varName, chainStr: param },
+                    bind: { parentNode: node, varName },
                 });
 
                 if (!res.meta) {
