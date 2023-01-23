@@ -110,16 +110,15 @@ function selectionSetToResolveTree(
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     document: DocumentNode
 ) {
-    // Throw error if more than one definition?
+    // Throw error if more than one definition? - yes as this means invalid selection set
+    // Needs thorough testing to make sure we don't allow anything other than a selection set to be parsed
     const selectionSetDocument = document.definitions[0];
 
     if (selectionSetDocument.kind !== Kind.OPERATION_DEFINITION) {
-        throw new Error();
+        throw new Error;
     }
-    const resolveTree = nestedSelectionSetToResolveTrees(object, selectionSetDocument.selectionSet);
-    console.log(resolveTree);
 
-    return resolveTree;
+    return nestedSelectionSetToResolveTrees(object, selectionSetDocument.selectionSet);
 }
 
 function nestedSelectionSetToResolveTrees(
@@ -129,7 +128,8 @@ function nestedSelectionSetToResolveTrees(
 ): { [x: string]: ResolveTree } {
     const result = selectionSet.selections.reduce((acc, selection) => {
         if (selection.kind === Kind.FRAGMENT_SPREAD) {
-            return acc;
+            // Support for these can be added later if there is time
+            throw new Error("Fragment spreads are not supported in customResolver requires")
         }
         if (selection.kind === Kind.INLINE_FRAGMENT) {
             if (!selection.selectionSet) {
