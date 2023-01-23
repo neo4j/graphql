@@ -33,6 +33,7 @@ import { FieldAggregationComposer } from "../aggregations/field-aggregation-comp
 import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
+import { overwrite } from "./fields/overwrite";
 
 function createRelationshipFields({
     relationshipFields,
@@ -758,7 +759,9 @@ function createRelationshipFields({
                 ...(hasNonGeneratedProperties
                     ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
                     : {}),
+                overwrite,
             });
+            tc.makeFieldNonNull("overwrite");
         });
 
         if (!rel.writeonly) {
