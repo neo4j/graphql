@@ -126,6 +126,21 @@ describe("createConnectAndParams", () => {
             		}
             		RETURN count(*) AS _
             	}
+            	WITH this, this0_node, this0_node_similarMovies0_node
+            CALL {
+            	WITH this0_node
+            	MATCH (this0_node)-[this0_node_similarMovies_Movie_unique:SIMILAR]->(other:Movie)
+            	WITH count(this0_node_similarMovies_Movie_unique) as c, other
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.similarMovies required exactly once for a specific Movie', [0])
+            	RETURN collect(c) AS this0_node_similarMovies_Movie_unique_ignored
+            }
+            CALL {
+            	WITH this0_node_similarMovies0_node
+            	MATCH (this0_node_similarMovies0_node)-[this0_node_similarMovies0_node_similarMovies_Movie_unique:SIMILAR]->(other:Movie)
+            	WITH count(this0_node_similarMovies0_node_similarMovies_Movie_unique) as c, other
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.similarMovies required exactly once for a specific Movie', [0])
+            	RETURN collect(c) AS this0_node_similarMovies0_node_similarMovies_Movie_unique_ignored
+            }
             WITH this, this0_node, this0_node_similarMovies0_node
             	RETURN count(*) AS connect_this0_node_similarMovies_Movie
             }
