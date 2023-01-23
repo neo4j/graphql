@@ -180,7 +180,8 @@ describe("#324", () => {
                                                                 \\"node\\": {
                                                                     \\"identifier\\": \\"Opel Logo\\"
                                                                 }
-                                                            }
+                                                            },
+                                                            \\"overwrite\\": true
                                                         }
                                                     }
                                                 }

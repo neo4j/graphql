@@ -382,7 +382,8 @@ describe("Cypher Create Pringles", () => {
                                                         \\"node\\": {
                                                             \\"name\\": \\"Light Green\\"
                                                         }
-                                                    }
+                                                    },
+                                                    \\"overwrite\\": true
                                                 },
                                                 \\"disconnect\\": {
                                                     \\"where\\": {

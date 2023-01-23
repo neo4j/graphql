@@ -73,13 +73,13 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
                 WITH this
                 MATCH (this)-[this_accepted_this0:OWNS_RISK]->(this_accepted_this1:\`Risk\`)
                 WHERE $this_accepted_param0 IN this_accepted_this1.mitigationState
-                RETURN count(this) AS this_accepted_var2
+                RETURN count(this_accepted_this1) AS this_accepted_var2
             }
             CALL {
                 WITH this
                 MATCH (this)-[this_identified_this0:OWNS_RISK]->(this_identified_this1:\`Risk\`)
                 WHERE $this_identified_param0 IN this_identified_this1.mitigationState
-                RETURN count(this) AS this_identified_var2
+                RETURN count(this_identified_this1) AS this_identified_var2
             }
             RETURN this { accepted: { count: this_accepted_var2 }, identified: { count: this_identified_var2 } } AS this"
         `);

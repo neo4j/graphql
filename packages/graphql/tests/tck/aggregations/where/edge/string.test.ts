@@ -102,7 +102,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN any(var2 IN collect(this0.someStringAlias) WHERE var2 = $param0) AS var3
+                RETURN any(var2 IN collect(this0._someStringAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
             WHERE var3 = true
@@ -135,7 +135,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN any(var2 IN collect(this0.someString) WHERE var2 > $param0) AS var3
+                RETURN any(var2 IN collect(size(this0.someString)) WHERE var2 > $param0) AS var3
             }
             WITH *
             WHERE var3 = true
@@ -171,7 +171,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN any(var2 IN collect(this0.someString) WHERE var2 >= $param0) AS var3
+                RETURN any(var2 IN collect(size(this0.someString)) WHERE var2 >= $param0) AS var3
             }
             WITH *
             WHERE var3 = true
@@ -207,7 +207,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN any(var2 IN collect(this0.someString) WHERE var2 < $param0) AS var3
+                RETURN any(var2 IN collect(size(this0.someString)) WHERE var2 < $param0) AS var3
             }
             WITH *
             WHERE var3 = true
@@ -243,7 +243,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN any(var2 IN collect(this0.someString) WHERE var2 <= $param0) AS var3
+                RETURN any(var2 IN collect(size(this0.someString)) WHERE var2 <= $param0) AS var3
             }
             WITH *
             WHERE var3 = true
@@ -279,7 +279,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN min(this0.someString) = $param0 AS var2
+                RETURN min(size(this0.someString)) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -315,7 +315,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN min(this0.someString) > $param0 AS var2
+                RETURN min(size(this0.someString)) > $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -351,7 +351,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN min(this0.someString) >= $param0 AS var2
+                RETURN min(size(this0.someString)) >= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -387,7 +387,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN min(this0.someString) < $param0 AS var2
+                RETURN min(size(this0.someString)) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -423,7 +423,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN min(this0.someString) <= $param0 AS var2
+                RETURN min(size(this0.someString)) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -459,7 +459,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN max(this0.someString) = $param0 AS var2
+                RETURN max(size(this0.someString)) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -495,7 +495,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN max(this0.someString) > $param0 AS var2
+                RETURN max(size(this0.someString)) > $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -531,7 +531,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN max(this0.someString) >= $param0 AS var2
+                RETURN max(size(this0.someString)) >= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -567,7 +567,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN max(this0.someString) < $param0 AS var2
+                RETURN max(size(this0.someString)) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -603,7 +603,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN max(this0.someString) <= $param0 AS var2
+                RETURN max(size(this0.someString)) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -639,7 +639,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN avg(this0.someString) = $param0 AS var2
+                RETURN avg(size(this0.someString)) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -672,7 +672,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN avg(this0.someString) > $param0 AS var2
+                RETURN avg(size(this0.someString)) > $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -705,7 +705,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN avg(this0.someString) >= $param0 AS var2
+                RETURN avg(size(this0.someString)) >= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -738,7 +738,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN avg(this0.someString) < $param0 AS var2
+                RETURN avg(size(this0.someString)) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -771,7 +771,7 @@ describe("Cypher Aggregations where edge with String", () => {
             CALL {
                 WITH this
                 MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
-                RETURN avg(this0.someString) <= $param0 AS var2
+                RETURN avg(size(this0.someString)) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true

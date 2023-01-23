@@ -99,9 +99,9 @@ describe("Arrays Methods", () => {
               connect: [MovieConnectInput!]
               edge: ActedInCreateInput
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
               \\"\\"\\"
-              overwrite: Boolean
+              overwrite: Boolean! = true
               where: MovieConnectWhere
             }
 
@@ -367,9 +367,9 @@ describe("Arrays Methods", () => {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
               \\"\\"\\"
-              overwrite: Boolean
+              overwrite: Boolean! = true
               where: ActorConnectWhere
             }
 

@@ -283,9 +283,9 @@ describe("Directive-preserve", () => {
             input GenreMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
               \\"\\"\\"
-              overwrite: Boolean
+              overwrite: Boolean! = true
               where: MovieConnectWhere
             }
 
@@ -555,9 +555,9 @@ describe("Directive-preserve", () => {
             input MovieGenresConnectFieldInput {
               connect: [GenreConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
               \\"\\"\\"
-              overwrite: Boolean
+              overwrite: Boolean! = true
               where: GenreConnectWhere
             }
 
@@ -1263,9 +1263,9 @@ describe("Directive-preserve", () => {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
               \\"\\"\\"
-              overwrite: Boolean
+              overwrite: Boolean! = true
               where: ActorConnectWhere
             }
 
@@ -2121,9 +2121,9 @@ describe("Directive-preserve", () => {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
               \\"\\"\\"
-              overwrite: Boolean
+              overwrite: Boolean! = true
               where: ActorConnectWhere
             }
 
@@ -2603,9 +2603,9 @@ describe("Directive-preserve", () => {
 
             input BlogPostsConnectFieldInput {
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
               \\"\\"\\"
-              overwrite: Boolean
+              overwrite: Boolean! = true
               where: PostConnectWhere
             }
 

@@ -1,5 +1,26 @@
 # @neo4j/graphql
 
+## 3.14.2
+
+### Patch Changes
+
+-   [#2674](https://github.com/neo4j/graphql/pull/2674) [`785e99db7`](https://github.com/neo4j/graphql/commit/785e99db7c75276ea1380cbef68435fe02dc8049) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix aliased fields on aggregations filtering #2656
+
+-   [#2675](https://github.com/neo4j/graphql/pull/2675) [`6c38084c0`](https://github.com/neo4j/graphql/commit/6c38084c0f2513085babc6a71b5039adf4b5c7e2) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #2675 - counting aggregation source not target
+
+-   [#2619](https://github.com/neo4j/graphql/pull/2619) [`788fe93ef`](https://github.com/neo4j/graphql/commit/788fe93ef4d52e8a4fd697ac7f134b0e523ea4de) Thanks [@tbwiss](https://github.com/tbwiss)! - fix: resolvers input for Neo4jGraphQL class accepts a IResolvers array
+
+-   [#2631](https://github.com/neo4j/graphql/pull/2631) [`ea1917a5a`](https://github.com/neo4j/graphql/commit/ea1917a5a751fe9df362e687cc1f4d9b353e588f) Thanks [@tbwiss](https://github.com/tbwiss)! - fix: node directive label is not used in interface sub-query (bug report #2614)
+
+-   [#2680](https://github.com/neo4j/graphql/pull/2680) [`1f8dee357`](https://github.com/neo4j/graphql/commit/1f8dee357296956c90968d79a5a3e0e9343fe2f9) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix aggregation Cypher translation when aliasing relationship properties using the `@alias` directive
+
+-   [#2666](https://github.com/neo4j/graphql/pull/2666) [`f19ef34d7`](https://github.com/neo4j/graphql/commit/f19ef34d7908539fdba6bebc5b2a76fc09cf46c1) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #2662 - missing `size()` call on string edge property aggregations when filtering by AVERAGE/LONGEST/SHORTEST.
+
+-   [#2664](https://github.com/neo4j/graphql/pull/2664) [`3252f44d7`](https://github.com/neo4j/graphql/commit/3252f44d7d5453690f0aa0f35b9246a41ff5908b) Thanks [@a-alle](https://github.com/a-alle)! - Fix point types when subscriptions enabled
+
+-   Updated dependencies [[`ddf51ccfe`](https://github.com/neo4j/graphql/commit/ddf51ccfeec896b64ee943e910e59ac4e2f62869)]:
+    -   @neo4j/cypher-builder@0.1.9
+
 ## 3.14.1
 
 ### Patch Changes
