@@ -54,6 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
                         ORDER BY update.date_added DESC
                         LIMIT 5
                         """
+                        columnName: "update"
                     )
             }
         `;
@@ -81,16 +82,21 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
             WHERE this.id = $param0
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[a:WROTE]->(wrote:Post)
-                WHERE a.date_added IS NOT NULL
-                WITH COLLECT(wrote{ .*, date_added: a.date_added, typename: 'WROTE' }) as updates1, this
-                MATCH (this)-[a:FOLLOWS]->(umb)
-                WHERE (umb:User or umb:Movie or umb:Blog) AND a.date_added IS NOT NULL
-                WITH updates1 + COLLECT(umb{ .*, date_added: a.date_added, typename: 'FOLLOWED' }) as allUpdates
-                UNWIND allUpdates as update
-                RETURN update
-                ORDER BY update.date_added DESC
-                LIMIT 5\\", { this: this, auth: $auth }) AS this_updates
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)-[a:WROTE]->(wrote:Post)
+                    WHERE a.date_added IS NOT NULL
+                    WITH COLLECT(wrote{ .*, date_added: a.date_added, typename: 'WROTE' }) as updates1, this
+                    MATCH (this)-[a:FOLLOWS]->(umb)
+                    WHERE (umb:User or umb:Movie or umb:Blog) AND a.date_added IS NOT NULL
+                    WITH updates1 + COLLECT(umb{ .*, date_added: a.date_added, typename: 'FOLLOWED' }) as allUpdates
+                    UNWIND allUpdates as update
+                    RETURN update
+                    ORDER BY update.date_added DESC
+                    LIMIT 5
+                }
+                WITH update AS this_updates
                 WITH *
                 WHERE (this_updates:\`Post\` OR this_updates:\`Movie\` OR this_updates:\`User\`)
                 RETURN collect(CASE
@@ -104,11 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"test-id\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
+                \\"param0\\": \\"test-id\\"
             }"
         `);
     });

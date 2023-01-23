@@ -56,6 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
                         statement: """
                         Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag) return pag SKIP ($limit * $pageIndex) LIMIT $limit
                         """
+                        columnName: "pag"
                     )
             }
 
@@ -90,7 +91,12 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
             "MATCH (this:\`Community\`:\`UNIVERSAL\`)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnMany(\\"Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag) return pag SKIP ($limit * $pageIndex) LIMIT $limit\\", { limit: $param0, pageIndex: $param1, this: this, auth: $auth }) AS this_hasFeedItems
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag) return pag SKIP ($limit * $pageIndex) LIMIT $limit
+                }
+                WITH pag AS this_hasFeedItems
                 WITH *
                 WHERE ((this_hasFeedItems:\`ContentPiece\` AND this_hasFeedItems:\`UNIVERSAL\`) OR (this_hasFeedItems:\`Project\` AND this_hasFeedItems:\`UNIVERSAL\`))
                 RETURN collect(CASE
@@ -103,17 +109,13 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
+                \\"limit\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"param1\\": {
+                \\"pageIndex\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
-                },
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
                 }
             }"
         `);

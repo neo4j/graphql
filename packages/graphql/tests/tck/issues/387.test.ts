@@ -36,26 +36,30 @@ describe("#387", () => {
                 url_works: String
                     @cypher(
                         statement: """
-                        return '' + ''
+                        return '' + '' as result
                         """
+                        columnName: "result"
                     )
                 url_fails: URL
                     @cypher(
                         statement: """
-                        return '' + ''
+                        return '' + '' as result
                         """
+                        columnName: "result"
                     )
                 url_array_works: [String]
                     @cypher(
                         statement: """
-                        return ['' + '']
+                        return ['' + ''] as result
                         """
+                        columnName: "result"
                     )
                 url_array_fails: [URL]
                     @cypher(
                         statement: """
-                        return ['' + '']
+                        return ['' + ''] as result
                         """
+                        columnName: "result"
                     )
             }
         `;
@@ -87,34 +91,47 @@ describe("#387", () => {
             "MATCH (this:\`Place\`)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"return '' + ''\\", { this: this, auth: $auth }) AS this_url_works
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    return '' + '' as result
+                }
+                UNWIND result AS this_url_works
                 RETURN head(collect(this_url_works)) AS this_url_works
             }
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"return '' + ''\\", { this: this, auth: $auth }) AS this_url_fails
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    return '' + '' as result
+                }
+                UNWIND result AS this_url_fails
                 RETURN head(collect(this_url_fails)) AS this_url_fails
             }
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"return ['' + '']\\", { this: this, auth: $auth }) AS this_url_array_works
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    return ['' + ''] as result
+                }
+                UNWIND result AS this_url_array_works
                 RETURN collect(this_url_array_works) AS this_url_array_works
             }
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"return ['' + '']\\", { this: this, auth: $auth }) AS this_url_array_fails
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    return ['' + ''] as result
+                }
+                UNWIND result AS this_url_array_fails
                 RETURN collect(this_url_array_fails) AS this_url_array_fails
             }
             RETURN this { url_works: this_url_works, url_fails: this_url_fails, url_array_works: this_url_array_works, url_array_fails: this_url_array_fails } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

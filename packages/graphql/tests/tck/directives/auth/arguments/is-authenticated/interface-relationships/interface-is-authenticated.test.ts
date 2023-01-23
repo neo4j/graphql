@@ -71,7 +71,7 @@ describe("Cypher Auth isAuthenticated", () => {
 
             extend type User {
                 history: [History]
-                    @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
+                    @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h", columnName: "h")
                     @auth(rules: [{ operations: [READ], isAuthenticated: true }])
             }
         `;

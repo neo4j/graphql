@@ -38,6 +38,7 @@ describe("Cypher", () => {
                         RETURN a
                         LIMIT 1
                         """
+                        columnName: "a"
                     )
             }
         `;
@@ -262,8 +263,9 @@ describe("Cypher", () => {
                     @cypher(
                         statement: """
                         MATCH (this)-[r:ACTED_IN]->(:Movie)
-                        RETURN sum(r.screenTime)
+                        RETURN sum(r.screenTime) as result
                         """
+                        columnName: "result"
                     )
             }
 
@@ -276,6 +278,7 @@ describe("Cypher", () => {
                         RETURN a
                         LIMIT 1
                         """
+                        columnName: "a"
                     )
             }
         `;
