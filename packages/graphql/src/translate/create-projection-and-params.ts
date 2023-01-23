@@ -368,12 +368,11 @@ export default function createProjectionAndParams({
 
     // Merge fields for final projection to account for multiple fragments
     // cf. https://github.com/neo4j/graphql/issues/920
-    const foo = [
+    const mergedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
         mergedSelectedFields,
         generateMissingOrAliasedSortFields({ selection: mergedSelectedFields, resolveTree }),
-        generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
-    ];
-    const mergedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>(foo);
+        ...generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
+    ]);
 
     const { projection, params, meta, subqueries, subqueriesBeforeSort } = Object.values(mergedFields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
@@ -420,15 +419,13 @@ const generateMissingOrAliasedRequiredFields = ({
 }: {
     node: Node;
     selection: Record<string, ResolveTree>;
-}): Record<string, ResolveTree> => {
+}): Record<string, ResolveTree>[] => {
     const requiredFields = removeDuplicates(
         filterFieldsInSelection({ fields: node.customResolverFields, selection })
             .map((f) => f.requiredFields)
             .flat()
     );
-    return requiredFields[0] as Record<string, ResolveTree>;
-
-    // return generateMissingOrAliasedFields({ fieldNames: requiredFields.map(field => field.name), selection });
+    return requiredFields;
 };
 
 function createFulltextProjection({
