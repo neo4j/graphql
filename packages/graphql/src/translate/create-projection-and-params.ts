@@ -425,8 +425,11 @@ const generateMissingOrAliasedRequiredFields = ({
             .map((f) => f.requiredFields)
             .flat()
     );
+    const foo = {};
+    requiredFields.forEach(field => foo[field.name] = field)
+    return foo;
 
-    return generateMissingOrAliasedFields({ fieldNames: requiredFields, selection });
+    // return generateMissingOrAliasedFields({ fieldNames: requiredFields.map(field => field.name), selection });
 };
 
 function createFulltextProjection({

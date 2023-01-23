@@ -18,17 +18,24 @@
  */
 
 import type { IResolvers } from "@graphql-tools/utils";
+import type { Context } from "apollo-server-core";
 import type {
     FieldDefinitionNode,
     StringValueNode,
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
+    DocumentNode,
+    SelectionNode,
+    SelectionSetNode,
+    TypeNode,
 } from "graphql";
-import { Kind } from "graphql";
+import { Kind, parse } from "graphql";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import { parseResolveInfo } from "graphql-parse-resolve-info";
 import { removeDuplicates } from "../utils/utils";
 
 type CustomResolverMeta = {
-    requiredFields: string[];
+    requiredFields: ResolveTree[];
 };
 
 const DEPRECATION_WARNING =
@@ -77,11 +84,21 @@ function getCustomResolverMeta(
         };
     }
 
-    if (
-        directiveFromArgument?.value.kind !== Kind.LIST ||
-        directiveFromArgument?.value.values.some((value) => value.kind !== Kind.STRING)
-    ) {
-        throw new Error(ERROR_MESSAGE);
+    if (directiveFromArgument?.value.kind === Kind.STRING) {
+        const baz = parse(directiveFromArgument.value.value);
+        // return {
+        //     requiredFields: [directiveFromArgument.value.value],
+        // };
+        const aVar = test(object, baz);
+        return {
+            requiredFields: aVar || [],
+        };
+    }
+
+    if (directiveFromArgument?.value.kind !== Kind.LIST) {
+        return {
+            requiredFields: [],
+        };
     }
 
     const requiredFields = removeDuplicates(
@@ -89,8 +106,98 @@ function getCustomResolverMeta(
     );
 
     return {
-        requiredFields,
+        requiredFields: [],
     };
 }
 
+function test(object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode, document: DocumentNode) {
+    // Throw error if more than one definition
+    const foo = document.definitions[0];
+
+    if (foo.kind !== Kind.OPERATION_DEFINITION) {
+        throw new Error();
+    }
+    const baz = recurse(object, foo.selectionSet);
+    console.log(baz);
+
+    return baz;
+}
+
+function recurse(
+    object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    selectionSet: SelectionSetNode | SelectionNode
+): ResolveTree[] | undefined {
+    if (selectionSet.kind === Kind.FIELD) {
+        if (!selectionSet.selectionSet) {
+            return [
+                {
+                    name: selectionSet.name.value,
+                    alias: selectionSet.name.value, // parse from object
+                    args: {}, // parse from object
+                    fieldsByTypeName: {}, // we know is none because no selection set
+                },
+            ];
+        }
+        return;
+    }
+
+    if (selectionSet.kind === Kind.SELECTION_SET) {
+        const requiredFields: ResolveTree[] = selectionSet.selections.flatMap((selection) => {
+            if (selection.kind !== Kind.FIELD) {
+                throw new Error("Invalid set");
+            }
+            if (selection.selectionSet) {
+                const lol: ResolveTree[] = [];
+                const outerField = object.fields?.find((field) => field.name.value === selection.name.value);
+                const outerFieldType = getNestedType(outerField?.type);
+                selection.selectionSet.selections.forEach((innerSelection) => {
+                    const innerFields = recurse(object, innerSelection);
+                    if (innerFields && innerFields.length) lol.push(...innerFields);
+                });
+
+                const returnVal = {
+                    name: selection.name.value,
+                    alias: selection.name.value, // parse from object
+                    args: {}, // parse from object
+                    fieldsByTypeName: {
+                        [outerFieldType]: {}, // need to parse this from object
+                    },
+                };
+
+                lol.forEach((val) => {
+                    returnVal.fieldsByTypeName[outerFieldType] = {
+                        ...returnVal.fieldsByTypeName[outerFieldType],
+                        [val.name]: {
+                            name: val.name,
+                            alias: val.name,
+                            args: {},
+                            fieldsByTypeName: {},
+                        },
+                    };
+                });
+
+                return returnVal;
+                // return lol;
+            }
+            return {
+                name: selection.name.value,
+                alias: selection.name.value, // parse from object
+                args: {}, // parse from object
+                fieldsByTypeName: {},
+            };
+        });
+        return requiredFields;
+    }
+}
+
 export default getCustomResolverMeta;
+
+function getNestedType(type: TypeNode | undefined): string {
+    if (!type) {
+        throw new Error();
+    }
+    if (type.kind !== Kind.NAMED_TYPE) {
+        return getNestedType(type.type);
+    }
+    return type.name.value;
+}
