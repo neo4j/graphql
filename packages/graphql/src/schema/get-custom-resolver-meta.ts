@@ -80,26 +80,28 @@ export default function getCustomResolverMeta(
     }
 
     if (directiveFromArgument?.value.kind === Kind.STRING) {
-        const selectionSetDocument = parse(directiveFromArgument.value.value);
-        // return {
-        //     requiredFields: [directiveFromArgument.value.value],
-        // };
+        const selectionSetDocument = parse(`{ ${directiveFromArgument.value.value} }`);
         const requiredFieldsResolveTree = selectionSetToResolveTree(object, selectionSetDocument);
         if (requiredFieldsResolveTree) {
             return {
                 requiredFields: requiredFieldsResolveTree,
             };
         }
-        return undefined;
     }
 
-    if (directiveFromArgument?.value.kind !== Kind.LIST) {
-        return undefined;
+    // TODO - remove this when requires no longer requires a list
+    if (directiveFromArgument?.value.kind === Kind.LIST) {
+        const requiredFields = removeDuplicates(
+            directiveFromArgument.value.values.map((v) => (v as StringValueNode).value) ?? []
+        );
+        const selectionSetDocument = parse(`{ ${requiredFields.join(" ")} }`);
+        const requiredFieldsResolveTree = selectionSetToResolveTree(object, selectionSetDocument);
+        if (requiredFieldsResolveTree) {
+            return {
+                requiredFields: requiredFieldsResolveTree,
+            };
+        }
     }
-
-    const requiredFields = removeDuplicates(
-        directiveFromArgument.value.values.map((v) => (v as StringValueNode).value) ?? []
-    );
 
     return undefined;
 }
@@ -108,7 +110,7 @@ function selectionSetToResolveTree(
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     document: DocumentNode
 ) {
-    // Throw error if more than one definition
+    // Throw error if more than one definition?
     const selectionSetDocument = document.definitions[0];
 
     if (selectionSetDocument.kind !== Kind.OPERATION_DEFINITION) {
