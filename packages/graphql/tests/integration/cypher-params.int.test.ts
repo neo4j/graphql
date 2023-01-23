@@ -45,7 +45,7 @@ describe("cypherParams", () => {
             }
 
             type Query {
-                id: String! @cypher(statement: "RETURN $cypherParams.id")
+                id: String! @cypher(statement: "RETURN $cypherParams.id AS id", columnName: "id")
             }
         `;
 
@@ -88,7 +88,7 @@ describe("cypherParams", () => {
 
             type Movie {
               id: ID
-              cypherParams: CypherParams @cypher(statement: "RETURN $cypherParams")
+              cypherParams: CypherParams @cypher(statement: "RETURN $cypherParams AS result", columnName: "result")
             }
         `;
 
@@ -153,7 +153,7 @@ describe("cypherParams", () => {
             }
 
             type Mutation {
-                id: String! @cypher(statement: "RETURN $cypherParams.id")
+                id: String! @cypher(statement: "RETURN $cypherParams.id AS id", columnName:"id")
             }
         `;
 

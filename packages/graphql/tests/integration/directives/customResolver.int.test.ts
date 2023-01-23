@@ -165,8 +165,8 @@ describe("@customResolver directive", () => {
         const typeDefs = `
             type ${testType.name} {
                 id: ID!
-                firstName: String! @cypher(statement: "RETURN '${user.firstName}'")
-                lastName: String! @cypher(statement: "RETURN '${user.lastName}'")
+                firstName: String! @cypher(statement: "RETURN '${user.firstName}' as x", columnName: "x")
+                lastName: String! @cypher(statement: "RETURN '${user.lastName}' as x", columnName: "x")
                 fullName: String @customResolver(requires: ["firstName", "lastName"])
             }
         `;
@@ -297,7 +297,7 @@ describe("@customResolver directive", () => {
                     ${customResolverField}: String
                 }
             `;
-            
+
             const testResolver = () => "Some value";
             const resolvers = {
                 [interfaceType.name]: {

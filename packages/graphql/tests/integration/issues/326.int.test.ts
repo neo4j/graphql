@@ -51,9 +51,9 @@ describe("326", () => {
                 getSelf: [User]!
                   @cypher(
                     statement: """
-                        MATCH (user:User { id: \\"${id}\\" })
+                        MATCH (user:User { id: "${id}" })
                         RETURN user
-                    """
+                    """, columnName: "user"
                   )
             }
 
@@ -117,7 +117,7 @@ describe("326", () => {
                     statement: """
                         MATCH (user:User { id: \\"${id}\\" })
                         RETURN user
-                    """
+                    """, columnName: "user"
                   )
             }
 

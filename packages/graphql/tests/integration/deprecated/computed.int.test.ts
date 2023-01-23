@@ -171,8 +171,8 @@ describe("@computed directive", () => {
         const typeDefs = `
             type User {
                 id: ID!
-                firstName: String! @cypher(statement: "RETURN '${user.firstName}'")
-                lastName: String! @cypher(statement: "RETURN '${user.lastName}'")
+                firstName: String! @cypher(statement: "RETURN '${user.firstName}' as x", columnName: "x")
+                lastName: String! @cypher(statement: "RETURN '${user.lastName}' as x", columnName: "x")
                 fullName: String @computed(from: ["firstName", "lastName"])
             }
         `;

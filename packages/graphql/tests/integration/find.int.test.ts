@@ -420,7 +420,8 @@ describe("find", () => {
                    MATCH (a:Actor)
                    WHERE a.id IN $actorIds
                    RETURN a
-                   """
+                   """,
+                   columnName: "a"
                 )
             }
         `;

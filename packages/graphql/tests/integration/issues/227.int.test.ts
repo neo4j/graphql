@@ -64,7 +64,8 @@ describe("https://github.com/neo4j/graphql/issues/227", () => {
                             MATCH (town:Town {id:$id})
                             OPTIONAL MATCH (town)<-[:BELONGS_TO]-(member:Member)
                             RETURN member
-                        """)
+                        """,
+                        columnName: "member")
                     }
                 `;
 

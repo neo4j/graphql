@@ -215,8 +215,8 @@ describe("BigInt", () => {
                 type File {
                   name: String!
                   size: BigInt! @cypher(statement: """
-                      RETURN 9223372036854775807
-                  """)
+                      RETURN 9223372036854775807 as result
+                  """, columnName:"result")
                 }
             `;
 

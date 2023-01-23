@@ -293,8 +293,9 @@ describe("Custom Resolvers", () => {
                         typeDefs = `
                             type Query {
                                 test: ${type}! @cypher(statement: """
-                                RETURN \\"${id}\\"
-                                """)
+                                RETURN "${id}" as id
+                                """,
+                                columnName: "id")
                             }
                         `;
 
@@ -309,8 +310,8 @@ describe("Custom Resolvers", () => {
                         typeDefs = `
                             type Query {
                                 test: ${type}! @cypher(statement: """
-                                RETURN ${int}
-                                """)
+                                RETURN ${int} as res
+                                """, columnName: "res")
                             }
                         `;
 
@@ -325,8 +326,8 @@ describe("Custom Resolvers", () => {
                         typeDefs = `
                             type Query {
                                 test: ${type}! @cypher(statement: """
-                                RETURN ${float}
-                                """)
+                                RETURN ${float} as res
+                                """, columnName: "res")
                             }
                         `;
 
@@ -341,8 +342,8 @@ describe("Custom Resolvers", () => {
                         typeDefs = `
                             type Query {
                                 test: ${type}! @cypher(statement: """
-                                RETURN ${bool}
-                                """)
+                                RETURN ${bool} as res
+                                """, columnName: "res")
                             }
                         `;
 
@@ -361,8 +362,8 @@ describe("Custom Resolvers", () => {
 
                             type Query {
                                 test: Test! @cypher(statement: """
-                                RETURN {id: \\"${id}\\"}
-                                """)
+                                RETURN {id: "${id}"} as res
+                                """, columnName: "res")
                             }
                         `;
 
@@ -385,7 +386,7 @@ describe("Custom Resolvers", () => {
                                 test(id: ID!): Test! @cypher(statement: """
                                 MATCH (n:Test {id: $id})
                                 RETURN n
-                                """)
+                                """, columnName: "n")
                             }
                         `;
 
@@ -461,8 +462,8 @@ describe("Custom Resolvers", () => {
 
                 type Mutation {
                     test(id: ID!): ID! @cypher(statement: """
-                        RETURN \\"${id}\\" + $id
-                    """)
+                        RETURN \\"${id}\\" + $id as res
+                    """, columnName: "res")
                 }
             `;
 
@@ -502,8 +503,8 @@ describe("Custom Resolvers", () => {
 
                 type Query {
                     status: Status @cypher(statement: """
-                        RETURN 'COMPLETED'
-                    """)
+                        RETURN 'COMPLETED' as str
+                    """, columnName: "str")
                 }
             `;
 
@@ -547,8 +548,8 @@ describe("Custom Resolvers", () => {
                 type Trade {
                     id: ID
                     status: Status @cypher(statement: """
-                        RETURN 'COMPLETED'
-                    """)
+                        RETURN 'COMPLETED' as res
+                    """, columnName: "res")
                 }
             `;
 
@@ -604,8 +605,9 @@ describe("Custom Resolvers", () => {
                 type Type {
                     id: ID
                     strings: [String] @cypher(statement: """
-                        RETURN ['${string1}', '${string2}', '${string3}']
-                    """)
+                        RETURN ['${string1}', '${string2}', '${string3}'] as arr
+                    """,
+                    columnName: "arr")
                 }
             `;
 

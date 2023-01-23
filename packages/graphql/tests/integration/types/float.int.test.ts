@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver} from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { int } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -188,7 +188,8 @@ describe("Float", () => {
                         statement: """
                         CREATE (m:Movie {id: $id, float: $float, floats: $nested.floats})
                         RETURN m.float
-                        """
+                        """,
+                        columnName: "m.float"
                     )
             }
         `;
@@ -241,8 +242,8 @@ describe("Float", () => {
             type Movie {
                 id: String
                 fakeFloat: Float! @cypher(statement: """
-                    RETURN 12345
-                """)
+                    RETURN 12345 as result
+                """, columnName: "result")
             }
 
 

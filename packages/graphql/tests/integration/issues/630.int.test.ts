@@ -45,7 +45,7 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
         type ${typeActor} {
             id: ID!
             name: String!
-            movies: [${typeMovie}!]! @cypher(statement: "MATCH (this)-[:ACTED_IN]->(m:${typeMovie}) RETURN m")
+            movies: [${typeMovie}!]! @cypher(statement: "MATCH (this)-[:ACTED_IN]->(m:${typeMovie}) RETURN m", columnName:"m")
         }
 
         type ${typeMovie} {

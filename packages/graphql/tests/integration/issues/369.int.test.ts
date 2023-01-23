@@ -57,6 +57,7 @@ describe("369", () => {
                         statement: """
                         MATCH (d:Dato {uuid: $uuid}) RETURN d
                         """
+                        columnName: "d"
                     )
             }
         `;
@@ -141,6 +142,7 @@ describe("369", () => {
                         statement: """
                         MATCH (d:Dato {uuid: $uuid}) RETURN d
                         """
+                        columnName: "d"
                     )
             }
         `;
