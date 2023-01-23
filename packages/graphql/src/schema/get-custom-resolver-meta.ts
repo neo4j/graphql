@@ -85,13 +85,13 @@ function getCustomResolverMeta(
     }
 
     if (directiveFromArgument?.value.kind === Kind.STRING) {
-        const baz = parse(directiveFromArgument.value.value);
+        const selectionSetDocument = parse(directiveFromArgument.value.value);
         // return {
         //     requiredFields: [directiveFromArgument.value.value],
         // };
-        const aVar = test(object, baz);
+        const requiredFieldsResolveTree = selectionSetToResolveTree(object, selectionSetDocument);
         return {
-            requiredFields: aVar || [],
+            requiredFields: requiredFieldsResolveTree || [],
         };
     }
 
@@ -110,35 +110,35 @@ function getCustomResolverMeta(
     };
 }
 
-function test(object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode, document: DocumentNode) {
+function selectionSetToResolveTree(
+    object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    document: DocumentNode
+) {
     // Throw error if more than one definition
-    const foo = document.definitions[0];
+    const selectionSetDocument = document.definitions[0];
 
-    if (foo.kind !== Kind.OPERATION_DEFINITION) {
+    if (selectionSetDocument.kind !== Kind.OPERATION_DEFINITION) {
         throw new Error();
     }
-    const baz = recurse(object, foo.selectionSet);
-    console.log(baz);
+    const resolveTree = nestedSelectionSetToResolveTrees(object, selectionSetDocument.selectionSet);
+    console.log(resolveTree);
 
-    return baz;
+    return resolveTree;
 }
 
-function recurse(
+function nestedSelectionSetToResolveTrees(
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     selectionSet: SelectionSetNode | SelectionNode
 ): ResolveTree[] | undefined {
     if (selectionSet.kind === Kind.FIELD) {
-        if (!selectionSet.selectionSet) {
-            return [
-                {
-                    name: selectionSet.name.value,
-                    alias: selectionSet.name.value, // parse from object
-                    args: {}, // parse from object
-                    fieldsByTypeName: {}, // we know is none because no selection set
-                },
-            ];
-        }
-        return;
+        return [
+            {
+                name: selectionSet.name.value,
+                alias: selectionSet.name.value, // parse from object
+                args: {}, // parse from object
+                fieldsByTypeName: {}, // we know is none because no selection set
+            },
+        ];
     }
 
     if (selectionSet.kind === Kind.SELECTION_SET) {
@@ -147,12 +147,12 @@ function recurse(
                 throw new Error("Invalid set");
             }
             if (selection.selectionSet) {
-                const lol: ResolveTree[] = [];
+                const nestedResolveTrees: ResolveTree[] = [];
                 const outerField = object.fields?.find((field) => field.name.value === selection.name.value);
                 const outerFieldType = getNestedType(outerField?.type);
                 selection.selectionSet.selections.forEach((innerSelection) => {
-                    const innerFields = recurse(object, innerSelection);
-                    if (innerFields && innerFields.length) lol.push(...innerFields);
+                    const innerResolveTrees = nestedSelectionSetToResolveTrees(object, innerSelection);
+                    if (innerResolveTrees && innerResolveTrees.length) nestedResolveTrees.push(...innerResolveTrees);
                 });
 
                 const returnVal = {
@@ -164,7 +164,7 @@ function recurse(
                     },
                 };
 
-                lol.forEach((val) => {
+                nestedResolveTrees.forEach((val) => {
                     returnVal.fieldsByTypeName[outerFieldType] = {
                         ...returnVal.fieldsByTypeName[outerFieldType],
                         [val.name]: {
