@@ -124,24 +124,51 @@ function selectionSetToResolveTree(
 
 function nestedSelectionSetToResolveTrees(
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
-    selectionSet: SelectionSetNode
+    selectionSet: SelectionSetNode,
+    outerFieldType?: string
 ): { [x: string]: ResolveTree } {
     const result = selectionSet.selections.reduce((acc, selection) => {
-        if (selection.kind !== Kind.FIELD) {
-            throw Error;
+        if (selection.kind === Kind.FRAGMENT_SPREAD) {
+            return acc;
+        }
+        if (selection.kind === Kind.INLINE_FRAGMENT) {
+            if (!selection.selectionSet) {
+                return acc;
+            }
+            const nestedResolveTree = nestedSelectionSetToResolveTrees(object, selection.selectionSet);
+            const outerFieldType = selection.typeCondition?.name.value;
+            if (!outerFieldType) {
+                throw new Error("Cannot find fragment type");
+            }
+            return {
+                ...acc,
+                [outerFieldType]: nestedResolveTree,
+            };
         }
         if (selection.selectionSet) {
-            const nestedResolveTree = nestedSelectionSetToResolveTrees(object, selection.selectionSet);
             const outerField = object.fields?.find((field) => field.name.value === selection.name.value);
             const outerFieldType = getNestedType(outerField?.type);
+            const nestedResolveTree = nestedSelectionSetToResolveTrees(object, selection.selectionSet, outerFieldType);
             return {
                 ...acc,
                 [selection.name.value]: {
                     name: selection.name.value,
                     alias: selection.name.value,
                     args: {},
-                    fieldsByTypeName: {
-                        [outerFieldType]: nestedResolveTree,
+                    fieldsByTypeName: nestedResolveTree,
+                },
+            };
+        }
+        if (outerFieldType) {
+            return {
+                ...acc,
+                [outerFieldType]: {
+                    ...acc[outerFieldType],
+                    [selection.name.value]: {
+                        name: selection.name.value,
+                        alias: selection.name.value,
+                        args: {},
+                        fieldsByTypeName: {},
                     },
                 },
             };
