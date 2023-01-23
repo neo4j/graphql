@@ -870,6 +870,10 @@ describe("Interface Relationships", () => {
 
             input EpisodeSeriesConnectFieldInput {
               connect: SeriesConnectInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: SeriesConnectWhere
             }
 
@@ -1269,6 +1273,10 @@ describe("Interface Relationships", () => {
             input ProductionActorsConnectFieldInput {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: ActorConnectWhere
             }
 
@@ -1661,6 +1669,10 @@ describe("Interface Relationships", () => {
 
             input SeriesEpisodesConnectFieldInput {
               connect: [EpisodeConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: EpisodeConnectWhere
             }
 
@@ -2901,6 +2913,10 @@ describe("Interface Relationships", () => {
 
             input CommentPostConnectFieldInput {
               connect: PostConnectInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: PostConnectWhere
             }
 
@@ -3099,6 +3115,10 @@ describe("Interface Relationships", () => {
 
             input ContentCreatorConnectFieldInput {
               connect: UserConnectInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: UserConnectWhere
             }
 
@@ -3362,6 +3382,10 @@ describe("Interface Relationships", () => {
 
             input PostCommentsConnectFieldInput {
               connect: [CommentConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: CommentConnectWhere
             }
 
