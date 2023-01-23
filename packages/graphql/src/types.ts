@@ -200,7 +200,7 @@ export interface UnionField extends BaseField {
 }
 
 export interface CustomResolverField extends BaseField {
-    requiredFields: ResolveTree;
+    requiredFields: { [x: string]: ResolveTree };
 }
 
 export interface InterfaceField extends BaseField {
@@ -368,7 +368,7 @@ export interface Neo4jGraphQLAuthPlugin {
     /**
      * This function tries to resolve public or secret keys.
      * The implementation on how to resolve the keys by the `JWKSEndpoint` or by the `Secret` is set on when the plugin is being initiated.
-     * @param req 
+     * @param req
      */
     tryToResolveKeys(req: unknown): void;
 }

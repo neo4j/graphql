@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import { IResolvers, mergeDeep } from "@graphql-tools/utils";
+import type { IResolvers } from "@graphql-tools/utils";
 import type {
     FieldDefinitionNode,
     StringValueNode,
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
     DocumentNode,
-    SelectionNode,
     SelectionSetNode,
     TypeNode,
 } from "graphql";
@@ -33,7 +32,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { removeDuplicates } from "../utils/utils";
 
 type CustomResolverMeta = {
-    requiredFields: ResolveTree;
+    requiredFields: { [x: string]: ResolveTree };
 };
 
 const DEPRECATION_WARNING =
@@ -44,7 +43,7 @@ export const ERROR_MESSAGE = "Required fields of @customResolver must be a list 
 
 let deprecationWarningShown = false;
 
-function getCustomResolverMeta(
+export default function getCustomResolverMeta(
     field: FieldDefinitionNode,
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     customResolvers?: IResolvers | IResolvers[],
@@ -123,60 +122,40 @@ function selectionSetToResolveTree(
 
 function nestedSelectionSetToResolveTrees(
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
-    selectionSet: SelectionSetNode | SelectionNode
-): ResolveTree | undefined {
-    if (selectionSet.kind === Kind.FIELD) {
-        return {
-            name: selectionSet.name.value,
-            alias: selectionSet.name.value, // parse from object
-            args: {}, // parse from object
-            fieldsByTypeName: {}, // we know is none because no selection set
-        };
-    }
-
-    if (selectionSet.kind === Kind.SELECTION_SET) {
-        const requiredFields: ResolveTree[] = selectionSet.selections.flatMap((selection) => {
-            if (selection.kind !== Kind.FIELD) {
-                throw new Error("Invalid set");
-            }
-            if (selection.selectionSet) {
-                const outerField = object.fields?.find((field) => field.name.value === selection.name.value);
-                const outerFieldType = getNestedType(outerField?.type);
-
-                const returnVal = {
-                    name: selection.name.value,
-                    alias: selection.name.value, // parse from object
-                    args: {}, // parse from object
-                    fieldsByTypeName: {
-                        [outerFieldType]: {}, // need to parse this from object
-                    },
-                };
-
-                selection.selectionSet.selections.forEach((innerSelection) => {
-                    const innerResolveTree = nestedSelectionSetToResolveTrees(object, innerSelection);
-                    if (innerResolveTree) {
-                        returnVal.fieldsByTypeName[outerFieldType] = {
-                            ...returnVal.fieldsByTypeName[outerFieldType],
-                            [innerResolveTree.name]: innerResolveTree,
-                        };
-                    }
-                });
-
-                return returnVal;
-                // return lol;
-            }
+    selectionSet: SelectionSetNode
+): { [x: string]: ResolveTree } {
+    const result = selectionSet.selections.reduce((acc, selection) => {
+        if (selection.kind !== Kind.FIELD) {
+            throw Error;
+        }
+        if (selection.selectionSet) {
+            const nestedResolveTree = nestedSelectionSetToResolveTrees(object, selection.selectionSet);
+            const outerField = object.fields?.find((field) => field.name.value === selection.name.value);
+            const outerFieldType = getNestedType(outerField?.type);
             return {
-                name: selection.name.value,
-                alias: selection.name.value, // parse from object
-                args: {}, // parse from object
-                fieldsByTypeName: {},
+                ...acc,
+                [selection.name.value]: {
+                    name: selection.name.value,
+                    alias: selection.name.value,
+                    args: {},
+                    fieldsByTypeName: {
+                        [outerFieldType]: nestedResolveTree,
+                    },
+                },
             };
-        });
-        return mergeDeep(requiredFields.map((requiredField) => ({ [requiredField.name]: requiredField })));
-    }
+        }
+        return {
+            ...acc,
+            [selection.name.value]: {
+                name: selection.name.value,
+                alias: selection.name.value,
+                args: {},
+                fieldsByTypeName: {},
+            },
+        };
+    }, {});
+    return result;
 }
-
-export default getCustomResolverMeta;
 
 function getNestedType(type: TypeNode | undefined): string {
     if (!type) {

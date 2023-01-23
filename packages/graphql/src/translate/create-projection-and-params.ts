@@ -368,11 +368,12 @@ export default function createProjectionAndParams({
 
     // Merge fields for final projection to account for multiple fragments
     // cf. https://github.com/neo4j/graphql/issues/920
-    const mergedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
+    const foo = [
         mergedSelectedFields,
         generateMissingOrAliasedSortFields({ selection: mergedSelectedFields, resolveTree }),
         generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
-    ]);
+    ];
+    const mergedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>(foo);
 
     const { projection, params, meta, subqueries, subqueriesBeforeSort } = Object.values(mergedFields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
@@ -425,9 +426,7 @@ const generateMissingOrAliasedRequiredFields = ({
             .map((f) => f.requiredFields)
             .flat()
     );
-    const foo = {};
-    requiredFields.forEach(field => foo[field.name] = field)
-    return foo;
+    return requiredFields[0] as Record<string, ResolveTree>;
 
     // return generateMissingOrAliasedFields({ fieldNames: requiredFields.map(field => field.name), selection });
 };
