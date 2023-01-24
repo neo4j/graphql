@@ -170,7 +170,7 @@ describe("Cypher Auth Allow", () => {
                     	WITH create_this5
                     	MATCH (create_this5)<-[create_this5_creator_User_unique:HAS_POST]-(:User)
                     	WITH count(create_this5_creator_User_unique) as c
-                    	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+                    	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
                     	RETURN c AS create_this5_creator_User_unique_ignored
                     }
                     RETURN collect(NULL) AS create_var13
@@ -294,7 +294,7 @@ describe("Cypher Auth Allow", () => {
             	WITH this_posts0
             	MATCH (this_posts0)<-[this_posts0_creator_User_unique:HAS_POST]-(:User)
             	WITH count(this_posts0_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             	RETURN c AS this_posts0_creator_User_unique_ignored
             }
             RETURN count(*) AS _
@@ -402,7 +402,7 @@ describe("Cypher Auth Allow", () => {
             	WITH this
             	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
             	WITH count(this_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -459,7 +459,7 @@ describe("Cypher Auth Allow", () => {
             	WITH this
             	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
             	WITH count(this_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
             RETURN collect(DISTINCT this { .id }) AS data"

@@ -64,7 +64,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(this1.name) WHERE var2 = $param0) AS var3
             }
             WITH *
@@ -97,7 +97,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(this1._someStringAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
@@ -130,7 +130,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(size(this1.name)) WHERE var2 > $param0) AS var3
             }
             WITH *
@@ -166,7 +166,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(size(this1.name)) WHERE var2 >= $param0) AS var3
             }
             WITH *
@@ -202,7 +202,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(size(this1.name)) WHERE var2 < $param0) AS var3
             }
             WITH *
@@ -238,7 +238,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(size(this1.name)) WHERE var2 <= $param0) AS var3
             }
             WITH *
@@ -274,7 +274,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN min(size(this1.name)) = $param0 AS var2
             }
             WITH *
@@ -310,7 +310,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN min(size(this1.name)) > $param0 AS var2
             }
             WITH *
@@ -346,7 +346,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN min(size(this1.name)) >= $param0 AS var2
             }
             WITH *
@@ -382,7 +382,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN min(size(this1.name)) < $param0 AS var2
             }
             WITH *
@@ -418,7 +418,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN min(size(this1.name)) <= $param0 AS var2
             }
             WITH *
@@ -454,7 +454,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN max(size(this1.name)) = $param0 AS var2
             }
             WITH *
@@ -490,7 +490,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN max(size(this1.name)) > $param0 AS var2
             }
             WITH *
@@ -526,7 +526,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN max(size(this1.name)) >= $param0 AS var2
             }
             WITH *
@@ -562,7 +562,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN max(size(this1.name)) < $param0 AS var2
             }
             WITH *
@@ -598,7 +598,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN max(size(this1.name)) <= $param0 AS var2
             }
             WITH *
@@ -634,7 +634,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN avg(size(this1.name)) = $param0 AS var2
             }
             WITH *
@@ -667,7 +667,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN avg(size(this1.name)) > $param0 AS var2
             }
             WITH *
@@ -700,7 +700,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN avg(size(this1.name)) >= $param0 AS var2
             }
             WITH *
@@ -733,7 +733,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN avg(size(this1.name)) < $param0 AS var2
             }
             WITH *
@@ -766,7 +766,7 @@ describe("Cypher Aggregations where node with String", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN avg(size(this1.name)) <= $param0 AS var2
             }
             WITH *

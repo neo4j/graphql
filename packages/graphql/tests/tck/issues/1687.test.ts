@@ -64,7 +64,13 @@ describe("https://github.com/neo4j/graphql/issues/1687", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Genre\`)
-            WHERE size([(this1:\`Movie\`)-[this0:HAS_GENRE]->(this) WHERE NOT this1.title = $param0 | 1]) = 0
+            WHERE (EXISTS {
+                MATCH (this1:\`Movie\`)-[this0:HAS_GENRE]->(this)
+                WHERE this1.title = $param0
+            } AND NOT (EXISTS {
+                MATCH (this1:\`Movie\`)-[this0:HAS_GENRE]->(this)
+                WHERE NOT (this1.title = $param0)
+            }))
             RETURN this { .name } AS this"
         `);
 
