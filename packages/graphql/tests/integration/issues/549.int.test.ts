@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/549", () => {
             });
 
             expect(result.errors).toBeTruthy();
-            expect((result.errors as any[])[0].message).toBe(`${testMovie.name}.director required`);
+            expect((result.errors as any[])[0].message).toBe(`${testMovie.name}.director required exactly once`);
         } finally {
             await session.close();
         }

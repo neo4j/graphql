@@ -56,13 +56,43 @@ export function createConnectionOperation({
     const operations: (Cypher.BooleanOp | Cypher.RawCypher | undefined)[] = [];
 
     Object.entries(nodeEntries).forEach((entry) => {
-        const refNode = context.nodes.find(
-            (x) => x.name === entry[0] || x.interfaces.some((i) => i.name.value === entry[0])
-        ) as Node;
+        let nodeOnValue: string | undefined = undefined;
+        const nodeOnObj = entry[1]?.node?._on;
+        if (nodeOnObj) {
+            nodeOnValue = Object.keys(nodeOnObj)[0];
+        }
+
+        let refNode = context.nodes.find((x) => x.name === nodeOnValue || x.name === entry[0]) as Node;
+        if (!refNode) {
+            refNode = context.nodes.find((x) => x.interfaces.some((i) => i.name.value === entry[0])) as Node;
+        }
 
         const relationField = connectionField.relationship;
 
-        const childNode = new Cypher.Node({ labels: refNode.getLabels(context) });
+        let labelsOfNodesImplementingInterface;
+        let labels = refNode.getLabels(context);
+
+        const hasOnlyNodeObjectFilter = entry[1]?.node && !nodeOnObj;
+        if (hasOnlyNodeObjectFilter) {
+            const nodesImplementingInterface = context.nodes.filter((x) =>
+                x.interfaces.some((i) => i.name.value === entry[0])
+            );
+            labelsOfNodesImplementingInterface = nodesImplementingInterface.map((n) => n.getLabels(context)).flat();
+            if (labelsOfNodesImplementingInterface?.length) {
+                // set labels to an empty array. We check for the possible interface implementations in the WHERE clause instead (that is Neo4j 4.x safe)
+                labels = [];
+            }
+        }
+
+        const childNode = new Cypher.Node({ labels });
+
+        let orOperatorMultipleNodeLabels;
+        if (labelsOfNodesImplementingInterface?.length) {
+            orOperatorMultipleNodeLabels = Cypher.or(
+                ...labelsOfNodesImplementingInterface.map((label: string) => childNode.hasLabel(label))
+            );
+        }
+
         const relationship = new Cypher.Relationship({
             source: relationField.direction === "IN" ? childNode : parentNode,
             target: relationField.direction === "IN" ? parentNode : childNode,
@@ -94,7 +124,14 @@ export function createConnectionOperation({
         }
         const subquery = new Cypher.RawCypher((env: Cypher.Environment) => {
             const patternStr = matchPattern.getCypher(env);
-            const whereStr = whereOperator ? whereOperator.getCypher(env) : "";
+
+            let whereStr = "";
+            if (whereOperator && orOperatorMultipleNodeLabels) {
+                whereStr = Cypher.and(whereOperator, orOperatorMultipleNodeLabels).getCypher(env);
+            } else if (whereOperator) {
+                whereStr = whereOperator.getCypher(env);
+            }
+
             const clause = listPredicateToSizeFunction(listPredicateStr, patternStr, whereStr);
             return [clause, {}];
         });
