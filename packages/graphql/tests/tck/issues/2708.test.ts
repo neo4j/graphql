@@ -68,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN count(this2) = $param0 AS var3
             }
             WITH this, collect(var3) AS var3
@@ -106,7 +106,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN count(this2) < $param0 AS var3
             }
             WITH this, collect(var3) AS var3
@@ -144,7 +144,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN count(this2) > $param0 AS var3
             }
             WITH this, collect(var3) AS var3
@@ -182,7 +182,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN min(size(this2.title)) = $param0 AS var3
             }
             WITH this, collect(var3) AS var3
@@ -220,7 +220,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN avg(size(this2.title)) = $param0 AS var3
             }
             WITH this, collect(var3) AS var3
@@ -255,7 +255,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN max(this1.intValue) < $param0 AS var3
             }
             WITH this, collect(var3) AS var3
@@ -293,7 +293,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN min(this1.intValue) = $param0 AS var3
             }
             WITH this, collect(var3) AS var3
@@ -331,7 +331,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN count(this2) = $param0 AS var3
             }
             WITH this, collect(var3) AS var3
@@ -369,7 +369,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN count(this2) = $param0 AS var3
             }
             WITH this, collect(var3) AS var3
@@ -407,7 +407,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN count(this2) = $param0 AS var3
             }
             WITH this, collect(var3) AS var3
@@ -448,7 +448,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN count(this2) = $param0 AS var3
             }
             WITH this, collect(var3) AS var3
@@ -483,7 +483,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN count(this2) = $param0 AS var3
             }
             WITH this, collect(var3) AS var3
@@ -521,7 +521,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN count(this2) = $param0 AS var3
             }
             WITH this, collect(var3) AS var3
@@ -571,12 +571,12 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN count(this2) = $param0 AS var3
             }
             CALL {
                 WITH this0
-                MATCH (this5:\`Series\`)-[this4:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this5:\`Series\`)-[this4:IN_GENRE]->(this0)
                 RETURN min(size(this5.name)) = $param1 AS var6
             }
             WITH this, collect(var3) AS var3, collect(var6) AS var6
@@ -627,12 +627,12 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN count(this2) = $param0 AS var3
             }
             CALL {
                 WITH this0
-                MATCH (this5:\`Series\`)-[this4:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this5:\`Series\`)-[this4:IN_GENRE]->(this0)
                 RETURN min(size(this5.name)) = $param1 AS var6
             }
             WITH this, collect(var3) AS var3, collect(var6) AS var6
@@ -678,12 +678,12 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN count(this2) = $param0 AS var3
             }
             CALL {
                 WITH this0
-                MATCH (this5:\`Series\`)-[this4:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this5:\`Series\`)-[this4:IN_GENRE]->(this0)
                 RETURN min(size(this5.name)) = $param1 AS var6
             }
             WITH this, collect(var3) AS var3, collect(var6) AS var6
@@ -725,13 +725,13 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
                 WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0:\`Genre\`)
+                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
                 RETURN count(this2) = $param0 AS var3
             }
             WITH this, collect(var3) AS var3
             CALL {
                 WITH this
-                MATCH (this:\`Movie\`)-[this4:IN_GENRE]->(this5:\`Genre\`)
+                MATCH (this)-[this4:IN_GENRE]->(this5:\`Genre\`)
                 RETURN count(this5) = $param1 AS var6
             }
             WITH *

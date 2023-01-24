@@ -61,10 +61,12 @@ export function aggregatePreComputedWhereFields(
         target: aggregationTarget,
         type: relationField.type,
     });
+    let matchPattern = cypherRelation.pattern({ source: { labels: false } });
     if (direction === "IN") {
         cypherRelation.reverse();
+        matchPattern = cypherRelation.pattern({ target: { labels: false } });
     }
-    const matchQuery = new Cypher.Match(cypherRelation);
+    const matchQuery = new Cypher.Match(matchPattern);
     const { returnProjections, predicates, returnVariables } = aggregateWhere(
         value as AggregateWhereInput,
         refNode,

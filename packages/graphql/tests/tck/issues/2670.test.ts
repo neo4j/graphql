@@ -68,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             OPTIONAL MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
             CALL {
                 WITH this1
-                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1)
                 RETURN count(this3) = $param0 AS var4
             }
             WITH this, collect(var4) AS var4
@@ -106,7 +106,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             OPTIONAL MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
             CALL {
                 WITH this1
-                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1)
                 RETURN count(this3) < $param0 AS var4
             }
             WITH this, collect(var4) AS var4
@@ -144,7 +144,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             OPTIONAL MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
             CALL {
                 WITH this1
-                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1)
                 RETURN count(this3) > $param0 AS var4
             }
             WITH this, collect(var4) AS var4
@@ -169,7 +169,9 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
     test("should find where moviesAggregate node property SHORTEST", async () => {
         const query = gql`
             {
-                movies(where: { genresConnection: { node: { moviesAggregate: { node: { title_SHORTEST_EQUAL: 5 } } } } }) {
+                movies(
+                    where: { genresConnection: { node: { moviesAggregate: { node: { title_SHORTEST_EQUAL: 5 } } } } }
+                ) {
                     title
                 }
             }
@@ -182,7 +184,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             OPTIONAL MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
             CALL {
                 WITH this1
-                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1)
                 RETURN min(size(this3.title)) = $param0 AS var4
             }
             WITH this, collect(var4) AS var4
@@ -207,7 +209,9 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
     test("should find where moviesAggregate node property AVERAGE", async () => {
         const query = gql`
             {
-                movies(where: { genresConnection: { node: { moviesAggregate: { node: { title_AVERAGE_EQUAL: 1 } } } } }) {
+                movies(
+                    where: { genresConnection: { node: { moviesAggregate: { node: { title_AVERAGE_EQUAL: 1 } } } } }
+                ) {
                     title
                 }
             }
@@ -220,7 +224,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             OPTIONAL MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
             CALL {
                 WITH this1
-                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1)
                 RETURN avg(size(this3.title)) = $param0 AS var4
             }
             WITH this, collect(var4) AS var4
@@ -255,7 +259,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             OPTIONAL MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
             CALL {
                 WITH this1
-                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1)
                 RETURN max(this2.intValue) < $param0 AS var4
             }
             WITH this, collect(var4) AS var4
@@ -280,7 +284,9 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
     test("should find where moviesAggregate edge property MIN_EQUAL", async () => {
         const query = gql`
             {
-                movies(where: { genresConnection: { node: { moviesAggregate: { edge: { intValue_MIN_EQUAL: 1 } } } } }) {
+                movies(
+                    where: { genresConnection: { node: { moviesAggregate: { edge: { intValue_MIN_EQUAL: 1 } } } } }
+                ) {
                     title
                 }
             }
@@ -293,7 +299,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             OPTIONAL MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
             CALL {
                 WITH this1
-                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1)
                 RETURN min(this2.intValue) = $param0 AS var4
             }
             WITH this, collect(var4) AS var4
@@ -331,7 +337,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             OPTIONAL MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
             CALL {
                 WITH this1
-                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1)
                 RETURN count(this3) = $param0 AS var4
             }
             WITH this, collect(var4) AS var4
@@ -369,7 +375,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             OPTIONAL MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
             CALL {
                 WITH this1
-                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1)
                 RETURN count(this3) = $param0 AS var4
             }
             WITH this, collect(var4) AS var4
@@ -407,7 +413,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             OPTIONAL MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
             CALL {
                 WITH this1
-                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1)
                 RETURN count(this3) = $param0 AS var4
             }
             WITH this, collect(var4) AS var4
@@ -448,7 +454,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             OPTIONAL MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
             CALL {
                 WITH this1
-                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1)
                 RETURN count(this3) = $param0 AS var4
             }
             WITH this, collect(var4) AS var4
@@ -483,7 +489,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             OPTIONAL MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
             CALL {
                 WITH this1
-                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1)
                 RETURN count(this3) = $param0 AS var4
             }
             WITH this, collect(var4) AS var4
@@ -508,7 +514,16 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
     test("should find genresConnection with multiple AND aggregates", async () => {
         const query = gql`
             {
-                movies(where: { genresConnection: { AND: [{ node: { moviesAggregate: { count: 2 } } }, { node: { seriesAggregate: { node: { name_SHORTEST_EQUAL: 1 } } } }] } }) {
+                movies(
+                    where: {
+                        genresConnection: {
+                            AND: [
+                                { node: { moviesAggregate: { count: 2 } } }
+                                { node: { seriesAggregate: { node: { name_SHORTEST_EQUAL: 1 } } } }
+                            ]
+                        }
+                    }
+                ) {
                     title
                 }
             }
@@ -521,12 +536,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             OPTIONAL MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
             CALL {
                 WITH this1
-                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1)
                 RETURN count(this3) = $param0 AS var4
             }
             CALL {
                 WITH this1
-                MATCH (this6:\`Series\`)-[this5:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this6:\`Series\`)-[this5:IN_GENRE]->(this1)
                 RETURN min(size(this6.name)) = $param1 AS var7
             }
             WITH this, collect(var4) AS var4, collect(var7) AS var7
@@ -555,7 +570,16 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
     test("should find genresConnection with multiple OR aggregates", async () => {
         const query = gql`
             {
-                movies(where: { genresConnection: { OR: [{ node: { moviesAggregate: { count: 3 } } }, { node: { seriesAggregate: { node: { name_SHORTEST_EQUAL: 983 } } } }] } }) {
+                movies(
+                    where: {
+                        genresConnection: {
+                            OR: [
+                                { node: { moviesAggregate: { count: 3 } } }
+                                { node: { seriesAggregate: { node: { name_SHORTEST_EQUAL: 983 } } } }
+                            ]
+                        }
+                    }
+                ) {
                     title
                 }
             }
@@ -568,12 +592,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             OPTIONAL MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
             CALL {
                 WITH this1
-                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1)
                 RETURN count(this3) = $param0 AS var4
             }
             CALL {
                 WITH this1
-                MATCH (this6:\`Series\`)-[this5:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this6:\`Series\`)-[this5:IN_GENRE]->(this1)
                 RETURN min(size(this6.name)) = $param1 AS var7
             }
             WITH this, collect(var4) AS var4, collect(var7) AS var7
@@ -602,7 +626,16 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
     test("should find genresConnection with multiple implicit AND aggregates", async () => {
         const query = gql`
             {
-                movies(where: { genresConnection: { node: { moviesAggregate: { count: 2 }, seriesAggregate: { node: { name_SHORTEST_EQUAL: 983 } } } } }) {
+                movies(
+                    where: {
+                        genresConnection: {
+                            node: {
+                                moviesAggregate: { count: 2 }
+                                seriesAggregate: { node: { name_SHORTEST_EQUAL: 983 } }
+                            }
+                        }
+                    }
+                ) {
                     title
                 }
             }
@@ -615,12 +648,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             OPTIONAL MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
             CALL {
                 WITH this1
-                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this3:\`Movie\`)-[this2:IN_GENRE]->(this1)
                 RETURN count(this3) = $param0 AS var4
             }
             CALL {
                 WITH this1
-                MATCH (this6:\`Series\`)-[this5:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this6:\`Series\`)-[this5:IN_GENRE]->(this1)
                 RETURN min(size(this6.name)) = $param1 AS var7
             }
             WITH this, collect(var4) AS var4, collect(var7) AS var7
@@ -666,13 +699,13 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this:\`Movie\`)-[this0:IN_GENRE]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
                 RETURN count(this1) = $param0 AS var2
             }
             OPTIONAL MATCH (this)-[this3:IN_GENRE]->(this4:\`Genre\`)
             CALL {
                 WITH this4
-                MATCH (this6:\`Movie\`)-[this5:IN_GENRE]->(this4:\`Genre\`)
+                MATCH (this6:\`Movie\`)-[this5:IN_GENRE]->(this4)
                 RETURN count(this6) = $param1 AS var7
             }
             WITH this, var2, collect(var7) AS var7
