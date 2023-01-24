@@ -18,13 +18,13 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { ConnectionField, ConnectionWhereArg, Context } from "../../../types";
+import type { ConnectionField, ConnectionWhereArg, Context, PredicateReturn } from "../../../types";
 import type { Node, Relationship } from "../../../classes";
 import { getListPredicate, ListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
 // Recursive function
 
-import { createWherePredicate, PredicateReturn } from "../create-where-predicate";
+import { createWherePredicate } from "../create-where-predicate";
 import { filterTruthy } from "../../../utils/utils";
 import { createRelationshipPredicate } from "./create-relationship-operation";
 

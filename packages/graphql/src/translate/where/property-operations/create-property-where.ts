@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Context } from "../../../types";
+import type { Context, PredicateReturn } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 import { GraphElement, Node } from "../../../classes";
 import { ListPredicate, whereRegEx, WhereRegexGroups } from "../utils";
@@ -31,7 +31,6 @@ import { createComparisonOperation } from "./create-comparison-operation";
 
 import { createRelationshipOperation } from "./create-relationship-operation";
 import { aggregatePreComputedWhereFields } from "../../create-aggregate-where-and-params";
-import type { PredicateReturn } from "../create-where-predicate";
 
 /** Translates a property into its predicate filter */
 export function createPropertyWhere({

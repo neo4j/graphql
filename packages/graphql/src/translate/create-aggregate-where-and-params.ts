@@ -19,12 +19,11 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
-import type { RelationField, Context, GraphQLWhereArg } from "../types";
+import type { RelationField, Context, GraphQLWhereArg, PredicateReturn } from "../types";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, ListPredicate, whereRegEx } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
 import { NODE_OR_EDGE_KEYS, LOGICAL_OPERATORS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
 import mapToDbProperty from "../utils/map-to-db-property";
-import type { PredicateReturn } from "./where/create-where-predicate";
 
 type logicalOperator = "AND" | "OR";
 

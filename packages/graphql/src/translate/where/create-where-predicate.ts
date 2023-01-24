@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLWhereArg, Context } from "../../types";
+import type { GraphQLWhereArg, Context, PredicateReturn } from "../../types";
 import type { GraphElement } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
 // Recursive function
@@ -26,13 +26,6 @@ import { createPropertyWhere } from "./property-operations/create-property-where
 import type { ListPredicate } from "./utils";
 
 type WhereOperators = "OR" | "AND";
-
-export type PredicateReturn = {
-    predicate: Cypher.Predicate | undefined;
-    preComputedSubqueries?: Cypher.CompositeClause | undefined;
-    requiredVariables: Cypher.Variable[];
-    aggregatingVariables: Cypher.Variable[];
-};
 
 function isWhereOperator(key: string): key is WhereOperators {
     return ["OR", "AND"].includes(key);

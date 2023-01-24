@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import type { Context, GraphQLWhereArg, RelationField } from "../../../types";
+import type { Context, GraphQLWhereArg, RelationField, PredicateReturn } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 
-import { createWherePredicate, PredicateReturn } from "../create-where-predicate";
+import { createWherePredicate } from "../create-where-predicate";
 import { getListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
 
@@ -146,19 +146,6 @@ export function createRelationshipPredicate({
             const notExistsMatchClause = new Cypher.Match(matchPattern).where(Cypher.not(innerOperation));
             return Cypher.and(new Cypher.Exists(matchClause), Cypher.not(new Cypher.Exists(notExistsMatchClause)));
         }
-        case "not":
-        case "none": {
-            const somePredicate = createRelationshipPredicate({
-                matchPattern,
-                listPredicateStr: "some",
-                childNode,
-                innerOperation,
-            });
-            if (somePredicate) {
-                return Cypher.not(somePredicate);
-            }
-            return undefined;
-        }
         case "single": {
             // If there are edge properties used in the innerOperation predicate, it is not possible to use the
             // more performant single() function. Therefore, we fall back to size()
@@ -172,9 +159,14 @@ export function createRelationshipPredicate({
             const patternComprehension = new Cypher.PatternComprehension(matchPattern, childNode);
             return Cypher.single(childNode, patternComprehension, innerOperation);
         }
+        case "not":
+        case "none":
         case "some":
         default: {
             const existsPredicate = new Cypher.Exists(matchClause);
+            if (["not", "none"].includes(listPredicateStr)) {
+                return Cypher.not(existsPredicate);
+            }
             return existsPredicate;
         }
     }
