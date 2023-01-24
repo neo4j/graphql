@@ -475,10 +475,14 @@ These are some loose conventions on type and input naming:
 
 ### Further discussion points
 
+-   `Fields` in edges vs having the fields directly on top-level
+-   Uppercase operators (e.g. `AND: [{title: CONTAINS: "Matrix"}]`)
+-   Remove top level edge from `where` and mutations
+-   `fulltextScore` vs `fulltext { score }`
 -   Connections may have a `nodes` fields as a shortcut without passing through `edges`
--   Node aggregation vs edge aggregation
 -   Sort by aggregations and 1-\* relationship
 -   Union / interfaces
+-   Nested [field]connection
 
 ## Examples
 
@@ -899,7 +903,7 @@ input PersonMoviesAggregationEdgeWhere {
 
 input ActedInAggregationEdgeWhere {
     fields: ActedInAggregationWhere
-    count: IntWhere
+    # count: IntWhere # Count edges, not required for now
 }
 
 input MoviesAggregationWhere {
