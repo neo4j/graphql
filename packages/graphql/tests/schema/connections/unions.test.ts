@@ -334,6 +334,10 @@ describe("Unions", () => {
             input BookAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
               edge: WroteCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: AuthorConnectWhere
             }
 
@@ -616,6 +620,10 @@ describe("Unions", () => {
             input JournalAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
               edge: WroteCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: AuthorConnectWhere
             }
 
