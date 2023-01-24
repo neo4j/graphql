@@ -64,7 +64,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(this1.someLocalTime) WHERE var2 = $param0) AS var3
             }
             WITH *
@@ -102,7 +102,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(this1._someLocalTimeAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
@@ -140,7 +140,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(this1.someLocalTime) WHERE var2 > $param0) AS var3
             }
             WITH *
@@ -178,7 +178,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(this1.someLocalTime) WHERE var2 >= $param0) AS var3
             }
             WITH *
@@ -216,7 +216,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(this1.someLocalTime) WHERE var2 < $param0) AS var3
             }
             WITH *
@@ -254,7 +254,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(this1.someLocalTime) WHERE var2 <= $param0) AS var3
             }
             WITH *
@@ -292,7 +292,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN min(this1.someLocalTime) = $param0 AS var2
             }
             WITH *
@@ -330,7 +330,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN min(this1.someLocalTime) > $param0 AS var2
             }
             WITH *
@@ -368,7 +368,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN min(this1.someLocalTime) >= $param0 AS var2
             }
             WITH *
@@ -406,7 +406,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN min(this1.someLocalTime) < $param0 AS var2
             }
             WITH *
@@ -444,7 +444,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN min(this1.someLocalTime) <= $param0 AS var2
             }
             WITH *
@@ -482,7 +482,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN max(this1.someLocalTime) = $param0 AS var2
             }
             WITH *
@@ -520,7 +520,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN max(this1.someLocalTime) > $param0 AS var2
             }
             WITH *
@@ -558,7 +558,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN max(this1.someLocalTime) >= $param0 AS var2
             }
             WITH *
@@ -596,7 +596,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN max(this1.someLocalTime) < $param0 AS var2
             }
             WITH *
@@ -634,7 +634,7 @@ describe("Cypher Aggregations where node with LocalTime", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN max(this1.someLocalTime) <= $param0 AS var2
             }
             WITH *

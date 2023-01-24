@@ -63,7 +63,7 @@ describe("Cypher Where Aggregations with @node directive", () => {
             "MATCH (this:\`_Post\`:\`additionalPost\`)
             CALL {
                 WITH this
-                MATCH (this1:\`_User\`:\`additionalUser\`)-[this0:LIKES]->(this:\`_Post\`:\`additionalPost\`)
+                MATCH (this1:\`_User\`:\`additionalUser\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(size(this1.someName)) WHERE var2 > $param0) AS var3
             }
             WITH *
