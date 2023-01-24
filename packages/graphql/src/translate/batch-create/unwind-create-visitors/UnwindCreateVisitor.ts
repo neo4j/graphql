@@ -251,7 +251,6 @@ export class UnwindCreateVisitor implements Visitor {
             return new Cypher.RawCypher((env: Cypher.Environment) => {
                 const authClauses = usedAuthFields
                     .map((authField) => {
-                        const dbPropertyName = authField.dbPropertyName;
                         const [authCypher, authParams] = createAuthAndParams({
                             entity: authField,
                             operations: "CREATE",
@@ -259,7 +258,6 @@ export class UnwindCreateVisitor implements Visitor {
                             bind: {
                                 parentNode: astNode.node,
                                 varName: env.getReferenceId(nodeRef),
-                                chainStr: `${env.getReferenceId(nodeRef)}_${dbPropertyName}`,
                             },
                             escapeQuotes: true,
                         });

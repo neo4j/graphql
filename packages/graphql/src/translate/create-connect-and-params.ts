@@ -80,6 +80,7 @@ function createConnectAndParams({
         const relTypeStr = `[${relationField.properties || context.subscriptionsEnabled ? relationshipName : ""}:${
             relationField.type
         }]`;
+        const isOverwriteNotAllowed = connect.overwrite === false;
 
         const subquery: string[] = [];
         const labels = relatedNode.getLabelString(context);
@@ -187,7 +188,7 @@ function createConnectAndParams({
                 subquery.push(cypher);
             } else {
                 subquery.push(`\tWHERE ${predicate}`);
-            }  
+            }
         }
 
         const nodeMatrix: Array<{ node: Node; name: string }> = [{ node: relatedNode, name: nodeName }];
@@ -204,7 +205,7 @@ function createConnectAndParams({
                     operations: "CONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: node, varName: name, chainStr: `${name}${node.name}${i}_allow` },
+                    allow: { parentNode: node, varName: name },
                 });
 
                 if (!str) {
@@ -251,7 +252,8 @@ function createConnectAndParams({
         subquery.push("\t\t\tWITH connectedNodes, parentNodes"); //
         subquery.push(`\t\t\tUNWIND parentNodes as ${parentVar}`);
         subquery.push(`\t\t\tUNWIND connectedNodes as ${nodeName}`);
-        subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        const connectOperator = isOverwriteNotAllowed ? "CREATE" : "MERGE";
+        subquery.push(`\t\t\t${connectOperator} (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
         if (relationField.properties) {
             const relationship = context.relationships.find(
@@ -306,7 +308,7 @@ function createConnectAndParams({
             innerMetaStr = `, connect_meta + meta AS meta`;
         }
 
-        if (includeRelationshipValidation) {
+        if (includeRelationshipValidation || isOverwriteNotAllowed) {
             const relValidationStrs: string[] = [];
             const matrixItems = [
                 [parentNode, parentVar],
@@ -318,6 +320,7 @@ function createConnectAndParams({
                     node: mi[0],
                     context,
                     varName: mi[1],
+                    relationshipFieldNotOverwritable: relationField.fieldName,
                 });
                 if (relValidationStr) {
                     relValidationStrs.push(relValidationStr);
@@ -466,7 +469,7 @@ function createConnectAndParams({
                     escapeQuotes: Boolean(insideDoWhen),
                     skipIsAuthenticated: true,
                     skipRoles: true,
-                    bind: { parentNode: node, varName: nodeName, chainStr: `${nodeName}${node.name}${i}_bind` },
+                    bind: { parentNode: node, varName: nodeName },
                 });
 
                 if (!str) {

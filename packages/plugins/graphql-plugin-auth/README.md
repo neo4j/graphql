@@ -26,6 +26,19 @@ const neoSchema = new Neo4jGraphQL({
         }),
     },
 });
+
+// Or you can initiate the secret with a function which will run to retrieve the secret when the request comes in
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWTPlugin({
+            secret: (req) => {
+                return "super-secret";
+            },
+        }),
+    },
+});
 ```
 
 ### `Neo4jGraphQLAuthJWKSPlugin`
@@ -39,6 +52,22 @@ const neoSchema = new Neo4jGraphQL({
     plugins: {
         auth: new Neo4jGraphQLAuthJWKSPlugin({
             jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json",
+        }),
+    },
+});
+
+//Or you can pass a function as jskwsEndpoint to compute the endpoint when the request comes in.
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWKSPlugin({
+            jwksEndpoint: (req) => {
+                let url = "https://YOUR_DOMAIN/well-known/{file}.json";
+                const fileHeader = req.headers["file"];
+                url = url.replace("{file}", fileHeader);
+                return url;
+            },
         }),
     },
 });

@@ -759,6 +759,10 @@ describe("@populatedBy tests", () => {
 
                 input MovieGenresConnectFieldInput {
                   edge: RelPropertiesCreateInput!
+                  \\"\\"\\"
+                  Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+                  \\"\\"\\"
+                  overwrite: Boolean! = true
                   where: GenreConnectWhere
                 }
 
@@ -1292,6 +1296,10 @@ describe("@populatedBy tests", () => {
 
                 input MovieGenresConnectFieldInput {
                   edge: RelPropertiesCreateInput!
+                  \\"\\"\\"
+                  Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+                  \\"\\"\\"
+                  overwrite: Boolean! = true
                   where: GenreConnectWhere
                 }
 
