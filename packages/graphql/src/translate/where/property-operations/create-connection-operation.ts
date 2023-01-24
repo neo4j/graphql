@@ -153,7 +153,7 @@ export function createConnectionOperation({
         );
 
         return {
-            predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined,
+            predicate: Cypher.and(...operations),
             preComputedSubqueries: Cypher.concat(
                 ...matchPatterns.map((matchPattern) => new Cypher.OptionalMatch(matchPattern)),
                 subqueries,
@@ -164,7 +164,7 @@ export function createConnectionOperation({
         };
     }
     return {
-        predicate: Cypher.and(...operations) as Cypher.BooleanOp | undefined,
+        predicate: Cypher.and(...operations),
         preComputedSubqueries: subqueries,
         requiredVariables: requiredVariables,
         aggregatingVariables: [],
