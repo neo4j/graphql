@@ -320,7 +320,7 @@ function createConnectAndParams({
                     node: mi[0],
                     context,
                     varName: mi[1],
-                    relationshipFieldNotOverwritable: relationField.fieldName,
+                    ...(isOverwriteNotAllowed && { relationshipFieldNotOverwritable: relationField.fieldName }),
                 });
                 if (relValidationStr) {
                     relValidationStrs.push(relValidationStr);
