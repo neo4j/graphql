@@ -82,7 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             "MATCH (this:\`Employee\`)
             CALL {
                 WITH this
-                MATCH (this:\`Employee\`)-[this0:PARTICIPATES]->(this1:\`Project\`)
+                MATCH (this)-[this0:PARTICIPATES]->(this1:\`Project\`)
                 RETURN sum(this0.allocation) <= $param0 AS var2
             }
             WITH *
@@ -135,7 +135,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             "MATCH (this:\`Employee\`)
             CALL {
                 WITH this
-                MATCH (this:\`Employee\`)-[this0:PARTICIPATES]->(this1:\`Project\`)
+                MATCH (this)-[this0:PARTICIPATES]->(this1:\`Project\`)
                 RETURN any(var2 IN collect(this0.allocation) WHERE var2 <= $param0) AS var3
             }
             WITH *
