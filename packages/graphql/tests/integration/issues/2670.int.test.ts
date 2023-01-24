@@ -334,7 +334,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         });
     });
 
-    test("should find where genresConnection_SOME", async () => {
+    test("should find where genresConnection_SOME and nested count", async () => {
         const query = `
             {
                 ${movieType.plural}(where: { genresConnection_SOME: { node: { moviesAggregate: { count: 2 } } } }) {
