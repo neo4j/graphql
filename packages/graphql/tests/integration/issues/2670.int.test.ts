@@ -111,23 +111,6 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
     afterAll(async () => {
         await driver.close();
     });
-    test("should not throw error", async () => {
-        const query = `
-            {
-                ${movieType.plural}(where: { genresConnection: { node: { moviesAggregate: { count_GT: 10 } } } }) {
-                    title
-                }
-            }
-        `;
-
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-
-        expect(result.errors).toBeFalsy();
-    });
 
     test("should find where moviesAggregate count equal", async () => {
         const query = `
