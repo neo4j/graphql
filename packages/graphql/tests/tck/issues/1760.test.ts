@@ -39,7 +39,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 markets: [Market!]! @relationship(type: "HAS_MARKETS", direction: OUT)
                 id: ID! @id(autogenerate: false)
                 relatedId: ID
-                    @cypher(statement: "MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id", columnName: "n.id")
+                    @cypher(statement: "MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id as res", columnName: "res")
                 baseObject: BaseObject! @relationship(type: "HAS_BASE", direction: IN)
                 current: Boolean!
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", direction: OUT)
@@ -131,9 +131,9 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 CALL {
                     WITH this
                     WITH this AS this
-                    MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id
+                    MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id as res
                 }
-                UNWIND n.id AS this_relatedId
+                UNWIND res AS this_relatedId
                 RETURN head(collect(this_relatedId)) AS this_relatedId
             }
             WITH *
