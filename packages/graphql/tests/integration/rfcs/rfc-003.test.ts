@@ -74,7 +74,7 @@ describe("integration/rfc/003", () => {
                 });
 
                 expect(result.errors).toBeTruthy();
-                expect((result.errors as any[])[0].message).toBe("Movie.director required");
+                expect((result.errors as any[])[0].message).toBe("Movie.director required exactly once");
             });
 
             describe("nested mutations", () => {
@@ -122,7 +122,7 @@ describe("integration/rfc/003", () => {
                     });
 
                     expect(result.errors).toBeTruthy();
-                    expect((result.errors as any[])[0].message).toBe("Director.address required");
+                    expect((result.errors as any[])[0].message).toBe("Director.address required exactly once");
                 });
             });
         });
@@ -170,7 +170,7 @@ describe("integration/rfc/003", () => {
                     });
 
                     expect(result.errors).toBeTruthy();
-                    expect((result.errors as any[])[0].message).toBe("Movie.director required");
+                    expect((result.errors as any[])[0].message).toBe("Movie.director required exactly once");
                 } finally {
                     await session.close();
                 }
@@ -231,7 +231,7 @@ describe("integration/rfc/003", () => {
                         });
 
                         expect(result.errors).toBeTruthy();
-                        expect((result.errors as any[])[0].message).toBe("Director.address required");
+                        expect((result.errors as any[])[0].message).toBe("Director.address required exactly once");
                     } finally {
                         await session.close();
                     }
@@ -291,7 +291,7 @@ describe("integration/rfc/003", () => {
                         });
 
                         expect(result.errors).toBeTruthy();
-                        expect((result.errors as any[])[0].message).toBe("Director.address required");
+                        expect((result.errors as any[])[0].message).toBe("Director.address required exactly once");
                     } finally {
                         await session.close();
                     }
@@ -355,7 +355,7 @@ describe("integration/rfc/003", () => {
                         });
 
                         expect(result.errors).toBeTruthy();
-                        expect((result.errors as any[])[0].message).toBe("Movie.director required");
+                        expect((result.errors as any[])[0].message).toBe("Movie.director required exactly once");
                     } finally {
                         await session.close();
                     }
@@ -403,7 +403,7 @@ describe("integration/rfc/003", () => {
                 });
 
                 expect(result.errors).toBeTruthy();
-                expect((result.errors as any[])[0].message).toBe("Movie.director required");
+                expect((result.errors as any[])[0].message).toBe("Movie.director required exactly once");
             });
 
             describe("nested mutations", () => {
@@ -470,7 +470,7 @@ describe("integration/rfc/003", () => {
                         });
 
                         expect(result.errors).toBeTruthy();
-                        expect((result.errors as any[])[0].message).toBe("Director.address required");
+                        expect((result.errors as any[])[0].message).toBe("Director.address required exactly once");
                     } finally {
                         await session.close();
                     }
@@ -526,7 +526,7 @@ describe("integration/rfc/003", () => {
                         });
 
                         expect(result.errors).toBeTruthy();
-                        expect((result.errors as any[])[0].message).toBe("Movie.director required");
+                        expect((result.errors as any[])[0].message).toBe("Movie.director required exactly once");
                     } finally {
                         await session.close();
                     }

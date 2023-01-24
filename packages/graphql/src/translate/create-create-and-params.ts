@@ -258,7 +258,7 @@ function createCreateAndParams({
                 entity: primitiveField,
                 operations: "CREATE",
                 context,
-                bind: { parentNode: node, varName, chainStr: varNameKey },
+                bind: { parentNode: node, varName },
                 escapeQuotes: Boolean(insideDoWhen),
             });
             if (authAndParams[0]) {
