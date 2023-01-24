@@ -14,6 +14,11 @@ Simply update `@neo4j/graphql` using npm or your package manager of choice:
 npm update @neo4j/graphql
 ----
 
+== Constructor arguments
+
+If you were passing any arguments from https://the-guild.dev/graphql/tools/docs/api/interfaces/schema_src.iexecutableschemadefinition[`IExecutableSchemaDefinition`] into the library
+other than `typeDefs` and `resolvers`, these are no longer supported.
+
 == Updated Directives
 
 We have renamed a number of directives and their arguments, in order to make using `@neo4j/graphql` more intuitive.
@@ -31,7 +36,7 @@ Therefore, the following usage of the directive would be invalid:
 ----
 type User {
   id: ID! @callback(name: "nanoid", operations: [CREATE])
-  firstName: String! 
+  firstName: String!
   surname: String!
 }
 ----
@@ -42,7 +47,7 @@ It would instead need to be updated to use the new directive and argument as bel
 ----
 type User {
   id: ID! @populatedBy(callback: "nanoid", operations: [CREATE])
-  firstName: String! 
+  firstName: String!
   surname: String!
 }
 ----

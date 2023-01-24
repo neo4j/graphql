@@ -22,7 +22,7 @@ import type { GraphQLSchema } from "graphql";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
-import type { IResolvers } from "@graphql-tools/utils";
+import type { IResolvers, TypeSource } from "@graphql-tools/utils";
 import { forEachField } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
 import Debug from "debug";
@@ -58,7 +58,9 @@ export interface Neo4jGraphQLConfig {
     callbacks?: Neo4jGraphQLCallbacks;
 }
 
-export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
+export interface Neo4jGraphQLConstructor {
+    typeDefs: TypeSource;
+    resolvers?: IExecutableSchemaDefinition["resolvers"];
     features?: Neo4jFeaturesSettings;
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
@@ -66,10 +68,12 @@ export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
 }
 
 class Neo4jGraphQL {
+    typeDefs: TypeSource;
+    resolvers?: IExecutableSchemaDefinition["resolvers"];
+
     private config: Neo4jGraphQLConfig;
     private driver?: Driver;
     private features?: Neo4jFeaturesSettings;
-    private schemaDefinition: IExecutableSchemaDefinition;
 
     private _nodes?: Node[];
     private _relationships?: Relationship[];
@@ -82,13 +86,15 @@ class Neo4jGraphQL {
     private dbInfo?: Neo4jDatabaseInfo;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, plugins, features, ...schemaDefinition } = input;
+        const { config = {}, driver, plugins, features, typeDefs, resolvers } = input;
 
         this.driver = driver;
         this.config = config;
         this.plugins = plugins;
         this.features = features;
-        this.schemaDefinition = schemaDefinition;
+
+        this.typeDefs = typeDefs;
+        this.resolvers = resolvers;
 
         this.checkEnableDebug();
     }
@@ -219,13 +225,13 @@ class Neo4jGraphQL {
         };
 
         // Merge generated and custom resolvers
-        const mergedResolvers = mergeResolvers([resolvers, ...asArray(this.schemaDefinition.resolvers)]);
+        const mergedResolvers = mergeResolvers([resolvers, ...asArray(this.resolvers)]);
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
     private generateSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
-            const document = getDocument(this.schemaDefinition.typeDefs);
+            const document = getDocument(this.typeDefs);
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
@@ -233,7 +239,7 @@ class Neo4jGraphQL {
                 skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
                 callbacks: this.config.callbacks,
-                userCustomResolvers: this.schemaDefinition.resolvers,
+                userCustomResolvers: this.resolvers,
             });
 
             const schemaModel = generateModel(document);
@@ -247,7 +253,6 @@ class Neo4jGraphQL {
             const wrappedResolvers = this.wrapResolvers(resolvers);
 
             const schema = makeExecutableSchema({
-                ...this.schemaDefinition,
                 typeDefs,
                 resolvers: wrappedResolvers,
             });
