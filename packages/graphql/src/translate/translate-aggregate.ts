@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import Cypher  from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import type { BaseField, Context, PrimitiveField, TemporalField } from "../types";
@@ -62,7 +62,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                     entity: authField,
                     operations: "READ",
                     context,
-                    allow: { parentNode: node, varName, chainStr: authField.fieldName },
+                    allow: { parentNode: node, varName },
                 });
                 if (allowAndParams[0]) {
                     authStrs.push(allowAndParams[0]);
