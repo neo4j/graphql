@@ -20,9 +20,11 @@
 import type { Driver } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
+import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("@customResolver directive", () => {
     let driver: Driver;
@@ -297,7 +299,7 @@ describe("@customResolver directive", () => {
                     ${customResolverField}: String
                 }
             `;
-            
+
             const testResolver = () => "Some value";
             const resolvers = {
                 [interfaceType.name]: {
@@ -308,6 +310,124 @@ describe("@customResolver directive", () => {
             await expect(async () => {
                 await neoSchema.getSchema();
             }).rejects.toThrow(`Custom resolver for ${customResolverField} has not been provided`);
+        });
+    });
+});
+
+describe("Related Fields", () => {
+    let driver: Driver;
+    let neo4j: Neo4j;
+
+    let Publication: UniqueType;
+    let Author: UniqueType;
+    let Book: UniqueType;
+    let Journal: UniqueType;
+    let User: UniqueType;
+    let Address: UniqueType;
+    let City: UniqueType;
+
+    beforeAll(async () => {
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+    });
+
+    beforeEach(() => {
+        Publication = generateUniqueType("Publication");
+        Author = generateUniqueType("Author");
+        Book = generateUniqueType("Book");
+        Journal = generateUniqueType("Journal");
+        User = generateUniqueType("User");
+        Address = generateUniqueType("Address");
+        City = generateUniqueType("City");
+    });
+
+    afterEach(async () => {
+        const session = await neo4j.getSession();
+        try {
+            await cleanNodes(session, [Publication, Author, Book, Journal, User, Address, City]);
+        } finally {
+            await session.close();
+        }
+    });
+
+    afterAll(async () => {
+        await driver.close();
+    });
+
+    test("should be able to require a field from a related type", async () => {
+        const typeDefs = gql`
+            type ${Address} {
+                street: String!
+                city: String!
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                fullName: String @customResolver(requires: "firstName lastName address { city }")
+            }
+        `;
+
+        const fullNameResolver = ({ firstName, lastName, address }) => `${firstName} ${lastName} from ${address.city}`;
+
+        const resolvers = {
+            [User.name]: {
+                fullName: fullNameResolver,
+            },
+        };
+
+        const userInput = {
+            id: "1",
+            firstName: "First",
+            lastName: "Last",
+        };
+        const addressInput = {
+            city: "some city",
+            street: "some street",
+        };
+
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput, addr = $addressInput`,
+                { userInput, addressInput }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        const query = `
+            query ${User} {
+                ${User.plural} {
+                    fullName
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [User.plural]: [
+                {
+                    fullName: fullNameResolver({
+                        firstName: userInput.firstName,
+                        lastName: userInput.lastName,
+                        address: { city: addressInput.city },
+                    }),
+                },
+            ],
         });
     });
 });
