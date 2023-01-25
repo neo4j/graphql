@@ -40,7 +40,7 @@
         "@types/node": "18.11.17",
         "apollo-server": "3.11.1",
         "apollo-server-express": "3.11.1",
-        "camelcase": "6.3.0",
+        "camelcase": "7.0.1",
         "graphql-ws": "5.11.2",
         "jest": "29.4.0",
         "neo4j-driver": "5.4.0",

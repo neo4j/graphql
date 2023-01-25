@@ -89,7 +89,7 @@
         "@graphql-tools/schema": "9.0.13",
         "@graphql-tools/utils": "^9.0.0",
         "@neo4j/cypher-builder": "~0.1.9",
-        "camelcase": "^6.3.0",
+        "camelcase": "^7.0.0",
         "debug": "^4.3.4",
         "deep-equal": "^2.0.5",
         "dot-prop": "^6.0.1",
