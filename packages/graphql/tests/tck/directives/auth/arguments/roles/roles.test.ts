@@ -527,7 +527,7 @@ describe("Cypher Auth Roles", () => {
             		WITH this_post0
             		MATCH (this_post0)-[this_post0_creator_User_unique:HAS_POST]->(:User)
             		WITH count(this_post0_creator_User_unique) as c
-            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             		RETURN c AS this_post0_creator_User_unique_ignored
             	}
             	RETURN count(*) AS update_this_post0
@@ -537,7 +537,7 @@ describe("Cypher Auth Roles", () => {
             	WITH this
             	MATCH (this)<-[this_post_Post_unique:HAS_COMMENT]-(:Post)
             	WITH count(this_post_Post_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required exactly once', [0])
             	RETURN c AS this_post_Post_unique_ignored
             }
             RETURN collect(DISTINCT this { .content }) AS data"
@@ -675,7 +675,7 @@ describe("Cypher Auth Roles", () => {
             		WITH this_post0
             		MATCH (this_post0)-[this_post0_creator_User_unique:HAS_POST]->(:User)
             		WITH count(this_post0_creator_User_unique) as c
-            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             		RETURN c AS this_post0_creator_User_unique_ignored
             	}
             	RETURN count(*) AS update_this_post0
@@ -685,7 +685,7 @@ describe("Cypher Auth Roles", () => {
             	WITH this
             	MATCH (this)<-[this_post_Post_unique:HAS_COMMENT]-(:Post)
             	WITH count(this_post_Post_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required exactly once', [0])
             	RETURN c AS this_post_Post_unique_ignored
             }
             RETURN collect(DISTINCT this { .content }) AS data"
