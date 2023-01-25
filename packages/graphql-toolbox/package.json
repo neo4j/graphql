@@ -59,7 +59,7 @@
         "react-resizable": "3.0.4"
     },
     "devDependencies": {
-        "@playwright/test": "1.29.2",
+        "@playwright/test": "1.30.0",
         "@tsconfig/create-react-app": "1.0.3",
         "@types/codemirror": "5.60.7",
         "@types/lodash.debounce": "4.0.7",
