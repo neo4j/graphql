@@ -200,7 +200,7 @@ export interface UnionField extends BaseField {
 }
 
 export interface CustomResolverField extends BaseField {
-    requiredFields: { [x: string]: ResolveTree };
+    requiredFields: Record<string, ResolveTree>;
 }
 
 export interface InterfaceField extends BaseField {

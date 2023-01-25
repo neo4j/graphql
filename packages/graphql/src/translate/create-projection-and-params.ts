@@ -29,7 +29,7 @@ import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
 import { getRelationshipDirection } from "../utils/get-relationship-direction";
-import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
+import { generateMissingOrAliasedFields, filterFieldsInSelection, generateResolveTree } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
@@ -352,7 +352,7 @@ export default function createProjectionAndParams({
             // If fieldname is not found in fields of selection set
             ...(!Object.values(existingProjection).find((field) => field.name === sortFieldName)
                 ? // generate a basic resolve tree
-                  generateProjectionField({ name: sortFieldName })
+                  generateResolveTree({ name: sortFieldName })
                 : {}),
         }),
         // and add it to existing fields for projection
