@@ -1,5 +1,25 @@
 # @neo4j/graphql
 
+## 3.15.0
+
+### Minor Changes
+
+-   [#2359](https://github.com/neo4j/graphql/pull/2359) [`3fd44b3ef`](https://github.com/neo4j/graphql/commit/3fd44b3ef08d6eebec3cb1dd51111af8bf4e9fb2) Thanks [@farhadnowzari](https://github.com/farhadnowzari)! - - The `JwksEndpoint` in `Neo4jGraphQLAuthJWKSPlugin` now will accept a function as well which returns a computed endpoint.
+
+    -   The `Secret` in `Neo4jGraphQLAuthJWTPlugin` now will accept a function as well which returns a computed secret.
+
+-   [#2588](https://github.com/neo4j/graphql/pull/2588) [`ef1822849`](https://github.com/neo4j/graphql/commit/ef182284930c8444c7205e2bc398ef17481e6279) Thanks [@a-alle](https://github.com/a-alle)! - Add `overwrite` argument on connect operation for relationships to standard types and arrays of
+
+### Patch Changes
+
+-   [#2715](https://github.com/neo4j/graphql/pull/2715) [`f17f6b5b0`](https://github.com/neo4j/graphql/commit/f17f6b5b0259d26cf207a340be027b6c20ec2b81) Thanks [@tbwiss](https://github.com/tbwiss)! - fix: issue on generated Cypher with interface type (#2709)
+
+-   [#2760](https://github.com/neo4j/graphql/pull/2760) [`343845b26`](https://github.com/neo4j/graphql/commit/343845b26b577f0126dd3d7f2c070c5d0d1e3bf3) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #2713 - missing checks for connection not NONE when filtering by connection_ALL
+
+-   [#2760](https://github.com/neo4j/graphql/pull/2760) [`6a784dd1f`](https://github.com/neo4j/graphql/commit/6a784dd1ffbaa8c901e04b67f62590545bdd4f5d) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #2708 - invalid cypher when using an aggregation filter within a relationship filter
+
+-   [#2760](https://github.com/neo4j/graphql/pull/2760) [`163cf903d`](https://github.com/neo4j/graphql/commit/163cf903d375222b8455733d7f6a45ae831dea25) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixes #2670 - invalid cypher when using an aggregation filter within a connection filter
+
 ## 3.14.2
 
 ### Patch Changes

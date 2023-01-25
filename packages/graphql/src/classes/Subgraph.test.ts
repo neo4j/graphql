@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { ConstDirectiveNode } from "graphql";
 import gql from "graphql-tag";
 import { Subgraph } from "./Subgraph";
 
@@ -178,7 +177,7 @@ describe("Subgraph", () => {
             const directive = plugin["findFederationLinkMeta"](typeDefs)?.directive;
             expect(directive).toBeDefined();
 
-            plugin["parseLinkImportArgument"](directive as ConstDirectiveNode);
+            plugin["parseLinkImportArgument"](directive as any);
 
             expect(plugin["importArgument"]).toEqual(
                 new Map([
