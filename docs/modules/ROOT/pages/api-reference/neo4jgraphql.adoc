@@ -66,10 +66,17 @@ Accepts all of the options from https://www.graphql-tools.com/docs/generate-sche
  Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-cypherqueryoptions[`CypherQueryOptions`]
 |Cypher query options, see xref::troubleshooting/index.adoc#troubleshooting-query-tuning[Query Tuning] for more information.
 
+|`startupValidation` +
+ +
+ Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-StartupValidationOptions[`StartupValidationOptions`] or `boolean`
+|Whether or not startup validation checks should be run. A boolean can be used to enable/disable all startup checks. Alternatively, a `StartupValidationOptions` object can be used for fine grain controls. If nothing is passed, all checks will be run.
+
 |`skipValidateTypeDefs` +
  +
  Type: `boolean`
-|Can be used to disable strict type definition validation if you are encountering unexpected errors.
+|*`skipValidateTypeDefs` has been deprecated and will be removed in 4.0.0. Please use `startupValidation` instead.* +
+ +
+Can be used to disable strict type definition validation if you are encountering unexpected errors.
 
 |===
 
@@ -173,6 +180,23 @@ const { CypherRuntime } = require("@neo4j/graphql");
  - `CypherReplanning.DEFAULT` +
  - `CypherReplanning.FORCE` +
  - `CypherReplanning.SKIP`
+|===
+
+[[api-reference-neo4jgraphql-input-neo4jgraphqlconfig-StartupValidationOptions]]
+===== `StartupValidationOptions`
+
+|===
+|Name and Type |Description
+
+|`typeDefs` +
+ +
+ Type: `boolean`
+|Can be used to disable strict type definition validation.
+
+|`customResolver` +
+ +
+ Type: `boolean`
+|Can be used to disable checks that expected custom resolvers have been provided.
 |===
 
 [[api-reference-neo4jgraphql-input-neo4jfeaturessettings]]
