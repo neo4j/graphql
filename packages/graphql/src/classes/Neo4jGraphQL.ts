@@ -56,7 +56,8 @@ export interface Neo4jGraphQLConfig {
     enableDebug?: boolean;
     /**
      * @deprecated This argument has been deprecated and will be removed in v4.0.0.
-     * Please use startupValidation instead.
+     * Please use startupValidation instead. More information can be found at
+     * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#startup-validation
      */
     skipValidateTypeDefs?: boolean;
     startupValidation?: StartupValidationConfig;
