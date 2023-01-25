@@ -42,7 +42,7 @@ describe("@customResolver directive", () => {
             id: ID!
             firstName: String!
             lastName: String!
-            ${customResolverField}: String @customResolver(requires: "firstName lastName")
+            ${customResolverField}: String @customResolver(requires: ["firstName", "lastName"])
         }
     `;
 
@@ -167,7 +167,7 @@ describe("@customResolver directive", () => {
                 id: ID!
                 firstName: String! @cypher(statement: "RETURN '${user.firstName}'")
                 lastName: String! @cypher(statement: "RETURN '${user.lastName}'")
-                fullName: String @customResolver(requires: "firstName lastName")
+                fullName: String @customResolver(requires: ["firstName", "lastName"])
             }
         `;
 
@@ -287,7 +287,7 @@ describe("@customResolver directive", () => {
             const interfaceType = generateUniqueType("UserInterface");
             const typeDefs = `
                 interface ${interfaceType.name} {
-                    ${customResolverField}: String @customResolver(requires: "firstName lastName")
+                    ${customResolverField}: String @customResolver(requires: ["firstName", "lastName"])
                 }
 
                 type ${testType} implements ${interfaceType.name} {

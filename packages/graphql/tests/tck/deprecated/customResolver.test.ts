@@ -32,7 +32,7 @@ describe("Cypher customResolver directive", () => {
             type User {
                 firstName: String!
                 lastName: String!
-                fullName: String! @customResolver(requires: "firstName lastName")
+                fullName: String! @customResolver(requires: ["firstName", "lastName"])
             }
         `;
 
