@@ -115,16 +115,17 @@ describe("Subscriptions", () => {
 
             input ActorSubscriptionWhere {
               AND: [ActorSubscriptionWhere!]
+              NOT: ActorSubscriptionWhere
               OR: [ActorSubscriptionWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
             }
 
@@ -141,16 +142,17 @@ describe("Subscriptions", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
             }
 
@@ -230,6 +232,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsAggregateInput {
               AND: [MovieActorsAggregateInput!]
+              NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
               count: Int
               count_GT: Int
@@ -263,9 +266,10 @@ describe("Subscriptions", () => {
 
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
+              NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               node: ActorWhere
-              node_NOT: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -287,6 +291,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsNodeAggregationWhereInput {
               AND: [MovieActorsNodeAggregationWhereInput!]
+              NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -442,6 +447,7 @@ describe("Subscriptions", () => {
 
             input MovieSubscriptionWhere {
               AND: [MovieSubscriptionWhere!]
+              NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
               actorCount: Int
               actorCount_GT: Int
@@ -449,28 +455,28 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int
-              actorCount_NOT_IN: [Int]
+              actorCount_NOT: Int @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float
-              averageRating_NOT_IN: [Float]
+              averageRating_NOT: Float @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean
+              isActive_NOT: Boolean @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             input MovieUpdateInput {
@@ -496,6 +502,7 @@ describe("Subscriptions", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               actorCount: Int
               actorCount_GT: Int
@@ -503,8 +510,8 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int
-              actorCount_NOT_IN: [Int]
+              actorCount_NOT: Int @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -528,20 +535,20 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float
-              averageRating_NOT_IN: [Float]
+              averageRating_NOT: Float @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean
+              isActive_NOT: Boolean @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             type MoviesConnection {
@@ -712,6 +719,7 @@ describe("Subscriptions", () => {
 
             input ActorMoviesAggregateInput {
               AND: [ActorMoviesAggregateInput!]
+              NOT: ActorMoviesAggregateInput
               OR: [ActorMoviesAggregateInput!]
               count: Int
               count_GT: Int
@@ -746,9 +754,10 @@ describe("Subscriptions", () => {
 
             input ActorMoviesConnectionWhere {
               AND: [ActorMoviesConnectionWhere!]
+              NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -772,6 +781,7 @@ describe("Subscriptions", () => {
 
             input ActorMoviesNodeAggregationWhereInput {
               AND: [ActorMoviesNodeAggregationWhereInput!]
+              NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
               actorCount_AVERAGE_EQUAL: Float
               actorCount_AVERAGE_GT: Float
@@ -896,6 +906,7 @@ describe("Subscriptions", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: ActorMoviesAggregateInput
@@ -987,6 +998,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsAggregateInput {
               AND: [MovieActorsAggregateInput!]
+              NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
               count: Int
               count_GT: Int
@@ -1012,9 +1024,10 @@ describe("Subscriptions", () => {
 
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
+              NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               node: ActorWhere
-              node_NOT: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -1166,6 +1179,7 @@ describe("Subscriptions", () => {
 
             input MovieSubscriptionWhere {
               AND: [MovieSubscriptionWhere!]
+              NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
               actorCount: Int
               actorCount_GT: Int
@@ -1173,28 +1187,28 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int
-              actorCount_NOT_IN: [Int]
+              actorCount_NOT: Int @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float
-              averageRating_NOT_IN: [Float]
+              averageRating_NOT: Float @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean
+              isActive_NOT: Boolean @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             input MovieUpdateInput {
@@ -1220,6 +1234,7 @@ describe("Subscriptions", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               actorCount: Int
               actorCount_GT: Int
@@ -1227,14 +1242,14 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int
-              actorCount_NOT_IN: [Int]
+              actorCount_NOT: Int @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               actorsConnection_ALL: MovieActorsConnectionWhere
               actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               actorsConnection_SINGLE: MovieActorsConnectionWhere
               actorsConnection_SOME: MovieActorsConnectionWhere
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
@@ -1252,20 +1267,20 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float
-              averageRating_NOT_IN: [Float]
+              averageRating_NOT: Float @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean
+              isActive_NOT: Boolean @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             type MoviesConnection {
@@ -1489,9 +1504,10 @@ describe("Subscriptions", () => {
 
             input MovieActorsPersonConnectionWhere {
               AND: [MovieActorsPersonConnectionWhere!]
+              NOT: MovieActorsPersonConnectionWhere
               OR: [MovieActorsPersonConnectionWhere!]
               node: PersonWhere
-              node_NOT: PersonWhere
+              node_NOT: PersonWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             input MovieActorsPersonCreateFieldInput {
@@ -1547,9 +1563,10 @@ describe("Subscriptions", () => {
 
             input MovieActorsStarConnectionWhere {
               AND: [MovieActorsStarConnectionWhere!]
+              NOT: MovieActorsStarConnectionWhere
               OR: [MovieActorsStarConnectionWhere!]
               node: StarWhere
-              node_NOT: StarWhere
+              node_NOT: StarWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             input MovieActorsStarCreateFieldInput {
@@ -1701,6 +1718,7 @@ describe("Subscriptions", () => {
 
             input MovieSubscriptionWhere {
               AND: [MovieSubscriptionWhere!]
+              NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
               actorCount: Int
               actorCount_GT: Int
@@ -1708,28 +1726,28 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int
-              actorCount_NOT_IN: [Int]
+              actorCount_NOT: Int @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float
-              averageRating_NOT_IN: [Float]
+              averageRating_NOT: Float @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean
+              isActive_NOT: Boolean @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             input MovieUpdateInput {
@@ -1755,6 +1773,7 @@ describe("Subscriptions", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               actorCount: Int
               actorCount_GT: Int
@@ -1762,12 +1781,12 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int
-              actorCount_NOT_IN: [Int]
+              actorCount_NOT: Int @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               actorsConnection_ALL: MovieActorsConnectionWhere
               actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               actorsConnection_SINGLE: MovieActorsConnectionWhere
               actorsConnection_SOME: MovieActorsConnectionWhere
               averageRating: Float
@@ -1776,20 +1795,20 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float
-              averageRating_NOT_IN: [Float]
+              averageRating_NOT: Float @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean
+              isActive_NOT: Boolean @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             type MoviesConnection {
@@ -1886,6 +1905,7 @@ describe("Subscriptions", () => {
 
             input PersonMoviesAggregateInput {
               AND: [PersonMoviesAggregateInput!]
+              NOT: PersonMoviesAggregateInput
               OR: [PersonMoviesAggregateInput!]
               count: Int
               count_GT: Int
@@ -1920,9 +1940,10 @@ describe("Subscriptions", () => {
 
             input PersonMoviesConnectionWhere {
               AND: [PersonMoviesConnectionWhere!]
+              NOT: PersonMoviesConnectionWhere
               OR: [PersonMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             input PersonMoviesCreateFieldInput {
@@ -1946,6 +1967,7 @@ describe("Subscriptions", () => {
 
             input PersonMoviesNodeAggregationWhereInput {
               AND: [PersonMoviesNodeAggregationWhereInput!]
+              NOT: PersonMoviesNodeAggregationWhereInput
               OR: [PersonMoviesNodeAggregationWhereInput!]
               actorCount_AVERAGE_EQUAL: Float
               actorCount_AVERAGE_GT: Float
@@ -2070,6 +2092,7 @@ describe("Subscriptions", () => {
 
             input PersonWhere {
               AND: [PersonWhere!]
+              NOT: PersonWhere
               OR: [PersonWhere!]
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: PersonMoviesAggregateInput
@@ -2176,6 +2199,7 @@ describe("Subscriptions", () => {
 
             input StarMoviesAggregateInput {
               AND: [StarMoviesAggregateInput!]
+              NOT: StarMoviesAggregateInput
               OR: [StarMoviesAggregateInput!]
               count: Int
               count_GT: Int
@@ -2210,9 +2234,10 @@ describe("Subscriptions", () => {
 
             input StarMoviesConnectionWhere {
               AND: [StarMoviesConnectionWhere!]
+              NOT: StarMoviesConnectionWhere
               OR: [StarMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             input StarMoviesCreateFieldInput {
@@ -2236,6 +2261,7 @@ describe("Subscriptions", () => {
 
             input StarMoviesNodeAggregationWhereInput {
               AND: [StarMoviesNodeAggregationWhereInput!]
+              NOT: StarMoviesNodeAggregationWhereInput
               OR: [StarMoviesNodeAggregationWhereInput!]
               actorCount_AVERAGE_EQUAL: Float
               actorCount_AVERAGE_GT: Float
@@ -2360,6 +2386,7 @@ describe("Subscriptions", () => {
 
             input StarWhere {
               AND: [StarWhere!]
+              NOT: StarWhere
               OR: [StarWhere!]
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: StarMoviesAggregateInput
@@ -2478,6 +2505,7 @@ describe("Subscriptions", () => {
 
             input ActedInSubscriptionWhere {
               AND: [ActedInSubscriptionWhere!]
+              NOT: ActedInSubscriptionWhere
               OR: [ActedInSubscriptionWhere!]
               screenTime: Int
               screenTime_GT: Int
@@ -2485,8 +2513,8 @@ describe("Subscriptions", () => {
               screenTime_IN: [Int]
               screenTime_LT: Int
               screenTime_LTE: Int
-              screenTime_NOT: Int
-              screenTime_NOT_IN: [Int]
+              screenTime_NOT: Int @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              screenTime_NOT_IN: [Int] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             input ActedInUpdateInput {
@@ -2497,6 +2525,7 @@ describe("Subscriptions", () => {
 
             input ActedInWhere {
               AND: [ActedInWhere!]
+              NOT: ActedInWhere
               OR: [ActedInWhere!]
               screenTime: Int
               screenTime_GT: Int
@@ -2504,8 +2533,8 @@ describe("Subscriptions", () => {
               screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
-              screenTime_NOT: Int
-              screenTime_NOT_IN: [Int!]
+              screenTime_NOT: Int @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             type Actor {
@@ -2570,6 +2599,7 @@ describe("Subscriptions", () => {
 
             input ActorMoviesAggregateInput {
               AND: [ActorMoviesAggregateInput!]
+              NOT: ActorMoviesAggregateInput
               OR: [ActorMoviesAggregateInput!]
               count: Int
               count_GT: Int
@@ -2604,9 +2634,10 @@ describe("Subscriptions", () => {
 
             input ActorMoviesConnectionWhere {
               AND: [ActorMoviesConnectionWhere!]
+              NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -2630,6 +2661,7 @@ describe("Subscriptions", () => {
 
             input ActorMoviesNodeAggregationWhereInput {
               AND: [ActorMoviesNodeAggregationWhereInput!]
+              NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
               actorCount_AVERAGE_EQUAL: Float
               actorCount_AVERAGE_GT: Float
@@ -2754,6 +2786,7 @@ describe("Subscriptions", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: ActorMoviesAggregateInput
@@ -2857,6 +2890,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsAggregateInput {
               AND: [MovieActorsAggregateInput!]
+              NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
               count: Int
               count_GT: Int
@@ -2892,11 +2926,12 @@ describe("Subscriptions", () => {
 
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
+              NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               node: ActorWhere
-              node_NOT: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -2916,6 +2951,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsEdgeAggregationWhereInput {
               AND: [MovieActorsEdgeAggregationWhereInput!]
+              NOT: MovieActorsEdgeAggregationWhereInput
               OR: [MovieActorsEdgeAggregationWhereInput!]
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
@@ -3088,6 +3124,7 @@ describe("Subscriptions", () => {
 
             input MovieSubscriptionWhere {
               AND: [MovieSubscriptionWhere!]
+              NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
               actorCount: Int
               actorCount_GT: Int
@@ -3095,28 +3132,28 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int
-              actorCount_NOT_IN: [Int]
+              actorCount_NOT: Int @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float
-              averageRating_NOT_IN: [Float]
+              averageRating_NOT: Float @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean
+              isActive_NOT: Boolean @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             input MovieUpdateInput {
@@ -3142,6 +3179,7 @@ describe("Subscriptions", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               actorCount: Int
               actorCount_GT: Int
@@ -3149,14 +3187,14 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int
-              actorCount_NOT_IN: [Int]
+              actorCount_NOT: Int @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               actorsConnection_ALL: MovieActorsConnectionWhere
               actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               actorsConnection_SINGLE: MovieActorsConnectionWhere
               actorsConnection_SOME: MovieActorsConnectionWhere
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
@@ -3174,20 +3212,20 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float
-              averageRating_NOT_IN: [Float]
+              averageRating_NOT: Float @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean
+              isActive_NOT: Boolean @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             type MoviesConnection {
@@ -3347,16 +3385,17 @@ describe("Subscriptions", () => {
 
             input ActorSubscriptionWhere {
               AND: [ActorSubscriptionWhere!]
+              NOT: ActorSubscriptionWhere
               OR: [ActorSubscriptionWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
             }
 
@@ -3373,16 +3412,17 @@ describe("Subscriptions", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
             }
 
@@ -3462,6 +3502,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsAggregateInput {
               AND: [MovieActorsAggregateInput!]
+              NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
               count: Int
               count_GT: Int
@@ -3491,9 +3532,10 @@ describe("Subscriptions", () => {
 
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
+              NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               node: ActorWhere
-              node_NOT: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -3515,6 +3557,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsNodeAggregationWhereInput {
               AND: [MovieActorsNodeAggregationWhereInput!]
+              NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -3627,6 +3670,7 @@ describe("Subscriptions", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               actorCount: Int
               actorCount_GT: Int
@@ -3634,8 +3678,8 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int
-              actorCount_NOT_IN: [Int]
+              actorCount_NOT: Int @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -3659,20 +3703,20 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float
-              averageRating_NOT_IN: [Float]
+              averageRating_NOT: Float @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean
+              isActive_NOT: Boolean @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             type MoviesConnection {

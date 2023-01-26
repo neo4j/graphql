@@ -33,154 +33,155 @@ describe("Algebraic", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
-                    "schema {
-                      query: Query
-                      mutation: Mutation
-                    }
-                    
-                    type CreateInfo {
-                      bookmark: String
-                      nodesCreated: Int!
-                      relationshipsCreated: Int!
-                    }
-                    
-                    type CreateMoviesMutationResponse {
-                      info: CreateInfo!
-                      movies: [Movie!]!
-                    }
-                    
-                    type DeleteInfo {
-                      bookmark: String
-                      nodesDeleted: Int!
-                      relationshipsDeleted: Int!
-                    }
-                    
-                    type IDAggregateSelectionNullable {
-                      longest: ID
-                      shortest: ID
-                    }
-                    
-                    type IntAggregateSelectionNonNullable {
-                      average: Float!
-                      max: Int!
-                      min: Int!
-                      sum: Int!
-                    }
-                    
-                    type Movie {
-                      id: ID
-                      viewers: Int!
-                    }
-                    
-                    type MovieAggregateSelection {
-                      count: Int!
-                      id: IDAggregateSelectionNullable!
-                      viewers: IntAggregateSelectionNonNullable!
-                    }
-                    
-                    input MovieCreateInput {
-                      id: ID
-                      viewers: Int!
-                    }
-                    
-                    type MovieEdge {
-                      cursor: String!
-                      node: Movie!
-                    }
-                    
-                    input MovieOptions {
-                      limit: Int
-                      offset: Int
-                      \\"\\"\\"
-                      Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                      \\"\\"\\"
-                      sort: [MovieSort!]
-                    }
-                    
-                    \\"\\"\\"
-                    Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-                    \\"\\"\\"
-                    input MovieSort {
-                      id: SortDirection
-                      viewers: SortDirection
-                    }
-                    
-                    input MovieUpdateInput {
-                      id: ID
-                      viewers: Int
-                      viewers_DECREMENT: Int
-                      viewers_INCREMENT: Int
-                    }
-                    
-                    input MovieWhere {
-                      AND: [MovieWhere!]
-                      OR: [MovieWhere!]
-                      id: ID
-                      id_CONTAINS: ID
-                      id_ENDS_WITH: ID
-                      id_IN: [ID]
-                      id_NOT: ID
-                      id_NOT_CONTAINS: ID
-                      id_NOT_ENDS_WITH: ID
-                      id_NOT_IN: [ID]
-                      id_NOT_STARTS_WITH: ID
-                      id_STARTS_WITH: ID
-                      viewers: Int
-                      viewers_GT: Int
-                      viewers_GTE: Int
-                      viewers_IN: [Int!]
-                      viewers_LT: Int
-                      viewers_LTE: Int
-                      viewers_NOT: Int
-                      viewers_NOT_IN: [Int!]
-                    }
-                    
-                    type MoviesConnection {
-                      edges: [MovieEdge!]!
-                      pageInfo: PageInfo!
-                      totalCount: Int!
-                    }
-                    
-                    type Mutation {
-                      createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-                      deleteMovies(where: MovieWhere): DeleteInfo!
-                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-                    }
-                    
-                    \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-                    type PageInfo {
-                      endCursor: String
-                      hasNextPage: Boolean!
-                      hasPreviousPage: Boolean!
-                      startCursor: String
-                    }
-                    
-                    type Query {
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                      moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                    }
-                    
-                    enum SortDirection {
-                      \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-                      ASC
-                      \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-                      DESC
-                    }
-                    
-                    type UpdateInfo {
-                      bookmark: String
-                      nodesCreated: Int!
-                      nodesDeleted: Int!
-                      relationshipsCreated: Int!
-                      relationshipsDeleted: Int!
-                    }
-                    
-                    type UpdateMoviesMutationResponse {
-                      info: UpdateInfo!
-                      movies: [Movie!]!
-                    }"
-                `);
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
+
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type IDAggregateSelectionNullable {
+              longest: ID
+              shortest: ID
+            }
+
+            type IntAggregateSelectionNonNullable {
+              average: Float!
+              max: Int!
+              min: Int!
+              sum: Int!
+            }
+
+            type Movie {
+              id: ID
+              viewers: Int!
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNullable!
+              viewers: IntAggregateSelectionNonNullable!
+            }
+
+            input MovieCreateInput {
+              id: ID
+              viewers: Int!
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
+            input MovieSort {
+              id: SortDirection
+              viewers: SortDirection
+            }
+
+            input MovieUpdateInput {
+              id: ID
+              viewers: Int
+              viewers_DECREMENT: Int
+              viewers_INCREMENT: Int
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              viewers: Int
+              viewers_GT: Int
+              viewers_GTE: Int
+              viewers_IN: [Int!]
+              viewers_LT: Int
+              viewers_LTE: Int
+              viewers_NOT: Int @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              viewers_NOT_IN: [Int!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Mutation {
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              deleteMovies(where: MovieWhere): DeleteInfo!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type Query {
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+            }
+
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }"
+        `);
     });
 
     test("BigInt fields should be extended with Increment/Decrement operators", async () => {
@@ -193,159 +194,160 @@ describe("Algebraic", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
-                  "schema {
-                    query: Query
-                    mutation: Mutation
-                  }
-                  
-                  \\"\\"\\"
-                  A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
-                  \\"\\"\\"
-                  scalar BigInt
-                  
-                  type BigIntAggregateSelectionNonNullable {
-                    average: BigInt!
-                    max: BigInt!
-                    min: BigInt!
-                    sum: BigInt!
-                  }
-                  
-                  type CreateInfo {
-                    bookmark: String
-                    nodesCreated: Int!
-                    relationshipsCreated: Int!
-                  }
-                  
-                  type CreateMoviesMutationResponse {
-                    info: CreateInfo!
-                    movies: [Movie!]!
-                  }
-                  
-                  type DeleteInfo {
-                    bookmark: String
-                    nodesDeleted: Int!
-                    relationshipsDeleted: Int!
-                  }
-                  
-                  type IDAggregateSelectionNullable {
-                    longest: ID
-                    shortest: ID
-                  }
-                  
-                  type Movie {
-                    id: ID
-                    viewers: BigInt!
-                  }
-                  
-                  type MovieAggregateSelection {
-                    count: Int!
-                    id: IDAggregateSelectionNullable!
-                    viewers: BigIntAggregateSelectionNonNullable!
-                  }
-                  
-                  input MovieCreateInput {
-                    id: ID
-                    viewers: BigInt!
-                  }
-                  
-                  type MovieEdge {
-                    cursor: String!
-                    node: Movie!
-                  }
-                  
-                  input MovieOptions {
-                    limit: Int
-                    offset: Int
-                    \\"\\"\\"
-                    Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                    \\"\\"\\"
-                    sort: [MovieSort!]
-                  }
-                  
-                  \\"\\"\\"
-                  Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-                  \\"\\"\\"
-                  input MovieSort {
-                    id: SortDirection
-                    viewers: SortDirection
-                  }
-                  
-                  input MovieUpdateInput {
-                    id: ID
-                    viewers: BigInt
-                    viewers_DECREMENT: BigInt
-                    viewers_INCREMENT: BigInt
-                  }
-                  
-                  input MovieWhere {
-                    AND: [MovieWhere!]
-                    OR: [MovieWhere!]
-                    id: ID
-                    id_CONTAINS: ID
-                    id_ENDS_WITH: ID
-                    id_IN: [ID]
-                    id_NOT: ID
-                    id_NOT_CONTAINS: ID
-                    id_NOT_ENDS_WITH: ID
-                    id_NOT_IN: [ID]
-                    id_NOT_STARTS_WITH: ID
-                    id_STARTS_WITH: ID
-                    viewers: BigInt
-                    viewers_GT: BigInt
-                    viewers_GTE: BigInt
-                    viewers_IN: [BigInt!]
-                    viewers_LT: BigInt
-                    viewers_LTE: BigInt
-                    viewers_NOT: BigInt
-                    viewers_NOT_IN: [BigInt!]
-                  }
-                  
-                  type MoviesConnection {
-                    edges: [MovieEdge!]!
-                    pageInfo: PageInfo!
-                    totalCount: Int!
-                  }
-                  
-                  type Mutation {
-                    createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-                    deleteMovies(where: MovieWhere): DeleteInfo!
-                    updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-                  }
-                  
-                  \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-                  type PageInfo {
-                    endCursor: String
-                    hasNextPage: Boolean!
-                    hasPreviousPage: Boolean!
-                    startCursor: String
-                  }
-                  
-                  type Query {
-                    movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-                    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                    moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  }
-                  
-                  enum SortDirection {
-                    \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-                    ASC
-                    \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-                    DESC
-                  }
-                  
-                  type UpdateInfo {
-                    bookmark: String
-                    nodesCreated: Int!
-                    nodesDeleted: Int!
-                    relationshipsCreated: Int!
-                    relationshipsDeleted: Int!
-                  }
-                  
-                  type UpdateMoviesMutationResponse {
-                    info: UpdateInfo!
-                    movies: [Movie!]!
-                  }"
-              `);
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            \\"\\"\\"
+            A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
+            \\"\\"\\"
+            scalar BigInt
+
+            type BigIntAggregateSelectionNonNullable {
+              average: BigInt!
+              max: BigInt!
+              min: BigInt!
+              sum: BigInt!
+            }
+
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
+
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type IDAggregateSelectionNullable {
+              longest: ID
+              shortest: ID
+            }
+
+            type Movie {
+              id: ID
+              viewers: BigInt!
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNullable!
+              viewers: BigIntAggregateSelectionNonNullable!
+            }
+
+            input MovieCreateInput {
+              id: ID
+              viewers: BigInt!
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
+            input MovieSort {
+              id: SortDirection
+              viewers: SortDirection
+            }
+
+            input MovieUpdateInput {
+              id: ID
+              viewers: BigInt
+              viewers_DECREMENT: BigInt
+              viewers_INCREMENT: BigInt
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              viewers: BigInt
+              viewers_GT: BigInt
+              viewers_GTE: BigInt
+              viewers_IN: [BigInt!]
+              viewers_LT: BigInt
+              viewers_LTE: BigInt
+              viewers_NOT: BigInt @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              viewers_NOT_IN: [BigInt!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Mutation {
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              deleteMovies(where: MovieWhere): DeleteInfo!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type Query {
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+            }
+
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }"
+        `);
     });
 
     test("Float fields should be extended with Add/Subtract/Multiply/Divide operators", async () => {
@@ -359,156 +361,157 @@ describe("Algebraic", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-                  "schema {
-                    query: Query
-                    mutation: Mutation
-                  }
-                  
-                  type CreateInfo {
-                    bookmark: String
-                    nodesCreated: Int!
-                    relationshipsCreated: Int!
-                  }
-                  
-                  type CreateMoviesMutationResponse {
-                    info: CreateInfo!
-                    movies: [Movie!]!
-                  }
-                  
-                  type DeleteInfo {
-                    bookmark: String
-                    nodesDeleted: Int!
-                    relationshipsDeleted: Int!
-                  }
-                  
-                  type FloatAggregateSelectionNonNullable {
-                    average: Float!
-                    max: Float!
-                    min: Float!
-                    sum: Float!
-                  }
-                  
-                  type IDAggregateSelectionNullable {
-                    longest: ID
-                    shortest: ID
-                  }
-                  
-                  type Movie {
-                    id: ID
-                    viewers: Float!
-                  }
-                  
-                  type MovieAggregateSelection {
-                    count: Int!
-                    id: IDAggregateSelectionNullable!
-                    viewers: FloatAggregateSelectionNonNullable!
-                  }
-                  
-                  input MovieCreateInput {
-                    id: ID
-                    viewers: Float!
-                  }
-                  
-                  type MovieEdge {
-                    cursor: String!
-                    node: Movie!
-                  }
-                  
-                  input MovieOptions {
-                    limit: Int
-                    offset: Int
-                    \\"\\"\\"
-                    Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                    \\"\\"\\"
-                    sort: [MovieSort!]
-                  }
-                  
-                  \\"\\"\\"
-                  Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-                  \\"\\"\\"
-                  input MovieSort {
-                    id: SortDirection
-                    viewers: SortDirection
-                  }
-                  
-                  input MovieUpdateInput {
-                    id: ID
-                    viewers: Float
-                    viewers_ADD: Float
-                    viewers_DIVIDE: Float
-                    viewers_MULTIPLY: Float
-                    viewers_SUBTRACT: Float
-                  }
-                  
-                  input MovieWhere {
-                    AND: [MovieWhere!]
-                    OR: [MovieWhere!]
-                    id: ID
-                    id_CONTAINS: ID
-                    id_ENDS_WITH: ID
-                    id_IN: [ID]
-                    id_NOT: ID
-                    id_NOT_CONTAINS: ID
-                    id_NOT_ENDS_WITH: ID
-                    id_NOT_IN: [ID]
-                    id_NOT_STARTS_WITH: ID
-                    id_STARTS_WITH: ID
-                    viewers: Float
-                    viewers_GT: Float
-                    viewers_GTE: Float
-                    viewers_IN: [Float!]
-                    viewers_LT: Float
-                    viewers_LTE: Float
-                    viewers_NOT: Float
-                    viewers_NOT_IN: [Float!]
-                  }
-                  
-                  type MoviesConnection {
-                    edges: [MovieEdge!]!
-                    pageInfo: PageInfo!
-                    totalCount: Int!
-                  }
-                  
-                  type Mutation {
-                    createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-                    deleteMovies(where: MovieWhere): DeleteInfo!
-                    updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-                  }
-                  
-                  \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-                  type PageInfo {
-                    endCursor: String
-                    hasNextPage: Boolean!
-                    hasPreviousPage: Boolean!
-                    startCursor: String
-                  }
-                  
-                  type Query {
-                    movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-                    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                    moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  }
-                  
-                  enum SortDirection {
-                    \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-                    ASC
-                    \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-                    DESC
-                  }
-                  
-                  type UpdateInfo {
-                    bookmark: String
-                    nodesCreated: Int!
-                    nodesDeleted: Int!
-                    relationshipsCreated: Int!
-                    relationshipsDeleted: Int!
-                  }
-                  
-                  type UpdateMoviesMutationResponse {
-                    info: UpdateInfo!
-                    movies: [Movie!]!
-                  }"
-              `);
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
+
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type FloatAggregateSelectionNonNullable {
+              average: Float!
+              max: Float!
+              min: Float!
+              sum: Float!
+            }
+
+            type IDAggregateSelectionNullable {
+              longest: ID
+              shortest: ID
+            }
+
+            type Movie {
+              id: ID
+              viewers: Float!
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNullable!
+              viewers: FloatAggregateSelectionNonNullable!
+            }
+
+            input MovieCreateInput {
+              id: ID
+              viewers: Float!
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
+            input MovieSort {
+              id: SortDirection
+              viewers: SortDirection
+            }
+
+            input MovieUpdateInput {
+              id: ID
+              viewers: Float
+              viewers_ADD: Float
+              viewers_DIVIDE: Float
+              viewers_MULTIPLY: Float
+              viewers_SUBTRACT: Float
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              viewers: Float
+              viewers_GT: Float
+              viewers_GTE: Float
+              viewers_IN: [Float!]
+              viewers_LT: Float
+              viewers_LTE: Float
+              viewers_NOT: Float @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              viewers_NOT_IN: [Float!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Mutation {
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              deleteMovies(where: MovieWhere): DeleteInfo!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type Query {
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+            }
+
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }"
+        `);
     });
 
     test("Operators should be presents in nested updates", async () => {
@@ -585,6 +588,7 @@ describe("Algebraic", () => {
 
             input DirectorDirectsAggregateInput {
               AND: [DirectorDirectsAggregateInput!]
+              NOT: DirectorDirectsAggregateInput
               OR: [DirectorDirectsAggregateInput!]
               count: Int
               count_GT: Int
@@ -615,9 +619,10 @@ describe("Algebraic", () => {
 
             input DirectorDirectsConnectionWhere {
               AND: [DirectorDirectsConnectionWhere!]
+              NOT: DirectorDirectsConnectionWhere
               OR: [DirectorDirectsConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Use \`directsConnection_NONE\` instead.\\")
             }
 
             input DirectorDirectsCreateFieldInput {
@@ -641,6 +646,7 @@ describe("Algebraic", () => {
 
             input DirectorDirectsNodeAggregationWhereInput {
               AND: [DirectorDirectsNodeAggregationWhereInput!]
+              NOT: DirectorDirectsNodeAggregationWhereInput
               OR: [DirectorDirectsNodeAggregationWhereInput!]
               id_EQUAL: ID
               viewers_AVERAGE_EQUAL: Float
@@ -734,6 +740,7 @@ describe("Algebraic", () => {
 
             input DirectorWhere {
               AND: [DirectorWhere!]
+              NOT: DirectorWhere
               OR: [DirectorWhere!]
               directs: MovieWhere @deprecated(reason: \\"Use \`directs_SOME\` instead.\\")
               directsAggregate: DirectorDirectsAggregateInput
@@ -756,11 +763,11 @@ describe("Algebraic", () => {
               lastName_CONTAINS: String
               lastName_ENDS_WITH: String
               lastName_IN: [String!]
-              lastName_NOT: String
-              lastName_NOT_CONTAINS: String
-              lastName_NOT_ENDS_WITH: String
-              lastName_NOT_IN: [String!]
-              lastName_NOT_STARTS_WITH: String
+              lastName_NOT: String @deprecated(reason: \\"Use \`directsConnection_NONE\` instead.\\")
+              lastName_NOT_CONTAINS: String @deprecated(reason: \\"Use \`directsConnection_NONE\` instead.\\")
+              lastName_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`directsConnection_NONE\` instead.\\")
+              lastName_NOT_IN: [String!] @deprecated(reason: \\"Use \`directsConnection_NONE\` instead.\\")
+              lastName_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`directsConnection_NONE\` instead.\\")
               lastName_STARTS_WITH: String
             }
 
@@ -816,6 +823,7 @@ describe("Algebraic", () => {
 
             input MovieDirectedByAggregateInput {
               AND: [MovieDirectedByAggregateInput!]
+              NOT: MovieDirectedByAggregateInput
               OR: [MovieDirectedByAggregateInput!]
               count: Int
               count_GT: Int
@@ -846,9 +854,10 @@ describe("Algebraic", () => {
 
             input MovieDirectedByConnectionWhere {
               AND: [MovieDirectedByConnectionWhere!]
+              NOT: MovieDirectedByConnectionWhere
               OR: [MovieDirectedByConnectionWhere!]
               node: DirectorWhere
-              node_NOT: DirectorWhere
+              node_NOT: DirectorWhere @deprecated(reason: \\"Use \`directsConnection_NONE\` instead.\\")
             }
 
             input MovieDirectedByCreateFieldInput {
@@ -872,6 +881,7 @@ describe("Algebraic", () => {
 
             input MovieDirectedByNodeAggregationWhereInput {
               AND: [MovieDirectedByNodeAggregationWhereInput!]
+              NOT: MovieDirectedByNodeAggregationWhereInput
               OR: [MovieDirectedByNodeAggregationWhereInput!]
               lastName_AVERAGE_EQUAL: Float
               lastName_AVERAGE_GT: Float
@@ -962,21 +972,22 @@ describe("Algebraic", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               directedBy: DirectorWhere
               directedByAggregate: MovieDirectedByAggregateInput
               directedByConnection: MovieDirectedByConnectionWhere
-              directedByConnection_NOT: MovieDirectedByConnectionWhere
+              directedByConnection_NOT: MovieDirectedByConnectionWhere @deprecated(reason: \\"Use \`directsConnection_NONE\` instead.\\")
               directedBy_NOT: DirectorWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`directsConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`directsConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`directsConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Use \`directsConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`directsConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               viewers: Int
               viewers_GT: Int
@@ -984,8 +995,8 @@ describe("Algebraic", () => {
               viewers_IN: [Int!]
               viewers_LT: Int
               viewers_LTE: Int
-              viewers_NOT: Int
-              viewers_NOT_IN: [Int!]
+              viewers_NOT: Int @deprecated(reason: \\"Use \`directsConnection_NONE\` instead.\\")
+              viewers_NOT_IN: [Int!] @deprecated(reason: \\"Use \`directsConnection_NONE\` instead.\\")
             }
 
             type MoviesConnection {
@@ -1188,16 +1199,17 @@ describe("Algebraic", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               viewers: Int
               viewers_GT: Int
@@ -1205,14 +1217,14 @@ describe("Algebraic", () => {
               viewers_IN: [Int!]
               viewers_LT: Int
               viewers_LTE: Int
-              viewers_NOT: Int
-              viewers_NOT_IN: [Int!]
+              viewers_NOT: Int @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
+              viewers_NOT_IN: [Int!] @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
               workers: PersonWhere @deprecated(reason: \\"Use \`workers_SOME\` instead.\\")
               workersAggregate: MovieWorkersAggregateInput
               workersConnection: MovieWorkersConnectionWhere @deprecated(reason: \\"Use \`workersConnection_SOME\` instead.\\")
               workersConnection_ALL: MovieWorkersConnectionWhere
               workersConnection_NONE: MovieWorkersConnectionWhere
-              workersConnection_NOT: MovieWorkersConnectionWhere @deprecated(reason: \\"Use \`workersConnection_NONE\` instead.\\")
+              workersConnection_NOT: MovieWorkersConnectionWhere @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
               workersConnection_SINGLE: MovieWorkersConnectionWhere
               workersConnection_SOME: MovieWorkersConnectionWhere
               \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
@@ -1228,6 +1240,7 @@ describe("Algebraic", () => {
 
             input MovieWorkersAggregateInput {
               AND: [MovieWorkersAggregateInput!]
+              NOT: MovieWorkersAggregateInput
               OR: [MovieWorkersAggregateInput!]
               count: Int
               count_GT: Int
@@ -1258,9 +1271,10 @@ describe("Algebraic", () => {
 
             input MovieWorkersConnectionWhere {
               AND: [MovieWorkersConnectionWhere!]
+              NOT: MovieWorkersConnectionWhere
               OR: [MovieWorkersConnectionWhere!]
               node: PersonWhere
-              node_NOT: PersonWhere
+              node_NOT: PersonWhere @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
             }
 
             input MovieWorkersCreateFieldInput {
@@ -1284,6 +1298,7 @@ describe("Algebraic", () => {
 
             input MovieWorkersNodeAggregationWhereInput {
               AND: [MovieWorkersNodeAggregationWhereInput!]
+              NOT: MovieWorkersNodeAggregationWhereInput
               OR: [MovieWorkersNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -1418,16 +1433,17 @@ describe("Algebraic", () => {
 
             input PersonWhere {
               AND: [PersonWhere!]
+              NOT: PersonWhere
               OR: [PersonWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
               worksInProductionConnection: PersonWorksInProductionConnectionWhere @deprecated(reason: \\"Use \`worksInProductionConnection_SOME\` instead.\\")
               worksInProductionConnection_ALL: PersonWorksInProductionConnectionWhere
@@ -1454,9 +1470,10 @@ describe("Algebraic", () => {
 
             input PersonWorksInProductionConnectionWhere {
               AND: [PersonWorksInProductionConnectionWhere!]
+              NOT: PersonWorksInProductionConnectionWhere
               OR: [PersonWorksInProductionConnectionWhere!]
               node: ProductionWhere
-              node_NOT: ProductionWhere
+              node_NOT: ProductionWhere @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
             }
 
             input PersonWorksInProductionCreateFieldInput {
@@ -1571,8 +1588,8 @@ describe("Algebraic", () => {
               viewers_IN: [Int!]
               viewers_LT: Int
               viewers_LTE: Int
-              viewers_NOT: Int
-              viewers_NOT_IN: [Int!]
+              viewers_NOT: Int @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
+              viewers_NOT_IN: [Int!] @deprecated(reason: \\"Use \`worksInProductionConnection_NONE\` instead.\\")
             }
 
             type Query {
@@ -1670,6 +1687,7 @@ describe("Algebraic", () => {
 
             input ActedInWhere {
               AND: [ActedInWhere!]
+              NOT: ActedInWhere
               OR: [ActedInWhere!]
               pay: Float
               pay_GT: Float
@@ -1677,12 +1695,12 @@ describe("Algebraic", () => {
               pay_IN: [Float]
               pay_LT: Float
               pay_LTE: Float
-              pay_NOT: Float
-              pay_NOT_IN: [Float]
+              pay_NOT: Float @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              pay_NOT_IN: [Float] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               roles: [String!]
               roles_INCLUDES: String
-              roles_NOT: [String!]
-              roles_NOT_INCLUDES: String
+              roles_NOT: [String!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              roles_NOT_INCLUDES: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             type CreateInfo {
@@ -1723,6 +1741,7 @@ describe("Algebraic", () => {
 
             input MovieActorsAggregateInput {
               AND: [MovieActorsAggregateInput!]
+              NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
               count: Int
               count_GT: Int
@@ -1756,11 +1775,12 @@ describe("Algebraic", () => {
 
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
+              NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               node: PersonWhere
-              node_NOT: PersonWhere
+              node_NOT: PersonWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -1780,6 +1800,7 @@ describe("Algebraic", () => {
 
             input MovieActorsEdgeAggregationWhereInput {
               AND: [MovieActorsEdgeAggregationWhereInput!]
+              NOT: MovieActorsEdgeAggregationWhereInput
               OR: [MovieActorsEdgeAggregationWhereInput!]
               pay_AVERAGE_EQUAL: Float
               pay_AVERAGE_GT: Float
@@ -1815,6 +1836,7 @@ describe("Algebraic", () => {
 
             input MovieActorsNodeAggregationWhereInput {
               AND: [MovieActorsNodeAggregationWhereInput!]
+              NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -1931,6 +1953,7 @@ describe("Algebraic", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
@@ -1953,11 +1976,11 @@ describe("Algebraic", () => {
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               title_STARTS_WITH: String
             }
 
@@ -1999,6 +2022,7 @@ describe("Algebraic", () => {
 
             input PersonActedInMoviesAggregateInput {
               AND: [PersonActedInMoviesAggregateInput!]
+              NOT: PersonActedInMoviesAggregateInput
               OR: [PersonActedInMoviesAggregateInput!]
               count: Int
               count_GT: Int
@@ -2032,11 +2056,12 @@ describe("Algebraic", () => {
 
             input PersonActedInMoviesConnectionWhere {
               AND: [PersonActedInMoviesConnectionWhere!]
+              NOT: PersonActedInMoviesConnectionWhere
               OR: [PersonActedInMoviesConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             input PersonActedInMoviesCreateFieldInput {
@@ -2056,6 +2081,7 @@ describe("Algebraic", () => {
 
             input PersonActedInMoviesEdgeAggregationWhereInput {
               AND: [PersonActedInMoviesEdgeAggregationWhereInput!]
+              NOT: PersonActedInMoviesEdgeAggregationWhereInput
               OR: [PersonActedInMoviesEdgeAggregationWhereInput!]
               pay_AVERAGE_EQUAL: Float
               pay_AVERAGE_GT: Float
@@ -2091,6 +2117,7 @@ describe("Algebraic", () => {
 
             input PersonActedInMoviesNodeAggregationWhereInput {
               AND: [PersonActedInMoviesNodeAggregationWhereInput!]
+              NOT: PersonActedInMoviesNodeAggregationWhereInput
               OR: [PersonActedInMoviesNodeAggregationWhereInput!]
               title_AVERAGE_EQUAL: Float
               title_AVERAGE_GT: Float
@@ -2207,13 +2234,14 @@ describe("Algebraic", () => {
 
             input PersonWhere {
               AND: [PersonWhere!]
+              NOT: PersonWhere
               OR: [PersonWhere!]
               actedInMovies: MovieWhere @deprecated(reason: \\"Use \`actedInMovies_SOME\` instead.\\")
               actedInMoviesAggregate: PersonActedInMoviesAggregateInput
               actedInMoviesConnection: PersonActedInMoviesConnectionWhere @deprecated(reason: \\"Use \`actedInMoviesConnection_SOME\` instead.\\")
               actedInMoviesConnection_ALL: PersonActedInMoviesConnectionWhere
               actedInMoviesConnection_NONE: PersonActedInMoviesConnectionWhere
-              actedInMoviesConnection_NOT: PersonActedInMoviesConnectionWhere @deprecated(reason: \\"Use \`actedInMoviesConnection_NONE\` instead.\\")
+              actedInMoviesConnection_NOT: PersonActedInMoviesConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               actedInMoviesConnection_SINGLE: PersonActedInMoviesConnectionWhere
               actedInMoviesConnection_SOME: PersonActedInMoviesConnectionWhere
               \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
@@ -2229,11 +2257,11 @@ describe("Algebraic", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
             }
 

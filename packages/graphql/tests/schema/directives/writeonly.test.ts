@@ -145,26 +145,27 @@ describe("@writeonly directive", () => {
 
             input UserWhere {
               AND: [UserWhere!]
+              NOT: UserWhere
               OR: [UserWhere!]
               password: String
               password_CONTAINS: String
               password_ENDS_WITH: String
               password_IN: [String!]
-              password_NOT: String
-              password_NOT_CONTAINS: String
-              password_NOT_ENDS_WITH: String
-              password_NOT_IN: [String!]
-              password_NOT_STARTS_WITH: String
+              password_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              password_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              password_NOT_IN: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               password_STARTS_WITH: String
               username: String
               username_CONTAINS: String
               username_ENDS_WITH: String
               username_IN: [String!]
-              username_NOT: String
-              username_NOT_CONTAINS: String
-              username_NOT_ENDS_WITH: String
-              username_NOT_IN: [String!]
-              username_NOT_STARTS_WITH: String
+              username_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              username_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              username_NOT_IN: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               username_STARTS_WITH: String
             }
 
@@ -307,26 +308,27 @@ describe("@writeonly directive", () => {
 
             input UserWhere {
               AND: [UserWhere!]
+              NOT: UserWhere
               OR: [UserWhere!]
               password: String
               password_CONTAINS: String
               password_ENDS_WITH: String
               password_IN: [String!]
-              password_NOT: String
-              password_NOT_CONTAINS: String
-              password_NOT_ENDS_WITH: String
-              password_NOT_IN: [String!]
-              password_NOT_STARTS_WITH: String
+              password_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              password_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              password_NOT_IN: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               password_STARTS_WITH: String
               username: String
               username_CONTAINS: String
               username_ENDS_WITH: String
               username_IN: [String!]
-              username_NOT: String
-              username_NOT_CONTAINS: String
-              username_NOT_ENDS_WITH: String
-              username_NOT_IN: [String!]
-              username_NOT_STARTS_WITH: String
+              username_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              username_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              username_NOT_IN: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               username_STARTS_WITH: String
             }
 
@@ -402,16 +404,17 @@ describe("@writeonly directive", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
             }
 
@@ -454,6 +457,7 @@ describe("@writeonly directive", () => {
 
             input MovieActorsAggregateInput {
               AND: [MovieActorsAggregateInput!]
+              NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
               count: Int
               count_GT: Int
@@ -473,9 +477,10 @@ describe("@writeonly directive", () => {
 
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
+              NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               node: ActorWhere
-              node_NOT: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -497,6 +502,7 @@ describe("@writeonly directive", () => {
 
             input MovieActorsNodeAggregationWhereInput {
               AND: [MovieActorsNodeAggregationWhereInput!]
+              NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -587,6 +593,7 @@ describe("@writeonly directive", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
@@ -609,11 +616,11 @@ describe("@writeonly directive", () => {
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
             }
 

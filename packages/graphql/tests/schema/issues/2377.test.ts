@@ -184,6 +184,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             input ResourceContainedByAggregateInput {
               AND: [ResourceContainedByAggregateInput!]
+              NOT: ResourceContainedByAggregateInput
               OR: [ResourceContainedByAggregateInput!]
               count: Int
               count_GT: Int
@@ -223,9 +224,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             input ResourceContainedByConnectionWhere {
               AND: [ResourceContainedByConnectionWhere!]
+              NOT: ResourceContainedByConnectionWhere
               OR: [ResourceContainedByConnectionWhere!]
               node: ResourceWhere
-              node_NOT: ResourceWhere
+              node_NOT: ResourceWhere @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
             }
 
             input ResourceContainedByCreateFieldInput {
@@ -250,6 +252,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             input ResourceContainedByNodeAggregationWhereInput {
               AND: [ResourceContainedByNodeAggregationWhereInput!]
+              NOT: ResourceContainedByNodeAggregationWhereInput
               OR: [ResourceContainedByNodeAggregationWhereInput!]
               createdAt_EQUAL: DateTime
               createdAt_GT: DateTime
@@ -425,6 +428,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             input ResourceWhere {
               AND: [ResourceWhere!]
+              NOT: ResourceWhere
               OR: [ResourceWhere!]
               containedBy: ResourceWhere @deprecated(reason: \\"Use \`containedBy_SOME\` instead.\\")
               containedByAggregate: ResourceContainedByAggregateInput
@@ -449,52 +453,52 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               createdAt_IN: [DateTime!]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
-              createdAt_NOT: DateTime
-              createdAt_NOT_IN: [DateTime!]
+              createdAt_NOT: DateTime @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              createdAt_NOT_IN: [DateTime!] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
               externalIds: [ID!]
               externalIds_INCLUDES: ID
-              externalIds_NOT: [ID!]
-              externalIds_NOT_INCLUDES: ID
+              externalIds_NOT: [ID!] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              externalIds_NOT_INCLUDES: ID @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID!]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID!]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
               properties: [Property!]
               properties_INCLUDES: Property
-              properties_NOT: [Property!]
-              properties_NOT_INCLUDES: Property
+              properties_NOT: [Property!] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              properties_NOT_INCLUDES: Property @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
               tags: [Tag!]
               tags_INCLUDES: Tag
-              tags_NOT: [Tag!]
-              tags_NOT_INCLUDES: Tag
+              tags_NOT: [Tag!] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              tags_NOT_INCLUDES: Tag @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
               type: ResourceType
               type_IN: [ResourceType!]
-              type_NOT: ResourceType
-              type_NOT_IN: [ResourceType!]
+              type_NOT: ResourceType @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              type_NOT_IN: [ResourceType!] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
               updatedAt: DateTime
               updatedAt_GT: DateTime
               updatedAt_GTE: DateTime
               updatedAt_IN: [DateTime!]
               updatedAt_LT: DateTime
               updatedAt_LTE: DateTime
-              updatedAt_NOT: DateTime
-              updatedAt_NOT_IN: [DateTime!]
+              updatedAt_NOT: DateTime @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              updatedAt_NOT_IN: [DateTime!] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
             }
 
             type ResourcesConnection {

@@ -107,6 +107,7 @@ describe("String Comparators", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               title: String
               title_CONTAINS: String
@@ -116,11 +117,11 @@ describe("String Comparators", () => {
               title_IN: [String]
               title_LT: String
               title_LTE: String
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -251,16 +252,17 @@ describe("String Comparators", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -400,6 +402,7 @@ describe("String Comparators", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               title: String
               title_CONTAINS: String
@@ -407,11 +410,11 @@ describe("String Comparators", () => {
               title_GT: String
               title_IN: [String]
               title_LT: String
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -524,6 +527,7 @@ describe("String Comparators", () => {
 
             input ActedInWhere {
               AND: [ActedInWhere!]
+              NOT: ActedInWhere
               OR: [ActedInWhere!]
               screenTime: String
               screenTime_CONTAINS: String
@@ -533,11 +537,11 @@ describe("String Comparators", () => {
               screenTime_IN: [String]
               screenTime_LT: String
               screenTime_LTE: String
-              screenTime_NOT: String
-              screenTime_NOT_CONTAINS: String
-              screenTime_NOT_ENDS_WITH: String
-              screenTime_NOT_IN: [String]
-              screenTime_NOT_STARTS_WITH: String
+              screenTime_NOT: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              screenTime_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              screenTime_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              screenTime_NOT_IN: [String] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              screenTime_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               screenTime_STARTS_WITH: String
             }
 
@@ -550,6 +554,7 @@ describe("String Comparators", () => {
 
             input ActorActedInAggregateInput {
               AND: [ActorActedInAggregateInput!]
+              NOT: ActorActedInAggregateInput
               OR: [ActorActedInAggregateInput!]
               count: Int
               count_GT: Int
@@ -583,11 +588,12 @@ describe("String Comparators", () => {
 
             input ActorActedInConnectionWhere {
               AND: [ActorActedInConnectionWhere!]
+              NOT: ActorActedInConnectionWhere
               OR: [ActorActedInConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
             }
 
             input ActorActedInCreateFieldInput {
@@ -607,6 +613,7 @@ describe("String Comparators", () => {
 
             input ActorActedInEdgeAggregationWhereInput {
               AND: [ActorActedInEdgeAggregationWhereInput!]
+              NOT: ActorActedInEdgeAggregationWhereInput
               OR: [ActorActedInEdgeAggregationWhereInput!]
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
@@ -637,6 +644,7 @@ describe("String Comparators", () => {
 
             input ActorActedInNodeAggregationWhereInput {
               AND: [ActorActedInNodeAggregationWhereInput!]
+              NOT: ActorActedInNodeAggregationWhereInput
               OR: [ActorActedInNodeAggregationWhereInput!]
               title_AVERAGE_EQUAL: Float
               title_AVERAGE_GT: Float
@@ -752,6 +760,7 @@ describe("String Comparators", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: MovieWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInAggregate: ActorActedInAggregateInput
@@ -778,11 +787,11 @@ describe("String Comparators", () => {
               name_IN: [String]
               name_LT: String
               name_LTE: String
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
             }
 
@@ -837,6 +846,7 @@ describe("String Comparators", () => {
 
             input MovieActorsAggregateInput {
               AND: [MovieActorsAggregateInput!]
+              NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
               count: Int
               count_GT: Int
@@ -870,11 +880,12 @@ describe("String Comparators", () => {
 
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
+              NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               node: ActorWhere
-              node_NOT: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -894,6 +905,7 @@ describe("String Comparators", () => {
 
             input MovieActorsEdgeAggregationWhereInput {
               AND: [MovieActorsEdgeAggregationWhereInput!]
+              NOT: MovieActorsEdgeAggregationWhereInput
               OR: [MovieActorsEdgeAggregationWhereInput!]
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
@@ -924,6 +936,7 @@ describe("String Comparators", () => {
 
             input MovieActorsNodeAggregationWhereInput {
               AND: [MovieActorsNodeAggregationWhereInput!]
+              NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -1025,13 +1038,14 @@ describe("String Comparators", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               actorsConnection_ALL: MovieActorsConnectionWhere
               actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               actorsConnection_SINGLE: MovieActorsConnectionWhere
               actorsConnection_SOME: MovieActorsConnectionWhere
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
@@ -1051,11 +1065,11 @@ describe("String Comparators", () => {
               title_IN: [String]
               title_LT: String
               title_LTE: String
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               title_STARTS_WITH: String
             }
 

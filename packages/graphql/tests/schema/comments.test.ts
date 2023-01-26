@@ -187,6 +187,7 @@ describe("Comments", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               actorCount: Int
               actorCount_GT: Int
@@ -194,36 +195,36 @@ describe("Comments", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int
-              actorCount_NOT_IN: [Int]
+              actorCount_NOT: Int @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float
-              averageRating_NOT_IN: [Float]
+              averageRating_NOT: Float @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               customScalar: CustomScalar
               customScalar_IN: [CustomScalar]
-              customScalar_NOT: CustomScalar
-              customScalar_NOT_IN: [CustomScalar]
+              customScalar_NOT: CustomScalar @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              customScalar_NOT_IN: [CustomScalar] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               genre: Genre
               genre_IN: [Genre]
-              genre_NOT: Genre
-              genre_NOT_IN: [Genre]
+              genre_NOT: Genre @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              genre_NOT_IN: [Genre] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean
+              isActive_NOT: Boolean @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -340,16 +341,17 @@ describe("Comments", () => {
 
                 input ActorWhere {
                   AND: [ActorWhere!]
+                  NOT: ActorWhere
                   OR: [ActorWhere!]
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_IN: [String]
-                  name_NOT: String
-                  name_NOT_CONTAINS: String
-                  name_NOT_ENDS_WITH: String
-                  name_NOT_IN: [String]
-                  name_NOT_STARTS_WITH: String
+                  name_NOT: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+                  name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+                  name_NOT_IN: [String] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   name_STARTS_WITH: String
                 }
 
@@ -405,6 +407,7 @@ describe("Comments", () => {
 
                 input MovieActorsAggregateInput {
                   AND: [MovieActorsAggregateInput!]
+                  NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
                   count: Int
                   count_GT: Int
@@ -434,9 +437,10 @@ describe("Comments", () => {
 
                 input MovieActorsConnectionWhere {
                   AND: [MovieActorsConnectionWhere!]
+                  NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: ActorWhere
-                  node_NOT: ActorWhere
+                  node_NOT: ActorWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                 }
 
                 input MovieActorsCreateFieldInput {
@@ -458,6 +462,7 @@ describe("Comments", () => {
 
                 input MovieActorsNodeAggregationWhereInput {
                   AND: [MovieActorsNodeAggregationWhereInput!]
+                  NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
                   name_AVERAGE_EQUAL: Float
                   name_AVERAGE_GT: Float
@@ -553,6 +558,7 @@ describe("Comments", () => {
 
                 input MovieWhere {
                   AND: [MovieWhere!]
+                  NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsAggregate: MovieActorsAggregateInput
@@ -575,11 +581,11 @@ describe("Comments", () => {
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_IN: [ID]
-                  id_NOT: ID
-                  id_NOT_CONTAINS: ID
-                  id_NOT_ENDS_WITH: ID
-                  id_NOT_IN: [ID]
-                  id_NOT_STARTS_WITH: ID
+                  id_NOT: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+                  id_NOT_IN: [ID] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -702,6 +708,7 @@ describe("Comments", () => {
 
                 input ActedInWhere {
                   AND: [ActedInWhere!]
+                  NOT: ActedInWhere
                   OR: [ActedInWhere!]
                   screenTime: Int
                   screenTime_GT: Int
@@ -709,8 +716,8 @@ describe("Comments", () => {
                   screenTime_IN: [Int!]
                   screenTime_LT: Int
                   screenTime_LTE: Int
-                  screenTime_NOT: Int
-                  screenTime_NOT_IN: [Int!]
+                  screenTime_NOT: Int @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
                 }
 
                 type Actor {
@@ -738,11 +745,12 @@ describe("Comments", () => {
 
                 input ActorActedInConnectionWhere {
                   AND: [ActorActedInConnectionWhere!]
+                  NOT: ActorActedInConnectionWhere
                   OR: [ActorActedInConnectionWhere!]
                   edge: ActedInWhere
-                  edge_NOT: ActedInWhere
+                  edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
                   node: ProductionWhere
-                  node_NOT: ProductionWhere
+                  node_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
                 }
 
                 input ActorActedInCreateFieldInput {
@@ -837,6 +845,7 @@ describe("Comments", () => {
 
                 input ActorWhere {
                   AND: [ActorWhere!]
+                  NOT: ActorWhere
                   OR: [ActorWhere!]
                   actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
                   actedInConnection_ALL: ActorActedInConnectionWhere
@@ -848,11 +857,11 @@ describe("Comments", () => {
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_IN: [String!]
-                  name_NOT: String
-                  name_NOT_CONTAINS: String
-                  name_NOT_ENDS_WITH: String
-                  name_NOT_IN: [String!]
-                  name_NOT_STARTS_WITH: String
+                  name_NOT: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  name_NOT_IN: [String!] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
                   name_STARTS_WITH: String
                 }
 
@@ -943,6 +952,7 @@ describe("Comments", () => {
 
                 input MovieWhere {
                   AND: [MovieWhere!]
+                  NOT: MovieWhere
                   OR: [MovieWhere!]
                   runtime: Int
                   runtime_GT: Int
@@ -950,17 +960,17 @@ describe("Comments", () => {
                   runtime_IN: [Int!]
                   runtime_LT: Int
                   runtime_LTE: Int
-                  runtime_NOT: Int
-                  runtime_NOT_IN: [Int!]
+                  runtime_NOT: Int @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  runtime_NOT_IN: [Int!] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
                   title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_IN: [String!]
-                  title_NOT: String
-                  title_NOT_CONTAINS: String
-                  title_NOT_ENDS_WITH: String
-                  title_NOT_IN: [String!]
-                  title_NOT_STARTS_WITH: String
+                  title_NOT: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  title_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  title_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  title_NOT_IN: [String!] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  title_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
                   title_STARTS_WITH: String
                 }
 
@@ -1040,11 +1050,11 @@ describe("Comments", () => {
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_IN: [String!]
-                  title_NOT: String
-                  title_NOT_CONTAINS: String
-                  title_NOT_ENDS_WITH: String
-                  title_NOT_IN: [String!]
-                  title_NOT_STARTS_WITH: String
+                  title_NOT: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  title_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  title_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  title_NOT_IN: [String!] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  title_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
                   title_STARTS_WITH: String
                 }
 
@@ -1113,6 +1123,7 @@ describe("Comments", () => {
 
                 input SeriesWhere {
                   AND: [SeriesWhere!]
+                  NOT: SeriesWhere
                   OR: [SeriesWhere!]
                   episodes: Int
                   episodes_GT: Int
@@ -1120,17 +1131,17 @@ describe("Comments", () => {
                   episodes_IN: [Int!]
                   episodes_LT: Int
                   episodes_LTE: Int
-                  episodes_NOT: Int
-                  episodes_NOT_IN: [Int!]
+                  episodes_NOT: Int @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  episodes_NOT_IN: [Int!] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
                   title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_IN: [String!]
-                  title_NOT: String
-                  title_NOT_CONTAINS: String
-                  title_NOT_ENDS_WITH: String
-                  title_NOT_IN: [String!]
-                  title_NOT_STARTS_WITH: String
+                  title_NOT: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  title_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  title_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  title_NOT_IN: [String!] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  title_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
                   title_STARTS_WITH: String
                 }
 
@@ -1260,16 +1271,17 @@ describe("Comments", () => {
 
                 input GenreWhere {
                   AND: [GenreWhere!]
+                  NOT: GenreWhere
                   OR: [GenreWhere!]
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_IN: [ID]
-                  id_NOT: ID
-                  id_NOT_CONTAINS: ID
-                  id_NOT_ENDS_WITH: ID
-                  id_NOT_IN: [ID]
-                  id_NOT_STARTS_WITH: ID
+                  id_NOT: ID @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
+                  id_NOT_IN: [ID] @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -1377,9 +1389,10 @@ describe("Comments", () => {
 
                 input MovieSearchGenreConnectionWhere {
                   AND: [MovieSearchGenreConnectionWhere!]
+                  NOT: MovieSearchGenreConnectionWhere
                   OR: [MovieSearchGenreConnectionWhere!]
                   node: GenreWhere
-                  node_NOT: GenreWhere
+                  node_NOT: GenreWhere @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
                 }
 
                 input MovieSearchGenreCreateFieldInput {
@@ -1419,9 +1432,10 @@ describe("Comments", () => {
 
                 input MovieSearchMovieConnectionWhere {
                   AND: [MovieSearchMovieConnectionWhere!]
+                  NOT: MovieSearchMovieConnectionWhere
                   OR: [MovieSearchMovieConnectionWhere!]
                   node: MovieWhere
-                  node_NOT: MovieWhere
+                  node_NOT: MovieWhere @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
                 }
 
                 input MovieSearchMovieCreateFieldInput {
@@ -1480,16 +1494,17 @@ describe("Comments", () => {
 
                 input MovieWhere {
                   AND: [MovieWhere!]
+                  NOT: MovieWhere
                   OR: [MovieWhere!]
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_IN: [ID]
-                  id_NOT: ID
-                  id_NOT_CONTAINS: ID
-                  id_NOT_ENDS_WITH: ID
-                  id_NOT_IN: [ID]
-                  id_NOT_STARTS_WITH: ID
+                  id_NOT: ID @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
+                  id_NOT_IN: [ID] @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
                   id_STARTS_WITH: ID
                   searchConnection: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_SOME\` instead.\\")
                   searchConnection_ALL: MovieSearchConnectionWhere

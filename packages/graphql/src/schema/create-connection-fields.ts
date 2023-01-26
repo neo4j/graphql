@@ -27,6 +27,7 @@ import getSortableFields from "./get-sortable-fields";
 import { addDirectedArgument } from "./directed-argument";
 import { connectionFieldResolver } from "./pagination";
 import { graphqlDirectivesToCompose } from "./to-compose";
+import { DEPRECATE_NOT } from "./constants";
 
 function createConnectionFields({
     connectionFields,
@@ -83,19 +84,24 @@ function createConnectionFields({
 
             connectionWhere.addFields({
                 edge: `${connectionField.relationship.properties}Where`,
-                edge_NOT: `${connectionField.relationship.properties}Where`,
+                edge_NOT: {
+                    type: `${connectionField.relationship.properties}Where`,
+                    directives: [
+                        DEPRECATE_NOT
+                    ],
+                }
             });
-            connectionWhere.setFieldDirectiveByName("edge_NOT", "deprecated", {
-                reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
-            });
+
         }
 
         whereInput.addFields({
             [connectionField.fieldName]: connectionWhere,
-            [`${connectionField.fieldName}_NOT`]: connectionWhere,
-        });
-        whereInput.setFieldDirectiveByName(`${connectionField.fieldName}_NOT`, "deprecated", {
-            reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
+            [`${connectionField.fieldName}_NOT`]: {
+                type: connectionWhere,
+                directives: [
+                    DEPRECATE_NOT
+                ],
+            }
         });
 
         // n..m Relationships
@@ -154,12 +160,14 @@ function createConnectionFields({
                 AND: connectionWhere.NonNull.List,
                 NOT: connectionWhereName,
                 node: `${connectionField.relationship.typeMeta.name}Where`,
-                node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
+                node_NOT: {
+                    type: `${connectionField.relationship.typeMeta.name}Where`,
+                    directives: [
+                        DEPRECATE_NOT
+                    ],
+                }
             });
-            connectionWhere.setFieldDirectiveByName("node_NOT", "deprecated", {
-                reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
-            });
-
+    
             if (schemaComposer.has(`${connectionField.relationship.typeMeta.name}Sort`)) {
                 const connectionSort = schemaComposer.getOrCreateITC(`${connectionField.typeMeta.name}Sort`);
                 connectionSort.addFields({
@@ -177,12 +185,15 @@ function createConnectionFields({
 
                 connectionWhere.addFields({
                     edge: `${connectionField.relationship.properties}Where`,
-                    edge_NOT: `${connectionField.relationship.properties}Where`,
+                    edge_NOT: {
+                        type: `${connectionField.relationship.properties}Where`,
+                        directives: [
+                            DEPRECATE_NOT
+                        ],
+                    }
+                    
                 });
 
-                connectionWhere.setFieldDirectiveByName("edge_NOT", "deprecated", {
-                    reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
-                });
             }
         } else if (connectionField.relationship.union) {
             const relatedNodes = nodes.filter((n) => connectionField.relationship.union?.nodes?.includes(n.name));
@@ -206,10 +217,12 @@ function createConnectionFields({
 
                 unionWhere.addFields({
                     node: `${n.name}Where`,
-                    node_NOT: `${n.name}Where`,
-                });
-                unionWhere.setFieldDirectiveByName("node_NOT", "deprecated", {
-                    reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
+                    node_NOT: {
+                        type: `${n.name}Where`,
+                        directives: [
+                            DEPRECATE_NOT
+                        ],
+                    }
                 });
 
                 if (connectionField.relationship.properties) {
@@ -219,10 +232,12 @@ function createConnectionFields({
 
                     unionWhere.addFields({
                         edge: `${connectionField.relationship.properties}Where`,
-                        edge_NOT: `${connectionField.relationship.properties}Where`,
-                    });
-                    unionWhere.setFieldDirectiveByName("edge_NOT", "deprecated", {
-                        reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
+                        edge_NOT: {
+                            type: `${connectionField.relationship.properties}Where`,
+                            directives: [
+                                DEPRECATE_NOT
+                            ],
+                        }
                     });
                 }
 
@@ -235,11 +250,12 @@ function createConnectionFields({
 
             connectionWhere.addFields({
                 node: `${connectionField.relationship.typeMeta.name}Where`,
-                node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
-            });
-
-            connectionWhere.setFieldDirectiveByName("node_NOT", "deprecated", {
-                reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
+                node_NOT: {
+                    type: `${connectionField.relationship.typeMeta.name}Where`,
+                    directives: [
+                        DEPRECATE_NOT
+                    ],
+                }
             });
 
             if (getSortableFields(relatedNode).length) {

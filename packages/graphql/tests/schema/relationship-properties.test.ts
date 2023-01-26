@@ -78,25 +78,26 @@ describe("Relationship-properties", () => {
 
             input ActedInWhere {
               AND: [ActedInWhere!]
+              NOT: ActedInWhere
               OR: [ActedInWhere!]
               leadRole: Boolean
-              leadRole_NOT: Boolean
+              leadRole_NOT: Boolean @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               screenTime: Int
               screenTime_GT: Int
               screenTime_GTE: Int
               screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
-              screenTime_NOT: Int
-              screenTime_NOT_IN: [Int!]
+              screenTime_NOT: Int @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               startDate: Date
               startDate_GT: Date
               startDate_GTE: Date
               startDate_IN: [Date!]
               startDate_LT: Date
               startDate_LTE: Date
-              startDate_NOT: Date
-              startDate_NOT_IN: [Date!]
+              startDate_NOT: Date @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              startDate_NOT_IN: [Date!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             type Actor {
@@ -153,6 +154,7 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesAggregateInput {
               AND: [ActorMoviesAggregateInput!]
+              NOT: ActorMoviesAggregateInput
               OR: [ActorMoviesAggregateInput!]
               count: Int
               count_GT: Int
@@ -186,11 +188,12 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesConnectionWhere {
               AND: [ActorMoviesConnectionWhere!]
+              NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -210,6 +213,7 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesEdgeAggregationWhereInput {
               AND: [ActorMoviesEdgeAggregationWhereInput!]
+              NOT: ActorMoviesEdgeAggregationWhereInput
               OR: [ActorMoviesEdgeAggregationWhereInput!]
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
@@ -245,6 +249,7 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesNodeAggregationWhereInput {
               AND: [ActorMoviesNodeAggregationWhereInput!]
+              NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
               title_AVERAGE_EQUAL: Float
               title_AVERAGE_GT: Float
@@ -317,13 +322,14 @@ describe("Relationship-properties", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
               moviesConnection_ALL: ActorMoviesConnectionWhere
               moviesConnection_NONE: ActorMoviesConnectionWhere
-              moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               moviesConnection_SINGLE: ActorMoviesConnectionWhere
               moviesConnection_SOME: ActorMoviesConnectionWhere
               \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
@@ -339,11 +345,11 @@ describe("Relationship-properties", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
             }
 
@@ -408,6 +414,7 @@ describe("Relationship-properties", () => {
 
             input MovieActorsAggregateInput {
               AND: [MovieActorsAggregateInput!]
+              NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
               count: Int
               count_GT: Int
@@ -441,11 +448,12 @@ describe("Relationship-properties", () => {
 
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
+              NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               node: ActorWhere
-              node_NOT: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -465,6 +473,7 @@ describe("Relationship-properties", () => {
 
             input MovieActorsEdgeAggregationWhereInput {
               AND: [MovieActorsEdgeAggregationWhereInput!]
+              NOT: MovieActorsEdgeAggregationWhereInput
               OR: [MovieActorsEdgeAggregationWhereInput!]
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
@@ -500,6 +509,7 @@ describe("Relationship-properties", () => {
 
             input MovieActorsNodeAggregationWhereInput {
               AND: [MovieActorsNodeAggregationWhereInput!]
+              NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -603,6 +613,7 @@ describe("Relationship-properties", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
@@ -625,11 +636,11 @@ describe("Relationship-properties", () => {
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               title_STARTS_WITH: String
             }
 
@@ -748,16 +759,17 @@ describe("Relationship-properties", () => {
 
             input ActedInWhere {
               AND: [ActedInWhere!]
+              NOT: ActedInWhere
               OR: [ActedInWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID!]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID!]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               screenTime: Int
               screenTime_GT: Int
@@ -765,16 +777,16 @@ describe("Relationship-properties", () => {
               screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
-              screenTime_NOT: Int
-              screenTime_NOT_IN: [Int!]
+              screenTime_NOT: Int @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               timestamp: DateTime
               timestamp_GT: DateTime
               timestamp_GTE: DateTime
               timestamp_IN: [DateTime!]
               timestamp_LT: DateTime
               timestamp_LTE: DateTime
-              timestamp_NOT: DateTime
-              timestamp_NOT_IN: [DateTime!]
+              timestamp_NOT: DateTime @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              timestamp_NOT_IN: [DateTime!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             type Actor {
@@ -833,6 +845,7 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesAggregateInput {
               AND: [ActorMoviesAggregateInput!]
+              NOT: ActorMoviesAggregateInput
               OR: [ActorMoviesAggregateInput!]
               count: Int
               count_GT: Int
@@ -866,11 +879,12 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesConnectionWhere {
               AND: [ActorMoviesConnectionWhere!]
+              NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -890,6 +904,7 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesEdgeAggregationWhereInput {
               AND: [ActorMoviesEdgeAggregationWhereInput!]
+              NOT: ActorMoviesEdgeAggregationWhereInput
               OR: [ActorMoviesEdgeAggregationWhereInput!]
               id_EQUAL: ID
               screenTime_AVERAGE_EQUAL: Float
@@ -941,6 +956,7 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesNodeAggregationWhereInput {
               AND: [ActorMoviesNodeAggregationWhereInput!]
+              NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
               title_AVERAGE_EQUAL: Float
               title_AVERAGE_GT: Float
@@ -1013,13 +1029,14 @@ describe("Relationship-properties", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
               moviesConnection_ALL: ActorMoviesConnectionWhere
               moviesConnection_NONE: ActorMoviesConnectionWhere
-              moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               moviesConnection_SINGLE: ActorMoviesConnectionWhere
               moviesConnection_SOME: ActorMoviesConnectionWhere
               \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
@@ -1035,11 +1052,11 @@ describe("Relationship-properties", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
             }
 
@@ -1116,6 +1133,7 @@ describe("Relationship-properties", () => {
 
             input MovieActorsAggregateInput {
               AND: [MovieActorsAggregateInput!]
+              NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
               count: Int
               count_GT: Int
@@ -1149,11 +1167,12 @@ describe("Relationship-properties", () => {
 
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
+              NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               node: ActorWhere
-              node_NOT: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -1173,6 +1192,7 @@ describe("Relationship-properties", () => {
 
             input MovieActorsEdgeAggregationWhereInput {
               AND: [MovieActorsEdgeAggregationWhereInput!]
+              NOT: MovieActorsEdgeAggregationWhereInput
               OR: [MovieActorsEdgeAggregationWhereInput!]
               id_EQUAL: ID
               screenTime_AVERAGE_EQUAL: Float
@@ -1224,6 +1244,7 @@ describe("Relationship-properties", () => {
 
             input MovieActorsNodeAggregationWhereInput {
               AND: [MovieActorsNodeAggregationWhereInput!]
+              NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -1327,6 +1348,7 @@ describe("Relationship-properties", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
@@ -1349,11 +1371,11 @@ describe("Relationship-properties", () => {
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               title_STARTS_WITH: String
             }
 
@@ -1459,16 +1481,17 @@ describe("Relationship-properties", () => {
 
             input ActedInWhere {
               AND: [ActedInWhere!]
+              NOT: ActedInWhere
               OR: [ActedInWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID!]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID!]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               timestamp: DateTime
               timestamp_GT: DateTime
@@ -1476,8 +1499,8 @@ describe("Relationship-properties", () => {
               timestamp_IN: [DateTime!]
               timestamp_LT: DateTime
               timestamp_LTE: DateTime
-              timestamp_NOT: DateTime
-              timestamp_NOT_IN: [DateTime!]
+              timestamp_NOT: DateTime @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              timestamp_NOT_IN: [DateTime!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             type Actor {
@@ -1535,6 +1558,7 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesAggregateInput {
               AND: [ActorMoviesAggregateInput!]
+              NOT: ActorMoviesAggregateInput
               OR: [ActorMoviesAggregateInput!]
               count: Int
               count_GT: Int
@@ -1567,11 +1591,12 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesConnectionWhere {
               AND: [ActorMoviesConnectionWhere!]
+              NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -1590,6 +1615,7 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesEdgeAggregationWhereInput {
               AND: [ActorMoviesEdgeAggregationWhereInput!]
+              NOT: ActorMoviesEdgeAggregationWhereInput
               OR: [ActorMoviesEdgeAggregationWhereInput!]
               id_EQUAL: ID
               timestamp_EQUAL: DateTime
@@ -1616,6 +1642,7 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesNodeAggregationWhereInput {
               AND: [ActorMoviesNodeAggregationWhereInput!]
+              NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
               title_AVERAGE_EQUAL: Float
               title_AVERAGE_GT: Float
@@ -1686,13 +1713,14 @@ describe("Relationship-properties", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
               moviesConnection_ALL: ActorMoviesConnectionWhere
               moviesConnection_NONE: ActorMoviesConnectionWhere
-              moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               moviesConnection_SINGLE: ActorMoviesConnectionWhere
               moviesConnection_SOME: ActorMoviesConnectionWhere
               \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
@@ -1708,11 +1736,11 @@ describe("Relationship-properties", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
             }
 
@@ -1781,6 +1809,7 @@ describe("Relationship-properties", () => {
 
             input MovieActorsAggregateInput {
               AND: [MovieActorsAggregateInput!]
+              NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
               count: Int
               count_GT: Int
@@ -1813,11 +1842,12 @@ describe("Relationship-properties", () => {
 
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
+              NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               node: ActorWhere
-              node_NOT: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -1836,6 +1866,7 @@ describe("Relationship-properties", () => {
 
             input MovieActorsEdgeAggregationWhereInput {
               AND: [MovieActorsEdgeAggregationWhereInput!]
+              NOT: MovieActorsEdgeAggregationWhereInput
               OR: [MovieActorsEdgeAggregationWhereInput!]
               id_EQUAL: ID
               timestamp_EQUAL: DateTime
@@ -1862,6 +1893,7 @@ describe("Relationship-properties", () => {
 
             input MovieActorsNodeAggregationWhereInput {
               AND: [MovieActorsNodeAggregationWhereInput!]
+              NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -1963,6 +1995,7 @@ describe("Relationship-properties", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
@@ -1985,11 +2018,11 @@ describe("Relationship-properties", () => {
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               title_STARTS_WITH: String
             }
 

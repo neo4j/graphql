@@ -200,6 +200,7 @@ describe("162", () => {
 
             input TigerJawLevel2Part1AggregateInput {
               AND: [TigerJawLevel2Part1AggregateInput!]
+              NOT: TigerJawLevel2Part1AggregateInput
               OR: [TigerJawLevel2Part1AggregateInput!]
               count: Int
               count_GT: Int
@@ -243,9 +244,10 @@ describe("162", () => {
 
             input TigerJawLevel2Part1ConnectionWhere {
               AND: [TigerJawLevel2Part1ConnectionWhere!]
+              NOT: TigerJawLevel2Part1ConnectionWhere
               OR: [TigerJawLevel2Part1ConnectionWhere!]
               node: TigerJawLevel2Part1Where
-              node_NOT: TigerJawLevel2Part1Where
+              node_NOT: TigerJawLevel2Part1Where @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input TigerJawLevel2Part1CreateFieldInput {
@@ -287,6 +289,7 @@ describe("162", () => {
 
             input TigerJawLevel2Part1NodeAggregationWhereInput {
               AND: [TigerJawLevel2Part1NodeAggregationWhereInput!]
+              NOT: TigerJawLevel2Part1NodeAggregationWhereInput
               OR: [TigerJawLevel2Part1NodeAggregationWhereInput!]
               id_EQUAL: ID
             }
@@ -318,6 +321,7 @@ describe("162", () => {
 
             input TigerJawLevel2Part1TigerAggregateInput {
               AND: [TigerJawLevel2Part1TigerAggregateInput!]
+              NOT: TigerJawLevel2Part1TigerAggregateInput
               OR: [TigerJawLevel2Part1TigerAggregateInput!]
               count: Int
               count_GT: Int
@@ -347,9 +351,10 @@ describe("162", () => {
 
             input TigerJawLevel2Part1TigerConnectionWhere {
               AND: [TigerJawLevel2Part1TigerConnectionWhere!]
+              NOT: TigerJawLevel2Part1TigerConnectionWhere
               OR: [TigerJawLevel2Part1TigerConnectionWhere!]
               node: TigerWhere
-              node_NOT: TigerWhere
+              node_NOT: TigerWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input TigerJawLevel2Part1TigerCreateFieldInput {
@@ -371,6 +376,7 @@ describe("162", () => {
 
             input TigerJawLevel2Part1TigerNodeAggregationWhereInput {
               AND: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
+              NOT: TigerJawLevel2Part1TigerNodeAggregationWhereInput
               OR: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
               x_AVERAGE_EQUAL: Float
               x_AVERAGE_GT: Float
@@ -446,21 +452,22 @@ describe("162", () => {
 
             input TigerJawLevel2Part1Where {
               AND: [TigerJawLevel2Part1Where!]
+              NOT: TigerJawLevel2Part1Where
               OR: [TigerJawLevel2Part1Where!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               tiger: TigerWhere
               tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
               tigerConnection: TigerJawLevel2Part1TigerConnectionWhere
-              tigerConnection_NOT: TigerJawLevel2Part1TigerConnectionWhere
+              tigerConnection_NOT: TigerJawLevel2Part1TigerConnectionWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               tiger_NOT: TigerWhere
             }
 
@@ -497,21 +504,22 @@ describe("162", () => {
 
             input TigerJawLevel2Where {
               AND: [TigerJawLevel2Where!]
+              NOT: TigerJawLevel2Where
               OR: [TigerJawLevel2Where!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               part1: TigerJawLevel2Part1Where
               part1Aggregate: TigerJawLevel2Part1AggregateInput
               part1Connection: TigerJawLevel2Part1ConnectionWhere
-              part1Connection_NOT: TigerJawLevel2Part1ConnectionWhere
+              part1Connection_NOT: TigerJawLevel2Part1ConnectionWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               part1_NOT: TigerJawLevel2Part1Where
             }
 
@@ -545,6 +553,7 @@ describe("162", () => {
 
             input TigerWhere {
               AND: [TigerWhere!]
+              NOT: TigerWhere
               OR: [TigerWhere!]
               x: Int
               x_GT: Int
@@ -552,8 +561,8 @@ describe("162", () => {
               x_IN: [Int]
               x_LT: Int
               x_LTE: Int
-              x_NOT: Int
-              x_NOT_IN: [Int]
+              x_NOT: Int @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              x_NOT_IN: [Int] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             type TigersConnection {

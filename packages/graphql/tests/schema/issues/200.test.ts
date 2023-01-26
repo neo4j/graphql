@@ -100,40 +100,41 @@ describe("200", () => {
 
             input CategoryWhere {
               AND: [CategoryWhere!]
+              NOT: CategoryWhere
               OR: [CategoryWhere!]
               categoryId: ID
               categoryId_CONTAINS: ID
               categoryId_ENDS_WITH: ID
               categoryId_IN: [ID!]
-              categoryId_NOT: ID
-              categoryId_NOT_CONTAINS: ID
-              categoryId_NOT_ENDS_WITH: ID
-              categoryId_NOT_IN: [ID!]
-              categoryId_NOT_STARTS_WITH: ID
+              categoryId_NOT: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              categoryId_NOT_CONTAINS: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              categoryId_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              categoryId_NOT_IN: [ID!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              categoryId_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               categoryId_STARTS_WITH: ID
               description: String
               description_CONTAINS: String
               description_ENDS_WITH: String
               description_IN: [String!]
-              description_NOT: String
-              description_NOT_CONTAINS: String
-              description_NOT_ENDS_WITH: String
-              description_NOT_IN: [String!]
-              description_NOT_STARTS_WITH: String
+              description_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              description_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              description_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              description_NOT_IN: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               description_STARTS_WITH: String
               exampleImageLocations: [String!]
               exampleImageLocations_INCLUDES: String
-              exampleImageLocations_NOT: [String!]
-              exampleImageLocations_NOT_INCLUDES: String
+              exampleImageLocations_NOT: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              exampleImageLocations_NOT_INCLUDES: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 

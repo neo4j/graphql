@@ -94,6 +94,7 @@ describe("connect or create with id", () => {
 
             input ActorMoviesAggregateInput {
               AND: [ActorMoviesAggregateInput!]
+              NOT: ActorMoviesAggregateInput
               OR: [ActorMoviesAggregateInput!]
               count: Int
               count_GT: Int
@@ -132,9 +133,10 @@ describe("connect or create with id", () => {
 
             input ActorMoviesConnectionWhere {
               AND: [ActorMoviesConnectionWhere!]
+              NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -157,6 +159,7 @@ describe("connect or create with id", () => {
 
             input ActorMoviesNodeAggregationWhereInput {
               AND: [ActorMoviesNodeAggregationWhereInput!]
+              NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
               id_EQUAL: ID
               title_AVERAGE_EQUAL: Float
@@ -227,6 +230,7 @@ describe("connect or create with id", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: ActorMoviesAggregateInput
@@ -249,11 +253,11 @@ describe("connect or create with id", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
             }
 
@@ -349,26 +353,27 @@ describe("connect or create with id", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID!]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID!]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               title_STARTS_WITH: String
             }
 
@@ -553,6 +558,7 @@ describe("connect or create with id", () => {
 
             input PostCreatorAggregateInput {
               AND: [PostCreatorAggregateInput!]
+              NOT: PostCreatorAggregateInput
               OR: [PostCreatorAggregateInput!]
               count: Int
               count_GT: Int
@@ -592,9 +598,10 @@ describe("connect or create with id", () => {
 
             input PostCreatorConnectionWhere {
               AND: [PostCreatorConnectionWhere!]
+              NOT: PostCreatorConnectionWhere
               OR: [PostCreatorConnectionWhere!]
               node: UserWhere
-              node_NOT: UserWhere
+              node_NOT: UserWhere @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
             }
 
             input PostCreatorCreateFieldInput {
@@ -619,6 +626,7 @@ describe("connect or create with id", () => {
 
             input PostCreatorNodeAggregationWhereInput {
               AND: [PostCreatorNodeAggregationWhereInput!]
+              NOT: PostCreatorNodeAggregationWhereInput
               OR: [PostCreatorNodeAggregationWhereInput!]
               id_EQUAL: ID
               name_AVERAGE_EQUAL: Float
@@ -726,16 +734,17 @@ describe("connect or create with id", () => {
 
             input PostWhere {
               AND: [PostWhere!]
+              NOT: PostWhere
               OR: [PostWhere!]
               content: String
               content_CONTAINS: String
               content_ENDS_WITH: String
               content_IN: [String!]
-              content_NOT: String
-              content_NOT_CONTAINS: String
-              content_NOT_ENDS_WITH: String
-              content_NOT_IN: [String!]
-              content_NOT_STARTS_WITH: String
+              content_NOT: String @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              content_NOT_CONTAINS: String @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              content_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              content_NOT_IN: [String!] @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              content_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
               content_STARTS_WITH: String
               createdAt: DateTime
               createdAt_GT: DateTime
@@ -743,22 +752,22 @@ describe("connect or create with id", () => {
               createdAt_IN: [DateTime!]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
-              createdAt_NOT: DateTime
-              createdAt_NOT_IN: [DateTime!]
+              createdAt_NOT: DateTime @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              createdAt_NOT_IN: [DateTime!] @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
               creator: UserWhere
               creatorAggregate: PostCreatorAggregateInput
               creatorConnection: PostCreatorConnectionWhere
-              creatorConnection_NOT: PostCreatorConnectionWhere
+              creatorConnection_NOT: PostCreatorConnectionWhere @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
               creator_NOT: UserWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID!]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID!]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
             }
 
@@ -881,6 +890,7 @@ describe("connect or create with id", () => {
 
             input UserPostsAggregateInput {
               AND: [UserPostsAggregateInput!]
+              NOT: UserPostsAggregateInput
               OR: [UserPostsAggregateInput!]
               count: Int
               count_GT: Int
@@ -920,9 +930,10 @@ describe("connect or create with id", () => {
 
             input UserPostsConnectionWhere {
               AND: [UserPostsConnectionWhere!]
+              NOT: UserPostsConnectionWhere
               OR: [UserPostsConnectionWhere!]
               node: PostWhere
-              node_NOT: PostWhere
+              node_NOT: PostWhere @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
             }
 
             input UserPostsCreateFieldInput {
@@ -947,6 +958,7 @@ describe("connect or create with id", () => {
 
             input UserPostsNodeAggregationWhereInput {
               AND: [UserPostsNodeAggregationWhereInput!]
+              NOT: UserPostsNodeAggregationWhereInput
               OR: [UserPostsNodeAggregationWhereInput!]
               content_AVERAGE_EQUAL: Float
               content_AVERAGE_GT: Float
@@ -1028,26 +1040,27 @@ describe("connect or create with id", () => {
 
             input UserWhere {
               AND: [UserWhere!]
+              NOT: UserWhere
               OR: [UserWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID!]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID!]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
               posts: PostWhere @deprecated(reason: \\"Use \`posts_SOME\` instead.\\")
               postsAggregate: UserPostsAggregateInput

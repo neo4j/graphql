@@ -241,40 +241,41 @@ describe("@default directive", () => {
 
             input UserWhere {
               AND: [UserWhere!]
+              NOT: UserWhere
               OR: [UserWhere!]
               fromInterface: String
               fromInterface_CONTAINS: String
               fromInterface_ENDS_WITH: String
               fromInterface_IN: [String!]
-              fromInterface_NOT: String
-              fromInterface_NOT_CONTAINS: String
-              fromInterface_NOT_ENDS_WITH: String
-              fromInterface_NOT_IN: [String!]
-              fromInterface_NOT_STARTS_WITH: String
+              fromInterface_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              fromInterface_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              fromInterface_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              fromInterface_NOT_IN: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              fromInterface_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               fromInterface_STARTS_WITH: String
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID!]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID!]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               location: Location
               location_IN: [Location!]
-              location_NOT: Location
-              location_NOT_IN: [Location!]
+              location_NOT: Location @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              location_NOT_IN: [Location!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               numberOfFriends: Int
               numberOfFriends_GT: Int
@@ -282,25 +283,25 @@ describe("@default directive", () => {
               numberOfFriends_IN: [Int!]
               numberOfFriends_LT: Int
               numberOfFriends_LTE: Int
-              numberOfFriends_NOT: Int
-              numberOfFriends_NOT_IN: [Int!]
+              numberOfFriends_NOT: Int @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              numberOfFriends_NOT_IN: [Int!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               rating: Float
               rating_GT: Float
               rating_GTE: Float
               rating_IN: [Float!]
               rating_LT: Float
               rating_LTE: Float
-              rating_NOT: Float
-              rating_NOT_IN: [Float!]
+              rating_NOT: Float @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              rating_NOT_IN: [Float!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               toBeOverridden: String
               toBeOverridden_CONTAINS: String
               toBeOverridden_ENDS_WITH: String
               toBeOverridden_IN: [String!]
-              toBeOverridden_NOT: String
-              toBeOverridden_NOT_CONTAINS: String
-              toBeOverridden_NOT_ENDS_WITH: String
-              toBeOverridden_NOT_IN: [String!]
-              toBeOverridden_NOT_STARTS_WITH: String
+              toBeOverridden_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              toBeOverridden_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              toBeOverridden_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              toBeOverridden_NOT_IN: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              toBeOverridden_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               toBeOverridden_STARTS_WITH: String
               verified: Boolean
               verifiedDate: DateTime
@@ -309,9 +310,9 @@ describe("@default directive", () => {
               verifiedDate_IN: [DateTime!]
               verifiedDate_LT: DateTime
               verifiedDate_LTE: DateTime
-              verifiedDate_NOT: DateTime
-              verifiedDate_NOT_IN: [DateTime!]
-              verified_NOT: Boolean
+              verifiedDate_NOT: DateTime @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              verifiedDate_NOT_IN: [DateTime!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              verified_NOT: Boolean @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             type UsersConnection {

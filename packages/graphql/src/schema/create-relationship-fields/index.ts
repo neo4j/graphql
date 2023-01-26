@@ -34,6 +34,7 @@ import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import { overwrite } from "./fields/overwrite";
+import { DEPRECATE_NOT } from "../constants";
 
 function createRelationshipFields({
     relationshipFields,
@@ -438,32 +439,36 @@ function createRelationshipFields({
                     fields: fieldInputFields,
                 });
 
-                const whereInputTC = schemaComposer.createInputTC({
+                schemaComposer.createInputTC({
                     name: whereName,
                     fields: {
                         node: `${n.name}Where`,
-                        node_NOT: `${n.name}Where`,
+                        node_NOT: {
+                            type: `${n.name}Where`,
+                            directives: [
+                                DEPRECATE_NOT
+                            ],
+                        },
                         AND: `[${whereName}!]`,
                         OR: `[${whereName}!]`,
                         NOT: whereName,
                         ...(rel.properties
                             ? {
                                   edge: `${rel.properties}Where`,
-                                  edge_NOT: `${rel.properties}Where`,
+                                  edge_NOT: {
+                                    type: `${rel.properties}Where`,
+                                    directives: [
+                                        DEPRECATE_NOT
+                                    ],
+                                },
+                                  
                               }
                             : {}),
                     },
                 });
 
-                whereInputTC.setFieldDirectiveByName("node_NOT", "deprecated", {
-                    reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
-                });
 
-                if (rel.properties) {
-                    whereInputTC.setFieldDirectiveByName("edge_NOT", "deprecated", {
-                        reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
-                    });
-                }
+               
 
                 if (!schemaComposer.has(deleteName)) {
                     schemaComposer.createInputTC({
@@ -702,7 +707,7 @@ function createRelationshipFields({
                 },
                 [`${rel.fieldName}_NOT`]: {
                     type: `${n.name}Where`,
-                    directives: [...deprecatedDirectives, deprecates_NOT],
+                    directives: [...deprecatedDirectives],
                 },
                 [`${rel.fieldName}Aggregate`]: {
                     type: whereAggregateInput,

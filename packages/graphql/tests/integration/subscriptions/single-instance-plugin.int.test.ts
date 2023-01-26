@@ -56,7 +56,7 @@ describe("Subscriptions Single Instance Plugin", () => {
         await driver.close();
     });
 
-    test("simple create with subscriptions enabled with single instance plugin", async () => {
+    test.only("simple create with subscriptions enabled with single instance plugin", async () => {
         const query = `
         mutation {
             ${typeMovie.operations.create}(

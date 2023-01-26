@@ -127,6 +127,7 @@ describe("Sort", () => {
 
             input Node1RelatedToAggregateInput {
               AND: [Node1RelatedToAggregateInput!]
+              NOT: Node1RelatedToAggregateInput
               OR: [Node1RelatedToAggregateInput!]
               count: Int
               count_GT: Int
@@ -152,9 +153,10 @@ describe("Sort", () => {
 
             input Node1RelatedToConnectionWhere {
               AND: [Node1RelatedToConnectionWhere!]
+              NOT: Node1RelatedToConnectionWhere
               OR: [Node1RelatedToConnectionWhere!]
               node: Node2Where
-              node_NOT: Node2Where
+              node_NOT: Node2Where @deprecated(reason: \\"Use \`relatedToConnection_NONE\` instead.\\")
             }
 
             input Node1RelatedToCreateFieldInput {
@@ -212,16 +214,17 @@ describe("Sort", () => {
 
             input Node1Where {
               AND: [Node1Where!]
+              NOT: Node1Where
               OR: [Node1Where!]
               property: String
               property_CONTAINS: String
               property_ENDS_WITH: String
               property_IN: [String!]
-              property_NOT: String
-              property_NOT_CONTAINS: String
-              property_NOT_ENDS_WITH: String
-              property_NOT_IN: [String!]
-              property_NOT_STARTS_WITH: String
+              property_NOT: String @deprecated(reason: \\"Use \`relatedToConnection_NONE\` instead.\\")
+              property_NOT_CONTAINS: String @deprecated(reason: \\"Use \`relatedToConnection_NONE\` instead.\\")
+              property_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`relatedToConnection_NONE\` instead.\\")
+              property_NOT_IN: [String!] @deprecated(reason: \\"Use \`relatedToConnection_NONE\` instead.\\")
+              property_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`relatedToConnection_NONE\` instead.\\")
               property_STARTS_WITH: String
               relatedTo: Node2Where @deprecated(reason: \\"Use \`relatedTo_SOME\` instead.\\")
               relatedToAggregate: Node1RelatedToAggregateInput
@@ -299,6 +302,7 @@ describe("Sort", () => {
 
             input Node2RelatedToAggregateInput {
               AND: [Node2RelatedToAggregateInput!]
+              NOT: Node2RelatedToAggregateInput
               OR: [Node2RelatedToAggregateInput!]
               count: Int
               count_GT: Int
@@ -329,9 +333,10 @@ describe("Sort", () => {
 
             input Node2RelatedToConnectionWhere {
               AND: [Node2RelatedToConnectionWhere!]
+              NOT: Node2RelatedToConnectionWhere
               OR: [Node2RelatedToConnectionWhere!]
               node: Node1Where
-              node_NOT: Node1Where
+              node_NOT: Node1Where @deprecated(reason: \\"Use \`relatedToConnection_NONE\` instead.\\")
             }
 
             input Node2RelatedToCreateFieldInput {
@@ -355,6 +360,7 @@ describe("Sort", () => {
 
             input Node2RelatedToNodeAggregationWhereInput {
               AND: [Node2RelatedToNodeAggregationWhereInput!]
+              NOT: Node2RelatedToNodeAggregationWhereInput
               OR: [Node2RelatedToNodeAggregationWhereInput!]
               property_AVERAGE_EQUAL: Float
               property_AVERAGE_GT: Float
@@ -406,6 +412,7 @@ describe("Sort", () => {
 
             input Node2Where {
               AND: [Node2Where!]
+              NOT: Node2Where
               OR: [Node2Where!]
               relatedTo: Node1Where @deprecated(reason: \\"Use \`relatedTo_SOME\` instead.\\")
               relatedToAggregate: Node2RelatedToAggregateInput

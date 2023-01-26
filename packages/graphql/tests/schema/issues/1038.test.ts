@@ -89,26 +89,27 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
 
             input AWSAccountWhere {
               AND: [AWSAccountWhere!]
+              NOT: AWSAccountWhere
               OR: [AWSAccountWhere!]
               accountName: String
               accountName_CONTAINS: String
               accountName_ENDS_WITH: String
               accountName_IN: [String]
-              accountName_NOT: String
-              accountName_NOT_CONTAINS: String
-              accountName_NOT_ENDS_WITH: String
-              accountName_NOT_IN: [String]
-              accountName_NOT_STARTS_WITH: String
+              accountName_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              accountName_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              accountName_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              accountName_NOT_IN: [String] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              accountName_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               accountName_STARTS_WITH: String
               code: String
               code_CONTAINS: String
               code_ENDS_WITH: String
               code_IN: [String]
-              code_NOT: String
-              code_NOT_CONTAINS: String
-              code_NOT_ENDS_WITH: String
-              code_NOT_IN: [String]
-              code_NOT_STARTS_WITH: String
+              code_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              code_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              code_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              code_NOT_IN: [String] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              code_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               code_STARTS_WITH: String
             }
 
@@ -179,26 +180,27 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
 
             input DNSZoneWhere {
               AND: [DNSZoneWhere!]
+              NOT: DNSZoneWhere
               OR: [DNSZoneWhere!]
               awsId: String
               awsId_CONTAINS: String
               awsId_ENDS_WITH: String
               awsId_IN: [String]
-              awsId_NOT: String
-              awsId_NOT_CONTAINS: String
-              awsId_NOT_ENDS_WITH: String
-              awsId_NOT_IN: [String]
-              awsId_NOT_STARTS_WITH: String
+              awsId_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              awsId_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              awsId_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              awsId_NOT_IN: [String] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              awsId_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               awsId_STARTS_WITH: String
               zoneType: String
               zoneType_CONTAINS: String
               zoneType_ENDS_WITH: String
               zoneType_IN: [String]
-              zoneType_NOT: String
-              zoneType_NOT_CONTAINS: String
-              zoneType_NOT_ENDS_WITH: String
-              zoneType_NOT_IN: [String]
-              zoneType_NOT_STARTS_WITH: String
+              zoneType_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              zoneType_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              zoneType_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              zoneType_NOT_IN: [String] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              zoneType_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               zoneType_STARTS_WITH: String
             }
 

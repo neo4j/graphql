@@ -106,6 +106,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input Actor2MoviesAggregateInput {
               AND: [Actor2MoviesAggregateInput!]
+              NOT: Actor2MoviesAggregateInput
               OR: [Actor2MoviesAggregateInput!]
               count: Int
               count_GT: Int
@@ -144,9 +145,10 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input Actor2MoviesConnectionWhere {
               AND: [Actor2MoviesConnectionWhere!]
+              NOT: Actor2MoviesConnectionWhere
               OR: [Actor2MoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             input Actor2MoviesCreateFieldInput {
@@ -169,6 +171,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input Actor2MoviesNodeAggregationWhereInput {
               AND: [Actor2MoviesNodeAggregationWhereInput!]
+              NOT: Actor2MoviesNodeAggregationWhereInput
               OR: [Actor2MoviesNodeAggregationWhereInput!]
               id_EQUAL: ID
               title_AVERAGE_EQUAL: Float
@@ -239,6 +242,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input Actor2Where {
               AND: [Actor2Where!]
+              NOT: Actor2Where
               OR: [Actor2Where!]
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: Actor2MoviesAggregateInput
@@ -261,11 +265,11 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
             }
 
@@ -318,6 +322,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input ActorMoviesAggregateInput {
               AND: [ActorMoviesAggregateInput!]
+              NOT: ActorMoviesAggregateInput
               OR: [ActorMoviesAggregateInput!]
               count: Int
               count_GT: Int
@@ -356,9 +361,10 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input ActorMoviesConnectionWhere {
               AND: [ActorMoviesConnectionWhere!]
+              NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -381,6 +387,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input ActorMoviesNodeAggregationWhereInput {
               AND: [ActorMoviesNodeAggregationWhereInput!]
+              NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
               id_EQUAL: ID
               title_AVERAGE_EQUAL: Float
@@ -451,6 +458,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: ActorMoviesAggregateInput
@@ -473,11 +481,11 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
             }
 
@@ -578,26 +586,27 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID!]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID!]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               id_STARTS_WITH: ID
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               title_STARTS_WITH: String
             }
 

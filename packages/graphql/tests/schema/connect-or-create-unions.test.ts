@@ -75,6 +75,7 @@ describe("Connect Or Create", () => {
 
             input ActedInWhere {
               AND: [ActedInWhere!]
+              NOT: ActedInWhere
               OR: [ActedInWhere!]
               screenTime: Int
               screenTime_GT: Int
@@ -82,8 +83,8 @@ describe("Connect Or Create", () => {
               screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
-              screenTime_NOT: Int
-              screenTime_NOT_IN: [Int!]
+              screenTime_NOT: Int @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
             }
 
             type Actor {
@@ -154,11 +155,12 @@ describe("Connect Or Create", () => {
 
             input ActorActedInMovieConnectionWhere {
               AND: [ActorActedInMovieConnectionWhere!]
+              NOT: ActorActedInMovieConnectionWhere
               OR: [ActorActedInMovieConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
             }
 
             input ActorActedInMovieCreateFieldInput {
@@ -218,11 +220,12 @@ describe("Connect Or Create", () => {
 
             input ActorActedInSeriesConnectionWhere {
               AND: [ActorActedInSeriesConnectionWhere!]
+              NOT: ActorActedInSeriesConnectionWhere
               OR: [ActorActedInSeriesConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               node: SeriesWhere
-              node_NOT: SeriesWhere
+              node_NOT: SeriesWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
             }
 
             input ActorActedInSeriesCreateFieldInput {
@@ -322,6 +325,7 @@ describe("Connect Or Create", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               actedInConnection_ALL: ActorActedInConnectionWhere
@@ -333,11 +337,11 @@ describe("Connect Or Create", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               name_STARTS_WITH: String
             }
 
@@ -436,26 +440,27 @@ describe("Connect Or Create", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               isan: String
               isan_CONTAINS: String
               isan_ENDS_WITH: String
               isan_IN: [String!]
-              isan_NOT: String
-              isan_NOT_CONTAINS: String
-              isan_NOT_ENDS_WITH: String
-              isan_NOT_IN: [String!]
-              isan_NOT_STARTS_WITH: String
+              isan_NOT: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              isan_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              isan_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              isan_NOT_IN: [String!] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              isan_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               title_STARTS_WITH: String
             }
 
@@ -577,26 +582,27 @@ describe("Connect Or Create", () => {
 
             input SeriesWhere {
               AND: [SeriesWhere!]
+              NOT: SeriesWhere
               OR: [SeriesWhere!]
               isan: String
               isan_CONTAINS: String
               isan_ENDS_WITH: String
               isan_IN: [String!]
-              isan_NOT: String
-              isan_NOT_CONTAINS: String
-              isan_NOT_ENDS_WITH: String
-              isan_NOT_IN: [String!]
-              isan_NOT_STARTS_WITH: String
+              isan_NOT: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              isan_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              isan_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              isan_NOT_IN: [String!] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              isan_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               title_STARTS_WITH: String
             }
 

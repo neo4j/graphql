@@ -26,6 +26,7 @@ import type {
     TemporalField,
 } from "../types";
 import { graphqlDirectivesToCompose } from "./to-compose";
+import { DEPRECATE_NOT } from "./constants";
 
 interface Fields {
     scalarFields: CustomScalarField[];
@@ -35,12 +36,7 @@ interface Fields {
     pointFields: PointField[];
 }
 
-const deprecates_NOT = {
-    name: "deprecated",
-    args: {
-        reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
-    },
-};
+
 
 function getWhereFields({
     typeName,
@@ -74,7 +70,7 @@ function getWhereFields({
             };
             res[`${f.fieldName}_NOT`] = {
                 type: f.typeMeta.input.where.pretty,
-                directives: [...deprecatedDirectives, deprecates_NOT],
+                directives: deprecatedDirectives.length ? [...deprecatedDirectives] : [DEPRECATE_NOT],
             };
 
             if (f.typeMeta.name === "Boolean") {
@@ -88,7 +84,7 @@ function getWhereFields({
                 };
                 res[`${f.fieldName}_NOT_INCLUDES`] = {
                     type: f.typeMeta.input.where.type,
-                    directives: [...deprecatedDirectives, deprecates_NOT],
+                    directives: deprecatedDirectives.length ? [...deprecatedDirectives] : [DEPRECATE_NOT],
                 };
                 return res;
             }
@@ -99,7 +95,7 @@ function getWhereFields({
             };
             res[`${f.fieldName}_NOT_IN`] = {
                 type: `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`,
-                directives: [...deprecatedDirectives, deprecates_NOT],
+                directives: deprecatedDirectives.length ? [...deprecatedDirectives] : [DEPRECATE_NOT],
             };
 
             if (
@@ -152,7 +148,7 @@ function getWhereFields({
                 stringWhereOperatorsNegate.forEach((comparator) => {
                     res[`${f.fieldName}${comparator}`] = {
                         type: f.typeMeta.name,
-                        directives: [...deprecatedDirectives, deprecates_NOT],
+                        directives: deprecatedDirectives.length ? [...deprecatedDirectives] : [DEPRECATE_NOT],
                     };
                 });
                 return res;
