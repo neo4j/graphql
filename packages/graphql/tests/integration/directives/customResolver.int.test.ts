@@ -326,6 +326,25 @@ describe("Related Fields", () => {
     let Address: UniqueType;
     let City: UniqueType;
 
+    const userInput1 = {
+        id: "1",
+        firstName: "First",
+        lastName: "Last",
+    };
+    const userInput2 = {
+        id: "2",
+        firstName: "New First",
+        lastName: "new-last",
+    };
+    const addressInput1 = {
+        city: "some city",
+        street: "some street",
+    };
+    const addressInput2 = {
+        city: "another-city",
+        street: "another-street",
+    };
+
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
@@ -355,6 +374,16 @@ describe("Related Fields", () => {
     });
 
     test("should be able to require a field from a related type", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
+                { userInput1, addressInput1 }
+            );
+        } finally {
+            await session.close();
+        }
+
         const typeDefs = gql`
             type ${Address} {
                 street: String!
@@ -377,26 +406,6 @@ describe("Related Fields", () => {
                 fullName: fullNameResolver,
             },
         };
-
-        const userInput = {
-            id: "1",
-            firstName: "First",
-            lastName: "Last",
-        };
-        const addressInput = {
-            city: "some city",
-            street: "some street",
-        };
-
-        const session = await neo4j.getSession();
-        try {
-            await session.run(
-                `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput, addr = $addressInput`,
-                { userInput, addressInput }
-            );
-        } finally {
-            await session.close();
-        }
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
@@ -422,12 +431,258 @@ describe("Related Fields", () => {
             [User.plural]: [
                 {
                     fullName: fullNameResolver({
-                        firstName: userInput.firstName,
-                        lastName: userInput.lastName,
-                        address: { city: addressInput.city },
+                        firstName: userInput1.firstName,
+                        lastName: userInput1.lastName,
+                        address: { city: addressInput1.city },
                     }),
                 },
             ],
+        });
+    });
+
+    test("should fetch required fields when other fields are also selected", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
+                { userInput1, addressInput1 }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const typeDefs = gql`
+            type ${Address} {
+                street: String!
+                city: String!
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                fullName: String @customResolver(requires: "firstName lastName address { city }")
+            }
+        `;
+
+        const fullNameResolver = ({ firstName, lastName, address }) => `${firstName} ${lastName} from ${address.city}`;
+
+        const resolvers = {
+            [User.name]: {
+                fullName: fullNameResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        const query = `
+            query ${User} {
+                ${User.plural} {
+                    id
+                    fullName
+                    address {
+                        street
+                        city
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [User.plural]: [
+                {
+                    id: userInput1.id,
+                    address: addressInput1,
+                    fullName: fullNameResolver({
+                        firstName: userInput1.firstName,
+                        lastName: userInput1.lastName,
+                        address: { city: addressInput1.city },
+                    }),
+                },
+            ],
+        });
+    });
+
+    test("should fetch customResolver fields over multiple users", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `
+                    CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address}) SET user1 = $userInput1, addr1 = $addressInput1
+                    CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address}) SET user2 = $userInput2, addr2 = $addressInput2
+                `,
+                { userInput1, addressInput1, userInput2, addressInput2 }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const typeDefs = gql`
+            type ${Address} {
+                street: String!
+                city: String!
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                fullName: String @customResolver(requires: "firstName lastName address { city }")
+            }
+        `;
+
+        const fullNameResolver = ({ firstName, lastName, address }) => `${firstName} ${lastName} from ${address.city}`;
+
+        const resolvers = {
+            [User.name]: {
+                fullName: fullNameResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        const query = `
+            query ${User} {
+                ${User.plural} {
+                    id
+                    fullName
+                    address {
+                        street
+                        city
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [User.plural]: expect.toIncludeSameMembers([
+                {
+                    id: userInput1.id,
+                    address: addressInput1,
+                    fullName: fullNameResolver({
+                        firstName: userInput1.firstName,
+                        lastName: userInput1.lastName,
+                        address: { city: addressInput1.city },
+                    }),
+                },
+                {
+                    id: userInput2.id,
+                    address: addressInput2,
+                    fullName: fullNameResolver({
+                        firstName: userInput2.firstName,
+                        lastName: userInput2.lastName,
+                        address: { city: addressInput2.city },
+                    }),
+                },
+            ]),
+        });
+    });
+
+    test("should select related fields when not selected last", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `
+                    CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address}) SET user1 = $userInput1, addr1 = $addressInput1
+                    CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address}) SET user2 = $userInput2, addr2 = $addressInput2
+                `,
+                { userInput1, addressInput1, userInput2, addressInput2 }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const typeDefs = gql`
+            type ${Address} {
+                street: String!
+                city: String!
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                fullName: String @customResolver(requires: "firstName address { city } lastName")
+            }
+        `;
+
+        const fullNameResolver = ({ firstName, lastName, address }) => `${firstName} ${lastName} from ${address.city}`;
+
+        const resolvers = {
+            [User.name]: {
+                fullName: fullNameResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        const query = `
+            query ${User} {
+                ${User.plural} {
+                    id
+                    fullName
+                    address {
+                        street
+                        city
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [User.plural]: expect.toIncludeSameMembers([
+                {
+                    id: userInput1.id,
+                    address: addressInput1,
+                    fullName: fullNameResolver({
+                        firstName: userInput1.firstName,
+                        lastName: userInput1.lastName,
+                        address: { city: addressInput1.city },
+                    }),
+                },
+                {
+                    id: userInput2.id,
+                    address: addressInput2,
+                    fullName: fullNameResolver({
+                        firstName: userInput2.firstName,
+                        lastName: userInput2.lastName,
+                        address: { city: addressInput2.city },
+                    }),
+                },
+            ]),
         });
     });
 });
