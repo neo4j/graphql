@@ -90,10 +90,10 @@ Conversely, the following operators are available on array fields, and accept a 
 
 These four operators are available for all types apart from `Boolean`.
 
-=== AND, OR operators
+=== AND, OR, NOT operators
 
-Complex combinations of operators are possible using the `AND`/ `OR` operators. 
-These are stand-alone operators - that is, they are used as such and not appended to field names, and they accept an array argument with items of the same format as the `where` argument. 
+Complex combinations of operators are possible using the `AND`/ `OR` / `NOT` operators. 
+These are stand-alone operators - that is, they are used as such and not appended to field names, and they accept an array/object argument with items of the same format as the `where` argument. 
 
 == Usage
 

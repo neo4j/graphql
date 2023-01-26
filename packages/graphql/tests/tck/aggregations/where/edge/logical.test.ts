@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
-describe("Cypher Aggregations where edge with Logical AND + OR", () => {
+describe("Cypher Aggregations where edge with Logical AND + OR + NOT", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -137,7 +137,7 @@ describe("Cypher Aggregations where edge with Logical AND + OR", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) AS var3
             }
             WITH *
