@@ -341,7 +341,7 @@ query Query {
 }
 ```
 
-> If there is a single index, the index field could be made optional ignored
+> If there is a single index, the index field could be made optional
 
 This approach allows the possibility of having nested fulltext:
 
@@ -387,6 +387,8 @@ query TopLevelFulltext {
 ```
 
 > Note that the plain `fulltext` option without `where` may still filter the results.
+
+Following this approach, the field `fulltext { score }` will always be returned as optional, regardless of the input. Which may lead to a slightly more confusing API compared to having separate operations.
 
 ## Simple API - Query
 
