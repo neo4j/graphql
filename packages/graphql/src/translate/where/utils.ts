@@ -60,7 +60,7 @@ export type AggregationFieldRegexGroups = {
     fieldName: string;
     aggregationOperator?: aggregationOperators;
     logicalOperator?: string;
-}
+};
 
 export type ListPredicate = "all" | "none" | "single" | "any" | "not";
 
