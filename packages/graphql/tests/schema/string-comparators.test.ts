@@ -537,11 +537,11 @@ describe("String Comparators", () => {
               screenTime_IN: [String]
               screenTime_LT: String
               screenTime_LTE: String
-              screenTime_NOT: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
-              screenTime_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
-              screenTime_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
-              screenTime_NOT_IN: [String] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
-              screenTime_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              screenTime_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              screenTime_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              screenTime_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              screenTime_NOT_IN: [String] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              screenTime_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               screenTime_STARTS_WITH: String
             }
 
@@ -591,9 +591,9 @@ describe("String Comparators", () => {
               NOT: ActorActedInConnectionWhere
               OR: [ActorActedInConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              node_NOT: MovieWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorActedInCreateFieldInput {
@@ -787,11 +787,11 @@ describe("String Comparators", () => {
               name_IN: [String]
               name_LT: String
               name_LTE: String
-              name_NOT: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              name_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -883,9 +883,9 @@ describe("String Comparators", () => {
               NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              node_NOT: ActorWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -1045,7 +1045,7 @@ describe("String Comparators", () => {
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               actorsConnection_ALL: MovieActorsConnectionWhere
               actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               actorsConnection_SINGLE: MovieActorsConnectionWhere
               actorsConnection_SOME: MovieActorsConnectionWhere
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
@@ -1065,11 +1065,11 @@ describe("String Comparators", () => {
               title_IN: [String]
               title_LT: String
               title_LTE: String
-              title_NOT: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
-              title_NOT_IN: [String] @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              title_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 

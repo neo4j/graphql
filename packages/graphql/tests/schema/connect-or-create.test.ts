@@ -136,7 +136,7 @@ describe("Connect Or Create", () => {
               NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              node_NOT: MovieWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -272,11 +272,11 @@ describe("Connect Or Create", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              name_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -376,21 +376,21 @@ describe("Connect Or Create", () => {
               isan_CONTAINS: String
               isan_ENDS_WITH: String
               isan_IN: [String!]
-              isan_NOT: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              isan_NOT_CONTAINS: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              isan_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              isan_NOT_IN: [String!] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              isan_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              isan_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_IN: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              title_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -514,11 +514,11 @@ describe("Connect Or Create", () => {
               characterName_CONTAINS: String
               characterName_ENDS_WITH: String
               characterName_IN: [String]
-              characterName_NOT: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              characterName_NOT_CONTAINS: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              characterName_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              characterName_NOT_IN: [String] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              characterName_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              characterName_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              characterName_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              characterName_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              characterName_NOT_IN: [String] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              characterName_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               characterName_STARTS_WITH: String
               screentime: Int
               screentime_GT: Int
@@ -526,8 +526,8 @@ describe("Connect Or Create", () => {
               screentime_IN: [Int!]
               screentime_LT: Int
               screentime_LTE: Int
-              screentime_NOT: Int @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              screentime_NOT_IN: [Int!] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              screentime_NOT: Int @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              screentime_NOT_IN: [Int!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             type Actor {
@@ -632,9 +632,9 @@ describe("Connect Or Create", () => {
               NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              node_NOT: MovieWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -825,11 +825,11 @@ describe("Connect Or Create", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              name_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -936,21 +936,21 @@ describe("Connect Or Create", () => {
               isan_CONTAINS: String
               isan_ENDS_WITH: String
               isan_IN: [String!]
-              isan_NOT: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              isan_NOT_CONTAINS: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              isan_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              isan_NOT_IN: [String!] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              isan_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              isan_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_IN: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              title_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 

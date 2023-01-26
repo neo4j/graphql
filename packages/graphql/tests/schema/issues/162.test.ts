@@ -464,11 +464,11 @@ describe("162", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              tiger: TigerWhere
+              tiger: TigerWhere @deprecated(reason: \\"Use \`tiger_SOME\` instead.\\")
               tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
               tigerConnection: TigerJawLevel2Part1TigerConnectionWhere
-              tigerConnection_NOT: TigerJawLevel2Part1TigerConnectionWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              tiger_NOT: TigerWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              tigerConnection_NOT: TigerJawLevel2Part1TigerConnectionWhere @deprecated(reason: \\"Use \`tigerConnection_NONE\` instead.\\")
+              tiger_NOT: TigerWhere @deprecated(reason: \\"Use \`tiger_NONE\` instead.\\")
             }
 
             type TigerJawLevel2Part1sConnection {
@@ -516,11 +516,11 @@ describe("162", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              part1: TigerJawLevel2Part1Where
+              part1: TigerJawLevel2Part1Where @deprecated(reason: \\"Use \`part1_SOME\` instead.\\")
               part1Aggregate: TigerJawLevel2Part1AggregateInput
               part1Connection: TigerJawLevel2Part1ConnectionWhere
-              part1Connection_NOT: TigerJawLevel2Part1ConnectionWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              part1_NOT: TigerJawLevel2Part1Where @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              part1Connection_NOT: TigerJawLevel2Part1ConnectionWhere @deprecated(reason: \\"Use \`part1Connection_NONE\` instead.\\")
+              part1_NOT: TigerJawLevel2Part1Where @deprecated(reason: \\"Use \`part1_NONE\` instead.\\")
             }
 
             type TigerJawLevel2sConnection {

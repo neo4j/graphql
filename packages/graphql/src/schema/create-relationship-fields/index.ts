@@ -696,11 +696,23 @@ function createRelationshipFields({
             ...{
                 [rel.fieldName]: {
                     type: `${n.name}Where`,
-                    directives: deprecatedDirectives,
+                    directives: [
+                        {
+                            name: "deprecated",
+                            args: {
+                                reason: `Use \`${rel.fieldName}_SOME\` instead.`,
+                            },
+                        },
+                    ],
                 },
                 [`${rel.fieldName}_NOT`]: {
                     type: `${n.name}Where`,
-                    directives: deprecatedDirectives.length ? [...deprecatedDirectives] : [DEPRECATE_NOT],
+                    directives:  [{
+                        name: "deprecated",
+                        args: {
+                            reason: `Use \`${rel.fieldName}_NONE\` instead.`,
+                        },
+                    }],
                 },
                 [`${rel.fieldName}Aggregate`]: {
                     type: whereAggregateInput,
@@ -728,24 +740,6 @@ function createRelationshipFields({
                     {}
                 )
             );
-
-            // Deprecate existing filters
-            whereInput.setFieldDirectives(rel.fieldName, [
-                {
-                    name: "deprecated",
-                    args: {
-                        reason: `Use \`${rel.fieldName}_SOME\` instead.`,
-                    },
-                },
-            ]);
-            whereInput.setFieldDirectives(`${rel.fieldName}_NOT`, [
-                {
-                    name: "deprecated",
-                    args: {
-                        reason: `Use \`${rel.fieldName}_NONE\` instead.`,
-                    },
-                },
-            ]);
         }
 
         const createName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}CreateFieldInput`;

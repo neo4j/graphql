@@ -227,7 +227,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               NOT: ResourceContainedByConnectionWhere
               OR: [ResourceContainedByConnectionWhere!]
               node: ResourceWhere
-              node_NOT: ResourceWhere @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              node_NOT: ResourceWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input ResourceContainedByCreateFieldInput {
@@ -453,52 +453,52 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               createdAt_IN: [DateTime!]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
-              createdAt_NOT: DateTime @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
-              createdAt_NOT_IN: [DateTime!] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              createdAt_NOT: DateTime @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              createdAt_NOT_IN: [DateTime!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               externalIds: [ID!]
               externalIds_INCLUDES: ID
-              externalIds_NOT: [ID!] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
-              externalIds_NOT_INCLUDES: ID @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              externalIds_NOT: [ID!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              externalIds_NOT_INCLUDES: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID!]
-              id_NOT: ID @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
-              id_NOT_IN: [ID!] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              id_NOT: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              name_NOT: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               properties: [Property!]
               properties_INCLUDES: Property
-              properties_NOT: [Property!] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
-              properties_NOT_INCLUDES: Property @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              properties_NOT: [Property!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              properties_NOT_INCLUDES: Property @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               tags: [Tag!]
               tags_INCLUDES: Tag
-              tags_NOT: [Tag!] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
-              tags_NOT_INCLUDES: Tag @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              tags_NOT: [Tag!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              tags_NOT_INCLUDES: Tag @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               type: ResourceType
               type_IN: [ResourceType!]
-              type_NOT: ResourceType @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
-              type_NOT_IN: [ResourceType!] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              type_NOT: ResourceType @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              type_NOT_IN: [ResourceType!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
               updatedAt: DateTime
               updatedAt_GT: DateTime
               updatedAt_GTE: DateTime
               updatedAt_IN: [DateTime!]
               updatedAt_LT: DateTime
               updatedAt_LTE: DateTime
-              updatedAt_NOT: DateTime @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
-              updatedAt_NOT_IN: [DateTime!] @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              updatedAt_NOT: DateTime @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              updatedAt_NOT_IN: [DateTime!] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             type ResourcesConnection {

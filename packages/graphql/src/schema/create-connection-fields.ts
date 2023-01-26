@@ -86,12 +86,9 @@ function createConnectionFields({
                 edge: `${connectionField.relationship.properties}Where`,
                 edge_NOT: {
                     type: `${connectionField.relationship.properties}Where`,
-                    directives: [
-                        DEPRECATE_NOT
-                    ],
-                }
+                    directives: [DEPRECATE_NOT],
+                },
             });
-
         }
 
         whereInput.addFields({
@@ -99,9 +96,14 @@ function createConnectionFields({
             [`${connectionField.fieldName}_NOT`]: {
                 type: connectionWhere,
                 directives: [
-                    DEPRECATE_NOT
+                    {
+                        name: "deprecated",
+                        args: {
+                            reason: `Use \`${connectionField.fieldName}_NONE\` instead.`,
+                        },
+                    },
                 ],
-            }
+            },
         });
 
         // n..m Relationships
@@ -120,12 +122,8 @@ function createConnectionFields({
                 )
             );
 
-            // Deprecate existing filters
             whereInput.setFieldDirectiveByName(connectionField.fieldName, "deprecated", {
                 reason: `Use \`${connectionField.fieldName}_SOME\` instead.`,
-            });
-            whereInput.setFieldDirectiveByName(`${connectionField.fieldName}_NOT`, "deprecated", {
-                reason: `Use \`${connectionField.fieldName}_NONE\` instead.`,
             });
         }
 
@@ -162,12 +160,10 @@ function createConnectionFields({
                 node: `${connectionField.relationship.typeMeta.name}Where`,
                 node_NOT: {
                     type: `${connectionField.relationship.typeMeta.name}Where`,
-                    directives: [
-                        DEPRECATE_NOT
-                    ],
-                }
+                    directives: [DEPRECATE_NOT],
+                },
             });
-    
+
             if (schemaComposer.has(`${connectionField.relationship.typeMeta.name}Sort`)) {
                 const connectionSort = schemaComposer.getOrCreateITC(`${connectionField.typeMeta.name}Sort`);
                 connectionSort.addFields({
@@ -187,13 +183,9 @@ function createConnectionFields({
                     edge: `${connectionField.relationship.properties}Where`,
                     edge_NOT: {
                         type: `${connectionField.relationship.properties}Where`,
-                        directives: [
-                            DEPRECATE_NOT
-                        ],
-                    }
-                    
+                        directives: [DEPRECATE_NOT],
+                    },
                 });
-
             }
         } else if (connectionField.relationship.union) {
             const relatedNodes = nodes.filter((n) => connectionField.relationship.union?.nodes?.includes(n.name));
@@ -219,10 +211,8 @@ function createConnectionFields({
                     node: `${n.name}Where`,
                     node_NOT: {
                         type: `${n.name}Where`,
-                        directives: [
-                            DEPRECATE_NOT
-                        ],
-                    }
+                        directives: [DEPRECATE_NOT],
+                    },
                 });
 
                 if (connectionField.relationship.properties) {
@@ -234,10 +224,8 @@ function createConnectionFields({
                         edge: `${connectionField.relationship.properties}Where`,
                         edge_NOT: {
                             type: `${connectionField.relationship.properties}Where`,
-                            directives: [
-                                DEPRECATE_NOT
-                            ],
-                        }
+                            directives: [DEPRECATE_NOT],
+                        },
                     });
                 }
 
@@ -252,10 +240,8 @@ function createConnectionFields({
                 node: `${connectionField.relationship.typeMeta.name}Where`,
                 node_NOT: {
                     type: `${connectionField.relationship.typeMeta.name}Where`,
-                    directives: [
-                        DEPRECATE_NOT
-                    ],
-                }
+                    directives: [DEPRECATE_NOT],
+                },
             });
 
             if (getSortableFields(relatedNode).length) {

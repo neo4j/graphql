@@ -70,6 +70,7 @@ type Movie {
     title: String
     genre: String
     averageRating: Float
+    releasedIn: Int
 }
 ----
 Below are some example of how filtering can be applied when creating a subscription.
@@ -165,23 +166,21 @@ NOTE: `Where` will only filter by existing properties right before deletion.
 All above-mentioned operators can be combined using the `AND`/`OR`/`NOT` operators. 
 They accept an array argument with items of the same format as the `where` argument, which means they can also be nested to form complex combinations.
 
-Say we dislike comedy movies and we only accept ratings below 7 for movies released before the 2000's. 
-As an exception we also like the movie "The Matrix". However, we do not like any of its sequels. 
+Say we like comedy movies except for romantic comedies from early 2000, although our favorite movies are ones from the Matrix Trilogy.
 We could subscribe to any updates that we are interested in as follows:
 
 [source, graphql, indent=0]
 ----
 subscription {
-    movieUpdate(where: {
+    movieUpdated(where: {
         OR: [
-            {title_ENDS_WITH: "The Matrix"},
-            {AND: [
-                { NOT: { genre: "comedy"} },
-                {OR: [
-                    {releasedIn_LTE: 2000},
-                    {releasedIn_GT: 2000, averageRating_GT: 7}
-                ]}
-            ]}
+            { title_CONTAINS: "Matrix" },
+            { genre: "comedy" },
+            { AND: [ 
+                { NOT: { genre: "romantic comedy" } },
+                { releasedIn_GT: 2000 },
+                { releasedIn_LTE: 2005 }
+            ] },
         ]
     }) {
         updatedMovie {
@@ -249,7 +248,7 @@ The following example filters the subscriptions to newly created relationships t
 [source, graphql, indent=0]
 ----
 subscription {
-    movieRelationshipCreated(where: { movie: { genre_NOT: "Drama" }, createdRelationship: { actors: { edge: { screenTime_GT: 10 } } } }) {
+    movieRelationshipCreated(where: { movie: { NOT: { genre: "Drama" } }, createdRelationship: { actors: { edge: { screenTime_GT: 10 } } } }) {
         movie {
             title
         }

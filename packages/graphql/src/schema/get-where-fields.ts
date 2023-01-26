@@ -49,8 +49,6 @@ function getWhereFields({
     isInterface?: boolean;
     features?: Neo4jFeaturesSettings;
 }): { [k: string]: string } {
-    console.log(`current: ${JSON.stringify(DEPRECATE_NOT)}`);
-
     return {
         ...(isInterface ? {} : { OR: `[${typeName}Where!]`, AND: `[${typeName}Where!]`, NOT: `${typeName}Where` }),
         ...[
@@ -72,10 +70,6 @@ function getWhereFields({
                 type: f.typeMeta.input.where.pretty,
                 directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
             };
-            if (f.fieldName === "name") {
-                console.log(`previous: ${deprecatedDirectives}`);
-                console.log(`current: ${JSON.stringify(DEPRECATE_NOT)}`);
-            }
 
             if (f.typeMeta.name === "Boolean") {
                 return res;
