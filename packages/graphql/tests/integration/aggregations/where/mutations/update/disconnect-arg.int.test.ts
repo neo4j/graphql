@@ -21,7 +21,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../../../../utils/graphql-types";
+import { UniqueType } from "../../../../../utils/graphql-types";
 import { cleanNodes } from "../../../../../utils/clean-nodes";
 
 describe("Disconnect using aggregate where", () => {
@@ -48,9 +48,9 @@ describe("Disconnect using aggregate where", () => {
 
     beforeEach(async () => {
         session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-        userType = generateUniqueType("User");
-        postType = generateUniqueType("Post");
-        likeInterface = generateUniqueType("LikeEdge");
+        userType = new UniqueType("User");
+        postType = new UniqueType("Post");
+        likeInterface = new UniqueType("LikeEdge");
         typeDefs = `
             type ${userType.name} {
                 name: String!
@@ -291,11 +291,11 @@ describe("Disconnect UNIONs using aggregate where", () => {
 
     beforeEach(async () => {
         session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-        userType = generateUniqueType("User");
-        specialUserType = generateUniqueType("SpecialUser");
-        postType = generateUniqueType("Post");
-        likeInterface = generateUniqueType("LikeEdge");
-        userUnion = generateUniqueType("UserUnion");
+        userType = new UniqueType("User");
+        specialUserType = new UniqueType("SpecialUser");
+        postType = new UniqueType("Post");
+        likeInterface = new UniqueType("LikeEdge");
+        userUnion = new UniqueType("UserUnion");
         typeDefs = `
             type ${userType.name} {
                 name: String!

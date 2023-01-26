@@ -107,6 +107,6 @@ export class UniqueType {
     }
 }
 
-export function generateUniqueType(baseName: string): UniqueType {
+export function new UniqueType(baseName: string): UniqueType {
     return new UniqueType(baseName);
 }

@@ -23,7 +23,7 @@ import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
 
 describe("Create -> ConnectOrCreate", () => {
@@ -32,8 +32,8 @@ describe("Create -> ConnectOrCreate", () => {
     let session: Session;
     let typeDefs: DocumentNode;
 
-    const typeMovie = generateUniqueType("Movie");
-    const typeActor = generateUniqueType("Actor");
+    const typeMovie = new UniqueType("Movie");
+    const typeActor = new UniqueType("Actor");
 
     let neoSchema: Neo4jGraphQL;
 

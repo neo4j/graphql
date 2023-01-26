@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import neo4j from "../integration/neo4j";
 import { OGM } from "../../src";
-import { generateUniqueType } from "../utils";
+import { UniqueType } from "../utils";
 
 describe("https://github.com/neo4j/graphql/issues/2357", () => {
     let driver: Driver;
@@ -45,7 +45,7 @@ describe("https://github.com/neo4j/graphql/issues/2357", () => {
     });
 
     beforeEach(async () => {
-        enterpriseType = generateUniqueType("Enterprise");
+        enterpriseType = new UniqueType("Enterprise");
         indexName = `${enterpriseType.name}_fulltext_index`;
 
         typeDefs = `

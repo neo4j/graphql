@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "../../../src";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/2261", () => {
     let driver: Driver;
@@ -39,8 +39,8 @@ describe("https://github.com/neo4j/graphql/issues/2261", () => {
     });
 
     beforeEach(async () => {
-        ProgrammeItem = generateUniqueType("ProgrammeItem");
-        Edition = generateUniqueType("Edition");
+        ProgrammeItem = new UniqueType("ProgrammeItem");
+        Edition = new UniqueType("Edition");
 
         session = await neo4j.getSession();
 

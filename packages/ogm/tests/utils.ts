@@ -41,7 +41,7 @@ export function createJwtRequest(secret: string, extraData: Record<string, any> 
     return req;
 }
 
-export function generateUniqueType(baseName: string): {
+export function new UniqueType(baseName: string): {
     name: string;
     plural: string;
 } {

@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/354", () => {
     let driver: Driver;
@@ -41,8 +41,8 @@ describe("https://github.com/neo4j/graphql/issues/354", () => {
     test("should throw when creating a node without a mandatory relationship", async () => {
         const session = await neo4j.getSession();
 
-        const testComment = generateUniqueType("Comment");
-        const testPost = generateUniqueType("Post");
+        const testComment = new UniqueType("Comment");
+        const testPost = new UniqueType("Post");
 
         const typeDefs = gql`
             type ${testComment.name} {

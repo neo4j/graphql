@@ -25,7 +25,7 @@ import { IncomingMessage } from "http";
 import { Socket } from "net";
 import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
-import { generateUniqueType } from "../../../../utils/graphql-types";
+import { UniqueType } from "../../../../utils/graphql-types";
 
 describe(`Field Level Auth Where Requests`, () => {
     let neoSchema: Neo4jGraphQL;
@@ -33,8 +33,8 @@ describe(`Field Level Auth Where Requests`, () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let session: Session;
-    const typeMovie = generateUniqueType("Movie");
-    const typeActor = generateUniqueType("Actor");
+    const typeMovie = new UniqueType("Movie");
+    const typeActor = new UniqueType("Actor");
     const typeDefs = `
     type ${typeMovie.name} {
         name: String

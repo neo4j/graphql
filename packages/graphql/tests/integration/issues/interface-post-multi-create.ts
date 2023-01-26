@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("Projecting interface relationships following create of multiple nodes", () => {
     let schema: GraphQLSchema;
@@ -30,9 +30,9 @@ describe("Projecting interface relationships following create of multiple nodes"
     let driver: Driver;
     let session: Session;
 
-    const Person = generateUniqueType("Person");
-    const Place = generateUniqueType("Place");
-    const Interaction = generateUniqueType("Interaction");
+    const Person = new UniqueType("Person");
+    const Place = new UniqueType("Place");
+    const Interaction = new UniqueType("Interaction");
 
     async function graphqlQuery(query: string) {
         return graphql({

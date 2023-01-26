@@ -26,7 +26,7 @@ import { createJwtRequest, generateUniqueType } from "../utils";
 
 describe("Additional Labels", () => {
     const secret = "secret";
-    const taskType = generateUniqueType("Task");
+    const taskType = new UniqueType("Task");
     const typeDefs = gql`
         type ${taskType.name} @node(additionalLabels: ["$jwt.tenant_id"]) {
             id: ID! @id

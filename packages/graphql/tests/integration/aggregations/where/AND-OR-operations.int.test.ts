@@ -21,7 +21,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import { cleanNodes } from "../../../utils/clean-nodes";
 
 describe("Nested within AND/OR", () => {
@@ -50,8 +50,8 @@ describe("Nested within AND/OR", () => {
     });
 
     beforeEach(async () => {
-        userType = generateUniqueType("User");
-        postType = generateUniqueType("Post");
+        userType = new UniqueType("User");
+        postType = new UniqueType("Post");
 
         session = await neo4j.getSession();
 
@@ -145,7 +145,7 @@ describe("Nested within AND/OR", () => {
                 }
             }
         `;
-        
+
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
