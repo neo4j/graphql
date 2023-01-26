@@ -36,8 +36,6 @@ interface Fields {
     pointFields: PointField[];
 }
 
-
-
 function getWhereFields({
     typeName,
     fields,
@@ -51,6 +49,8 @@ function getWhereFields({
     isInterface?: boolean;
     features?: Neo4jFeaturesSettings;
 }): { [k: string]: string } {
+    console.log(`current: ${JSON.stringify(DEPRECATE_NOT)}`);
+
     return {
         ...(isInterface ? {} : { OR: `[${typeName}Where!]`, AND: `[${typeName}Where!]`, NOT: `${typeName}Where` }),
         ...[
@@ -70,8 +70,12 @@ function getWhereFields({
             };
             res[`${f.fieldName}_NOT`] = {
                 type: f.typeMeta.input.where.pretty,
-                directives: deprecatedDirectives.length ? [...deprecatedDirectives] : [DEPRECATE_NOT],
+                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
             };
+            if (f.fieldName === "name") {
+                console.log(`previous: ${deprecatedDirectives}`);
+                console.log(`current: ${JSON.stringify(DEPRECATE_NOT)}`);
+            }
 
             if (f.typeMeta.name === "Boolean") {
                 return res;
@@ -84,7 +88,7 @@ function getWhereFields({
                 };
                 res[`${f.fieldName}_NOT_INCLUDES`] = {
                     type: f.typeMeta.input.where.type,
-                    directives: deprecatedDirectives.length ? [...deprecatedDirectives] : [DEPRECATE_NOT],
+                    directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
                 };
                 return res;
             }
@@ -95,7 +99,7 @@ function getWhereFields({
             };
             res[`${f.fieldName}_NOT_IN`] = {
                 type: `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`,
-                directives: deprecatedDirectives.length ? [...deprecatedDirectives] : [DEPRECATE_NOT],
+                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
             };
 
             if (
@@ -148,7 +152,7 @@ function getWhereFields({
                 stringWhereOperatorsNegate.forEach((comparator) => {
                     res[`${f.fieldName}${comparator}`] = {
                         type: f.typeMeta.name,
-                        directives: deprecatedDirectives.length ? [...deprecatedDirectives] : [DEPRECATE_NOT],
+                        directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
                     };
                 });
                 return res;

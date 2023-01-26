@@ -468,7 +468,7 @@ describe("162", () => {
               tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
               tigerConnection: TigerJawLevel2Part1TigerConnectionWhere
               tigerConnection_NOT: TigerJawLevel2Part1TigerConnectionWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              tiger_NOT: TigerWhere
+              tiger_NOT: TigerWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             type TigerJawLevel2Part1sConnection {
@@ -520,7 +520,7 @@ describe("162", () => {
               part1Aggregate: TigerJawLevel2Part1AggregateInput
               part1Connection: TigerJawLevel2Part1ConnectionWhere
               part1Connection_NOT: TigerJawLevel2Part1ConnectionWhere @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              part1_NOT: TigerJawLevel2Part1Where
+              part1_NOT: TigerJawLevel2Part1Where @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             type TigerJawLevel2sConnection {

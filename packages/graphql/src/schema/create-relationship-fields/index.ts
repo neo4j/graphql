@@ -692,13 +692,6 @@ function createRelationshipFields({
             },
         });
 
-        const deprecates_NOT = {
-            name: "deprecated",
-            args: {
-                reason: "Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior",
-            },
-        };
-
         whereInput.addFields({
             ...{
                 [rel.fieldName]: {
@@ -707,7 +700,7 @@ function createRelationshipFields({
                 },
                 [`${rel.fieldName}_NOT`]: {
                     type: `${n.name}Where`,
-                    directives: [...deprecatedDirectives],
+                    directives: deprecatedDirectives.length ? [...deprecatedDirectives] : [DEPRECATE_NOT],
                 },
                 [`${rel.fieldName}Aggregate`]: {
                     type: whereAggregateInput,
