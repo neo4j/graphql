@@ -48,6 +48,7 @@ let deprecationWarningShown = false;
 export default function getCustomResolverMeta(
     field: FieldDefinitionNode,
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    objects: ObjectTypeDefinitionNode[],
     customResolvers?: IResolvers | IResolvers[],
     interfaceField?: FieldDefinitionNode
 ): CustomResolverMeta | undefined {
@@ -83,7 +84,7 @@ export default function getCustomResolverMeta(
 
     if (directiveFromArgument?.value.kind === Kind.STRING) {
         const selectionSetDocument = parse(`{ ${directiveFromArgument.value.value} }`);
-        const requiredFieldsResolveTree = selectionSetToResolveTree(object, selectionSetDocument);
+        const requiredFieldsResolveTree = selectionSetToResolveTree(object, objects, selectionSetDocument);
         if (requiredFieldsResolveTree) {
             return {
                 requiredFields: requiredFieldsResolveTree,
@@ -97,7 +98,7 @@ export default function getCustomResolverMeta(
             directiveFromArgument.value.values.map((v) => (v as StringValueNode).value) ?? []
         );
         const selectionSetDocument = parse(`{ ${requiredFields.join(" ")} }`);
-        const requiredFieldsResolveTree = selectionSetToResolveTree(object, selectionSetDocument);
+        const requiredFieldsResolveTree = selectionSetToResolveTree(object, objects, selectionSetDocument);
         if (requiredFieldsResolveTree) {
             return {
                 requiredFields: requiredFieldsResolveTree,
@@ -110,36 +111,41 @@ export default function getCustomResolverMeta(
 
 function selectionSetToResolveTree(
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    objects: ObjectTypeDefinitionNode[],
     document: DocumentNode
 ) {
     if (document.definitions.length !== 1) {
         throw new Error(INVALID_SELECTION_SET_ERROR);
     }
-    
+
     const selectionSetDocument = document.definitions[0];
     if (selectionSetDocument.kind !== Kind.OPERATION_DEFINITION) {
         throw new Error(INVALID_SELECTION_SET_ERROR);
     }
 
-    return nestedSelectionSetToResolveTrees(object, selectionSetDocument.selectionSet);
+    return nestedSelectionSetToResolveTrees(object, objects, selectionSetDocument.selectionSet);
 }
 
 function nestedSelectionSetToResolveTrees(
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    objects: ObjectTypeDefinitionNode[],
     selectionSet: SelectionSetNode
 ): Record<string, ResolveTree>;
 function nestedSelectionSetToResolveTrees(
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    objects: ObjectTypeDefinitionNode[],
     selectionSet: SelectionSetNode,
     outerFieldType: string
 ): FieldsByTypeName;
 function nestedSelectionSetToResolveTrees(
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    objects: ObjectTypeDefinitionNode[],
     selectionSet: SelectionSetNode,
     outerFieldType?: string
 ): Record<string, ResolveTree> | FieldsByTypeName {
     // TODO - handle aliases
     const result = selectionSet.selections.reduce((acc, selection) => {
+        let nestedResolveTree = {};
         if (selection.kind === Kind.FRAGMENT_SPREAD) {
             // Support for these can be added later if there is time
             throw new Error("Fragment spreads are not supported in customResolver requires");
@@ -148,7 +154,7 @@ function nestedSelectionSetToResolveTrees(
             if (!selection.selectionSet) {
                 return acc;
             }
-            const nestedResolveTree = nestedSelectionSetToResolveTrees(object, selection.selectionSet);
+            const nestedResolveTree = nestedSelectionSetToResolveTrees(object, objects, selection.selectionSet);
             const fieldType = selection.typeCondition?.name.value;
             if (!fieldType) {
                 throw new Error("Cannot find fragment type");
@@ -161,14 +167,9 @@ function nestedSelectionSetToResolveTrees(
         if (selection.selectionSet) {
             const field = object.fields?.find((field) => field.name.value === selection.name.value);
             const fieldType = getNestedType(field?.type);
-            const nestedResolveTree = nestedSelectionSetToResolveTrees(object, selection.selectionSet, fieldType);
-            return {
-                ...acc,
-                ...generateResolveTree({
-                    name: selection.name.value,
-                    fieldsByTypeName: nestedResolveTree,
-                }),
-            };
+            const innerObject = objects.find((obj) => obj.name.value === fieldType);
+            if (!innerObject) throw new Error; // TODO - message
+            nestedResolveTree = nestedSelectionSetToResolveTrees(innerObject, objects, selection.selectionSet, fieldType);
         }
         if (outerFieldType) {
             return {
@@ -177,6 +178,7 @@ function nestedSelectionSetToResolveTrees(
                     ...acc[outerFieldType],
                     ...generateResolveTree({
                         name: selection.name.value,
+                        fieldsByTypeName: nestedResolveTree,
                     }),
                 },
             };
@@ -185,6 +187,7 @@ function nestedSelectionSetToResolveTrees(
             ...acc,
             ...generateResolveTree({
                 name: selection.name.value,
+                fieldsByTypeName: nestedResolveTree,
             }),
         };
     }, {});
