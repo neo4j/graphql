@@ -52,7 +52,7 @@ export function createWherePredicate({
                 requiredVariables: innerRequiredVariables,
                 aggregatingVariables: innerAggregatingVariables,
             } = createNestedPredicate({
-                key as LogicalOperator,
+                key: key as LogicalOperator,
                 element,
                 targetElement,
                 context,
@@ -107,6 +107,8 @@ function createNestedPredicate({
     targetElement: Cypher.Variable;
     context: Context;
     value: Array<GraphQLWhereArg>;
+    listPredicateStr?: ListPredicate;
+    requiredVariables: Cypher.Variable[];
 }): PredicateReturn {
     const nested: Cypher.Predicate[] = [];
     const aggregatingVariables: Cypher.Variable[] = [];
