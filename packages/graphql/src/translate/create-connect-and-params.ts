@@ -195,7 +195,7 @@ function createConnectAndParams({
         if (!fromCreate) nodeMatrix.push({ node: parentNode, name: parentVar });
 
         const preAuth = nodeMatrix.reduce(
-            (result: Res, { node, name }, i) => {
+            (result: Res, { node, name }) => {
                 if (!node.auth) {
                     return result;
                 }
@@ -320,7 +320,7 @@ function createConnectAndParams({
                     node: mi[0],
                     context,
                     varName: mi[1],
-                    relationshipFieldNotOverwritable: relationField.fieldName,
+                    ...(isOverwriteNotAllowed && { relationshipFieldNotOverwritable: relationField.fieldName }),
                 });
                 if (relValidationStr) {
                     relValidationStrs.push(relValidationStr);
@@ -457,7 +457,7 @@ function createConnectAndParams({
         }
 
         const postAuth = [...(!fromCreate ? [parentNode] : []), relatedNode].reduce(
-            (result: Res, node, i) => {
+            (result: Res, node) => {
                 if (!node.auth) {
                     return result;
                 }

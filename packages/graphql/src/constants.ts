@@ -28,7 +28,7 @@ export const REQUIRED_APOC_FUNCTIONS = [
     "apoc.cypher.runFirstColumnMany",
     "apoc.date.convertFormat",
 ];
-export const REQUIRED_APOC_PROCEDURES = ["apoc.util.validate", "apoc.do.when", "apoc.cypher.doIt"];
+export const REQUIRED_APOC_PROCEDURES = ["apoc.util.validate", "apoc.cypher.doIt"];
 export const DEBUG_ALL = `${DEBUG_PREFIX}:*`;
 export const DEBUG_AUTH = `${DEBUG_PREFIX}:auth`;
 export const DEBUG_GRAPHQL = `${DEBUG_PREFIX}:graphql`;

@@ -80,7 +80,10 @@ describe("#488", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Journalist\`)
-            WHERE size([(this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`) WHERE this1.type = $param0 | 1]) > 0
+            WHERE EXISTS {
+                MATCH (this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`)
+                WHERE this1.type = $param0
+            }
             CALL {
                 WITH this
                 CALL {
@@ -134,7 +137,10 @@ describe("#488", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Journalist\`)
-            WHERE size([(this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`) WHERE this1.type = $param0 | 1]) = 0
+            WHERE NOT (EXISTS {
+                MATCH (this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`)
+                WHERE this1.type = $param0
+            })
             CALL {
                 WITH this
                 CALL {

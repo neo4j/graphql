@@ -141,7 +141,7 @@ function createDisconnectAndParams({
         ];
 
         const preAuth = nodeMatrix.reduce(
-            (result: Res, { node, name }, i) => {
+            (result: Res, { node, name }) => {
                 if (!node.auth) {
                     return result;
                 }
@@ -344,7 +344,7 @@ function createDisconnectAndParams({
         }
 
         const postAuth = [parentNode, relatedNode].reduce(
-            (result: Res, node, i) => {
+            (result: Res, node) => {
                 if (!node.auth) {
                     return result;
                 }
