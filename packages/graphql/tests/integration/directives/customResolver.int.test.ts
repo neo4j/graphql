@@ -325,6 +325,7 @@ describe("Related Fields", () => {
     let User: UniqueType;
     let Address: UniqueType;
     let City: UniqueType;
+    let State: UniqueType;
 
     const userInput1 = {
         id: "1",
@@ -351,6 +352,9 @@ describe("Related Fields", () => {
     const cityInput2 = {
         name: "city2 name?",
         population: 74,
+    };
+    const stateInput = {
+        someValue: 4797,
     };
     const authorInput1 = {
         name: "some-author-name",
@@ -388,12 +392,13 @@ describe("Related Fields", () => {
         User = generateUniqueType("User");
         Address = generateUniqueType("Address");
         City = generateUniqueType("City");
+        State = generateUniqueType("State");
     });
 
     afterEach(async () => {
         const session = await neo4j.getSession();
         try {
-            await cleanNodes(session, [Publication, Author, Book, Journal, User, Address, City]);
+            await cleanNodes(session, [Publication, Author, Book, Journal, User, Address, City, State]);
         } finally {
             await session.close();
         }
@@ -808,6 +813,123 @@ describe("Related Fields", () => {
                         firstName: userInput2.firstName,
                         lastName: userInput2.lastName,
                         address: { city: cityInput2 },
+                    }),
+                },
+            ]),
+        });
+    });
+
+    test("should select fields from triple nested related nodes", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `
+                    CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address})-[:IN_CITY]->(city1:${City})
+                        -[:IN_STATE]->(state:${State})
+                    SET user1 = $userInput1, addr1 = $addressInput1, city1 = $cityInput1, state = $stateInput
+                    CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address})-[:IN_CITY]->(city2:${City})
+                        -[:IN_STATE]->(state)
+                    SET user2 = $userInput2, addr2 = $addressInput2, city2 = $cityInput2
+                `,
+                { userInput1, addressInput1, userInput2, addressInput2, cityInput1, cityInput2, stateInput }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const typeDefs = gql`
+            type ${State} {
+                someValue: Int!
+            }
+
+            type ${City} {
+                name: String!
+                population: Int
+                state: ${State}! @relationship(type: "IN_STATE", direction: OUT)
+            }
+
+            type ${Address} {
+                street: String!
+                city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                fullName: String @customResolver(requires: "firstName lastName address { city { name state { someValue } population } }")
+            }
+        `;
+
+        const fullNameResolver = ({ firstName, lastName, address }) => {
+            if (address.city.population) {
+                return `${firstName} ${lastName} from ${address.city.name} with population of ${address.city.population} with ${address.city.state.someValue}`;
+            }
+            return `${firstName} ${lastName} from ${address.city.name}`;
+        };
+
+        const resolvers = {
+            [User.name]: {
+                fullName: fullNameResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        const query = `
+            query ${User} {
+                ${User.plural} {
+                    fullName
+                    address {
+                        street
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [User.plural]: expect.toIncludeSameMembers([
+                {
+                    address: {
+                        street: addressInput1.street,
+                    },
+                    fullName: fullNameResolver({
+                        firstName: userInput1.firstName,
+                        lastName: userInput1.lastName,
+                        address: {
+                            city: {
+                                name: cityInput1.name,
+                                population: cityInput1.population,
+                                state: stateInput,
+                            },
+                        },
+                    }),
+                },
+                {
+                    address: {
+                        street: addressInput2.street,
+                    },
+                    fullName: fullNameResolver({
+                        firstName: userInput2.firstName,
+                        lastName: userInput2.lastName,
+                        address: {
+                            city: {
+                                name: cityInput2.name,
+                                population: cityInput2.population,
+                                state: stateInput,
+                            },
+                        },
                     }),
                 },
             ]),
