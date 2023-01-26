@@ -352,15 +352,19 @@ describe("Related Fields", () => {
     };
     const bookInput1 = {
         title: "a book name",
+        publicationYear: 12,
     };
     const bookInput2 = {
         title: "another-book-name",
+        publicationYear: 1074,
     };
     const journalInput1 = {
         subject: "a subject",
+        publicationYear: 573,
     };
     const journalInput2 = {
         subject: "a second subject",
+        publicationYear: 9087,
     };
 
     beforeAll(async () => {
@@ -711,9 +715,11 @@ describe("Related Fields", () => {
                 `
                     CREATE (author1:${Author})-[:WROTE]->(book1:${Book}) SET author1 = $authorInput1, book1 = $bookInput1
                     CREATE (author2:${Author})-[:WROTE]->(journal1:${Journal}) SET author2 = $authorInput2, journal1 = $journalInput1
+                    CREATE (author2)-[:WROTE]->(journal2:${Journal}) SET journal2 = $journalInput2
+                    CREATE (author2)-[:WROTE]->(book2:${Book}) SET book2 = $bookInput2
                     CREATE (author1)-[:WROTE]->(journal1)
                 `,
-                { authorInput1, authorInput2, bookInput1, journalInput1 }
+                { authorInput1, authorInput2, bookInput1, bookInput2, journalInput1, journalInput2 }
             );
         } finally {
             await session.close();
@@ -742,6 +748,102 @@ describe("Related Fields", () => {
 
         const publicationsWithAuthorResolver = ({ name, publications }) =>
             publications.map((publication) => `${publication.title || publication.subject} by ${name}`);
+
+        const resolvers = {
+            [Author.name]: {
+                publicationsWithAuthor: publicationsWithAuthorResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        const query = `
+            query ${Author} {
+                ${Author.plural} {
+                    publicationsWithAuthor
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [Author.plural]: expect.toIncludeSameMembers([
+                {
+                    publicationsWithAuthor: expect.toIncludeSameMembers(
+                        publicationsWithAuthorResolver({
+                            name: authorInput1.name,
+                            publications: [bookInput1, journalInput1],
+                        })
+                    ),
+                },
+                {
+                    publicationsWithAuthor: expect.toIncludeSameMembers(
+                        publicationsWithAuthorResolver({
+                            name: authorInput2.name,
+                            publications: [journalInput1, journalInput2, bookInput2],
+                        })
+                    ),
+                },
+            ]),
+        });
+    });
+
+    test("should be able to require fields from a related interface", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `
+                    CREATE (author1:${Author})-[:WROTE]->(book1:${Book}) SET author1 = $authorInput1, book1 = $bookInput1
+                    CREATE (author2:${Author})-[:WROTE]->(journal1:${Journal}) SET author2 = $authorInput2, journal1 = $journalInput1
+                    CREATE (author1)-[:WROTE]->(journal1)
+                `,
+                { authorInput1, authorInput2, bookInput1, journalInput1 }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const typeDefs = gql`
+            interface ${Publication} {
+                publicationYear: Int!
+            }
+
+            type ${Author} {
+                name: String!
+                publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
+                publicationsWithAuthor: [String!]!
+                    @customResolver(
+                        requires: "name publications { publicationYear ...on ${Book} { title } ... on ${Journal} { subject } }"
+                    )
+            }
+
+            type ${Book} implements ${Publication} {
+                title: String!
+                publicationYear: Int!
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+
+            type ${Journal} implements ${Publication} {
+                subject: String!
+                publicationYear: Int!
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+        `;
+
+        const publicationsWithAuthorResolver = ({ name, publications }) =>
+            publications.map(
+                (publication) =>
+                    `${publication.title || publication.subject} by ${name} in ${publication.publicationYear}`
+            );
 
         const resolvers = {
             [Author.name]: {

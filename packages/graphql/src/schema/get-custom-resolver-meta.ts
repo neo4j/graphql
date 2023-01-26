@@ -40,7 +40,8 @@ const DEPRECATION_WARNING =
     "The @computed directive has been deprecated and will be removed in version 4.0.0. Please use " +
     "the @customResolver directive instead. More information can be found at " +
     "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_computed_renamed_to_customresolver.";
-export const ERROR_MESSAGE = "Required fields of @customResolver must be a list of strings";
+const INVALID_SELECTION_SET_ERROR = "Invalid selection set passed to @customResolver required";
+export const DEPRECATED_ERROR_MESSAGE = "Required fields of @customResolver must be a list of strings";
 
 let deprecationWarningShown = false;
 
@@ -111,12 +112,13 @@ function selectionSetToResolveTree(
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     document: DocumentNode
 ) {
-    // Throw error if more than one definition? - yes as this means invalid selection set
-    // Needs thorough testing to make sure we don't allow anything other than a selection set to be parsed
+    if (document.definitions.length !== 1) {
+        throw new Error(INVALID_SELECTION_SET_ERROR);
+    }
+    
     const selectionSetDocument = document.definitions[0];
-
     if (selectionSetDocument.kind !== Kind.OPERATION_DEFINITION) {
-        throw new Error();
+        throw new Error(INVALID_SELECTION_SET_ERROR);
     }
 
     return nestedSelectionSetToResolveTrees(object, selectionSetDocument.selectionSet);

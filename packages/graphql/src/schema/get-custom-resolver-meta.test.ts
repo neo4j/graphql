@@ -19,7 +19,7 @@
 
 import type { FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
 import { Kind } from "graphql";
-import getCustomResolverMeta, { ERROR_MESSAGE } from "./get-custom-resolver-meta";
+import getCustomResolverMeta, { DEPRECATED_ERROR_MESSAGE } from "./get-custom-resolver-meta";
 
 describe("getCustomResolverMeta", () => {
     const fieldName = "someFieldName";
@@ -113,7 +113,7 @@ describe("getCustomResolverMeta", () => {
             },
         };
 
-        expect(() => getCustomResolverMeta(field, object, resolvers)).toThrow(ERROR_MESSAGE);
+        expect(() => getCustomResolverMeta(field, object, resolvers)).toThrow(DEPRECATED_ERROR_MESSAGE);
     });
     test("should throw if requires not a list of strings", () => {
         const field: FieldDefinitionNode = {
@@ -159,7 +159,7 @@ describe("getCustomResolverMeta", () => {
             },
         };
 
-        expect(() => getCustomResolverMeta(field, object, resolvers)).toThrow(ERROR_MESSAGE);
+        expect(() => getCustomResolverMeta(field, object, resolvers)).toThrow(DEPRECATED_ERROR_MESSAGE);
     });
     test("should return the correct meta if no requires argument", () => {
         const field: FieldDefinitionNode = {
