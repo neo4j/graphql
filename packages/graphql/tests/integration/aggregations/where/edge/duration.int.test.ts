@@ -21,16 +21,15 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
-import { generateUniqueType } from "../../../../utils/graphql-types";
+import { UniqueType } from "../../../../utils/graphql-types";
 
 describe("aggregations-where-edge-duration", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let session: Session;
-    let typeDefs: string;
 
-    const typeMovie = generateUniqueType("Movie");
-    const typeActor = generateUniqueType("Actor");
+    const User = new UniqueType("User");
+    const Post = new UniqueType("Post");
 
     let neoSchema: Neo4jGraphQL;
 
@@ -41,13 +40,13 @@ describe("aggregations-where-edge-duration", () => {
 
     beforeEach(async () => {
         const typeDefs = `
-        type User {
+        type ${User} {
             name: String
         }
 
-        type Post {
+        type ${Post} {
             content: String!
-            likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
+            likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
         }
 
         interface Likes {
@@ -73,15 +72,15 @@ describe("aggregations-where-edge-duration", () => {
 
         await session.run(
             `
-                    CREATE (p1:Post {content: "post1"})<-[:LIKES { someDuration: duration({months: 1}) }]-(:User {name: "user1"})
-                    CREATE (p2:Post {content: "post2"})<-[:LIKES { someDuration: duration({months: 2}) }]-(:User {name: "user2"})
-                    CREATE (p3:Post {content: "post3"})<-[:LIKES { someDuration: duration({months: 2, days: 6}) }]-(:User {name: "user2"})
+                    CREATE (p1:${Post} {content: "post1"})<-[:LIKES { someDuration: duration({months: 1}) }]-(:${User} {name: "user1"})
+                    CREATE (p2:${Post} {content: "post2"})<-[:LIKES { someDuration: duration({months: 2}) }]-(:${User} {name: "user2"})
+                    CREATE (p3:${Post} {content: "post3"})<-[:LIKES { someDuration: duration({months: 2, days: 6}) }]-(:${User} {name: "user2"})
                 `
         );
 
         const query = `
                 {
-                    posts(where: { likesAggregate: { edge: { someDuration_GTE: "P2M" } } }) {
+                    ${Post.plural}(where: { likesAggregate: { edge: { someDuration_GTE: "P2M" } } }) {
                         content
                     }
                 }
@@ -94,7 +93,6 @@ describe("aggregations-where-edge-duration", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-
-        expect((gqlResult.data as any).posts).toIncludeSameMembers([{ content: "post2" }, { content: "post3" }]);
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([{ content: "post2" }, { content: "post3" }]);
     });
 });
