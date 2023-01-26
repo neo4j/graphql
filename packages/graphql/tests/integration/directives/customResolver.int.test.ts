@@ -344,6 +344,24 @@ describe("Related Fields", () => {
         city: "another-city",
         street: "another-street",
     };
+    const authorInput1 = {
+        name: "some-author-name",
+    };
+    const authorInput2 = {
+        name: "another author name",
+    };
+    const bookInput1 = {
+        title: "a book name",
+    };
+    const bookInput2 = {
+        title: "another-book-name",
+    };
+    const journalInput1 = {
+        subject: "a subject",
+    };
+    const journalInput2 = {
+        subject: "a second subject",
+    };
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -681,6 +699,93 @@ describe("Related Fields", () => {
                         lastName: userInput2.lastName,
                         address: { city: addressInput2.city },
                     }),
+                },
+            ]),
+        });
+    });
+
+    test("should be able to require fields from a related union", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `
+                    CREATE (author1:${Author})-[:WROTE]->(book1:${Book}) SET author1 = $authorInput1, book1 = $bookInput1
+                    CREATE (author2:${Author})-[:WROTE]->(journal1:${Journal}) SET author2 = $authorInput2, journal1 = $journalInput1
+                    CREATE (author1)-[:WROTE]->(journal1)
+                `,
+                { authorInput1, authorInput2, bookInput1, journalInput1 }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const typeDefs = gql`
+            union ${Publication} = ${Book} | ${Journal}
+
+            type ${Author} {
+                name: String!
+                publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
+                publicationsWithAuthor: [String!]!
+                    @customResolver(requires: "name publications { ...on ${Book} { title } ... on ${Journal} { subject } }")
+            }
+
+            type ${Book} {
+                title: String!
+                author: ${Author}! @relationship(type: "WROTE", direction: IN)
+            }
+
+            type ${Journal} {
+                subject: String!
+                author: ${Author}! @relationship(type: "WROTE", direction: IN)
+            }
+        `;
+
+        const publicationsWithAuthorResolver = ({ name, publications }) =>
+            publications.map((publication) => `${publication.title || publication.subject} by ${name}`);
+
+        const resolvers = {
+            [Author.name]: {
+                publicationsWithAuthor: publicationsWithAuthorResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        const query = `
+            query ${Author} {
+                ${Author.plural} {
+                    publicationsWithAuthor
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [Author.plural]: expect.toIncludeSameMembers([
+                {
+                    publicationsWithAuthor: expect.toIncludeSameMembers(
+                        publicationsWithAuthorResolver({
+                            name: authorInput1.name,
+                            publications: [bookInput1, journalInput1],
+                        })
+                    ),
+                },
+                {
+                    publicationsWithAuthor: expect.toIncludeSameMembers(
+                        publicationsWithAuthorResolver({
+                            name: authorInput2.name,
+                            publications: [journalInput1],
+                        })
+                    ),
                 },
             ]),
         });
