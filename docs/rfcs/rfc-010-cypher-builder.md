@@ -110,7 +110,7 @@ query.print(); // MATCH(pepe:Actor:MyOtherLabel)-[:ACTED_IN]->(m:Movie) ....
 
 ## Patterns
 
-Writing complex patterns (such as `()-[]->()<-[]-()`) can be tricky in a readable and composable API.
+Writing arbitrarily complex patterns (such as `()-[]->()<-[]-()`) can be tricky in a readable and composable API.
 
 The following cases will create the pattern: `(:Actor {name: "Neo"})-[:ACTED_IN*3 {role: "neo"}]-(:Movie {title: "The Matrix"})`. In all 3 cases all of the parameters are optional and the default direction would be from the first node to the second (`()-[]->()`)
 
