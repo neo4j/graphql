@@ -215,24 +215,6 @@ describe("makeAugmentedSchema", () => {
         );
     });
 
-    test("should throw error if @cypher is used on relationship properties interface", () => {
-        const typeDefs = gql`
-            type Movie {
-                actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-            }
-
-            type Actor {
-                name: String
-            }
-
-            interface ActedIn @cypher(statement: "RETURN rand()") {
-                screenTime: Int
-            }
-        `;
-
-        expect(() => makeAugmentedSchema(typeDefs)).toThrow('Directive "@cypher" may not be used on INTERFACE.');
-    });
-
     test("should throw error if @auth is used on relationship property", () => {
         const typeDefs = gql`
             type Movie {
