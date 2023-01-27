@@ -21,7 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
 import type { RelationField, Context, GraphQLWhereArg, PredicateReturn } from "../types";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, ListPredicate, whereRegEx } from "./where/utils";
-import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
+import { createBaseOperation, createDurationOperation } from "./where/property-operations/create-comparison-operation";
 import { NODE_OR_EDGE_KEYS, LOGICAL_OPERATORS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
 import { getCypherLogicalOperator, isLogicalOperator, LogicalOperator } from "./utils/logical-operators";
 import mapToDbProperty from "../utils/map-to-db-property";
@@ -124,6 +124,7 @@ export function aggregateWhere(
             const target = key === "edge" ? cypherRelation : aggregationTarget;
             const refNodeOrRelation = key === "edge" ? relationship : refNode;
             if (!refNodeOrRelation) throw new Error(`Edge filter ${key} on undefined relationship`);
+
             const {
                 returnProjections: innerReturnProjections,
                 predicates: innerPredicates,
@@ -256,12 +257,21 @@ function createEntityOperation(
         });
     } else {
         const innerVar = new Cypher.Variable();
-        const innerOperation = createBaseOperation({
-            operator: logicalOperator || "EQ",
-            property: innerVar,
-            param: paramName,
-        });
 
+        let innerOperation: Cypher.Operation;
+        if (fieldType === "Duration") {
+            innerOperation = createDurationOperation({
+                operator: logicalOperator || "EQ",
+                property: innerVar,
+                param: paramName,
+            });
+        } else {
+            innerOperation = createBaseOperation({
+                operator: logicalOperator || "EQ",
+                property: innerVar,
+                param: paramName,
+            });
+        }
         const dbFieldName = mapToDbProperty(refNodeOrRelation, fieldName);
         const collectedProperty =
             fieldType === "String" && logicalOperator !== "EQUAL"
