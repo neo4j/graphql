@@ -737,7 +737,7 @@ describe("Cypher directive", () => {
                     CALL {
                         WITH this
                         WITH this AS this
-                        MATCH (m:Movie {title: $title})
+                        MATCH (m:Movie {title: $param0})
                         RETURN m
                     }
                     WITH m AS this_custom
@@ -754,7 +754,7 @@ describe("Cypher directive", () => {
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"title\\": \\"The Matrix\\"
+                    \\"param0\\": \\"The Matrix\\"
                 }"
             `);
         });
