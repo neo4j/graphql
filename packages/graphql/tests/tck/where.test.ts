@@ -351,7 +351,7 @@ describe("Cypher WHERE", () => {
         test("Match with not NULL in where", async () => {
             const query = gql`
                 {
-                    movies(where: { title_NOT: null }) {
+                    movies(where: { NOT: { title: null }}) {
                         title
                     }
                 }

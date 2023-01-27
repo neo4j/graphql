@@ -426,10 +426,10 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         });
     });
 
-    test("should find where genres_NOT", async () => {
+    test("should find where genres", async () => {
         const query = `
             {
-                ${movieType.plural}(where: { genres_NOT: { moviesAggregate: { count: 2 } } }) {
+                ${movieType.plural}(where: { NOT: { genres:  { moviesAggregate: { count: 2 } }} }) {
                     title
                 }
             }

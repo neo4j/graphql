@@ -152,10 +152,10 @@ describe("Update Subscriptions", () => {
         ]);
     });
 
-    test("subscription with where filter NOT_STARTS_WITH for String", async () => {
+    test("subscription with where filter NOT STARTS_WITH for String", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { title_NOT_STARTS_WITH: "movie" }) {
+            ${typeMovie.operations.subscribe.updated}(where: { NOT: { title_STARTS_WITH: "movie" } }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
                     title
                 }
@@ -178,10 +178,10 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
-    test("subscription with where filter NOT_STARTS_WITH for ID as String", async () => {
+    test("subscription with where filter NOT STARTS_WITH for ID as String", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { id_NOT_STARTS_WITH: "dummy" }) {
+            ${typeMovie.operations.subscribe.updated}(where: { NOT: { id_STARTS_WITH: "dummy" } }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
                     id
                 }
@@ -204,10 +204,10 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
-    test("subscription with where filter NOT_STARTS_WITH for ID as Int", async () => {
+    test("subscription with where filter NOT STARTS_WITH for ID as Int", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { id_NOT_STARTS_WITH: 32 }) {
+            ${typeMovie.operations.subscribe.updated}(where: { NOT: { id_STARTS_WITH: 32 } }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
                     id
                 }
@@ -310,10 +310,10 @@ describe("Update Subscriptions", () => {
         ]);
     });
 
-    test("subscription with where filter NOT_ENDS_WITH for String", async () => {
+    test("subscription with where filter NOT ENDS_WITH for String", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { title_NOT_ENDS_WITH: "movie_not_ends_with" }) {
+            ${typeMovie.operations.subscribe.updated}(where: { NOT: { title_ENDS_WITH: "movie_not_ends_with" }}) {
                 ${typeMovie.operations.subscribe.payload.updated} {
                     title
                 }
@@ -336,10 +336,10 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
-    test("subscription with where filter NOT_ENDS_WITH for ID as String", async () => {
+    test("subscription with where filter NOT ENDS_WITH for ID as String", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { id_NOT_ENDS_WITH: "dummy" }) {
+            ${typeMovie.operations.subscribe.updated}(where: { NOT: { id_ENDS_WITH: "dummy" } }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
                     id
                 }
@@ -362,10 +362,10 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
-    test("subscription with where filter NOT_ENDS_WITH for ID as Int", async () => {
+    test("subscription with where filter NOT ENDS_WITH for ID as Int", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { id_NOT_ENDS_WITH: 3 }) {
+            ${typeMovie.operations.subscribe.updated}(where: { NOT: { id_ENDS_WITH: 3 } }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
                     id
                 }
@@ -468,10 +468,10 @@ describe("Update Subscriptions", () => {
         ]);
     });
 
-    test("subscription with where filter NOT_CONTAINS for String", async () => {
+    test("subscription with where filter NOT CONTAINS for String", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { title_NOT_CONTAINS: "movie1" }) {
+            ${typeMovie.operations.subscribe.updated}(where: { NOT: { title_CONTAINS: "movie1" } }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
                     title
                 }
@@ -494,10 +494,10 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
-    test("subscription with where filter NOT_CONTAINS for ID as String", async () => {
+    test("subscription with where filter NOT CONTAINS for ID as String", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { id_NOT_CONTAINS: "dummy" }) {
+            ${typeMovie.operations.subscribe.updated}(where: { NOT: { id_CONTAINS: "dummy" } }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
                     id
                 }
@@ -520,10 +520,10 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
-    test("subscription with where filter NOT_CONTAINS for ID as Int", async () => {
+    test("subscription with where filter NOT CONTAINS for ID as Int", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { id_NOT_CONTAINS: 3 }) {
+            ${typeMovie.operations.subscribe.updated}(where: { NTO: { id_CONTAINS: 3 }}) {
                 ${typeMovie.operations.subscribe.payload.updated} {
                     id
                 }

@@ -34,7 +34,6 @@ import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import { overwrite } from "./fields/overwrite";
-import { DEPRECATE_NOT } from "../constants";
 
 function createRelationshipFields({
     relationshipFields,
@@ -443,32 +442,16 @@ function createRelationshipFields({
                     name: whereName,
                     fields: {
                         node: `${n.name}Where`,
-                        node_NOT: {
-                            type: `${n.name}Where`,
-                            directives: [
-                                DEPRECATE_NOT
-                            ],
-                        },
                         AND: `[${whereName}!]`,
                         OR: `[${whereName}!]`,
                         NOT: whereName,
                         ...(rel.properties
                             ? {
                                   edge: `${rel.properties}Where`,
-                                  edge_NOT: {
-                                    type: `${rel.properties}Where`,
-                                    directives: [
-                                        DEPRECATE_NOT
-                                    ],
-                                },
-                                  
                               }
                             : {}),
                     },
                 });
-
-
-               
 
                 if (!schemaComposer.has(deleteName)) {
                     schemaComposer.createInputTC({
@@ -704,15 +687,6 @@ function createRelationshipFields({
                             },
                         },
                     ],
-                },
-                [`${rel.fieldName}_NOT`]: {
-                    type: `${n.name}Where`,
-                    directives:  [{
-                        name: "deprecated",
-                        args: {
-                            reason: `Use \`${rel.fieldName}_NONE\` instead.`,
-                        },
-                    }],
                 },
                 [`${rel.fieldName}Aggregate`]: {
                     type: whereAggregateInput,

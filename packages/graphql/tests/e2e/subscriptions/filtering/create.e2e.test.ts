@@ -78,10 +78,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await driver.close();
     });
 
-    test("subscription with where filter _NOT 1 result", async () => {
+    test("subscription with where filter NOT title 1 result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title_NOT: "movie1" }) {
+                ${typeMovie.operations.subscribe.created}(where: { NOT: { title: "movie1" } }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -101,10 +101,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-    test("subscription with where filter _NOT multiple results", async () => {
+    test("subscription with where filter NOT title multiple results", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title_NOT: "movie0" }) {
+                ${typeMovie.operations.subscribe.created}(where: { NOT: { title: "movie0"  }}) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -129,10 +129,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-    test("subscription with where filter _NOT empty result", async () => {
+    test("subscription with where filter NOT empty result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title_NOT: "movie1" }) {
+                ${typeMovie.operations.subscribe.created}(where: { NOT: { title: "movie1"  }}) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -293,7 +293,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
     test("create subscription with where property + OR with filters match 1", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { releasedIn_GTE: 2000, OR: [{ title_NOT_STARTS_WITH: "movie", releasedIn: 2001}, {title: "movie4", releasedIn: 1000}] }) {
+                ${typeMovie.operations.subscribe.created}(where: { releasedIn_GTE: 2000, OR: [{ NOT: { title_STARTS_WITH: "movie", releasedIn: 2001}}, {title: "movie4", releasedIn: 1000}] }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -546,10 +546,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-    test("subscription with NOT_IN on String", async () => {
+    test("subscription with NOT title_IN on String", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title_NOT_IN: ["movie", "movie1"] }) {
+                ${typeMovie.operations.subscribe.created}(where: { NOT: { title_IN: ["movie", "movie1"] } }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -648,10 +648,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-    test("subscription with NOT_IN on Int", async () => {
+    test("subscription with NOT IN on Int", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { releasedIn_NOT_IN: [2019, 2020] }) {
+                ${typeMovie.operations.subscribe.created}(where: { NOT: { releasedIn_IN: [2019, 2020] } }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         releasedIn
                     }
@@ -694,10 +694,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-    test("subscription with NOT_IN on Float", async () => {
+    test("subscription with NOT IN on Float", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { averageRating_NOT_IN: [5.9, 7] }) {
+                ${typeMovie.operations.subscribe.created}(where: { NOT: { averageRating_IN: [5.9, 7] } }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         averageRating
                     }
@@ -734,10 +734,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-    test("subscription with NOT_IN on BigInt", async () => {
+    test("subscription with NOT IN on BigInt", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { fileSize_NOT_IN: [9223372036854775608, 9223372036854775508] }) {
+                ${typeMovie.operations.subscribe.created}(where: { NOT: { fileSize_IN: [9223372036854775608, 9223372036854775508] }}) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         fileSize
                     }
@@ -778,12 +778,12 @@ describe("Create Subscription with optional filters valid for all types", () => 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with NOT_IN on Boolean should error", async () => {
+    test("subscription with NOT IN on Boolean should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_NOT_IN: [true] }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { NOT: { isFavorite_IN: [true] } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         title
                     }
@@ -820,12 +820,12 @@ describe("Create Subscription with optional filters valid for all types", () => 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with NOT_IN on Array should error", async () => {
+    test("subscription with NOT IN on Array should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { similarTitles_NOT_IN: ["blue"] }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { NOT: { similarTitles_IN: ["blue"] } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         title
                     }

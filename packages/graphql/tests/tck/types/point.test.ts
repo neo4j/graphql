@@ -81,7 +81,7 @@ describe("Cypher Points", () => {
     test("Simple Point NOT query", async () => {
         const query = gql`
             {
-                pointContainers(where: { point_NOT: { longitude: 1.0, latitude: 2.0 } }) {
+                pointContainers(where: { NOT: { point: { longitude: 1.0, latitude: 2.0 } }}) {
                     point {
                         longitude
                         latitude
@@ -156,7 +156,7 @@ describe("Cypher Points", () => {
     test("Simple Point NOT IN query", async () => {
         const query = gql`
             {
-                pointContainers(where: { point_NOT_IN: [{ longitude: 1.0, latitude: 2.0 }] }) {
+                pointContainers(where: { NOT: { point_IN: [{ longitude: 1.0, latitude: 2.0 }] }}) {
                     point {
                         longitude
                         latitude

@@ -648,7 +648,7 @@ describe("Relationship properties - read", () => {
                     name
                     movies {
                         title
-                        actorsConnection(where: { node: { name_NOT: "${actorA}" } }) {
+                        actorsConnection(where: { node: { NOT: { name:  "${actorA}" } } }) {
                             edges {
                                 screenTime
                                 node {

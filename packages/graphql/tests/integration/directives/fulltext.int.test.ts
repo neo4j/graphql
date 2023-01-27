@@ -700,7 +700,7 @@ describe("@fulltext directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_ALL: { released_NOT_IN: [${movie1.released}, ${movie2.released}] } } }) {
+                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_ALL: { NOT: { released_IN: [${movie1.released}, ${movie2.released}] } } } }) {
                         score
                         ${personTypeLowerFirst} {
                             name

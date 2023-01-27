@@ -58,13 +58,11 @@ export function createPointComparisonOperation({
 
             return Cypher.eq(propertyRefOrCoalesce, Cypher.point(param));
         }
-        case "IN":
-        case "NOT_IN": {
+        case "IN": {
             const pointList = createPointListComprehension(param);
             return Cypher.in(propertyRefOrCoalesce, pointList);
         }
         case "INCLUDES":
-        case "NOT_INCLUDES":
             return Cypher.in(Cypher.point(param), propertyRefOrCoalesce);
         default:
             throw new Error(`Invalid operator ${operator}`);

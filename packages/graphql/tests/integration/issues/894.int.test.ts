@@ -114,7 +114,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
                     ${testUser.operations.update}(
                         where: { name: "Luke Skywalker" }
                         connect: { activeOrganization: { where: { node: { id: "${orgId}" } } } }
-                        disconnect: { activeOrganization: { where: { node: { id_NOT: "${orgId}" } } } }
+                        disconnect: { activeOrganization: { where: { node: { NOT: { id: "${orgId}" }} } } }
                     ) {
                         ${testUser.plural} {
                             id

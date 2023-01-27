@@ -104,12 +104,12 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
         `);
     });
 
-    test("NOT_IN", async () => {
+    test("NOT IN", async () => {
         const query = gql`
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { name_NOT_IN: ["Tom Hanks", "Robin Wright"] } }) {
+                    actorsConnection(where: { node: { NOT: { name_IN: ["Tom Hanks", "Robin Wright"] } } }) {
                         edges {
                             screenTime
                             node {
@@ -194,12 +194,12 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
         `);
     });
 
-    test("NOT_INCLUDES", async () => {
+    test("NOT INCLUDES", async () => {
         const query = gql`
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { favouriteColours_NOT_INCLUDES: "Blue" } }) {
+                    actorsConnection(where: { node: { NOT: { favouriteColours_INCLUDES: "Blue" } } }) {
                         edges {
                             screenTime
                             node {

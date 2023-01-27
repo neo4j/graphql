@@ -163,7 +163,7 @@ query DeeplyNestedWithRelationshipFilters {
                 actors_SOME: {
                     name_CONTAINS: "i"
                     movies_SOME: {
-                        title_NOT: "non-existant"
+                        NOT: { title: "non-existant" }
                         actors_SOME: { name_CONTAINS: "i", movies_NONE: { title: "The Matrix" } }
                     }
                 }
@@ -183,7 +183,7 @@ query DeeplyNestedWithRelationshipSingleFilters {
                 actors_SINGLE: {
                     name_CONTAINS: "i"
                     movies_SINGLE: {
-                        title_NOT: "non-existant"
+                        NOT: { title: "non-existant" }
                         actors_SINGLE: { name_CONTAINS: "i", movies_SINGLE: { title: "The Matrix" } }
                     }
                 }

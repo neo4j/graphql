@@ -70,7 +70,7 @@ describe("Cypher coalesce()", () => {
                     where: {
                         id: $id
                         name_MATCHES: $name
-                        verified_NOT: $verified
+                        NOT: { verified: $verified }
                         numberOfFriends_GT: $numberOfFriends
                         rating_LT: $rating
                         fromInterface: $fromInterface

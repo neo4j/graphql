@@ -29,23 +29,18 @@ export const comparisonMap: Record<Exclude<WhereOperator, RelationshipWhereOpera
     // Distance
     DISTANCE: "=",
     // String
-    NOT_CONTAINS: "CONTAINS",
     CONTAINS: "CONTAINS",
-    NOT_STARTS_WITH: "STARTS WITH",
     STARTS_WITH: "STARTS WITH",
-    NOT_ENDS_WITH: "ENDS WITH",
     ENDS_WITH: "ENDS WITH",
     // Regex
     MATCHES: "=~",
     // Array
-    NOT_IN: "IN",
     IN: "IN",
-    NOT_INCLUDES: "IN",
     INCLUDES: "IN",
 };
 
 export const whereRegEx =
-    /(?<prefix>\w*\.)?(?<fieldName>[_A-Za-z]\w*?)(?<isAggregate>Aggregate)?(?:_(?<operator>NOT|NOT_IN|IN|NOT_INCLUDES|INCLUDES|MATCHES|NOT_CONTAINS|CONTAINS|NOT_STARTS_WITH|STARTS_WITH|NOT_ENDS_WITH|ENDS_WITH|LT|LTE|GT|GTE|DISTANCE|ALL|NONE|SINGLE|SOME))?$/;
+    /(?<prefix>\w*\.)?(?<fieldName>[_A-Za-z]\w*?)(?<isAggregate>Aggregate)?(?:_(?<operator>NOT|IN|INCLUDES|MATCHES|CONTAINS|STARTS_WITH|ENDS_WITH|LT|LTE|GT|GTE|DISTANCE|ALL|NONE|SINGLE|SOME))?$/;
 export type WhereRegexGroups = {
     fieldName: string;
     isAggregate?: string;

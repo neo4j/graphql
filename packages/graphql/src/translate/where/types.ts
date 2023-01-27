@@ -29,8 +29,6 @@ export type WhereOperator =
     | NumericalWhereOperator
     | SpatialWhereOperator
     | StringWhereOperator
-    | `NOT_${StringWhereOperator}`
     | RegexWhereOperator
     | ArrayWhereOperator
-    | `NOT_${ArrayWhereOperator}`
     | RelationshipWhereOperator;

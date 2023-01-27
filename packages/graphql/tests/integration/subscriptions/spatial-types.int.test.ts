@@ -352,10 +352,10 @@ describe("Subscriptions to spatial types", () => {
             },
         });
 
-        // Test NOT_IN functionality
+        // Test NOT IN functionality
         const notInFilterQuery = `
                 query MoviesNotIn($locations: [PointInput!]) {
-                    ${typeMovie.plural}(where: { filmedIn_NOT_IN: $locations }) {
+                    ${typeMovie.plural}(where: { NOT: { filmedIn_IN: $locations }}) {
                         title
                         filmedIn {
                             latitude
@@ -682,10 +682,10 @@ describe("Subscriptions to spatial types", () => {
             },
         });
 
-        // Test NOT_IN functionality
+        // Test NOT IN functionality
         const notInFilterQuery = `
                 query MoviesNotIn($locations: [CartesianPointInput!]) {
-                    ${typeMovie.plural}(where: { location_NOT_IN: $locations }) {
+                    ${typeMovie.plural}(where: { NOT: { location_IN: $locations }}) {
                         title
                         location {
                             x

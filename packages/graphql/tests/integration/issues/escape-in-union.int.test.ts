@@ -76,7 +76,7 @@ describe("Empty fields on unions due to escaped labels", () => {
             query GetUsersWithAllContent {
                 users {
                     name
-                    content(where: { Blog: { title_NOT: null } }) {
+                    content(where: { Blog: { NOT: { title: null }} }) {
                         ... on Blog {
                             title
                         }

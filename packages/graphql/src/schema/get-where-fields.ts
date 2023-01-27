@@ -26,7 +26,6 @@ import type {
     TemporalField,
 } from "../types";
 import { graphqlDirectivesToCompose } from "./to-compose";
-import { DEPRECATE_NOT } from "./constants";
 
 interface Fields {
     scalarFields: CustomScalarField[];
@@ -66,10 +65,6 @@ function getWhereFields({
                 type: f.typeMeta.input.where.pretty,
                 directives: deprecatedDirectives,
             };
-            res[`${f.fieldName}_NOT`] = {
-                type: f.typeMeta.input.where.pretty,
-                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-            };
 
             if (f.typeMeta.name === "Boolean") {
                 return res;
@@ -80,20 +75,12 @@ function getWhereFields({
                     type: f.typeMeta.input.where.type,
                     directives: deprecatedDirectives,
                 };
-                res[`${f.fieldName}_NOT_INCLUDES`] = {
-                    type: f.typeMeta.input.where.type,
-                    directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-                };
                 return res;
             }
 
             res[`${f.fieldName}_IN`] = {
                 type: `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`,
                 directives: deprecatedDirectives,
-            };
-            res[`${f.fieldName}_NOT_IN`] = {
-                type: `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`,
-                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
             };
 
             if (
@@ -132,7 +119,6 @@ function getWhereFields({
 
                 const stringWhereOperators = ["_CONTAINS", "_STARTS_WITH", "_ENDS_WITH"];
 
-                const stringWhereOperatorsNegate = ["_NOT_CONTAINS", "_NOT_STARTS_WITH", "_NOT_ENDS_WITH"];
 
                 Object.entries(features?.filters?.String || {}).forEach(([key, value]) => {
                     if (value) {
@@ -143,12 +129,6 @@ function getWhereFields({
                     res[`${f.fieldName}${comparator}`] = { type: f.typeMeta.name, directives: deprecatedDirectives };
                 });
 
-                stringWhereOperatorsNegate.forEach((comparator) => {
-                    res[`${f.fieldName}${comparator}`] = {
-                        type: f.typeMeta.name,
-                        directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-                    };
-                });
                 return res;
             }
 

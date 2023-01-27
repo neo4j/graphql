@@ -246,10 +246,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
         ]);
     });
 
-    test("subscription with NOT_INCLUDES on String", async () => {
+    test("subscription with NOT INCLUDES on String", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.updated}(where: { similarTitles_NOT_INCLUDES: "movie" }) {
+                ${typeMovie.operations.subscribe.updated}(where: { NOT: { similarTitles_INCLUDES: "movie" } }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
                         similarTitles
                     }
@@ -272,10 +272,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-    test("subscription with NOT_INCLUDES on ID as String", async () => {
+    test("subscription with NOT INCLUDES on ID as String", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.updated}(where: { similarIds_NOT_INCLUDES: "1" }) {
+                ${typeMovie.operations.subscribe.updated}(where: { NOT: { similarIds_INCLUDES: "1" } }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
                         similarIds
                     }
@@ -298,10 +298,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-    test("subscription with NOT_INCLUDES on ID as number", async () => {
+    test("subscription with NOT INCLUDES on ID as number", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.updated}(where: { similarIds_NOT_INCLUDES: 42 }) {
+                ${typeMovie.operations.subscribe.updated}(where: { NOT: { similarIds_INCLUDES: 42 }}) {
                     ${typeMovie.operations.subscribe.payload.updated} {
                         similarIds
                     }
@@ -324,10 +324,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-    test("subscription with NOT_INCLUDES on Int", async () => {
+    test("subscription with NOT INCLUDES on Int", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.updated}(where: { allDates_NOT_INCLUDES: 2019 }) {
+                ${typeMovie.operations.subscribe.updated}(where: { NOT: { allDates_INCLUDES: 2019 } }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
                         allDates
                     }
@@ -355,10 +355,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-    test("subscription with NOT_INCLUDES on Float", async () => {
+    test("subscription with NOT INCLUDES on Float", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.updated}(where: { allRatings_NOT_INCLUDES: 5.4 }) {
+                ${typeMovie.operations.subscribe.updated}(where: { NOT: { allRatings_INCLUDES: 5.4 }}) {
                     ${typeMovie.operations.subscribe.payload.updated} {
                         allRatings
                     }
@@ -375,10 +375,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with NOT_INCLUDES on BigInt", async () => {
+    test("subscription with NOT INCLUDES on BigInt", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.updated}(where: { allSizes_NOT_INCLUDES: "9223372036854775608" }) {
+                ${typeMovie.operations.subscribe.updated}(where: { NOT: { allSizes_INCLUDES: "9223372036854775608" } }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
                         allSizes
                     }
@@ -452,12 +452,12 @@ describe("Create Subscription with optional filters valid for all types", () => 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with NOT_INCLUDES on String should error", async () => {
+    test("subscription with NOTINCLUDES on String should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.updated}(where: { similarTitles_NOT_INCLUDES: ["movie"] }) {
+                ${typeMovie.operations.subscribe.updated}(where: { NOT: { similarTitles_INCLUDES: ["movie"] } }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
                         similarTitles
                     }
@@ -476,12 +476,12 @@ describe("Create Subscription with optional filters valid for all types", () => 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with NOT_INCLUDES on Boolean should error", async () => {
+    test("subscription with NOT INCLUDES on Boolean should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.updated}(where: { isFavorite_NOT_INCLUDES: true }) {
+                ${typeMovie.operations.subscribe.updated}(where: { NOT: { isFavorite_INCLUDES: true } }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
                         isFavorite
                     }

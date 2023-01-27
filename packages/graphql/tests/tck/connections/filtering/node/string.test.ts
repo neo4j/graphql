@@ -110,12 +110,12 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
         `);
     });
 
-    test("NOT_CONTAINS", async () => {
+    test("NOT CONTAINS", async () => {
         const query = gql`
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { name_NOT_CONTAINS: "Tom" } }) {
+                    actorsConnection(where: { node: { NOT: { name_CONTAINS: "Tom" } } }) {
                         edges {
                             screenTime
                             node {
@@ -196,12 +196,12 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
         `);
     });
 
-    test("NOT_STARTS_WITH", async () => {
+    test("NOT STARTS_WITH", async () => {
         const query = gql`
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { name_NOT_STARTS_WITH: "Tom" } }) {
+                    actorsConnection(where: { node: { NOT: { name_STARTS_WITH: "Tom" } } }) {
                         edges {
                             screenTime
                             node {
@@ -282,12 +282,12 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
         `);
     });
 
-    test("NOT_ENDS_WITH", async () => {
+    test("NOT ENDS_WITH", async () => {
         const query = gql`
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { name_NOT_ENDS_WITH: "Hanks" } }) {
+                    actorsConnection(where: { node: { NOT: { name_ENDS_WITH: "Hanks" } } }) {
                         edges {
                             screenTime
                             node {
