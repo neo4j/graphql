@@ -1595,4 +1595,114 @@ describe("Related Fields", () => {
             ]),
         });
     });
+
+    test("should be able to require fields from a nested related interface", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `
+                    CREATE (user1:${User})-[:FOLLOWS]->(author1:${Author})-[:WROTE]->(book1:${Book})
+                    SET user1 = $userInput1, author1 = $authorInput1, book1 = $bookInput1
+                    CREATE (user1)-[:FOLLOWS]->(author2:${Author})-[:WROTE]->(journal1:${Journal}) SET author2 = $authorInput2, journal1 = $journalInput1
+                    CREATE (author1)-[:WROTE]->(journal1)
+                `,
+                { userInput1, authorInput1, authorInput2, bookInput1, journalInput1 }
+            );
+        } finally {
+            await session.close();
+        }
+
+        userInput1;
+
+        const typeDefs = gql`
+            interface ${Publication} {
+                publicationYear: Int!
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                followedAuthors: [${Author}!]! @relationship(type: "FOLLOWS", direction: OUT)
+                customResolverField: Int @customResolver(requires: "followedAuthors { name publications { publicationYear ...on ${Book} { title } ... on ${Journal} { subject } } } firstName")
+            }
+
+            type ${Author} {
+                name: String!
+                publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
+            }
+
+            type ${Book} implements ${Publication} {
+                title: String!
+                publicationYear: Int!
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+
+            type ${Journal} implements ${Publication} {
+                subject: String!
+                publicationYear: Int!
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+        `;
+
+        const customResolver = ({ firstName, followedAuthors }) => {
+            let count = 0;
+            count += firstName.length;
+            followedAuthors.forEach((author) => {
+                count += author.name.length;
+                author.publications.forEach((publication) => {
+                    if (publication.name) count += publication.name.length;
+                    if (publication.subject) count += publication.subject.length;
+                    count += publication.publicationYear;
+                });
+            });
+            return count;
+        };
+
+        const resolvers = {
+            [User.name]: {
+                customResolverField: customResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        const query = `
+            query ${User} {
+                ${User.plural} {
+                    customResolverField
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [User.plural]: expect.toIncludeSameMembers([
+                {
+                    customResolverField: customResolver({
+                        firstName: userInput1.firstName,
+                        followedAuthors: [
+                            {
+                                name: authorInput1.name,
+                                publications: [bookInput1, journalInput1],
+                            },
+                            {
+                                name: authorInput2.name,
+                                publications: [journalInput1],
+                            },
+                        ],
+                    }),
+                },
+            ]),
+        });
+    });
 });
