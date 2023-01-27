@@ -25,6 +25,8 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
+import { Neo4jGraphQLAuthJWTPlugin } from "../../../../plugins/graphql-plugin-auth/src";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 
 describe("@customResolver directive", () => {
     let driver: Driver;
@@ -378,6 +380,7 @@ describe("Related Fields", () => {
         subject: "a second subject",
         publicationYear: 9087,
     };
+    const secret = "secret";
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -1130,6 +1133,370 @@ describe("Related Fields", () => {
                     }),
                 },
             ]),
+        });
+    });
+
+    test("should still prevent access to @auth fields when not authenticated", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `
+                    CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address})-[:IN_CITY]->(city1:${City})
+                    SET user1 = $userInput1, addr1 = $addressInput1, city1 = $cityInput1
+                    CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address})-[:IN_CITY]->(city2:${City})
+                    SET user2 = $userInput2, addr2 = $addressInput2, city2 = $cityInput2
+                `,
+                {
+                    userInput1,
+                    addressInput1,
+                    userInput2,
+                    addressInput2,
+                    cityInput1,
+                    cityInput2,
+                }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const typeDefs = gql`
+            type ${City} {
+                name: String! @auth(rules: [{ roles: ["admin"] }])
+                population: Int
+            }
+
+            type ${Address} {
+                street: String!
+                city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+                lastName: String!
+                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
+            }
+        `;
+
+        const fullNameResolver = ({ firstName, lastName, address }) => {
+            if (address.city.population) {
+                return `${firstName} ${lastName} from ${address.city.name} with population of ${address.city.population}`;
+            }
+            return `${firstName} ${lastName} from ${address.city.name}`;
+        };
+
+        const resolvers = {
+            [User.name]: {
+                fullName: fullNameResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        const query = `
+            query ${User} {
+                ${User.plural} {
+                    firstName
+                    fullName
+                    address {
+                        street
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect((result.errors as any[])[0].message).toBe("Unauthenticated");
+    });
+
+    test("should prevent access to top-level @auth fields when rules are not met", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `
+                    CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address})-[:IN_CITY]->(city1:${City})
+                    SET user1 = $userInput1, addr1 = $addressInput1, city1 = $cityInput1
+                    CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address})-[:IN_CITY]->(city2:${City})
+                    SET user2 = $userInput2, addr2 = $addressInput2, city2 = $cityInput2
+                `,
+                {
+                    userInput1,
+                    addressInput1,
+                    userInput2,
+                    addressInput2,
+                    cityInput1,
+                    cityInput2,
+                }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const typeDefs = gql`
+            type ${City} {
+                name: String! @auth(rules: [{ roles: ["admin"] }])
+                population: Int
+            }
+
+            type ${Address} {
+                street: String!
+                city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+                lastName: String!
+                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
+            }
+        `;
+
+        const fullNameResolver = ({ firstName, lastName, address }) => {
+            if (address.city.population) {
+                return `${firstName} ${lastName} from ${address.city.name} with population of ${address.city.population}`;
+            }
+            return `${firstName} ${lastName} from ${address.city.name}`;
+        };
+
+        const resolvers = {
+            [User.name]: {
+                fullName: fullNameResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
+
+        const query = `
+            query ${User} {
+                ${User.plural}(where: { id: "1" }) {
+                    firstName
+                    fullName
+                    address {
+                        street
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest(secret, { sub: "not 1", roles: ["admin"] });
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues({ req }),
+        });
+
+        expect((result.errors as any[])[0].message).toBe("Forbidden");
+    });
+
+    test("should prevent access to nested @auth fields when rules are not met", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `
+                    CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address})-[:IN_CITY]->(city1:${City})
+                    SET user1 = $userInput1, addr1 = $addressInput1, city1 = $cityInput1
+                    CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address})-[:IN_CITY]->(city2:${City})
+                    SET user2 = $userInput2, addr2 = $addressInput2, city2 = $cityInput2
+                `,
+                {
+                    userInput1,
+                    addressInput1,
+                    userInput2,
+                    addressInput2,
+                    cityInput1,
+                    cityInput2,
+                }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const typeDefs = gql`
+            type ${City} {
+                name: String! @auth(rules: [{ roles: ["admin"] }])
+                population: Int
+            }
+
+            type ${Address} {
+                street: String!
+                city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+                lastName: String!
+                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
+            }
+        `;
+
+        const fullNameResolver = ({ firstName, lastName, address }) => {
+            if (address.city.population) {
+                return `${firstName} ${lastName} from ${address.city.name} with population of ${address.city.population}`;
+            }
+            return `${firstName} ${lastName} from ${address.city.name}`;
+        };
+
+        const resolvers = {
+            [User.name]: {
+                fullName: fullNameResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
+
+        const query = `
+            query ${User} {
+                ${User.plural}(where: { id: "1" }) {
+                    firstName
+                    fullName
+                    address {
+                        street
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest(secret, { sub: "1", roles: ["not-admin"] });
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues({ req }),
+        });
+
+        expect((result.errors as any[])[0].message).toBe("Forbidden");
+    });
+
+    test("should allow access to @auth fields when rules are met", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `
+                    CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address})-[:IN_CITY]->(city1:${City})
+                    SET user1 = $userInput1, addr1 = $addressInput1, city1 = $cityInput1
+                    CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address})-[:IN_CITY]->(city2:${City})
+                    SET user2 = $userInput2, addr2 = $addressInput2, city2 = $cityInput2
+                `,
+                {
+                    userInput1,
+                    addressInput1,
+                    userInput2,
+                    addressInput2,
+                    cityInput1,
+                    cityInput2,
+                }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const typeDefs = gql`
+            type ${City} {
+                name: String! @auth(rules: [{ roles: ["admin"] }])
+                population: Int
+            }
+
+            type ${Address} {
+                street: String!
+                city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+                lastName: String!
+                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
+            }
+        `;
+
+        const fullNameResolver = ({ firstName, lastName, address }) => {
+            if (address.city.population) {
+                return `${firstName} ${lastName} from ${address.city.name} with population of ${address.city.population}`;
+            }
+            return `${firstName} ${lastName} from ${address.city.name}`;
+        };
+
+        const resolvers = {
+            [User.name]: {
+                fullName: fullNameResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
+
+        const query = `
+            query ${User} {
+                ${User.plural}(where: { id: "1" }) {
+                    firstName
+                    fullName
+                    address {
+                        street
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest(secret, { sub: "1", roles: ["admin"] });
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues({ req }),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [User.plural]: [
+                {
+                    address: {
+                        street: addressInput1.street,
+                    },
+                    firstName: userInput1.firstName,
+                    fullName: fullNameResolver({
+                        firstName: userInput1.firstName,
+                        lastName: userInput1.lastName,
+                        address: { city: cityInput1 },
+                    }),
+                },
+            ],
         });
     });
 
