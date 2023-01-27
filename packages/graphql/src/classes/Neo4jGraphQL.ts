@@ -22,7 +22,7 @@ import type { DocumentNode, GraphQLSchema } from "graphql";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
-import { mergeResolvers } from "@graphql-tools/merge";
+import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import Debug from "debug";
 import type {
     DriverConfig,
@@ -43,13 +43,10 @@ import { asArray } from "../utils/utils";
 import { DEBUG_ALL } from "../constants";
 import { getNeo4jDatabaseInfo, Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
 import { Executor, ExecutorConstructorParam } from "./Executor";
-import { getDocument } from "../schema/get-document";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
-import { forEachField } from "@graphql-tools/utils";
+import { forEachField, TypeSource } from "@graphql-tools/utils";
 import { validateDocument } from "../schema/validation";
-
-export type SchemaType = "executableSchema" | "subgraphSchema";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
@@ -65,7 +62,6 @@ export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
     plugins?: Neo4jGraphQLPlugins;
-    schemaType?: SchemaType;
 }
 
 export type SchemaDefinition = {
@@ -74,8 +70,6 @@ export type SchemaDefinition = {
 };
 
 class Neo4jGraphQL {
-    private schemaType: SchemaType;
-
     private config: Neo4jGraphQLConfig;
     private driver?: Driver;
     private features?: Neo4jFeaturesSettings;
@@ -87,23 +81,21 @@ class Neo4jGraphQL {
 
     private schemaModel?: Neo4jGraphQLSchemaModel;
 
-    private schema?: Promise<GraphQLSchema>;
+    private executableSchema?: Promise<GraphQLSchema>;
+    private subgraphSchema?: Promise<GraphQLSchema>;
+
+    private pluginsInit?: Promise<void>;
 
     private dbInfo?: Neo4jDatabaseInfo;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, plugins, features, schemaType = "executableSchema", ...schemaDefinition } = input;
-
-        if (schemaType === "subgraphSchema" && !driver) {
-            throw new Error("Driver must be provided when running in subgraph mode");
-        }
+        const { config = {}, driver, plugins, features, ...schemaDefinition } = input;
 
         this.driver = driver;
         this.config = config;
         this.plugins = plugins;
         this.features = features;
         this.schemaDefinition = schemaDefinition;
-        this.schemaType = schemaType;
 
         this.checkEnableDebug();
     }
@@ -124,21 +116,41 @@ class Neo4jGraphQL {
         return this._relationships;
     }
 
+    /**
+     * @deprecated This method will change to `getExecutableSchema` in the next major release, as different schema types are introduced into the library.
+     */
     public async getSchema(): Promise<GraphQLSchema> {
-        if (!this.schema) {
-            switch (this.schemaType) {
-                case "executableSchema":
-                    this.schema = this.generateExecutableSchema();
-                    break;
-                case "subgraphSchema":
-                    this.schema = this.generateSubgraphSchema();
-                    break;
-            }
+        return this.getExecutableSchema();
+    }
 
-            await this.pluginsSetup();
+    public async getExecutableSchema(): Promise<GraphQLSchema> {
+        if (!this.executableSchema) {
+            this.executableSchema = this.generateExecutableSchema();
+
+            if (!this.pluginsInit) {
+                this.pluginsInit = this.pluginsSetup();
+            }
+            await this.pluginsInit;
         }
 
-        return this.schema;
+        return this.executableSchema;
+    }
+
+    public async getSubgraphSchema(): Promise<GraphQLSchema> {
+        if (!this.driver) {
+            throw new Error("Driver must be provided when running in subgraph mode");
+        }
+
+        if (!this.subgraphSchema) {
+            this.subgraphSchema = this.generateSubgraphSchema();
+
+            if (!this.pluginsInit) {
+                this.pluginsInit = this.pluginsSetup();
+            }
+            await this.pluginsInit;
+        }
+
+        return this.subgraphSchema;
     }
 
     public async checkNeo4jCompat(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {
@@ -159,11 +171,11 @@ class Neo4jGraphQL {
     public async assertIndexesAndConstraints(
         input: { driver?: Driver; driverConfig?: DriverConfig; options?: AssertIndexesAndConstraintsOptions } = {}
     ): Promise<void> {
-        if (!this.schema) {
+        if (!(this.executableSchema || this.subgraphSchema)) {
             throw new Error("You must await `.getSchema()` before `.assertIndexesAndConstraints()`");
         }
 
-        await this.schema;
+        await (this.executableSchema || this.subgraphSchema);
 
         const driver = input.driver || this.driver;
         const driverConfig = input.driverConfig || this.config?.driverConfig;
@@ -203,6 +215,10 @@ class Neo4jGraphQL {
                 Debug.disable();
             }
         }
+    }
+
+    private getDocument(typeDefs: TypeSource): DocumentNode {
+        return mergeTypeDefs(typeDefs);
     }
 
     private async getNeo4jDatabaseInfo(driver: Driver, driverConfig?: DriverConfig): Promise<Neo4jDatabaseInfo> {
@@ -254,7 +270,7 @@ class Neo4jGraphQL {
         const { Subgraph } = await import("./Subgraph");
 
         return new Promise((resolve) => {
-            const document = getDocument(this.schemaDefinition.typeDefs);
+            const document = this.getDocument(this.schemaDefinition.typeDefs);
             const subgraph = new Subgraph(this.schemaDefinition.typeDefs);
 
             const { directives, types } = subgraph.getValidationDefinitions();
@@ -294,7 +310,7 @@ class Neo4jGraphQL {
 
     private generateExecutableSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
-            const document = getDocument(this.schemaDefinition.typeDefs);
+            const document = this.getDocument(this.schemaDefinition.typeDefs);
 
             if (!this.config?.skipValidateTypeDefs) {
                 validateDocument(document);

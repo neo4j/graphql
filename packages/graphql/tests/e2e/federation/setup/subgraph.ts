@@ -30,12 +30,11 @@ export class Subgraph {
             typeDefs,
             resolvers,
             driver,
-            schemaType: "subgraphSchema",
         });
     }
 
     public async getSchema(): Promise<GraphQLSchema> {
-        const schema = await this.library.getSchema();
+        const schema = await this.library.getSubgraphSchema();
 
         return schema;
     }
