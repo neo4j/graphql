@@ -104,8 +104,8 @@ describe("Enum", () => {
               OR: [MovieWhere!]
               status: Status
               status_IN: [Status]
-              status_NOT: Status @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              status_NOT_IN: [Status] @deprecated(reason: \\"Negate filters will be deprecated from version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              status_NOT: Status @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              status_NOT_IN: [Status] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
