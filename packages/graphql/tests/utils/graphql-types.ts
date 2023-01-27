@@ -47,7 +47,7 @@ type UniqueTypeOperations = {
 export class UniqueType {
     public readonly name: string;
 
-    constructor(baseName: string, uniqueName: boolean) {
+    constructor(baseName: string, uniqueName = true) {
         if (uniqueName) {
             this.name = `${generate({
                 length: 8,
