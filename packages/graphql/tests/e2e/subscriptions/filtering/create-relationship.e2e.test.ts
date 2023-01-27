@@ -174,7 +174,7 @@ subscription SubscriptionMovie {
 `;
 
     test("node filter on standard type", async () => {
-        const where = `{createdRelationship: {actors: {node: {name_NOT: "Keanu"}}}}`;
+        const where = `{createdRelationship: {actors: {node: {NOT: { name: "Keanu" }}}}}`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -328,7 +328,7 @@ subscription SubscriptionMovie {
         ]);
     });
     test("node filter on standard type - by connected field expecting none", async () => {
-        const where = `{${typeMovie.operations.subscribe.payload.relationship_created}: {title_NOT: "Matrix"}}`;
+        const where = `{${typeMovie.operations.subscribe.payload.relationship_created}: { NOT: { title: "Matrix" }}}`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -533,7 +533,7 @@ subscription SubscriptionMovie {
     });
 
     test("node filter on union type - both types", async () => {
-        const where = `{createdRelationship: { directors: { ${typePerson.name}: { node: { reputation_GTE: 50 } }, ${typeActor.name}: { node: { name_NOT_IN: ["Keanu", "K"] } } } } }`;
+        const where = `{createdRelationship: { directors: { ${typePerson.name}: { node: { reputation_GTE: 50 } }, ${typeActor.name}: { node: { NOT: { name_IN: ["Keanu", "K"] } } } } } }`;
 
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
@@ -1484,7 +1484,7 @@ subscription SubscriptionMovie {
     });
 
     test("node filter on interface type - specific fields on one type, other type not included", async () => {
-        const where = `{ createdRelationship: { reviewers: { node: { _on: { ${typePerson.name}: {name_NOT: "Ana"} } } } } }`;
+        const where = `{ createdRelationship: { reviewers: { node: { _on: { ${typePerson.name}: { NOT: { name: "Ana" }} } } } } }`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -1533,7 +1533,7 @@ subscription SubscriptionMovie {
     });
 
     test("node filter on interface type - specific fields on one type, other type included", async () => {
-        const where = `{ createdRelationship: { reviewers: { node: { _on: { ${typePerson.name}: {name_NOT: "Ana"}, ${typeInfluencer.name}: {} } } } } }`;
+        const where = `{ createdRelationship: { reviewers: { node: { _on: { ${typePerson.name}: { NOT: { name: "Ana"}} , ${typeInfluencer.name}: {} } } } } }`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)

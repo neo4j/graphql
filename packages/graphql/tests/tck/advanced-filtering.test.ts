@@ -132,7 +132,7 @@ describe("Cypher Advanced Filtering", () => {
     test("NOT", async () => {
         const query = gql`
             {
-                movies(where: { id_NOT: "123" }) {
+                movies(where: { NOT: { id: "123" } }) {
                     id
                 }
             }
@@ -156,10 +156,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("NOT_IN", async () => {
+    test("NOT IN", async () => {
         const query = gql`
             {
-                movies(where: { id_NOT_IN: ["123"] }) {
+                movies(where: { NOT: { id_IN: ["123"] }}) {
                     id
                 }
             }
@@ -212,10 +212,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("NOT_CONTAINS", async () => {
+    test("NOT CONTAINS", async () => {
         const query = gql`
             {
-                movies(where: { id_NOT_CONTAINS: "123" }) {
+                movies(where: { NOT: { id_CONTAINS: "123" }}) {
                     id
                 }
             }
@@ -266,10 +266,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("NOT_STARTS_WITH", async () => {
+    test("NOT STARTS_WITH", async () => {
         const query = gql`
             {
-                movies(where: { id_NOT_STARTS_WITH: "123" }) {
+                movies(where: { NOT: { id_STARTS_WITH: "123" } }) {
                     id
                 }
             }
@@ -320,10 +320,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("NOT_ENDS_WITH", async () => {
+    test("NOT ENDS_WITH", async () => {
         const query = gql`
             {
-                movies(where: { id_NOT_ENDS_WITH: "123" }) {
+                movies(where: { NOT: { id_ENDS_WITH: "123" } }) {
                     id
                 }
             }
@@ -725,7 +725,7 @@ describe("Cypher Advanced Filtering", () => {
         test("NOT", async () => {
             const query = gql`
                 {
-                    movies(where: { genres_NOT: { name: "some genre" } }) {
+                    movies(where: { NOT: { genres: { name: "some genre" } } }) {
                         actorCount
                     }
                 }
@@ -880,7 +880,7 @@ describe("Cypher Advanced Filtering", () => {
         test("Node and relationship properties NOT", async () => {
             const query = gql`
                 {
-                    movies(where: { genresConnection_NOT: { node: { name: "some genre" } } }) {
+                    movies(where: { genresConnection: { NOT: { node: { name: "some genre" } } } }) {
                         actorCount
                     }
                 }

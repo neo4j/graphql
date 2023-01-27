@@ -420,7 +420,7 @@ describe("[Point]", () => {
         // Test NOT INCLUDES functionality
         const routesNotIncludesQuery = `
             query RoutesNotIncludes($waypoint: PointInput) {
-                routes(where: { waypoints_NOT_INCLUDES: $waypoint }) {
+                routes(where: { NOT: { waypoints_INCLUDES: $waypoint }}) {
                     id
                     waypoints {
                         latitude

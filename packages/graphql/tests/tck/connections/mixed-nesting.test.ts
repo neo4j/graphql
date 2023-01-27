@@ -60,7 +60,7 @@ describe("Mixed nesting", () => {
                             screenTime
                             node {
                                 name
-                                movies(where: { title_NOT: "Forrest Gump" }) {
+                                movies(where: { NOT: { title: "Forrest Gump" } }) {
                                     title
                                 }
                             }
@@ -116,11 +116,11 @@ describe("Mixed nesting", () => {
                             screenTime
                             node {
                                 name
-                                moviesConnection(where: { node: { title_NOT: "Forrest Gump" } }) {
+                                moviesConnection(where: { node: { NOT: { title: "Forrest Gump" } } }) {
                                     edges {
                                         node {
                                             title
-                                            actors(where: { name_NOT: "Tom Hanks" }) {
+                                            actors(where: { NOT: { name: "Tom Hanks" } }) {
                                                 name
                                             }
                                         }
@@ -186,7 +186,7 @@ describe("Mixed nesting", () => {
                     title
                     actors(where: { name: "Tom Hanks" }) {
                         name
-                        moviesConnection(where: { node: { title_NOT: "Forrest Gump" } }) {
+                        moviesConnection(where: { node: { NOT: { title: "Forrest Gump" } } }) {
                             edges {
                                 screenTime
                                 node {

@@ -111,12 +111,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         `);
     });
 
-    test("NOT_CONTAINS", async () => {
+    test("NOT CONTAINS", async () => {
         const query = gql`
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { role_NOT_CONTAINS: "Forrest" } }) {
+                    actorsConnection(where: { edge: { NOT: { role_CONTAINS: "Forrest" } } }) {
                         edges {
                             role
                             node {
@@ -197,12 +197,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         `);
     });
 
-    test("NOT_STARTS_WITH", async () => {
+    test("NOT STARTS_WITH", async () => {
         const query = gql`
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { role_NOT_STARTS_WITH: "Forrest" } }) {
+                    actorsConnection(where: { edge: { NOT: { role_STARTS_WITH: "Forrest" } } }) {
                         edges {
                             role
                             node {
@@ -283,12 +283,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         `);
     });
 
-    test("NOT_ENDS_WITH", async () => {
+    test("NOT ENDS_WITH", async () => {
         const query = gql`
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { role_NOT_ENDS_WITH: "Gump" } }) {
+                    actorsConnection(where: { edge: { NOT: { role_ENDS_WITH: "Gump" } } }) {
                         edges {
                             role
                             node {

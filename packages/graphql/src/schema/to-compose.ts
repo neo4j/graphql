@@ -24,7 +24,6 @@ import parseValueNode from "./parse-value-node";
 import type { BaseField, InputField, PrimitiveField, TemporalField } from "../types";
 import { numericalResolver } from "./resolvers/field/numerical";
 import { idResolver } from "./resolvers/field/id";
-import { DEPRECATE_NOT } from "./constants";
 
 export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
     return args.reduce((res, arg) => {
@@ -140,29 +139,11 @@ export function objectFieldsToSubscriptionsWhereInputFields(
             OR: `[${typeName}SubscriptionWhere!]`,
             NOT: `${typeName}SubscriptionWhere`,
             [f.fieldName]: fieldType,
-            [`${f.fieldName}_NOT`]: {
-                type: fieldType,
-                directives: [
-                    DEPRECATE_NOT
-                ],
-            },
             ...(ifArrayOfAnyTypeExceptBoolean && {
                 [`${f.fieldName}_INCLUDES`]: inputTypeName,
-                [`${f.fieldName}_NOT_INCLUDES`]: {
-                    type: inputTypeName,
-                    directives: [
-                        DEPRECATE_NOT
-                    ],
-                },
             }),
             ...(ifAnyTypeExceptArrayAndBoolean && {
                 [`${f.fieldName}_IN`]: `[${inputTypeName}]`,
-                [`${f.fieldName}_NOT_IN`]: {
-                    type: `[${inputTypeName}]`,
-                    directives: [
-                        DEPRECATE_NOT
-                    ],
-                },
             }),
             ...(isOneOfNumberTypes && {
                 [`${f.fieldName}_LT`]: fieldType,
@@ -172,26 +153,8 @@ export function objectFieldsToSubscriptionsWhereInputFields(
             }),
             ...(isOneOfStringTypes && {
                 [`${f.fieldName}_STARTS_WITH`]: fieldType,
-                [`${f.fieldName}_NOT_STARTS_WITH`]: {
-                    type: fieldType,
-                    directives: [
-                        DEPRECATE_NOT
-                    ],
-                },
                 [`${f.fieldName}_ENDS_WITH`]: fieldType,
-                [`${f.fieldName}_NOT_ENDS_WITH`]: {
-                    type: fieldType,
-                    directives: [
-                        DEPRECATE_NOT
-                    ],
-                },
                 [`${f.fieldName}_CONTAINS`]: fieldType,
-                [`${f.fieldName}_NOT_CONTAINS`]: {
-                    type: fieldType,
-                    directives: [
-                        DEPRECATE_NOT
-                    ],
-                },
             }),
         };
     }, {});

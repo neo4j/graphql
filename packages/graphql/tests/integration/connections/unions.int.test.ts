@@ -504,7 +504,7 @@ describe("Connections -> Unions", () => {
             query ($authorName: String, $bookTitle: String) {
                 authors(where: { name: $authorName }) {
                     name
-                    publicationsConnection(where: { Book: { node: { title_NOT: $bookTitle } } }) {
+                    publicationsConnection(where: { Book: { node: { NOT: { title: $bookTitle }} } }) {
                         edges {
                             words
                             node {
@@ -643,7 +643,7 @@ describe("Connections -> Unions", () => {
                     publicationsConnection(
                         where: {
                             Book: { node: { title: $bookTitle } }
-                            Journal: { node: { subject_NOT: $journalSubject } }
+                            Journal: { node: { NOT: { subject: $journalSubject } } }
                         }
                     ) {
                         totalCount
@@ -769,7 +769,7 @@ describe("Connections -> Unions", () => {
             query ($authorName: String, $bookWordCount: Int) {
                 authors(where: { name: $authorName }) {
                     name
-                    publicationsConnection(where: { Book: { edge: { words_NOT: $bookWordCount } } }) {
+                    publicationsConnection(where: { Book: { edge: { NOT: { words: $bookWordCount } } } }) {
                         edges {
                             words
                             node {
@@ -908,7 +908,7 @@ describe("Connections -> Unions", () => {
                     publicationsConnection(
                         where: {
                             Book: { edge: { words: $bookWordCount } }
-                            Journal: { edge: { words_NOT: $journalWordCount } }
+                            Journal: { edge: { NOT: { words: $journalWordCount } } }
                         }
                     ) {
                         totalCount

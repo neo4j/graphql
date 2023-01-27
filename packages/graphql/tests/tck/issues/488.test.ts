@@ -118,7 +118,7 @@ describe("#488", () => {
     test("Should replicate issue and return correct cypher (using not)", async () => {
         const query = gql`
             query {
-                journalists(where: { keywordsConnection_NOT: { Emoji: { node: { type: "Smile" } } } }) {
+                journalists(where: { NOT: { keywordsConnection: { Emoji: { node: { type: "Smile" } } } } }) {
                     name
                     keywords {
                         ... on Emoji {

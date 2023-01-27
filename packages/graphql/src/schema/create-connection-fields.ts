@@ -27,7 +27,6 @@ import getSortableFields from "./get-sortable-fields";
 import { addDirectedArgument } from "./directed-argument";
 import { connectionFieldResolver } from "./pagination";
 import { graphqlDirectivesToCompose } from "./to-compose";
-import { DEPRECATE_NOT } from "./constants";
 
 function createConnectionFields({
     connectionFields,
@@ -84,26 +83,11 @@ function createConnectionFields({
 
             connectionWhere.addFields({
                 edge: `${connectionField.relationship.properties}Where`,
-                edge_NOT: {
-                    type: `${connectionField.relationship.properties}Where`,
-                    directives: [DEPRECATE_NOT],
-                },
             });
         }
 
         whereInput.addFields({
             [connectionField.fieldName]: connectionWhere,
-            [`${connectionField.fieldName}_NOT`]: {
-                type: connectionWhere,
-                directives: [
-                    {
-                        name: "deprecated",
-                        args: {
-                            reason: `Use \`${connectionField.fieldName}_NONE\` instead.`,
-                        },
-                    },
-                ],
-            },
         });
 
         // n..m Relationships
@@ -158,10 +142,6 @@ function createConnectionFields({
                 AND: connectionWhere.NonNull.List,
                 NOT: connectionWhereName,
                 node: `${connectionField.relationship.typeMeta.name}Where`,
-                node_NOT: {
-                    type: `${connectionField.relationship.typeMeta.name}Where`,
-                    directives: [DEPRECATE_NOT],
-                },
             });
 
             if (schemaComposer.has(`${connectionField.relationship.typeMeta.name}Sort`)) {
@@ -181,10 +161,6 @@ function createConnectionFields({
 
                 connectionWhere.addFields({
                     edge: `${connectionField.relationship.properties}Where`,
-                    edge_NOT: {
-                        type: `${connectionField.relationship.properties}Where`,
-                        directives: [DEPRECATE_NOT],
-                    },
                 });
             }
         } else if (connectionField.relationship.union) {
@@ -208,11 +184,7 @@ function createConnectionFields({
                 });
 
                 unionWhere.addFields({
-                    node: `${n.name}Where`,
-                    node_NOT: {
-                        type: `${n.name}Where`,
-                        directives: [DEPRECATE_NOT],
-                    },
+                    node: `${n.name}Where`
                 });
 
                 if (connectionField.relationship.properties) {
@@ -222,10 +194,6 @@ function createConnectionFields({
 
                     unionWhere.addFields({
                         edge: `${connectionField.relationship.properties}Where`,
-                        edge_NOT: {
-                            type: `${connectionField.relationship.properties}Where`,
-                            directives: [DEPRECATE_NOT],
-                        },
                     });
                 }
 
@@ -238,10 +206,6 @@ function createConnectionFields({
 
             connectionWhere.addFields({
                 node: `${connectionField.relationship.typeMeta.name}Where`,
-                node_NOT: {
-                    type: `${connectionField.relationship.typeMeta.name}Where`,
-                    directives: [DEPRECATE_NOT],
-                },
             });
 
             if (getSortableFields(relatedNode).length) {

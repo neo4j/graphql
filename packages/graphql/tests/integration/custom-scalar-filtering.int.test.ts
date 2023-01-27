@@ -66,7 +66,7 @@ describe("Custom Scalar Filtering", () => {
 
                 const query = `
                     {
-                        ${randomType.plural}(where: { property_NOT: ${unwantedValue} }) {
+                        ${randomType.plural}(where: { NOT: { property: ${unwantedValue} }}) {
                             property
                         }
                     }
@@ -115,7 +115,7 @@ describe("Custom Scalar Filtering", () => {
 
                 const query = `
                     {
-                        ${randomType.plural}(where: { property_NOT: ${unwantedValue} }) {
+                        ${randomType.plural}(where: { NOT: { property: ${unwantedValue} } }) {
                             property
                         }
                     }
@@ -167,7 +167,7 @@ describe("Custom Scalar Filtering", () => {
 
                 const query = `
                     {
-                        ${randomType.plural}(where: { property_NOT: ${value} }) {
+                        ${randomType.plural}(where: { NOT: { property: ${value} }}) {
                             property
                         }
                     }
@@ -337,7 +337,7 @@ describe("Custom Scalar Filtering", () => {
                 await session.close();
             }
         });
-        test("Filter NOT_IN CustomScalar - expect return value", async () => {
+        test("Filter NOT IN CustomScalar - expect return value", async () => {
             const session = await neo4j.getSession();
             const randomType = new UniqueType("Movie");
 
@@ -367,7 +367,7 @@ describe("Custom Scalar Filtering", () => {
 
                 const query = `
                     {
-                        ${randomType.plural}(where: { property_NOT_IN: ["${unwantedValue1}", "${unwantedValue2}"] }) {
+                        ${randomType.plural}(where: { NOT: { property_IN: ["${unwantedValue1}", "${unwantedValue2}"] }}) {
                             property
                         }
                     }
@@ -386,7 +386,7 @@ describe("Custom Scalar Filtering", () => {
                 await session.close();
             }
         });
-        test("Filter NOT_IN CustomScalar - expect array of return values", async () => {
+        test("Filter NOT IN CustomScalar - expect array of return values", async () => {
             const session = await neo4j.getSession();
             const randomType = new UniqueType("Movie");
 
@@ -416,7 +416,7 @@ describe("Custom Scalar Filtering", () => {
 
                 const query = `
                     {
-                        ${randomType.plural}(where: { property_NOT_IN: ["${unwantedValue}"] }) {
+                        ${randomType.plural}(where: { NOT: { property_IN: ["${unwantedValue}"] } }) {
                             property
                         }
                     }
@@ -442,7 +442,7 @@ describe("Custom Scalar Filtering", () => {
                 await session.close();
             }
         });
-        test("Filter NOT_IN CustomScalar - expect no return values", async () => {
+        test("Filter NOT IN CustomScalar - expect no return values", async () => {
             const session = await neo4j.getSession();
             const randomType = new UniqueType("Movie");
 
@@ -468,7 +468,7 @@ describe("Custom Scalar Filtering", () => {
 
                 const query = `
                     {
-                        ${randomType.plural}(where: { property_NOT_IN: ["${value}"] }) {
+                        ${randomType.plural}(where: { NOT: { property_IN: ["${value}"] } }) {
                             property
                         }
                     }
@@ -516,7 +516,7 @@ describe("Custom Scalar Filtering", () => {
 
                 const query = `
                     query($unwantedValue: [CustomListScalar!]!){
-                        ${randomType.plural}(where: { property_NOT: $unwantedValue }) {
+                        ${randomType.plural}(where: { NOT: { property: $unwantedValue }}) {
                             property
                         }
                     }
@@ -566,7 +566,7 @@ describe("Custom Scalar Filtering", () => {
 
                 const query = `
                     query($unwantedValue: [CustomListScalar!]!){
-                        ${randomType.plural}(where: { property_NOT: $unwantedValue }) {
+                        ${randomType.plural}(where: { NOT: { property: $unwantedValue }}) {
                             property
                         }
                     }
@@ -619,7 +619,7 @@ describe("Custom Scalar Filtering", () => {
 
                 const query = `
                     query($value: [CustomListScalar!]!){
-                        ${randomType.plural}(where: { property_NOT: $value }) {
+                        ${randomType.plural}(where: { NOT: { property: $value }}) {
                             property
                         }
                     }
@@ -786,7 +786,7 @@ describe("Custom Scalar Filtering", () => {
                 await session.close();
             }
         });
-        test("Filter NOT_INCLUDES CustomListScalar - expect return value", async () => {
+        test("Filter NOT INCLUDES CustomListScalar - expect return value", async () => {
             const session = await neo4j.getSession();
             const randomType = new UniqueType("Movie");
 
@@ -814,7 +814,7 @@ describe("Custom Scalar Filtering", () => {
 
                 const query = `
                     {
-                        ${randomType.plural}(where: { property_NOT_INCLUDES: ${unwantedValue[0]} }) {
+                        ${randomType.plural}(where: { NOT: { property_INCLUDES: ${unwantedValue[0]}} }) {
                             property
                         }
                     }
@@ -833,7 +833,7 @@ describe("Custom Scalar Filtering", () => {
                 await session.close();
             }
         });
-        test("Filter NOT_INCLUDES CustomListScalar - expect array of return values", async () => {
+        test("Filter NOT INCLUDES CustomListScalar - expect array of return values", async () => {
             const session = await neo4j.getSession();
             const randomType = new UniqueType("Movie");
 
@@ -863,7 +863,7 @@ describe("Custom Scalar Filtering", () => {
 
                 const query = `
                     {
-                        ${randomType.plural}(where: { property_NOT_INCLUDES: ${unwantedValue[0]} }) {
+                        ${randomType.plural}(where: { NOT: { property_INCLUDES: ${unwantedValue[0]} } }) {
                             property
                         }
                     }
@@ -889,7 +889,7 @@ describe("Custom Scalar Filtering", () => {
                 await session.close();
             }
         });
-        test("Filter NOT_INCLUDES CustomListScalar - expect no return values", async () => {
+        test("Filter NOT INCLUDES CustomListScalar - expect no return values", async () => {
             const session = await neo4j.getSession();
             const randomType = new UniqueType("Movie");
 
@@ -915,7 +915,7 @@ describe("Custom Scalar Filtering", () => {
 
                 const query = `
                     {
-                        ${randomType.plural}(where: { property_NOT_INCLUDES: ${value[0]} }) {
+                        ${randomType.plural}(where: { NOT: { property_INCLUDES: ${value[0]} } }) {
                             property
                         }
                     }

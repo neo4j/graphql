@@ -190,7 +190,7 @@ describe("Advanced Filtering", () => {
 
                         const query = `
                             {
-                                ${randomType.plural}(where: { property_NOT: "${randomValue1}" }) {
+                                ${randomType.plural}(where: { NOT: { property: "${randomValue1}" }}) {
                                     property
                                 }
                             }
@@ -214,7 +214,7 @@ describe("Advanced Filtering", () => {
             );
         });
 
-        test("should find Movies NOT_IN strings", async () => {
+        test("should find Movies NOT IN strings", async () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
                     const session = await neo4j.getSession();
@@ -256,7 +256,7 @@ describe("Advanced Filtering", () => {
 
                         const query = `
                             {
-                                ${randomType.plural}(where: { property_NOT_IN: ["${randomValue1}", "${randomValue2}"] }) {
+                                ${randomType.plural}(where: { NOT: { property_IN: ["${randomValue1}", "${randomValue2}"] } }) {
                                     property
                                 }
                             }
@@ -338,7 +338,7 @@ describe("Advanced Filtering", () => {
             );
         });
 
-        test("should find Movies NOT_CONTAINS string", async () => {
+        test("should find Movies NOT CONTAINS string", async () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
                     const session = await neo4j.getSession();
@@ -375,7 +375,7 @@ describe("Advanced Filtering", () => {
 
                         const query = `
                             {
-                                ${randomType.plural}(where: { property_NOT_CONTAINS: "${notValue}" }) {
+                                ${randomType.plural}(where: { NOT: { property_CONTAINS: "${notValue}" } }) {
                                     property
                                 }
                             }
@@ -459,7 +459,7 @@ describe("Advanced Filtering", () => {
             );
         });
 
-        test("should find Movies NOT_STARTS_WITH string", async () => {
+        test("should find Movies NOT STARTS_WITH string", async () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
                     const session = await neo4j.getSession();
@@ -496,7 +496,7 @@ describe("Advanced Filtering", () => {
 
                         const query = `
                             {
-                                ${randomType.plural}(where: { property_NOT_STARTS_WITH: "${notValue}" }) {
+                                ${randomType.plural}(where: { NOT: { property_STARTS_WITH: "${notValue}" }}) {
                                     property
                                 }
                             }
@@ -579,7 +579,7 @@ describe("Advanced Filtering", () => {
             );
         });
 
-        test("should find Movies NOT_ENDS_WITH string", async () => {
+        test("should find Movies NOT ENDS_WITH string", async () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
                     const session = await neo4j.getSession();
@@ -618,7 +618,7 @@ describe("Advanced Filtering", () => {
 
                         const query = `
                             {
-                                ${randomType.plural}(where: { property_NOT_ENDS_WITH: "${value}" }) {
+                                ${randomType.plural}(where: { NOT: { property_ENDS_WITH: "${value}" } }) {
                                     property
                                 }
                             }
@@ -975,7 +975,7 @@ describe("Advanced Filtering", () => {
 
                         const query = `
                             {
-                                ${randomType.plural}(where: { property_NOT: ${notProperty} }) {
+                                ${randomType.plural}(where: { NOT: { property: ${notProperty} }}) {
                                     property
                                 }
                             }
@@ -1070,7 +1070,7 @@ describe("Advanced Filtering", () => {
             );
         });
 
-        test("should find Movies NOT_IN numbers", async () => {
+        test("should find Movies NOT IN numbers", async () => {
             await Promise.all(
                 ["Int", "Float"].map(async (type) => {
                     const session = await neo4j.getSession();
@@ -1121,7 +1121,7 @@ describe("Advanced Filtering", () => {
 
                         const query = `
                             {
-                                ${randomType.plural}(where: { property_NOT_IN: [${randomValue1}, ${randomValue2}] }) {
+                                ${randomType.plural}(where: { NOT: { property_IN: [${randomValue1}, ${randomValue2}] }}) {
                                     property
                                 }
                             }
@@ -1450,7 +1450,7 @@ describe("Advanced Filtering", () => {
 
                 const query = `
                             {
-                                ${randomType.plural}(where: { property_NOT: false }) {
+                                ${randomType.plural}(where: { NOT: { property: false }}) {
                                     property
                                 }
                             }
@@ -1790,7 +1790,7 @@ describe("Advanced Filtering", () => {
 
                     const query = `
                         {
-                            ${randomType1.plural}(where: { ${randomType2.plural}_NOT: { id: "${relationId2}" } }) {
+                            ${randomType1.plural}(where: { NOT: { ${randomType2.plural}: { id: "${relationId2}" } }}) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -1861,7 +1861,7 @@ describe("Advanced Filtering", () => {
 
                     const query = `
                         {
-                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NOT: { node: { id: "${relationId2}" } } }) {
+                            ${randomType1.plural}(where: { NOT: { ${randomType2.plural}Connection: { node: { id: "${relationId2}" } }} }) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -1939,7 +1939,7 @@ describe("Advanced Filtering", () => {
 
                     const query = `
                         {
-                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NOT: { edge: { id: "${actedInId}" } } }) {
+                            ${randomType1.plural}(where: { NOT: { ${randomType2.plural}Connection: { edge: { id: "${actedInId}" } }} }) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -2031,9 +2031,9 @@ describe("Advanced Filtering", () => {
             describe("on relationship", () => {
                 const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => `
                     query($movieIds: [ID!]!) {
-                        movies(where: { AND: [{ id_IN: $movieIds }, { actors_${predicate}: { flag_NOT: false } }] }) {
+                        movies(where: { AND: [{ id_IN: $movieIds }, { actors_${predicate}: { NOT: { flag: false } }}] }) {
                             id
-                            actors(where: { flag_NOT: false }) {
+                            actors(where: { NOT: { flag: false }}) {
                                 id
                                 flag
                             }
@@ -2227,9 +2227,9 @@ describe("Advanced Filtering", () => {
             describe("on connection", () => {
                 const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => `
                     query($movieIds: [ID!]!) {
-                        movies(where: { AND: [{ id_IN: $movieIds }, { actorsConnection_${predicate}: { node: { flag_NOT: false } } }] }) {
+                        movies(where: { AND: [{ id_IN: $movieIds }, { actorsConnection_${predicate}: { node: { NOT: { flag: false }} } }] }) {
                             id
-                            actors(where: {flag_NOT: false}) {
+                            actors(where: {NOT: { flag: false }}) {
                                 id
                                 flag
                             }
@@ -2491,7 +2491,7 @@ describe("Advanced Filtering", () => {
 
                 const notNullQuery = `
                     {
-                        ${randomType1.plural}(where: { ${randomType2.plural}_NOT: null }) {
+                        ${randomType1.plural}(where: { NOT: { ${randomType2.plural}: null }}) {
                             id
                         }
                     }
@@ -2581,7 +2581,7 @@ describe("Advanced Filtering", () => {
 
                 const notNullQuery = `
                     {
-                        ${randomType.plural}(where: { optional_NOT: null }) {
+                        ${randomType.plural}(where: { NOT: { optional: null }}) {
                             id
                         }
                     }

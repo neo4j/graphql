@@ -108,7 +108,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Equality", () =>
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { screenTime_NOT: 60 } }) {
+                    actorsConnection(where: { edge: { NOT: { screenTime: 60 } } }) {
                         edges {
                             screenTime
                             node {

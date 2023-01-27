@@ -99,21 +99,16 @@ export function createBaseOperation({
         case "GTE":
             return Cypher.gte(property, param);
         case "ENDS_WITH":
-        case "NOT_ENDS_WITH":
             return Cypher.endsWith(property, param);
         case "STARTS_WITH":
-        case "NOT_STARTS_WITH":
             return Cypher.startsWith(property, param);
         case "MATCHES":
             return Cypher.matches(property, param);
         case "CONTAINS":
-        case "NOT_CONTAINS":
             return Cypher.contains(property, param);
         case "IN":
-        case "NOT_IN":
             return Cypher.in(property, param);
         case "INCLUDES":
-        case "NOT_INCLUDES":
             return Cypher.in(param, property);
         case "EQ":
         case "EQUAL":

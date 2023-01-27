@@ -110,12 +110,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
         `);
     });
 
-    test("NOT_IN", async () => {
+    test("NOT IN", async () => {
         const query = gql`
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { screenTime_NOT_IN: [60, 70] } }) {
+                    actorsConnection(where: { edge: { NOT: { screenTime_IN: [60, 70] }} }) {
                         edges {
                             screenTime
                             node {
@@ -205,12 +205,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
         `);
     });
 
-    test("NOT_INCLUDES", async () => {
+    test("NOT INCLUDES", async () => {
         const query = gql`
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { quotes_NOT_INCLUDES: "Life is like a box of chocolates" } }) {
+                    actorsConnection(where: { edge: { NOT: { quotes_INCLUDES: "Life is like a box of chocolates" } } }) {
                         edges {
                             screenTime
                             node {
