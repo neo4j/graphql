@@ -486,6 +486,81 @@ describe("Disconnect UNIONs using aggregate where", () => {
         expect(storedValue.records).toHaveLength(2);
     });
 
+    test("should disconnect by using a nested aggregation count, with NOT operator", async () => {
+        const query = `
+            mutation {
+                ${postType.operations.update}(
+                    where: { id: "${postId2}" }
+                    disconnect: {
+                        likes: {
+                            ${userType.name}: {
+                                where: {
+                                    node: {
+                                        AND: [
+                                            {
+                                                likedPostsAggregate: {
+                                                    count: 2
+                                                }
+                                            },
+                                            {
+                                                likedPostsAggregate: {
+                                                    edge: {
+                                                        NOT: { likedAt_MAX_LTE: "${date2.toISOString()}" }
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    ${postType.plural} {
+                        id
+                        likes {
+                            ... on ${specialUserType.name} {
+                                specialName
+                            }
+                            ... on ${userType.name} {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        const users = (gqlResult.data as any)[postType.operations.update][postType.plural] as any[];
+        expect(users).toEqual([
+            {
+                id: postId2,
+                likes: expect.toIncludeSameMembers([{ specialName: userName }, { name: userName2 }]),
+            },
+        ]);
+        const storedValue = await session.run(
+            `
+            MATCH (u:${specialUserType.name})-[r:LIKES]->(p:${postType.name})
+            WHERE p.id = "${postId2}"
+            RETURN u
+            UNION
+            MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name})
+            WHERE p.id = "${postId2}" 
+            RETURN u
+            `,
+            {}
+        );
+        expect(storedValue.records).toHaveLength(2);
+    });
+
+
     test("should disconnect when filtering using aggregate count, edge and node", async () => {
         const query = `
             mutation {

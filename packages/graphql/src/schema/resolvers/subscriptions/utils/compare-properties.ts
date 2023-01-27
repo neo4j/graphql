@@ -169,6 +169,9 @@ const multipleConditionsAggregationMap = {
         }
         return false;
     },
+    NOT: (result: boolean): boolean => {
+        return !result;
+    },
 };
 
 /** Returns true if receivedProperties comply with filters specified in whereProperties, false otherwise. */
@@ -180,9 +183,15 @@ export function filterByProperties<T>(
     for (const [k, v] of Object.entries(whereProperties)) {
         if (Object.keys(multipleConditionsAggregationMap).includes(k)) {
             const comparisonResultsAggregationFn = multipleConditionsAggregationMap[k];
-            const comparisonResults = (v as Array<Record<string, T>>).map((whereCl) => {
-                return filterByProperties(node, whereCl, receivedProperties);
-            });
+            let comparisonResults;
+            if (k === "NOT") {
+                comparisonResults = filterByProperties(node, v as Record<string, T>, receivedProperties);
+            } else {
+                comparisonResults = (v as Array<Record<string, T>>).map((whereCl) => {
+                    return filterByProperties(node, whereCl, receivedProperties);
+                });
+            }
+
             if (!comparisonResultsAggregationFn(comparisonResults)) {
                 return false;
             }
