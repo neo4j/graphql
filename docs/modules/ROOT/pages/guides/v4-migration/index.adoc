@@ -119,7 +119,7 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs,
     config: {
         startupValidation: {
-          customResolver: false
+          resolvers: false
         },
     },
 })
@@ -415,7 +415,7 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs,
     config: {
         startupValidation: {
-          customResolver: false
+          resolvers: false
         },
     },
 })

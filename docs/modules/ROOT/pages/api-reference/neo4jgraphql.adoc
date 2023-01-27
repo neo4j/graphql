@@ -193,7 +193,7 @@ const { CypherRuntime } = require("@neo4j/graphql");
  Type: `boolean`
 |Can be used to disable strict type definition validation.
 
-|`customResolver` +
+|`resolvers` +
  +
  Type: `boolean`
 |Can be used to disable checks that expected custom resolvers have been provided.
