@@ -61,7 +61,7 @@ export function createComparisonOperation({
     });
 }
 
-function createDurationOperation({
+export function createDurationOperation({
     operator,
     property,
     param,
