@@ -108,13 +108,13 @@ describe("Cypher Update", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
             WITH this
-            OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
-            SET this_actors0.name = $this_update_actors0_name
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
-            YIELD value AS _
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
+            	SET this_actors0.name = $this_update_actors0_name
+            	RETURN count(*) AS update_this_actors0
+            }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -123,10 +123,6 @@ describe("Cypher Update", () => {
                 \\"param0\\": \\"1\\",
                 \\"updateMovies_args_update_actors0_where_Actorparam0\\": \\"old name\\",
                 \\"this_update_actors0_name\\": \\"new name\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                },
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -192,21 +188,21 @@ describe("Cypher Update", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
             WITH this
-            OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
-            SET this_actors0.name = $this_update_actors0_name
-            WITH this, this_actors0
-            OPTIONAL MATCH (this_actors0)-[this_actors0_acted_in0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
-            WHERE this_actors0_movies0.id = $updateMovies_args_update_actors0_update_node_movies0_where_Movieparam0
-            CALL apoc.do.when(this_actors0_movies0 IS NOT NULL, \\\\\\"
-            SET this_actors0_movies0.title = $this_update_actors0_movies0_title
-            RETURN count(*) AS _
-            \\\\\\", \\\\\\"\\\\\\", {this:this, this_actors0:this_actors0, updateMovies: $updateMovies, this_actors0_movies0:this_actors0_movies0, auth:$auth,this_update_actors0_movies0_title:$this_update_actors0_movies0_title})
-            YIELD value AS _
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name,updateMovies_args_update_actors0_update_node_movies0_where_Movieparam0:$updateMovies_args_update_actors0_update_node_movies0_where_Movieparam0,this_update_actors0_movies0_title:$this_update_actors0_movies0_title})
-            YIELD value AS _
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
+            	SET this_actors0.name = $this_update_actors0_name
+            	WITH this, this_actors0
+            	CALL {
+            		WITH this, this_actors0
+            		MATCH (this_actors0)-[this_actors0_acted_in0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
+            		WHERE this_actors0_movies0.id = $updateMovies_args_update_actors0_update_node_movies0_where_Movieparam0
+            		SET this_actors0_movies0.title = $this_update_actors0_movies0_title
+            		RETURN count(*) AS update_this_actors0_movies0
+            	}
+            	RETURN count(*) AS update_this_actors0
+            }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -217,10 +213,6 @@ describe("Cypher Update", () => {
                 \\"this_update_actors0_name\\": \\"new actor name\\",
                 \\"updateMovies_args_update_actors0_update_node_movies0_where_Movieparam0\\": \\"old movie title\\",
                 \\"this_update_actors0_movies0_title\\": \\"new movie title\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                },
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -800,13 +792,13 @@ describe("Cypher Update", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
             WITH this
-            OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
-            SET this_actors0.name = $this_update_actors0_name
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
-            YIELD value AS _
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
+            	SET this_actors0.name = $this_update_actors0_name
+            	RETURN count(*) AS update_this_actors0
+            }
             WITH this
             OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
             WHERE this_delete_actors0.name = $updateMovies_args_delete_actors0_where_Actorparam0
@@ -826,10 +818,6 @@ describe("Cypher Update", () => {
                 \\"param0\\": \\"1\\",
                 \\"updateMovies_args_update_actors0_where_Actorparam0\\": \\"Actor to update\\",
                 \\"this_update_actors0_name\\": \\"Updated name\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                },
                 \\"updateMovies_args_delete_actors0_where_Actorparam0\\": \\"Actor to delete\\",
                 \\"updateMovies\\": {
                     \\"args\\": {

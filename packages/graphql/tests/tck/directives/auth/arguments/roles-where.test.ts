@@ -683,23 +683,23 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
-            OPTIONAL MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
-            WHERE ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (exists((this_posts0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this2 IN [(this_posts0)<-[:HAS_POST]-(auth_this2:\`User\`) | auth_this2] WHERE (auth_this2.id IS NOT NULL AND auth_this2.id = $this_posts0auth_param1)))) OR any(auth_var4 IN [\\"admin\\"] WHERE any(auth_var3 IN $auth.roles WHERE auth_var3 = auth_var4)))
-            CALL apoc.do.when(this_posts0 IS NOT NULL, \\"
-            WITH this, this_posts0
-            CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\\\\\"user\\\\\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\\\\\"admin\\\\\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
-            SET this_posts0.id = $this_update_posts0_id
-            WITH this, this_posts0
             CALL {
-            	WITH this_posts0
-            	MATCH (this_posts0)<-[this_posts0_creator_User_unique:HAS_POST]-(:User)
-            	WITH count(this_posts0_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator must be less than or equal to one', [0])
-            	RETURN c AS this_posts0_creator_User_unique_ignored
+            	WITH this
+            	MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
+            	WHERE ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (exists((this_posts0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this2 IN [(this_posts0)<-[:HAS_POST]-(auth_this2:\`User\`) | auth_this2] WHERE (auth_this2.id IS NOT NULL AND auth_this2.id = $this_posts0auth_param1)))) OR any(auth_var4 IN [\\"admin\\"] WHERE any(auth_var3 IN $auth.roles WHERE auth_var3 = auth_var4)))
+            	WITH this, this_posts0
+            	CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	SET this_posts0.id = $this_update_posts0_id
+            	WITH this, this_posts0
+            	CALL {
+            		WITH this_posts0
+            		MATCH (this_posts0)<-[this_posts0_creator_User_unique:HAS_POST]-(:User)
+            		WITH count(this_posts0_creator_User_unique) as c
+            		CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator must be less than or equal to one', [0])
+            		RETURN c AS this_posts0_creator_User_unique_ignored
+            	}
+            	RETURN count(*) AS update_this_posts0
             }
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_id:$this_update_posts0_id})
-            YIELD value AS _
             WITH *
             CALL {
                 WITH this
@@ -717,6 +717,7 @@ describe("Cypher Auth Where with Roles", () => {
                 \\"auth_param1\\": \\"id-01\\",
                 \\"this_posts0auth_param1\\": \\"id-01\\",
                 \\"this_update_posts0_id\\": \\"new-id\\",
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -728,23 +729,7 @@ describe("Cypher Auth Where with Roles", () => {
                         ],
                         \\"sub\\": \\"id-01\\"
                     }
-                },
-                \\"updateUsers\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"posts\\": [
-                                {
-                                    \\"update\\": {
-                                        \\"node\\": {
-                                            \\"id\\": \\"new-id\\"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });

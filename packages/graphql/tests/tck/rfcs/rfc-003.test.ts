@@ -492,20 +492,20 @@ describe("tck/rfs/003", () => {
                             "MATCH (this:\`Movie\`)
                             WHERE this.id = $param0
                             WITH this
-                            OPTIONAL MATCH (this)<-[this_directed0_relationship:DIRECTED]-(this_director0:Director)
-                            CALL apoc.do.when(this_director0 IS NOT NULL, \\"
-                            SET this_director0.id = $this_update_director0_id
-                            WITH this, this_director0
                             CALL {
-                            	WITH this_director0
-                            	MATCH (this_director0)-[this_director0_address_Address_unique:HAS_ADDRESS]->(:Address)
-                            	WITH count(this_director0_address_Address_unique) as c
-                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required exactly once', [0])
-                            	RETURN c AS this_director0_address_Address_unique_ignored
+                            	WITH this
+                            	MATCH (this)<-[this_directed0_relationship:DIRECTED]-(this_director0:Director)
+                            	SET this_director0.id = $this_update_director0_id
+                            	WITH this, this_director0
+                            	CALL {
+                            		WITH this_director0
+                            		MATCH (this_director0)-[this_director0_address_Address_unique:HAS_ADDRESS]->(:Address)
+                            		WITH count(this_director0_address_Address_unique) as c
+                            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required exactly once', [0])
+                            		RETURN c AS this_director0_address_Address_unique_ignored
+                            	}
+                            	RETURN count(*) AS update_this_director0
                             }
-                            RETURN count(*) AS _
-                            \\", \\"\\", {this:this, updateMovies: $updateMovies, this_director0:this_director0, auth:$auth,this_update_director0_id:$this_update_director0_id})
-                            YIELD value AS _
                             WITH this
                             CALL {
                             	WITH this
@@ -521,23 +521,6 @@ describe("tck/rfs/003", () => {
                             "{
                                 \\"param0\\": \\"movieId-4\\",
                                 \\"this_update_director0_id\\": \\"directorId-3\\",
-                                \\"auth\\": {
-                                    \\"isAuthenticated\\": false,
-                                    \\"roles\\": []
-                                },
-                                \\"updateMovies\\": {
-                                    \\"args\\": {
-                                        \\"update\\": {
-                                            \\"director\\": {
-                                                \\"update\\": {
-                                                    \\"node\\": {
-                                                        \\"id\\": \\"directorId-3\\"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
                                 \\"resolvedCallbacks\\": {}
                             }"
                         `);
@@ -586,20 +569,20 @@ describe("tck/rfs/003", () => {
                             "MATCH (this:\`Movie\`)
                             WHERE this.id = $param0
                             WITH this
-                            OPTIONAL MATCH (this)<-[this_directed0_relationship:DIRECTED]-(this_director0:Director)
-                            CALL apoc.do.when(this_director0 IS NOT NULL, \\"
-                            SET this_director0.id = $this_update_director0_id
-                            WITH this, this_director0
                             CALL {
-                            	WITH this_director0
-                            	MATCH (this_director0)-[this_director0_address_Address_unique:HAS_ADDRESS]->(:Address)
-                            	WITH count(this_director0_address_Address_unique) as c
-                            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
-                            	RETURN c AS this_director0_address_Address_unique_ignored
+                            	WITH this
+                            	MATCH (this)<-[this_directed0_relationship:DIRECTED]-(this_director0:Director)
+                            	SET this_director0.id = $this_update_director0_id
+                            	WITH this, this_director0
+                            	CALL {
+                            		WITH this_director0
+                            		MATCH (this_director0)-[this_director0_address_Address_unique:HAS_ADDRESS]->(:Address)
+                            		WITH count(this_director0_address_Address_unique) as c
+                            		CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
+                            		RETURN c AS this_director0_address_Address_unique_ignored
+                            	}
+                            	RETURN count(*) AS update_this_director0
                             }
-                            RETURN count(*) AS _
-                            \\", \\"\\", {this:this, updateMovies: $updateMovies, this_director0:this_director0, auth:$auth,this_update_director0_id:$this_update_director0_id})
-                            YIELD value AS _
                             WITH this
                             CALL {
                             	WITH this
@@ -615,23 +598,6 @@ describe("tck/rfs/003", () => {
                             "{
                                 \\"param0\\": \\"movieId-4\\",
                                 \\"this_update_director0_id\\": \\"directorId-3\\",
-                                \\"auth\\": {
-                                    \\"isAuthenticated\\": false,
-                                    \\"roles\\": []
-                                },
-                                \\"updateMovies\\": {
-                                    \\"args\\": {
-                                        \\"update\\": {
-                                            \\"director\\": {
-                                                \\"update\\": {
-                                                    \\"node\\": {
-                                                        \\"id\\": \\"directorId-3\\"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
                                 \\"resolvedCallbacks\\": {}
                             }"
                         `);
