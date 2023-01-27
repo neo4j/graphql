@@ -158,10 +158,10 @@ export function translateTopLevelCypher({
     const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
     if (type === "Query") {
-        const experimentalCypherStatement = createCypherDirectiveSubquery({
+        const cypherStatement = createCypherDirectiveSubquery({
             field,
         });
-        cypherStrs.push(...experimentalCypherStatement);
+        cypherStrs.push(...cypherStatement);
     } else {
         cypherStrs.push(`
             CALL apoc.cypher.doIt("${statement}", ${apocParamsStr}) YIELD value

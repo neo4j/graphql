@@ -385,7 +385,7 @@ describe("validateDocument", () => {
                     shippingCost: Float
                         @cypher(
                             statement: "MATCH (this)-[:SHIPS_TO]->(a:Address) RETURN round(0.01 * distance(a.location, Point({latitude: 40.7128, longitude: -74.0060})) / 1000, 2) as result"
-                            columnName: "resul"
+                            columnName: "result"
                         )
                     estimatedDelivery: DateTime @customResolver
                 }
@@ -411,7 +411,7 @@ describe("validateDocument", () => {
                     currentWeather: Weather
                         @cypher(
                             statement: "CALL apoc.load.json('https://www.7timer.info/bin/civil.php?lon=' + this.location.longitude + '&lat=' + this.location.latitude + '&ac=0&unit=metric&output=json&tzshift=0') YIELD value WITH value.dataseries[0] as weather RETURN {temperature: weather.temp2m, windSpeed: weather.wind10m.speed, windDirection: weather.wind10m.direction, precipitation: weather.prec_type, summary: weather.weather} AS conditions"
-                            columnName: "condition"
+                            columnName: "conditions"
                         )
                 }
 
@@ -445,7 +445,7 @@ describe("validateDocument", () => {
                             ORDER BY jaccard DESC
                             RETURN b LIMIT 1
                             """
-                            columnName: "jaccard"
+                            columnName: "b"
                         )
                 }
 
