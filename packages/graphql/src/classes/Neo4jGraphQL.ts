@@ -64,11 +64,6 @@ export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
     plugins?: Neo4jGraphQLPlugins;
 }
 
-export type SchemaDefinition = {
-    typeDefs: DocumentNode;
-    resolvers: IExecutableSchemaDefinition["resolvers"];
-};
-
 class Neo4jGraphQL {
     private config: Neo4jGraphQLConfig;
     private driver?: Driver;
