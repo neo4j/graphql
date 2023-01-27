@@ -23,15 +23,18 @@ import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../create-where-predicate";
 import { getListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
+import type { GraphElement } from "../../../classes";
 
 export function createRelationshipOperation({
     relationField,
     context,
+    topLevelNode,
     parentNode,
     operator,
     value,
     isNot,
     requiredVariables,
+    topLevelPattern,
 }: {
     relationField: RelationField;
     context: Context;
@@ -40,6 +43,8 @@ export function createRelationshipOperation({
     value: GraphQLWhereArg;
     isNot: boolean;
     requiredVariables: Cypher.Variable[];
+    topLevelNode?: Cypher.Node;
+    topLevelPattern?: Cypher.RawCypher;
 }): PredicateReturn {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
@@ -57,6 +62,18 @@ export function createRelationshipOperation({
         target: relationField.direction === "IN" ? { labels: false } : { variable: true },
         relationship: { variable: false },
     });
+
+    let newFoo;
+    if (!topLevelPattern) {
+        newFoo = new Cypher.RawCypher((env) => `OPTIONAL MATCH ${matchPattern.getCypher(env)}`);
+    } else {
+        newFoo = new Cypher.RawCypher(
+            (env) =>
+                `${topLevelPattern.getCypher(env)}-[:${relationField.type}]->(${childNode.getCypher(env)}:${
+                    childNode.labels
+                })`
+        );
+    }
 
     // TODO: check null in return projection
     if (value === null) {
@@ -82,6 +99,8 @@ export function createRelationshipOperation({
     } = createWherePredicate({
         // Nested properties here
         whereInput: value,
+        topLevelNode: topLevelNode || parentNode,
+        topLevelPattern: newFoo,
         targetElement: childNode,
         element: refNode,
         context,
@@ -99,18 +118,14 @@ export function createRelationshipOperation({
 
     if (aggregatingVariables && aggregatingVariables.length) {
         const aggregatingWithClause = new Cypher.With(
-            parentNode,
+            topLevelNode || parentNode,
             ...requiredVariables,
-            ...(aggregatingVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar]) as any)
+            ...aggregatingVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar] as any)
         );
 
         return {
             predicate,
-            preComputedSubqueries: Cypher.concat(
-                new Cypher.OptionalMatch(matchPattern),
-                preComputedSubqueries,
-                aggregatingWithClause
-            ),
+            preComputedSubqueries: Cypher.concat(newFoo, preComputedSubqueries, aggregatingWithClause),
             requiredVariables: [...requiredVariables, ...aggregatingVariables],
             aggregatingVariables: [],
         };

@@ -38,12 +38,16 @@ export function createWherePredicate({
     context,
     element,
     listPredicateStr,
+    topLevelNode,
+    topLevelPattern,
 }: {
     targetElement: Cypher.Variable;
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
     listPredicateStr?: ListPredicate;
+    topLevelNode?: Cypher.Node;
+    topLevelPattern?: Cypher.RawCypher;
 }): PredicateReturn {
     const whereFields = Object.entries(whereInput);
     const predicates: Cypher.Predicate[] = [];
@@ -61,6 +65,8 @@ export function createWherePredicate({
                 key,
                 element,
                 targetElement,
+                topLevelNode,
+                topLevelPattern,
                 context,
                 value,
                 listPredicateStr,
@@ -80,7 +86,17 @@ export function createWherePredicate({
             preComputedSubqueries,
             requiredVariables: innerRequiredVariables,
             aggregatingVariables: innerAggregatingVariables,
-        } = createPropertyWhere({ key, value, element, targetElement, context, listPredicateStr, requiredVariables });
+        } = createPropertyWhere({
+            key,
+            value,
+            element,
+            targetElement,
+            context,
+            listPredicateStr,
+            requiredVariables,
+            topLevelNode,
+            topLevelPattern,
+        });
         if (predicate) {
             predicates.push(predicate);
             requiredVariables.push(...innerRequiredVariables);
@@ -107,6 +123,8 @@ function createNestedPredicate({
     value,
     listPredicateStr,
     requiredVariables,
+    topLevelNode,
+    topLevelPattern,
 }: {
     key: WhereOperators;
     value: Array<GraphQLWhereArg>;
@@ -115,6 +133,8 @@ function createNestedPredicate({
     context: Context;
     listPredicateStr?: ListPredicate;
     requiredVariables: Cypher.Variable[];
+    topLevelNode?: Cypher.Node;
+    topLevelPattern?: Cypher.RawCypher;
 }): PredicateReturn {
     const nested: Cypher.Predicate[] = [];
     const aggregatingVariables: Cypher.Variable[] = [];
@@ -131,6 +151,8 @@ function createNestedPredicate({
             targetElement,
             context,
             listPredicateStr,
+            topLevelNode,
+            topLevelPattern,
         });
         if (predicate) {
             nested.push(predicate);
