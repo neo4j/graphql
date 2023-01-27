@@ -234,13 +234,13 @@ class Neo4jGraphQL {
         return new Promise((resolve) => {
             const document = getDocument(this.schemaDefinition.typeDefs);
 
-            const { validateTypeDefs, validateCustomResolvers } = this.parseStartupValidationConfig();
+            const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
                 enableRegex: this.config?.enableRegex,
                 validateTypeDefs,
-                validateCustomResolvers,
+                validateResolvers,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
                 callbacks: this.config.callbacks,
                 userCustomResolvers: this.schemaDefinition.resolvers,
@@ -268,15 +268,15 @@ class Neo4jGraphQL {
 
     private parseStartupValidationConfig(): {
         validateTypeDefs: boolean;
-        validateCustomResolvers: boolean;
+        validateResolvers: boolean;
     } {
         let validateTypeDefs = true;
-        let validateCustomResolvers = true;
+        let validateResolvers = true;
 
         if (this.config?.startupValidation === false) {
             return {
                 validateTypeDefs: false,
-                validateCustomResolvers: false,
+                validateResolvers: false,
             };
         }
 
@@ -285,12 +285,12 @@ class Neo4jGraphQL {
 
         if (typeof this.config?.startupValidation === "object") {
             if (this.config?.startupValidation.typeDefs === false) validateTypeDefs = false;
-            if (this.config?.startupValidation.customResolver === false) validateCustomResolvers = false;
+            if (this.config?.startupValidation.resolvers === false) validateResolvers = false;
         }
 
         return {
             validateTypeDefs,
-            validateCustomResolvers,
+            validateResolvers,
         };
     }
 

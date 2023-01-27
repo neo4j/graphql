@@ -95,7 +95,7 @@ function getObjFieldMeta({
     enums,
     callbacks,
     customResolvers,
-    validateCustomResolvers,
+    validateResolvers,
 }: {
     obj: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
@@ -103,7 +103,7 @@ function getObjFieldMeta({
     unions: UnionTypeDefinitionNode[];
     scalars: ScalarTypeDefinitionNode[];
     enums: EnumTypeDefinitionNode[];
-    validateCustomResolvers: boolean;
+    validateResolvers: boolean;
     callbacks?: Neo4jGraphQLCallbacks;
     customResolvers?: IResolvers | Array<IResolvers>;
 }) {
@@ -135,7 +135,7 @@ function getObjFieldMeta({
             const customResolverMeta = getCustomResolverMeta(
                 field,
                 obj,
-                validateCustomResolvers,
+                validateResolvers,
                 customResolvers,
                 interfaceField
             );

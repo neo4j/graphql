@@ -141,7 +141,7 @@ describe("Startup Validation", () => {
             config: {
                 startupValidation: {
                     typeDefs: true,
-                    customResolver: false,
+                    resolvers: false,
                 },
             },
         });
@@ -155,7 +155,7 @@ describe("Startup Validation", () => {
             driver,
             config: {
                 startupValidation: {
-                    customResolver: false,
+                    resolvers: false,
                 },
             },
         });
@@ -203,7 +203,7 @@ describe("Startup Validation", () => {
             config: {
                 startupValidation: {
                     typeDefs: false,
-                    customResolver: false,
+                    resolvers: false,
                 },
             },
         });
@@ -218,7 +218,7 @@ describe("Startup Validation", () => {
             config: {
                 startupValidation: {
                     typeDefs: true,
-                    customResolver: true,
+                    resolvers: true,
                 },
             },
         });
@@ -296,7 +296,7 @@ describe("Startup Validation", () => {
             driver,
             config: {
                 startupValidation: {
-                    customResolver: false,
+                    resolvers: false,
                 },
             },
         });
@@ -310,7 +310,7 @@ describe("Startup Validation", () => {
             driver,
             config: {
                 startupValidation: {
-                    customResolver: false,
+                    resolvers: false,
                     typeDefs: false,
                 },
             },

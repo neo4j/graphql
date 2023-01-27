@@ -48,7 +48,7 @@ function getNodes(
     options: {
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
-        validateCustomResolvers: boolean;
+        validateResolvers: boolean;
     }
 ): Nodes {
     let pointInTypeDefs = false;
@@ -138,7 +138,7 @@ function getNodes(
             unions: definitionNodes.unionTypes,
             callbacks: options.callbacks,
             customResolvers,
-            validateCustomResolvers: options.validateCustomResolvers,
+            validateResolvers: options.validateResolvers,
         });
 
         // Ensure that all required fields are returning either a scalar type or an enum

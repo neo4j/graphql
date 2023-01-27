@@ -44,7 +44,7 @@ describe("parseFulltextDirective", () => {
             scalars: [],
             unions: [],
             objects: [],
-            validateCustomResolvers: true,
+            validateResolvers: true,
         });
 
         expect(() =>
@@ -74,7 +74,7 @@ describe("parseFulltextDirective", () => {
             scalars: [],
             unions: [],
             objects: [],
-            validateCustomResolvers: true,
+            validateResolvers: true,
         });
 
         expect(() =>
@@ -112,7 +112,7 @@ describe("parseFulltextDirective", () => {
             scalars: [],
             unions: [],
             objects: [],
-            validateCustomResolvers: true,
+            validateResolvers: true,
         });
 
         const result = parseFulltextDirective({

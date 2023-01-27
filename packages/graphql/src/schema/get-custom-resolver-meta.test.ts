@@ -351,7 +351,7 @@ describe("getCustomResolverMeta", () => {
         );
     });
 
-    test("Check does not throw error if validateCustomResolvers false", () => {
+    test("Check does not throw error if validateResolvers false", () => {
         const requiredFields = ["field1", "field2", "field3"];
         const field: FieldDefinitionNode = {
             directives: [

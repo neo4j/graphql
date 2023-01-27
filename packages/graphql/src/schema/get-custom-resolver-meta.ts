@@ -42,7 +42,7 @@ let deprecationWarningShown = false;
 function getCustomResolverMeta(
     field: FieldDefinitionNode,
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
-    validateCustomResolvers: boolean,
+    validateResolvers: boolean,
     customResolvers?: IResolvers | IResolvers[],
     interfaceField?: FieldDefinitionNode
 ): CustomResolverMeta | undefined {
@@ -65,7 +65,7 @@ function getCustomResolverMeta(
 
     // TODO: remove check for directive when removing @computed
     if (
-        validateCustomResolvers &&
+        validateResolvers &&
         object.kind !== Kind.INTERFACE_TYPE_DEFINITION &&
         directive &&
         !customResolvers?.[field.name.value]

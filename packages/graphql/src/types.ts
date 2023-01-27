@@ -360,7 +360,7 @@ export interface CypherQueryOptions {
 /** The startup validation checks to run */
 export interface StartupValidationOptions {
     typeDefs?: boolean;
-    customResolver?: boolean;
+    resolvers?: boolean;
 }
 
 /**

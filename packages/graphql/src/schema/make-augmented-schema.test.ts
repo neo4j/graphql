@@ -160,7 +160,7 @@ describe("makeAugmentedSchema", () => {
 
             const neoSchema = makeAugmentedSchema(typeDefs, {
                 enableRegex: true,
-                validateCustomResolvers: true,
+                validateResolvers: true,
                 validateTypeDefs: true,
             });
 

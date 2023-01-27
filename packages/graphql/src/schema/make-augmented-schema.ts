@@ -92,7 +92,7 @@ function makeAugmentedSchema(
         features,
         enableRegex,
         validateTypeDefs,
-        validateCustomResolvers,
+        validateResolvers,
         generateSubscriptions,
         callbacks,
         userCustomResolvers,
@@ -100,11 +100,11 @@ function makeAugmentedSchema(
         features?: Neo4jFeaturesSettings;
         enableRegex?: boolean;
         validateTypeDefs: boolean;
-        validateCustomResolvers: boolean;
+        validateResolvers: boolean;
         generateSubscriptions?: boolean;
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
-    } = { validateTypeDefs: true, validateCustomResolvers: true }
+    } = { validateTypeDefs: true, validateResolvers: true }
 ): {
     nodes: Node[];
     relationships: Relationship[];
@@ -155,7 +155,7 @@ function makeAugmentedSchema(
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
-    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers, validateCustomResolvers });
+    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers, validateResolvers });
 
     const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames, floatWhereInTypeDefs } =
         getNodesResult;
@@ -207,7 +207,7 @@ function makeAugmentedSchema(
             unions: unionTypes,
             obj: relationship,
             callbacks,
-            validateCustomResolvers,
+            validateResolvers,
         });
 
         if (!pointInTypeDefs) {
@@ -296,7 +296,7 @@ function makeAugmentedSchema(
             unions: unionTypes,
             obj: interfaceRelationship,
             callbacks,
-            validateCustomResolvers,
+            validateResolvers,
         });
 
         if (!pointInTypeDefs) {
@@ -804,7 +804,7 @@ function makeAugmentedSchema(
                 unions: unionTypes,
                 objects: objectTypes,
                 callbacks,
-                validateCustomResolvers,
+                validateResolvers,
             });
 
             const objectComposeFields = objectFieldsToComposeFields([
@@ -843,7 +843,7 @@ function makeAugmentedSchema(
             unions: unionTypes,
             objects: objectTypes,
             callbacks,
-            validateCustomResolvers,
+            validateResolvers,
         });
 
         const baseFields: BaseField[][] = Object.values(objectFields);
