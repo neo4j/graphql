@@ -235,6 +235,49 @@ describe("Delete using top level aggregate where", () => {
         });
     });
 
+    test("AND within an AND with NOT", async () => {
+        const query = `
+            mutation {
+                ${postType.operations.delete}(where: { 
+                    likesAggregate: {
+                        AND: [
+                            { NOT: { count_GT: 2 } }
+                            {
+                                AND: [
+                                    {
+                                        node: {
+                                            NOT: { testString_SHORTEST_GTE: 4 }
+                                        }
+                                    }
+                                    {
+                                        node: {
+                                            testString_EQUAL: "${testString5}"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }) {
+                    nodesDeleted
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [postType.operations.delete]: {
+                nodesDeleted: 1,
+            },
+        });
+    });
+
     test("OR within an OR", async () => {
         const query = `
             mutation {

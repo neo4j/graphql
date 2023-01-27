@@ -125,6 +125,42 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         `);
     });
 
+    test("NOT", async () => {
+        const query = gql`
+            {
+                posts(where: { likesAggregate: { NOT: { count_GT: 10 } } }) {
+                    content
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Post\`)
+            CALL {
+                WITH this
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
+                RETURN count(this1) > $param0 AS var2
+            }
+            WITH *
+            WHERE NOT (var2 = true)
+            RETURN this { .content } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
     test("AND plus OR", async () => {
         const query = gql`
             {
