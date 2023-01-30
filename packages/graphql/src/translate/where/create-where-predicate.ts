@@ -38,7 +38,7 @@ export function createWherePredicate({
     context,
     element,
     listPredicateStr,
-    topLevelNode,
+    topLevelNodes,
     topLevelPattern,
 }: {
     targetElement: Cypher.Variable;
@@ -46,7 +46,7 @@ export function createWherePredicate({
     context: Context;
     element: GraphElement;
     listPredicateStr?: ListPredicate;
-    topLevelNode?: Cypher.Node;
+    topLevelNodes?: Cypher.Node[];
     topLevelPattern?: Cypher.RawCypher;
 }): PredicateReturn {
     const whereFields = Object.entries(whereInput);
@@ -65,7 +65,7 @@ export function createWherePredicate({
                 key,
                 element,
                 targetElement,
-                topLevelNode,
+                topLevelNodes,
                 topLevelPattern,
                 context,
                 value,
@@ -94,7 +94,7 @@ export function createWherePredicate({
             context,
             listPredicateStr,
             requiredVariables,
-            topLevelNode,
+            topLevelNodes,
             topLevelPattern,
         });
         if (predicate) {
@@ -123,7 +123,7 @@ function createNestedPredicate({
     value,
     listPredicateStr,
     requiredVariables,
-    topLevelNode,
+    topLevelNodes,
     topLevelPattern,
 }: {
     key: WhereOperators;
@@ -133,7 +133,7 @@ function createNestedPredicate({
     context: Context;
     listPredicateStr?: ListPredicate;
     requiredVariables: Cypher.Variable[];
-    topLevelNode?: Cypher.Node;
+    topLevelNodes?: Cypher.Node[];
     topLevelPattern?: Cypher.RawCypher;
 }): PredicateReturn {
     const nested: Cypher.Predicate[] = [];
@@ -151,7 +151,7 @@ function createNestedPredicate({
             targetElement,
             context,
             listPredicateStr,
-            topLevelNode,
+            topLevelNodes,
             topLevelPattern,
         });
         if (predicate) {

@@ -27,7 +27,7 @@ import type { WhereOperator } from "../types";
 export function createRelationshipOperation({
     relationField,
     context,
-    topLevelNode,
+    topLevelNodes,
     parentNode,
     operator,
     value,
@@ -42,7 +42,7 @@ export function createRelationshipOperation({
     value: GraphQLWhereArg;
     isNot: boolean;
     requiredVariables: Cypher.Variable[];
-    topLevelNode?: Cypher.Node;
+    topLevelNodes?: Cypher.Node[];
     topLevelPattern?: Cypher.RawCypher;
 }): PredicateReturn {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
@@ -92,6 +92,7 @@ export function createRelationshipOperation({
     if (listPredicateStr === "any" && !relationField.typeMeta.array) {
         listPredicateStr = "single";
     }
+    if (!topLevelNodes?.includes(parentNode)) topLevelNodes = [parentNode, ...(topLevelNodes || [])];
     const {
         predicate: innerOperation,
         preComputedSubqueries,
@@ -100,7 +101,7 @@ export function createRelationshipOperation({
     } = createWherePredicate({
         // Nested properties here
         whereInput: value,
-        topLevelNode: topLevelNode || parentNode,
+        topLevelNodes,
         topLevelPattern: newTopLevelPattern,
         targetElement: childNode,
         element: refNode,
@@ -119,7 +120,7 @@ export function createRelationshipOperation({
 
     if (aggregatingVariables && aggregatingVariables.length) {
         const aggregatingWithClause = new Cypher.With(
-            topLevelNode || parentNode,
+            ...topLevelNodes,
             ...requiredVariables,
             ...aggregatingVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar] as any)
         );

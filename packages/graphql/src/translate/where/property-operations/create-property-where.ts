@@ -41,7 +41,7 @@ export function createPropertyWhere({
     context,
     listPredicateStr,
     requiredVariables,
-    topLevelNode,
+    topLevelNodes,
     topLevelPattern,
 }: {
     key: string;
@@ -51,7 +51,7 @@ export function createPropertyWhere({
     context: Context;
     listPredicateStr?: ListPredicate;
     requiredVariables: Cypher.Variable[];
-    topLevelNode?: Cypher.Node;
+    topLevelNodes?: Cypher.Node[];
     topLevelPattern?: Cypher.RawCypher;
 }): PredicateReturn {
     const match = whereRegEx.exec(key);
@@ -122,7 +122,7 @@ export function createPropertyWhere({
             return createRelationshipOperation({
                 relationField,
                 context,
-                topLevelNode,
+                topLevelNodes,
                 topLevelPattern,
                 parentNode: targetElement as Cypher.Node,
                 operator,
