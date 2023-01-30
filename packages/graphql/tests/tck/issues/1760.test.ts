@@ -38,7 +38,8 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 markets: [Market!]! @relationship(type: "HAS_MARKETS", direction: OUT)
                 id: ID! @id(autogenerate: false)
-                relatedId: ID @cypher(statement: "MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id")
+                relatedId: ID
+                    @cypher(statement: "MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id as res", columnName: "res")
                 baseObject: BaseObject! @relationship(type: "HAS_BASE", direction: IN)
                 current: Boolean!
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", direction: OUT)
@@ -127,13 +128,18 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             WHERE (this.current = $param0 AND apoc.util.validatePredicate(NOT ((any(var1 IN [\\"ALL\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id\\", { this: this, auth: $auth }) AS this_relatedId
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id as res
+                }
+                UNWIND res AS this_relatedId
                 RETURN head(collect(this_relatedId)) AS this_relatedId
             }
             WITH *
             ORDER BY this_relatedId ASC
-            SKIP $param3
-            LIMIT $param4
+            SKIP $param2
+            LIMIT $param3
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_NameDetails:\`NameDetails\`)
@@ -176,11 +182,11 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
-                \\"param3\\": {
+                \\"param2\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
                 },
-                \\"param4\\": {
+                \\"param3\\": {
                     \\"low\\": 50,
                     \\"high\\": 0
                 },

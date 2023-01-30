@@ -58,7 +58,8 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
                     )
                 soldCopiesWithoutColumnName: Int
                     @cypher(
-                        statement: "OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result"
+                        statement: "OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result",
+                        columnName: "result"
                     )
                 authors: [Author!]! @relationship(type: "AUTHORED_BOOK", direction: IN)
             }
@@ -144,7 +145,12 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
                 WITH result AS this_mostRecentBook
                 CALL {
                     WITH this_mostRecentBook
-                    UNWIND apoc.cypher.runFirstColumnSingle(\\"OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result\\", { this: this_mostRecentBook, auth: $auth }) AS this_mostRecentBook_soldCopiesWithoutColumnName
+                    CALL {
+                        WITH this_mostRecentBook
+                        WITH this_mostRecentBook AS this
+                        OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result
+                    }
+                    UNWIND result AS this_mostRecentBook_soldCopiesWithoutColumnName
                     RETURN head(collect(this_mostRecentBook_soldCopiesWithoutColumnName)) AS this_mostRecentBook_soldCopiesWithoutColumnName
                 }
                 RETURN head(collect(this_mostRecentBook { .name, .year, soldCopiesWithoutColumnName: this_mostRecentBook_soldCopiesWithoutColumnName })) AS this_mostRecentBook
@@ -152,13 +158,6 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
             RETURN this { .name, mostRecentBook: this_mostRecentBook } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

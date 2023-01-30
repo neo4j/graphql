@@ -182,7 +182,7 @@ describe("makeAugmentedSchema", () => {
                 }
 
                 type Query {
-                    movies: [Movie!]! @cypher(statement: "")
+                    movies: [Movie!]! @cypher(statement: "RETURN 5 as a", columnName: "a")
                 }
             `;
 
@@ -225,7 +225,7 @@ describe("makeAugmentedSchema", () => {
                 name: String
             }
 
-            interface ActedIn @cypher(statement: "RETURN rand()") {
+            interface ActedIn @cypher(statement: "RETURN rand() as rand", columnName: "rand") {
                 screenTime: Int
             }
         `;
@@ -282,7 +282,7 @@ describe("makeAugmentedSchema", () => {
             }
 
             interface ActedIn {
-                id: ID @cypher(statement: "RETURN id(this)")
+                id: ID @cypher(statement: "RETURN id(this) as id", columnName: "id")
                 roles: [String]
             }
         `;

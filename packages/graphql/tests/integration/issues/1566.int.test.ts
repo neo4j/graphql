@@ -56,6 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
                         Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)
                         return pag
                         """
+                        columnName: "pag"
                     )
                 hasFeedItems(limit: Int = 10, page: Int = 0): [FeedItem!]!
                     @cypher(
@@ -63,6 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
                         Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)
                            return pag SKIP ($limit * $page) LIMIT $limit
                         """
+                        columnName: "pag"
                     )
             }
         `;

@@ -40,6 +40,7 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
                       post.id = randomUUID()
                     RETURN post
                     """
+                    columnName: "post"
                 )
         }
 

@@ -41,6 +41,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                         MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
                         RETURN COUNT(member) > 0 AS markedAttendance
                         """
+                        columnName: "markedAttendance"
                     )
                 serviceDate: TimeGraph! @relationship(type: "BUSSED_ON", direction: OUT)
             }
@@ -62,6 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                         WITH DISTINCT records, date LIMIT $limit
                         RETURN records ORDER BY date.date DESC
                         """
+                        columnName: "records"
                     )
             }
 
@@ -78,6 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                         MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
                         RETURN COUNT(member) > 0 AS markedAttendance
                         """
+                        columnName: "markedAttendance"
                     )
                 serviceDate: TimeGraph! @relationship(type: "BUSSED_ON", direction: OUT)
             }
@@ -115,13 +118,23 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(:ServiceLog)-[:HAS_BUSSING]->(records:BussingRecord)-[:BUSSED_ON]->(date:TimeGraph)
-                WITH DISTINCT records, date LIMIT $limit
-                RETURN records ORDER BY date.date DESC\\", { limit: $param2, this: this, auth: $auth }) AS this_bussing
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)-[:HAS_HISTORY]->(:ServiceLog)-[:HAS_BUSSING]->(records:BussingRecord)-[:BUSSED_ON]->(date:TimeGraph)
+                    WITH DISTINCT records, date LIMIT $limit
+                    RETURN records ORDER BY date.date DESC
+                }
+                WITH records AS this_bussing
                 CALL {
                     WITH this_bussing
-                    UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
-                    RETURN COUNT(member) > 0 AS markedAttendance\\", { this: this_bussing, auth: $auth }) AS this_bussing_markedAttendance
+                    CALL {
+                        WITH this_bussing
+                        WITH this_bussing AS this
+                        MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
+                        RETURN COUNT(member) > 0 AS markedAttendance
+                    }
+                    UNWIND markedAttendance AS this_bussing_markedAttendance
                     RETURN head(collect(this_bussing_markedAttendance)) AS this_bussing_markedAttendance
                 }
                 CALL {
@@ -139,7 +152,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"param2\\": {
+                \\"limit\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },

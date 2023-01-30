@@ -50,7 +50,8 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                     statement: """
                     MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
                     RETURN COUNT(member) > 0 AS markedAttendance
-                    """
+                    """,
+                    columnName: "markedAttendance"
                 )
             serviceDate: ${TimeGraphType}! @relationship(type: "BUSSED_ON", direction: OUT)
         }
@@ -72,6 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                     WITH DISTINCT records, date LIMIT $limit
                     RETURN records ORDER BY date.date DESC
                     """
+                    columnName: "records"
                 )
         }
 
@@ -87,7 +89,8 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                     statement: """
                     MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
                     RETURN COUNT(member) > 0 AS markedAttendance
-                    """
+                    """,
+                    columnName: "markedAttendance"
                 )
             serviceDate: ${TimeGraphType}! @relationship(type: "BUSSED_ON", direction: OUT)
         }

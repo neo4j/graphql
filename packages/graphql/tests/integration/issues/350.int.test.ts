@@ -51,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
                 flagged: Boolean!
                 content: String!
                 post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
-                canEdit: Boolean! @cypher(statement: "RETURN false")
+                canEdit: Boolean! @cypher(statement: "RETURN false as res", columnName: "res")
             }
         `;
 

@@ -34,6 +34,7 @@ describe("Interfaces", () => {
                         MATCH (m:Movie)
                         RETURN m
                         """
+                        columnName: "m"
                     )
             }
 
@@ -47,6 +48,7 @@ describe("Interfaces", () => {
                         MATCH (m:Movie)
                         RETURN m
                         """
+                        columnName: "m"
                     )
             }
         `;
