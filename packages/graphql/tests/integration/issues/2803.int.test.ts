@@ -43,10 +43,10 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         name: "ThirdName",
     };
     const movieInput1 = {
-        relased: 1,
+        released: 1,
     };
     const movieInput2 = {
-        relased: 987598257,
+        released: 987598257,
     };
 
     beforeAll(async () => {
@@ -102,7 +102,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     test("should find movies aggregate within double nested relationships", async () => {
         const query = `
             {
-                ${Actor.plural}(where: { movies_SOME: { actors_SOME: { moviesAggregate: { count_GT: 0 } } } }) {
+                ${Actor.plural}(where: { movies_SOME: { actors_ALL: { moviesAggregate: { count_GT: 1 } } } }) {
                     name
                 }
             }
@@ -116,7 +116,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [Actor.plural]: expect.toIncludeSameMembers([actorInput1, actorInput2]),
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput1]),
         });
     });
 });
