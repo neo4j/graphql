@@ -247,7 +247,6 @@ describe("162", () => {
               NOT: TigerJawLevel2Part1ConnectionWhere
               OR: [TigerJawLevel2Part1ConnectionWhere!]
               node: TigerJawLevel2Part1Where
-              node_NOT: TigerJawLevel2Part1Where @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input TigerJawLevel2Part1CreateFieldInput {
@@ -354,7 +353,6 @@ describe("162", () => {
               NOT: TigerJawLevel2Part1TigerConnectionWhere
               OR: [TigerJawLevel2Part1TigerConnectionWhere!]
               node: TigerWhere
-              node_NOT: TigerWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input TigerJawLevel2Part1TigerCreateFieldInput {
@@ -458,17 +456,10 @@ describe("162", () => {
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               tiger: TigerWhere @deprecated(reason: \\"Use \`tiger_SOME\` instead.\\")
               tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
               tigerConnection: TigerJawLevel2Part1TigerConnectionWhere
-              tigerConnection_NOT: TigerJawLevel2Part1TigerConnectionWhere @deprecated(reason: \\"Use \`tigerConnection_NONE\` instead.\\")
-              tiger_NOT: TigerWhere @deprecated(reason: \\"Use \`tiger_NONE\` instead.\\")
             }
 
             type TigerJawLevel2Part1sConnection {
@@ -510,17 +501,10 @@ describe("162", () => {
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               part1: TigerJawLevel2Part1Where @deprecated(reason: \\"Use \`part1_SOME\` instead.\\")
               part1Aggregate: TigerJawLevel2Part1AggregateInput
               part1Connection: TigerJawLevel2Part1ConnectionWhere
-              part1Connection_NOT: TigerJawLevel2Part1ConnectionWhere @deprecated(reason: \\"Use \`part1Connection_NONE\` instead.\\")
-              part1_NOT: TigerJawLevel2Part1Where @deprecated(reason: \\"Use \`part1_NONE\` instead.\\")
             }
 
             type TigerJawLevel2sConnection {
@@ -561,8 +545,6 @@ describe("162", () => {
               x_IN: [Int]
               x_LT: Int
               x_LTE: Int
-              x_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              x_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             type TigersConnection {

@@ -156,7 +156,6 @@ describe("Sort", () => {
               NOT: Node1RelatedToConnectionWhere
               OR: [Node1RelatedToConnectionWhere!]
               node: Node2Where
-              node_NOT: Node2Where @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input Node1RelatedToCreateFieldInput {
@@ -220,25 +219,18 @@ describe("Sort", () => {
               property_CONTAINS: String
               property_ENDS_WITH: String
               property_IN: [String!]
-              property_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              property_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              property_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              property_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              property_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               property_STARTS_WITH: String
               relatedTo: Node2Where @deprecated(reason: \\"Use \`relatedTo_SOME\` instead.\\")
               relatedToAggregate: Node1RelatedToAggregateInput
               relatedToConnection: Node1RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_SOME\` instead.\\")
               relatedToConnection_ALL: Node1RelatedToConnectionWhere
               relatedToConnection_NONE: Node1RelatedToConnectionWhere
-              relatedToConnection_NOT: Node1RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_NONE\` instead.\\")
               relatedToConnection_SINGLE: Node1RelatedToConnectionWhere
               relatedToConnection_SOME: Node1RelatedToConnectionWhere
               \\"\\"\\"Return Node1s where all of the related Node2s match this filter\\"\\"\\"
               relatedTo_ALL: Node2Where
               \\"\\"\\"Return Node1s where none of the related Node2s match this filter\\"\\"\\"
               relatedTo_NONE: Node2Where
-              relatedTo_NOT: Node2Where @deprecated(reason: \\"Use \`relatedTo_NONE\` instead.\\")
               \\"\\"\\"Return Node1s where one of the related Node2s match this filter\\"\\"\\"
               relatedTo_SINGLE: Node2Where
               \\"\\"\\"Return Node1s where some of the related Node2s match this filter\\"\\"\\"
@@ -336,7 +328,6 @@ describe("Sort", () => {
               NOT: Node2RelatedToConnectionWhere
               OR: [Node2RelatedToConnectionWhere!]
               node: Node1Where
-              node_NOT: Node1Where @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input Node2RelatedToCreateFieldInput {
@@ -419,14 +410,12 @@ describe("Sort", () => {
               relatedToConnection: Node2RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_SOME\` instead.\\")
               relatedToConnection_ALL: Node2RelatedToConnectionWhere
               relatedToConnection_NONE: Node2RelatedToConnectionWhere
-              relatedToConnection_NOT: Node2RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_NONE\` instead.\\")
               relatedToConnection_SINGLE: Node2RelatedToConnectionWhere
               relatedToConnection_SOME: Node2RelatedToConnectionWhere
               \\"\\"\\"Return Node2s where all of the related Node1s match this filter\\"\\"\\"
               relatedTo_ALL: Node1Where
               \\"\\"\\"Return Node2s where none of the related Node1s match this filter\\"\\"\\"
               relatedTo_NONE: Node1Where
-              relatedTo_NOT: Node1Where @deprecated(reason: \\"Use \`relatedTo_NONE\` instead.\\")
               \\"\\"\\"Return Node2s where one of the related Node1s match this filter\\"\\"\\"
               relatedTo_SINGLE: Node1Where
               \\"\\"\\"Return Node2s where some of the related Node1s match this filter\\"\\"\\"
