@@ -163,10 +163,15 @@ export function translateTopLevelCypher({
         });
         cypherStrs.push(...cypherStatement);
     } else {
+        const columnName = field.columnName;
         cypherStrs.push(`
-            CALL apoc.cypher.doIt("${statement}", ${apocParamsStr}) YIELD value
-            WITH [k in keys(value) | value[k]][0] AS this
-            `);
+            CALL {
+                WITH *
+                ${statement}
+            }
+            WITH ${columnName} AS this
+        
+        `);
     }
 
     if (unionWhere.length) {

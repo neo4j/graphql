@@ -7,3 +7,9 @@ query TopLevelCypherDirective {
         }
     }
 }
+
+mutation TopLevelMutationDirective_only {
+    getCustomUser {
+        name
+    }
+}

@@ -462,7 +462,7 @@ describe("Custom Resolvers", () => {
 
                 type Mutation {
                     test(id: ID!): ID! @cypher(statement: """
-                        RETURN \\"${id}\\" + $id as res
+                        RETURN "${id}" + $id as res
                     """, columnName: "res")
                 }
             `;
