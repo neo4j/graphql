@@ -23,7 +23,7 @@ export const AUTH_FORBIDDEN_ERROR = "@neo4j/graphql/FORBIDDEN";
 export const AUTH_UNAUTHENTICATED_ERROR = "@neo4j/graphql/UNAUTHENTICATED";
 export const MIN_VERSIONS = [{ majorMinor: "4.3", neo4j: "4.3.2" }];
 export const REQUIRED_APOC_FUNCTIONS = ["apoc.util.validatePredicate", "apoc.date.convertFormat"];
-export const REQUIRED_APOC_PROCEDURES = ["apoc.util.validate", "apoc.do.when", "apoc.cypher.doIt"];
+export const REQUIRED_APOC_PROCEDURES = ["apoc.util.validate", "apoc.cypher.doIt"];
 export const DEBUG_ALL = `${DEBUG_PREFIX}:*`;
 export const DEBUG_AUTH = `${DEBUG_PREFIX}:auth`;
 export const DEBUG_GRAPHQL = `${DEBUG_PREFIX}:graphql`;
@@ -69,7 +69,7 @@ export const SCALAR_TYPES = [
 
 export const NODE_OR_EDGE_KEYS = ["node", "edge"];
 
-export const LOGICAL_OPERATORS = ["AND", "OR"];
+export const LOGICAL_OPERATORS = ["AND", "OR", "NOT"] as const;
 
 // aggregation
 export const AGGREGATION_COMPARISON_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];

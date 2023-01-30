@@ -26,6 +26,7 @@ import type {
     TemporalField,
 } from "../types";
 import { graphqlDirectivesToCompose } from "./to-compose";
+import { DEPRECATE_NOT } from "./constants";
 
 interface Fields {
     scalarFields: CustomScalarField[];
@@ -49,7 +50,7 @@ function getWhereFields({
     features?: Neo4jFeaturesSettings;
 }): { [k: string]: string } {
     return {
-        ...(isInterface ? {} : { OR: `[${typeName}Where!]`, AND: `[${typeName}Where!]` }),
+        ...(isInterface ? {} : { OR: `[${typeName}Where!]`, AND: `[${typeName}Where!]`, NOT: `${typeName}Where` }),
         ...[
             ...fields.primitiveFields,
             ...fields.temporalFields,
@@ -67,7 +68,7 @@ function getWhereFields({
             };
             res[`${f.fieldName}_NOT`] = {
                 type: f.typeMeta.input.where.pretty,
-                directives: deprecatedDirectives,
+                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
             };
 
             if (f.typeMeta.name === "Boolean") {
@@ -81,7 +82,7 @@ function getWhereFields({
                 };
                 res[`${f.fieldName}_NOT_INCLUDES`] = {
                     type: f.typeMeta.input.where.type,
-                    directives: deprecatedDirectives,
+                    directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
                 };
                 return res;
             }
@@ -92,7 +93,7 @@ function getWhereFields({
             };
             res[`${f.fieldName}_NOT_IN`] = {
                 type: `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`,
-                directives: deprecatedDirectives,
+                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
             };
 
             if (
@@ -129,14 +130,9 @@ function getWhereFields({
                     res[`${f.fieldName}_MATCHES`] = { type: "String", directives: deprecatedDirectives };
                 }
 
-                const stringWhereOperators = [
-                    "_CONTAINS",
-                    "_NOT_CONTAINS",
-                    "_STARTS_WITH",
-                    "_NOT_STARTS_WITH",
-                    "_ENDS_WITH",
-                    "_NOT_ENDS_WITH",
-                ];
+                const stringWhereOperators = ["_CONTAINS", "_STARTS_WITH", "_ENDS_WITH"];
+
+                const stringWhereOperatorsNegate = ["_NOT_CONTAINS", "_NOT_STARTS_WITH", "_NOT_ENDS_WITH"];
 
                 Object.entries(features?.filters?.String || {}).forEach(([key, value]) => {
                     if (value) {
@@ -145,6 +141,13 @@ function getWhereFields({
                 });
                 stringWhereOperators.forEach((comparator) => {
                     res[`${f.fieldName}${comparator}`] = { type: f.typeMeta.name, directives: deprecatedDirectives };
+                });
+
+                stringWhereOperatorsNegate.forEach((comparator) => {
+                    res[`${f.fieldName}${comparator}`] = {
+                        type: f.typeMeta.name,
+                        directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+                    };
                 });
                 return res;
             }
