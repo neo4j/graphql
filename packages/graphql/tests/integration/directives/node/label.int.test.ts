@@ -22,7 +22,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("Node directive labels", () => {
@@ -30,7 +30,7 @@ describe("Node directive labels", () => {
     let neo4j: Neo4j;
     let session: Session;
 
-    const typeFilm = generateUniqueType("Film");
+    const typeFilm = new UniqueType("Film");
 
     beforeAll(async () => {
         neo4j = new Neo4j();

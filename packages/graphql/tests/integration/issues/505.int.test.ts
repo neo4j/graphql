@@ -24,7 +24,7 @@ import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/505", () => {
     let driver: Driver;
@@ -33,9 +33,9 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         secret: "secret",
     });
 
-    const userType = generateUniqueType("User");
-    const workspaceType = generateUniqueType("Workspace");
-    const pageType = generateUniqueType("User");
+    const userType = new UniqueType("User");
+    const workspaceType = new UniqueType("Workspace");
+    const pageType = new UniqueType("User");
 
     // Update to use _INCLUDES once https://github.com/neo4j/graphql/pull/500 is merged
     const typeDefs = gql`

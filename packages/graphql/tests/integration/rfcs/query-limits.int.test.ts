@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("integration/rfcs/query-limits", () => {
     let driver: Driver;
@@ -40,7 +40,7 @@ describe("integration/rfcs/query-limits", () => {
     describe("Top Level Query Limits", () => {
         test("should limit the top level query", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 type ${randomType.name} @queryOptions(limit: {default:2}) {
@@ -89,8 +89,8 @@ describe("integration/rfcs/query-limits", () => {
     describe("Field Level Query Limits", () => {
         test("should limit the normal field level query", async () => {
             const session = await neo4j.getSession();
-            const randomType1 = generateUniqueType("Movie");
-            const randomType2 = generateUniqueType("Person");
+            const randomType1 = new UniqueType("Movie");
+            const randomType2 = new UniqueType("Person");
             const movieId = generate({
                 charset: "alphabetic",
             });
@@ -149,8 +149,8 @@ describe("integration/rfcs/query-limits", () => {
 
         test("should limit the connection field level query", async () => {
             const session = await neo4j.getSession();
-            const randomType1 = generateUniqueType("Movie");
-            const randomType2 = generateUniqueType("Person");
+            const randomType1 = new UniqueType("Movie");
+            const randomType2 = new UniqueType("Person");
             const movieId = generate({
                 charset: "alphabetic",
             });

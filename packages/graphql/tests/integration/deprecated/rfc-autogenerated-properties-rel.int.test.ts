@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("integration/rfc/autogenerate-properties-rel", () => {
     let driver: Driver;
@@ -40,8 +40,8 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
 
     describe("Callback - String", () => {
         test("should insert callback on CREATE", async () => {
-            const testMovie = generateUniqueType("Movie");
-            const testGenre = generateUniqueType("Genre");
+            const testMovie = new UniqueType("Movie");
+            const testGenre = new UniqueType("Genre");
             const string1 = generate({
                 charset: "alphabetic",
             });
@@ -150,8 +150,8 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
         });
 
         test("should insert callback on UPDATE", async () => {
-            const testMovie = generateUniqueType("Movie");
-            const testGenre = generateUniqueType("Genre");
+            const testMovie = new UniqueType("Movie");
+            const testGenre = new UniqueType("Genre");
             const string1 = generate({
                 charset: "alphabetic",
             });
@@ -266,8 +266,8 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
         });
 
         test("should insert callback on CREATE and UPDATE", async () => {
-            const testMovie = generateUniqueType("Movie");
-            const testGenre = generateUniqueType("Genre");
+            const testMovie = new UniqueType("Movie");
+            const testGenre = new UniqueType("Genre");
             const string1 = generate({
                 charset: "alphabetic",
             });
@@ -432,8 +432,8 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
 
     describe("Callback - Int", () => {
         test("should insert callback on CREATE", async () => {
-            const testMovie = generateUniqueType("Movie");
-            const testGenre = generateUniqueType("Genre");
+            const testMovie = new UniqueType("Movie");
+            const testGenre = new UniqueType("Genre");
             const int1 = Number(
                 generate({
                     charset: "numeric",
@@ -545,8 +545,8 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
         });
 
         test("should insert callback on UPDATE", async () => {
-            const testMovie = generateUniqueType("Movie");
-            const testGenre = generateUniqueType("Genre");
+            const testMovie = new UniqueType("Movie");
+            const testGenre = new UniqueType("Genre");
             const int1 = Number(
                 generate({
                     charset: "numeric",
@@ -664,8 +664,8 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
         });
 
         test("should insert callback on CREATE and UPDATE", async () => {
-            const testMovie = generateUniqueType("Movie");
-            const testGenre = generateUniqueType("Genre");
+            const testMovie = new UniqueType("Movie");
+            const testGenre = new UniqueType("Genre");
             const int1 = Number(
                 generate({
                     charset: "numeric",
@@ -836,8 +836,8 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
 
     describe("Callback - Misc", () => {
         test("should have access to parent in callback function for CREATE", async () => {
-            const testMovie = generateUniqueType("Movie");
-            const testGenre = generateUniqueType("Genre");
+            const testMovie = new UniqueType("Movie");
+            const testGenre = new UniqueType("Genre");
             const callback = (parent) => `${parent.title}-slug`;
 
             const typeDefs = gql`
@@ -949,8 +949,8 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
         });
 
         test("should have access to parent in callback function for UPDATE", async () => {
-            const testMovie = generateUniqueType("Movie");
-            const testGenre = generateUniqueType("Genre");
+            const testMovie = new UniqueType("Movie");
+            const testGenre = new UniqueType("Genre");
             const callback = (parent) => `${parent.title}-slug`;
 
             const typeDefs = gql`

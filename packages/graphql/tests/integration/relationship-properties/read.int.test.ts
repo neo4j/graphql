@@ -24,7 +24,7 @@ import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { runCypher } from "../../utils/run-cypher";
 import { cleanNodes } from "../../utils/clean-nodes";
 
@@ -53,8 +53,8 @@ describe("Relationship properties - read", () => {
     });
 
     beforeEach(async () => {
-        typeMovie = generateUniqueType("Movie");
-        typeActor = generateUniqueType("Actor");
+        typeMovie = new UniqueType("Movie");
+        typeActor = new UniqueType("Actor");
 
         const session = await neo4j.getSession();
         await runCypher(

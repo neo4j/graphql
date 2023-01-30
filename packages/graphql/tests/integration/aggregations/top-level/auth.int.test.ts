@@ -24,7 +24,7 @@ import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 
 describe("aggregations-top_level-auth", () => {
     let driver: Driver;
@@ -43,7 +43,7 @@ describe("aggregations-top_level-auth", () => {
     test("should throw forbidden when incorrect allow on aggregate count", async () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
-        const randomType = generateUniqueType("Movie");
+        const randomType = new UniqueType("Movie");
 
         const typeDefs = `
             type ${randomType.name} {

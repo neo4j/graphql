@@ -22,10 +22,10 @@ import { graphql, GraphQLError } from "graphql";
 import type { Driver } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/1551", () => {
-    const testType = generateUniqueType("AttribValue");
+    const testType = new UniqueType("AttribValue");
 
     let schema: GraphQLSchema;
     let neo4j: Neo4j;

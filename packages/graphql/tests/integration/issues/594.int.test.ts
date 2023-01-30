@@ -21,7 +21,7 @@ import { gql } from "apollo-server";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import Neo4j from "../neo4j";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/594", () => {
@@ -30,8 +30,8 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
     let session: Session;
     let neoSchema: Neo4jGraphQL;
 
-    const typeMovie = generateUniqueType("Movie");
-    const typePerson = generateUniqueType("Person");
+    const typeMovie = new UniqueType("Movie");
+    const typePerson = new UniqueType("Person");
 
     beforeAll(async () => {
         neo4j = new Neo4j();

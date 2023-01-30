@@ -21,12 +21,13 @@ import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
 import type { RelationField, Context, GraphQLWhereArg, PredicateReturn } from "../types";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, ListPredicate, whereRegEx } from "./where/utils";
-import { createBaseOperation, createDurationOperation } from "./where/property-operations/create-comparison-operation";
-import { NODE_OR_EDGE_KEYS, LOGICAL_OPERATORS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
+import {
+    createBaseOperation,
+    createComparisonOperation,
+} from "./where/property-operations/create-comparison-operation";
+import { NODE_OR_EDGE_KEYS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
 import { getCypherLogicalOperator, isLogicalOperator, LogicalOperator } from "./utils/logical-operators";
 import mapToDbProperty from "../utils/map-to-db-property";
-
-
 
 type WhereFilter = Record<string | LogicalOperator, any>;
 
@@ -74,7 +75,8 @@ export function aggregatePreComputedWhereFields(
         relationship,
         aggregationTarget,
         cypherRelation,
-        listPredicateStr
+        listPredicateStr,
+        context
     );
     matchQuery.return(...returnProjections);
     const subquery = new Cypher.Call(matchQuery).innerWith(matchNode);
@@ -99,13 +101,14 @@ export function aggregatePreComputedWhereFields(
     };
 }
 
-export function aggregateWhere(
+function aggregateWhere(
     aggregateWhereInput: AggregateWhereInput,
     refNode: Node,
     relationship: Relationship | undefined,
     aggregationTarget: Cypher.Node,
     cypherRelation: Cypher.Relationship,
-    listPredicateStr?: ListPredicate
+    listPredicateStr: ListPredicate | undefined,
+    context: Context
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
     const predicates: Cypher.Predicate[] = [];
@@ -129,14 +132,14 @@ export function aggregateWhere(
                 returnProjections: innerReturnProjections,
                 predicates: innerPredicates,
                 returnVariables: innerReturnVariables,
-            } = aggregateEntityWhere(value, refNodeOrRelation, target, listPredicateStr);
+            } = aggregateEntityWhere(value, refNodeOrRelation, target, listPredicateStr, context);
             returnProjections.push(...innerReturnProjections);
             predicates.push(...innerPredicates);
             returnVariables.push(...innerReturnVariables);
         } else if (isLogicalOperator(key)) {
             const cypherBuilderFunction = getCypherLogicalOperator(key);
             const logicalPredicates: Cypher.Predicate[] = [];
-            value =  Array.isArray(value) ? value : [value];
+            value = Array.isArray(value) ? value : [value];
             value.forEach((whereInput) => {
                 const {
                     returnProjections: innerReturnProjections,
@@ -148,7 +151,8 @@ export function aggregateWhere(
                     relationship,
                     aggregationTarget,
                     cypherRelation,
-                    listPredicateStr
+                    listPredicateStr,
+                    context
                 );
                 returnProjections.push(...innerReturnProjections);
                 logicalPredicates.push(...innerPredicates);
@@ -195,7 +199,8 @@ function aggregateEntityWhere(
     aggregateEntityWhereInput: WhereFilter,
     refNodeOrRelation: Node | Relationship,
     target: Cypher.Node | Cypher.Relationship,
-    listPredicateStr?: ListPredicate
+    listPredicateStr: ListPredicate | undefined,
+    context: Context
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
     const predicates: Cypher.Predicate[] = [];
@@ -210,14 +215,14 @@ function aggregateEntityWhere(
                     returnProjections: innerReturnProjections,
                     predicates: innerPredicates,
                     returnVariables: innerReturnVariables,
-                } = aggregateEntityWhere(whereInput, refNodeOrRelation, target, listPredicateStr);
+                } = aggregateEntityWhere(whereInput, refNodeOrRelation, target, listPredicateStr, context);
                 returnProjections.push(...innerReturnProjections);
                 logicalPredicates.push(...innerPredicates);
                 returnVariables.push(...innerReturnVariables);
             });
             predicates.push(cypherBuilderFunction(...logicalPredicates));
         } else {
-            const operation = createEntityOperation(refNodeOrRelation, target, key, value);
+            const operation = createEntityOperation(refNodeOrRelation, target, key, value, context);
             const operationVar = new Cypher.Variable();
             returnProjections.push([operation, operationVar]);
             predicates.push(getReturnValuePredicate(operationVar, listPredicateStr));
@@ -235,7 +240,8 @@ function createEntityOperation(
     refNodeOrRelation: Node | Relationship,
     target: Cypher.Node | Cypher.Relationship,
     aggregationInputField: string,
-    aggregationInputValue: any
+    aggregationInputValue: any,
+    context: Context
 ): Cypher.Predicate {
     const paramName = new Cypher.Param(aggregationInputValue);
     const regexResult = aggregationFieldRegEx.exec(aggregationInputField)?.groups as AggregationFieldRegexGroups;
@@ -258,20 +264,19 @@ function createEntityOperation(
     } else {
         const innerVar = new Cypher.Variable();
 
-        let innerOperation: Cypher.Operation;
-        if (fieldType === "Duration") {
-            innerOperation = createDurationOperation({
-                operator: logicalOperator || "EQ",
-                property: innerVar,
-                param: paramName,
-            });
-        } else {
-            innerOperation = createBaseOperation({
-                operator: logicalOperator || "EQ",
-                property: innerVar,
-                param: paramName,
-            });
-        }
+        const pointField = refNodeOrRelation.pointFields.find((x) => x.fieldName === fieldName);
+        const durationField = refNodeOrRelation.primitiveFields.find(
+            (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
+        );
+
+        const innerOperation = createComparisonOperation({
+            operator: logicalOperator || "EQ",
+            propertyRefOrCoalesce: innerVar,
+            param: paramName,
+            durationField,
+            pointField,
+            neo4jDatabaseInfo: context.neo4jDatabaseInfo,
+        });
         const dbFieldName = mapToDbProperty(refNodeOrRelation, fieldName);
         const collectedProperty =
             fieldType === "String" && logicalOperator !== "EQUAL"
