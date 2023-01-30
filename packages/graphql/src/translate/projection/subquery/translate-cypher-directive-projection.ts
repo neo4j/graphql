@@ -56,7 +56,6 @@ export function translateCypherDirectiveProjection({
     const entity = context.schemaModel.entities.get(cypherField.typeMeta.name);
 
     const isArray = Boolean(cypherField.typeMeta.array);
-    const expectMultipleValues = Boolean((referenceNode || entity instanceof CompositeEntity) && isArray);
 
     const fieldFields = field.fieldsByTypeName;
 

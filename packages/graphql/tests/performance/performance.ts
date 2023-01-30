@@ -82,6 +82,17 @@ const typeDefs = gql`
                 columnName: "p"
             )
     }
+
+    type Mutation {
+        getCustomUser: [Person]!
+            @cypher(
+                statement: """
+                MATCH (user:Person { name_INCLUDES: "Wa" })
+                RETURN user
+                """
+                columnName: "user"
+            )
+    }
 `;
 
 let neoSchema: Neo4jGraphQL;

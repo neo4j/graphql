@@ -187,9 +187,9 @@ describe("Float", () => {
                     @cypher(
                         statement: """
                         CREATE (m:Movie {id: $id, float: $float, floats: $nested.floats})
-                        RETURN m.float
+                        RETURN m.float as result
                         """,
-                        columnName: "m.float"
+                        columnName: "result"
                     )
             }
         `;
