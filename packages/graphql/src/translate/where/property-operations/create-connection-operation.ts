@@ -35,6 +35,8 @@ export function createConnectionOperation({
     parentNode,
     operator,
     requiredVariables,
+    topLevelNodes,
+    topLevelPattern,
 }: {
     connectionField: ConnectionField;
     value: any;
@@ -42,6 +44,8 @@ export function createConnectionOperation({
     parentNode: Cypher.Node;
     operator: string | undefined;
     requiredVariables: Cypher.Variable[];
+    topLevelNodes?: Cypher.Node[];
+    topLevelPattern?: Cypher.RawCypher;
 }): PredicateReturn {
     let nodeEntries: Record<string, any>;
 
@@ -106,11 +110,26 @@ export function createConnectionOperation({
             relationship: { variable: true },
         });
 
+        let newTopLevelPattern: Cypher.RawCypher;
+        if (!topLevelPattern) {
+            newTopLevelPattern = new Cypher.RawCypher((env) => `OPTIONAL MATCH ${matchPattern.getCypher(env)}`);
+        } else {
+            const startArrow = relationField.direction === "IN" ? "<-" : "-";
+            const endArrow = relationField.direction === "IN" ? "-" : "->";
+            newTopLevelPattern = new Cypher.RawCypher(
+                (env) =>
+                    `${topLevelPattern.getCypher(env)}${startArrow}[:${
+                        relationField.type
+                    }]${endArrow}(${childNode.getCypher(env)}:${childNode.labels})`
+            );
+        }
+
         let listPredicateStr = getListPredicate(operator as WhereOperator);
 
         const contextRelationship = context.relationships.find(
             (x) => x.name === connectionField.relationshipTypeName
         ) as Relationship;
+        if (!topLevelNodes?.includes(parentNode)) topLevelNodes = [parentNode, ...(topLevelNodes || [])];
         const innerOperation = createConnectionWherePropertyOperation({
             context,
             whereInput: entry[1],
@@ -119,6 +138,8 @@ export function createConnectionOperation({
             edge: contextRelationship,
             node: refNode,
             listPredicateStr,
+            topLevelNodes,
+            topLevelPattern: newTopLevelPattern,
         });
 
         if (orOperatorMultipleNodeLabels) {
@@ -147,7 +168,7 @@ export function createConnectionOperation({
 
     if (aggregatingVariables && aggregatingVariables.length) {
         const aggregatingWithClause = new Cypher.With(
-            parentNode,
+            ...(topLevelNodes || []),
             ...requiredVariables,
             ...(aggregatingVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar]) as any)
         );
@@ -179,6 +200,8 @@ export function createConnectionWherePropertyOperation({
     node,
     edge,
     listPredicateStr,
+    topLevelNodes,
+    topLevelPattern,
 }: {
     whereInput: ConnectionWhereArg;
     context: Context;
@@ -187,6 +210,8 @@ export function createConnectionWherePropertyOperation({
     edgeRef: Cypher.Variable;
     targetNode: Cypher.Node;
     listPredicateStr?: ListPredicate;
+    topLevelNodes?: Cypher.Node[];
+    topLevelPattern?: Cypher.RawCypher;
 }): PredicateReturn {
     const requiredVariables: Cypher.Variable[] = [];
     const aggregatingVariables: Cypher.Variable[] = [];
@@ -209,6 +234,8 @@ export function createConnectionWherePropertyOperation({
                     node,
                     edge,
                     listPredicateStr,
+                    topLevelNodes,
+                    topLevelPattern,
                 });
                 subOperations.push(predicate);
                 if (preComputedSubqueries && !preComputedSubqueries.empty)
@@ -239,6 +266,8 @@ export function createConnectionWherePropertyOperation({
                 context,
                 element: edge,
                 listPredicateStr,
+                topLevelNodes,
+                topLevelPattern,
             });
 
             params.push(result);
@@ -274,6 +303,8 @@ export function createConnectionWherePropertyOperation({
                 context,
                 element: node,
                 listPredicateStr,
+                topLevelNodes,
+                topLevelPattern,
             });
 
             // NOTE: _NOT is handled by the size()=0
