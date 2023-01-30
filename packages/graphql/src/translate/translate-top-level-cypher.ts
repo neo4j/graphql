@@ -155,8 +155,6 @@ export function translateTopLevelCypher({
 
     params = { ...params, ...apocParams.params };
 
-    const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
-
     if (type === "Query") {
         const cypherStatement = createCypherDirectiveSubquery({
             field,
@@ -166,7 +164,6 @@ export function translateTopLevelCypher({
         const columnName = field.columnName;
         cypherStrs.push(`
             CALL {
-                WITH *
                 ${statement}
             }
             WITH ${columnName} AS this

@@ -22,11 +22,9 @@ import type { Node, Relationship } from "../classes";
 import type { RelationField, Context, GraphQLWhereArg, PredicateReturn } from "../types";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, ListPredicate, whereRegEx } from "./where/utils";
 import { createBaseOperation, createDurationOperation } from "./where/property-operations/create-comparison-operation";
-import { NODE_OR_EDGE_KEYS, LOGICAL_OPERATORS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
+import { NODE_OR_EDGE_KEYS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
 import { getCypherLogicalOperator, isLogicalOperator, LogicalOperator } from "./utils/logical-operators";
 import mapToDbProperty from "../utils/map-to-db-property";
-
-
 
 type WhereFilter = Record<string | LogicalOperator, any>;
 
@@ -136,7 +134,7 @@ export function aggregateWhere(
         } else if (isLogicalOperator(key)) {
             const cypherBuilderFunction = getCypherLogicalOperator(key);
             const logicalPredicates: Cypher.Predicate[] = [];
-            value =  Array.isArray(value) ? value : [value];
+            value = Array.isArray(value) ? value : [value];
             value.forEach((whereInput) => {
                 const {
                     returnProjections: innerReturnProjections,

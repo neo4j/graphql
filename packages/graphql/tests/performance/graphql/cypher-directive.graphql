@@ -8,7 +8,7 @@ query TopLevelCypherDirective {
     }
 }
 
-mutation TopLevelMutationDirective_only {
+mutation TopLevelMutationDirective {
     getCustomUser {
         name
     }
