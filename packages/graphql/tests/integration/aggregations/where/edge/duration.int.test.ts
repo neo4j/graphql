@@ -51,7 +51,6 @@ describe("aggregations-where-edge-duration", () => {
 
         interface Likes {
             someDuration: Duration!
-            someDurationAlias: Duration @alias(property: "_someDurationAlias")
         }
     `;
 
