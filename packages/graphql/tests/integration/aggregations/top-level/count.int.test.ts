@@ -24,7 +24,7 @@ import { generate } from "randomstring";
 import { gql } from "apollo-server";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("Aggregate -> count", () => {
@@ -43,7 +43,7 @@ describe("Aggregate -> count", () => {
     test("should count nodes", async () => {
         const session = await neo4j.getSession();
 
-        const randomType = generateUniqueType("Movie");
+        const randomType = new UniqueType("Movie");
 
         const typeDefs = `
             type ${randomType.name} {
@@ -88,7 +88,7 @@ describe("Aggregate -> count", () => {
 
     test("should count nodes with where and or predicate", async () => {
         const session = await neo4j.getSession();
-        const randomType = generateUniqueType("Movie");
+        const randomType = new UniqueType("Movie");
 
         const typeDefs = `
             type ${randomType.name} {
@@ -143,7 +143,7 @@ describe("Aggregate -> count", () => {
 
     test("should return count aggregation with allow @auth", async () => {
         const session = await neo4j.getSession();
-        const jobPlanType = generateUniqueType("JobPlan");
+        const jobPlanType = new UniqueType("JobPlan");
 
         const typeDefs = gql`
             type ${jobPlanType.name} {

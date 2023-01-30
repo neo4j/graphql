@@ -22,7 +22,7 @@ import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
@@ -32,7 +32,7 @@ import { createJwtHeader } from "../../../utils/create-jwt-request";
 import { cleanNodes } from "../../../utils/clean-nodes";
 
 describe("Subscription authentication", () => {
-    const typeMovie = generateUniqueType("Movie");
+    const typeMovie = new UniqueType("Movie");
     let neo4j: Neo4j;
     let driver: Driver;
     let jwtToken: string;
@@ -266,10 +266,10 @@ describe("Subscription authentication", () => {
         let typeInfluencer: UniqueType;
 
         beforeEach(async () => {
-            typeActor = generateUniqueType("Actor");
-            typeMovie = generateUniqueType("Movie");
-            typePerson = generateUniqueType("Person");
-            typeInfluencer = generateUniqueType("Influencer");
+            typeActor = new UniqueType("Actor");
+            typeMovie = new UniqueType("Movie");
+            typePerson = new UniqueType("Person");
+            typeInfluencer = new UniqueType("Influencer");
             typeDefs = `
             type ${typeMovie} {
                 title: String!

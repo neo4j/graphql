@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/487", () => {
     let driver: Driver;
@@ -41,10 +41,10 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
     test("related fields should resolve on custom queries", async () => {
         const session = await neo4j.getSession();
 
-        const typeAuthor = generateUniqueType("Author");
-        const typeDirector = generateUniqueType("Director");
-        const typeBook = generateUniqueType("Book");
-        const typeMovie = generateUniqueType("Movie");
+        const typeAuthor = new UniqueType("Author");
+        const typeDirector = new UniqueType("Director");
+        const typeBook = new UniqueType("Book");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeAuthor.name} {

@@ -24,7 +24,7 @@ import { graphql } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
 import { createJwtRequest } from "../../utils/create-jwt-request";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/pull/2068", () => {
     let driver: Driver;
@@ -44,9 +44,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
         await driver.close();
     });
     describe("Updates within updates", () => {
-        const contentType = generateUniqueType("Content");
-        const userType = generateUniqueType("User");
-        const commentType = generateUniqueType("Comment");
+        const contentType = new UniqueType("Content");
+        const userType = new UniqueType("User");
+        const commentType = new UniqueType("Comment");
 
         const typeDefs = gql`
             interface ${contentType.name} {
@@ -253,10 +253,10 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
         const numberOfSeasons = 2;
         const sharedTitle = "someTitle";
 
-        const actorType = generateUniqueType("Actor");
-        const movieType = generateUniqueType("Movie");
-        const tvShowType = generateUniqueType("TVShow");
-        const movieOrTVShowType = generateUniqueType("MovieOrTVShow");
+        const actorType = new UniqueType("Actor");
+        const movieType = new UniqueType("Movie");
+        const tvShowType = new UniqueType("TVShow");
+        const movieOrTVShowType = new UniqueType("MovieOrTVShow");
 
         const typeDefs = `
             type ${actorType.name} {
@@ -410,8 +410,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
          * @returns Unique types and a graphql type deinition string.
          */
         function getTypedef(operations: string): [UniqueType, UniqueType, string] {
-            const movieType = generateUniqueType("Movie");
-            const genreType = generateUniqueType("Genre");
+            const movieType = new UniqueType("Movie");
+            const genreType = new UniqueType("Genre");
             const typeDefs = `
                 type ${movieType.name} {
                     title: String
@@ -868,8 +868,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
         });
     });
     describe("Select connections following the creation of a multiple nodes", () => {
-        const movieType = generateUniqueType("Movie");
-        const actorType = generateUniqueType("Actor");
+        const movieType = new UniqueType("Movie");
+        const actorType = new UniqueType("Actor");
 
         const typeDefs = `
             type ${movieType.name} {

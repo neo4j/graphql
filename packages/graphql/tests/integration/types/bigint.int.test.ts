@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("BigInt", () => {
     let driver: Driver;
@@ -148,7 +148,7 @@ describe("BigInt", () => {
 
         test("should successfully query an node with a BigInt property using in where", async () => {
             const session = driver.session();
-            const fileType = generateUniqueType("File");
+            const fileType = new UniqueType("File");
 
             const typeDefs = `
                 type ${fileType} {

@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import type { Neo4jGraphQLAuthenticationError } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 
 describe("Global authentication - Auth JWT plugin", () => {
@@ -31,7 +31,7 @@ describe("Global authentication - Auth JWT plugin", () => {
     let neo4j: Neo4j;
 
     const secret = "secret";
-    const testMovie = generateUniqueType("Movie");
+    const testMovie = new UniqueType("Movie");
 
     const typeDefs = `
         type ${testMovie} {

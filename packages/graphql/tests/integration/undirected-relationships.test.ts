@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { getQuerySource } from "../utils/get-query-source";
-import { generateUniqueType } from "../utils/graphql-types";
+import { UniqueType } from "../utils/graphql-types";
 
 describe("undirected relationships", () => {
     let driver: Driver;
@@ -48,7 +48,7 @@ describe("undirected relationships", () => {
     });
 
     test("query for an undirected relationship", async () => {
-        const userType = generateUniqueType("User");
+        const userType = new UniqueType("User");
         const typeDefs = gql`
             type ${userType.name} {
                 name: String!
@@ -101,7 +101,7 @@ describe("undirected relationships", () => {
     });
 
     test("query for an undirected relationship on single relationship", async () => {
-        const userType = generateUniqueType("User");
+        const userType = new UniqueType("User");
         const typeDefs = gql`
             type ${userType.name} {
                 name: String!

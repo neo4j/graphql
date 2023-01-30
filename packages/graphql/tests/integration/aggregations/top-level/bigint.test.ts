@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 
 describe("aggregations-top_level-bigint", () => {
     let driver: Driver;
@@ -41,8 +41,8 @@ describe("aggregations-top_level-bigint", () => {
 
     test("should return the min of node properties", async () => {
         const session = await neo4j.getSession();
-        const movieType = generateUniqueType("Movie");
-        
+        const movieType = new UniqueType("Movie");
+
         const typeDefs = `
             type ${movieType.name} {
                 testString: String
@@ -104,8 +104,8 @@ describe("aggregations-top_level-bigint", () => {
 
     test("should return the max of node properties", async () => {
         const session = await neo4j.getSession();
-        const movieType = generateUniqueType("Movie");
-        
+        const movieType = new UniqueType("Movie");
+
         const typeDefs = `
             type ${movieType.name} {
                 testString: String
@@ -167,7 +167,7 @@ describe("aggregations-top_level-bigint", () => {
 
     test("should return the average of node properties", async () => {
         const session = await neo4j.getSession();
-        const movieType = generateUniqueType("Movie");
+        const movieType = new UniqueType("Movie");
 
         const typeDefs = `
             type ${movieType.name}  {
@@ -230,7 +230,7 @@ describe("aggregations-top_level-bigint", () => {
 
     test("should return the sum of node properties", async () => {
         const session = await neo4j.getSession();
-        const movieType = generateUniqueType("Movie");
+        const movieType = new UniqueType("Movie");
 
         const typeDefs = `
             type ${movieType.name} {
@@ -293,7 +293,7 @@ describe("aggregations-top_level-bigint", () => {
 
     test("should return the min, max, sum and average of node properties", async () => {
         const session = await neo4j.getSession();
-        const movieType = generateUniqueType("Movie");
+        const movieType = new UniqueType("Movie");
 
         const typeDefs = `
             type ${movieType.name} {

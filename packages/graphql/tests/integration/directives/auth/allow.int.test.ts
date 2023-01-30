@@ -25,7 +25,7 @@ import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { cleanNodes } from "../../../utils/clean-nodes";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 
 describe("auth/allow", () => {
     let driver: Driver;
@@ -47,9 +47,9 @@ describe("auth/allow", () => {
     });
 
     beforeEach(async () => {
-        userType = generateUniqueType("User");
-        postType = generateUniqueType("Post");
-        commentType = generateUniqueType("Comment");
+        userType = new UniqueType("User");
+        postType = new UniqueType("Post");
+        commentType = new UniqueType("Comment");
 
         session = await neo4j.getSession();
     });

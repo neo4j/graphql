@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
@@ -37,8 +37,8 @@ describe("Create Subscription", () => {
     let typeActor: UniqueType;
 
     beforeEach(async () => {
-        typeMovie = generateUniqueType("Movie");
-        typeActor = generateUniqueType("Actor");
+        typeMovie = new UniqueType("Movie");
+        typeActor = new UniqueType("Actor");
         const typeDefs = `
          type ${typeMovie} {
              title: String

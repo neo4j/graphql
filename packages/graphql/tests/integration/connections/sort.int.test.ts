@@ -24,7 +24,7 @@ import { generate } from "randomstring";
 import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 const testLabel = generate({ charset: "alphabetic" });
 
@@ -35,9 +35,9 @@ describe("connections sort", () => {
     let session: Session;
     let bookmarks: string[];
 
-    const Movie = generateUniqueType("Movie");
-    const Series = generateUniqueType("Series");
-    const Actor = generateUniqueType("Actor");
+    const Movie = new UniqueType("Movie");
+    const Series = new UniqueType("Series");
+    const Actor = new UniqueType("Actor");
 
     const typeDefs = gql`
         interface Production {

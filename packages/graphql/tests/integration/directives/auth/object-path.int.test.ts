@@ -24,7 +24,7 @@ import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 
 describe("auth/object-path", () => {
     let driver: Driver;
@@ -39,8 +39,8 @@ describe("auth/object-path", () => {
     });
 
     beforeEach(() => {
-        User = generateUniqueType("User");
-        Post = generateUniqueType("Post");
+        User = new UniqueType("User");
+        Post = new UniqueType("Post");
     });
 
     afterAll(async () => {
