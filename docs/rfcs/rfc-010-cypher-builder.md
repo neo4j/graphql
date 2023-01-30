@@ -112,9 +112,66 @@ query.print(); // MATCH(pepe:Actor:MyOtherLabel)-[:ACTED_IN]->(m:Movie) ....
 
 Writing arbitrarily complex patterns (such as `()-[]->()<-[]-()`) can be tricky in a readable and composable API.
 
-The following cases will create the pattern: `(:Actor {name: "Neo"})-[:ACTED_IN*3 {role: "neo"}]-(:Movie {title: "The Matrix"})`. In all 3 cases all of the parameters are optional and the default direction would be from the first node to the second (`()-[]->()`)
+**Requirements**
+
+-   Must be composable (i.e. define nodes and relationships and compose into a complex pattern)
+-   Support for node and relationship properties
+-   Parametrized direction
+-   [Variable-length pattern matching](https://neo4j.com/docs/cypher-manual/current/syntax/patterns/#cypher-pattern-varlength)
+-   Path variables
+
+**2 levels pattern relationship**
+
+```cypher
+MATCH(m:Movie)-[:ACTED_IN]-(:Person)-[:DIRECTED]-(m2:Movie)
+```
+
+```typescript
+const movieNode = new Cypher.Node({ labels: ["Movie"] });
+const movie2Node = new Cypher.Node({ labels: ["Movie"] });
+
+const pattern = movieNode
+    .related({ type: "ACTED_IN" })
+    .to(new Cypher.Node({ labels: ["Person"] }))
+    .related({ type: "DIRECTED" })
+    .to(movie2Node);
+```
+
+**Variable length pattern matching**
+
+```cypher
+MATCH(m:Movie)-[:ACTED_IN]-(:Person)-[:DIRECTED]-(m2:Movie)
+```
+
+```typescript
+new Cypher.Node({ labels: ["Actor"] })
+    .withProperties({ title: "The Matrix" })
+    .related(new Cypher.Relationship().undirected().withType("ACTED_IN").length(3).withProperties({ role: "neo " }))
+    .to(movieNode.withProperties({ title: "The Matrix" }));
+```
+
+---
+
+-   Parametrized direction
+
+```java
+    void p1() {
+		var actor = Cypher.node("Actor")
+			.withProperties("name", literalOf("Keanu Reeves"));
+		var movie = Cypher.node("Movie").withProperties("title", literalOf("The Matrix"));
+
+		var pattern = actor.relationshipBetween(movie)
+			.withProperties("role", literalOf("Neo"))
+			.min(3);
+
+		System.out.println(pattern);
+		System.out.println(pattern.relationshipFrom(Cypher.node("Publisher"), "PUBLISHED"));
+	}
+```
 
 ### Proposals
+
+The following cases will create the pattern: `(:Actor {name: "Neo"})-[:ACTED_IN*3 {role: "neo"}]-(:Movie {title: "The Matrix"})`. In all 3 cases all of the parameters are optional and the default direction would be from the first node to the second (`()-[]->()`)
 
 **1. Use a related chain**
 
