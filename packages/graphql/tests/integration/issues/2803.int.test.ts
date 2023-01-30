@@ -62,7 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
 
         const typeDefs = `
             type ${Movie} {
-                actors: [${Actor}!]! @relationship(type: "HAS_ACTOR", direction: OUT)
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
                 released: Int!
             }
 
@@ -79,9 +79,9 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
 
         await session.run(
             `
-            CREATE (a1:${Actor})-[:ACTED_IN]->(m1:${Movie})-[:HAS_ACTOR]->(a1)
-            CREATE (a1)-[:ACTED_IN]->(m2:${Movie})-[:HAS_ACTOR]->(a1)
-            CREATE (a2:${Actor})-[:ACTED_IN]->(m2)-[:HAS_ACTOR]->(a2)
+            CREATE (a1:${Actor})-[:ACTED_IN]->(m1:${Movie})
+            CREATE (a1)-[:ACTED_IN]->(m2:${Movie})
+            CREATE (a2:${Actor})-[:ACTED_IN]->(m2)
             CREATE (a3:${Actor})
             SET a1 = $actorInput1, a2 = $actorInput2, a3 = $actorInput3,
                 m1 = $movieInput1, m2 = $movieInput2
