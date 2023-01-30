@@ -127,7 +127,9 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
                             \\"activeOrganization\\": {
                                 \\"where\\": {
                                     \\"node\\": {
-                                        \\"id_NOT\\": \\"test-id\\"
+                                        \\"NOT\\": {
+                                            \\"id\\": \\"test-id\\"
+                                        }
                                     }
                                 }
                             }

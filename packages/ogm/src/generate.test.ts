@@ -220,16 +220,12 @@ describe("generate", () => {
             export type UserWhere = {
               OR?: InputMaybe<Array<UserWhere>>;
               AND?: InputMaybe<Array<UserWhere>>;
+              NOT?: InputMaybe<UserWhere>;
               name?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export interface StringAggregateInputNullable {
@@ -527,16 +523,12 @@ describe("generate", () => {
             export type UserWhere = {
               OR?: InputMaybe<Array<UserWhere>>;
               AND?: InputMaybe<Array<UserWhere>>;
+              NOT?: InputMaybe<UserWhere>;
               name?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export interface StringAggregateInputNullable {
@@ -797,16 +789,12 @@ describe("generate", () => {
             export type UserWhere = {
               OR?: InputMaybe<Array<UserWhere>>;
               AND?: InputMaybe<Array<UserWhere>>;
+              NOT?: InputMaybe<UserWhere>;
               name?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export interface StringAggregateInputNullable {
@@ -1199,10 +1187,9 @@ describe("generate", () => {
             export type ActedInWhere = {
               OR?: InputMaybe<Array<ActedInWhere>>;
               AND?: InputMaybe<Array<ActedInWhere>>;
+              NOT?: InputMaybe<ActedInWhere>;
               screenTime?: InputMaybe<Scalars[\\"Int\\"]>;
-              screenTime_NOT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_IN?: InputMaybe<Array<Scalars[\\"Int\\"]>>;
-              screenTime_NOT_IN?: InputMaybe<Array<Scalars[\\"Int\\"]>>;
               screenTime_LT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_GT?: InputMaybe<Scalars[\\"Int\\"]>;
@@ -1217,6 +1204,7 @@ describe("generate", () => {
               count_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
               AND?: InputMaybe<Array<MovieActorsAggregateInput>>;
               OR?: InputMaybe<Array<MovieActorsAggregateInput>>;
+              NOT?: InputMaybe<MovieActorsAggregateInput>;
               node?: InputMaybe<MovieActorsNodeAggregationWhereInput>;
               edge?: InputMaybe<MovieActorsEdgeAggregationWhereInput>;
             };
@@ -1236,10 +1224,9 @@ describe("generate", () => {
             export type MovieActorsConnectionWhere = {
               AND?: InputMaybe<Array<MovieActorsConnectionWhere>>;
               OR?: InputMaybe<Array<MovieActorsConnectionWhere>>;
+              NOT?: InputMaybe<MovieActorsConnectionWhere>;
               edge?: InputMaybe<ActedInWhere>;
-              edge_NOT?: InputMaybe<ActedInWhere>;
               node?: InputMaybe<PersonWhere>;
-              node_NOT?: InputMaybe<PersonWhere>;
             };
 
             export type MovieActorsCreateFieldInput = {
@@ -1258,6 +1245,7 @@ describe("generate", () => {
             export type MovieActorsEdgeAggregationWhereInput = {
               AND?: InputMaybe<Array<MovieActorsEdgeAggregationWhereInput>>;
               OR?: InputMaybe<Array<MovieActorsEdgeAggregationWhereInput>>;
+              NOT?: InputMaybe<MovieActorsEdgeAggregationWhereInput>;
               screenTime_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
@@ -1293,6 +1281,7 @@ describe("generate", () => {
             export type MovieActorsNodeAggregationWhereInput = {
               AND?: InputMaybe<Array<MovieActorsNodeAggregationWhereInput>>;
               OR?: InputMaybe<Array<MovieActorsNodeAggregationWhereInput>>;
+              NOT?: InputMaybe<MovieActorsNodeAggregationWhereInput>;
               name_EQUAL?: InputMaybe<Scalars[\\"String\\"]>;
               name_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
               name_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
@@ -1370,20 +1359,14 @@ describe("generate", () => {
             export type MovieWhere = {
               OR?: InputMaybe<Array<MovieWhere>>;
               AND?: InputMaybe<Array<MovieWhere>>;
+              NOT?: InputMaybe<MovieWhere>;
               title?: InputMaybe<Scalars[\\"String\\"]>;
-              title_NOT?: InputMaybe<Scalars[\\"String\\"]>;
               title_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
-              title_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
               title_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              title_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               title_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              title_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               title_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              title_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               /** @deprecated Use \`actors_SOME\` instead. */
               actors?: InputMaybe<PersonWhere>;
-              /** @deprecated Use \`actors_NONE\` instead. */
-              actors_NOT?: InputMaybe<PersonWhere>;
               actorsAggregate?: InputMaybe<MovieActorsAggregateInput>;
               /** Return Movies where all of the related People match this filter */
               actors_ALL?: InputMaybe<PersonWhere>;
@@ -1395,8 +1378,6 @@ describe("generate", () => {
               actors_SOME?: InputMaybe<PersonWhere>;
               /** @deprecated Use \`actorsConnection_SOME\` instead. */
               actorsConnection?: InputMaybe<MovieActorsConnectionWhere>;
-              /** @deprecated Use \`actorsConnection_NONE\` instead. */
-              actorsConnection_NOT?: InputMaybe<MovieActorsConnectionWhere>;
               actorsConnection_ALL?: InputMaybe<MovieActorsConnectionWhere>;
               actorsConnection_NONE?: InputMaybe<MovieActorsConnectionWhere>;
               actorsConnection_SINGLE?: InputMaybe<MovieActorsConnectionWhere>;
@@ -1430,16 +1411,12 @@ describe("generate", () => {
             export type PersonWhere = {
               OR?: InputMaybe<Array<PersonWhere>>;
               AND?: InputMaybe<Array<PersonWhere>>;
+              NOT?: InputMaybe<PersonWhere>;
               name?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
               name_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
-              name_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export interface StringAggregateInputNonNullable {
