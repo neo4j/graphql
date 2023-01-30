@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
                 CALL {
                     WITH this
                     WITH this AS this
-                    Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag) return pag SKIP ($limit * $pageIndex) LIMIT $limit
+                    Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag) return pag SKIP ($param0 * $param1) LIMIT $param0
                 }
                 WITH pag AS this_hasFeedItems
                 WITH *
@@ -109,11 +109,11 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"limit\\": {
+                \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"pageIndex\\": {
+                \\"param1\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
                 }

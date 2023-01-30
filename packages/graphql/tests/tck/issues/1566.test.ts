@@ -89,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
                     WITH this
                     WITH this AS this
                     Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)
-                       return pag SKIP ($limit * $pageIndex) LIMIT $limit
+                       return pag SKIP ($param1 * $param2Index) LIMIT $param1
                 }
                 WITH pag AS this_hasFeedItems
                 WITH *
