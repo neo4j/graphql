@@ -272,6 +272,72 @@ describe("Connect using aggregate where", () => {
         );
         expect(storedValue.records).toHaveLength(2);
     });
+
+    test("should connect when using count, edge and node filters with NOT", async () => {
+        const query = `
+            mutation {
+                ${userType.operations.update}(
+                    where: { name: "${userName}" }
+                    update: { 
+                        likedPosts: {
+                            connect: {
+                                where: { 
+                                    node: {
+                                        likesAggregate: {
+                                            AND: [
+                                                {   
+                                                    edge: {
+                                                        likedAt_MIN_LTE: "${date2.toISOString()}" 
+                                                    }
+                                                },
+                                                {
+                                                    node: {
+                                                        NOT: { name_SHORTEST_GTE: 2 } 
+                                                    }
+                                                    count: 2
+                                                }
+                                            ]
+                                        }
+                                    }
+                                } 
+                            } 
+                        } 
+                    }
+                ) {
+                    ${userType.plural} {
+                        name
+                        likedPosts {
+                            id
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
+        expect(users).toEqual([
+            {
+                name: userName,
+                likedPosts: expect.toIncludeSameMembers([{ id: postId1 }, { id: postId2 }]),
+            },
+        ]);
+        const storedValue = await session.run(
+            `
+            MATCH (u:${userType.name})-[r:LIKES]->(p:${postType.name}) 
+            WHERE u.name = "${userName}" 
+            RETURN p
+            `,
+            {}
+        );
+        expect(storedValue.records).toHaveLength(2);
+    });
 });
 
 describe("Connect UNIONs using aggregate where", () => {

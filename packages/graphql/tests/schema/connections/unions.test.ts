@@ -109,11 +109,12 @@ describe("Unions", () => {
 
             input AuthorPublicationsBookConnectionWhere {
               AND: [AuthorPublicationsBookConnectionWhere!]
+              NOT: AuthorPublicationsBookConnectionWhere
               OR: [AuthorPublicationsBookConnectionWhere!]
               edge: WroteWhere
-              edge_NOT: WroteWhere
+              edge_NOT: WroteWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               node: BookWhere
-              node_NOT: BookWhere
+              node_NOT: BookWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input AuthorPublicationsBookCreateFieldInput {
@@ -198,11 +199,12 @@ describe("Unions", () => {
 
             input AuthorPublicationsJournalConnectionWhere {
               AND: [AuthorPublicationsJournalConnectionWhere!]
+              NOT: AuthorPublicationsJournalConnectionWhere
               OR: [AuthorPublicationsJournalConnectionWhere!]
               edge: WroteWhere
-              edge_NOT: WroteWhere
+              edge_NOT: WroteWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               node: JournalWhere
-              node_NOT: JournalWhere
+              node_NOT: JournalWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input AuthorPublicationsJournalCreateFieldInput {
@@ -268,16 +270,17 @@ describe("Unions", () => {
 
             input AuthorWhere {
               AND: [AuthorWhere!]
+              NOT: AuthorWhere
               OR: [AuthorWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               publicationsConnection: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Use \`publicationsConnection_SOME\` instead.\\")
               publicationsConnection_ALL: AuthorPublicationsConnectionWhere
@@ -307,6 +310,7 @@ describe("Unions", () => {
 
             input BookAuthorAggregateInput {
               AND: [BookAuthorAggregateInput!]
+              NOT: BookAuthorAggregateInput
               OR: [BookAuthorAggregateInput!]
               count: Int
               count_GT: Int
@@ -334,6 +338,10 @@ describe("Unions", () => {
             input BookAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
               edge: WroteCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: AuthorConnectWhere
             }
 
@@ -350,11 +358,12 @@ describe("Unions", () => {
 
             input BookAuthorConnectionWhere {
               AND: [BookAuthorConnectionWhere!]
+              NOT: BookAuthorConnectionWhere
               OR: [BookAuthorConnectionWhere!]
               edge: WroteWhere
-              edge_NOT: WroteWhere
+              edge_NOT: WroteWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               node: AuthorWhere
-              node_NOT: AuthorWhere
+              node_NOT: AuthorWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input BookAuthorCreateFieldInput {
@@ -374,6 +383,7 @@ describe("Unions", () => {
 
             input BookAuthorEdgeAggregationWhereInput {
               AND: [BookAuthorEdgeAggregationWhereInput!]
+              NOT: BookAuthorEdgeAggregationWhereInput
               OR: [BookAuthorEdgeAggregationWhereInput!]
               words_AVERAGE_EQUAL: Float
               words_AVERAGE_GT: Float
@@ -409,6 +419,7 @@ describe("Unions", () => {
 
             input BookAuthorNodeAggregationWhereInput {
               AND: [BookAuthorNodeAggregationWhereInput!]
+              NOT: BookAuthorNodeAggregationWhereInput
               OR: [BookAuthorNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -505,6 +516,7 @@ describe("Unions", () => {
 
             input BookWhere {
               AND: [BookWhere!]
+              NOT: BookWhere
               OR: [BookWhere!]
               author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
               authorAggregate: BookAuthorAggregateInput
@@ -527,11 +539,11 @@ describe("Unions", () => {
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -589,6 +601,7 @@ describe("Unions", () => {
 
             input JournalAuthorAggregateInput {
               AND: [JournalAuthorAggregateInput!]
+              NOT: JournalAuthorAggregateInput
               OR: [JournalAuthorAggregateInput!]
               count: Int
               count_GT: Int
@@ -616,6 +629,10 @@ describe("Unions", () => {
             input JournalAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
               edge: WroteCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: AuthorConnectWhere
             }
 
@@ -632,11 +649,12 @@ describe("Unions", () => {
 
             input JournalAuthorConnectionWhere {
               AND: [JournalAuthorConnectionWhere!]
+              NOT: JournalAuthorConnectionWhere
               OR: [JournalAuthorConnectionWhere!]
               edge: WroteWhere
-              edge_NOT: WroteWhere
+              edge_NOT: WroteWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               node: AuthorWhere
-              node_NOT: AuthorWhere
+              node_NOT: AuthorWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input JournalAuthorCreateFieldInput {
@@ -656,6 +674,7 @@ describe("Unions", () => {
 
             input JournalAuthorEdgeAggregationWhereInput {
               AND: [JournalAuthorEdgeAggregationWhereInput!]
+              NOT: JournalAuthorEdgeAggregationWhereInput
               OR: [JournalAuthorEdgeAggregationWhereInput!]
               words_AVERAGE_EQUAL: Float
               words_AVERAGE_GT: Float
@@ -691,6 +710,7 @@ describe("Unions", () => {
 
             input JournalAuthorNodeAggregationWhereInput {
               AND: [JournalAuthorNodeAggregationWhereInput!]
+              NOT: JournalAuthorNodeAggregationWhereInput
               OR: [JournalAuthorNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -787,6 +807,7 @@ describe("Unions", () => {
 
             input JournalWhere {
               AND: [JournalWhere!]
+              NOT: JournalWhere
               OR: [JournalWhere!]
               author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
               authorAggregate: JournalAuthorAggregateInput
@@ -809,11 +830,11 @@ describe("Unions", () => {
               subject_CONTAINS: String
               subject_ENDS_WITH: String
               subject_IN: [String!]
-              subject_NOT: String
-              subject_NOT_CONTAINS: String
-              subject_NOT_ENDS_WITH: String
-              subject_NOT_IN: [String!]
-              subject_NOT_STARTS_WITH: String
+              subject_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              subject_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              subject_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              subject_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              subject_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               subject_STARTS_WITH: String
             }
 
@@ -922,6 +943,7 @@ describe("Unions", () => {
 
             input WroteWhere {
               AND: [WroteWhere!]
+              NOT: WroteWhere
               OR: [WroteWhere!]
               words: Int
               words_GT: Int
@@ -929,8 +951,8 @@ describe("Unions", () => {
               words_IN: [Int!]
               words_LT: Int
               words_LTE: Int
-              words_NOT: Int
-              words_NOT_IN: [Int!]
+              words_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              words_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }"
         `);
     });

@@ -385,13 +385,13 @@ describe("Cypher Union", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
             WITH this
-            OPTIONAL MATCH (this)-[this_search0_relationship:SEARCH]->(this_search_Genre0:Genre)
-            WHERE this_search_Genre0.name = $updateMovies_args_update_search_Genre0_where_Genreparam0
-            CALL apoc.do.when(this_search_Genre0 IS NOT NULL, \\"
-            SET this_search_Genre0.name = $this_update_search_Genre0_name
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateMovies: $updateMovies, this_search_Genre0:this_search_Genre0, auth:$auth,this_update_search_Genre0_name:$this_update_search_Genre0_name})
-            YIELD value AS _
+            CALL {
+            	WITH this
+            	MATCH (this)-[this_search0_relationship:SEARCH]->(this_search_Genre0:Genre)
+            	WHERE this_search_Genre0.name = $updateMovies_args_update_search_Genre0_where_Genreparam0
+            	SET this_search_Genre0.name = $this_update_search_Genre0_name
+            	RETURN count(*) AS update_this_search_Genre0
+            }
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
@@ -400,13 +400,6 @@ describe("Cypher Union", () => {
                 \\"param0\\": \\"some movie\\",
                 \\"updateMovies_args_update_search_Genre0_where_Genreparam0\\": \\"some genre\\",
                 \\"this_update_search_Genre0_name\\": \\"some new genre\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
-                },
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {

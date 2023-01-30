@@ -252,6 +252,51 @@ describe("Nested within AND/OR", () => {
         });
     });
 
+    test("AND within an AND with NOT", async () => {
+        const query = `
+            query {
+                ${postType.plural}(where: { 
+                    likesAggregate: {
+                        AND: [
+                            { NOT: { count_GT: 2 } }
+                            {
+                                AND: [
+                                    {
+                                        node: {
+                                            NOT: { testString_SHORTEST_GT: 4 }
+                                        }
+                                    }
+                                    {
+                                        node: {
+                                            testString_EQUAL: "${testString5}"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }) {
+                    content
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [postType.plural]: expect.toIncludeSameMembers([
+                {
+                    content: content5,
+                },
+            ]),
+        });
+    });
+
     test("OR within an OR", async () => {
         const query = `
             query {
@@ -318,6 +363,54 @@ describe("Nested within AND/OR", () => {
                                     {
                                         node: {
                                             testString_SHORTEST_LT: 4
+                                        }
+                                    }
+                                    {
+                                        node: {
+                                            testString_EQUAL: "${testString5}"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }) {
+                    content
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [postType.plural]: expect.toIncludeSameMembers([
+                {
+                    content: content4,
+                },
+                {
+                    content: content5,
+                },
+            ]),
+        });
+    });
+
+    test("OR within an AND with NOT", async () => {
+        const query = `
+            query {
+                ${postType.plural}(where: { 
+                    likesAggregate: {
+                        AND: [
+                            { NOT: { count_GT: 2 } }
+                            {
+                                OR: [
+                                    {
+                                        node: {
+                                            NOT: { testString_SHORTEST_GT: 4 }
                                         }
                                     }
                                     {

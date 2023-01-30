@@ -128,6 +128,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input GenreMoviesAggregateInput {
               AND: [GenreMoviesAggregateInput!]
+              NOT: GenreMoviesAggregateInput
               OR: [GenreMoviesAggregateInput!]
               count: Int
               count_GT: Int
@@ -139,6 +140,10 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input GenreMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: MovieConnectWhere
             }
 
@@ -154,9 +159,10 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input GenreMoviesConnectionWhere {
               AND: [GenreMoviesConnectionWhere!]
+              NOT: GenreMoviesConnectionWhere
               OR: [GenreMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input GenreMoviesCreateFieldInput {
@@ -180,6 +186,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input GenreMoviesNodeAggregationWhereInput {
               AND: [GenreMoviesNodeAggregationWhereInput!]
+              NOT: GenreMoviesNodeAggregationWhereInput
               OR: [GenreMoviesNodeAggregationWhereInput!]
               imdbRating_AVERAGE_EQUAL: Float
               imdbRating_AVERAGE_GT: Float
@@ -298,6 +305,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input GenreWhere {
               AND: [GenreWhere!]
+              NOT: GenreWhere
               OR: [GenreWhere!]
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: GenreMoviesAggregateInput
@@ -320,11 +328,11 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -396,6 +404,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input MovieGenresAggregateInput {
               AND: [MovieGenresAggregateInput!]
+              NOT: MovieGenresAggregateInput
               OR: [MovieGenresAggregateInput!]
               count: Int
               count_GT: Int
@@ -407,6 +416,10 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input MovieGenresConnectFieldInput {
               connect: [GenreConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: GenreConnectWhere
             }
 
@@ -422,9 +435,10 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input MovieGenresConnectionWhere {
               AND: [MovieGenresConnectionWhere!]
+              NOT: MovieGenresConnectionWhere
               OR: [MovieGenresConnectionWhere!]
               node: GenreWhere
-              node_NOT: GenreWhere
+              node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieGenresCreateFieldInput {
@@ -448,6 +462,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input MovieGenresNodeAggregationWhereInput {
               AND: [MovieGenresNodeAggregationWhereInput!]
+              NOT: MovieGenresNodeAggregationWhereInput
               OR: [MovieGenresNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -526,6 +541,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
               genresAggregate: MovieGenresAggregateInput @deprecated(reason: \\"Do not use genre\\")
@@ -550,8 +566,8 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               imdbRating_IN: [Float]
               imdbRating_LT: Float
               imdbRating_LTE: Float
-              imdbRating_NOT: Float
-              imdbRating_NOT_IN: [Float]
+              imdbRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              imdbRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title: String @deprecated(reason: \\"Do not use title\\")
               title_CONTAINS: String @deprecated(reason: \\"Do not use title\\")
               title_ENDS_WITH: String @deprecated(reason: \\"Do not use title\\")
@@ -568,8 +584,8 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               year_IN: [Int]
               year_LT: Int
               year_LTE: Int
-              year_NOT: Int
-              year_NOT_IN: [Int]
+              year_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              year_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {

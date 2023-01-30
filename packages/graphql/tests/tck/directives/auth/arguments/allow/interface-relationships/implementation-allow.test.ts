@@ -209,48 +209,48 @@ describe("@auth allow on specific interface implementation", () => {
             CALL {
             	 WITH this
             WITH this
-            OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
-            CALL apoc.do.when(this_content0 IS NOT NULL, \\"
-            SET this_content0.id = $this_update_content0_id
-            WITH this, this_content0
             CALL {
-            	WITH this_content0
-            	MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
-            	WITH count(this_content0_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required', [0])
-            	RETURN c AS this_content0_creator_User_unique_ignored
+            	WITH this
+            	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
+            	SET this_content0.id = $this_update_content0_id
+            	WITH this, this_content0
+            	CALL {
+            		WITH this_content0
+            		MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
+            		WITH count(this_content0_creator_User_unique) as c
+            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required exactly once', [0])
+            		RETURN c AS this_content0_creator_User_unique_ignored
+            	}
+            	CALL {
+            		WITH this_content0
+            		MATCH (this_content0)<-[this_content0_post_Post_unique:HAS_COMMENT]-(:Post)
+            		WITH count(this_content0_post_Post_unique) as c
+            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required exactly once', [0])
+            		RETURN c AS this_content0_post_Post_unique_ignored
+            	}
+            	RETURN count(*) AS update_this_content0
             }
-            CALL {
-            	WITH this_content0
-            	MATCH (this_content0)<-[this_content0_post_Post_unique:HAS_COMMENT]-(:Post)
-            	WITH count(this_content0_post_Post_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required', [0])
-            	RETURN c AS this_content0_post_Post_unique_ignored
-            }
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id})
-            YIELD value AS _
             RETURN count(*) AS update_this_Comment
             }
             CALL {
             	 WITH this
             	WITH this
-            OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
-            CALL apoc.do.when(this_content0 IS NOT NULL, \\"
-            WITH this, this_content0
-            CALL apoc.util.validate(NOT ((exists((this_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content0auth_param0)))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
-            SET this_content0.id = $this_update_content0_id
-            WITH this, this_content0
             CALL {
-            	WITH this_content0
-            	MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
-            	WITH count(this_content0_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
-            	RETURN c AS this_content0_creator_User_unique_ignored
+            	WITH this
+            	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
+            	WITH this, this_content0
+            	CALL apoc.util.validate(NOT ((exists((this_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	SET this_content0.id = $this_update_content0_id
+            	WITH this, this_content0
+            	CALL {
+            		WITH this_content0
+            		MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
+            		WITH count(this_content0_creator_User_unique) as c
+            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
+            		RETURN c AS this_content0_creator_User_unique_ignored
+            	}
+            	RETURN count(*) AS update_this_content0
             }
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id,this_content0auth_param0:$this_content0auth_param0})
-            YIELD value AS _
             RETURN count(*) AS update_this_Post
             }
             WITH *
@@ -277,34 +277,7 @@ describe("@auth allow on specific interface implementation", () => {
                 \\"update_param0\\": \\"user-id\\",
                 \\"param0\\": \\"user-id\\",
                 \\"this_update_content0_id\\": \\"new-id\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"user-id\\"
-                    }
-                },
                 \\"this_content0auth_param0\\": \\"user-id\\",
-                \\"updateUsers\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"content\\": [
-                                {
-                                    \\"update\\": {
-                                        \\"node\\": {
-                                            \\"id\\": \\"new-id\\"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
                 \\"resolvedCallbacks\\": {}
             }"
         `);

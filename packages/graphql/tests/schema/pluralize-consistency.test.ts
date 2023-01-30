@@ -177,16 +177,17 @@ describe("Pluralize consistency", () => {
 
             input super_friendWhere {
               AND: [super_friendWhere!]
+              NOT: super_friendWhere
               OR: [super_friendWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -226,6 +227,7 @@ describe("Pluralize consistency", () => {
 
             input super_userMy_friendAggregateInput {
               AND: [super_userMy_friendAggregateInput!]
+              NOT: super_userMy_friendAggregateInput
               OR: [super_userMy_friendAggregateInput!]
               count: Int
               count_GT: Int
@@ -236,6 +238,10 @@ describe("Pluralize consistency", () => {
             }
 
             input super_userMy_friendConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: super_friendConnectWhere
             }
 
@@ -251,9 +257,10 @@ describe("Pluralize consistency", () => {
 
             input super_userMy_friendConnectionWhere {
               AND: [super_userMy_friendConnectionWhere!]
+              NOT: super_userMy_friendConnectionWhere
               OR: [super_userMy_friendConnectionWhere!]
               node: super_friendWhere
-              node_NOT: super_friendWhere
+              node_NOT: super_friendWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input super_userMy_friendCreateFieldInput {
@@ -275,6 +282,7 @@ describe("Pluralize consistency", () => {
 
             input super_userMy_friendNodeAggregationWhereInput {
               AND: [super_userMy_friendNodeAggregationWhereInput!]
+              NOT: super_userMy_friendNodeAggregationWhereInput
               OR: [super_userMy_friendNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -343,6 +351,7 @@ describe("Pluralize consistency", () => {
 
             input super_userWhere {
               AND: [super_userWhere!]
+              NOT: super_userWhere
               OR: [super_userWhere!]
               my_friend: super_friendWhere @deprecated(reason: \\"Use \`my_friend_SOME\` instead.\\")
               my_friendAggregate: super_userMy_friendAggregateInput
@@ -373,11 +382,11 @@ describe("Pluralize consistency", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 

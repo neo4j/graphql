@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/354", () => {
             });
 
             expect(result.errors).toBeTruthy();
-            expect((result.errors as any[])[0].message).toBe(`${testComment.name}.post required`);
+            expect((result.errors as any[])[0].message).toBe(`${testComment.name}.post required exactly once`);
         } finally {
             await session.close();
         }

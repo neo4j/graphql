@@ -2126,6 +2126,104 @@ describe("Advanced Filtering", () => {
                 });
             });
 
+            describe("on relationship using NOT operator", () => {
+                const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => `
+                    query($movieIds: [ID!]!) {
+                        movies(where: { AND: [{ id_IN: $movieIds }, { actors_${predicate}: { NOT: { flag: false } } }] }) {
+                            id
+                            actors(where: { NOT: { flag: false } }) {
+                                id
+                                flag
+                            }
+                        }
+                    }
+                `;
+
+                test("ALL", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("ALL"),
+                        contextValue: neo4j.getContextValues(),
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies = gqlResult.data?.movies;
+
+                    expect(gqlMovies).toHaveLength(1);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[0].id,
+                        actors: expect.toIncludeSameMembers([actors[0], actors[2]]),
+                    });
+                });
+
+                test("NONE", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("NONE"),
+                        contextValue: neo4j.getContextValues(),
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies = gqlResult.data?.movies;
+
+                    expect(gqlMovies).toHaveLength(1);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[2].id,
+                        actors: [],
+                    });
+                });
+
+                test("SINGLE", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("SINGLE"),
+                        contextValue: neo4j.getContextValues(),
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies = gqlResult.data?.movies;
+
+                    expect(gqlMovies).toHaveLength(1);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[1].id,
+                        actors: expect.toIncludeSameMembers([actors[2]]),
+                    });
+                });
+
+                test("SOME", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("SOME"),
+                        contextValue: neo4j.getContextValues(),
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies = gqlResult.data?.movies;
+
+                    expect(gqlMovies).toHaveLength(3);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[0].id,
+                        actors: expect.toIncludeSameMembers([actors[0], actors[2]]),
+                    });
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[1].id,
+                        actors: expect.toIncludeSameMembers([actors[2]]),
+                    });
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[3].id,
+                        actors: expect.toIncludeSameMembers([actors[0], actors[2]]),
+                    });
+                });
+            });
+
             describe("on connection", () => {
                 const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => `
                     query($movieIds: [ID!]!) {
@@ -2223,8 +2321,106 @@ describe("Advanced Filtering", () => {
                     });
                 });
             });
-        });
 
+            describe("on connection using NOT operator", () => {
+                const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => `
+                    query($movieIds: [ID!]!) {
+                        movies(where: { AND: [{ id_IN: $movieIds }, { actorsConnection_${predicate}: { node: { NOT: { flag: false } } } }] }) {
+                            id
+                            actors(where: { NOT: { flag: false }}) {
+                                id
+                                flag
+                            }
+                        }
+                    }
+                `;
+
+                test("ALL", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("ALL"),
+                        contextValue: neo4j.getContextValues(),
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies = gqlResult.data?.movies;
+
+                    expect(gqlMovies).toHaveLength(1);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[0].id,
+                        actors: expect.toIncludeSameMembers([actors[0], actors[2]]),
+                    });
+                });
+
+                test("NONE", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("NONE"),
+                        contextValue: neo4j.getContextValues(),
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies = gqlResult.data?.movies;
+
+                    expect(gqlMovies).toHaveLength(1);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[2].id,
+                        actors: [],
+                    });
+                });
+
+                test("SINGLE", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("SINGLE"),
+                        contextValue: neo4j.getContextValues(),
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies = gqlResult.data?.movies;
+
+                    expect(gqlMovies).toHaveLength(1);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[1].id,
+                        actors: expect.toIncludeSameMembers([actors[2]]),
+                    });
+                });
+
+                test("SOME", async () => {
+                    const gqlResult = await graphql({
+                        schema,
+                        source: generateQuery("SOME"),
+                        contextValue: neo4j.getContextValues(),
+                        variableValues: { movieIds: movies.map(({ id }) => id) },
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const gqlMovies = gqlResult.data?.movies;
+
+                    expect(gqlMovies).toHaveLength(3);
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[0].id,
+                        actors: expect.toIncludeSameMembers([actors[0], actors[2]]),
+                    });
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[1].id,
+                        actors: expect.toIncludeSameMembers([actors[2]]),
+                    });
+                    expect(gqlMovies).toContainEqual({
+                        id: movies[3].id,
+                        actors: expect.toIncludeSameMembers([actors[0], actors[2]]),
+                    });
+                });
+            });
+        });
+        
         test("should test for not null", async () => {
             const session = await neo4j.getSession();
 

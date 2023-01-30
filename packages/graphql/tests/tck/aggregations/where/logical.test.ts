@@ -63,7 +63,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN count(this1) > $param0 AS var2, count(this1) < $param1 AS var3
             }
             WITH *
@@ -103,7 +103,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN count(this1) > $param0 AS var2, count(this1) < $param1 AS var3
             }
             WITH *
@@ -119,6 +119,42 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
                 },
                 \\"param1\\": {
                     \\"low\\": 20,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("NOT", async () => {
+        const query = gql`
+            {
+                posts(where: { likesAggregate: { NOT: { count_GT: 10 } } }) {
+                    content
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Post\`)
+            CALL {
+                WITH this
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
+                RETURN count(this1) > $param0 AS var2
+            }
+            WITH *
+            WHERE NOT (var2 = true)
+            RETURN this { .content } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 10,
                     \\"high\\": 0
                 }
             }"
@@ -150,7 +186,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN count(this1) > $param0 AS var2, count(this1) < $param1 AS var3, count(this1) > $param2 AS var4, count(this1) < $param3 AS var5
             }
             WITH *
