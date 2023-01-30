@@ -38,7 +38,7 @@ describe("Cypher Advanced Filtering", () => {
                 budget: BigInt
                 genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
             }
-
+            
             type Genre {
                 name: String
                 movies: [Movie!]! @relationship(type: "IN_GENRE", direction: IN)
@@ -159,7 +159,7 @@ describe("Cypher Advanced Filtering", () => {
     test("NOT IN", async () => {
         const query = gql`
             {
-                movies(where: { NOT: { id_IN: ["123"] }}) {
+                movies(where: { NOT: { id_IN: ["123"] } }) {
                     id
                 }
             }
@@ -215,7 +215,7 @@ describe("Cypher Advanced Filtering", () => {
     test("NOT CONTAINS", async () => {
         const query = gql`
             {
-                movies(where: { NOT: { id_CONTAINS: "123" }}) {
+                movies(where: { NOT: { id_CONTAINS: "123" } }) {
                     id
                 }
             }
@@ -880,7 +880,7 @@ describe("Cypher Advanced Filtering", () => {
         test("Node and relationship properties NOT", async () => {
             const query = gql`
                 {
-                    movies(where: { genresConnection: { NOT: { node: { name: "some genre" } } } }) {
+                    movies(where: { NOT: { genresConnection: { node: { name: "some genre" } } } }) {
                         actorCount
                     }
                 }

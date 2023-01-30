@@ -93,7 +93,7 @@ describe("Cypher NULL", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title IS NOT NULL
+            WHERE NOT (this.title IS NULL)
             RETURN this { .title } AS this"
         `);
 
@@ -128,7 +128,7 @@ describe("Cypher NULL", () => {
     test("Simple relationship IS NOT NULL", async () => {
         const query = gql`
             query {
-                movies(where: { NOT: { actors: null }}) {
+                movies(where: { NOT: { actors: null } }) {
                     title
                 }
             }
@@ -141,9 +141,9 @@ describe("Cypher NULL", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE EXISTS {
+            WHERE NOT (NOT (EXISTS {
                 MATCH (this0:\`Actor\`)-[:ACTED_IN]->(this)
-            }
+            }))
             RETURN this { .title } AS this"
         `);
 
