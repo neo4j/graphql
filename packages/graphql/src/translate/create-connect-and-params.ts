@@ -195,7 +195,7 @@ function createConnectAndParams({
         if (!fromCreate) nodeMatrix.push({ node: parentNode, name: parentVar });
 
         const preAuth = nodeMatrix.reduce(
-            (result: Res, { node, name }, i) => {
+            (result: Res, { node, name }) => {
                 if (!node.auth) {
                     return result;
                 }
@@ -457,7 +457,7 @@ function createConnectAndParams({
         }
 
         const postAuth = [...(!fromCreate ? [parentNode] : []), relatedNode].reduce(
-            (result: Res, node, i) => {
+            (result: Res, node) => {
                 if (!node.auth) {
                     return result;
                 }

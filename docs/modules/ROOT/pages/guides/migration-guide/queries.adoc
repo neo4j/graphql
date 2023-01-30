@@ -74,35 +74,23 @@ When discussing how the field `where` of type `MovieWhere` differs to the field 
 |`OR: [_MovieFilter!]`
 |`OR: [MovieWhere!]`
 
-|`title: String`
-|`title: String`
+|`NOT: _MovieFilter!`
+|`NOT: MovieWhere!`
 
-|`title_not: String`
-|`title_NOT: String`
+|`title: String`
+|`title: String`
 
 |`title_in: [String!]`
 |`title_IN: [String!]`
 
-|`title_not_in: [String!]`
-|`title_NOT_IN: [String!]`
-
 |`title_contains: String`
 |`title_CONTAINS: String`
-
-|`title_not_contains: String`
-|`title_NOT_CONTAINS: String`
 
 |`title_starts_with: String`
 |`title_STARTS_WITH: String`
 
-|`title_not_starts_with: String`
-|`title_NOT_STARTS_WITH: String`
-
 |`title_ends_with: String`
 |`title_ENDS_WITH: String`
-
-|`title_not_ends_with: String`
-|`title_NOT_ENDS_WITH: String`
 
 |`title_regexp: String`
 |`title_MATCHES: String`
@@ -110,14 +98,8 @@ When discussing how the field `where` of type `MovieWhere` differs to the field 
 |`averageRating: Float`
 |`averageRating: Float`
 
-|`averageRating_not: Float`
-|`averageRating_NOT: Float`
-
 |`averageRating_in: [Float!]`
 |`averageRating_IN: [Float]`
-
-|`averageRating_not_in: [Float!]`
-|`averageRating_NOT_IN: [Float]`
 
 |`averageRating_lt: Float`
 |`averageRating_LT: Float`

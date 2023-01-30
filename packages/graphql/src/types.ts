@@ -264,6 +264,7 @@ export interface GraphQLWhereArg {
     [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
     AND?: GraphQLWhereArg[];
     OR?: GraphQLWhereArg[];
+    NOT?: GraphQLWhereArg;
 }
 
 export interface ConnectionWhereArg {
@@ -273,6 +274,7 @@ export interface ConnectionWhereArg {
     edge_NOT?: GraphQLWhereArg;
     AND?: ConnectionWhereArg[];
     OR?: ConnectionWhereArg[];
+    NOT?: ConnectionWhereArg;
 }
 
 export interface InterfaceWhereArg {
