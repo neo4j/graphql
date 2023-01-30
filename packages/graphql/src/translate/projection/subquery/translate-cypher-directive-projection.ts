@@ -147,7 +147,6 @@ export function translateCypherDirectiveProjection({
         }
     }
 
-    let customCypherClause: Cypher.Clause | undefined;
     const nodeRef = new Cypher.NamedNode(chainStr);
 
     // Null default argument values are not passed into the resolve tree therefore these are not being passed to
@@ -161,23 +160,12 @@ export function translateCypherDirectiveProjection({
     );
     const extraArgs = { ...nullArgumentValues, ...field.args };
 
-    if (!cypherField.columnName) {
-        const runCypherInApocClause = createCypherDirectiveApocProcedure({
-            nodeRef,
-            expectMultipleValues,
-            context,
-            cypherField,
-            extraArgs,
-        });
-        customCypherClause = new Cypher.Unwind([runCypherInApocClause, param]);
-    } else {
-        customCypherClause = createCypherDirectiveSubquery({
-            cypherField,
-            nodeRef,
-            resultVariable: param,
-            extraArgs,
-        });
-    }
+    const customCypherClause = createCypherDirectiveSubquery({
+        cypherField,
+        nodeRef,
+        resultVariable: param,
+        extraArgs,
+    });
 
     const unionExpression = hasUnionLabelsPredicate ? new Cypher.With("*").where(hasUnionLabelsPredicate) : undefined;
 
@@ -210,40 +198,6 @@ export function translateCypherDirectiveProjection({
     return res;
 }
 
-function createCypherDirectiveApocProcedure({
-    cypherField,
-    expectMultipleValues,
-    context,
-    nodeRef,
-    extraArgs,
-}: {
-    cypherField: CypherField;
-    expectMultipleValues: boolean;
-    context: Context;
-    nodeRef: Cypher.Node;
-    extraArgs: Record<string, any>;
-}): Cypher.apoc.RunFirstColumn {
-    const rawApocParams = Object.entries(extraArgs);
-
-    const apocParams: Record<string, Cypher.Param> = rawApocParams.reduce((acc, [key, value]) => {
-        acc[key] = new Cypher.Param(value);
-        return acc;
-    }, {});
-
-    const apocParamsMap = new Cypher.Map({
-        ...apocParams,
-        this: nodeRef,
-        ...(context.auth && { auth: new Cypher.NamedParam("auth") }),
-        ...(Boolean(context.cypherParams) && { cypherParams: new Cypher.NamedParam("cypherParams") }),
-    });
-    const apocClause = new Cypher.apoc.RunFirstColumn(
-        cypherField.statement,
-        apocParamsMap,
-        Boolean(expectMultipleValues)
-    );
-    return apocClause;
-}
-
 function createCypherDirectiveSubquery({
     cypherField,
     nodeRef,
@@ -256,7 +210,16 @@ function createCypherDirectiveSubquery({
     extraArgs: Record<string, any>;
 }): Cypher.Clause {
     const innerWithAlias = new Cypher.With([nodeRef, new Cypher.NamedNode("this")]);
-    const rawCypher = new Cypher.RawCypher(cypherField.statement);
+    const rawCypher = new Cypher.RawCypher((env) => {
+        let statement = cypherField.statement;
+        for (const [key, value] of Object.entries(extraArgs)) {
+            const param = new Cypher.Param(value);
+            const paramName = param.getCypher(env);
+            statement = statement.replaceAll(`$${key}`, `${paramName}`);
+        }
+        return statement;
+    });
+
     const callClause = new Cypher.Call(Cypher.concat(innerWithAlias, rawCypher)).innerWith(nodeRef);
 
     if (cypherField.columnName) {
@@ -268,12 +231,7 @@ function createCypherDirectiveSubquery({
             callClause.with([columnVariable, resultVariable]);
         }
     }
-    return Cypher.concat(
-        callClause,
-        new Cypher.RawCypher(() => {
-            return ["", extraArgs];
-        })
-    );
+    return callClause;
 }
 
 function createReturnClause({

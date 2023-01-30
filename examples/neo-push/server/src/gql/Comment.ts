@@ -21,6 +21,7 @@ export const typeDefs = gql`
                 ) AS canDelete
                 RETURN canDelete
                 """
+                columnName: "canDelete"
             )
         createdAt: DateTime @timestamp(operations: [CREATE])
         updatedAt: DateTime @timestamp(operations: [UPDATE])

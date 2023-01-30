@@ -45,8 +45,9 @@ describe("Default values", () => {
               field(skip: Int = 100): Int
                 @cypher(
                     statement: """
-                    return $skip
-                    """
+                    return $skip as s
+                    """,
+                    columnName: "s"
                 )
             }
         `;
@@ -102,8 +103,9 @@ describe("Default values", () => {
                 field(skip: Int = 100): Int
                 @cypher(
                     statement: """
-                    return $skip
-                    """
+                    return $skip as s
+                    """,
+                    columnName: "s"
                 )
             }
         `;

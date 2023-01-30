@@ -47,6 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
                     RETURN movie
                     LIMIT $limit
                     """
+                    columnName: "movie"
                 )
         }
     `;

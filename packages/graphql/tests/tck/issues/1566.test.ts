@@ -50,6 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
                         Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)
                            return pag SKIP ($limit * $pageIndex) LIMIT $limit
                         """
+                        columnName: "pag"
                     )
             }
         `;
@@ -84,8 +85,13 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
             WHERE this.id = $param0
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnMany(\\"Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)
-                   return pag SKIP ($limit * $pageIndex) LIMIT $limit\\", { limit: $param1, page: $param2, this: this, auth: $auth }) AS this_hasFeedItems
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)
+                       return pag SKIP ($limit * $pageIndex) LIMIT $limit
+                }
+                WITH pag AS this_hasFeedItems
                 WITH *
                 WHERE (this_hasFeedItems:\`Content\` OR this_hasFeedItems:\`Project\`)
                 RETURN collect(CASE

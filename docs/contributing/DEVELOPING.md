@@ -113,6 +113,14 @@ run the following from `packages/graphql`:
 yarn test:tck
 ```
 
+### Verify TCK Tests
+
+You can run all the TCK tests against the database to check that the Cypher generated is valid. This can be done with the env variable `VERIFY_TCK`
+
+```bash
+VERIFY_TCK yarn test:tck
+```
+
 ### Testing using docker
 
 ```bash

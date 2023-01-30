@@ -117,4 +117,64 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
             }"
         `);
     });
+
+    test("Composite NOT", async () => {
+        const query = gql`
+            query {
+                movies(where: { title: "Forrest Gump" }) {
+                    title
+                    actorsConnection(
+                        where: {
+                            node: { NOT: { firstName: "Tom", lastName: "Hanks" } }
+                            edge: { NOT: { screenTime_GT: 30, screenTime_LT: 90 } }
+                        }
+                    ) {
+                        edges {
+                            screenTime
+                            node {
+                                firstName
+                                lastName
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
+            CALL {
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE (NOT (this_connection_actorsConnectionthis0.screenTime < $this_connection_actorsConnectionparam0 AND this_connection_actorsConnectionthis0.screenTime > $this_connection_actorsConnectionparam1) AND NOT (this_Actor.firstName = $this_connection_actorsConnectionparam2 AND this_Actor.lastName = $this_connection_actorsConnectionparam3))
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { firstName: this_Actor.firstName, lastName: this_Actor.lastName } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+            }
+            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"this_connection_actorsConnectionparam0\\": {
+                    \\"low\\": 90,
+                    \\"high\\": 0
+                },
+                \\"this_connection_actorsConnectionparam1\\": {
+                    \\"low\\": 30,
+                    \\"high\\": 0
+                },
+                \\"this_connection_actorsConnectionparam2\\": \\"Tom\\",
+                \\"this_connection_actorsConnectionparam3\\": \\"Hanks\\"
+            }"
+        `);
+    });
 });

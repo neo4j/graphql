@@ -12,6 +12,7 @@ type Query {
             ORDER BY p.position ASC
             RETURN collect(color) as canvas
             """
+            columnName: "canvas"
         )
         @auth(rules: [{ isAuthenticated: true }])
 }

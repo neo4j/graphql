@@ -592,7 +592,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Query {
-                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u") @auth(rules: [{ isAuthenticated: true }])
+                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u", columnName:"u") @auth(rules: [{ isAuthenticated: true }])
                 }
             `;
 
@@ -635,7 +635,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Mutation {
-                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u") @auth(rules: [{ isAuthenticated: true }])
+                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u", columnName: "u") @auth(rules: [{ isAuthenticated: true }])
                 }
             `;
 
@@ -680,7 +680,7 @@ describe("auth/is-authenticated", () => {
                 type ${User} {
                     id: ID
                     history: [${History}]
-                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h")
+                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h", columnName: "h")
                         @auth(rules: [{ operations: [READ], isAuthenticated: true }])
                 }
             `;

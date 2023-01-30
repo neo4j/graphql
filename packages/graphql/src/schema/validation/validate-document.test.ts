@@ -171,6 +171,7 @@ describe("validateDocument", () => {
                           post.id = randomUUID()
                         RETURN post
                         """
+                        columnName: "post"
                     )
             }
 
@@ -277,6 +278,7 @@ describe("validateDocument", () => {
                                       s.salaryReviewDate = salary.salaryReviewDate
                         RETURN s
                         """
+                        columnName: "s"
                     )
 
                 mergeEmploymentRecords(employmentRecords: [EmpRecord]): [EmploymentRecord]
@@ -303,6 +305,7 @@ describe("validateDocument", () => {
                         MERGE (er)-[:PAYS_SALARY]->(s)
                         RETURN er
                         """
+                        columnName: "er"
                     )
             }
         `;
@@ -319,7 +322,7 @@ describe("validateDocument", () => {
                 }
 
                 type Query {
-                    nodes: [Test] @cypher(statement: "")
+                    nodes: [Test] @cypher(statement: "", columnName: "")
                 }
             `;
 
@@ -374,10 +377,15 @@ describe("validateDocument", () => {
                 }
 
                 extend type Order {
-                    subTotal: Float @cypher(statement: "MATCH (this)-[:CONTAINS]->(b:Book) RETURN sum(b.price)")
+                    subTotal: Float
+                        @cypher(
+                            statement: "MATCH (this)-[:CONTAINS]->(b:Book) RETURN sum(b.price) as result"
+                            columnName: "result"
+                        )
                     shippingCost: Float
                         @cypher(
-                            statement: "MATCH (this)-[:SHIPS_TO]->(a:Address) RETURN round(0.01 * distance(a.location, Point({latitude: 40.7128, longitude: -74.0060})) / 1000, 2)"
+                            statement: "MATCH (this)-[:SHIPS_TO]->(a:Address) RETURN round(0.01 * distance(a.location, Point({latitude: 40.7128, longitude: -74.0060})) / 1000, 2) as result"
+                            columnName: "result"
                         )
                     estimatedDelivery: DateTime @customResolver
                 }
@@ -389,6 +397,7 @@ describe("validateDocument", () => {
                     recommended(limit: Int = 3): [Book]
                         @cypher(
                             statement: "MATCH (this)-[:PLACED]->(:Order)-[:CONTAINS]->(:Book)<-[:CONTAINS]-(:Order)<-[:PLACED]-(c:Customer) MATCH (c)-[:PLACED]->(:Order)-[:CONTAINS]->(rec:Book) WHERE NOT exists((this)-[:PLACED]->(:Order)-[:CONTAINS]->(rec)) RETURN rec LIMIT $limit"
+                            columnName: "rec"
                         )
                 }
 
@@ -402,6 +411,7 @@ describe("validateDocument", () => {
                     currentWeather: Weather
                         @cypher(
                             statement: "CALL apoc.load.json('https://www.7timer.info/bin/civil.php?lon=' + this.location.longitude + '&lat=' + this.location.latitude + '&ac=0&unit=metric&output=json&tzshift=0') YIELD value WITH value.dataseries[0] as weather RETURN {temperature: weather.temp2m, windSpeed: weather.wind10m.speed, windDirection: weather.wind10m.direction, precipitation: weather.prec_type, summary: weather.weather} AS conditions"
+                            columnName: "conditions"
                         )
                 }
 
@@ -435,6 +445,7 @@ describe("validateDocument", () => {
                             ORDER BY jaccard DESC
                             RETURN b LIMIT 1
                             """
+                            columnName: "b"
                         )
                 }
 
@@ -467,6 +478,7 @@ describe("validateDocument", () => {
                             MERGE (t)-[:ABOUT]->(s)
                             RETURN s
                             """
+                            columnName: "s"
                         )
                 }
 
@@ -477,6 +489,7 @@ describe("validateDocument", () => {
                             CALL db.index.fulltext.queryNodes('bookIndex', $searchString+'~')
                             YIELD node RETURN node
                             """
+                            columnName: "node"
                         )
                 }
             `;

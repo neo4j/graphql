@@ -46,8 +46,8 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
               leadActorsCount: Int! @cypher(statement:"""
                 MATCH (this)<-[rel:ACTED_IN]-(a:${actorType.name})
                 WHERE rel.isLead = true
-                RETURN count(a)
-              """)
+                RETURN count(a) as result
+              """, columnName: "result")
           }
 
           type ${actorType.name} {

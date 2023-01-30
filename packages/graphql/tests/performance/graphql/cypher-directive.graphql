@@ -7,13 +7,3 @@ query TopLevelCypherDirective {
         }
     }
 }
-
-query TopLevelCypherDirectiveWithColumnName {
-    experimentalCustomCypher {
-        name
-        born
-        movies {
-            title
-        }
-    }
-}

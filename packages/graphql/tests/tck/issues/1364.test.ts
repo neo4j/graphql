@@ -46,15 +46,17 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                     @cypher(
                         statement: """
                         MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                        RETURN count(DISTINCT genre)
+                        RETURN count(DISTINCT genre) as result
                         """
+                        columnName: "result"
                     )
                 totalActors: Int!
                     @cypher(
                         statement: """
                         MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                        RETURN count(DISTINCT actor)
+                        RETURN count(DISTINCT actor) as result
                         """
+                        columnName: "result"
                     )
             }
 
@@ -65,8 +67,9 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                     @cypher(
                         statement: """
                         MATCH (this)<-[:HAS_GENRE]-(movie:Movie)
-                        RETURN count(DISTINCT movie)
+                        RETURN count(DISTINCT movie) as result
                         """
+                        columnName: "result"
                     )
             }
         `;
@@ -109,8 +112,13 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             ORDER BY this.title ASC
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                RETURN count(DISTINCT genre)\\", { this: this, auth: $auth }) AS this_totalGenres
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+                    RETURN count(DISTINCT genre) as result
+                }
+                UNWIND result AS this_totalGenres
                 RETURN head(collect(this_totalGenres)) AS this_totalGenres
             }
             WITH { node: this { .title, totalGenres: this_totalGenres } } AS edge, totalCount, this
@@ -144,8 +152,13 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             WITH this, totalCount
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                RETURN count(DISTINCT genre)\\", { this: this, auth: $auth }) AS this_totalGenres
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+                    RETURN count(DISTINCT genre) as result
+                }
+                UNWIND result AS this_totalGenres
                 RETURN head(collect(this_totalGenres)) AS this_totalGenres
             }
             WITH *
@@ -182,16 +195,26 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             WITH this, totalCount
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                RETURN count(DISTINCT genre)\\", { this: this, auth: $auth }) AS this_totalGenres
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+                    RETURN count(DISTINCT genre) as result
+                }
+                UNWIND result AS this_totalGenres
                 RETURN head(collect(this_totalGenres)) AS this_totalGenres
             }
             WITH *
             ORDER BY this_totalGenres ASC
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                RETURN count(DISTINCT actor)\\", { this: this, auth: $auth }) AS this_totalActors
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                    RETURN count(DISTINCT actor) as result
+                }
+                UNWIND result AS this_totalActors
                 RETURN head(collect(this_totalActors)) AS this_totalActors
             }
             WITH { node: this { .title, totalGenres: this_totalGenres, totalActors: this_totalActors } } AS edge, totalCount, this

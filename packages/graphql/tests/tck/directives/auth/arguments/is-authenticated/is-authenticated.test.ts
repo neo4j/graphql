@@ -60,7 +60,7 @@ describe("Cypher Auth isAuthenticated", () => {
 
             extend type User {
                 history: [History]
-                    @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
+                    @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h", columnName: "h")
                     @auth(rules: [{ operations: [READ], isAuthenticated: true }])
             }
         `;
@@ -178,7 +178,12 @@ describe("Cypher Auth isAuthenticated", () => {
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h\\", { this: this, auth: $auth }) AS this_history
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h
+                }
+                WITH h AS this_history
                 RETURN collect(this_history { .url }) AS this_history
             }
             RETURN this { history: this_history } AS this"
