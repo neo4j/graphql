@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/488", () => {
     let driver: Driver;
@@ -41,10 +41,10 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
     test("should return correct data based on issue", async () => {
         const session = await neo4j.getSession();
 
-        const testJournalist = generateUniqueType("Journalist");
-        const testEmoji = generateUniqueType("Emoji");
-        const testHashtag = generateUniqueType("Hashtag");
-        const testText = generateUniqueType("Text");
+        const testJournalist = new UniqueType("Journalist");
+        const testEmoji = new UniqueType("Emoji");
+        const testHashtag = new UniqueType("Hashtag");
+        const testText = new UniqueType("Text");
 
         const typeDefs = gql`
             type ${testJournalist.name} {

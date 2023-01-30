@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
-import { generateUniqueType } from "../../../../utils/graphql-types";
+import { UniqueType } from "../../../../utils/graphql-types";
 
 describe("aggregations-where-edge-string", () => {
     let driver: Driver;
@@ -1002,8 +1002,8 @@ describe("aggregations-where-edge-string", () => {
     });
 
     test("EQUAL with alias", async () => {
-        const Post = generateUniqueType("Post");
-        const User = generateUniqueType("Post");
+        const Post = new UniqueType("Post");
+        const User = new UniqueType("Post");
 
         const session = await neo4j.getSession();
 

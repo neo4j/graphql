@@ -24,8 +24,7 @@ import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import type { UniqueType } from "../../utils/graphql-types";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
 
 describe("interface relationships", () => {
@@ -44,9 +43,9 @@ describe("interface relationships", () => {
     });
 
     beforeEach(async () => {
-        typeMovie = generateUniqueType("Movie");
-        typeSeries = generateUniqueType("Series");
-        typeActor = generateUniqueType("Actor");
+        typeMovie = new UniqueType("Movie");
+        typeSeries = new UniqueType("Series");
+        typeActor = new UniqueType("Actor");
         session = await neo4j.getSession();
 
         const typeDefs = gql`

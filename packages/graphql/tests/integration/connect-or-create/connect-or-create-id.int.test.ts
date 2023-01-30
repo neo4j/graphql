@@ -24,7 +24,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
 
 describe("connect-or-create with @id", () => {
@@ -33,8 +33,8 @@ describe("connect-or-create with @id", () => {
     let session: Session;
     let typeDefs: DocumentNode;
 
-    const typeMovie = generateUniqueType("Movie");
-    const typeActor = generateUniqueType("Actor");
+    const typeMovie = new UniqueType("Movie");
+    const typeActor = new UniqueType("Actor");
 
     let neoSchema: Neo4jGraphQL;
 

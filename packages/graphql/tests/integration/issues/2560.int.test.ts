@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { cleanNodes } from "../../utils/clean-nodes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/2560", () => {
     let driver: Driver;
@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/2560", () => {
 
     test("should accept resolvers which are an array of objects - one resolver object", async () => {
         session = await neo4j.getSession();
-        User = generateUniqueType("User");
+        User = new UniqueType("User");
 
         const typeDefs = `
             type ${User} {
@@ -109,8 +109,8 @@ describe("https://github.com/neo4j/graphql/issues/2560", () => {
 
     test("should accept resolvers which are an array of objects - two resolver objects", async () => {
         session = await neo4j.getSession();
-        User = generateUniqueType("User");
-        Person = generateUniqueType("Person");
+        User = new UniqueType("User");
+        Person = new UniqueType("Person");
 
         const typeDefs = `
             type ${User} {

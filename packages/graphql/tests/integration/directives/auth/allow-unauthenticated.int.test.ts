@@ -25,7 +25,7 @@ import { IncomingMessage } from "http";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 
 // Reference: https://github.com/neo4j/graphql/pull/355
 // Reference: https://github.com/neo4j/graphql/issues/345
@@ -42,7 +42,7 @@ describe("auth/allow-unauthenticated", () => {
     });
 
     beforeEach(() => {
-        Post = generateUniqueType("Post");
+        Post = new UniqueType("Post");
     });
 
     afterAll(async () => {
@@ -398,7 +398,7 @@ describe("auth/allow-unauthenticated", () => {
 
     describe("allowUnauthenticated with bind", () => {
         test("should throw Forbiden error only", async () => {
-            const User = generateUniqueType("User");
+            const User = new UniqueType("User");
 
             const typeDefs = `
                 type ${User} {

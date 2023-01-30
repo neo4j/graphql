@@ -22,7 +22,7 @@ import { graphql, GraphQLSchema } from "graphql";
 import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("Connections Filtering", () => {
     let driver: Driver;
@@ -38,8 +38,8 @@ describe("Connections Filtering", () => {
     });
 
     beforeEach(async () => {
-        movieType = generateUniqueType("Movie");
-        actorType = generateUniqueType("Actor");
+        movieType = new UniqueType("Movie");
+        actorType = new UniqueType("Actor");
 
         const typeDefs = gql`
             type ${movieType} {
