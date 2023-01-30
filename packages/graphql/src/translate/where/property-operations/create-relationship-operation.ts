@@ -23,7 +23,6 @@ import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../create-where-predicate";
 import { getListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
-import type { GraphElement } from "../../../classes";
 
 export function createRelationshipOperation({
     relationField,
@@ -63,15 +62,17 @@ export function createRelationshipOperation({
         relationship: { variable: false },
     });
 
-    let newFoo;
+    let newTopLevelPattern: Cypher.RawCypher;
     if (!topLevelPattern) {
-        newFoo = new Cypher.RawCypher((env) => `OPTIONAL MATCH ${matchPattern.getCypher(env)}`);
+        newTopLevelPattern = new Cypher.RawCypher((env) => `OPTIONAL MATCH ${matchPattern.getCypher(env)}`);
     } else {
-        newFoo = new Cypher.RawCypher(
+        const startArrow = relationField.direction === "IN" ? "<-" : "-";
+        const endArrow = relationField.direction === "IN" ? "-" : "->";
+        newTopLevelPattern = new Cypher.RawCypher(
             (env) =>
-                `${topLevelPattern.getCypher(env)}-[:${relationField.type}]->(${childNode.getCypher(env)}:${
-                    childNode.labels
-                })`
+                `${topLevelPattern.getCypher(env)}${startArrow}[:${
+                    relationField.type
+                }]${endArrow}(${childNode.getCypher(env)}:${childNode.labels})`
         );
     }
 
@@ -100,7 +101,7 @@ export function createRelationshipOperation({
         // Nested properties here
         whereInput: value,
         topLevelNode: topLevelNode || parentNode,
-        topLevelPattern: newFoo,
+        topLevelPattern: newTopLevelPattern,
         targetElement: childNode,
         element: refNode,
         context,
@@ -125,7 +126,7 @@ export function createRelationshipOperation({
 
         return {
             predicate,
-            preComputedSubqueries: Cypher.concat(newFoo, preComputedSubqueries, aggregatingWithClause),
+            preComputedSubqueries: Cypher.concat(newTopLevelPattern, preComputedSubqueries, aggregatingWithClause),
             requiredVariables: [...requiredVariables, ...aggregatingVariables],
             aggregatingVariables: [],
         };
