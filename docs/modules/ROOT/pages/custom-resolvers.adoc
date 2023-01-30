@@ -95,6 +95,20 @@ const resolvers = {
 };
 ----
 
+These checks may not always be required or desirable. If this is the case, they can be disabled using the `startupValidation` config option:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: {
+          resolvers: false
+        },
+    },
+})
+----
+
 [[custom-resolvers-computed]]
 === `@computed`
 
