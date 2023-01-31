@@ -15,15 +15,25 @@ Install Rover from Apollo by following their https://www.apollographql.com/docs/
 
 The example subgraphs below assume that the database URI is stored in an environment variable "NEO4J_URI", and the password in "NEO4J_PASSWORD".
 
+Create a new directory, and within it, run the following commands to start a new npm project and install the dependencies:
+
+[source, bash, indent=0]
+----
+npm init --yes
+npm install @apollo/server @neo4j/graphql graphql-tag neo4j-driver
+----
+
 === Example subgraphs
 
 ==== Locations
+
+Create a file `locations.js` with the following contents:
 
 [source, javascript, indent=0]
 ----
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
-const { Neo4jGraphQL } = require("@neo4j/graphl");
+const { Neo4jGraphQL } = require("@neo4j/graphql");
 const gql = require("graphql-tag");
 const neo4j = require("neo4j-driver");
 
@@ -65,13 +75,17 @@ neo4jgraphql.getSubgraphSchema.then((schema) => {
 });
 ----
 
+Start this server by running `node locations.js`.
+
 ==== Reviews
+
+Create a file `reviews.js` with the following contents:
 
 [source, javascript, indent=0]
 ----
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
-const { Neo4jGraphQL } = require("@neo4j/graphl");
+const { Neo4jGraphQL } = require("@neo4j/graphql");
 const gql = require("graphql-tag");
 const neo4j = require("neo4j-driver");
 
@@ -120,6 +134,8 @@ neo4jgraphql.getSubgraphSchema.then((schema) => {
   });
 });
 ----
+
+Start this server by running `node reviews.js`.
 
 === Supergraph composition
 
