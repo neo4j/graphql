@@ -156,7 +156,7 @@ describe("Sort", () => {
               NOT: Node1RelatedToConnectionWhere
               OR: [Node1RelatedToConnectionWhere!]
               node: Node2Where
-              node_NOT: Node2Where @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: Node2Where @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input Node1RelatedToCreateFieldInput {
@@ -220,11 +220,11 @@ describe("Sort", () => {
               property_CONTAINS: String
               property_ENDS_WITH: String
               property_IN: [String!]
-              property_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              property_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              property_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              property_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              property_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              property_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              property_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              property_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              property_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              property_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               property_STARTS_WITH: String
               relatedTo: Node2Where @deprecated(reason: \\"Use \`relatedTo_SOME\` instead.\\")
               relatedToAggregate: Node1RelatedToAggregateInput
@@ -336,7 +336,7 @@ describe("Sort", () => {
               NOT: Node2RelatedToConnectionWhere
               OR: [Node2RelatedToConnectionWhere!]
               node: Node1Where
-              node_NOT: Node1Where @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: Node1Where @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input Node2RelatedToCreateFieldInput {
