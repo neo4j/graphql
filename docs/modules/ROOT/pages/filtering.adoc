@@ -384,7 +384,7 @@ query {
 
 ==== `ID`
 
-No Aggregation filters available for ID.
+No Aggregation filters are available for ID.
 
 ==== `String`
 
