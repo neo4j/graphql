@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Context, GraphQLWhereArg, RelationField, PredicateReturn } from "../../../types";
+import type { Context, GraphQLWhereArg, RelationField, PredicateReturn, OuterRelationshipData } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 
 import { createWherePredicate } from "../create-where-predicate";
@@ -31,6 +31,7 @@ export function createRelationshipOperation({
     operator,
     value,
     isNot,
+    outerRelationshipData,
 }: {
     relationField: RelationField;
     context: Context;
@@ -38,6 +39,7 @@ export function createRelationshipOperation({
     operator: string | undefined;
     value: GraphQLWhereArg;
     isNot: boolean;
+    outerRelationshipData: OuterRelationshipData[];
 }): PredicateReturn {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
@@ -72,15 +74,14 @@ export function createRelationshipOperation({
     if (listPredicateStr === "any" && !relationField.typeMeta.array) {
         listPredicateStr = "single";
     }
-    const {
-        predicate: innerOperation,
-        preComputedSubqueries,
-    } = createWherePredicate({
+    outerRelationshipData.push({ listPredicateType: listPredicateStr, outerPattern: matchPattern });
+    const { predicate: innerOperation, preComputedSubqueries } = createWherePredicate({
         // Nested properties here
         whereInput: value,
         targetElement: childNode,
         element: refNode,
         context,
+        outerRelationshipData,
     });
 
     const predicate = createRelationshipPredicate({
@@ -90,16 +91,20 @@ export function createRelationshipOperation({
         innerOperation,
     });
 
-    // if (aggregatingVariables && aggregatingVariables.length) {
-    //     return {
-    //         predicate,
-    //         preComputedSubqueries: Cypher.concat(newTopLevelPattern, preComputedSubqueries, aggregatingWithClause),
-    //     };
-    // }
+    if (preComputedSubqueries && !preComputedSubqueries.empty) {
+        const optionalMatches = outerRelationshipData.map((relData) => new Cypher.OptionalMatch(relData.outerPattern));
+        while (outerRelationshipData.length > 0) {
+            outerRelationshipData.pop();
+        }
+        return {
+            predicate,
+            preComputedSubqueries: Cypher.concat(...optionalMatches, preComputedSubqueries),
+        };
+    }
 
     return {
         predicate,
-        preComputedSubqueries: preComputedSubqueries,
+        preComputedSubqueries,
     };
 }
 

@@ -19,7 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
-import type { RelationField, Context, GraphQLWhereArg, PredicateReturn } from "../types";
+import type { RelationField, Context, GraphQLWhereArg, PredicateReturn, OuterRelationshipData } from "../types";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, ListPredicate, whereRegEx } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
 import { NODE_OR_EDGE_KEYS, LOGICAL_OPERATORS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
@@ -45,13 +45,21 @@ type AggregateWhereReturn = {
     returnVariables: Cypher.Variable[];
 };
 
-export function aggregatePreComputedWhereFields(
-    value: GraphQLWhereArg,
-    relationField: RelationField,
-    relationship: Relationship | undefined,
-    context: Context,
-    matchNode: Cypher.Variable
-): PredicateReturn {
+export function aggregatePreComputedWhereFields({
+    value,
+    relationField,
+    relationship,
+    context,
+    matchNode,
+    outerRelationshipData,
+}: {
+    value: GraphQLWhereArg;
+    relationField: RelationField;
+    relationship: Relationship | undefined;
+    context: Context;
+    matchNode: Cypher.Variable;
+    outerRelationshipData: OuterRelationshipData[];
+}): PredicateReturn {
     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
     const direction = relationField.direction;
     const aggregationTarget = new Cypher.Node({ labels: refNode.getLabels(context) });
@@ -74,18 +82,12 @@ export function aggregatePreComputedWhereFields(
         cypherRelation
     );
     matchQuery.return(...returnProjections);
-    const subquery = new Cypher.Call(matchQuery).innerWith(matchNode);
 
-    // // The return values are needed when performing SOME/NONE/ALL/SINGLE operations as they need to be aggregated to perform comparisons
-    // if (listPredicateStr) {
-    //     return {
-    //         predicate: Cypher.and(...predicates),
-    //         // Cypher.concat is used because this is passed to createWherePredicate which expects a Cypher.CompositeClause
-    //         preComputedSubqueries: Cypher.concat(subquery),
-    //         requiredVariables: [],
-    //         aggregatingVariables: returnVariables,
-    //     };
-    // }
+    // const subqueryContents = Cypher.concat(
+    //     ...outerRelationshipData.map((outerRel) => new Cypher.OptionalMatch(outerRel.outerPattern)),
+    //     matchQuery
+    // );
+    const subquery = new Cypher.Call(matchQuery).innerWith(matchNode);
 
     return {
         predicate: Cypher.and(...predicates),

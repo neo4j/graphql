@@ -28,6 +28,7 @@ import type { RelationshipQueryDirectionOption } from "./constants";
 import type { Executor } from "./classes/Executor";
 import type { Directive } from "graphql-compose";
 import type { Neo4jGraphQLSchemaModel } from "./schema-model/Neo4jGraphQLSchemaModel";
+import type { ListPredicate } from "./translate/where/utils";
 
 export { Node } from "./classes";
 
@@ -525,6 +526,11 @@ export interface Neo4jFiltersSettings {
 export interface Neo4jFeaturesSettings {
     filters?: Neo4jFiltersSettings;
 }
+
+export type OuterRelationshipData = {
+    listPredicateType: ListPredicate;
+    outerPattern: Cypher.Pattern;
+};
 
 export type PredicateReturn = {
     predicate: Cypher.Predicate | undefined;

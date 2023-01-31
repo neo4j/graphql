@@ -18,7 +18,13 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { ConnectionField, ConnectionWhereArg, Context, PredicateReturn } from "../../../types";
+import type {
+    ConnectionField,
+    ConnectionWhereArg,
+    Context,
+    OuterRelationshipData,
+    PredicateReturn,
+} from "../../../types";
 import type { Node, Relationship } from "../../../classes";
 import { getListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
@@ -34,12 +40,14 @@ export function createConnectionOperation({
     context,
     parentNode,
     operator,
+    outerRelationshipData,
 }: {
     connectionField: ConnectionField;
     value: any;
     context: Context;
     parentNode: Cypher.Node;
     operator: string | undefined;
+    outerRelationshipData: OuterRelationshipData[];
 }): PredicateReturn {
     let nodeEntries: Record<string, any>;
 
@@ -115,6 +123,7 @@ export function createConnectionOperation({
             targetNode: childNode,
             edge: contextRelationship,
             node: refNode,
+            outerRelationshipData,
         });
 
         if (orOperatorMultipleNodeLabels) {
@@ -139,22 +148,6 @@ export function createConnectionOperation({
         operations.push(predicate);
     });
 
-    // if (aggregatingVariables && aggregatingVariables.length) {
-    //     const aggregatingWithClause = new Cypher.With(
-    //         ...(topLevelNodes || []),
-    //         ...requiredVariables,
-    //         ...(aggregatingVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar]) as any)
-    //     );
-
-    //     return {
-    //         predicate: Cypher.and(...operations),
-    //         preComputedSubqueries: Cypher.concat(
-    //             ...matchPatterns.map((matchPattern) => new Cypher.OptionalMatch(matchPattern)),
-    //             subqueries,
-    //             aggregatingWithClause
-    //         ),
-    //     };
-    // }
     return {
         predicate: Cypher.and(...operations),
         preComputedSubqueries: subqueries,
@@ -168,6 +161,7 @@ export function createConnectionWherePropertyOperation({
     targetNode,
     node,
     edge,
+    outerRelationshipData,
 }: {
     whereInput: ConnectionWhereArg;
     context: Context;
@@ -175,6 +169,7 @@ export function createConnectionWherePropertyOperation({
     edge: Relationship;
     edgeRef: Cypher.Variable;
     targetNode: Cypher.Node;
+    outerRelationshipData: OuterRelationshipData[];
 }): PredicateReturn {
     const preComputedSubqueriesResult: (Cypher.CompositeClause | undefined)[] = [];
     const params: (Cypher.Predicate | undefined)[] = [];
@@ -189,6 +184,7 @@ export function createConnectionWherePropertyOperation({
                     targetNode,
                     node,
                     edge,
+                    outerRelationshipData,
                 });
                 subOperations.push(predicate);
                 if (preComputedSubqueries && !preComputedSubqueries.empty)
@@ -211,6 +207,7 @@ export function createConnectionWherePropertyOperation({
                 whereInput: nestedProperties,
                 context,
                 element: edge,
+                outerRelationshipData,
             });
 
             params.push(result);
@@ -238,6 +235,7 @@ export function createConnectionWherePropertyOperation({
                 whereInput: nestedProperties,
                 context,
                 element: node,
+                outerRelationshipData,
             });
 
             // NOTE: _NOT is handled by the size()=0

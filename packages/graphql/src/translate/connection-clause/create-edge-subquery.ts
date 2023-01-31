@@ -85,6 +85,7 @@ export function createEdgeSubquery({
                 targetNode: relatedNodeRef,
                 node: relatedNode,
                 edge: relationship,
+                outerRelationshipData: [], // TODO - if this is still here this is an edge case that should be tested
             });
 
         if (wherePredicate) predicates.push(wherePredicate);
@@ -151,10 +152,5 @@ export function createEdgeSubquery({
 
     matchClause.where(Cypher.and(...predicates));
 
-    return Cypher.concat(
-        matchClause,
-        withSortClause,
-        ...projection.subqueries,
-        withReturn
-    );
+    return Cypher.concat(matchClause, withSortClause, ...projection.subqueries, withReturn);
 }

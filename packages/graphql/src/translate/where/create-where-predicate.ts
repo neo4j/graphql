@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLWhereArg, Context, PredicateReturn } from "../../types";
+import type { GraphQLWhereArg, Context, PredicateReturn, OuterRelationshipData } from "../../types";
 import type { GraphElement } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
 // Recursive function
@@ -36,11 +36,13 @@ export function createWherePredicate({
     whereInput,
     context,
     element,
+    outerRelationshipData,
 }: {
     targetElement: Cypher.Variable;
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
+    outerRelationshipData: OuterRelationshipData[];
 }): PredicateReturn {
     const whereFields = Object.entries(whereInput);
     const predicates: Cypher.Predicate[] = [];
@@ -53,6 +55,7 @@ export function createWherePredicate({
                 targetElement,
                 context,
                 value,
+                outerRelationshipData,
             });
             if (predicate) {
                 predicates.push(predicate);
@@ -67,6 +70,7 @@ export function createWherePredicate({
             element,
             targetElement,
             context,
+            outerRelationshipData,
         });
         if (predicate) {
             predicates.push(predicate);
@@ -88,12 +92,14 @@ function createNestedPredicate({
     targetElement,
     context,
     value,
+    outerRelationshipData,
 }: {
     key: WhereOperators;
     value: Array<GraphQLWhereArg>;
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
+    outerRelationshipData: OuterRelationshipData[];
 }): PredicateReturn {
     const nested: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
@@ -103,6 +109,7 @@ function createNestedPredicate({
             element,
             targetElement,
             context,
+            outerRelationshipData,
         });
         if (predicate) {
             nested.push(predicate);

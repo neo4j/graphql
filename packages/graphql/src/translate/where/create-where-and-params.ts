@@ -46,6 +46,7 @@ export default function createWhereAndParams({
         context,
         whereInput,
         targetElement: nodeRef,
+        outerRelationshipData: [], // TODO - if this is still here this is an edge case that should be tested
     });
 
     let preComputedWhereFieldsResult = "";
