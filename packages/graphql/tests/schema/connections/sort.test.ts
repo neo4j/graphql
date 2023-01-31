@@ -367,16 +367,16 @@ describe("Sort", () => {
               property_AVERAGE_GTE: Float
               property_AVERAGE_LT: Float
               property_AVERAGE_LTE: Float
-              property_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              property_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              property_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              property_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              property_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              property_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               property_LONGEST_EQUAL: Int
               property_LONGEST_GT: Int
               property_LONGEST_GTE: Int
               property_LONGEST_LT: Int
               property_LONGEST_LTE: Int
-              property_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              property_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              property_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              property_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               property_SHORTEST_EQUAL: Int
               property_SHORTEST_GT: Int
               property_SHORTEST_GTE: Int

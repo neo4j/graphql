@@ -157,11 +157,11 @@ describe("Arrays Methods", () => {
               averageRating_AVERAGE_GTE: Float
               averageRating_AVERAGE_LT: Float
               averageRating_AVERAGE_LTE: Float
-              averageRating_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              averageRating_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              averageRating_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              averageRating_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              averageRating_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              averageRating_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               averageRating_MAX_EQUAL: Float
               averageRating_MAX_GT: Float
               averageRating_MAX_GTE: Float
@@ -177,7 +177,7 @@ describe("Arrays Methods", () => {
               averageRating_SUM_GTE: Float
               averageRating_SUM_LT: Float
               averageRating_SUM_LTE: Float
-              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
             type ActorActedInRelationship implements ActedIn {
@@ -429,16 +429,16 @@ describe("Arrays Methods", () => {
               name_AVERAGE_GTE: Float
               name_AVERAGE_LT: Float
               name_AVERAGE_LTE: Float
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               name_LONGEST_EQUAL: Int
               name_LONGEST_GT: Int
               name_LONGEST_GTE: Int
               name_LONGEST_LT: Int
               name_LONGEST_LTE: Int
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               name_SHORTEST_EQUAL: Int
               name_SHORTEST_GT: Int
               name_SHORTEST_GTE: Int

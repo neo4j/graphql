@@ -193,11 +193,11 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               imdbRating_AVERAGE_GTE: Float
               imdbRating_AVERAGE_LT: Float
               imdbRating_AVERAGE_LTE: Float
-              imdbRating_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              imdbRating_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              imdbRating_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              imdbRating_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              imdbRating_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              imdbRating_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              imdbRating_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              imdbRating_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              imdbRating_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              imdbRating_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               imdbRating_MAX_EQUAL: Float
               imdbRating_MAX_GT: Float
               imdbRating_MAX_GTE: Float
@@ -218,16 +218,16 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               title_AVERAGE_GTE: Float
               title_AVERAGE_LT: Float
               title_AVERAGE_LTE: Float
-              title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               title_LONGEST_EQUAL: Int
               title_LONGEST_GT: Int
               title_LONGEST_GTE: Int
               title_LONGEST_LT: Int
               title_LONGEST_LTE: Int
-              title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               title_SHORTEST_EQUAL: Int
               title_SHORTEST_GT: Int
               title_SHORTEST_GTE: Int
@@ -238,11 +238,11 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               year_AVERAGE_GTE: Float
               year_AVERAGE_LT: Float
               year_AVERAGE_LTE: Float
-              year_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              year_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              year_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              year_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              year_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              year_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              year_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              year_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              year_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              year_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               year_MAX_EQUAL: Int
               year_MAX_GT: Int
               year_MAX_GTE: Int
@@ -469,16 +469,16 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               name_AVERAGE_GTE: Float
               name_AVERAGE_LT: Float
               name_AVERAGE_LTE: Float
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               name_LONGEST_EQUAL: Int
               name_LONGEST_GT: Int
               name_LONGEST_GTE: Int
               name_LONGEST_LT: Int
               name_LONGEST_LTE: Int
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               name_SHORTEST_EQUAL: Int
               name_SHORTEST_GT: Int
               name_SHORTEST_GTE: Int

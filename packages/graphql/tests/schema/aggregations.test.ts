@@ -787,11 +787,11 @@ describe("Aggregations", () => {
               someBigInt_AVERAGE_GTE: BigInt
               someBigInt_AVERAGE_LT: BigInt
               someBigInt_AVERAGE_LTE: BigInt
-              someBigInt_EQUAL: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someBigInt_GT: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someBigInt_GTE: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someBigInt_LT: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someBigInt_LTE: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someBigInt_EQUAL: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someBigInt_GT: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someBigInt_GTE: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someBigInt_LT: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someBigInt_LTE: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someBigInt_MAX_EQUAL: BigInt
               someBigInt_MAX_GT: BigInt
               someBigInt_MAX_GTE: BigInt
@@ -807,11 +807,11 @@ describe("Aggregations", () => {
               someBigInt_SUM_GTE: BigInt
               someBigInt_SUM_LT: BigInt
               someBigInt_SUM_LTE: BigInt
-              someDateTime_EQUAL: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDateTime_GT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDateTime_GTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDateTime_LT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDateTime_LTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someDateTime_EQUAL: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDateTime_GT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDateTime_GTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDateTime_LT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDateTime_LTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someDateTime_MAX_EQUAL: DateTime
               someDateTime_MAX_GT: DateTime
               someDateTime_MAX_GTE: DateTime
@@ -827,11 +827,11 @@ describe("Aggregations", () => {
               someDuration_AVERAGE_GTE: Duration
               someDuration_AVERAGE_LT: Duration
               someDuration_AVERAGE_LTE: Duration
-              someDuration_EQUAL: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDuration_GT: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDuration_GTE: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDuration_LT: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDuration_LTE: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someDuration_EQUAL: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDuration_GT: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDuration_GTE: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDuration_LT: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDuration_LTE: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someDuration_MAX_EQUAL: Duration
               someDuration_MAX_GT: Duration
               someDuration_MAX_GTE: Duration
@@ -847,11 +847,11 @@ describe("Aggregations", () => {
               someFloat_AVERAGE_GTE: Float
               someFloat_AVERAGE_LT: Float
               someFloat_AVERAGE_LTE: Float
-              someFloat_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someFloat_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someFloat_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someFloat_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someFloat_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someFloat_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someFloat_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someFloat_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someFloat_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someFloat_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someFloat_MAX_EQUAL: Float
               someFloat_MAX_GT: Float
               someFloat_MAX_GTE: Float
@@ -867,17 +867,17 @@ describe("Aggregations", () => {
               someFloat_SUM_GTE: Float
               someFloat_SUM_LT: Float
               someFloat_SUM_LTE: Float
-              someId_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someId_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someInt_AVERAGE_EQUAL: Float
               someInt_AVERAGE_GT: Float
               someInt_AVERAGE_GTE: Float
               someInt_AVERAGE_LT: Float
               someInt_AVERAGE_LTE: Float
-              someInt_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someInt_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someInt_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someInt_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someInt_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someInt_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someInt_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someInt_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someInt_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someInt_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someInt_MAX_EQUAL: Int
               someInt_MAX_GT: Int
               someInt_MAX_GTE: Int
@@ -893,11 +893,11 @@ describe("Aggregations", () => {
               someInt_SUM_GTE: Int
               someInt_SUM_LT: Int
               someInt_SUM_LTE: Int
-              someLocalDateTime_EQUAL: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalDateTime_GT: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalDateTime_GTE: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalDateTime_LT: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalDateTime_LTE: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someLocalDateTime_EQUAL: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalDateTime_GT: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalDateTime_GTE: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalDateTime_LT: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalDateTime_LTE: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someLocalDateTime_MAX_EQUAL: LocalDateTime
               someLocalDateTime_MAX_GT: LocalDateTime
               someLocalDateTime_MAX_GTE: LocalDateTime
@@ -908,11 +908,11 @@ describe("Aggregations", () => {
               someLocalDateTime_MIN_GTE: LocalDateTime
               someLocalDateTime_MIN_LT: LocalDateTime
               someLocalDateTime_MIN_LTE: LocalDateTime
-              someLocalTime_EQUAL: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalTime_GT: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalTime_GTE: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalTime_LT: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalTime_LTE: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someLocalTime_EQUAL: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalTime_GT: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalTime_GTE: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalTime_LT: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalTime_LTE: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someLocalTime_MAX_EQUAL: LocalTime
               someLocalTime_MAX_GT: LocalTime
               someLocalTime_MAX_GTE: LocalTime
@@ -928,26 +928,26 @@ describe("Aggregations", () => {
               someString_AVERAGE_GTE: Float
               someString_AVERAGE_LT: Float
               someString_AVERAGE_LTE: Float
-              someString_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someString_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someString_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someString_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someString_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someString_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someString_LONGEST_EQUAL: Int
               someString_LONGEST_GT: Int
               someString_LONGEST_GTE: Int
               someString_LONGEST_LT: Int
               someString_LONGEST_LTE: Int
-              someString_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someString_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someString_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someString_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someString_SHORTEST_EQUAL: Int
               someString_SHORTEST_GT: Int
               someString_SHORTEST_GTE: Int
               someString_SHORTEST_LT: Int
               someString_SHORTEST_LTE: Int
-              someTime_EQUAL: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someTime_GT: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someTime_GTE: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someTime_LT: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someTime_LTE: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someTime_EQUAL: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someTime_GT: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someTime_GTE: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someTime_LT: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someTime_LTE: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someTime_MAX_EQUAL: Time
               someTime_MAX_GT: Time
               someTime_MAX_GTE: Time
@@ -974,11 +974,11 @@ describe("Aggregations", () => {
               someBigInt_AVERAGE_GTE: BigInt
               someBigInt_AVERAGE_LT: BigInt
               someBigInt_AVERAGE_LTE: BigInt
-              someBigInt_EQUAL: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someBigInt_GT: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someBigInt_GTE: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someBigInt_LT: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someBigInt_LTE: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someBigInt_EQUAL: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someBigInt_GT: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someBigInt_GTE: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someBigInt_LT: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someBigInt_LTE: BigInt @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someBigInt_MAX_EQUAL: BigInt
               someBigInt_MAX_GT: BigInt
               someBigInt_MAX_GTE: BigInt
@@ -994,11 +994,11 @@ describe("Aggregations", () => {
               someBigInt_SUM_GTE: BigInt
               someBigInt_SUM_LT: BigInt
               someBigInt_SUM_LTE: BigInt
-              someDateTime_EQUAL: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDateTime_GT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDateTime_GTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDateTime_LT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDateTime_LTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someDateTime_EQUAL: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDateTime_GT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDateTime_GTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDateTime_LT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDateTime_LTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someDateTime_MAX_EQUAL: DateTime
               someDateTime_MAX_GT: DateTime
               someDateTime_MAX_GTE: DateTime
@@ -1014,11 +1014,11 @@ describe("Aggregations", () => {
               someDuration_AVERAGE_GTE: Duration
               someDuration_AVERAGE_LT: Duration
               someDuration_AVERAGE_LTE: Duration
-              someDuration_EQUAL: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDuration_GT: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDuration_GTE: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDuration_LT: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someDuration_LTE: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someDuration_EQUAL: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDuration_GT: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDuration_GTE: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDuration_LT: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someDuration_LTE: Duration @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someDuration_MAX_EQUAL: Duration
               someDuration_MAX_GT: Duration
               someDuration_MAX_GTE: Duration
@@ -1034,11 +1034,11 @@ describe("Aggregations", () => {
               someFloat_AVERAGE_GTE: Float
               someFloat_AVERAGE_LT: Float
               someFloat_AVERAGE_LTE: Float
-              someFloat_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someFloat_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someFloat_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someFloat_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someFloat_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someFloat_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someFloat_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someFloat_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someFloat_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someFloat_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someFloat_MAX_EQUAL: Float
               someFloat_MAX_GT: Float
               someFloat_MAX_GTE: Float
@@ -1054,17 +1054,17 @@ describe("Aggregations", () => {
               someFloat_SUM_GTE: Float
               someFloat_SUM_LT: Float
               someFloat_SUM_LTE: Float
-              someId_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someId_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someInt_AVERAGE_EQUAL: Float
               someInt_AVERAGE_GT: Float
               someInt_AVERAGE_GTE: Float
               someInt_AVERAGE_LT: Float
               someInt_AVERAGE_LTE: Float
-              someInt_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someInt_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someInt_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someInt_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someInt_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someInt_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someInt_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someInt_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someInt_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someInt_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someInt_MAX_EQUAL: Int
               someInt_MAX_GT: Int
               someInt_MAX_GTE: Int
@@ -1080,11 +1080,11 @@ describe("Aggregations", () => {
               someInt_SUM_GTE: Int
               someInt_SUM_LT: Int
               someInt_SUM_LTE: Int
-              someLocalDateTime_EQUAL: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalDateTime_GT: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalDateTime_GTE: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalDateTime_LT: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalDateTime_LTE: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someLocalDateTime_EQUAL: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalDateTime_GT: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalDateTime_GTE: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalDateTime_LT: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalDateTime_LTE: LocalDateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someLocalDateTime_MAX_EQUAL: LocalDateTime
               someLocalDateTime_MAX_GT: LocalDateTime
               someLocalDateTime_MAX_GTE: LocalDateTime
@@ -1095,11 +1095,11 @@ describe("Aggregations", () => {
               someLocalDateTime_MIN_GTE: LocalDateTime
               someLocalDateTime_MIN_LT: LocalDateTime
               someLocalDateTime_MIN_LTE: LocalDateTime
-              someLocalTime_EQUAL: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalTime_GT: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalTime_GTE: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalTime_LT: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someLocalTime_LTE: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someLocalTime_EQUAL: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalTime_GT: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalTime_GTE: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalTime_LT: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someLocalTime_LTE: LocalTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someLocalTime_MAX_EQUAL: LocalTime
               someLocalTime_MAX_GT: LocalTime
               someLocalTime_MAX_GTE: LocalTime
@@ -1115,26 +1115,26 @@ describe("Aggregations", () => {
               someString_AVERAGE_GTE: Float
               someString_AVERAGE_LT: Float
               someString_AVERAGE_LTE: Float
-              someString_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someString_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someString_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someString_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someString_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someString_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someString_LONGEST_EQUAL: Int
               someString_LONGEST_GT: Int
               someString_LONGEST_GTE: Int
               someString_LONGEST_LT: Int
               someString_LONGEST_LTE: Int
-              someString_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someString_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someString_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someString_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someString_SHORTEST_EQUAL: Int
               someString_SHORTEST_GT: Int
               someString_SHORTEST_GTE: Int
               someString_SHORTEST_LT: Int
               someString_SHORTEST_LTE: Int
-              someTime_EQUAL: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someTime_GT: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someTime_GTE: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someTime_LT: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
-              someTime_LTE: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+              someTime_EQUAL: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someTime_GT: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someTime_GTE: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someTime_LT: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              someTime_LTE: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someTime_MAX_EQUAL: Time
               someTime_MAX_GT: Time
               someTime_MAX_GTE: Time

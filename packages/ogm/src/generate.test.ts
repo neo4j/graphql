@@ -1284,31 +1284,31 @@ describe("generate", () => {
               AND?: InputMaybe<Array<MovieActorsEdgeAggregationWhereInput>>;
               OR?: InputMaybe<Array<MovieActorsEdgeAggregationWhereInput>>;
               NOT?: InputMaybe<MovieActorsEdgeAggregationWhereInput>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated. */
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               screenTime_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated. */
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               screenTime_GT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_GT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_GT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_SUM_GT?: InputMaybe<Scalars[\\"Int\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated. */
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               screenTime_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated. */
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               screenTime_LT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_LT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_LT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_SUM_LT?: InputMaybe<Scalars[\\"Int\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated. */
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
@@ -1325,27 +1325,27 @@ describe("generate", () => {
               AND?: InputMaybe<Array<MovieActorsNodeAggregationWhereInput>>;
               OR?: InputMaybe<Array<MovieActorsNodeAggregationWhereInput>>;
               NOT?: InputMaybe<MovieActorsNodeAggregationWhereInput>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated. */
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               name_EQUAL?: InputMaybe<Scalars[\\"String\\"]>;
               name_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
               name_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
               name_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated. */
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               name_GT?: InputMaybe<Scalars[\\"Int\\"]>;
               name_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"]>;
               name_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
               name_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated. */
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               name_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
               name_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
               name_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
               name_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated. */
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               name_LT?: InputMaybe<Scalars[\\"Int\\"]>;
               name_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"]>;
               name_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
               name_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
-              /** @deprecated Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated. */
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               name_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
               name_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
               name_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
