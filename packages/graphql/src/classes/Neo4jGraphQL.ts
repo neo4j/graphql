@@ -132,6 +132,10 @@ class Neo4jGraphQL {
     }
 
     public async getSubgraphSchema(): Promise<GraphQLSchema> {
+        console.warn(
+            "Apollo Federation support is currently experimental. There will be missing functionality, and breaking changes may occur in patch and minor releases. It is not recommended to use it in a production environment."
+        );
+
         if (!this.driver) {
             throw new Error("Driver must be provided when running in subgraph mode");
         }
