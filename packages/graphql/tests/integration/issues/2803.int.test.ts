@@ -119,4 +119,25 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             [Actor.plural]: expect.toIncludeSameMembers([actorInput1]),
         });
     });
+
+    test("should find movies aggregate within triple nested relationships", async () => {
+        const query = `
+            {
+                ${Movie.plural}(where: { actors_SOME: { movies_SOME: { actors_ALL: { moviesAggregate: { count_GT: 1 } } } } }) {
+                    released
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([movieInput1, movieInput2]),
+        });
+    });
 });
