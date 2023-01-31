@@ -27,6 +27,6 @@ export const DEPRECATE_NOT = {
 export const DEPRECATE_INVALID_AGGREGATION_FILTERS = {
     name: "deprecated",
     args: {
-        reason: "Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.",
+        reason: "Aggregation filters that are not relying on an aggregating function will be deprecated.",
     },
 };
