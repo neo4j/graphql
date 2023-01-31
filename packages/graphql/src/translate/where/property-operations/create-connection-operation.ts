@@ -197,8 +197,7 @@ export function createConnectionWherePropertyOperation({
     Object.entries(whereInput).forEach(([key, value]) => {
         if (isLogicalOperator(key)) {
             const subOperations: (Cypher.Predicate | undefined)[] = [];
-            value = Array.isArray(value) ? value : [value];
-            (value as Array<any>).forEach((input) => {
+            (Array.isArray(value) ? value : [value]).forEach((input) => {
                 const {
                     predicate,
                     preComputedSubqueries,
