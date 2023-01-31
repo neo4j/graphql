@@ -20,7 +20,7 @@
 import type { Context, PredicateReturn } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 import { GraphElement, Node } from "../../../classes";
-import { ListPredicate, whereRegEx, WhereRegexGroups } from "../utils";
+import { whereRegEx, WhereRegexGroups } from "../utils";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createGlobalNodeOperation } from "./create-global-node-operation";
 // Recursive function
@@ -39,20 +39,12 @@ export function createPropertyWhere({
     element,
     targetElement,
     context,
-    listPredicateStr,
-    requiredVariables,
-    topLevelNodes,
-    topLevelPattern,
 }: {
     key: string;
     value: any;
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
-    listPredicateStr?: ListPredicate;
-    requiredVariables: Cypher.Variable[];
-    topLevelNodes?: Cypher.Node[];
-    topLevelPattern?: Cypher.RawCypher;
 }): PredicateReturn {
     const match = whereRegEx.exec(key);
     if (!match) {
@@ -88,8 +80,6 @@ export function createPropertyWhere({
                     targetElement,
                     coalesceValue,
                 }),
-                requiredVariables: [],
-                aggregatingVariables: [],
             };
         }
 
@@ -108,27 +98,17 @@ export function createPropertyWhere({
 
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
-            return aggregatePreComputedWhereFields(
-                value,
-                relationField,
-                relationship,
-                context,
-                targetElement,
-                listPredicateStr
-            );
+            return aggregatePreComputedWhereFields(value, relationField, relationship, context, targetElement);
         }
 
         if (relationField) {
             return createRelationshipOperation({
                 relationField,
                 context,
-                topLevelNodes,
-                topLevelPattern,
                 parentNode: targetElement as Cypher.Node,
                 operator,
                 value,
                 isNot,
-                requiredVariables,
             });
         }
 
@@ -140,7 +120,6 @@ export function createPropertyWhere({
                 context,
                 parentNode: targetElement as Cypher.Node,
                 operator,
-                requiredVariables,
             });
         }
 
@@ -148,14 +127,10 @@ export function createPropertyWhere({
             if (isNot) {
                 return {
                     predicate: Cypher.isNotNull(propertyRef),
-                    requiredVariables: [],
-                    aggregatingVariables: [],
                 };
             }
             return {
                 predicate: Cypher.isNull(propertyRef),
-                requiredVariables: [],
-                aggregatingVariables: [],
             };
         }
     }
@@ -175,9 +150,7 @@ export function createPropertyWhere({
     if (isNot) {
         return {
             predicate: Cypher.not(comparisonOp),
-            requiredVariables: [],
-            aggregatingVariables: [],
         };
     }
-    return { predicate: comparisonOp, requiredVariables: [], aggregatingVariables: [] };
+    return { predicate: comparisonOp };
 }

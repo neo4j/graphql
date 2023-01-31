@@ -50,8 +50,7 @@ export function aggregatePreComputedWhereFields(
     relationField: RelationField,
     relationship: Relationship | undefined,
     context: Context,
-    matchNode: Cypher.Variable,
-    listPredicateStr?: ListPredicate
+    matchNode: Cypher.Variable
 ): PredicateReturn {
     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
     const direction = relationField.direction;
@@ -67,34 +66,31 @@ export function aggregatePreComputedWhereFields(
         matchPattern = cypherRelation.pattern({ target: { labels: false } });
     }
     const matchQuery = new Cypher.Match(matchPattern);
-    const { returnProjections, predicates, returnVariables } = aggregateWhere(
+    const { returnProjections, predicates } = aggregateWhere(
         value as AggregateWhereInput,
         refNode,
         relationship,
         aggregationTarget,
-        cypherRelation,
-        listPredicateStr
+        cypherRelation
     );
     matchQuery.return(...returnProjections);
     const subquery = new Cypher.Call(matchQuery).innerWith(matchNode);
 
-    // The return values are needed when performing SOME/NONE/ALL/SINGLE operations as they need to be aggregated to perform comparisons
-    if (listPredicateStr) {
-        return {
-            predicate: Cypher.and(...predicates),
-            // Cypher.concat is used because this is passed to createWherePredicate which expects a Cypher.CompositeClause
-            preComputedSubqueries: Cypher.concat(subquery),
-            requiredVariables: [],
-            aggregatingVariables: returnVariables,
-        };
-    }
+    // // The return values are needed when performing SOME/NONE/ALL/SINGLE operations as they need to be aggregated to perform comparisons
+    // if (listPredicateStr) {
+    //     return {
+    //         predicate: Cypher.and(...predicates),
+    //         // Cypher.concat is used because this is passed to createWherePredicate which expects a Cypher.CompositeClause
+    //         preComputedSubqueries: Cypher.concat(subquery),
+    //         requiredVariables: [],
+    //         aggregatingVariables: returnVariables,
+    //     };
+    // }
 
     return {
         predicate: Cypher.and(...predicates),
         // Cypher.concat is used because this is passed to createWherePredicate which expects a Cypher.CompositeClause
         preComputedSubqueries: Cypher.concat(subquery),
-        requiredVariables: returnVariables,
-        aggregatingVariables: [],
     };
 }
 

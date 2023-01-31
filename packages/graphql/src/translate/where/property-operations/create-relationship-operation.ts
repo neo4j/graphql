@@ -27,13 +27,10 @@ import type { WhereOperator } from "../types";
 export function createRelationshipOperation({
     relationField,
     context,
-    topLevelNodes,
     parentNode,
     operator,
     value,
     isNot,
-    requiredVariables,
-    topLevelPattern,
 }: {
     relationField: RelationField;
     context: Context;
@@ -41,9 +38,6 @@ export function createRelationshipOperation({
     operator: string | undefined;
     value: GraphQLWhereArg;
     isNot: boolean;
-    requiredVariables: Cypher.Variable[];
-    topLevelNodes?: Cypher.Node[];
-    topLevelPattern?: Cypher.RawCypher;
 }): PredicateReturn {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
@@ -62,29 +56,15 @@ export function createRelationshipOperation({
         relationship: { variable: false },
     });
 
-    let newTopLevelPattern: Cypher.RawCypher;
-    if (!topLevelPattern) {
-        newTopLevelPattern = new Cypher.RawCypher((env) => `OPTIONAL MATCH ${matchPattern.getCypher(env)}`);
-    } else {
-        const startArrow = relationField.direction === "IN" ? "<-" : "-";
-        const endArrow = relationField.direction === "IN" ? "-" : "->";
-        newTopLevelPattern = new Cypher.RawCypher(
-            (env) =>
-                `${topLevelPattern.getCypher(env)}${startArrow}[:${
-                    relationField.type
-                }]${endArrow}(${childNode.getCypher(env)}:${childNode.labels})`
-        );
-    }
-
     // TODO: check null in return projection
     if (value === null) {
         const existsSubquery = new Cypher.Match(matchPattern, {});
         const exists = new Cypher.Exists(existsSubquery);
         if (!isNot) {
             // Bit confusing, but basically checking for not null is the same as checking for relationship exists
-            return { predicate: Cypher.not(exists), requiredVariables: [], aggregatingVariables: [] };
+            return { predicate: Cypher.not(exists) };
         }
-        return { predicate: exists, requiredVariables: [], aggregatingVariables: [] };
+        return { predicate: exists };
     }
 
     let listPredicateStr = getListPredicate(operator as WhereOperator);
@@ -92,24 +72,16 @@ export function createRelationshipOperation({
     if (listPredicateStr === "any" && !relationField.typeMeta.array) {
         listPredicateStr = "single";
     }
-    if (!topLevelNodes?.includes(parentNode)) topLevelNodes = [parentNode, ...(topLevelNodes || [])];
     const {
         predicate: innerOperation,
         preComputedSubqueries,
-        requiredVariables: innerRequiredVariables,
-        aggregatingVariables,
     } = createWherePredicate({
         // Nested properties here
         whereInput: value,
-        topLevelNodes,
-        topLevelPattern: newTopLevelPattern,
         targetElement: childNode,
         element: refNode,
         context,
-        listPredicateStr,
     });
-
-    requiredVariables = [...requiredVariables, ...innerRequiredVariables];
 
     const predicate = createRelationshipPredicate({
         childNode,
@@ -118,26 +90,16 @@ export function createRelationshipOperation({
         innerOperation,
     });
 
-    if (aggregatingVariables && aggregatingVariables.length) {
-        const aggregatingWithClause = new Cypher.With(
-            ...topLevelNodes,
-            ...requiredVariables,
-            ...aggregatingVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar] as any)
-        );
-
-        return {
-            predicate,
-            preComputedSubqueries: Cypher.concat(newTopLevelPattern, preComputedSubqueries, aggregatingWithClause),
-            requiredVariables: [...requiredVariables, ...aggregatingVariables],
-            aggregatingVariables: [],
-        };
-    }
+    // if (aggregatingVariables && aggregatingVariables.length) {
+    //     return {
+    //         predicate,
+    //         preComputedSubqueries: Cypher.concat(newTopLevelPattern, preComputedSubqueries, aggregatingWithClause),
+    //     };
+    // }
 
     return {
         predicate,
         preComputedSubqueries: preComputedSubqueries,
-        requiredVariables,
-        aggregatingVariables: [],
     };
 }
 
