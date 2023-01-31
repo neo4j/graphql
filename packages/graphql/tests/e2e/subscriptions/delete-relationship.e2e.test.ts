@@ -20,7 +20,7 @@
 import type { Driver } from "neo4j-driver";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
@@ -42,10 +42,10 @@ describe("Delete Relationship Subscription", () => {
     let typeDefs: string;
 
     beforeEach(async () => {
-        typeActor = generateUniqueType("Actor");
-        typeMovie = generateUniqueType("Movie");
-        typePerson = generateUniqueType("Person");
-        typeInfluencer = generateUniqueType("Influencer");
+        typeActor = new UniqueType("Actor");
+        typeMovie = new UniqueType("Movie");
+        typePerson = new UniqueType("Person");
+        typeInfluencer = new UniqueType("Influencer");
 
         typeDefs = `
             type ${typeMovie} {
@@ -285,7 +285,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -431,8 +431,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -558,7 +557,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -712,7 +711,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -910,7 +909,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1152,7 +1151,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1389,7 +1388,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1616,7 +1615,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1852,7 +1851,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2136,7 +2135,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2465,7 +2464,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2764,7 +2763,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -3053,7 +3052,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -3375,8 +3374,8 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
-        await delay(2);
+        await delay(3);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 

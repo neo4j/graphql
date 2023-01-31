@@ -103,12 +103,27 @@ new Neo4jGraphQL({
 });
 ----
 
+[[customResolver-checks]]
 ==== Checks for custom resolvers
 
 Previously, if no custom resolver was specified for a `@computed` field when creating an instance of Neo4jGraphQL, no errors would be thrown when generating the schema.
 However, it is likely that the lack of a custom resolver would lead to errors at runtime. It is preferable to fail fast in this case as it is easier to debug and makes it less likely that bugs will make it into production.
 
 As a result, checks are now performed to ensure that every `@customResolver` field has a custom resolver provided. If not the library will throw an error during schema generation.
+
+These checks may not always be required or desirable. If this is the case, they can be disabled using the new xref::guides/v4-migration/index.adoc#startup-validation[`startupValidation`] config option:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: {
+          resolvers: false
+        },
+    },
+})
+----
 
 [plural-migration]
 === `plural` argument removed from `@node` and replaced with `@plural`
@@ -338,3 +353,82 @@ type query {
 ----
 
 Additionally, escaping strings is no longer needed.
+
+
+== Updated Filters
+
+Starting from 4.0.0 negate filters, filters with the suffix `_NOT`, will be deprecated in favor of the more generic NOT operator.
+
+For instance:
+
+[source, graphql, indent=0]
+----
+query MoviesThatAreNotMatrix {
+  movies(where: {
+    title_NOT: "The Matrix"
+  }) {
+    title
+  }
+}
+----
+
+From version 4.0.0 the same can be achieved with:
+
+[source, graphql, indent=0]
+----
+query MoviesThatAreNotMatrix {
+  movies(where: {
+    NOT: { title: "The Matrix" }
+  }) {
+    title
+  }
+}
+----
+
+== Miscellaneous changes
+
+[[startup-validation]]
+=== Startup validation
+
+In version 4.0.0, startup xref::guides/v4-migration/index.adoc#customResolver-checks[checks for custom resolvers] have been added. As a result, a new configuration option has been added that can disable these checks.
+This new option has been combined with the option to `skipValidateTypeDefs`. As a result, `skipValidateTypeDefs` will be removed and replaced by `startupValidation`.
+
+To only disable strict type definition validation, the following config option should be used:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: {
+          typeDefs: false
+        },
+    },
+})
+----
+
+To only disable checks for custom resolvers, the following config option should be used:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: {
+          resolvers: false
+        },
+    },
+})
+----
+
+To disable all startup checks, the following config option should be used:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: false,
+    },
+})
+----

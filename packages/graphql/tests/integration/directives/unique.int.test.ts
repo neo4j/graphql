@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
 import { getNeo4jDatabaseInfo, Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
 import { Executor } from "../../../src/classes/Executor";
@@ -178,7 +178,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("Book");
+            const type = new UniqueType("Book");
 
             const typeDefs = `
                 type ${type.name} {
@@ -202,7 +202,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("Book");
+            const type = new UniqueType("Book");
 
             const typeDefs = `
                 type ${type.name} {
@@ -226,7 +226,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("Book");
+            const type = new UniqueType("Book");
 
             const typeDefs = `
                 type ${type.name} {
@@ -262,7 +262,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("Book");
+            const type = new UniqueType("Book");
 
             const typeDefs = `
                 type ${type.name} {
@@ -298,7 +298,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("Book");
+            const type = new UniqueType("Book");
 
             const typeDefs = `
                 type ${type.name} {
@@ -344,7 +344,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("Book");
+            const type = new UniqueType("Book");
 
             const typeDefs = `
                 type ${type.name} {
@@ -394,8 +394,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const baseType = generateUniqueType("Base");
-            const additionalType = generateUniqueType("Additional");
+            const baseType = new UniqueType("Base");
+            const additionalType = new UniqueType("Additional");
 
             const typeDefs = `
                 type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
@@ -437,8 +437,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const baseType = generateUniqueType("Base");
-            const additionalType = generateUniqueType("Additional");
+            const baseType = new UniqueType("Base");
+            const additionalType = new UniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
                     someIntProperty: Int!
@@ -499,8 +499,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const baseType = generateUniqueType("Base");
-            const additionalType = generateUniqueType("Additional");
+            const baseType = new UniqueType("Base");
+            const additionalType = new UniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
                     someStringProperty: String! @unique @alias(property: "someAlias")
@@ -584,8 +584,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const baseType = generateUniqueType("Base");
-            const additionalType = generateUniqueType("Additional");
+            const baseType = new UniqueType("Base");
+            const additionalType = new UniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
                     someStringProperty: String! @unique @alias(property: "someAlias")
@@ -703,7 +703,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("User");
+            const type = new UniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -727,7 +727,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("User");
+            const type = new UniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -751,7 +751,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("User");
+            const type = new UniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -775,7 +775,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("User");
+            const type = new UniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -799,7 +799,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("User");
+            const type = new UniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -835,7 +835,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("User");
+            const type = new UniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -871,7 +871,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("User");
+            const type = new UniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -917,7 +917,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("User");
+            const type = new UniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -966,7 +966,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("User");
+            const type = new UniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -1012,7 +1012,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const type = generateUniqueType("User");
+            const type = new UniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -1061,8 +1061,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const baseType = generateUniqueType("Base");
-            const additionalType = generateUniqueType("Additional");
+            const baseType = new UniqueType("Base");
+            const additionalType = new UniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
                     someIdProperty: ID! @id @alias(property: "someAlias")
@@ -1102,8 +1102,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                 return;
             }
 
-            const baseType = generateUniqueType("Base");
-            const additionalType = generateUniqueType("Additional");
+            const baseType = new UniqueType("Base");
+            const additionalType = new UniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
                     someIdProperty: ID! @id @alias(property: "someAlias")

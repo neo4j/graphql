@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("integration/rfc/autogenerate-properties-node", () => {
     let driver: Driver;
@@ -40,7 +40,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
 
     describe("Callback - String", () => {
         test("should insert callback on CREATE", async () => {
-            const testMovie = generateUniqueType("Movie");
+            const testMovie = new UniqueType("Movie");
             const string1 = generate({
                 charset: "alphabetic",
             });
@@ -98,7 +98,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
         });
 
         test("should insert callback on UPDATE", async () => {
-            const testMovie = generateUniqueType("Movie");
+            const testMovie = new UniqueType("Movie");
             const string1 = generate({
                 charset: "alphabetic",
             });
@@ -166,7 +166,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
         });
 
         test("should insert callback on CREATE and UPDATE", async () => {
-            const testMovie = generateUniqueType("Movie");
+            const testMovie = new UniqueType("Movie");
             const string1 = generate({
                 charset: "alphabetic",
             });
@@ -252,7 +252,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
 
     describe("Callback - Int", () => {
         test("should insert callback on CREATE", async () => {
-            const testMovie = generateUniqueType("Movie");
+            const testMovie = new UniqueType("Movie");
             const int1 = Number(
                 generate({
                     charset: "numeric",
@@ -313,7 +313,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
         });
 
         test("should insert callback on UPDATE", async () => {
-            const testMovie = generateUniqueType("Movie");
+            const testMovie = new UniqueType("Movie");
             const int1 = Number(
                 generate({
                     charset: "numeric",
@@ -384,7 +384,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
         });
 
         test("should insert callback on CREATE and UPDATE", async () => {
-            const testMovie = generateUniqueType("Movie");
+            const testMovie = new UniqueType("Movie");
             const int1 = Number(
                 generate({
                     charset: "numeric",
@@ -476,7 +476,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
 
     describe("Callback - Misc", () => {
         test("should not change the property when returning 'undefined'", async () => {
-            const testMovie = generateUniqueType("Movie");
+            const testMovie = new UniqueType("Movie");
             const string1 = generate({
                 charset: "alphabetic",
             });
@@ -543,7 +543,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
         });
 
         test("should remove property when returning 'null'", async () => {
-            const testMovie = generateUniqueType("Movie");
+            const testMovie = new UniqueType("Movie");
             const string1 = generate({
                 charset: "alphabetic",
             });
@@ -610,7 +610,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
         });
 
         test("should have access to parent in callback function for CREATE", async () => {
-            const testMovie = generateUniqueType("Movie");
+            const testMovie = new UniqueType("Movie");
             const callback = (parent) => `${parent.title}-slug`;
 
             const typeDefs = gql`
@@ -671,7 +671,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
         });
 
         test("should have access to parent in callback function for UPDATE", async () => {
-            const testMovie = generateUniqueType("Movie");
+            const testMovie = new UniqueType("Movie");
             const callback = (parent) => `${parent.title}-slug`;
 
             const typeDefs = gql`
@@ -742,7 +742,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
         });
 
         test("should have access to context as third argument", async () => {
-            const testMovie = generateUniqueType("Movie");
+            const testMovie = new UniqueType("Movie");
             const callback = (_parent, _args, context) => context.testValue;
 
             const typeDefs = gql`

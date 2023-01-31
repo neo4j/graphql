@@ -358,20 +358,20 @@ describe("@auth allow when inherited from interface", () => {
             WITH this
             CALL apoc.util.validate(NOT ((exists((this)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
-            OPTIONAL MATCH (this)<-[this_has_post0_relationship:HAS_POST]-(this_creator0:User)
-            CALL apoc.do.when(this_creator0 IS NOT NULL, \\"
-            WITH this, this_creator0
-            CALL apoc.util.validate(NOT ((this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0auth_param0)), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
-            SET this_creator0.id = $this_update_creator0_id
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_id:$this_update_creator0_id,this_creator0auth_param0:$this_creator0auth_param0})
-            YIELD value AS _
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_has_post0_relationship:HAS_POST]-(this_creator0:User)
+            	WITH this, this_creator0
+            	CALL apoc.util.validate(NOT ((this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	SET this_creator0.id = $this_update_creator0_id
+            	RETURN count(*) AS update_this_creator0
+            }
             WITH this
             CALL {
             	WITH this
             	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
             	WITH count(this_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -382,32 +382,7 @@ describe("@auth allow when inherited from interface", () => {
                 \\"param0\\": \\"post-id\\",
                 \\"this_update_creator0_id\\": \\"new-id\\",
                 \\"this_creator0auth_param0\\": \\"user-id\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"user-id\\"
-                    }
-                },
                 \\"thisauth_param0\\": \\"user-id\\",
-                \\"updatePosts\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"creator\\": {
-                                \\"update\\": {
-                                    \\"node\\": {
-                                        \\"id\\": \\"new-id\\"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -438,20 +413,20 @@ describe("@auth allow when inherited from interface", () => {
             WITH this
             CALL apoc.util.validate(NOT ((exists((this)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
-            OPTIONAL MATCH (this)<-[this_has_post0_relationship:HAS_POST]-(this_creator0:User)
-            CALL apoc.do.when(this_creator0 IS NOT NULL, \\"
-            WITH this, this_creator0
-            CALL apoc.util.validate(NOT ((this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0auth_param0) AND (this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0auth_param0)), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
-            SET this_creator0.password = $this_update_creator0_password
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_password:$this_update_creator0_password,this_creator0auth_param0:$this_creator0auth_param0})
-            YIELD value AS _
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_has_post0_relationship:HAS_POST]-(this_creator0:User)
+            	WITH this, this_creator0
+            	CALL apoc.util.validate(NOT ((this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0auth_param0) AND (this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	SET this_creator0.password = $this_update_creator0_password
+            	RETURN count(*) AS update_this_creator0
+            }
             WITH this
             CALL {
             	WITH this
             	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
             	WITH count(this_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -462,32 +437,7 @@ describe("@auth allow when inherited from interface", () => {
                 \\"param0\\": \\"post-id\\",
                 \\"this_update_creator0_password\\": \\"new-password\\",
                 \\"this_creator0auth_param0\\": \\"user-id\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"user-id\\"
-                    }
-                },
                 \\"thisauth_param0\\": \\"user-id\\",
-                \\"updatePosts\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"creator\\": {
-                                \\"update\\": {
-                                    \\"node\\": {
-                                        \\"password\\": \\"new-password\\"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -708,14 +658,14 @@ describe("@auth allow when inherited from interface", () => {
             	WITH this
             	MATCH (this)<-[this_creator_User_unique:HAS_COMMENT]-(:User)
             	WITH count(this_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required exactly once', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
             CALL {
             	WITH this
             	MATCH (this)<-[this_post_Post_unique:HAS_COMMENT]-(:Post)
             	WITH count(this_post_Post_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required exactly once', [0])
             	RETURN c AS this_post_Post_unique_ignored
             }
             RETURN collect(DISTINCT this { .id }) AS data"

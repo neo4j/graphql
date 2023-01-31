@@ -77,6 +77,7 @@ describe("Interface Relationships", () => {
 
             input ActedInWhere {
               AND: [ActedInWhere!]
+              NOT: ActedInWhere
               OR: [ActedInWhere!]
               screenTime: Int
               screenTime_GT: Int
@@ -84,8 +85,8 @@ describe("Interface Relationships", () => {
               screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
-              screenTime_NOT: Int
-              screenTime_NOT_IN: [Int!]
+              screenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             type Actor {
@@ -112,11 +113,12 @@ describe("Interface Relationships", () => {
 
             input ActorActedInConnectionWhere {
               AND: [ActorActedInConnectionWhere!]
+              NOT: ActorActedInConnectionWhere
               OR: [ActorActedInConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               node: ProductionWhere
-              node_NOT: ProductionWhere
+              node_NOT: ProductionWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorActedInCreateFieldInput {
@@ -211,6 +213,7 @@ describe("Interface Relationships", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               actedInConnection_ALL: ActorActedInConnectionWhere
@@ -222,11 +225,11 @@ describe("Interface Relationships", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -317,6 +320,7 @@ describe("Interface Relationships", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               runtime: Int
               runtime_GT: Int
@@ -324,17 +328,17 @@ describe("Interface Relationships", () => {
               runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
-              runtime_NOT: Int
-              runtime_NOT_IN: [Int!]
+              runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -414,11 +418,11 @@ describe("Interface Relationships", () => {
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -487,6 +491,7 @@ describe("Interface Relationships", () => {
 
             input SeriesWhere {
               AND: [SeriesWhere!]
+              NOT: SeriesWhere
               OR: [SeriesWhere!]
               episodes: Int
               episodes_GT: Int
@@ -494,17 +499,17 @@ describe("Interface Relationships", () => {
               episodes_IN: [Int!]
               episodes_LT: Int
               episodes_LTE: Int
-              episodes_NOT: Int
-              episodes_NOT_IN: [Int!]
+              episodes_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              episodes_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -608,6 +613,7 @@ describe("Interface Relationships", () => {
 
             input ActedInWhere {
               AND: [ActedInWhere!]
+              NOT: ActedInWhere
               OR: [ActedInWhere!]
               screenTime: Int
               screenTime_GT: Int
@@ -615,8 +621,8 @@ describe("Interface Relationships", () => {
               screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
-              screenTime_NOT: Int
-              screenTime_NOT_IN: [Int!]
+              screenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             type Actor {
@@ -644,11 +650,12 @@ describe("Interface Relationships", () => {
 
             input ActorActedInConnectionWhere {
               AND: [ActorActedInConnectionWhere!]
+              NOT: ActorActedInConnectionWhere
               OR: [ActorActedInConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               node: ProductionWhere
-              node_NOT: ProductionWhere
+              node_NOT: ProductionWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorActedInCreateFieldInput {
@@ -749,6 +756,7 @@ describe("Interface Relationships", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               actedInConnection_ALL: ActorActedInConnectionWhere
@@ -760,11 +768,11 @@ describe("Interface Relationships", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -859,6 +867,7 @@ describe("Interface Relationships", () => {
 
             input EpisodeSeriesAggregateInput {
               AND: [EpisodeSeriesAggregateInput!]
+              NOT: EpisodeSeriesAggregateInput
               OR: [EpisodeSeriesAggregateInput!]
               count: Int
               count_GT: Int
@@ -870,6 +879,10 @@ describe("Interface Relationships", () => {
 
             input EpisodeSeriesConnectFieldInput {
               connect: SeriesConnectInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: SeriesConnectWhere
             }
 
@@ -885,9 +898,10 @@ describe("Interface Relationships", () => {
 
             input EpisodeSeriesConnectionWhere {
               AND: [EpisodeSeriesConnectionWhere!]
+              NOT: EpisodeSeriesConnectionWhere
               OR: [EpisodeSeriesConnectionWhere!]
               node: SeriesWhere
-              node_NOT: SeriesWhere
+              node_NOT: SeriesWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input EpisodeSeriesCreateFieldInput {
@@ -911,6 +925,7 @@ describe("Interface Relationships", () => {
 
             input EpisodeSeriesNodeAggregationWhereInput {
               AND: [EpisodeSeriesNodeAggregationWhereInput!]
+              NOT: EpisodeSeriesNodeAggregationWhereInput
               OR: [EpisodeSeriesNodeAggregationWhereInput!]
               episodeCount_AVERAGE_EQUAL: Float
               episodeCount_AVERAGE_GT: Float
@@ -1003,6 +1018,7 @@ describe("Interface Relationships", () => {
 
             input EpisodeWhere {
               AND: [EpisodeWhere!]
+              NOT: EpisodeWhere
               OR: [EpisodeWhere!]
               runtime: Int
               runtime_GT: Int
@@ -1010,13 +1026,13 @@ describe("Interface Relationships", () => {
               runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
-              runtime_NOT: Int
-              runtime_NOT_IN: [Int!]
-              series: SeriesWhere
+              runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              series: SeriesWhere @deprecated(reason: \\"Use \`series_SOME\` instead.\\")
               seriesAggregate: EpisodeSeriesAggregateInput
               seriesConnection: EpisodeSeriesConnectionWhere
-              seriesConnection_NOT: EpisodeSeriesConnectionWhere
-              series_NOT: SeriesWhere
+              seriesConnection_NOT: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Use \`seriesConnection_NONE\` instead.\\")
+              series_NOT: SeriesWhere @deprecated(reason: \\"Use \`series_NONE\` instead.\\")
             }
 
             type EpisodesConnection {
@@ -1056,6 +1072,7 @@ describe("Interface Relationships", () => {
 
             input MovieActorsAggregateInput {
               AND: [MovieActorsAggregateInput!]
+              NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
               count: Int
               count_GT: Int
@@ -1068,6 +1085,7 @@ describe("Interface Relationships", () => {
 
             input MovieActorsEdgeAggregationWhereInput {
               AND: [MovieActorsEdgeAggregationWhereInput!]
+              NOT: MovieActorsEdgeAggregationWhereInput
               OR: [MovieActorsEdgeAggregationWhereInput!]
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
@@ -1098,6 +1116,7 @@ describe("Interface Relationships", () => {
 
             input MovieActorsNodeAggregationWhereInput {
               AND: [MovieActorsNodeAggregationWhereInput!]
+              NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -1181,6 +1200,7 @@ describe("Interface Relationships", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
@@ -1205,17 +1225,17 @@ describe("Interface Relationships", () => {
               runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
-              runtime_NOT: Int
-              runtime_NOT_IN: [Int!]
+              runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -1256,6 +1276,7 @@ describe("Interface Relationships", () => {
 
             input ProductionActorsAggregateInput {
               AND: [ProductionActorsAggregateInput!]
+              NOT: ProductionActorsAggregateInput
               OR: [ProductionActorsAggregateInput!]
               count: Int
               count_GT: Int
@@ -1269,6 +1290,10 @@ describe("Interface Relationships", () => {
             input ProductionActorsConnectFieldInput {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: ActorConnectWhere
             }
 
@@ -1285,11 +1310,12 @@ describe("Interface Relationships", () => {
 
             input ProductionActorsConnectionWhere {
               AND: [ProductionActorsConnectionWhere!]
+              NOT: ProductionActorsConnectionWhere
               OR: [ProductionActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               node: ActorWhere
-              node_NOT: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input ProductionActorsCreateFieldInput {
@@ -1309,6 +1335,7 @@ describe("Interface Relationships", () => {
 
             input ProductionActorsEdgeAggregationWhereInput {
               AND: [ProductionActorsEdgeAggregationWhereInput!]
+              NOT: ProductionActorsEdgeAggregationWhereInput
               OR: [ProductionActorsEdgeAggregationWhereInput!]
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
@@ -1344,6 +1371,7 @@ describe("Interface Relationships", () => {
 
             input ProductionActorsNodeAggregationWhereInput {
               AND: [ProductionActorsNodeAggregationWhereInput!]
+              NOT: ProductionActorsNodeAggregationWhereInput
               OR: [ProductionActorsNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -1481,11 +1509,11 @@ describe("Interface Relationships", () => {
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -1531,6 +1559,7 @@ describe("Interface Relationships", () => {
 
             input SeriesActorsAggregateInput {
               AND: [SeriesActorsAggregateInput!]
+              NOT: SeriesActorsAggregateInput
               OR: [SeriesActorsAggregateInput!]
               count: Int
               count_GT: Int
@@ -1543,6 +1572,7 @@ describe("Interface Relationships", () => {
 
             input SeriesActorsEdgeAggregationWhereInput {
               AND: [SeriesActorsEdgeAggregationWhereInput!]
+              NOT: SeriesActorsEdgeAggregationWhereInput
               OR: [SeriesActorsEdgeAggregationWhereInput!]
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
@@ -1573,6 +1603,7 @@ describe("Interface Relationships", () => {
 
             input SeriesActorsNodeAggregationWhereInput {
               AND: [SeriesActorsNodeAggregationWhereInput!]
+              NOT: SeriesActorsNodeAggregationWhereInput
               OR: [SeriesActorsNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -1650,6 +1681,7 @@ describe("Interface Relationships", () => {
 
             input SeriesEpisodesAggregateInput {
               AND: [SeriesEpisodesAggregateInput!]
+              NOT: SeriesEpisodesAggregateInput
               OR: [SeriesEpisodesAggregateInput!]
               count: Int
               count_GT: Int
@@ -1661,6 +1693,10 @@ describe("Interface Relationships", () => {
 
             input SeriesEpisodesConnectFieldInput {
               connect: [EpisodeConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: EpisodeConnectWhere
             }
 
@@ -1676,9 +1712,10 @@ describe("Interface Relationships", () => {
 
             input SeriesEpisodesConnectionWhere {
               AND: [SeriesEpisodesConnectionWhere!]
+              NOT: SeriesEpisodesConnectionWhere
               OR: [SeriesEpisodesConnectionWhere!]
               node: EpisodeWhere
-              node_NOT: EpisodeWhere
+              node_NOT: EpisodeWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input SeriesEpisodesCreateFieldInput {
@@ -1702,6 +1739,7 @@ describe("Interface Relationships", () => {
 
             input SeriesEpisodesNodeAggregationWhereInput {
               AND: [SeriesEpisodesNodeAggregationWhereInput!]
+              NOT: SeriesEpisodesNodeAggregationWhereInput
               OR: [SeriesEpisodesNodeAggregationWhereInput!]
               runtime_AVERAGE_EQUAL: Float
               runtime_AVERAGE_GT: Float
@@ -1781,6 +1819,7 @@ describe("Interface Relationships", () => {
 
             input SeriesWhere {
               AND: [SeriesWhere!]
+              NOT: SeriesWhere
               OR: [SeriesWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: SeriesActorsAggregateInput
@@ -1805,8 +1844,8 @@ describe("Interface Relationships", () => {
               episodeCount_IN: [Int!]
               episodeCount_LT: Int
               episodeCount_LTE: Int
-              episodeCount_NOT: Int
-              episodeCount_NOT_IN: [Int!]
+              episodeCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              episodeCount_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               episodes: EpisodeWhere @deprecated(reason: \\"Use \`episodes_SOME\` instead.\\")
               episodesAggregate: SeriesEpisodesAggregateInput
               episodesConnection: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Use \`episodesConnection_SOME\` instead.\\")
@@ -1828,11 +1867,11 @@ describe("Interface Relationships", () => {
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -2030,9 +2069,10 @@ describe("Interface Relationships", () => {
 
             input Interface1Interface2ConnectionWhere {
               AND: [Interface1Interface2ConnectionWhere!]
+              NOT: Interface1Interface2ConnectionWhere
               OR: [Interface1Interface2ConnectionWhere!]
               node: Interface2Where
-              node_NOT: Interface2Where
+              node_NOT: Interface2Where @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input Interface1Interface2CreateFieldInput {
@@ -2098,11 +2138,11 @@ describe("Interface Relationships", () => {
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_IN: [String!]
-              field1_NOT: String
-              field1_NOT_CONTAINS: String
-              field1_NOT_ENDS_WITH: String
-              field1_NOT_IN: [String!]
-              field1_NOT_STARTS_WITH: String
+              field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
               interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               interface2Connection_ALL: Interface1Interface2ConnectionWhere
@@ -2162,11 +2202,11 @@ describe("Interface Relationships", () => {
               field2_CONTAINS: String
               field2_ENDS_WITH: String
               field2_IN: [String]
-              field2_NOT: String
-              field2_NOT_CONTAINS: String
-              field2_NOT_ENDS_WITH: String
-              field2_NOT_IN: [String]
-              field2_NOT_STARTS_WITH: String
+              field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               field2_STARTS_WITH: String
             }
 
@@ -2291,9 +2331,10 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1ConnectionWhere {
               AND: [Type1Interface1ConnectionWhere!]
+              NOT: Type1Interface1ConnectionWhere
               OR: [Type1Interface1ConnectionWhere!]
               node: Interface1Where
-              node_NOT: Interface1Where
+              node_NOT: Interface1Where @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input Type1Interface1CreateFieldInput {
@@ -2407,16 +2448,17 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1Where {
               AND: [Type1Interface1Where!]
+              NOT: Type1Interface1Where
               OR: [Type1Interface1Where!]
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_IN: [String!]
-              field1_NOT: String
-              field1_NOT_CONTAINS: String
-              field1_NOT_ENDS_WITH: String
-              field1_NOT_IN: [String!]
-              field1_NOT_STARTS_WITH: String
+              field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
               interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               interface2Connection_ALL: Interface1Interface2ConnectionWhere
@@ -2472,16 +2514,17 @@ describe("Interface Relationships", () => {
 
             input Type1Interface2Where {
               AND: [Type1Interface2Where!]
+              NOT: Type1Interface2Where
               OR: [Type1Interface2Where!]
               field2: String
               field2_CONTAINS: String
               field2_ENDS_WITH: String
               field2_IN: [String!]
-              field2_NOT: String
-              field2_NOT_CONTAINS: String
-              field2_NOT_ENDS_WITH: String
-              field2_NOT_IN: [String!]
-              field2_NOT_STARTS_WITH: String
+              field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               field2_STARTS_WITH: String
             }
 
@@ -2518,16 +2561,17 @@ describe("Interface Relationships", () => {
 
             input Type1Where {
               AND: [Type1Where!]
+              NOT: Type1Where
               OR: [Type1Where!]
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_IN: [String!]
-              field1_NOT: String
-              field1_NOT_CONTAINS: String
-              field1_NOT_ENDS_WITH: String
-              field1_NOT_IN: [String!]
-              field1_NOT_STARTS_WITH: String
+              field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
               interface1Connection: Type1Interface1ConnectionWhere @deprecated(reason: \\"Use \`interface1Connection_SOME\` instead.\\")
               interface1Connection_ALL: Type1Interface1ConnectionWhere
@@ -2632,16 +2676,17 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1Where {
               AND: [Type2Interface1Where!]
+              NOT: Type2Interface1Where
               OR: [Type2Interface1Where!]
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_IN: [String!]
-              field1_NOT: String
-              field1_NOT_CONTAINS: String
-              field1_NOT_ENDS_WITH: String
-              field1_NOT_IN: [String!]
-              field1_NOT_STARTS_WITH: String
+              field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               field1_STARTS_WITH: String
               interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               interface2Connection_ALL: Interface1Interface2ConnectionWhere
@@ -2697,16 +2742,17 @@ describe("Interface Relationships", () => {
 
             input Type2Interface2Where {
               AND: [Type2Interface2Where!]
+              NOT: Type2Interface2Where
               OR: [Type2Interface2Where!]
               field2: String
               field2_CONTAINS: String
               field2_ENDS_WITH: String
               field2_IN: [String!]
-              field2_NOT: String
-              field2_NOT_CONTAINS: String
-              field2_NOT_ENDS_WITH: String
-              field2_NOT_IN: [String!]
-              field2_NOT_STARTS_WITH: String
+              field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              field2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               field2_STARTS_WITH: String
             }
 
@@ -2829,6 +2875,7 @@ describe("Interface Relationships", () => {
 
             input CommentCreatorAggregateInput {
               AND: [CommentCreatorAggregateInput!]
+              NOT: CommentCreatorAggregateInput
               OR: [CommentCreatorAggregateInput!]
               count: Int
               count_GT: Int
@@ -2840,6 +2887,7 @@ describe("Interface Relationships", () => {
 
             input CommentCreatorNodeAggregationWhereInput {
               AND: [CommentCreatorNodeAggregationWhereInput!]
+              NOT: CommentCreatorNodeAggregationWhereInput
               OR: [CommentCreatorNodeAggregationWhereInput!]
               id_EQUAL: ID
               name_AVERAGE_EQUAL: Float
@@ -2890,6 +2938,7 @@ describe("Interface Relationships", () => {
 
             input CommentPostAggregateInput {
               AND: [CommentPostAggregateInput!]
+              NOT: CommentPostAggregateInput
               OR: [CommentPostAggregateInput!]
               count: Int
               count_GT: Int
@@ -2901,6 +2950,10 @@ describe("Interface Relationships", () => {
 
             input CommentPostConnectFieldInput {
               connect: PostConnectInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: PostConnectWhere
             }
 
@@ -2916,9 +2969,10 @@ describe("Interface Relationships", () => {
 
             input CommentPostConnectionWhere {
               AND: [CommentPostConnectionWhere!]
+              NOT: CommentPostConnectionWhere
               OR: [CommentPostConnectionWhere!]
               node: PostWhere
-              node_NOT: PostWhere
+              node_NOT: PostWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input CommentPostCreateFieldInput {
@@ -2942,6 +2996,7 @@ describe("Interface Relationships", () => {
 
             input CommentPostNodeAggregationWhereInput {
               AND: [CommentPostNodeAggregationWhereInput!]
+              NOT: CommentPostNodeAggregationWhereInput
               OR: [CommentPostNodeAggregationWhereInput!]
               content_AVERAGE_EQUAL: Float
               content_AVERAGE_GT: Float
@@ -3026,37 +3081,38 @@ describe("Interface Relationships", () => {
 
             input CommentWhere {
               AND: [CommentWhere!]
+              NOT: CommentWhere
               OR: [CommentWhere!]
               content: String
               content_CONTAINS: String
               content_ENDS_WITH: String
               content_IN: [String]
-              content_NOT: String
-              content_NOT_CONTAINS: String
-              content_NOT_ENDS_WITH: String
-              content_NOT_IN: [String]
-              content_NOT_STARTS_WITH: String
+              content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              content_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              content_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              content_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               content_STARTS_WITH: String
-              creator: UserWhere
+              creator: UserWhere @deprecated(reason: \\"Use \`creator_SOME\` instead.\\")
               creatorAggregate: CommentCreatorAggregateInput
               creatorConnection: ContentCreatorConnectionWhere
-              creatorConnection_NOT: ContentCreatorConnectionWhere
-              creator_NOT: UserWhere
+              creatorConnection_NOT: ContentCreatorConnectionWhere @deprecated(reason: \\"Use \`creatorConnection_NONE\` instead.\\")
+              creator_NOT: UserWhere @deprecated(reason: \\"Use \`creator_NONE\` instead.\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              post: PostWhere
+              post: PostWhere @deprecated(reason: \\"Use \`post_SOME\` instead.\\")
               postAggregate: CommentPostAggregateInput
               postConnection: CommentPostConnectionWhere
-              postConnection_NOT: CommentPostConnectionWhere
-              post_NOT: PostWhere
+              postConnection_NOT: CommentPostConnectionWhere @deprecated(reason: \\"Use \`postConnection_NONE\` instead.\\")
+              post_NOT: PostWhere @deprecated(reason: \\"Use \`post_NONE\` instead.\\")
             }
 
             type CommentsConnection {
@@ -3088,6 +3144,7 @@ describe("Interface Relationships", () => {
 
             input ContentCreatorAggregateInput {
               AND: [ContentCreatorAggregateInput!]
+              NOT: ContentCreatorAggregateInput
               OR: [ContentCreatorAggregateInput!]
               count: Int
               count_GT: Int
@@ -3099,6 +3156,10 @@ describe("Interface Relationships", () => {
 
             input ContentCreatorConnectFieldInput {
               connect: UserConnectInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: UserConnectWhere
             }
 
@@ -3114,9 +3175,10 @@ describe("Interface Relationships", () => {
 
             input ContentCreatorConnectionWhere {
               AND: [ContentCreatorConnectionWhere!]
+              NOT: ContentCreatorConnectionWhere
               OR: [ContentCreatorConnectionWhere!]
               node: UserWhere
-              node_NOT: UserWhere
+              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input ContentCreatorCreateFieldInput {
@@ -3140,6 +3202,7 @@ describe("Interface Relationships", () => {
 
             input ContentCreatorNodeAggregationWhereInput {
               AND: [ContentCreatorNodeAggregationWhereInput!]
+              NOT: ContentCreatorNodeAggregationWhereInput
               OR: [ContentCreatorNodeAggregationWhereInput!]
               id_EQUAL: ID
               name_AVERAGE_EQUAL: Float
@@ -3247,26 +3310,26 @@ describe("Interface Relationships", () => {
               content_CONTAINS: String
               content_ENDS_WITH: String
               content_IN: [String]
-              content_NOT: String
-              content_NOT_CONTAINS: String
-              content_NOT_ENDS_WITH: String
-              content_NOT_IN: [String]
-              content_NOT_STARTS_WITH: String
+              content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              content_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              content_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              content_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               content_STARTS_WITH: String
-              creator: UserWhere
+              creator: UserWhere @deprecated(reason: \\"Use \`creator_SOME\` instead.\\")
               creatorAggregate: ContentCreatorAggregateInput
               creatorConnection: ContentCreatorConnectionWhere
-              creatorConnection_NOT: ContentCreatorConnectionWhere
-              creator_NOT: UserWhere
+              creatorConnection_NOT: ContentCreatorConnectionWhere @deprecated(reason: \\"Use \`creatorConnection_NONE\` instead.\\")
+              creator_NOT: UserWhere @deprecated(reason: \\"Use \`creator_NONE\` instead.\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
             }
 
@@ -3351,6 +3414,7 @@ describe("Interface Relationships", () => {
 
             input PostCommentsAggregateInput {
               AND: [PostCommentsAggregateInput!]
+              NOT: PostCommentsAggregateInput
               OR: [PostCommentsAggregateInput!]
               count: Int
               count_GT: Int
@@ -3362,6 +3426,10 @@ describe("Interface Relationships", () => {
 
             input PostCommentsConnectFieldInput {
               connect: [CommentConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: CommentConnectWhere
             }
 
@@ -3377,9 +3445,10 @@ describe("Interface Relationships", () => {
 
             input PostCommentsConnectionWhere {
               AND: [PostCommentsConnectionWhere!]
+              NOT: PostCommentsConnectionWhere
               OR: [PostCommentsConnectionWhere!]
               node: CommentWhere
-              node_NOT: CommentWhere
+              node_NOT: CommentWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input PostCommentsCreateFieldInput {
@@ -3403,6 +3472,7 @@ describe("Interface Relationships", () => {
 
             input PostCommentsNodeAggregationWhereInput {
               AND: [PostCommentsNodeAggregationWhereInput!]
+              NOT: PostCommentsNodeAggregationWhereInput
               OR: [PostCommentsNodeAggregationWhereInput!]
               content_AVERAGE_EQUAL: Float
               content_AVERAGE_GT: Float
@@ -3463,6 +3533,7 @@ describe("Interface Relationships", () => {
 
             input PostCreatorAggregateInput {
               AND: [PostCreatorAggregateInput!]
+              NOT: PostCreatorAggregateInput
               OR: [PostCreatorAggregateInput!]
               count: Int
               count_GT: Int
@@ -3474,6 +3545,7 @@ describe("Interface Relationships", () => {
 
             input PostCreatorNodeAggregationWhereInput {
               AND: [PostCreatorNodeAggregationWhereInput!]
+              NOT: PostCreatorNodeAggregationWhereInput
               OR: [PostCreatorNodeAggregationWhereInput!]
               id_EQUAL: ID
               name_AVERAGE_EQUAL: Float
@@ -3554,6 +3626,7 @@ describe("Interface Relationships", () => {
 
             input PostWhere {
               AND: [PostWhere!]
+              NOT: PostWhere
               OR: [PostWhere!]
               comments: CommentWhere @deprecated(reason: \\"Use \`comments_SOME\` instead.\\")
               commentsAggregate: PostCommentsAggregateInput
@@ -3576,26 +3649,26 @@ describe("Interface Relationships", () => {
               content_CONTAINS: String
               content_ENDS_WITH: String
               content_IN: [String]
-              content_NOT: String
-              content_NOT_CONTAINS: String
-              content_NOT_ENDS_WITH: String
-              content_NOT_IN: [String]
-              content_NOT_STARTS_WITH: String
+              content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              content_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              content_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              content_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               content_STARTS_WITH: String
-              creator: UserWhere
+              creator: UserWhere @deprecated(reason: \\"Use \`creator_SOME\` instead.\\")
               creatorAggregate: PostCreatorAggregateInput
               creatorConnection: ContentCreatorConnectionWhere
-              creatorConnection_NOT: ContentCreatorConnectionWhere
-              creator_NOT: UserWhere
+              creatorConnection_NOT: ContentCreatorConnectionWhere @deprecated(reason: \\"Use \`creatorConnection_NONE\` instead.\\")
+              creator_NOT: UserWhere @deprecated(reason: \\"Use \`creator_NONE\` instead.\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
             }
 
@@ -3690,9 +3763,10 @@ describe("Interface Relationships", () => {
 
             input UserContentConnectionWhere {
               AND: [UserContentConnectionWhere!]
+              NOT: UserContentConnectionWhere
               OR: [UserContentConnectionWhere!]
               node: ContentWhere
-              node_NOT: ContentWhere
+              node_NOT: ContentWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input UserContentCreateFieldInput {
@@ -3780,6 +3854,7 @@ describe("Interface Relationships", () => {
 
             input UserWhere {
               AND: [UserWhere!]
+              NOT: UserWhere
               OR: [UserWhere!]
               contentConnection: UserContentConnectionWhere @deprecated(reason: \\"Use \`contentConnection_SOME\` instead.\\")
               contentConnection_ALL: UserContentConnectionWhere
@@ -3791,21 +3866,21 @@ describe("Interface Relationships", () => {
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 

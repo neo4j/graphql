@@ -318,13 +318,13 @@ describe("Label in Node directive", () => {
             "MATCH (this:\`Film\`)
             WHERE this.id = $param0
             WITH this
-            OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
-            WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
-            SET this_actors0.name = $this_update_actors0_name
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
-            YIELD value AS _
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
+            	SET this_actors0.name = $this_update_actors0_name
+            	RETURN count(*) AS update_this_actors0
+            }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -333,13 +333,6 @@ describe("Label in Node directive", () => {
                 \\"param0\\": \\"1\\",
                 \\"updateMovies_args_update_actors0_where_Actorparam0\\": \\"old name\\",
                 \\"this_update_actors0_name\\": \\"new name\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
-                },
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {

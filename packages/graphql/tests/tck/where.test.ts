@@ -371,4 +371,59 @@ describe("Cypher WHERE", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
         });
     });
+
+    test("Simple NOT", async () => {
+        const query = gql`
+            {
+                movies(where: { NOT: { title: "some title" } }) {
+                    title
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Movie\`)
+            WHERE NOT (this.title = $param0)
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"some title\\"
+            }"
+        `);
+    });
+
+    test("Simple NOT, implicit AND", async () => {
+        const query = gql`
+            {
+                movies(where: { NOT: { title: "some title", isFavorite: false } }) {
+                    title
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Movie\`)
+            WHERE NOT (this.title = $param0 AND this.isFavorite = $param1)
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"some title\\",
+                \\"param1\\": false
+            }"
+        `);
+    });
 });

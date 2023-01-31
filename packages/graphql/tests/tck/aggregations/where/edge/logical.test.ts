@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
-describe("Cypher Aggregations where edge with Logical AND + OR", () => {
+describe("Cypher Aggregations where edge with Logical AND + OR + NOT", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -69,7 +69,7 @@ describe("Cypher Aggregations where edge with Logical AND + OR", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) AS var3, any(var4 IN collect(this0.someFloat) WHERE var4 = $param1) AS var5
             }
             WITH *
@@ -103,7 +103,7 @@ describe("Cypher Aggregations where edge with Logical AND + OR", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
                 RETURN any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) AS var3, any(var4 IN collect(this0.someFloat) WHERE var4 = $param1) AS var5
             }
             WITH *
@@ -115,6 +115,39 @@ describe("Cypher Aggregations where edge with Logical AND + OR", () => {
             "{
                 \\"param0\\": 10,
                 \\"param1\\": 11
+            }"
+        `);
+    });
+
+    test("NOT", async () => {
+        const query = gql`
+            {
+                posts(where: { likesAggregate: { edge: { NOT: { someFloat_EQUAL: 10 } } } }) {
+                    content
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Post\`)
+            CALL {
+                WITH this
+                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
+                RETURN any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) AS var3
+            }
+            WITH *
+            WHERE NOT (var3 = true)
+            RETURN this { .content } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": 10
             }"
         `);
     });

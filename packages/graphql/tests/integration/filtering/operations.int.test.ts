@@ -21,11 +21,11 @@ import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("Filtering Operations", () => {
-    const personType = generateUniqueType("Person");
-    const movieType = generateUniqueType("Movie");
+    const personType = new UniqueType("Person");
+    const movieType = new UniqueType("Movie");
 
     let driver: Driver;
     let neoSchema: Neo4jGraphQL;

@@ -25,28 +25,20 @@ function createRelationshipValidationString({
     node,
     context,
     varName,
+    relationshipFieldNotOverwritable,
 }: {
     node: Node;
     context: Context;
     varName: string;
+    relationshipFieldNotOverwritable?: string;
 }): string {
     const strs: string[] = [];
 
     node.relationFields.forEach((field) => {
-        if (field.typeMeta.array) {
-            return;
-        }
-
+        const isArray = field.typeMeta.array;
         const isUnionOrInterface = Boolean(field.union) || Boolean(field.interface);
         if (isUnionOrInterface) {
             return;
-        }
-
-        let predicate = `c = 1`;
-        let errorMsg = `${RELATIONSHIP_REQUIREMENT_PREFIX}${node.name}.${field.fieldName} required`;
-        if (!field.typeMeta.required) {
-            predicate = `c <= 1`;
-            errorMsg = `${RELATIONSHIP_REQUIREMENT_PREFIX}${node.name}.${field.fieldName} must be less than or equal to one`;
         }
 
         const toNode = context.nodes.find((n) => n.name === field.typeMeta.name) as Node;
@@ -54,17 +46,47 @@ function createRelationshipValidationString({
         const outStr = field.direction === "OUT" ? "->" : "-";
         const relVarname = `${varName}_${field.fieldName}_${toNode.name}_unique`;
 
-        const subQuery = [
-            `CALL {`,
-            `\tWITH ${varName}`,
-            `\tMATCH (${varName})${inStr}[${relVarname}:${field.type}]${outStr}(${toNode.getLabelString(context)})`,
-            `\tWITH count(${relVarname}) as c`,
-            `\tCALL apoc.util.validate(NOT (${predicate}), '${errorMsg}', [0])`,
-            `\tRETURN c AS ${relVarname}_ignored`,
-            `}`,
-        ].join("\n");
+        let predicate: string;
+        let errorMsg: string;
+        let subQuery: string | undefined;
+        if (isArray) {
+            if (relationshipFieldNotOverwritable === field.fieldName) {
+                predicate = `c = 1`;
+                errorMsg = `${RELATIONSHIP_REQUIREMENT_PREFIX}${node.name}.${field.fieldName} required exactly once for a specific ${toNode.name}`;
+                subQuery = [
+                    `CALL {`,
+                    `\tWITH ${varName}`,
+                    `\tMATCH (${varName})${inStr}[${relVarname}:${field.type}]${outStr}(other${toNode.getLabelString(
+                        context
+                    )})`,
+                    `\tWITH count(${relVarname}) as c, other`,
+                    `\tCALL apoc.util.validate(NOT (${predicate}), '${errorMsg}', [0])`,
+                    `\tRETURN collect(c) AS ${relVarname}_ignored`,
+                    `}`,
+                ].join("\n");
+            }
+        } else {
+            predicate = `c = 1`;
+            errorMsg = `${RELATIONSHIP_REQUIREMENT_PREFIX}${node.name}.${field.fieldName} required exactly once`;
+            if (!field.typeMeta.required) {
+                predicate = `c <= 1`;
+                errorMsg = `${RELATIONSHIP_REQUIREMENT_PREFIX}${node.name}.${field.fieldName} must be less than or equal to one`;
+            }
 
-        strs.push(subQuery);
+            subQuery = [
+                `CALL {`,
+                `\tWITH ${varName}`,
+                `\tMATCH (${varName})${inStr}[${relVarname}:${field.type}]${outStr}(${toNode.getLabelString(context)})`,
+                `\tWITH count(${relVarname}) as c`,
+                `\tCALL apoc.util.validate(NOT (${predicate}), '${errorMsg}', [0])`,
+                `\tRETURN c AS ${relVarname}_ignored`,
+                `}`,
+            ].join("\n");
+        }
+
+        if (subQuery) {
+            strs.push(subQuery);
+        }
     });
 
     return strs.join("\n");

@@ -26,14 +26,14 @@ import { ApolloTestServer } from "./setup/apollo-server";
 import { WebSocketTestClient } from "./setup/ws-client";
 import neo4j from "./setup/neo4j";
 import type { Neo4jGraphQLSubscriptionsAMQPPlugin } from "../../src";
-import { generateUniqueType } from "../utils/graphql-types";
+import { UniqueType } from "../utils/graphql-types";
 import createPlugin from "./setup/plugin";
 import getRabbitConnectionOptions from "./setup/rabbitmq";
 
 describe("Apollo and RabbitMQ Subscription", () => {
     let driver: Driver;
 
-    const typeMovie = generateUniqueType("Movie");
+    const typeMovie = new UniqueType("Movie");
 
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;

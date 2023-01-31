@@ -20,7 +20,7 @@
 import type { Driver } from "neo4j-driver";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
@@ -45,13 +45,13 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
     let typeDefs: string;
 
     beforeEach(async () => {
-        typeActor = generateUniqueType("Actor");
-        typePerson = generateUniqueType("Person");
-        typeDinosaur = generateUniqueType("Dinosaur");
-        typeMovie = generateUniqueType("Movie");
-        typeFilm = generateUniqueType("Film");
-        typeSeries = generateUniqueType("Series");
-        typeProduction = generateUniqueType("Production");
+        typeActor = new UniqueType("Actor");
+        typePerson = new UniqueType("Person");
+        typeDinosaur = new UniqueType("Dinosaur");
+        typeMovie = new UniqueType("Movie");
+        typeFilm = new UniqueType("Film");
+        typeSeries = new UniqueType("Series");
+        typeProduction = new UniqueType("Production");
 
         typeDefs = `
              type ${typeActor} @node(additionalLabels: ["${typePerson}"]) {

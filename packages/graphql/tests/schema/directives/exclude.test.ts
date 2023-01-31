@@ -56,16 +56,17 @@ describe("@exclude directive", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -131,16 +132,17 @@ describe("@exclude directive", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -256,16 +258,17 @@ describe("@exclude directive", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -403,16 +406,17 @@ describe("@exclude directive", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -553,16 +557,17 @@ describe("@exclude directive", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -674,16 +679,17 @@ describe("@exclude directive", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -722,6 +728,7 @@ describe("@exclude directive", () => {
 
             input MovieActorsAggregateInput {
               AND: [MovieActorsAggregateInput!]
+              NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
               count: Int
               count_GT: Int
@@ -732,6 +739,10 @@ describe("@exclude directive", () => {
             }
 
             input MovieActorsConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: ActorConnectWhere
             }
 
@@ -747,9 +758,10 @@ describe("@exclude directive", () => {
 
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
+              NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               node: ActorWhere
-              node_NOT: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -771,6 +783,7 @@ describe("@exclude directive", () => {
 
             input MovieActorsNodeAggregationWhereInput {
               AND: [MovieActorsNodeAggregationWhereInput!]
+              NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
@@ -866,6 +879,7 @@ describe("@exclude directive", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
@@ -888,11 +902,11 @@ describe("@exclude directive", () => {
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -1004,16 +1018,17 @@ describe("@exclude directive", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -1163,16 +1178,17 @@ describe("@exclude directive", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -1252,16 +1268,17 @@ describe("@exclude directive", () => {
 
             input SeriesWhere {
               AND: [SeriesWhere!]
+              NOT: SeriesWhere
               OR: [SeriesWhere!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
