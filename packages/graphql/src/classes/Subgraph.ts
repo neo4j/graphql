@@ -168,15 +168,11 @@ export class Subgraph {
         const __resolveReference = async (reference, _context, info: GraphQLResolveInfo): Promise<unknown> => {
             const { __typename } = reference;
 
-            console.log(reference);
-
             const node = nodes.find((n) => n.name === __typename);
 
             if (!node) {
                 throw new Error("Unable to find matching node");
             }
-
-            console.log(_context);
 
             const executor = new Executor({ executionContext: driver });
 

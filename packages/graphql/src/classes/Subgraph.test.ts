@@ -225,7 +225,6 @@ describe("Subgraph", () => {
                 }
             `;
 
-            // parseLinkImportArgument called in constructor
             // @ts-ignore
             expect(() => new Subgraph(typeDefs)).toThrow("Encountered unknown Apollo Federation directive @banana");
         });
@@ -261,7 +260,6 @@ describe("Subgraph", () => {
                 }
             `;
 
-            // parseLinkImportArgument called in constructor
             // @ts-ignore
             expect(() => new Subgraph(typeDefs)).toThrow("Alias for directive @external is not of type string");
         });

@@ -45,8 +45,6 @@ export function translateResolveReference(
 
     let projAuth: Cypher.Clause | undefined;
 
-    console.log(resolveTree.args);
-
     const {
         matchClause: topLevelMatch,
         preComputedWhereFieldSubqueries,

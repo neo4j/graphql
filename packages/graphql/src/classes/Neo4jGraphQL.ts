@@ -243,11 +243,7 @@ class Neo4jGraphQL {
         return getNeo4jDatabaseInfo(new Executor(executorConstructorParam));
     }
 
-    private wrapResolvers(resolvers: IExecutableSchemaDefinition["resolvers"]) {
-        if (!resolvers) {
-            throw new Error("No resolvers to wrap");
-        }
-
+    private wrapResolvers(resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>) {
         if (!this.schemaModel) {
             throw new Error("Schema Model is not defined");
         }
