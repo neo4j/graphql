@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/2189", () => {
     let driver: Driver;
@@ -37,8 +37,8 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
     });
 
     beforeEach(() => {
-        Test_Item = generateUniqueType("Test_Item");
-        Test_Feedback = generateUniqueType("Test_Feedback");
+        Test_Item = new UniqueType("Test_Item");
+        Test_Feedback = new UniqueType("Test_Feedback");
 
         const typeDefs = `
             type ${Test_Item} {

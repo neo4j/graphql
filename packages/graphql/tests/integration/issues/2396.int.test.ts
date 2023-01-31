@@ -21,7 +21,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("https://github.com/neo4j/graphql/issues/2396", () => {
@@ -42,11 +42,11 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
     });
 
     beforeEach(async () => {
-        PostalCode = generateUniqueType("PostalCode");
-        Address = generateUniqueType("Address");
-        Mandate = generateUniqueType("Mandate");
-        Valuation = generateUniqueType("Valuation");
-        Estate = generateUniqueType("Estate");
+        PostalCode = new UniqueType("PostalCode");
+        Address = new UniqueType("Address");
+        Mandate = new UniqueType("Mandate");
+        Valuation = new UniqueType("Valuation");
+        Estate = new UniqueType("Estate");
 
         session = await neo4j.getSession();
 

@@ -91,6 +91,7 @@ function makeAugmentedSchema(
     {
         features,
         enableRegex,
+        validateResolvers,
         generateSubscriptions,
         callbacks,
         userCustomResolvers,
@@ -98,11 +99,12 @@ function makeAugmentedSchema(
     }: {
         features?: Neo4jFeaturesSettings;
         enableRegex?: boolean;
+        validateResolvers: boolean;
         generateSubscriptions?: boolean;
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
         subgraph?: Subgraph;
-    } = {}
+    } = { validateResolvers: true }
 ): {
     nodes: Node[];
     relationships: Relationship[];
@@ -160,7 +162,7 @@ function makeAugmentedSchema(
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
-    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers });
+    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers, validateResolvers });
 
     const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames, floatWhereInTypeDefs } =
         getNodesResult;
@@ -212,6 +214,7 @@ function makeAugmentedSchema(
             unions: unionTypes,
             obj: relationship,
             callbacks,
+            validateResolvers,
         });
 
         if (!pointInTypeDefs) {
@@ -300,6 +303,7 @@ function makeAugmentedSchema(
             unions: unionTypes,
             obj: interfaceRelationship,
             callbacks,
+            validateResolvers,
         });
 
         if (!pointInTypeDefs) {
@@ -816,6 +820,7 @@ function makeAugmentedSchema(
                 unions: unionTypes,
                 objects: objectTypes,
                 callbacks,
+                validateResolvers,
             });
 
             const objectComposeFields = objectFieldsToComposeFields([
@@ -854,6 +859,7 @@ function makeAugmentedSchema(
             unions: unionTypes,
             objects: objectTypes,
             callbacks,
+            validateResolvers,
         });
 
         const baseFields: BaseField[][] = Object.values(objectFields);

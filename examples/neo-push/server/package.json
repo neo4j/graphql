@@ -24,7 +24,7 @@
         "express-rate-limit": "^6.5.2",
         "graphql": "16.6.0",
         "jsonwebtoken": "9.0.0",
-        "neo4j-driver": "5.4.0"
+        "neo4j-driver": "5.5.0"
     },
     "devDependencies": {
         "@faker-js/faker": "7.6.0",
@@ -42,6 +42,6 @@
         "ts-jest": "29.0.5",
         "ts-node": "10.9.1",
         "tsconfig-paths": "4.1.2",
-        "typescript": "4.9.4"
+        "typescript": "4.9.5"
     }
 }

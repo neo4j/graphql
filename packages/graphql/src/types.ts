@@ -264,6 +264,7 @@ export interface GraphQLWhereArg {
     [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
     AND?: GraphQLWhereArg[];
     OR?: GraphQLWhereArg[];
+    NOT?: GraphQLWhereArg;
 }
 
 export interface ConnectionWhereArg {
@@ -273,6 +274,7 @@ export interface ConnectionWhereArg {
     edge_NOT?: GraphQLWhereArg;
     AND?: ConnectionWhereArg[];
     OR?: ConnectionWhereArg[];
+    NOT?: ConnectionWhereArg;
 }
 
 export interface InterfaceWhereArg {
@@ -356,6 +358,18 @@ export interface CypherQueryOptions {
     interpretedPipesFallback?: CypherInterpretedPipesFallback;
     replan?: CypherReplanning;
 }
+
+/** The startup validation checks to run */
+export interface StartupValidationOptions {
+    typeDefs?: boolean;
+    resolvers?: boolean;
+}
+
+/**
+ * Configure which startup validation checks should be run.
+ * Optionally, a boolean can be passed to toggle all these options.
+ */
+export type StartupValidationConfig = StartupValidationOptions | boolean;
 
 /** Input field for graphql-compose */
 export type InputField = { type: string; defaultValue?: string; directives?: Directive[] } | string;

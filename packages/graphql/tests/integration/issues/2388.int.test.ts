@@ -22,7 +22,7 @@ import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 
@@ -42,9 +42,9 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
     });
 
     beforeEach(async () => {
-        PartAddress = generateUniqueType("PartAddress");
-        PartUsage = generateUniqueType("PartUsage");
-        Part = generateUniqueType("Part");
+        PartAddress = new UniqueType("PartAddress");
+        PartUsage = new UniqueType("PartUsage");
+        Part = new UniqueType("Part");
         session = await neo4j.getSession();
 
         const typeDefs = `

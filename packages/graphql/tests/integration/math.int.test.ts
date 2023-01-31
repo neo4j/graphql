@@ -24,7 +24,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
-import { generateUniqueType } from "../utils/graphql-types";
+import { UniqueType } from "../utils/graphql-types";
 
 describe("Mathematical operations tests", () => {
     let driver: Driver;
@@ -64,7 +64,7 @@ describe("Mathematical operations tests", () => {
     ])(
         "Simple operations on numberical fields: on $type, $operation($initialValue, $value) should return $expected",
         async ({ initialValue, type, value, operation, expected }) => {
-            const movie = generateUniqueType("Movie");
+            const movie = new UniqueType("Movie");
 
             const typeDefs = `
             type ${movie.name} {
@@ -141,7 +141,7 @@ describe("Mathematical operations tests", () => {
     ])(
         "Should raise an error in case of $expectedError on $type, initialValue: $initialValue, value: $value",
         async ({ initialValue, type, value, operation, expectedError }) => {
-            const movie = generateUniqueType("Movie");
+            const movie = new UniqueType("Movie");
             const typeDefs = `
             type ${movie.name} {
                 id: ID!
@@ -201,7 +201,7 @@ describe("Mathematical operations tests", () => {
 
     test("Should raise an error if the input fields are ambiguous", async () => {
         const initialViewers = int(100);
-        const movie = generateUniqueType("Movie");
+        const movie = new UniqueType("Movie");
         const typeDefs = `
         type ${movie.name} {
             id: ID!
@@ -263,7 +263,7 @@ describe("Mathematical operations tests", () => {
     test("Should be possible to do multiple operations in the same mutation", async () => {
         const initialViewers = int(100);
         const initialLength = int(100);
-        const movie = generateUniqueType("Movie");
+        const movie = new UniqueType("Movie");
         const typeDefs = `
         type ${movie.name} {
             id: ID!
@@ -325,8 +325,8 @@ describe("Mathematical operations tests", () => {
     test("Should be possible to update nested nodes", async () => {
         const initialViewers = int(100);
         const name = "Luigino";
-        const movie = generateUniqueType("Movie");
-        const actor = generateUniqueType("Actor");
+        const movie = new UniqueType("Movie");
+        const actor = new UniqueType("Actor");
         const typeDefs = `
         type ${movie.name} {
             viewers: Int!
@@ -405,9 +405,9 @@ describe("Mathematical operations tests", () => {
     test("Should be possible to update nested nodes using interfaces", async () => {
         const initialViewers = int(100);
         const name = "Luigino";
-        const movie = generateUniqueType("Movie");
-        const production = generateUniqueType("Production");
-        const actor = generateUniqueType("Actor");
+        const movie = new UniqueType("Movie");
+        const production = new UniqueType("Production");
+        const actor = new UniqueType("Actor");
 
         const typeDefs = `
         interface ${production.name} {
@@ -491,9 +491,9 @@ describe("Mathematical operations tests", () => {
         const initialViewers = int(100);
         const name = "Luigino";
 
-        const movie = generateUniqueType("Movie");
-        const production = generateUniqueType("Production");
-        const actor = generateUniqueType("Actor");
+        const movie = new UniqueType("Movie");
+        const production = new UniqueType("Production");
+        const actor = new UniqueType("Actor");
 
         const typeDefs = `
         interface ${production.name} {
@@ -579,7 +579,7 @@ describe("Mathematical operations tests", () => {
 
     test("Should throws an error if the property holds Nan values", async () => {
         const increment = 10;
-        const movie = generateUniqueType("Movie");
+        const movie = new UniqueType("Movie");
         const typeDefs = `
         type ${movie.name} {
             id: ID!
@@ -641,8 +641,8 @@ describe("Mathematical operations tests", () => {
     test("Should be possible to update relationship properties", async () => {
         const initialPay = 100;
         const payIncrement = 50;
-        const movie = generateUniqueType("Movie");
-        const actor = generateUniqueType("Actor");
+        const movie = new UniqueType("Movie");
+        const actor = new UniqueType("Actor");
         const typeDefs = `
         type ${movie.name} {
             title: String
@@ -727,8 +727,8 @@ describe("Mathematical operations tests", () => {
     test("Should raise in case of ambiguous properties on relationships", async () => {
         const initialPay = 100;
         const payIncrement = 50;
-        const movie = generateUniqueType("Movie");
-        const actor = generateUniqueType("Actor");
+        const movie = new UniqueType("Movie");
+        const actor = new UniqueType("Actor");
         const typeDefs = `
         type ${movie.name} {
             title: String

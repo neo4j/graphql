@@ -158,7 +158,10 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema(typeDefs, { enableRegex: true });
+            const neoSchema = makeAugmentedSchema(typeDefs, {
+                enableRegex: true,
+                validateResolvers: true,
+            });
 
             const document = neoSchema.typeDefs;
 

@@ -24,11 +24,11 @@ import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/894", () => {
-    const testUser = generateUniqueType("User");
-    const testOrganization = generateUniqueType("Organization");
+    const testUser = new UniqueType("User");
+    const testOrganization = new UniqueType("Organization");
     let schema: GraphQLSchema;
     let driver: Driver;
     let neo4j: Neo4j;

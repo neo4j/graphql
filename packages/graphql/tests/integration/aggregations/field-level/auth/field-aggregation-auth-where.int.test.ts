@@ -22,7 +22,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
-import { generateUniqueType } from "../../../../utils/graphql-types";
+import { UniqueType } from "../../../../utils/graphql-types";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 
 describe(`Field Level Auth Where Requests`, () => {
@@ -30,8 +30,8 @@ describe(`Field Level Auth Where Requests`, () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let session: Session;
-    const typeMovie = generateUniqueType("Movie");
-    const typeActor = generateUniqueType("Actor");
+    const typeMovie = new UniqueType("Movie");
+    const typeActor = new UniqueType("Actor");
     const typeDefs = `
     type ${typeMovie.name} {
         name: String
