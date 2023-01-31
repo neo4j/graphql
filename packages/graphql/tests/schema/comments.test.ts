@@ -469,16 +469,16 @@ describe("Comments", () => {
                   name_AVERAGE_GTE: Float
                   name_AVERAGE_LT: Float
                   name_AVERAGE_LTE: Float
-                  name_EQUAL: String
-                  name_GT: Int
-                  name_GTE: Int
+                  name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+                  name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+                  name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
                   name_LONGEST_EQUAL: Int
                   name_LONGEST_GT: Int
                   name_LONGEST_GTE: Int
                   name_LONGEST_LT: Int
                   name_LONGEST_LTE: Int
-                  name_LT: Int
-                  name_LTE: Int
+                  name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
+                  name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function like 'LONGEST', 'SHORTEST', 'AVERAGE', 'SUM', 'MIN' and 'MAX' will be deprecated.\\")
                   name_SHORTEST_EQUAL: Int
                   name_SHORTEST_GT: Int
                   name_SHORTEST_GTE: Int
