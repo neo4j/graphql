@@ -75,6 +75,7 @@
 ** xref:introspector.adoc[Introspector]
 ** xref:toolbox.adoc[GraphQL Toolbox]
 ** xref:driver-configuration.adoc[]
+** xref:integrations/index.adoc[]
 *** xref:integrations/apollo-federation.adoc[]
 ** xref:guides/index.adoc[]
 *** xref:guides/frameworks/nextjs.adoc[]

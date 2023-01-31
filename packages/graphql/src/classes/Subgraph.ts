@@ -230,19 +230,13 @@ export class Subgraph {
         const document = mergeTypeDefs(typeDefs);
 
         for (const definition of document.definitions) {
-            if (definition.kind === Kind.SCHEMA_EXTENSION) {
-                if (definition.directives) {
-                    for (const directive of definition.directives) {
-                        if (directive.name.value === "link") {
-                            if (directive.arguments) {
-                                for (const argument of directive.arguments) {
-                                    if (argument.name.value === "url") {
-                                        if (argument.value.kind === Kind.STRING) {
-                                            if (argument.value.value === "https://specs.apollo.dev/federation/v2.0") {
-                                                return { extension: definition, directive };
-                                            }
-                                        }
-                                    }
+            if (definition.kind === Kind.SCHEMA_EXTENSION && definition.directives) {
+                for (const directive of definition.directives) {
+                    if (directive.name.value === "link" && directive.arguments) {
+                        for (const argument of directive.arguments) {
+                            if (argument.name.value === "url" && argument.value.kind === Kind.STRING) {
+                                if (argument.value.value === "https://specs.apollo.dev/federation/v2.0") {
+                                    return { extension: definition, directive };
                                 }
                             }
                         }
