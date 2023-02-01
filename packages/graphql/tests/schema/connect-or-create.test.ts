@@ -166,16 +166,16 @@ describe("Connect Or Create", () => {
               isan_AVERAGE_GTE: Float
               isan_AVERAGE_LT: Float
               isan_AVERAGE_LTE: Float
-              isan_EQUAL: String
-              isan_GT: Int
-              isan_GTE: Int
+              isan_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              isan_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              isan_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               isan_LONGEST_EQUAL: Int
               isan_LONGEST_GT: Int
               isan_LONGEST_GTE: Int
               isan_LONGEST_LT: Int
               isan_LONGEST_LTE: Int
-              isan_LT: Int
-              isan_LTE: Int
+              isan_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              isan_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               isan_SHORTEST_EQUAL: Int
               isan_SHORTEST_GT: Int
               isan_SHORTEST_GTE: Int
@@ -186,16 +186,16 @@ describe("Connect Or Create", () => {
               title_AVERAGE_GTE: Float
               title_AVERAGE_LT: Float
               title_AVERAGE_LTE: Float
-              title_EQUAL: String
-              title_GT: Int
-              title_GTE: Int
+              title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               title_LONGEST_EQUAL: Int
               title_LONGEST_GT: Int
               title_LONGEST_GTE: Int
               title_LONGEST_LT: Int
               title_LONGEST_LTE: Int
-              title_LT: Int
-              title_LTE: Int
+              title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               title_SHORTEST_EQUAL: Int
               title_SHORTEST_GT: Int
               title_SHORTEST_GTE: Int
@@ -659,16 +659,16 @@ describe("Connect Or Create", () => {
               characterName_AVERAGE_GTE: Float
               characterName_AVERAGE_LT: Float
               characterName_AVERAGE_LTE: Float
-              characterName_EQUAL: String
-              characterName_GT: Int
-              characterName_GTE: Int
+              characterName_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              characterName_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              characterName_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               characterName_LONGEST_EQUAL: Int
               characterName_LONGEST_GT: Int
               characterName_LONGEST_GTE: Int
               characterName_LONGEST_LT: Int
               characterName_LONGEST_LTE: Int
-              characterName_LT: Int
-              characterName_LTE: Int
+              characterName_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              characterName_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               characterName_SHORTEST_EQUAL: Int
               characterName_SHORTEST_GT: Int
               characterName_SHORTEST_GTE: Int
@@ -679,11 +679,11 @@ describe("Connect Or Create", () => {
               screentime_AVERAGE_GTE: Float
               screentime_AVERAGE_LT: Float
               screentime_AVERAGE_LTE: Float
-              screentime_EQUAL: Int
-              screentime_GT: Int
-              screentime_GTE: Int
-              screentime_LT: Int
-              screentime_LTE: Int
+              screentime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screentime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screentime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screentime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screentime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               screentime_MAX_EQUAL: Int
               screentime_MAX_GT: Int
               screentime_MAX_GTE: Int
@@ -716,16 +716,16 @@ describe("Connect Or Create", () => {
               isan_AVERAGE_GTE: Float
               isan_AVERAGE_LT: Float
               isan_AVERAGE_LTE: Float
-              isan_EQUAL: String
-              isan_GT: Int
-              isan_GTE: Int
+              isan_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              isan_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              isan_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               isan_LONGEST_EQUAL: Int
               isan_LONGEST_GT: Int
               isan_LONGEST_GTE: Int
               isan_LONGEST_LT: Int
               isan_LONGEST_LTE: Int
-              isan_LT: Int
-              isan_LTE: Int
+              isan_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              isan_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               isan_SHORTEST_EQUAL: Int
               isan_SHORTEST_GT: Int
               isan_SHORTEST_GTE: Int
@@ -736,16 +736,16 @@ describe("Connect Or Create", () => {
               title_AVERAGE_GTE: Float
               title_AVERAGE_LT: Float
               title_AVERAGE_LTE: Float
-              title_EQUAL: String
-              title_GT: Int
-              title_GTE: Int
+              title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               title_LONGEST_EQUAL: Int
               title_LONGEST_GT: Int
               title_LONGEST_GTE: Int
               title_LONGEST_LT: Int
               title_LONGEST_LTE: Int
-              title_LT: Int
-              title_LTE: Int
+              title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               title_SHORTEST_EQUAL: Int
               title_SHORTEST_GT: Int
               title_SHORTEST_GTE: Int

@@ -28,6 +28,7 @@ import {
 import { NODE_OR_EDGE_KEYS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
 import { getCypherLogicalOperator, isLogicalOperator, LogicalOperator } from "./utils/logical-operators";
 import mapToDbProperty from "../utils/map-to-db-property";
+import { asArray } from "../utils/utils";
 
 type WhereFilter = Record<string | LogicalOperator, any>;
 
@@ -139,8 +140,7 @@ function aggregateWhere(
         } else if (isLogicalOperator(key)) {
             const cypherBuilderFunction = getCypherLogicalOperator(key);
             const logicalPredicates: Cypher.Predicate[] = [];
-            value = Array.isArray(value) ? value : [value];
-            value.forEach((whereInput) => {
+            asArray(value).forEach((whereInput) => {
                 const {
                     returnProjections: innerReturnProjections,
                     predicates: innerPredicates,
@@ -209,8 +209,7 @@ function aggregateEntityWhere(
         if (isLogicalOperator(key)) {
             const cypherBuilderFunction = getCypherLogicalOperator(key);
             const logicalPredicates: Cypher.Predicate[] = [];
-            value = Array.isArray(value) ? value : [value];
-            value.forEach((whereInput) => {
+            asArray(value).forEach((whereInput) => {
                 const {
                     returnProjections: innerReturnProjections,
                     predicates: innerPredicates,
