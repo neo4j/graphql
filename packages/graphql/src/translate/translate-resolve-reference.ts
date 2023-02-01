@@ -19,31 +19,26 @@
 
 import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
-import type { GraphQLOptionsArg, Context } from "../types";
-import { createAuthPredicates } from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import type { Context } from "../types";
 import { createMatchClause } from "./translate-top-level-match";
 import Cypher from "@neo4j/cypher-builder";
 
-export function translateResolveReference(
-    {
-        node,
-        context,
-        reference,
-    }: {
-        context: Context;
-        node: Node;
-        reference: any;
-    },
-    varName = "this"
-): Cypher.CypherResult {
+export function translateResolveReference({
+    node,
+    context,
+    reference,
+}: {
+    context: Context;
+    node: Node;
+    reference: any;
+}): Cypher.CypherResult {
+    const varName = "this";
     const { resolveTree } = context;
+
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { __typename, ...where } = reference;
-
-    let projAuth: Cypher.Clause | undefined;
 
     const {
         matchClause: topLevelMatch,
@@ -64,42 +59,7 @@ export function translateResolveReference(
         varName,
     });
 
-    if (projection.meta?.authValidateStrs?.length) {
-        projAuth = new Cypher.RawCypher(
-            `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
-                " AND "
-            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-        );
-    }
-
-    const authPredicates = createAuthPredicates({
-        operations: "READ",
-        entity: node,
-        context,
-        allow: {
-            parentNode: node,
-            varName,
-        },
-    });
-
-    if (authPredicates) {
-        topLevelWhereClause.where(new Cypher.apoc.ValidatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR));
-    }
-
-    const projectionSubqueries = Cypher.concat(...projection.subqueries);
-    const projectionSubqueriesBeforeSort = Cypher.concat(...projection.subqueriesBeforeSort);
-
-    const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
-
-    if (context.fulltextIndex) {
-        optionsInput.sort = optionsInput.sort?.[node?.singular] || optionsInput.sort;
-    }
-
-    if (node.queryOptions) {
-        optionsInput.limit = node.queryOptions.getLimit(optionsInput.limit); // TODO: improve this
-        resolveTree.args.options = resolveTree.args.options || {};
-        (resolveTree.args.options as Record<string, any>).limit = optionsInput.limit;
-    }
+    const projectionSubqueries = Cypher.concat(...projection.subqueries, ...projection.subqueriesBeforeSort);
 
     const projectionExpression = new Cypher.RawCypher(() => {
         return [`${varName} ${projection.projection}`, projection.params];
@@ -118,9 +78,7 @@ export function translateResolveReference(
     const readQuery = Cypher.concat(
         topLevelMatch,
         preComputedWhereFields,
-        projAuth,
         connectionPreClauses,
-        projectionSubqueriesBeforeSort,
         projectionSubqueries,
         projectionClause
     );

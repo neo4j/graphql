@@ -118,9 +118,6 @@ class Neo4jGraphQL {
         return this._relationships;
     }
 
-    /**
-     * @deprecated This method will change to `getExecutableSchema` in the next major release, as different schema types are introduced into the library.
-     */
     public async getSchema(): Promise<GraphQLSchema> {
         return this.getExecutableSchema();
     }
@@ -287,12 +284,10 @@ class Neo4jGraphQL {
                 userCustomResolvers: this.schemaDefinition.resolvers,
             });
 
-            const schemaModel = generateModel(document);
+            this.schemaModel = generateModel(document);
 
             this._nodes = nodes;
             this._relationships = relationships;
-
-            this.schemaModel = schemaModel;
 
             // Wrap the generated and custom resolvers, which adds a context including the schema to every request
             const wrappedResolvers = this.wrapResolvers(resolvers);
@@ -330,12 +325,10 @@ class Neo4jGraphQL {
             subgraph,
         });
 
-        const schemaModel = generateModel(document);
+        this.schemaModel = generateModel(document);
 
         this._nodes = nodes;
         this._relationships = relationships;
-
-        this.schemaModel = schemaModel;
 
         const referenceResolvers = subgraph.getReferenceResolvers(this._nodes, this.driver as Driver);
         const subgraphTypeDefs = subgraph.augmentGeneratedSchemaDefinition(typeDefs);
