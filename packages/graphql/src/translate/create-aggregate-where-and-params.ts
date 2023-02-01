@@ -114,8 +114,8 @@ function aggregateWhere(
     relationship: Relationship | undefined,
     aggregationTarget: Cypher.Node,
     cypherRelation: Cypher.Relationship,
-    context: Context,
-    outerRelationshipData: ConnectionPredicateData[]
+    outerRelationshipData: ConnectionPredicateData[],
+    context: Context
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
     const predicates: Cypher.Predicate[] = [];
@@ -205,8 +205,8 @@ function aggregateEntityWhere(
     aggregateEntityWhereInput: WhereFilter,
     refNodeOrRelation: Node | Relationship,
     target: Cypher.Node | Cypher.Relationship,
-    context: Context,
-    outerRelationshipData: ConnectionPredicateData[]
+    outerRelationshipData: ConnectionPredicateData[],
+    context: Context
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
     const predicates: Cypher.Predicate[] = [];
