@@ -76,7 +76,7 @@ No change. See xref::type-definitions/cypher.adoc[`@cypher` directive] for more 
 `@neo4j/graphql` offers two directives for skipping autogeneration for specified types/fields:
 
 * xref::type-definitions/access-control.adoc#type-definitions-access-control-exclude[`@exclude`]: Skip generation of specified Query/Mutation fields for an object type
-* xref::custom-resolvers.adoc#custom-resolvers-computed[`@computed`]: Ignore a field, which will need custom logic for resolution
+* xref::custom-resolvers.adoc#custom-resolver-directive[`@customResolver`]: Ignore a field, which will need custom logic for resolution
 
 === `@isAuthenticated`, `@hasRole` and `@hasScope`
 
