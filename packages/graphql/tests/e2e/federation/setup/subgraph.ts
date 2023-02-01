@@ -22,7 +22,7 @@ import type { GraphQLSchema } from "graphql";
 import type * as neo4j from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../src";
 
-export class Subgraph {
+export class TestSubgraph {
     library: Neo4jGraphQL;
 
     constructor({ typeDefs, resolvers, driver }: { typeDefs: TypeSource; resolvers?: any; driver: neo4j.Driver }) {

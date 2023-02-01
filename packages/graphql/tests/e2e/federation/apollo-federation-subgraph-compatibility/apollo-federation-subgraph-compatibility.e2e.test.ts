@@ -20,7 +20,7 @@
 import { gql } from "graphql-tag";
 import { GatewayServer } from "../setup/gateway-server";
 import type { Server } from "../setup/server";
-import { Subgraph } from "../setup/subgraph";
+import { TestSubgraph } from "../setup/subgraph";
 import { SubgraphServer } from "../setup/subgraph-server";
 import { Neo4j } from "../setup/neo4j";
 import { schema as inventory } from "./subgraphs/inventory";
@@ -121,7 +121,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
         inventoryServer = new SubgraphServer(inventory, 4010);
         usersServer = new SubgraphServer(users, 4012);
 
-        const productsSubgraph = new Subgraph({
+        const productsSubgraph = new TestSubgraph({
             typeDefs: products,
             resolvers: {
                 User: {

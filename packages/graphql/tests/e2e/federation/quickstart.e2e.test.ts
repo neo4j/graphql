@@ -21,7 +21,7 @@ import supertest from "supertest";
 import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 import { GatewayServer } from "./setup/gateway-server";
 import type { Server } from "./setup/server";
-import { Subgraph } from "./setup/subgraph";
+import { TestSubgraph } from "./setup/subgraph";
 import { SubgraphServer } from "./setup/subgraph-server";
 import { Neo4j } from "./setup/neo4j";
 
@@ -80,8 +80,8 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
         neo4j = new Neo4j();
         await neo4j.init();
 
-        const locationsSubgraph = new Subgraph({ typeDefs: locations, driver: neo4j.driver });
-        const reviewsSubgraph = new Subgraph({ typeDefs: reviews, driver: neo4j.driver });
+        const locationsSubgraph = new TestSubgraph({ typeDefs: locations, driver: neo4j.driver });
+        const reviewsSubgraph = new TestSubgraph({ typeDefs: reviews, driver: neo4j.driver });
 
         const [locationsSchema, reviewsSchema] = await Promise.all([
             locationsSubgraph.getSchema(),
