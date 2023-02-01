@@ -93,7 +93,7 @@ export function aggregatePreComputedWhereFields({
 
     const subquery = new Cypher.Call(matchQuery).innerWith(matchNode);
 
-    outerRelationshipData.returnVariables = returnVariables;
+    outerRelationshipData.returnVariables.push(...returnVariables);
 
     return {
         predicate: Cypher.and(...predicates),
