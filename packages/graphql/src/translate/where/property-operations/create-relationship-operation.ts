@@ -41,6 +41,7 @@ export function createRelationshipOperation({
     isNot: boolean;
     outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
+    const topLevelRel = outerRelationshipData.connectionPredicateData.length === 0;
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
 
@@ -74,11 +75,15 @@ export function createRelationshipOperation({
     if (listPredicateStr === "any" && !relationField.typeMeta.array) {
         listPredicateStr = "single";
     }
+
     outerRelationshipData.connectionPredicateData.push({
         listPredicateType: listPredicateStr,
         outerPattern: matchPattern,
         sourceNode: parentNode,
+        collectingVariables: [],
+        nonCollectingVariables: [],
     });
+
     const { predicate: innerOperation, preComputedSubqueries } = createWherePredicate({
         // Nested properties here
         whereInput: value,
@@ -95,7 +100,7 @@ export function createRelationshipOperation({
         innerOperation,
     });
 
-    if (outerRelationshipData.collectingVariables.length && preComputedSubqueries && !preComputedSubqueries.empty) {
+    if (topLevelRel && preComputedSubqueries && !preComputedSubqueries.empty) {
         return wrapAggregationSubqueries(outerRelationshipData, preComputedSubqueries, predicate);
     }
 
@@ -164,10 +169,12 @@ export function wrapAggregationSubqueries(
     );
     const withCollects: Cypher.With[] = [];
     while (outerRelationshipData.connectionPredicateData.length > 0) {
+        const lastConnectionIndex = outerRelationshipData.connectionPredicateData.length - 1;
         withCollects.push(
             new Cypher.With(
                 ...outerRelationshipData.connectionPredicateData.map((relData) => relData.sourceNode),
-                ...outerRelationshipData.collectingVariables.map(
+                ...outerRelationshipData.connectionPredicateData[lastConnectionIndex].nonCollectingVariables,
+                ...outerRelationshipData.connectionPredicateData[lastConnectionIndex].collectingVariables.map(
                     (returnVar) => [Cypher.collect(returnVar), returnVar] as any
                 )
             )
@@ -175,7 +182,7 @@ export function wrapAggregationSubqueries(
         outerRelationshipData.connectionPredicateData.pop();
     }
     const returnClause = new Cypher.Return(...outerRelationshipData.returnClauses);
-    outerRelationshipData.collectingVariables = [];
+    // outerRelationshipData.collectingVariables = [];
     outerRelationshipData.returnClauses = [];
     return {
         predicate,

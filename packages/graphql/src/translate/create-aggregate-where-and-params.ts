@@ -99,7 +99,20 @@ export function aggregatePreComputedWhereFields({
     const subquery = new Cypher.Call(matchQuery).innerWith(matchNode);
 
     if (outerRelationshipData.connectionPredicateData.length) {
-        outerRelationshipData.collectingVariables.push(...collectingVariables);
+        const lastConnectionIndex = outerRelationshipData.connectionPredicateData.length - 1;
+        outerRelationshipData.connectionPredicateData.forEach((connectionData) =>
+            connectionData.collectingVariables.push(...collectingVariables)
+        );
+        if (outerRelationshipData.connectionPredicateData.length > 1) {
+            outerRelationshipData.connectionPredicateData[lastConnectionIndex - 1].collectingVariables.forEach(
+                (variable) => {
+                    if (!collectingVariables.includes(variable))
+                        outerRelationshipData.connectionPredicateData
+                            .slice(1)
+                            .forEach((connectionData) => connectionData.nonCollectingVariables.push(variable));
+                }
+            );
+        }
         outerRelationshipData.returnClauses.push(...outerReturnProjections);
     }
 
@@ -232,7 +245,10 @@ function aggregateEntityWhere(
             const operation = createEntityOperation(refNodeOrRelation, target, key, value, context);
             const operationVar = new Cypher.Variable();
             resultInnerReturnProjections.push([operation, operationVar]);
-            resultOuterReturnProjections.push([getReturnValuePredicate(operationVar, connectionPredicateData), operationVar]);
+            resultOuterReturnProjections.push([
+                getReturnValuePredicate(operationVar, connectionPredicateData),
+                operationVar,
+            ]);
             resultPredicates.push(Cypher.eq(operationVar, new Cypher.Literal(true)));
             resultCollectingVariables.push(operationVar);
         }

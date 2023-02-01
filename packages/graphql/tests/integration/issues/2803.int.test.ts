@@ -120,6 +120,51 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         });
     });
 
+    test("should find aggregations at all levels within double nested relationships", async () => {
+        const queryExpectingResults = `
+            {
+                ${Actor.plural}(
+                    where: {
+                        movies_SOME: { actors_ALL: { moviesAggregate: { count_GT: 1 } }, actorsAggregate: { count: 1 } }
+                    }
+                ) {
+                    name
+                }
+            }
+        `;
+        const queryExpectingNoResults = `
+            {
+                ${Actor.plural}(
+                    where: {
+                        movies_SOME: { actors_ALL: { moviesAggregate: { count_GT: 1 } }, actorsAggregate: { count: 0 } }
+                    }
+                ) {
+                    name
+                }
+            }
+        `;
+
+        const resultExpectingResults = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: queryExpectingResults,
+            contextValue: neo4j.getContextValues(),
+        });
+        const resultExpectingNoResults = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: queryExpectingNoResults,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(resultExpectingResults.errors).toBeFalsy();
+        expect(resultExpectingResults.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput1]),
+        });
+        expect(resultExpectingNoResults.errors).toBeFalsy();
+        expect(resultExpectingNoResults.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([]),
+        });
+    });
+
     test("should find movies aggregate within triple nested relationships", async () => {
         const query = `
             {

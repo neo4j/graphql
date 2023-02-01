@@ -180,7 +180,7 @@ function createInterfaceSubquery({
             context,
             targetElement: relatedNode,
             element: refNode,
-            outerRelationshipData: { connectionPredicateData: [], collectingVariables: [], returnClauses: [] }, // TODO - if this is still here this is an edge case that should be tested
+            outerRelationshipData: { connectionPredicateData: [], returnClauses: [] }, // TODO - if this is still here this is an edge case that should be tested
         });
 
         if (wherePredicate) {

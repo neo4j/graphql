@@ -50,6 +50,7 @@ export function createConnectionOperation({
     operator: string | undefined;
     outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
+    const topLevelRel = outerRelationshipData.connectionPredicateData.length === 0;
     let nodeEntries: Record<string, any>;
 
     if (!connectionField?.relationship.union) {
@@ -122,6 +123,8 @@ export function createConnectionOperation({
             listPredicateType: listPredicateStr,
             outerPattern: matchPattern,
             sourceNode: parentNode,
+            collectingVariables: [],
+            nonCollectingVariables: [],
         });
 
         const innerOperation = createConnectionWherePropertyOperation({
@@ -156,7 +159,7 @@ export function createConnectionOperation({
         operations.push(predicate);
     });
 
-    if (outerRelationshipData.collectingVariables.length && subqueries && !subqueries.empty) {
+    if (topLevelRel && subqueries && !subqueries.empty) {
         return wrapAggregationSubqueries(outerRelationshipData, subqueries, Cypher.and(...operations));
     }
 

@@ -545,11 +545,12 @@ export type ConnectionPredicateData = {
     listPredicateType: ListPredicate;
     outerPattern: Cypher.Pattern;
     sourceNode: Cypher.Node;
+    collectingVariables: Cypher.Variable[];
+    nonCollectingVariables: Cypher.Variable[];
 };
 
 export type OuterRelationshipData = {
     connectionPredicateData: ConnectionPredicateData[];
-    collectingVariables: Cypher.Variable[];
     returnClauses: Cypher.ProjectionColumn[];
 };
 

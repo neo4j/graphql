@@ -49,7 +49,7 @@ export default function createConnectionWhereAndParams({
         targetNode: nodeRef,
         node,
         edge: relationship,
-        outerRelationshipData: { connectionPredicateData: [], collectingVariables: [], returnClauses: [] }, // TODO - if this is still here this is an edge case that should be tested
+        outerRelationshipData: { connectionPredicateData: [], returnClauses: [] }, // TODO - if this is still here this is an edge case that should be tested
     });
 
     let subquery = "";

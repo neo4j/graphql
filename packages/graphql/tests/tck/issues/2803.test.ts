@@ -92,6 +92,69 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         `);
     });
 
+    test("should find aggregations at all levels within double nested relationships", async () => {
+        const query = gql`
+            {
+                actors(
+                    where: {
+                        movies_SOME: { actors_ALL: { moviesAggregate: { count_GT: 1 } }, actorsAggregate: { count: 1 } }
+                    }
+                ) {
+                    name
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Actor\`)
+            CALL {
+                WITH this
+                OPTIONAL MATCH (this)-[:ACTED_IN]->(this0:\`Movie\`)
+                OPTIONAL MATCH (this1:\`Actor\`)-[:ACTED_IN]->(this0)
+                CALL {
+                    WITH this0
+                    MATCH (this3:\`Actor\`)-[this2:ACTED_IN]->(this0)
+                    RETURN count(this3) = $param0 AS var4
+                }
+                CALL {
+                    WITH this1
+                    MATCH (this1)-[this5:ACTED_IN]->(this6:\`Movie\`)
+                    RETURN count(this6) > $param1 AS var7
+                }
+                WITH this, this0, var4, collect(var7) AS var7
+                WITH this, collect(var4) AS var4, collect(var7) AS var7
+                RETURN any(var8 IN var4 WHERE var8 = true) AS var4, any(var10 IN var7 WHERE all(var9 IN var10 WHERE var9 = true)) AS var7
+            }
+            WITH *
+            WHERE EXISTS {
+                MATCH (this)-[:ACTED_IN]->(this0:\`Movie\`)
+                WHERE (var4 = true AND (EXISTS {
+                    MATCH (this1:\`Actor\`)-[:ACTED_IN]->(this0)
+                    WHERE var7 = true
+                } AND NOT (EXISTS {
+                    MATCH (this1:\`Actor\`)-[:ACTED_IN]->(this0)
+                    WHERE NOT (var7 = true)
+                })))
+            }
+            RETURN this { .name } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 1,
+                    \\"high\\": 0
+                },
+                \\"param1\\": {
+                    \\"low\\": 1,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
     test("should find movies aggregate within triple nested relationships", async () => {
         const query = gql`
             {
