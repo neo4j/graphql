@@ -320,7 +320,7 @@ Answering the question:
 [source, graphql, indent=0]
 ----
 query {
-    flights(where: { passengersAggregate: { node: { age_AVERAGE_LENGTH_GTE: 18 } } }) {
+    flights(where: { passengersAggregate: { node: { age_AVERAGE_GTE: 18 } } }) {
         code
     }
 }
