@@ -65,17 +65,21 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN count(this2) = $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN count(this2) = $param0 AS var3
+                }
+                WITH this, collect(var3) AS var3
+                RETURN var3
             }
-            WITH this, collect(var3) AS var3
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
-                WHERE true IN var3
+                WHERE any(var4 IN var3 WHERE var4 = true)
             }
             RETURN this { .title } AS this"
         `);
@@ -103,17 +107,21 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN count(this2) < $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN count(this2) < $param0 AS var3
+                }
+                WITH this, collect(var3) AS var3
+                RETURN var3
             }
-            WITH this, collect(var3) AS var3
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
-                WHERE true IN var3
+                WHERE any(var4 IN var3 WHERE var4 = true)
             }
             RETURN this { .title } AS this"
         `);
@@ -141,17 +149,21 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN count(this2) > $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN count(this2) > $param0 AS var3
+                }
+                WITH this, collect(var3) AS var3
+                RETURN var3
             }
-            WITH this, collect(var3) AS var3
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
-                WHERE true IN var3
+                WHERE any(var4 IN var3 WHERE var4 = true)
             }
             RETURN this { .title } AS this"
         `);
@@ -179,17 +191,21 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN min(size(this2.title)) = $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN min(size(this2.title)) = $param0 AS var3
+                }
+                WITH this, collect(var3) AS var3
+                RETURN var3
             }
-            WITH this, collect(var3) AS var3
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
-                WHERE true IN var3
+                WHERE any(var4 IN var3 WHERE var4 = true)
             }
             RETURN this { .title } AS this"
         `);
@@ -217,17 +233,21 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN avg(size(this2.title)) = $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN avg(size(this2.title)) = $param0 AS var3
+                }
+                WITH this, collect(var3) AS var3
+                RETURN var3
             }
-            WITH this, collect(var3) AS var3
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
-                WHERE true IN var3
+                WHERE any(var4 IN var3 WHERE var4 = true)
             }
             RETURN this { .title } AS this"
         `);
@@ -252,17 +272,21 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN max(this1.intValue) < $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN max(this1.intValue) < $param0 AS var3
+                }
+                WITH this, collect(var3) AS var3
+                RETURN var3
             }
-            WITH this, collect(var3) AS var3
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
-                WHERE true IN var3
+                WHERE any(var4 IN var3 WHERE var4 = true)
             }
             RETURN this { .title } AS this"
         `);
@@ -290,17 +314,21 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN min(this1.intValue) = $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN min(this1.intValue) = $param0 AS var3
+                }
+                WITH this, collect(var3) AS var3
+                RETURN var3
             }
-            WITH this, collect(var3) AS var3
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
-                WHERE true IN var3
+                WHERE any(var4 IN var3 WHERE var4 = true)
             }
             RETURN this { .title } AS this"
         `);
@@ -328,17 +356,21 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN count(this2) = $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN count(this2) = $param0 AS var3
+                }
+                WITH this, collect(var3) AS var3
+                RETURN var3
             }
-            WITH this, collect(var3) AS var3
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
-                WHERE true IN var3
+                WHERE any(var4 IN var3 WHERE var4 = true)
             }
             RETURN this { .title } AS this"
         `);
@@ -366,17 +398,21 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN count(this2) = $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN count(this2) = $param0 AS var3
+                }
+                WITH this, collect(var3) AS var3
+                RETURN var3
             }
-            WITH this, collect(var3) AS var3
             WITH *
             WHERE NOT (EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
-                WHERE true IN var3
+                WHERE any(var4 IN var3 WHERE var4 = true)
             })
             RETURN this { .title } AS this"
         `);
@@ -404,13 +440,17 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN count(this2) = $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN count(this2) = $param0 AS var3
+                }
+                WITH this, collect(var3) AS var3
+                RETURN var3
             }
-            WITH this, collect(var3) AS var3
             WITH *
             WHERE (EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
@@ -445,13 +485,17 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN count(this2) = $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN count(this2) = $param0 AS var3
+                }
+                WITH this, collect(var3) AS var3
+                RETURN var3
             }
-            WITH this, collect(var3) AS var3
             WITH *
             WHERE single(this0 IN [(this)-[:IN_GENRE]->(this0:\`Genre\`) | this0] WHERE single(var4 IN var3 WHERE var4 = true))
             RETURN this { .title } AS this"
@@ -480,17 +524,21 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN count(this2) = $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN count(this2) = $param0 AS var3
+                }
+                WITH this, collect(var3) AS var3
+                RETURN var3
             }
-            WITH this, collect(var3) AS var3
             WITH *
             WHERE NOT (EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
-                WHERE true IN var3
+                WHERE any(var4 IN var3 WHERE var4 = true)
             })
             RETURN this { .title } AS this"
         `);
@@ -518,13 +566,17 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN count(this2) = $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN count(this2) = $param0 AS var3
+                }
+                WITH this, collect(var3) AS var3
+                RETURN var3
             }
-            WITH this, collect(var3) AS var3
             WITH *
             WHERE (EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
@@ -568,22 +620,26 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN count(this2) = $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN count(this2) = $param0 AS var3
+                }
+                CALL {
+                    WITH this0
+                    MATCH (this5:\`Series\`)-[this4:IN_GENRE]->(this0)
+                    RETURN min(size(this5.name)) = $param1 AS var6
+                }
+                WITH this, collect(var3) AS var3, collect(var6) AS var6
+                RETURN var3, var6
             }
-            CALL {
-                WITH this0
-                MATCH (this5:\`Series\`)-[this4:IN_GENRE]->(this0)
-                RETURN min(size(this5.name)) = $param1 AS var6
-            }
-            WITH this, collect(var3) AS var3, collect(var6) AS var6
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
-                WHERE (true IN var3 AND true IN var6)
+                WHERE (any(var7 IN var3 WHERE var7 = true) AND any(var8 IN var6 WHERE var8 = true))
             }
             RETURN this { .title } AS this"
         `);
@@ -624,22 +680,26 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN count(this2) = $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN count(this2) = $param0 AS var3
+                }
+                CALL {
+                    WITH this0
+                    MATCH (this5:\`Series\`)-[this4:IN_GENRE]->(this0)
+                    RETURN min(size(this5.name)) = $param1 AS var6
+                }
+                WITH this, collect(var3) AS var3, collect(var6) AS var6
+                RETURN var3, var6
             }
-            CALL {
-                WITH this0
-                MATCH (this5:\`Series\`)-[this4:IN_GENRE]->(this0)
-                RETURN min(size(this5.name)) = $param1 AS var6
-            }
-            WITH this, collect(var3) AS var3, collect(var6) AS var6
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
-                WHERE (true IN var3 OR true IN var6)
+                WHERE (any(var7 IN var3 WHERE var7 = true) OR any(var8 IN var6 WHERE var8 = true))
             }
             RETURN this { .title } AS this"
         `);
@@ -675,22 +735,26 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN count(this2) = $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN count(this2) = $param0 AS var3
+                }
+                CALL {
+                    WITH this0
+                    MATCH (this5:\`Series\`)-[this4:IN_GENRE]->(this0)
+                    RETURN min(size(this5.name)) = $param1 AS var6
+                }
+                WITH this, collect(var3) AS var3, collect(var6) AS var6
+                RETURN var3, var6
             }
-            CALL {
-                WITH this0
-                MATCH (this5:\`Series\`)-[this4:IN_GENRE]->(this0)
-                RETURN min(size(this5.name)) = $param1 AS var6
-            }
-            WITH this, collect(var3) AS var3, collect(var6) AS var6
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
-                WHERE (true IN var3 AND true IN var6)
+                WHERE (any(var7 IN var3 WHERE var7 = true) AND any(var8 IN var6 WHERE var8 = true))
             }
             RETURN this { .title } AS this"
         `);
@@ -722,13 +786,17 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
             CALL {
-                WITH this0
-                MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
-                RETURN count(this2) = $param0 AS var3
+                WITH this
+                OPTIONAL MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                CALL {
+                    WITH this0
+                    MATCH (this2:\`Movie\`)-[this1:IN_GENRE]->(this0)
+                    RETURN count(this2) = $param0 AS var3
+                }
+                WITH this, collect(var3) AS var3
+                RETURN var3
             }
-            WITH this, collect(var3) AS var3
             CALL {
                 WITH this
                 MATCH (this)-[this4:IN_GENRE]->(this5:\`Genre\`)
@@ -737,7 +805,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             WITH *
             WHERE (EXISTS {
                 MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
-                WHERE true IN var3
+                WHERE any(var7 IN var3 WHERE var7 = true)
             } AND var6 = true)
             RETURN this { .title } AS this"
         `);
