@@ -30,8 +30,9 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
     let neoSchema: Neo4jGraphQL;
     let session: Session;
 
-    let Movie: UniqueType;
-    let Actor: UniqueType;
+    let Product: UniqueType;
+    let Color: UniqueType;
+    let Photo: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -41,26 +42,27 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
     beforeEach(async () => {
         session = await neo4j.getSession();
 
-        Movie = new UniqueType("Movie");
-        Actor = new UniqueType("Actor");
+        Product = new UniqueType("Product");
+        Color = new UniqueType("Color");
+        Photo = new UniqueType("Photo");
 
         const typeDefs = `
-            type Product {
+            type ${Product} {
                 id: ID!
                 name: String
-                colors: [Color!]! @relationship(type: "HAS_COLOR", direction: OUT)
-                photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
+                colors: [${Color}!]! @relationship(type: "HAS_COLOR", direction: OUT)
+                photos: [${Photo}!]! @relationship(type: "HAS_PHOTO", direction: OUT)
             }
 
-            type Color {
+            type ${Color} {
                 id: ID!
                 name: String!
-                photos: [Photo!]! @relationship(type: "OF_COLOR", direction: IN)
+                photos: [${Photo}!]! @relationship(type: "OF_COLOR", direction: IN)
             }
 
-            type Photo {
+            type ${Photo} {
                 id: ID!
-                color: Color @relationship(type: "OF_COLOR", direction: OUT)
+                color: ${Color} @relationship(type: "OF_COLOR", direction: OUT)
             }
         `;
 
@@ -70,15 +72,15 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
         });
 
         await session.run(`
-            CREATE(p:Product {id: "1", name: "NormalConnect"})
-            CREATE(p)-[:HAS_COLOR]->(red:Color {id: "1", name: "Red"})
-            CREATE(red)<-[:OF_COLOR]-(photo:Photo {id: "123"})
-            CREATE(photo)-[:OF_COLOR]->(:Color {id: "134", name:"Orange"})
+            CREATE(p:${Product} {id: "1", name: "NormalConnect"})
+            CREATE(p)-[:HAS_COLOR]->(red:${Color} {id: "1", name: "Red"})
+            CREATE(red)<-[:OF_COLOR]-(photo:${Photo} {id: "123"})
+            CREATE(photo)-[:OF_COLOR]->(:${Color} {id: "134", name:"Orange"})
             
-            CREATE(p)-[:HAS_PHOTO]->(photo2:Photo {id: "321"})
-            CREATE(p)-[:HAS_PHOTO]->(photo3:Photo {id: "33211"})
+            CREATE(p)-[:HAS_PHOTO]->(photo2:${Photo} {id: "321"})
+            CREATE(p)-[:HAS_PHOTO]->(photo3:${Photo} {id: "33211"})
 
-            CREATE(green:Color {id: "999", name: "Green"})
+            CREATE(green:${Color} {id: "999", name: "Green"})
         
             CREATE(photo2)-[:OF_COLOR]->(green)
             CREATE(photo3)-[:OF_COLOR]->(red)
@@ -86,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [Movie, Actor]);
+        await cleanNodes(session, [Product, Color, Photo]);
         await session.close();
     });
 
@@ -97,7 +99,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
     test("should update with nested disconnections", async () => {
         const query = `
             mutation {
-                updateProducts(
+                ${Product.operations.update}(
                     update: {
                         id: "123"
                         name: "Nested Connect"
@@ -130,7 +132,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
                         }
                     }
                 ) {
-                    products {
+                    ${Product.plural} {
                         id
                     }
                 }
@@ -144,8 +146,8 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
         });
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            updateProducts: {
-                products: [
+            [Product.operations.update]: {
+                [Product.plural]: [
                     {
                         id: "123",
                     },
@@ -155,7 +157,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
 
         const query2 = `
             query {
-                products {
+                ${Product.plural} {
                     id
                     name
                     colors {
@@ -187,7 +189,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
 
         expect(result2.errors).toBeFalsy();
         expect(result2.data).toEqual({
-            products: [
+            [Product.plural]: [
                 {
                     id: "123",
                     name: "Nested Connect",
@@ -199,7 +201,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
 
         const query3 = `
             query {
-                photos {
+                ${Photo.plural} {
                     id
                     color {
                         id
@@ -217,7 +219,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
 
         expect(result3.errors).toBeFalsy();
         expect(result3.data).toEqual({
-            photos: expect.toIncludeSameMembers([
+            [Photo.plural]: expect.toIncludeSameMembers([
                 {
                     id: "123",
                     color: null,
