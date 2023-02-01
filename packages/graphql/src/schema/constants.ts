@@ -30,3 +30,10 @@ export const DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS = {
         reason: "Please use the explicit _LENGTH version for string aggregation.",
     },
 };
+
+export const DEPRECATE_INVALID_AGGREGATION_FILTERS = {
+    name: "deprecated",
+    args: {
+        reason: "Aggregation filters that are not relying on an aggregating function will be deprecated.",
+    },
+};

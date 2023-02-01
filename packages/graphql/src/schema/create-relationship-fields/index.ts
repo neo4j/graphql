@@ -34,7 +34,7 @@ import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import { overwrite } from "./fields/overwrite";
-import { DEPRECATE_NOT, DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS } from "../constants";
+import { DEPRECATE_NOT, DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS, DEPRECATE_INVALID_AGGREGATION_FILTERS } from "../constants";
 
 function createRelationshipFields({
     relationshipFields,
@@ -601,7 +601,10 @@ function createRelationshipFields({
             fields.forEach((field) => {
                 if (field.typeMeta.name === "ID") {
                     aggregationInput.addFields({
-                        [`${field.fieldName}_EQUAL`]: "ID",
+                        [`${field.fieldName}_EQUAL`]: {
+                            type: `ID`,
+                            directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                        },
                     });
 
                     return;
@@ -612,7 +615,10 @@ function createRelationshipFields({
                         AGGREGATION_COMPARISON_OPERATORS.reduce((res, operator) => {
                             return {
                                 ...res,
-                                [`${field.fieldName}_${operator}`]: `${operator === "EQUAL" ? "String" : "Int"}`,
+                                [`${field.fieldName}_${operator}`]: {
+                                    type: `${operator === "EQUAL" ? "String" : "Int"}`,
+                                    directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                                },
                                 [`${field.fieldName}_AVERAGE_${operator}`]: {
                                     type: "Float",
                                     directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
@@ -650,7 +656,10 @@ function createRelationshipFields({
 
                             return {
                                 ...res,
-                                [`${field.fieldName}_${operator}`]: field.typeMeta.name,
+                                [`${field.fieldName}_${operator}`]: {
+                                    type: field.typeMeta.name,
+                                    directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                                },
                                 [`${field.fieldName}_AVERAGE_${operator}`]: averageType,
                                 [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
                                 [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
@@ -668,7 +677,10 @@ function createRelationshipFields({
                     AGGREGATION_COMPARISON_OPERATORS.reduce(
                         (res, operator) => ({
                             ...res,
-                            [`${field.fieldName}_${operator}`]: field.typeMeta.name,
+                            [`${field.fieldName}_${operator}`]: {
+                                type: field.typeMeta.name,
+                                directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                            },
                             [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
                             [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
                         }),

@@ -25,7 +25,7 @@ import type { WhereOperator } from "../types";
 // Recursive function
 
 import { createWherePredicate } from "../create-where-predicate";
-import { filterTruthy } from "../../../utils/utils";
+import { asArray, filterTruthy } from "../../../utils/utils";
 import { getCypherLogicalOperator, isLogicalOperator } from "../../utils/logical-operators";
 import { createRelationshipPredicate } from "./create-relationship-operation";
 
@@ -196,7 +196,7 @@ export function createConnectionWherePropertyOperation({
     Object.entries(whereInput).forEach(([key, value]) => {
         if (isLogicalOperator(key)) {
             const subOperations: (Cypher.Predicate | undefined)[] = [];
-            (value as Array<any>).forEach((input) => {
+            asArray(value).forEach((input) => {
                 const {
                     predicate,
                     preComputedSubqueries,

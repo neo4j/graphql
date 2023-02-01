@@ -384,17 +384,12 @@ query {
 
 ==== `ID`
 
-You can only use the `_EQUAL` operator on types of `ID`.
+No Aggregation filters are available for ID.
 
 ==== `String`
 
 Fields of type `String` have the following operators:
 
-* `_EQUAL`
-* `_GT`
-* `_GTE`
-* `_LT`
-* `_LTE`
 * `_AVERAGE_LENGTH_EQUAL`
 * `_AVERAGE_LENGTH_GT`
 * `_AVERAGE_LENGTH_GTE`
@@ -434,11 +429,6 @@ Numerical types include the following:
 
 The types in the list above have the following operators:
 
-* `_EQUAL`
-* `_GT`
-* `_GTE`
-* `_LT`
-* `_LTE`
 * `_AVERAGE_EQUAL`
 * `_AVERAGE_GT`
 * `_AVERAGE_GTE`
@@ -483,11 +473,6 @@ Temporal types include the following:
 
 The types listed above have the following aggregation operators:
 
-* `_EQUAL`
-* `_GT`
-* `_GTE`
-* `_LT`
-* `_LTE`
 * `_MIN_EQUAL`
 * `_MIN_GT`
 * `_MIN_GTE`
