@@ -74,15 +74,15 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
                     RETURN count(this3) = $param0 AS var4
                 }
                 WITH this, collect(var4) AS var4
-                RETURN var4
+                RETURN all(var5 IN var4 WHERE var5 = true) AS var4
             }
             WITH *
             WHERE (EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE all(var5 IN var4 WHERE var5 = true)
+                WHERE var4 = true
             } AND NOT (EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE NOT (all(var5 IN var4 WHERE var5 = true))
+                WHERE NOT (var4 = true)
             }))
             RETURN this { .title } AS this"
         `);

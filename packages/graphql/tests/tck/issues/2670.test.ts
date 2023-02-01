@@ -74,12 +74,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN count(this3) = $param0 AS var4
                 }
                 WITH this, collect(var4) AS var4
-                RETURN var4
+                RETURN any(var5 IN var4 WHERE var5 = true) AS var4
             }
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE any(var5 IN var4 WHERE var5 = true)
+                WHERE var4 = true
             }
             RETURN this { .title } AS this"
         `);
@@ -116,12 +116,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN count(this3) < $param0 AS var4
                 }
                 WITH this, collect(var4) AS var4
-                RETURN var4
+                RETURN any(var5 IN var4 WHERE var5 = true) AS var4
             }
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE any(var5 IN var4 WHERE var5 = true)
+                WHERE var4 = true
             }
             RETURN this { .title } AS this"
         `);
@@ -158,12 +158,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN count(this3) > $param0 AS var4
                 }
                 WITH this, collect(var4) AS var4
-                RETURN var4
+                RETURN any(var5 IN var4 WHERE var5 = true) AS var4
             }
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE any(var5 IN var4 WHERE var5 = true)
+                WHERE var4 = true
             }
             RETURN this { .title } AS this"
         `);
@@ -202,12 +202,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN min(size(this3.title)) = $param0 AS var4
                 }
                 WITH this, collect(var4) AS var4
-                RETURN var4
+                RETURN any(var5 IN var4 WHERE var5 = true) AS var4
             }
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE any(var5 IN var4 WHERE var5 = true)
+                WHERE var4 = true
             }
             RETURN this { .title } AS this"
         `);
@@ -246,12 +246,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN avg(size(this3.title)) = $param0 AS var4
                 }
                 WITH this, collect(var4) AS var4
-                RETURN var4
+                RETURN any(var5 IN var4 WHERE var5 = true) AS var4
             }
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE any(var5 IN var4 WHERE var5 = true)
+                WHERE var4 = true
             }
             RETURN this { .title } AS this"
         `);
@@ -285,12 +285,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN max(this2.intValue) < $param0 AS var4
                 }
                 WITH this, collect(var4) AS var4
-                RETURN var4
+                RETURN any(var5 IN var4 WHERE var5 = true) AS var4
             }
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE any(var5 IN var4 WHERE var5 = true)
+                WHERE var4 = true
             }
             RETURN this { .title } AS this"
         `);
@@ -329,12 +329,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN min(this2.intValue) = $param0 AS var4
                 }
                 WITH this, collect(var4) AS var4
-                RETURN var4
+                RETURN any(var5 IN var4 WHERE var5 = true) AS var4
             }
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE any(var5 IN var4 WHERE var5 = true)
+                WHERE var4 = true
             }
             RETURN this { .title } AS this"
         `);
@@ -371,12 +371,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN count(this3) = $param0 AS var4
                 }
                 WITH this, collect(var4) AS var4
-                RETURN var4
+                RETURN any(var5 IN var4 WHERE var5 = true) AS var4
             }
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE any(var5 IN var4 WHERE var5 = true)
+                WHERE var4 = true
             }
             RETURN this { .title } AS this"
         `);
@@ -413,12 +413,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN count(this3) = $param0 AS var4
                 }
                 WITH this, collect(var4) AS var4
-                RETURN var4
+                RETURN any(var5 IN var4 WHERE var5 = true) AS var4
             }
             WITH *
             WHERE NOT (EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE any(var5 IN var4 WHERE var5 = true)
+                WHERE var4 = true
             })
             RETURN this { .title } AS this"
         `);
@@ -455,15 +455,15 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN count(this3) = $param0 AS var4
                 }
                 WITH this, collect(var4) AS var4
-                RETURN var4
+                RETURN all(var5 IN var4 WHERE var5 = true) AS var4
             }
             WITH *
             WHERE (EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE all(var5 IN var4 WHERE var5 = true)
+                WHERE var4 = true
             } AND NOT (EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE NOT (all(var5 IN var4 WHERE var5 = true))
+                WHERE NOT (var4 = true)
             }))
             RETURN this { .title } AS this"
         `);
@@ -500,10 +500,10 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN count(this3) = $param0 AS var4
                 }
                 WITH this, collect(var4) AS var4
-                RETURN var4
+                RETURN single(var5 IN var4 WHERE var5 = true) AS var4
             }
             WITH *
-            WHERE size([(this)-[this0:IN_GENRE]->(this1:\`Genre\`) WHERE single(var5 IN var4 WHERE var5 = true) | 1]) = 1
+            WHERE size([(this)-[this0:IN_GENRE]->(this1:\`Genre\`) WHERE var4 = true | 1]) = 1
             RETURN this { .title } AS this"
         `);
 
@@ -539,12 +539,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN count(this3) = $param0 AS var4
                 }
                 WITH this, collect(var4) AS var4
-                RETURN var4
+                RETURN any(var5 IN var4 WHERE var5 = true) AS var4
             }
             WITH *
             WHERE NOT (EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE any(var5 IN var4 WHERE var5 = true)
+                WHERE var4 = true
             })
             RETURN this { .title } AS this"
         `);
@@ -595,12 +595,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN min(size(this6.name)) = $param1 AS var7
                 }
                 WITH this, collect(var4) AS var4, collect(var7) AS var7
-                RETURN var4, var7
+                RETURN any(var8 IN var4 WHERE var8 = true) AS var4, any(var9 IN var7 WHERE var9 = true) AS var7
             }
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE (any(var8 IN var4 WHERE var8 = true) AND any(var9 IN var7 WHERE var9 = true))
+                WHERE (var4 = true AND var7 = true)
             }
             RETURN this { .title } AS this"
         `);
@@ -655,12 +655,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN min(size(this6.name)) = $param1 AS var7
                 }
                 WITH this, collect(var4) AS var4, collect(var7) AS var7
-                RETURN var4, var7
+                RETURN any(var8 IN var4 WHERE var8 = true) AS var4, any(var9 IN var7 WHERE var9 = true) AS var7
             }
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE (any(var8 IN var4 WHERE var8 = true) OR any(var9 IN var7 WHERE var9 = true))
+                WHERE (var4 = true OR var7 = true)
             }
             RETURN this { .title } AS this"
         `);
@@ -715,12 +715,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN min(size(this6.name)) = $param1 AS var7
                 }
                 WITH this, collect(var4) AS var4, collect(var7) AS var7
-                RETURN var4, var7
+                RETURN any(var8 IN var4 WHERE var8 = true) AS var4, any(var9 IN var7 WHERE var9 = true) AS var7
             }
             WITH *
             WHERE EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:\`Genre\`)
-                WHERE (any(var8 IN var4 WHERE var8 = true) AND any(var9 IN var7 WHERE var9 = true))
+                WHERE (var4 = true AND var7 = true)
             }
             RETURN this { .title } AS this"
         `);
@@ -771,12 +771,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                     RETURN count(this6) = $param1 AS var7
                 }
                 WITH this, collect(var7) AS var7
-                RETURN var7
+                RETURN any(var8 IN var7 WHERE var8 = true) AS var7
             }
             WITH *
             WHERE (var2 = true AND EXISTS {
                 MATCH (this)-[this3:IN_GENRE]->(this4:\`Genre\`)
-                WHERE any(var8 IN var7 WHERE var8 = true)
+                WHERE var7 = true
             })
             RETURN this { .title } AS this"
         `);
