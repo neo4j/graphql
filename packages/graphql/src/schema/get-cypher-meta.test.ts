@@ -125,6 +125,12 @@ describe("getCypherMeta", () => {
                             // @ts-ignore
                             value: { kind: "StringValue", value: "MATCH (m:Movie) RETURN m" },
                         },
+                        {
+                            // @ts-ignore
+                            name: { value: "columnName" },
+                            // @ts-ignore
+                            value: { kind: "StringValue", value: "m" },
+                        },
                     ],
                 },
                 {

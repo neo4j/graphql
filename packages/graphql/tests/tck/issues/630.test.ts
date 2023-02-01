@@ -79,7 +79,7 @@ describe("Cypher directive", () => {
                 CALL {
                     WITH this
                     WITH this AS this
-                    MATCH (m:Movie {title: $title})
+                    MATCH (m:Movie {title: NULL})
                     RETURN m
                 }
                 WITH m AS this_movies
@@ -96,10 +96,6 @@ describe("Cypher directive", () => {
             RETURN this { movies: this_movies } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"title\\": null
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

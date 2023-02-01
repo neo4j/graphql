@@ -26,8 +26,8 @@ import { Socket } from "net";
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("array-push", () => {
     let driver: Driver;
@@ -55,7 +55,7 @@ describe("array-push", () => {
     });
 
     test("should throw an error when trying to push on to a non-existing array", async () => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeMovie} {
@@ -103,7 +103,7 @@ describe("array-push", () => {
     });
 
     test("should throw an error if not authenticated on field definition", async () => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
         const typeDefs = `
             type ${typeMovie} {
                 title: String
@@ -155,7 +155,7 @@ describe("array-push", () => {
     });
 
     test("should throw an error when input is invalid", async () => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeMovie} {
@@ -203,7 +203,7 @@ describe("array-push", () => {
     });
 
     test("should throw an error when performing an ambiguous property update", async () => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeMovie} {
@@ -257,8 +257,8 @@ describe("array-push", () => {
     test("should throw an error when performing an ambiguous property update on relationship properties", async () => {
         const initialPay = 100;
         const payIncrement = 50;
-        const movie = generateUniqueType("Movie");
-        const actor = generateUniqueType("Actor");
+        const movie = new UniqueType("Movie");
+        const actor = new UniqueType("Actor");
         const typeDefs = `
             type ${movie.name} {
                 title: String

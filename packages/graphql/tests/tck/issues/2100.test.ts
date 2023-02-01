@@ -122,7 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                     WITH this
                     WITH this AS this
                     MATCH (this)-[:HAS_HISTORY]->(:ServiceLog)-[:HAS_BUSSING]->(records:BussingRecord)-[:BUSSED_ON]->(date:TimeGraph)
-                    WITH DISTINCT records, date LIMIT $limit
+                    WITH DISTINCT records, date LIMIT $param2
                     RETURN records ORDER BY date.date DESC
                 }
                 WITH records AS this_bussing
@@ -152,7 +152,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"limit\\": {
+                \\"param2\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },

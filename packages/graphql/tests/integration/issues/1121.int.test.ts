@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/1121", () => {
     let schema: GraphQLSchema;
@@ -30,10 +30,10 @@ describe("https://github.com/neo4j/graphql/issues/1121", () => {
     let driver: Driver;
     let session: Session;
 
-    const Food = generateUniqueType("Food");
-    const Banana = generateUniqueType("Banana");
-    const Sugar = generateUniqueType("Sugar");
-    const Syrup = generateUniqueType("Syrup");
+    const Food = new UniqueType("Food");
+    const Banana = new UniqueType("Banana");
+    const Sugar = new UniqueType("Sugar");
+    const Syrup = new UniqueType("Syrup");
 
     async function graphqlQuery(query: string) {
         return graphql({

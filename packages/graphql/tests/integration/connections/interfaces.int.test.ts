@@ -22,16 +22,16 @@ import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("Connections -> Interfaces", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let bookmarks: string[];
 
-    const typeMovie = generateUniqueType("Movie");
-    const typeSeries = generateUniqueType("Series");
-    const typeActor = generateUniqueType("Actor");
+    const typeMovie = new UniqueType("Movie");
+    const typeSeries = new UniqueType("Series");
+    const typeActor = new UniqueType("Actor");
 
     const typeDefs = gql`
         interface Production {

@@ -18,14 +18,13 @@
  */
 
 import type { Driver } from "neo4j-driver";
-import type { DocumentNode} from "graphql";
+import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import type { UniqueType } from "../../utils/graphql-types";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/464", () => {
     let driver: Driver;
@@ -66,8 +65,8 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
     });
 
     beforeEach(() => {
-        typeAuthor = generateUniqueType("Author");
-        typeBook = generateUniqueType("Book");
+        typeAuthor = new UniqueType("Author");
+        typeBook = new UniqueType("Book");
 
         typeDefs = gql`
             type ${typeAuthor.name} {

@@ -23,14 +23,14 @@ import { generate } from "randomstring";
 import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("Connections Alias", () => {
     let driver: Driver;
     let neo4j: Neo4j;
 
-    const typeMovie = generateUniqueType("Movie");
-    const typeActor = generateUniqueType("Actor");
+    const typeMovie = new UniqueType("Movie");
+    const typeActor = new UniqueType("Actor");
 
     beforeAll(async () => {
         neo4j = new Neo4j();

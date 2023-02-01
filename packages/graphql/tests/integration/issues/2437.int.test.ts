@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { cleanNodes } from "../../utils/clean-nodes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/2437", () => {
     let driver: Driver;
@@ -40,8 +40,8 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
 
     beforeEach(async () => {
         session = await neo4j.getSession();
-        Agent = generateUniqueType("Agent");
-        Valuation = generateUniqueType("Valuation");
+        Agent = new UniqueType("Agent");
+        Valuation = new UniqueType("Valuation");
 
         const typeDefs = `
             type ${Agent} @exclude(operations: [DELETE]) {

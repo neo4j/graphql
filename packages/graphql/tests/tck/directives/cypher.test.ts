@@ -308,7 +308,7 @@ describe("Cypher directive", () => {
                     CALL {
                         WITH this_topActor
                         WITH this_topActor AS this
-                        MATCH (m:Movie {title: $title})
+                        MATCH (m:Movie {title: $param0})
                         RETURN m
                     }
                     WITH m AS this_topActor_movies
@@ -321,7 +321,7 @@ describe("Cypher directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"title\\": \\"some title\\"
+                \\"param0\\": \\"some title\\"
             }"
         `);
     });
@@ -368,7 +368,7 @@ describe("Cypher directive", () => {
                     CALL {
                         WITH this_topActor
                         WITH this_topActor AS this
-                        MATCH (m:Movie {title: $title})
+                        MATCH (m:Movie {title: $param0})
                         RETURN m
                     }
                     WITH m AS this_topActor_movies
@@ -386,7 +386,7 @@ describe("Cypher directive", () => {
                             CALL {
                                 WITH this_topActor_movies_topActor
                                 WITH this_topActor_movies_topActor AS this
-                                MATCH (m:Movie {title: $title})
+                                MATCH (m:Movie {title: $param1})
                                 RETURN m
                             }
                             WITH m AS this_topActor_movies_topActor_movies
@@ -403,7 +403,8 @@ describe("Cypher directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"title\\": \\"another title\\"
+                \\"param0\\": \\"some title\\",
+                \\"param1\\": \\"another title\\"
             }"
         `);
     });
@@ -444,7 +445,7 @@ describe("Cypher directive", () => {
                     CALL {
                         WITH this_topActor
                         WITH this_topActor AS this
-                        MATCH (m:Movie {title: $title})
+                        MATCH (m:Movie {title: $param0})
                         RETURN m
                     }
                     WITH m AS this_topActor_movies
@@ -457,7 +458,7 @@ describe("Cypher directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"title\\": \\"some title\\"
+                \\"param0\\": \\"some title\\"
             }"
         `);
     });
@@ -503,7 +504,7 @@ describe("Cypher directive", () => {
                     WITH this
                     WITH this AS this
                     MATCH (n)
-                    WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
+                    WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                     RETURN n
                 }
                 WITH n AS this_movieOrTVShow
@@ -554,7 +555,7 @@ describe("Cypher directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"title\\": \\"some title\\"
+                \\"param0\\": \\"some title\\"
             }"
         `);
     });
@@ -583,7 +584,7 @@ describe("Cypher directive", () => {
                     WITH this
                     WITH this AS this
                     MATCH (n)
-                    WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
+                    WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                     RETURN n
                 }
                 WITH n AS this_movieOrTVShow
@@ -599,7 +600,7 @@ describe("Cypher directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"title\\": \\"some title\\"
+                \\"param0\\": \\"some title\\"
             }"
         `);
     });

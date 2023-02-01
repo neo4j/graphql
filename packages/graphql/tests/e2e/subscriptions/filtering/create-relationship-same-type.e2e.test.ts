@@ -20,7 +20,7 @@
 import type { Driver } from "neo4j-driver";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
@@ -40,8 +40,8 @@ describe("Connect Subscription with optional filters valid for all types", () =>
     let typeDefs: string;
 
     beforeEach(async () => {
-        typePerson = generateUniqueType("Person");
-        typeArticle = generateUniqueType("Article");
+        typePerson = new UniqueType("Person");
+        typeArticle = new UniqueType("Article");
 
         typeDefs = `
             type ${typePerson} {

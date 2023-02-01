@@ -169,7 +169,7 @@ export interface ConnectionField extends BaseField {
  */
 export interface CypherField extends BaseField {
     statement: string;
-    columnName?: string;
+    columnName: string;
     isEnum: boolean;
     isScalar: boolean;
 }
@@ -358,6 +358,18 @@ export interface CypherQueryOptions {
     interpretedPipesFallback?: CypherInterpretedPipesFallback;
     replan?: CypherReplanning;
 }
+
+/** The startup validation checks to run */
+export interface StartupValidationOptions {
+    typeDefs?: boolean;
+    resolvers?: boolean;
+}
+
+/**
+ * Configure which startup validation checks should be run.
+ * Optionally, a boolean can be passed to toggle all these options.
+ */
+export type StartupValidationConfig = StartupValidationOptions | boolean;
 
 /** Input field for graphql-compose */
 export type InputField = { type: string; defaultValue?: string; directives?: Directive[] } | string;

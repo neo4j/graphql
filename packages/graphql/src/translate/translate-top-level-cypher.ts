@@ -155,18 +155,20 @@ export function translateTopLevelCypher({
 
     params = { ...params, ...apocParams.params };
 
-    const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
-
     if (type === "Query") {
         const cypherStatement = createCypherDirectiveSubquery({
             field,
         });
         cypherStrs.push(...cypherStatement);
     } else {
+        const columnName = field.columnName;
         cypherStrs.push(`
-            CALL apoc.cypher.doIt("${statement}", ${apocParamsStr}) YIELD value
-            WITH [k in keys(value) | value[k]][0] AS this
-            `);
+            CALL {
+                ${statement}
+            }
+            WITH ${columnName} AS this
+        
+        `);
     }
 
     if (unionWhere.length) {

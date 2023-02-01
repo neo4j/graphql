@@ -21,12 +21,12 @@ import { graphql, GraphQLSchema } from "graphql";
 import type { Driver } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/1685", () => {
-    const productionType = generateUniqueType("Production");
-    const movieType = generateUniqueType("Movie");
-    const genreType = generateUniqueType("Genre");
+    const productionType = new UniqueType("Production");
+    const movieType = new UniqueType("Movie");
+    const genreType = new UniqueType("Genre");
 
     let schema: GraphQLSchema;
     let neo4j: Neo4j;

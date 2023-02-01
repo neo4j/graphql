@@ -21,7 +21,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 
 describe("Field Level Aggregations Graphql alias", () => {
     let driver: Driver;
@@ -29,8 +29,8 @@ describe("Field Level Aggregations Graphql alias", () => {
     let session: Session;
     let typeDefs: string;
 
-    const typeMovie = generateUniqueType("Movie");
-    const typeActor = generateUniqueType("Actor");
+    const typeMovie = new UniqueType("Movie");
+    const typeActor = new UniqueType("Actor");
 
     let neoSchema: Neo4jGraphQL;
 
