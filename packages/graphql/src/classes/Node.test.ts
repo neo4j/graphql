@@ -386,7 +386,8 @@ describe("Node", () => {
             (plural: string, rootTypeFieldNames: RootTypeFieldNames) => {
                 const node = new NodeBuilder({
                     name: "Test",
-                    nodeDirective: new NodeDirective({ plural }),
+                    nodeDirective: new NodeDirective({}),
+                    plural,
                 }).instance();
 
                 expect(node.rootTypeFieldNames).toStrictEqual(rootTypeFieldNames);
@@ -539,7 +540,8 @@ describe("Node", () => {
             (plural: string, mutationResponseTypeNames: MutationResponseTypeNames) => {
                 const node = new NodeBuilder({
                     name: "Test",
-                    nodeDirective: new NodeDirective({ plural }),
+                    nodeDirective: new NodeDirective({}),
+                    plural,
                 }).instance();
 
                 expect(node.mutationResponseTypeNames).toStrictEqual(mutationResponseTypeNames);
