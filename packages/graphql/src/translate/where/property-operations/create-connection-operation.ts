@@ -33,7 +33,7 @@ import type { WhereOperator } from "../types";
 import { createWherePredicate } from "../create-where-predicate";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { getCypherLogicalOperator, isLogicalOperator } from "../../utils/logical-operators";
-import { createRelationshipPredicate } from "./create-relationship-operation";
+import { createRelationshipPredicate, wrapAggregationSubqueries } from "./create-relationship-operation";
 
 export function createConnectionOperation({
     connectionField,
@@ -156,33 +156,8 @@ export function createConnectionOperation({
         operations.push(predicate);
     });
 
-    if (outerRelationshipData.collectingVariables.length) {
-        const optionalMatches = outerRelationshipData.connectionPredicateData.map(
-            (relData) => new Cypher.OptionalMatch(relData.outerPattern)
-        );
-        const withCollects: Cypher.With[] = [];
-        while (outerRelationshipData.connectionPredicateData.length > 0) {
-            withCollects.push(
-                new Cypher.With(
-                    ...outerRelationshipData.connectionPredicateData.map((relData) => relData.sourceNode),
-                    ...outerRelationshipData.collectingVariables.map(
-                        (returnVar) => [Cypher.collect(returnVar), returnVar] as any
-                    )
-                )
-            );
-            outerRelationshipData.connectionPredicateData.pop();
-        }
-        const returnClause = new Cypher.Return(...outerRelationshipData.returnClauses);
-        outerRelationshipData.collectingVariables = [];
-        outerRelationshipData.returnClauses = [];
-        return {
-            predicate: Cypher.and(...operations),
-            preComputedSubqueries: Cypher.concat(
-                new Cypher.Call(Cypher.concat(...optionalMatches, subqueries, ...withCollects, returnClause)).innerWith(
-                    parentNode
-                )
-            ),
-        };
+    if (outerRelationshipData.collectingVariables.length && subqueries && !subqueries.empty) {
+        return wrapAggregationSubqueries(outerRelationshipData, subqueries, Cypher.and(...operations));
     }
 
     return {

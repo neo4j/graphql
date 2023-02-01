@@ -95,34 +95,8 @@ export function createRelationshipOperation({
         innerOperation,
     });
 
-    if (outerRelationshipData.collectingVariables.length) {
-        const topLevelNode = outerRelationshipData.connectionPredicateData[0].sourceNode;
-        const optionalMatches = outerRelationshipData.connectionPredicateData.map(
-            (relData) => new Cypher.OptionalMatch(relData.outerPattern)
-        );
-        const withCollects: Cypher.With[] = [];
-        while (outerRelationshipData.connectionPredicateData.length > 0) {
-            withCollects.push(
-                new Cypher.With(
-                    ...outerRelationshipData.connectionPredicateData.map((relData) => relData.sourceNode),
-                    ...outerRelationshipData.collectingVariables.map(
-                        (returnVar) => [Cypher.collect(returnVar), returnVar] as any
-                    )
-                )
-            );
-            outerRelationshipData.connectionPredicateData.pop();
-        }
-        const returnClause = new Cypher.Return(...outerRelationshipData.returnClauses);
-        outerRelationshipData.collectingVariables = [];
-        outerRelationshipData.returnClauses = [];
-        return {
-            predicate,
-            preComputedSubqueries: Cypher.concat(
-                new Cypher.Call(
-                    Cypher.concat(...optionalMatches, preComputedSubqueries, ...withCollects, returnClause)
-                ).innerWith(topLevelNode)
-            ),
-        };
+    if (outerRelationshipData.collectingVariables.length && preComputedSubqueries && !preComputedSubqueries.empty) {
+        return wrapAggregationSubqueries(outerRelationshipData, preComputedSubqueries, predicate);
     }
 
     return {
@@ -177,4 +151,38 @@ export function createRelationshipPredicate({
             return existsPredicate;
         }
     }
+}
+
+export function wrapAggregationSubqueries(
+    outerRelationshipData: OuterRelationshipData,
+    preComputedSubqueries: Cypher.CompositeClause,
+    predicate: Cypher.Predicate | undefined
+): PredicateReturn {
+    const topLevelNode = outerRelationshipData.connectionPredicateData[0].sourceNode;
+    const optionalMatches = outerRelationshipData.connectionPredicateData.map(
+        (relData) => new Cypher.OptionalMatch(relData.outerPattern)
+    );
+    const withCollects: Cypher.With[] = [];
+    while (outerRelationshipData.connectionPredicateData.length > 0) {
+        withCollects.push(
+            new Cypher.With(
+                ...outerRelationshipData.connectionPredicateData.map((relData) => relData.sourceNode),
+                ...outerRelationshipData.collectingVariables.map(
+                    (returnVar) => [Cypher.collect(returnVar), returnVar] as any
+                )
+            )
+        );
+        outerRelationshipData.connectionPredicateData.pop();
+    }
+    const returnClause = new Cypher.Return(...outerRelationshipData.returnClauses);
+    outerRelationshipData.collectingVariables = [];
+    outerRelationshipData.returnClauses = [];
+    return {
+        predicate,
+        preComputedSubqueries: Cypher.concat(
+            new Cypher.Call(
+                Cypher.concat(...optionalMatches, preComputedSubqueries, ...withCollects, returnClause)
+            ).innerWith(topLevelNode)
+        ),
+    };
 }
