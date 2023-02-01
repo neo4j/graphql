@@ -268,50 +268,6 @@ class Neo4jGraphQL {
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
-    private async generateSubgraphSchema(): Promise<GraphQLSchema> {
-        const { Subgraph } = await import("./Subgraph");
-
-        return new Promise((resolve) => {
-            const document = this.getDocument(this.schemaDefinition.typeDefs);
-            const subgraph = new Subgraph(this.schemaDefinition.typeDefs);
-
-            const { directives, types } = subgraph.getValidationDefinitions();
-
-            const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
-
-            if (validateTypeDefs) {
-                validateDocument(document, directives, types);
-            }
-            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
-                features: this.features,
-                enableRegex: this.config?.enableRegex,
-                validateResolvers,
-                generateSubscriptions: Boolean(this.plugins?.subscriptions),
-                callbacks: this.config.callbacks,
-                userCustomResolvers: this.schemaDefinition.resolvers,
-                subgraph,
-            });
-
-            const schemaModel = generateModel(document);
-
-            this._nodes = nodes;
-            this._relationships = relationships;
-
-            this.schemaModel = schemaModel;
-
-            const referenceResolvers = subgraph.getReferenceResolvers(this._nodes, this.driver as Driver);
-            const subgraphTypeDefs = subgraph.augmentGeneratedSchemaDefinition(typeDefs);
-            const wrappedResolvers = this.wrapResolvers([resolvers, referenceResolvers]);
-
-            const schema = subgraph.buildSchema({
-                typeDefs: subgraphTypeDefs,
-                resolvers: wrappedResolvers as Record<string, any>,
-            });
-
-            resolve(this.addDefaultFieldResolvers(schema));
-        });
-    }
-
     private generateExecutableSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
             const document = this.getDocument(this.schemaDefinition.typeDefs);
@@ -349,6 +305,48 @@ class Neo4jGraphQL {
 
             resolve(this.addDefaultFieldResolvers(schema));
         });
+    }
+
+    private async generateSubgraphSchema(): Promise<GraphQLSchema> {
+        const { Subgraph } = await import("./Subgraph");
+
+        const document = this.getDocument(this.schemaDefinition.typeDefs);
+        const subgraph = new Subgraph(this.schemaDefinition.typeDefs);
+
+        const { directives, types } = subgraph.getValidationDefinitions();
+
+        const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
+
+        if (validateTypeDefs) {
+            validateDocument(document, directives, types);
+        }
+        const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
+            features: this.features,
+            enableRegex: this.config?.enableRegex,
+            validateResolvers,
+            generateSubscriptions: Boolean(this.plugins?.subscriptions),
+            callbacks: this.config.callbacks,
+            userCustomResolvers: this.schemaDefinition.resolvers,
+            subgraph,
+        });
+
+        const schemaModel = generateModel(document);
+
+        this._nodes = nodes;
+        this._relationships = relationships;
+
+        this.schemaModel = schemaModel;
+
+        const referenceResolvers = subgraph.getReferenceResolvers(this._nodes, this.driver as Driver);
+        const subgraphTypeDefs = subgraph.augmentGeneratedSchemaDefinition(typeDefs);
+        const wrappedResolvers = this.wrapResolvers([resolvers, referenceResolvers]);
+
+        const schema = subgraph.buildSchema({
+            typeDefs: subgraphTypeDefs,
+            resolvers: wrappedResolvers as Record<string, any>,
+        });
+
+        return this.addDefaultFieldResolvers(schema);
     }
 
     private parseStartupValidationConfig(): {

@@ -39,23 +39,23 @@ import { execute } from "../utils";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import { Executor } from "./Executor";
 
-type FederationDirectiveName =
-    | "key"
-    | "extends"
-    | "shareable"
-    | "inaccessible"
-    | "override"
-    | "external"
-    | "provides"
-    | "requires"
-    | "tag";
+const federationDirectiveNames = [
+    "key",
+    "extends",
+    "shareable",
+    "inaccessible",
+    "override",
+    "external",
+    "provides",
+    "requires",
+    "tag",
+] as const;
+
+type FederationDirectiveName = (typeof federationDirectiveNames)[number];
 
 type FullyQualifiedFederationDirectiveName = `federation__${FederationDirectiveName}`;
 
-const isFederationDirectiveName = (name: string): name is FederationDirectiveName =>
-    ["key", "extends", "shareable", "inaccessible", "override", "external", "provides", "requires", "tag"].includes(
-        name
-    );
+const isFederationDirectiveName = (name): name is FederationDirectiveName => federationDirectiveNames.includes(name);
 
 export class Subgraph {
     private importArgument: Map<
@@ -91,9 +91,7 @@ export class Subgraph {
         this.parseLinkImportArgument(linkDirective);
     }
 
-    public getFullyQualifiedDirectiveName(
-        name: FederationDirectiveName
-    ): FederationDirectiveName | FullyQualifiedFederationDirectiveName | string {
+    public getFullyQualifiedDirectiveName(name: FederationDirectiveName): string {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this.importArgument.get(name)!;
     }
@@ -161,10 +159,7 @@ export class Subgraph {
         return resolverMap;
     }
 
-    private getReferenceResolver(
-        nodes: Node[],
-        driver: neo4j.Driver
-    ): (reference, context, info) => Promise<unknown | undefined> {
+    private getReferenceResolver(nodes: Node[], driver: neo4j.Driver): (reference, context, info) => Promise<unknown> {
         const __resolveReference = async (reference, _context, info: GraphQLResolveInfo): Promise<unknown> => {
             const { __typename } = reference;
 
@@ -180,7 +175,6 @@ export class Subgraph {
             context.resolveTree = getNeo4jResolveTree(info);
             context.executor = executor;
             context.nodes = nodes;
-            // context.resolveTree = getNeo4jResolveTree(info, { args: { where } });
 
             const { cypher, params } = translateResolveReference({ context, node, reference });
 
