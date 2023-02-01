@@ -35,7 +35,6 @@ import { asArray, filterTruthy } from "../../../utils/utils";
 import { getCypherLogicalOperator, isLogicalOperator } from "../../utils/logical-operators";
 import { createRelationshipPredicate } from "./create-relationship-operation";
 
-
 export function createConnectionOperation({
     connectionField,
     value,
@@ -157,7 +156,7 @@ export function createConnectionOperation({
         operations.push(predicate);
     });
 
-    if (outerRelationshipData.returnVariables.length) {
+    if (outerRelationshipData.collectingVariables.length) {
         const optionalMatches = outerRelationshipData.connectionPredicateData.map(
             (relData) => new Cypher.OptionalMatch(relData.outerPattern)
         );
@@ -166,21 +165,22 @@ export function createConnectionOperation({
             withCollects.push(
                 new Cypher.With(
                     ...outerRelationshipData.connectionPredicateData.map((relData) => relData.sourceNode),
-                    ...outerRelationshipData.returnVariables.map(
+                    ...outerRelationshipData.collectingVariables.map(
                         (returnVar) => [Cypher.collect(returnVar), returnVar] as any
                     )
                 )
             );
             outerRelationshipData.connectionPredicateData.pop();
         }
-        const returnClause = new Cypher.Return(...outerRelationshipData.returnVariables);
-        outerRelationshipData.returnVariables = [];
+        const returnClause = new Cypher.Return(...outerRelationshipData.returnClauses);
+        outerRelationshipData.collectingVariables = [];
+        outerRelationshipData.returnClauses = [];
         return {
             predicate: Cypher.and(...operations),
             preComputedSubqueries: Cypher.concat(
-                new Cypher.Call(
-                    Cypher.concat(...optionalMatches, subqueries, ...withCollects, returnClause)
-                ).innerWith(parentNode)
+                new Cypher.Call(Cypher.concat(...optionalMatches, subqueries, ...withCollects, returnClause)).innerWith(
+                    parentNode
+                )
             ),
         };
     }

@@ -549,7 +549,8 @@ export type ConnectionPredicateData = {
 
 export type OuterRelationshipData = {
     connectionPredicateData: ConnectionPredicateData[];
-    returnVariables: Cypher.Variable[];
+    collectingVariables: Cypher.Variable[];
+    returnClauses: Cypher.ProjectionColumn[];
 };
 
 export type PredicateReturn = {

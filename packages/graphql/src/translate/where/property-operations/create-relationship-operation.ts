@@ -95,7 +95,7 @@ export function createRelationshipOperation({
         innerOperation,
     });
 
-    if (outerRelationshipData.returnVariables.length) {
+    if (outerRelationshipData.collectingVariables.length) {
         const topLevelNode = outerRelationshipData.connectionPredicateData[0].sourceNode;
         const optionalMatches = outerRelationshipData.connectionPredicateData.map(
             (relData) => new Cypher.OptionalMatch(relData.outerPattern)
@@ -105,15 +105,16 @@ export function createRelationshipOperation({
             withCollects.push(
                 new Cypher.With(
                     ...outerRelationshipData.connectionPredicateData.map((relData) => relData.sourceNode),
-                    ...outerRelationshipData.returnVariables.map(
+                    ...outerRelationshipData.collectingVariables.map(
                         (returnVar) => [Cypher.collect(returnVar), returnVar] as any
                     )
                 )
             );
             outerRelationshipData.connectionPredicateData.pop();
         }
-        const returnClause = new Cypher.Return(...outerRelationshipData.returnVariables);
-        outerRelationshipData.returnVariables = [];
+        const returnClause = new Cypher.Return(...outerRelationshipData.returnClauses);
+        outerRelationshipData.collectingVariables = [];
+        outerRelationshipData.returnClauses = [];
         return {
             predicate,
             preComputedSubqueries: Cypher.concat(
