@@ -116,6 +116,13 @@ export function createConnectionOperation({
         const contextRelationship = context.relationships.find(
             (x) => x.name === connectionField.relationshipTypeName
         ) as Relationship;
+
+        outerRelationshipData.connectionPredicateData.push({
+            listPredicateType: listPredicateStr,
+            outerPattern: matchPattern,
+            sourceNode: parentNode,
+        });
+
         const innerOperation = createConnectionWherePropertyOperation({
             context,
             whereInput: entry[1],
@@ -147,6 +154,34 @@ export function createConnectionOperation({
 
         operations.push(predicate);
     });
+
+    if (outerRelationshipData.returnVariables.length) {
+        const optionalMatches = outerRelationshipData.connectionPredicateData.map(
+            (relData) => new Cypher.OptionalMatch(relData.outerPattern)
+        );
+        const withCollects: Cypher.With[] = [];
+        while (outerRelationshipData.connectionPredicateData.length > 0) {
+            withCollects.push(
+                new Cypher.With(
+                    ...outerRelationshipData.connectionPredicateData.map((relData) => relData.sourceNode),
+                    ...outerRelationshipData.returnVariables.map(
+                        (returnVar) => [Cypher.collect(returnVar), returnVar] as any
+                    )
+                )
+            );
+            outerRelationshipData.connectionPredicateData.pop();
+        }
+        const returnClause = new Cypher.Return(...outerRelationshipData.returnVariables);
+        outerRelationshipData.returnVariables = [];
+        return {
+            predicate: Cypher.and(...operations),
+            preComputedSubqueries: Cypher.concat(
+                new Cypher.Call(
+                    Cypher.concat(...optionalMatches, subqueries, ...withCollects, returnClause)
+                ).innerWith(parentNode)
+            ),
+        };
+    }
 
     return {
         predicate: Cypher.and(...operations),

@@ -95,7 +95,8 @@ export function createRelationshipOperation({
         innerOperation,
     });
 
-    if (preComputedSubqueries && !preComputedSubqueries.empty) {
+    if (outerRelationshipData.returnVariables.length) {
+        const topLevelNode = outerRelationshipData.connectionPredicateData[0].sourceNode;
         const optionalMatches = outerRelationshipData.connectionPredicateData.map(
             (relData) => new Cypher.OptionalMatch(relData.outerPattern)
         );
@@ -111,9 +112,15 @@ export function createRelationshipOperation({
             );
             outerRelationshipData.connectionPredicateData.pop();
         }
+        const returnClause = new Cypher.Return(...outerRelationshipData.returnVariables);
+        outerRelationshipData.returnVariables = [];
         return {
             predicate,
-            preComputedSubqueries: Cypher.concat(...optionalMatches, preComputedSubqueries, ...withCollects),
+            preComputedSubqueries: Cypher.concat(
+                new Cypher.Call(
+                    Cypher.concat(...optionalMatches, preComputedSubqueries, ...withCollects, returnClause)
+                ).innerWith(topLevelNode)
+            ),
         };
     }
 
