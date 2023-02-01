@@ -23,3 +23,10 @@ export const DEPRECATE_NOT = {
         reason: "Negation filters will be deprecated, use the NOT operator to achieve the same behavior",
     },
 };
+
+export const DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS = {
+    name: "deprecated",
+    args: {
+        reason: "Please use the explicit _LENGTH version for string aggregation.",
+    },
+};

@@ -161,46 +161,76 @@ describe("Connect Or Create", () => {
               AND: [ActorMoviesNodeAggregationWhereInput!]
               NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
-              isan_AVERAGE_EQUAL: Float
-              isan_AVERAGE_GT: Float
-              isan_AVERAGE_GTE: Float
-              isan_AVERAGE_LT: Float
-              isan_AVERAGE_LTE: Float
+              isan_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_AVERAGE_LENGTH_EQUAL: Float
+              isan_AVERAGE_LENGTH_GT: Float
+              isan_AVERAGE_LENGTH_GTE: Float
+              isan_AVERAGE_LENGTH_LT: Float
+              isan_AVERAGE_LENGTH_LTE: Float
+              isan_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               isan_EQUAL: String
               isan_GT: Int
               isan_GTE: Int
-              isan_LONGEST_EQUAL: Int
-              isan_LONGEST_GT: Int
-              isan_LONGEST_GTE: Int
-              isan_LONGEST_LT: Int
-              isan_LONGEST_LTE: Int
+              isan_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_LONGEST_LENGTH_EQUAL: Int
+              isan_LONGEST_LENGTH_GT: Int
+              isan_LONGEST_LENGTH_GTE: Int
+              isan_LONGEST_LENGTH_LT: Int
+              isan_LONGEST_LENGTH_LTE: Int
+              isan_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               isan_LT: Int
               isan_LTE: Int
-              isan_SHORTEST_EQUAL: Int
-              isan_SHORTEST_GT: Int
-              isan_SHORTEST_GTE: Int
-              isan_SHORTEST_LT: Int
-              isan_SHORTEST_LTE: Int
-              title_AVERAGE_EQUAL: Float
-              title_AVERAGE_GT: Float
-              title_AVERAGE_GTE: Float
-              title_AVERAGE_LT: Float
-              title_AVERAGE_LTE: Float
+              isan_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_SHORTEST_LENGTH_EQUAL: Int
+              isan_SHORTEST_LENGTH_GT: Int
+              isan_SHORTEST_LENGTH_GTE: Int
+              isan_SHORTEST_LENGTH_LT: Int
+              isan_SHORTEST_LENGTH_LTE: Int
+              isan_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_LENGTH_EQUAL: Float
+              title_AVERAGE_LENGTH_GT: Float
+              title_AVERAGE_LENGTH_GTE: Float
+              title_AVERAGE_LENGTH_LT: Float
+              title_AVERAGE_LENGTH_LTE: Float
+              title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               title_EQUAL: String
               title_GT: Int
               title_GTE: Int
-              title_LONGEST_EQUAL: Int
-              title_LONGEST_GT: Int
-              title_LONGEST_GTE: Int
-              title_LONGEST_LT: Int
-              title_LONGEST_LTE: Int
+              title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_LENGTH_EQUAL: Int
+              title_LONGEST_LENGTH_GT: Int
+              title_LONGEST_LENGTH_GTE: Int
+              title_LONGEST_LENGTH_LT: Int
+              title_LONGEST_LENGTH_LTE: Int
+              title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               title_LT: Int
               title_LTE: Int
-              title_SHORTEST_EQUAL: Int
-              title_SHORTEST_GT: Int
-              title_SHORTEST_GTE: Int
-              title_SHORTEST_LT: Int
-              title_SHORTEST_LTE: Int
+              title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_LENGTH_EQUAL: Int
+              title_SHORTEST_LENGTH_GT: Int
+              title_SHORTEST_LENGTH_GTE: Int
+              title_SHORTEST_LENGTH_LT: Int
+              title_SHORTEST_LENGTH_LTE: Int
+              title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type ActorMoviesRelationship {
@@ -654,26 +684,41 @@ describe("Connect Or Create", () => {
               AND: [ActorMoviesEdgeAggregationWhereInput!]
               NOT: ActorMoviesEdgeAggregationWhereInput
               OR: [ActorMoviesEdgeAggregationWhereInput!]
-              characterName_AVERAGE_EQUAL: Float
-              characterName_AVERAGE_GT: Float
-              characterName_AVERAGE_GTE: Float
-              characterName_AVERAGE_LT: Float
-              characterName_AVERAGE_LTE: Float
+              characterName_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_AVERAGE_LENGTH_EQUAL: Float
+              characterName_AVERAGE_LENGTH_GT: Float
+              characterName_AVERAGE_LENGTH_GTE: Float
+              characterName_AVERAGE_LENGTH_LT: Float
+              characterName_AVERAGE_LENGTH_LTE: Float
+              characterName_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               characterName_EQUAL: String
               characterName_GT: Int
               characterName_GTE: Int
-              characterName_LONGEST_EQUAL: Int
-              characterName_LONGEST_GT: Int
-              characterName_LONGEST_GTE: Int
-              characterName_LONGEST_LT: Int
-              characterName_LONGEST_LTE: Int
+              characterName_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_LONGEST_LENGTH_EQUAL: Int
+              characterName_LONGEST_LENGTH_GT: Int
+              characterName_LONGEST_LENGTH_GTE: Int
+              characterName_LONGEST_LENGTH_LT: Int
+              characterName_LONGEST_LENGTH_LTE: Int
+              characterName_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               characterName_LT: Int
               characterName_LTE: Int
-              characterName_SHORTEST_EQUAL: Int
-              characterName_SHORTEST_GT: Int
-              characterName_SHORTEST_GTE: Int
-              characterName_SHORTEST_LT: Int
-              characterName_SHORTEST_LTE: Int
+              characterName_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_SHORTEST_LENGTH_EQUAL: Int
+              characterName_SHORTEST_LENGTH_GT: Int
+              characterName_SHORTEST_LENGTH_GTE: Int
+              characterName_SHORTEST_LENGTH_LT: Int
+              characterName_SHORTEST_LENGTH_LTE: Int
+              characterName_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              characterName_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               screentime_AVERAGE_EQUAL: Float
               screentime_AVERAGE_GT: Float
               screentime_AVERAGE_GTE: Float
@@ -711,46 +756,76 @@ describe("Connect Or Create", () => {
               AND: [ActorMoviesNodeAggregationWhereInput!]
               NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
-              isan_AVERAGE_EQUAL: Float
-              isan_AVERAGE_GT: Float
-              isan_AVERAGE_GTE: Float
-              isan_AVERAGE_LT: Float
-              isan_AVERAGE_LTE: Float
+              isan_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_AVERAGE_LENGTH_EQUAL: Float
+              isan_AVERAGE_LENGTH_GT: Float
+              isan_AVERAGE_LENGTH_GTE: Float
+              isan_AVERAGE_LENGTH_LT: Float
+              isan_AVERAGE_LENGTH_LTE: Float
+              isan_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               isan_EQUAL: String
               isan_GT: Int
               isan_GTE: Int
-              isan_LONGEST_EQUAL: Int
-              isan_LONGEST_GT: Int
-              isan_LONGEST_GTE: Int
-              isan_LONGEST_LT: Int
-              isan_LONGEST_LTE: Int
+              isan_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_LONGEST_LENGTH_EQUAL: Int
+              isan_LONGEST_LENGTH_GT: Int
+              isan_LONGEST_LENGTH_GTE: Int
+              isan_LONGEST_LENGTH_LT: Int
+              isan_LONGEST_LENGTH_LTE: Int
+              isan_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               isan_LT: Int
               isan_LTE: Int
-              isan_SHORTEST_EQUAL: Int
-              isan_SHORTEST_GT: Int
-              isan_SHORTEST_GTE: Int
-              isan_SHORTEST_LT: Int
-              isan_SHORTEST_LTE: Int
-              title_AVERAGE_EQUAL: Float
-              title_AVERAGE_GT: Float
-              title_AVERAGE_GTE: Float
-              title_AVERAGE_LT: Float
-              title_AVERAGE_LTE: Float
+              isan_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_SHORTEST_LENGTH_EQUAL: Int
+              isan_SHORTEST_LENGTH_GT: Int
+              isan_SHORTEST_LENGTH_GTE: Int
+              isan_SHORTEST_LENGTH_LT: Int
+              isan_SHORTEST_LENGTH_LTE: Int
+              isan_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              isan_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_LENGTH_EQUAL: Float
+              title_AVERAGE_LENGTH_GT: Float
+              title_AVERAGE_LENGTH_GTE: Float
+              title_AVERAGE_LENGTH_LT: Float
+              title_AVERAGE_LENGTH_LTE: Float
+              title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               title_EQUAL: String
               title_GT: Int
               title_GTE: Int
-              title_LONGEST_EQUAL: Int
-              title_LONGEST_GT: Int
-              title_LONGEST_GTE: Int
-              title_LONGEST_LT: Int
-              title_LONGEST_LTE: Int
+              title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_LENGTH_EQUAL: Int
+              title_LONGEST_LENGTH_GT: Int
+              title_LONGEST_LENGTH_GTE: Int
+              title_LONGEST_LENGTH_LT: Int
+              title_LONGEST_LENGTH_LTE: Int
+              title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               title_LT: Int
               title_LTE: Int
-              title_SHORTEST_EQUAL: Int
-              title_SHORTEST_GT: Int
-              title_SHORTEST_GTE: Int
-              title_SHORTEST_LT: Int
-              title_SHORTEST_LTE: Int
+              title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_LENGTH_EQUAL: Int
+              title_SHORTEST_LENGTH_GT: Int
+              title_SHORTEST_LENGTH_GTE: Int
+              title_SHORTEST_LENGTH_LT: Int
+              title_SHORTEST_LENGTH_LTE: Int
+              title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type ActorMoviesRelationship implements ActedIn {

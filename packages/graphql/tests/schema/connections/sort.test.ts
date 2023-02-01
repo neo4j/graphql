@@ -362,26 +362,41 @@ describe("Sort", () => {
               AND: [Node2RelatedToNodeAggregationWhereInput!]
               NOT: Node2RelatedToNodeAggregationWhereInput
               OR: [Node2RelatedToNodeAggregationWhereInput!]
-              property_AVERAGE_EQUAL: Float
-              property_AVERAGE_GT: Float
-              property_AVERAGE_GTE: Float
-              property_AVERAGE_LT: Float
-              property_AVERAGE_LTE: Float
+              property_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_AVERAGE_LENGTH_EQUAL: Float
+              property_AVERAGE_LENGTH_GT: Float
+              property_AVERAGE_LENGTH_GTE: Float
+              property_AVERAGE_LENGTH_LT: Float
+              property_AVERAGE_LENGTH_LTE: Float
+              property_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               property_EQUAL: String
               property_GT: Int
               property_GTE: Int
-              property_LONGEST_EQUAL: Int
-              property_LONGEST_GT: Int
-              property_LONGEST_GTE: Int
-              property_LONGEST_LT: Int
-              property_LONGEST_LTE: Int
+              property_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_LONGEST_LENGTH_EQUAL: Int
+              property_LONGEST_LENGTH_GT: Int
+              property_LONGEST_LENGTH_GTE: Int
+              property_LONGEST_LENGTH_LT: Int
+              property_LONGEST_LENGTH_LTE: Int
+              property_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               property_LT: Int
               property_LTE: Int
-              property_SHORTEST_EQUAL: Int
-              property_SHORTEST_GT: Int
-              property_SHORTEST_GTE: Int
-              property_SHORTEST_LT: Int
-              property_SHORTEST_LTE: Int
+              property_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_SHORTEST_LENGTH_EQUAL: Int
+              property_SHORTEST_LENGTH_GT: Int
+              property_SHORTEST_LENGTH_GTE: Int
+              property_SHORTEST_LENGTH_LT: Int
+              property_SHORTEST_LENGTH_LTE: Int
+              property_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type Node2RelatedToRelationship {
