@@ -185,4 +185,63 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             [Movie.plural]: expect.toIncludeSameMembers([movieInput1, movieInput2]),
         });
     });
+
+    test("should find aggregations at all levels within within triple nested relationships", async () => {
+        const queryExpectingResults = `
+            {
+                ${Movie.plural}(
+                    where: {
+                        actors_SOME: {
+                            movies_SOME: {
+                                actors_ALL: { moviesAggregate: { count_GT: 1 } }
+                                actorsAggregate: { node: { name_AVERAGE_LT: 10 } }
+                            }
+                            moviesAggregate: { node: { released_MAX_GT: 1 } }
+                        }
+                        actorsAggregate: { node: { name_AVERAGE_GTE: 3 } }
+                    }
+                ) {
+                    released
+                }
+            }
+        `;
+        const queryExpectingNoResults = `
+            {
+                ${Movie.plural}(
+                    where: {
+                        actors_SOME: {
+                            movies_SOME: {
+                                actors_ALL: { moviesAggregate: { count_GT: 1 } }
+                                actorsAggregate: { node: { name_AVERAGE_GT: 10 } }
+                            }
+                            moviesAggregate: { node: { released_MAX_GT: 1 } }
+                        }
+                        actorsAggregate: { node: { name_AVERAGE_EQUAL: 6 } }
+                    }
+                ) {
+                    released
+                }
+            }
+        `;
+
+        const resultExpectingResults = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: queryExpectingResults,
+            contextValue: neo4j.getContextValues(),
+        });
+        const resultExpectingNoResults = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: queryExpectingNoResults,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(resultExpectingResults.errors).toBeFalsy();
+        expect(resultExpectingResults.data).toEqual({
+            [Movie.plural]: expect.toIncludeSameMembers([movieInput1, movieInput2]),
+        });
+        expect(resultExpectingNoResults.errors).toBeFalsy();
+        expect(resultExpectingNoResults.data).toEqual({
+            [Movie.plural]: expect.toIncludeSameMembers([]),
+        });
+    });
 });

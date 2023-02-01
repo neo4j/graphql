@@ -100,19 +100,19 @@ export function aggregatePreComputedWhereFields({
 
     if (outerRelationshipData.connectionPredicateData.length) {
         const lastConnectionIndex = outerRelationshipData.connectionPredicateData.length - 1;
+        
         outerRelationshipData.connectionPredicateData.forEach((connectionData) =>
             connectionData.collectingVariables.push(...collectingVariables)
         );
-        if (outerRelationshipData.connectionPredicateData.length > 1) {
-            outerRelationshipData.connectionPredicateData[lastConnectionIndex - 1].collectingVariables.forEach(
-                (variable) => {
-                    if (!collectingVariables.includes(variable))
-                        outerRelationshipData.connectionPredicateData
-                            .slice(1)
-                            .forEach((connectionData) => connectionData.nonCollectingVariables.push(variable));
-                }
-            );
-        }
+
+        outerRelationshipData.connectionPredicateData[0].collectingVariables.forEach((variable) => {
+            if (!collectingVariables.includes(variable)) {
+                outerRelationshipData.connectionPredicateData[lastConnectionIndex].nonCollectingVariables.push(
+                    variable
+                );
+            }
+        });
+
         outerRelationshipData.returnClauses.push(...outerReturnProjections);
     }
 

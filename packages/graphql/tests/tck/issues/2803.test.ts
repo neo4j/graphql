@@ -209,4 +209,91 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }"
         `);
     });
+
+    test("should find aggregations at all levels within within triple nested relationships", async () => {
+        const query = gql`
+            {
+                movies(
+                    where: {
+                        actors_SOME: {
+                            movies_SOME: {
+                                actors_ALL: { moviesAggregate: { count_GT: 1 } }
+                                actorsAggregate: { node: { name_AVERAGE_EQUAL: 10 } }
+                            }
+                            moviesAggregate: { node: { released_MAX_GT: 2 } }
+                        }
+                        actorsAggregate: { node: { name_AVERAGE_EQUAL: 6 } }
+                    }
+                ) {
+                    released
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Movie\`)
+            CALL {
+                WITH this
+                MATCH (this1:\`Actor\`)-[this0:ACTED_IN]->(this)
+                RETURN avg(size(this1.name)) = $param0 AS var2
+            }
+            CALL {
+                WITH this
+                OPTIONAL MATCH (this3:\`Actor\`)-[:ACTED_IN]->(this)
+                OPTIONAL MATCH (this3)-[:ACTED_IN]->(this4:\`Movie\`)
+                OPTIONAL MATCH (this5:\`Actor\`)-[:ACTED_IN]->(this4)
+                CALL {
+                    WITH this3
+                    MATCH (this3)-[this6:ACTED_IN]->(this7:\`Movie\`)
+                    RETURN max(this7.released) > $param1 AS var8
+                }
+                CALL {
+                    WITH this4
+                    MATCH (this10:\`Actor\`)-[this9:ACTED_IN]->(this4)
+                    RETURN avg(size(this10.name)) = $param2 AS var11
+                }
+                CALL {
+                    WITH this5
+                    MATCH (this5)-[this12:ACTED_IN]->(this13:\`Movie\`)
+                    RETURN count(this13) > $param3 AS var14
+                }
+                WITH this, this3, this4, var8, var11, collect(var14) AS var14
+                WITH this, this3, var8, collect(var11) AS var11, collect(var14) AS var14
+                WITH this, collect(var8) AS var8, collect(var11) AS var11, collect(var14) AS var14
+                RETURN any(var15 IN var8 WHERE var15 = true) AS var8, any(var17 IN var11 WHERE any(var16 IN var17 WHERE var16 = true)) AS var11, any(var20 IN var14 WHERE any(var19 IN var20 WHERE all(var18 IN var19 WHERE var18 = true))) AS var14
+            }
+            WITH *
+            WHERE (var2 = true AND EXISTS {
+                MATCH (this3:\`Actor\`)-[:ACTED_IN]->(this)
+                WHERE (var8 = true AND EXISTS {
+                    MATCH (this3)-[:ACTED_IN]->(this4:\`Movie\`)
+                    WHERE (var11 = true AND (EXISTS {
+                        MATCH (this5:\`Actor\`)-[:ACTED_IN]->(this4)
+                        WHERE var14 = true
+                    } AND NOT (EXISTS {
+                        MATCH (this5:\`Actor\`)-[:ACTED_IN]->(this4)
+                        WHERE NOT (var14 = true)
+                    })))
+                })
+            })
+            RETURN this { .released } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": 6,
+                \\"param1\\": {
+                    \\"low\\": 2,
+                    \\"high\\": 0
+                },
+                \\"param2\\": 10,
+                \\"param3\\": {
+                    \\"low\\": 1,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
 });
