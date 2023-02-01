@@ -277,29 +277,29 @@ describe("Cypher Auth Allow", () => {
             "MATCH (this:\`User\`)
             WHERE this.id = $param0
             WITH this
-            OPTIONAL MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
-            WHERE this_posts0.id = $updateUsers_args_update_posts0_where_Postparam0
-            CALL apoc.do.when(this_posts0 IS NOT NULL, \\"
-            WITH this, this_posts0
-            OPTIONAL MATCH (this_posts0)<-[this_posts0_has_post0_relationship:HAS_POST]-(this_posts0_creator0:User)
-            CALL apoc.do.when(this_posts0_creator0 IS NOT NULL, \\\\\\"
-            SET this_posts0_creator0.id = $this_update_posts0_creator0_id
-            WITH this, this_posts0, this_posts0_creator0
-            CALL apoc.util.validate(NOT ((this_posts0_creator0.id IS NOT NULL AND this_posts0_creator0.id = $this_posts0_creator0auth_param0)), \\\\\\\\\\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\\\\\\\\\", [0])
-            RETURN count(*) AS _
-            \\\\\\", \\\\\\"\\\\\\", {this:this, this_posts0:this_posts0, updateUsers: $updateUsers, this_posts0_creator0:this_posts0_creator0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0auth_param0:$this_posts0_creator0auth_param0})
-            YIELD value AS _
-            WITH this, this_posts0
             CALL {
-            	WITH this_posts0
-            	MATCH (this_posts0)<-[this_posts0_creator_User_unique:HAS_POST]-(:User)
-            	WITH count(this_posts0_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
-            	RETURN c AS this_posts0_creator_User_unique_ignored
+            	WITH this
+            	MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
+            	WHERE this_posts0.id = $updateUsers_args_update_posts0_where_Postparam0
+            	WITH this, this_posts0
+            	CALL {
+            		WITH this, this_posts0
+            		MATCH (this_posts0)<-[this_posts0_has_post0_relationship:HAS_POST]-(this_posts0_creator0:User)
+            		SET this_posts0_creator0.id = $this_update_posts0_creator0_id
+            		WITH this, this_posts0, this_posts0_creator0
+            		CALL apoc.util.validate(NOT ((this_posts0_creator0.id IS NOT NULL AND this_posts0_creator0.id = $this_posts0_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            		RETURN count(*) AS update_this_posts0_creator0
+            	}
+            	WITH this, this_posts0
+            	CALL {
+            		WITH this_posts0
+            		MATCH (this_posts0)<-[this_posts0_creator_User_unique:HAS_POST]-(:User)
+            		WITH count(this_posts0_creator_User_unique) as c
+            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
+            		RETURN c AS this_posts0_creator_User_unique_ignored
+            	}
+            	RETURN count(*) AS update_this_posts0
             }
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0auth_param0:$this_posts0_creator0auth_param0})
-            YIELD value AS _
             WITH this
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -311,18 +311,6 @@ describe("Cypher Auth Allow", () => {
                 \\"updateUsers_args_update_posts0_where_Postparam0\\": \\"post-id\\",
                 \\"this_update_posts0_creator0_id\\": \\"not bound\\",
                 \\"this_posts0_creator0auth_param0\\": \\"id-01\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"id-01\\"
-                    }
-                },
                 \\"thisauth_param0\\": \\"id-01\\",
                 \\"updateUsers\\": {
                     \\"args\\": {

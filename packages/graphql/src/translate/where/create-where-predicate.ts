@@ -21,14 +21,9 @@ import type { GraphQLWhereArg, Context, PredicateReturn, OuterRelationshipData }
 import type { GraphElement } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
 // Recursive function
-
 import { createPropertyWhere } from "./property-operations/create-property-where";
-
-type WhereOperators = "OR" | "AND";
-
-function isWhereOperator(key: string): key is WhereOperators {
-    return ["OR", "AND"].includes(key);
-}
+import { getCypherLogicalOperator, isLogicalOperator, LogicalOperator } from "../utils/logical-operators";
+import { asArray } from "../../utils/utils";
 
 /** Translate a target node and GraphQL input into a Cypher operation o valid where expression */
 export function createWherePredicate({
@@ -48,13 +43,13 @@ export function createWherePredicate({
     const predicates: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
     whereFields.forEach(([key, value]) => {
-        if (isWhereOperator(key)) {
+        if (isLogicalOperator(key)) {
             const { predicate, preComputedSubqueries } = createNestedPredicate({
-                key,
+                key: key as LogicalOperator,
                 element,
                 targetElement,
                 context,
-                value,
+                value: asArray(value),
                 outerRelationshipData,
             });
             if (predicate) {
@@ -94,15 +89,16 @@ function createNestedPredicate({
     value,
     outerRelationshipData,
 }: {
-    key: WhereOperators;
-    value: Array<GraphQLWhereArg>;
+    key: LogicalOperator;
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
+    value: Array<GraphQLWhereArg>;
     outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
     const nested: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
+
     value.forEach((v) => {
         const { predicate, preComputedSubqueries } = createWherePredicate({
             whereInput: v,
@@ -117,14 +113,6 @@ function createNestedPredicate({
         if (preComputedSubqueries && !preComputedSubqueries.empty)
             subqueries = Cypher.concat(subqueries, preComputedSubqueries);
     });
-    if (key === "OR") {
-        return {
-            predicate: Cypher.or(...nested),
-            preComputedSubqueries: subqueries,
-        };
-    }
-    return {
-        predicate: Cypher.and(...nested),
-        preComputedSubqueries: subqueries,
-    };
+    const logicalOperator = getCypherLogicalOperator(key);
+    return { predicate: logicalOperator(...nested), preComputedSubqueries: subqueries };
 }

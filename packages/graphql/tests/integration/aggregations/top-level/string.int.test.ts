@@ -22,8 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 
 describe("aggregations-top_level-string", () => {
     let driver: Driver;
@@ -45,7 +44,7 @@ describe("aggregations-top_level-string", () => {
     });
 
     beforeEach(async () => {
-        typeMovie = generateUniqueType("Movie");
+        typeMovie = new UniqueType("Movie");
         session = await neo4j.getSession();
     });
 

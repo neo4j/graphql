@@ -21,7 +21,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("https://github.com/neo4j/graphql/issues/2662", () => {
@@ -53,9 +53,9 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     beforeEach(async () => {
         session = await neo4j.getSession();
 
-        userType = generateUniqueType("User");
-        postType = generateUniqueType("Post");
-        likesInterface = generateUniqueType("Likes");
+        userType = new UniqueType("User");
+        postType = new UniqueType("Post");
+        likesInterface = new UniqueType("Likes");
 
         const typeDefs = `
             type ${userType} {
@@ -833,9 +833,9 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     });
 
     test("should should apply AVERAGE filter to a string edge property correctly when node has a node has a property with the same name but different type", async () => {
-        userType = generateUniqueType("User");
-        postType = generateUniqueType("Post");
-        likesInterface = generateUniqueType("Likes");
+        userType = new UniqueType("User");
+        postType = new UniqueType("Post");
+        likesInterface = new UniqueType("Likes");
 
         const typeDefs = `
             type ${userType} {

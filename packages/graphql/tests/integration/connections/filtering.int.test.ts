@@ -22,7 +22,7 @@ import { graphql, GraphQLSchema } from "graphql";
 import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("Connections Filtering", () => {
     let driver: Driver;
@@ -38,8 +38,8 @@ describe("Connections Filtering", () => {
     });
 
     beforeEach(async () => {
-        movieType = generateUniqueType("Movie");
-        actorType = generateUniqueType("Actor");
+        movieType = new UniqueType("Movie");
+        actorType = new UniqueType("Actor");
 
         const typeDefs = gql`
             type ${movieType} {
@@ -159,6 +159,111 @@ describe("Connections Filtering", () => {
                         {
                             node: { name: actor1Name },
                         },
+                        {
+                            node: { name: actor2Name },
+                        },
+                    ]),
+                },
+            },
+        ]);
+    });
+
+    it("allows for NOT boolean operators on nested connections filters", async () => {
+        const movieTitle = "My title";
+        const actor1Name = "Arthur";
+        const actor2Name = "Zaphod";
+
+        const query = `
+			query {
+				${movieType.plural} (where: {actorsConnection: { NOT: { node: { name: "${actor1Name}" } } } }){
+                    actorsConnection {
+						edges {
+							node {
+								name
+							}
+						}
+					}
+				}
+			}
+		`;
+
+        await session.run(
+            `
+					CREATE (movie:${movieType} {title: $movieTitle})
+					CREATE (actorOne:${actorType} {name: $actor1Name})
+					CREATE (actorTwo:${actorType} {name: $actor2Name})
+					CREATE (actorOne)-[:ACTED_IN]->(movie)<-[:ACTED_IN]-(actorTwo)
+                `,
+            {
+                actor1Name,
+                actor2Name,
+                movieTitle,
+            }
+        );
+        const result = await graphql({
+            schema,
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+        expect(result.errors).toBeFalsy();
+        expect((result?.data as any)?.[movieType.plural]).toEqual([
+            {
+                actorsConnection: {
+                    edges: expect.toIncludeSameMembers([
+                        {
+                            node: { name: actor1Name },
+                        },
+                        {
+                            node: { name: actor2Name },
+                        },
+                    ]),
+                },
+            },
+        ]);
+    });
+
+    it("allows for NOT boolean operators on connection projection filters", async () => {
+        const movieTitle = "My title";
+        const actor1Name = "Arthur";
+        const actor2Name = "Zaphod";
+
+        const query = `
+			query {
+				${movieType.plural}{
+                    actorsConnection(where: { NOT: { node: { name: "${actor1Name}" } } }){
+						edges {
+							node {
+								name
+							}
+						}
+					}
+				}
+			}
+		`;
+
+        await session.run(
+            `
+					CREATE (movie:${movieType} {title: $movieTitle})
+					CREATE (actorOne:${actorType} {name: $actor1Name})
+					CREATE (actorTwo:${actorType} {name: $actor2Name})
+					CREATE (actorOne)-[:ACTED_IN]->(movie)<-[:ACTED_IN]-(actorTwo)
+                `,
+            {
+                actor1Name,
+                actor2Name,
+                movieTitle,
+            }
+        );
+        const result = await graphql({
+            schema,
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+        expect(result.errors).toBeFalsy();
+        expect((result?.data as any)?.[movieType.plural]).toEqual([
+            {
+                actorsConnection: {
+                    edges: expect.toIncludeSameMembers([
                         {
                             node: { name: actor2Name },
                         },

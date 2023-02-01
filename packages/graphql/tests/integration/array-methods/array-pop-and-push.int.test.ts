@@ -22,9 +22,9 @@ import { gql } from "apollo-server";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 
-import { generateUniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("array-pop-and-push", () => {
     let driver: Driver;
@@ -49,7 +49,7 @@ describe("array-pop-and-push", () => {
     });
 
     test("should push to and pop from two different arrays in the same update", async () => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeMovie} {

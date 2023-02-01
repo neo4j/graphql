@@ -21,8 +21,7 @@ import { gql } from "apollo-server";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
-import type { UniqueType } from "../../utils/graphql-types";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import Neo4j from "../neo4j";
 
@@ -44,8 +43,8 @@ describe("array-subscription", () => {
     beforeEach(async () => {
         session = await neo4j.getSession();
 
-        typeActor = generateUniqueType("Actor");
-        typeMovie = generateUniqueType("Movie");
+        typeActor = new UniqueType("Actor");
+        typeMovie = new UniqueType("Movie");
 
         plugin = new TestSubscriptionsPlugin();
         const typeDefs = gql`

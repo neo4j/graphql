@@ -127,6 +127,7 @@ describe("Sort", () => {
 
             input Node1RelatedToAggregateInput {
               AND: [Node1RelatedToAggregateInput!]
+              NOT: Node1RelatedToAggregateInput
               OR: [Node1RelatedToAggregateInput!]
               count: Int
               count_GT: Int
@@ -152,9 +153,10 @@ describe("Sort", () => {
 
             input Node1RelatedToConnectionWhere {
               AND: [Node1RelatedToConnectionWhere!]
+              NOT: Node1RelatedToConnectionWhere
               OR: [Node1RelatedToConnectionWhere!]
               node: Node2Where
-              node_NOT: Node2Where
+              node_NOT: Node2Where @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input Node1RelatedToCreateFieldInput {
@@ -212,16 +214,17 @@ describe("Sort", () => {
 
             input Node1Where {
               AND: [Node1Where!]
+              NOT: Node1Where
               OR: [Node1Where!]
               property: String
               property_CONTAINS: String
               property_ENDS_WITH: String
               property_IN: [String!]
-              property_NOT: String
-              property_NOT_CONTAINS: String
-              property_NOT_ENDS_WITH: String
-              property_NOT_IN: [String!]
-              property_NOT_STARTS_WITH: String
+              property_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              property_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              property_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              property_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              property_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               property_STARTS_WITH: String
               relatedTo: Node2Where @deprecated(reason: \\"Use \`relatedTo_SOME\` instead.\\")
               relatedToAggregate: Node1RelatedToAggregateInput
@@ -299,6 +302,7 @@ describe("Sort", () => {
 
             input Node2RelatedToAggregateInput {
               AND: [Node2RelatedToAggregateInput!]
+              NOT: Node2RelatedToAggregateInput
               OR: [Node2RelatedToAggregateInput!]
               count: Int
               count_GT: Int
@@ -329,9 +333,10 @@ describe("Sort", () => {
 
             input Node2RelatedToConnectionWhere {
               AND: [Node2RelatedToConnectionWhere!]
+              NOT: Node2RelatedToConnectionWhere
               OR: [Node2RelatedToConnectionWhere!]
               node: Node1Where
-              node_NOT: Node1Where
+              node_NOT: Node1Where @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input Node2RelatedToCreateFieldInput {
@@ -355,22 +360,23 @@ describe("Sort", () => {
 
             input Node2RelatedToNodeAggregationWhereInput {
               AND: [Node2RelatedToNodeAggregationWhereInput!]
+              NOT: Node2RelatedToNodeAggregationWhereInput
               OR: [Node2RelatedToNodeAggregationWhereInput!]
               property_AVERAGE_EQUAL: Float
               property_AVERAGE_GT: Float
               property_AVERAGE_GTE: Float
               property_AVERAGE_LT: Float
               property_AVERAGE_LTE: Float
-              property_EQUAL: String
-              property_GT: Int
-              property_GTE: Int
+              property_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              property_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              property_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               property_LONGEST_EQUAL: Int
               property_LONGEST_GT: Int
               property_LONGEST_GTE: Int
               property_LONGEST_LT: Int
               property_LONGEST_LTE: Int
-              property_LT: Int
-              property_LTE: Int
+              property_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              property_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               property_SHORTEST_EQUAL: Int
               property_SHORTEST_GT: Int
               property_SHORTEST_GTE: Int
@@ -406,6 +412,7 @@ describe("Sort", () => {
 
             input Node2Where {
               AND: [Node2Where!]
+              NOT: Node2Where
               OR: [Node2Where!]
               relatedTo: Node1Where @deprecated(reason: \\"Use \`relatedTo_SOME\` instead.\\")
               relatedToAggregate: Node2RelatedToAggregateInput

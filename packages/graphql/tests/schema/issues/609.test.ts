@@ -95,6 +95,7 @@ describe("609", () => {
 
             input DeprecatedWhere {
               AND: [DeprecatedWhere!]
+              NOT: DeprecatedWhere
               OR: [DeprecatedWhere!]
               deprecatedField: String @deprecated
               deprecatedField_CONTAINS: String @deprecated
