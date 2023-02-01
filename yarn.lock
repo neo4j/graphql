@@ -246,9 +246,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/client@npm:3.7.5":
-  version: 3.7.5
-  resolution: "@apollo/client@npm:3.7.5"
+"@apollo/client@npm:3.7.6":
+  version: 3.7.6
+  resolution: "@apollo/client@npm:3.7.6"
   dependencies:
     "@graphql-typed-document-node/core": ^3.1.1
     "@wry/context": ^0.7.0
@@ -278,7 +278,7 @@ __metadata:
       optional: true
     subscriptions-transport-ws:
       optional: true
-  checksum: c36f4469eb6a9ebc0f750a97cb201bcca725e1e98098c3d135d923e6d711ef8fa99365745b66f40744f59b78b3ffc0883ab2448ddadce89a5053033b40db8706
+  checksum: 88b78b90090aa45cdc0d175784ac4fe2a5ed7d20bc8fe38357f286d25062ffdf9e259881ac3848e38cf3d0dc9a3f5752ab058a6db0c9eca7c8d7bcb25ef36a52
   languageName: node
   linkType: hard
 
@@ -2753,30 +2753,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:0.16.2, @neo4j-ndl/base@npm:^0.16.2":
-  version: 0.16.2
-  resolution: "@neo4j-ndl/base@npm:0.16.2"
-  checksum: 65ba8c5db7cae347b96f01a805e367cb921d74065f051bf0c541967608c5b88cfbeef3b8997618cfb3c19cb24a888e986501a130fa6ad1aabfba462cb159c8b1
+"@neo4j-ndl/base@npm:0.16.3, @neo4j-ndl/base@npm:^0.16.3":
+  version: 0.16.3
+  resolution: "@neo4j-ndl/base@npm:0.16.3"
+  checksum: d37f166d29f3f5f02d68bc905ea03148e6934db68b88334c4b78068f59a6cce1a859e1a71812a7c6ec8c6c43761d8ad7c58ffbc9524769fd85b6026b041ae4d0
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:0.17.3":
-  version: 0.17.3
-  resolution: "@neo4j-ndl/react@npm:0.17.3"
+"@neo4j-ndl/react@npm:0.17.5":
+  version: 0.17.5
+  resolution: "@neo4j-ndl/react@npm:0.17.5"
   dependencies:
     "@heroicons/react": ^1.0.5
-    "@neo4j-ndl/base": ^0.16.2
+    "@neo4j-ndl/base": ^0.16.3
     classnames: ^2.3.1
     detect-browser: ^5.3.0
     react-dropzone: ^14.0.0
-    react-select: ^5.3.2
+    react-select: 5.7.0
     react-syntax-highlighter: ^15.5.0
     react-table: ^7.7.0
     react-use: ^17.4.0
     tinycolor2: ^1.4.2
   peerDependencies:
     react: 17.x
-  checksum: 2f8f0fd4f6f876819ff246af79ea278364ab5e60003773ab0d4e04cbeea8299e61aec628e98071d694fb2aa385a8699d422f4022e41d492d0dd5b4a9b3b6b957
+  checksum: dc182f56ad341e9039ca3d83a4530da7a46b67517ffb74cd00e7f1857fef55d44829f0e29b776743df2e4839f21cbcbe1c879d1daa89c2387209c2e340cf61ee
   languageName: node
   linkType: hard
 
@@ -2872,8 +2872,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@neo4j-ndl/base": 0.16.2
-    "@neo4j-ndl/react": 0.17.3
+    "@neo4j-ndl/base": 0.16.3
+    "@neo4j-ndl/react": 0.17.5
     "@neo4j/graphql": 3.15.0
     "@neo4j/introspector": 1.0.2
     "@playwright/test": 1.30.0
@@ -15722,7 +15722,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "neo-push-client@workspace:examples/neo-push/client"
   dependencies:
-    "@apollo/client": 3.7.5
+    "@apollo/client": 3.7.6
     "@fortawesome/fontawesome-svg-core": 6.2.1
     "@fortawesome/free-solid-svg-icons": 6.2.1
     "@fortawesome/react-fontawesome": 0.2.0
@@ -18588,7 +18588,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-select@npm:^5.3.2":
+"react-select@npm:5.7.0":
   version: 5.7.0
   resolution: "react-select@npm:5.7.0"
   dependencies:

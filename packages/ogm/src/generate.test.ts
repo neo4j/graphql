@@ -222,19 +222,19 @@ describe("generate", () => {
               AND?: InputMaybe<Array<UserWhere>>;
               NOT?: InputMaybe<UserWhere>;
               name?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
@@ -535,19 +535,19 @@ describe("generate", () => {
               AND?: InputMaybe<Array<UserWhere>>;
               NOT?: InputMaybe<UserWhere>;
               name?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
@@ -811,19 +811,19 @@ describe("generate", () => {
               AND?: InputMaybe<Array<UserWhere>>;
               NOT?: InputMaybe<UserWhere>;
               name?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
@@ -1219,10 +1219,10 @@ describe("generate", () => {
               AND?: InputMaybe<Array<ActedInWhere>>;
               NOT?: InputMaybe<ActedInWhere>;
               screenTime?: InputMaybe<Scalars[\\"Int\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               screenTime_NOT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_IN?: InputMaybe<Array<Scalars[\\"Int\\"]>>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               screenTime_NOT_IN?: InputMaybe<Array<Scalars[\\"Int\\"]>>;
               screenTime_LT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
@@ -1260,10 +1260,10 @@ describe("generate", () => {
               OR?: InputMaybe<Array<MovieActorsConnectionWhere>>;
               NOT?: InputMaybe<MovieActorsConnectionWhere>;
               edge?: InputMaybe<ActedInWhere>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               edge_NOT?: InputMaybe<ActedInWhere>;
               node?: InputMaybe<PersonWhere>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               node_NOT?: InputMaybe<PersonWhere>;
             };
 
@@ -1409,19 +1409,19 @@ describe("generate", () => {
               AND?: InputMaybe<Array<MovieWhere>>;
               NOT?: InputMaybe<MovieWhere>;
               title?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT?: InputMaybe<Scalars[\\"String\\"]>;
               title_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
               title_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               title_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               title_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               /** @deprecated Use \`actors_SOME\` instead. */
               actors?: InputMaybe<PersonWhere>;
@@ -1475,19 +1475,19 @@ describe("generate", () => {
               AND?: InputMaybe<Array<PersonWhere>>;
               NOT?: InputMaybe<PersonWhere>;
               name?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
               name_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 

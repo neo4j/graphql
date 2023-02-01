@@ -20,7 +20,7 @@
 export const DEPRECATE_NOT = {
     name: "deprecated",
     args: {
-        reason: "Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior",
+        reason: "Negation filters will be deprecated, use the NOT operator to achieve the same behavior",
     },
 };
 
