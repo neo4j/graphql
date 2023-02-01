@@ -245,11 +245,11 @@ export class Subgraph {
     }
 
     private parseLinkImportArgument(directive: ConstDirectiveNode): void {
-        const importArgument = directive.arguments?.find((arg) => arg.name.value === "import");
+        const argument = directive.arguments?.find((arg) => arg.name.value === "import");
 
-        if (importArgument) {
-            if (importArgument.value.kind === Kind.LIST) {
-                for (const value of importArgument.value.values) {
+        if (argument) {
+            if (argument.value.kind === Kind.LIST) {
+                for (const value of argument.value.values) {
                     if (value.kind === Kind.STRING) {
                         const trimmedName = this.trimDirectiveName(value.value);
 
