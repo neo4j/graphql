@@ -47,7 +47,7 @@ export function createConnectionOperation({
     context: Context;
     parentNode: Cypher.Node;
     operator: string | undefined;
-    outerRelationshipData: OuterRelationshipData[];
+    outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
     let nodeEntries: Record<string, any>;
 
@@ -169,7 +169,7 @@ export function createConnectionWherePropertyOperation({
     edge: Relationship;
     edgeRef: Cypher.Variable;
     targetNode: Cypher.Node;
-    outerRelationshipData: OuterRelationshipData[];
+    outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
     const preComputedSubqueriesResult: (Cypher.CompositeClause | undefined)[] = [];
     const params: (Cypher.Predicate | undefined)[] = [];

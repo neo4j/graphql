@@ -46,7 +46,7 @@ export function createPropertyWhere({
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
-    outerRelationshipData: OuterRelationshipData[];
+    outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
     const match = whereRegEx.exec(key);
     if (!match) {

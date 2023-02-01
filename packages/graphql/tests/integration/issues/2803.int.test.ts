@@ -137,7 +137,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [Actor.plural]: expect.toIncludeSameMembers([movieInput1, movieInput2]),
+            [Movie.plural]: expect.toIncludeSameMembers([movieInput1, movieInput2]),
         });
     });
 });

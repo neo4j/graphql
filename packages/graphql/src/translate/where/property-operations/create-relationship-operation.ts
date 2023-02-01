@@ -39,7 +39,7 @@ export function createRelationshipOperation({
     operator: string | undefined;
     value: GraphQLWhereArg;
     isNot: boolean;
-    outerRelationshipData: OuterRelationshipData[];
+    outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
@@ -74,7 +74,11 @@ export function createRelationshipOperation({
     if (listPredicateStr === "any" && !relationField.typeMeta.array) {
         listPredicateStr = "single";
     }
-    outerRelationshipData.push({ listPredicateType: listPredicateStr, outerPattern: matchPattern });
+    outerRelationshipData.connectionPredicateData.push({
+        listPredicateType: listPredicateStr,
+        outerPattern: matchPattern,
+        sourceNode: parentNode,
+    });
     const { predicate: innerOperation, preComputedSubqueries } = createWherePredicate({
         // Nested properties here
         whereInput: value,
@@ -92,13 +96,24 @@ export function createRelationshipOperation({
     });
 
     if (preComputedSubqueries && !preComputedSubqueries.empty) {
-        const optionalMatches = outerRelationshipData.map((relData) => new Cypher.OptionalMatch(relData.outerPattern));
-        while (outerRelationshipData.length > 0) {
-            outerRelationshipData.pop();
+        const optionalMatches = outerRelationshipData.connectionPredicateData.map(
+            (relData) => new Cypher.OptionalMatch(relData.outerPattern)
+        );
+        const withCollects: Cypher.With[] = [];
+        while (outerRelationshipData.connectionPredicateData.length > 0) {
+            withCollects.push(
+                new Cypher.With(
+                    ...outerRelationshipData.connectionPredicateData.map((relData) => relData.sourceNode),
+                    ...outerRelationshipData.returnVariables.map(
+                        (returnVar) => [Cypher.collect(returnVar), returnVar] as any
+                    )
+                )
+            );
+            outerRelationshipData.connectionPredicateData.pop();
         }
         return {
             predicate,
-            preComputedSubqueries: Cypher.concat(...optionalMatches, preComputedSubqueries),
+            preComputedSubqueries: Cypher.concat(...optionalMatches, preComputedSubqueries, ...withCollects),
         };
     }
 

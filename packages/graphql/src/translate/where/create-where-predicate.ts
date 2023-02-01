@@ -42,7 +42,7 @@ export function createWherePredicate({
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
-    outerRelationshipData: OuterRelationshipData[];
+    outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
     const whereFields = Object.entries(whereInput);
     const predicates: Cypher.Predicate[] = [];
@@ -99,7 +99,7 @@ function createNestedPredicate({
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
-    outerRelationshipData: OuterRelationshipData[];
+    outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
     const nested: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;

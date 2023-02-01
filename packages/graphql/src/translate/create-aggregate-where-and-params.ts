@@ -19,7 +19,14 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
-import type { RelationField, Context, GraphQLWhereArg, PredicateReturn, OuterRelationshipData } from "../types";
+import type {
+    RelationField,
+    Context,
+    GraphQLWhereArg,
+    PredicateReturn,
+    ConnectionPredicateData,
+    OuterRelationshipData,
+} from "../types";
 import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx } from "./where/utils";
 import { createBaseOperation } from "./where/property-operations/create-comparison-operation";
 import { NODE_OR_EDGE_KEYS, LOGICAL_OPERATORS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
@@ -58,7 +65,7 @@ export function aggregatePreComputedWhereFields({
     relationship: Relationship | undefined;
     context: Context;
     matchNode: Cypher.Variable;
-    outerRelationshipData: OuterRelationshipData[];
+    outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
     const direction = relationField.direction;
@@ -74,17 +81,19 @@ export function aggregatePreComputedWhereFields({
         matchPattern = cypherRelation.pattern({ target: { labels: false } });
     }
     const matchQuery = new Cypher.Match(matchPattern);
-    const { returnProjections, predicates } = aggregateWhere(
+    const { returnProjections, predicates, returnVariables } = aggregateWhere(
         value as AggregateWhereInput,
         refNode,
         relationship,
         aggregationTarget,
         cypherRelation,
-        [...outerRelationshipData.reverse()] // TODO - check this copy doesn't need to be made at a more nested level
+        [...outerRelationshipData.connectionPredicateData].reverse() // TODO - check this copy doesn't need to be made at a more nested level
     );
     matchQuery.return(...returnProjections);
 
     const subquery = new Cypher.Call(matchQuery).innerWith(matchNode);
+
+    outerRelationshipData.returnVariables = returnVariables;
 
     return {
         predicate: Cypher.and(...predicates),
@@ -99,7 +108,7 @@ export function aggregateWhere(
     relationship: Relationship | undefined,
     aggregationTarget: Cypher.Node,
     cypherRelation: Cypher.Relationship,
-    outerRelationshipData: OuterRelationshipData[]
+    outerRelationshipData: ConnectionPredicateData[]
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
     const predicates: Cypher.Predicate[] = [];
@@ -160,7 +169,7 @@ function createCountPredicateAndProjection(
     aggregationTarget: Cypher.Node,
     filterKey: string,
     filterValue: number,
-    outerRelationshipData: OuterRelationshipData[]
+    outerRelationshipData: ConnectionPredicateData[]
 ): {
     returnProjection: "*" | Cypher.ProjectionColumn;
     predicate: Cypher.Predicate | undefined;
@@ -187,7 +196,7 @@ function aggregateEntityWhere(
     aggregateEntityWhereInput: WhereFilter,
     refNodeOrRelation: Node | Relationship,
     target: Cypher.Node | Cypher.Relationship,
-    outerRelationshipData: OuterRelationshipData[]
+    outerRelationshipData: ConnectionPredicateData[]
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
     const predicates: Cypher.Predicate[] = [];
@@ -283,7 +292,7 @@ function getAggregateOperation(
     }
 }
 
-function getReturnValuePredicate(operationVar: Cypher.Variable, outerRelationshipData: OuterRelationshipData[]) {
+function getReturnValuePredicate(operationVar: Cypher.Variable, outerRelationshipData: ConnectionPredicateData[]) {
     const relData = outerRelationshipData.pop();
     const listVar = new Cypher.Variable();
     switch (relData?.listPredicateType) {

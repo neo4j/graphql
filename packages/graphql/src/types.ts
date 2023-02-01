@@ -527,9 +527,15 @@ export interface Neo4jFeaturesSettings {
     filters?: Neo4jFiltersSettings;
 }
 
-export type OuterRelationshipData = {
+export type ConnectionPredicateData = {
     listPredicateType: ListPredicate;
     outerPattern: Cypher.Pattern;
+    sourceNode: Cypher.Node;
+};
+
+export type OuterRelationshipData = {
+    connectionPredicateData: ConnectionPredicateData[];
+    returnVariables: Cypher.Variable[];
 };
 
 export type PredicateReturn = {
