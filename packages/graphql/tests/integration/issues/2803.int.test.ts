@@ -438,4 +438,66 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             [Movie.plural]: expect.toIncludeSameMembers([]),
         });
     });
+
+    test("should find movies aggregate with connection nested in relationship", async () => {
+        const query = `
+            {
+                ${Actor.plural}(
+                    where: {
+                        movies_SOME: {
+                            actorsConnection_ALL: {
+                                node: {
+                                    moviesAggregate: { count_GT: 1 }
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    name
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput1]),
+        });
+    });
+
+    test("should find movies aggregate with relationship nested in connection", async () => {
+        const query = `
+            {
+                ${Actor.plural}(
+                    where: {
+                        moviesConnection_SOME: {
+                            node: {
+                                actors_ALL: {
+                                    moviesAggregate: { count_GT: 1 }
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    name
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput1]),
+        });
+    });
 });
