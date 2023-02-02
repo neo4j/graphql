@@ -244,4 +244,198 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             [Movie.plural]: expect.toIncludeSameMembers([]),
         });
     });
+
+    test("should find movies aggregate within double nested connections", async () => {
+        const query = `
+            {
+                ${Actor.plural}(
+                    where: {
+                        moviesConnection_SOME: {
+                            node: {
+                                actorsConnection_ALL: {
+                                    node: { moviesAggregate: { count_GT: 1 }
+                                }
+                            }
+                        }
+                    }
+                }) {
+                    name
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput1]),
+        });
+    });
+
+    test("should find aggregations at all levels within double nested connections", async () => {
+        const queryExpectingResults = `
+            {
+                ${Actor.plural}(
+                    where: {
+                        movies_SOME: {
+                            actorsConnection_ALL: {
+                                node: {
+                                    moviesAggregate: { count_GT: 1 }
+                                }
+                            },
+                            actorsAggregate: { count: 1 }
+                        }
+                    }
+                ) {
+                    name
+                }
+            }
+        `;
+        const queryExpectingNoResults = `
+            {
+                ${Actor.plural}(
+                    where: {
+                        movies_SOME: {
+                            actorsConnection_ALL: {
+                                node: {
+                                    moviesAggregate: { count_GT: 1 }
+                                }
+                            },
+                            actorsAggregate: { count: 0 }
+                        }
+                    }
+                ) {
+                    name
+                }
+            }
+        `;
+
+        const resultExpectingResults = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: queryExpectingResults,
+            contextValue: neo4j.getContextValues(),
+        });
+        const resultExpectingNoResults = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: queryExpectingNoResults,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(resultExpectingResults.errors).toBeFalsy();
+        expect(resultExpectingResults.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput1]),
+        });
+        expect(resultExpectingNoResults.errors).toBeFalsy();
+        expect(resultExpectingNoResults.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([]),
+        });
+    });
+
+    test("should find movies aggregate within triple nested connections", async () => {
+        const query = `
+            {
+                ${Movie.plural}(
+                    where: {
+                        actorsConnection_SOME: {
+                            node: {
+                                moviesConnection_SOME: {
+                                    node: {
+                                        actorsConnection_ALL: { 
+                                            node: {
+                                                moviesAggregate: { count_GT: 1 }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    released
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Movie.plural]: expect.toIncludeSameMembers([movieInput1, movieInput2]),
+        });
+    });
+
+    test("should find aggregations at all levels within within triple nested connections", async () => {
+        const queryExpectingResults = `
+            {
+                ${Movie.plural}(
+                    where: {
+                        actorsConnection_SOME: {
+                            node: {
+                                moviesConnection_SOME: {
+                                    node: {
+                                        actorsConnection_ALL: { 
+                                            node: {
+                                                moviesAggregate: { count_GT: 1 }
+                                            }
+                                        }
+                                        actorsAggregate: { node: { name_AVERAGE_LT: 10 } }
+                                    }
+                                }
+                                moviesAggregate: { node: { released_MAX_GT: 1 } }
+                            }
+                        }
+                        actorsAggregate: { node: { name_AVERAGE_GTE: 3 } }
+                    }
+                ) {
+                    released
+                }
+            }
+        `;
+        const queryExpectingNoResults = `
+            {
+                ${Movie.plural}(
+                    where: {
+                        actors_SOME: {
+                            movies_SOME: {
+                                actors_ALL: { moviesAggregate: { count_GT: 1 } }
+                                actorsAggregate: { node: { name_AVERAGE_GT: 10 } }
+                            }
+                            moviesAggregate: { node: { released_MAX_GT: 1 } }
+                        }
+                        actorsAggregate: { node: { name_AVERAGE_EQUAL: 6 } }
+                    }
+                ) {
+                    released
+                }
+            }
+        `;
+
+        const resultExpectingResults = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: queryExpectingResults,
+            contextValue: neo4j.getContextValues(),
+        });
+        const resultExpectingNoResults = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: queryExpectingNoResults,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(resultExpectingResults.errors).toBeFalsy();
+        expect(resultExpectingResults.data).toEqual({
+            [Movie.plural]: expect.toIncludeSameMembers([movieInput1, movieInput2]),
+        });
+        expect(resultExpectingNoResults.errors).toBeFalsy();
+        expect(resultExpectingNoResults.data).toEqual({
+            [Movie.plural]: expect.toIncludeSameMembers([]),
+        });
+    });
 });
