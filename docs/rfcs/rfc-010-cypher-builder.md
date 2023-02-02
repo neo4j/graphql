@@ -120,39 +120,152 @@ Writing arbitrarily complex patterns (such as `()-[]->()<-[]-()`) can be tricky 
 -   [Variable-length pattern matching](https://neo4j.com/docs/cypher-manual/current/syntax/patterns/#cypher-pattern-varlength)
 -   Path variables
 
-**2 levels pattern relationship**
+A pattern is a sequence of nodes and relationships, starting at a node.
+
+-   A node contains labels and properties.
+-   A relationship contains a type and properties. Note, relationships no longer contains from and to.
+
+Example patterns
+
+-   `MATCH (m:Movie {title: "The Matrix"})-[:ACTED_IN { role: "neo" }]->(:Person)-[:DIRECTED]-(m2:Movie)`
+-   `MATCH (p:Person)-[*3..5]->(b)`
+-   `(me)-[:KNOWS*1..2]-(remote_friend)`
+-   Assigning to path: `p = (a)-[*3..5]->(b)`
+
+### Proposed solution
+
+**Node**
+
+```typescript
+class Node {
+    related(rel?: Relationship): PartialPattern;
+    withProperties(Record<string, any>): this
+    withoutLabels(): Pattern; // Pattern of only one node without labels
+}
+
+class PartialPattern { // Cannot be compiled
+    to(node?: Node): Pattern;
+    withDirection(direction: "left" | "right" | "undirected");
+}
+
+class Pattern {
+    related(rel?: Relationship): PartialPattern;
+    toPath(): Path; // Extends Variable and can be returned
+}
+```
+
+### Examples
+
+**Long pattern**
 
 ```cypher
-MATCH(m:Movie)-[:ACTED_IN]-(:Person)-[:DIRECTED]-(m2:Movie)
+MATCH (m:Movie {title: "The Matrix"})-[:ACTED_IN { role: "neo" }]->(:Person)-[:DIRECTED]-(m2:Movie)
 ```
 
 ```typescript
-const movieNode = new Cypher.Node({ labels: ["Movie"] });
-const movie2Node = new Cypher.Node({ labels: ["Movie"] });
+const movie = new Cypher.Node({ labels: ["Movie"] });
+const person = new Cypher.Node({ labels: ["Person"] });
+const movie2 = new Cypher.Node({ labels: ["Movie"] });
 
-const pattern = movieNode
-    .related({ type: "ACTED_IN" })
-    .to(new Cypher.Node({ labels: ["Person"] }))
-    .related({ type: "DIRECTED" })
-    .to(movie2Node);
-```
+const actedIn = new Cypher.Relationship({ type: "ACTED_IN" });
+const directed = new Cypher.Relationship({ type: "DIRECTED" });
 
-**Variable length pattern matching**
-
-```cypher
-MATCH(m:Movie)-[:ACTED_IN]-(:Person)-[:DIRECTED]-(m2:Movie)
-```
-
-```typescript
-new Cypher.Node({ labels: ["Actor"] })
+movie
     .withProperties({ title: "The Matrix" })
-    .related(new Cypher.Relationship().undirected().withType("ACTED_IN").length(3).withProperties({ role: "neo " }))
-    .to(movieNode.withProperties({ title: "The Matrix" }));
+    .related(actedIn.withProperties({ role: "neo" }))
+    .withDirection("undirected")
+    .to(person)
+    .related(directed)
+    .withDirection("left")
+    .to(movie2);
 ```
 
----
+**Relationship without labels**
 
--   Parametrized direction
+```cypher
+MATCH(m)-[:ACTED_IN]->(:Person)
+```
+
+```typescript
+const movie = new Cypher.Node({ labels: ["Movie"] });
+const person = new Cypher.Node({ labels: ["Person"] });
+
+const actedIn = new Cypher.Relationship({ type: "ACTED_IN" });
+
+// TODO: disable labels in movie, and, optionally variable name in person
+movie.related(actedIn).to(person);
+```
+
+**Relationship with path**
+
+```cypher
+MATCH p = (this1 :Label1 :Label2) <- [this2 :TYPE1] - (this3) - [this4 :TYPE2] -> (this5 :Label3)
+WHERE this1.prop1 = 'value1' AND this4.property2 > "value2"
+RETURN p
+```
+
+```typescript
+const this1 = new Cypher.Node({ labels: ["Label1", "Label2"] });
+const this2 = new Cypher.Relationship({ type: "TYPE1" });
+const this3 = new Cypher.Node();
+const this4 = new Cypher.Relationship({ type: "TYPE2" });
+const this5 = new Cypher.Node({ labels: ["Label3"] });
+
+const pattern = this1.relates(this2).withDirection("left").to(this3).relates(this4).to(this5);
+const p = pattern.toPath();
+
+const query = new Cypher.Match(p)
+    .where(
+        Cypher.and(
+            Cypher.eq(this1.property("prop1"), new Cypher.param("value1")),
+            Cypher.gt(this4.property("property2"), new Cypher.param("value2"))
+        )
+    )
+    .return(p); // Patterns cannot be returned but paths can
+```
+
+**Relationship with path and empty nodes/relationships**
+
+```cypher
+MATCH p =(this1 :Label1 ) - [this2 :TYPE1] -> () - [] -> (this5 :Label2 :Label3) - [this6 :TYPE3] - (this7)
+RETURN DISTINCT p LIMIT 20
+```
+
+```typescript
+const this1 = new Cypher.Node({ labels: ["Label1"] });
+const this2 = new Cypher.Relationship({ type: "TYPE1" });
+
+const this5 = new Cypher.Node({ labels: ["Label2", "Label3"] });
+const this6 = new Cypher.Relationship({ type: "TYPE3" });
+
+const p = this1
+    .relates(this2)
+    .to()
+    .relates()
+    .to(this5)
+    .relates(this6)
+    .withDirection("undirected")
+    .to(new Cypher.Node());
+
+new Cypher.Match(p).return(p).distinct().limit(20);
+```
+
+**Reusing variable in Match**
+
+```cypher
+MATCH(m:Movie)
+MATCH(m)
+RETURN m
+```
+
+```typescript
+const this1 = new Cypher.Node({ labels: ["Label1", "Label2"] });
+
+new Cypher.Match(this1) // MATCH (m:Label1:Label2)
+    .match(this1.withoutLabels()); // MATCH(m) // TODO: do not use labels here
+```
+
+For reference, this is a Java Cypher-DSL example:
 
 ```java
     void p1() {
@@ -167,52 +280,6 @@ new Cypher.Node({ labels: ["Actor"] })
 		System.out.println(pattern);
 		System.out.println(pattern.relationshipFrom(Cypher.node("Publisher"), "PUBLISHED"));
 	}
-```
-
-### Proposals
-
-The following cases will create the pattern: `(:Actor {name: "Neo"})-[:ACTED_IN*3 {role: "neo"}]-(:Movie {title: "The Matrix"})`. In all 3 cases all of the parameters are optional and the default direction would be from the first node to the second (`()-[]->()`)
-
-**1. Use a related chain**
-
-This approach is closer to a fluent API, easier to write, and consistent across all nodes and relationships, but have 2 downsides:
-
--   It is hard to noticed which options are scoped to the relationship and which ones to the node.
--   It may be hard to compose a pattern from variables (i.e. having the relationship outside the fluent interface).
-
-```typescript
-new CypherBuilder.Node({ labels: ["Actor"] })
-    .withProperties({ title: "The Matrix" })
-    .related()
-    .undirected()
-    .withType("ACTED_IN")
-    .length(3)
-    .withProperties({ role: "neo " })
-    .to(movieNode.withProperties({ title: "The Matrix" }));
-```
-
-**2. A nested relationship**
-
-This approach is a bit more verbose, but adds a level of nested field to the relationship, making it easier to separate and compose.
-
-```typescript
-new CypherBuilder.Node({ labels: ["Actor"] })
-    .withProperties({ title: "The Matrix" })
-    .related(new Relationship().undirected().withType("ACTED_IN").length(3).withProperties({ role: "neo " }))
-    .to(movieNode.withProperties({ title: "The Matrix" }));
-```
-
-**3. A nested relationship in a callback**
-
-Similar to before, but using a callback for the nested relationship instead of directly. This makes it slightly easier to enforce the type at runtime, but adds the added complexity of a callback and slightly harder to compose with existing relationships.
-
-```typescript
-new CypherBuilder.Node({ labels: ["Actor"] })
-    .withProperties({ title: "The Matrix" })
-    .related((relationship) =>
-        relationship.undirected().withType("ACTED_IN").length(3).withProperties({ role: "neo " })
-    )
-    .to(movieNode.withProperties({ title: "The Matrix" }));
 ```
 
 ## Cypher Builder Domain
