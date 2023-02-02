@@ -47,13 +47,13 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
         driver = await neo4j.getDriver();
 
         const typeDefs = `
-            type ${testBibliographicReference.name} @node(additionalLabels: ["Resource"]){
+            type ${testBibliographicReference.name} @node(labels: ["${testBibliographicReference.name}", "Resource"]){
                 iri: ID! @unique @alias(property: "uri")
                 prefLabel: [String!]
                 isInPublication: [${testConcept.name}!]! @relationship(type: "isInPublication", direction: OUT)
             }
 
-            type ${testConcept.name} @node(additionalLabels: ["Resource"]){
+            type ${testConcept.name} @node(labels: ["${testConcept.name}", "Resource"]){
                 iri: ID! @unique @alias(property: "uri")
                 prefLabel: [String!]!
             }

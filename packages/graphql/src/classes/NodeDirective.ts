@@ -25,6 +25,7 @@ import Cypher from "@neo4j/cypher-builder";
 export interface NodeDirectiveConstructor {
     label?: string;
     additionalLabels?: string[];
+    labels?: string[];
     plural?: string;
 }
 
@@ -32,11 +33,13 @@ export class NodeDirective {
     public readonly label: string | undefined;
     public readonly additionalLabels: string[];
     public readonly plural: string | undefined;
+    public readonly labels: string[];
 
     constructor(input: NodeDirectiveConstructor) {
         this.label = input.label;
         this.additionalLabels = input.additionalLabels || [];
         this.plural = input.plural;
+        this.labels = input.labels || [];
     }
 
     public getLabelsString(typeName: string, context: Context): string {
@@ -48,9 +51,16 @@ export class NodeDirective {
     }
 
     public getLabels(typeName: string, context: Context): string[] {
-        const mainLabel = this.label || typeName;
-        const labels = [mainLabel, ...this.additionalLabels];
-        return this.mapLabelsWithContext(labels, context);
+        let finalLabels: string[] = [];
+        if (this.labels.length) {
+            finalLabels = [...this.labels];
+        } else {
+            const mainLabel = this.label || typeName;
+            finalLabels = [mainLabel, ...this.additionalLabels];
+        }
+        // TODO: use when removing label & additionalLabels
+        // const finalLabels = !this.labels.length ? [typeName] : this.labels;
+        return this.mapLabelsWithContext(finalLabels, context);
     }
 
     private mapLabelsWithContext(labels: string[], context: Context): string[] {

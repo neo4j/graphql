@@ -2382,7 +2382,7 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = gql`
-                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) @node(label: "${label}") {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) @node(labels: ["${label}"]) {
                     title: String!
                 }
             `;
@@ -2423,7 +2423,7 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = gql`
-                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) @node(label: "${label}") {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) @node(labels: ["${label}"]) {
                     title: String! @alias(property: "${aliasName}")
                 }
             `;
@@ -2685,7 +2685,7 @@ describe("@fulltext directive", () => {
             const baseType = new UniqueType("Base");
             const additionalType = new UniqueType("Additional");
             const typeDefs = `
-                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
+                type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
                     title: String!
                 }
             `;
@@ -2725,7 +2725,7 @@ describe("@fulltext directive", () => {
             const baseType = new UniqueType("Base");
             const additionalType = new UniqueType("Additional");
             const typeDefs = `
-                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
+                type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
                     title: String!
                 }
             `;
