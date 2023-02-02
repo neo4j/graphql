@@ -24,6 +24,13 @@ export const DEPRECATE_NOT = {
     },
 };
 
+export const DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS = {
+    name: "deprecated",
+    args: {
+        reason: "Please use the explicit _LENGTH version for string aggregation.",
+    },
+};
+
 export const DEPRECATE_INVALID_AGGREGATION_FILTERS = {
     name: "deprecated",
     args: {
