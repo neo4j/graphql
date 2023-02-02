@@ -32,6 +32,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
 
     let Movie: UniqueType;
     let Actor: UniqueType;
+    let ActedIn: UniqueType;
 
     const actorInput1 = {
         name: "some name",
@@ -42,11 +43,60 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     const actorInput3 = {
         name: "ThirdName",
     };
+    const actorInput4 = {
+        name: "!@£$@$ special char actor",
+    };
+    const actorInput5 = {
+        name: "actor with an very long name indeed!",
+    };
+
     const movieInput1 = {
         released: 1,
     };
     const movieInput2 = {
-        released: 987598257,
+        released: 287598257,
+    };
+    const movieInput3 = {
+        released: 3409,
+    };
+    const movieInput4 = {
+        released: 4809567,
+    };
+    const movieInput5 = {
+        released: 588,
+    };
+
+    const actedInInput1 = {
+        roles: ["some char"],
+        screenTime: 1,
+    };
+    const actedInInput2 = {
+        roles: ["some other character", "second-character"],
+        screenTime: 2984,
+    };
+    const actedInInput3 = {
+        roles: ["12"],
+        screenTime: 0,
+    };
+    const actedInInput4 = {
+        roles: ["some-char"],
+        screenTime: 456,
+    };
+    const actedInInput5 = {
+        roles: ["char1", "char2", "char3!"],
+        screenTime: 56,
+    };
+    const actedInInput6 = {
+        roles: ["a role with a long ish name"],
+        screenTime: 66,
+    };
+    const actedInInput7 = {
+        roles: ["special char role *%|?~£$^%"],
+        screenTime: 773,
+    };
+    const actedInInput8 = {
+        roles: ["final role"],
+        screenTime: 8904,
     };
 
     beforeAll(async () => {
@@ -62,13 +112,18 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
 
         const typeDefs = `
             type ${Movie} {
-                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "${ActedIn}")
                 released: Int!
             }
 
             type ${Actor} {
-                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "${ActedIn}")
                 name: String
+            }
+
+            interface ${ActedIn} @relationshipProperties {
+                screenTime: Int!
+                roles: [String!]!
             }
         `;
 
@@ -79,14 +134,41 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
 
         await session.run(
             `
-            CREATE (a1:${Actor})-[:ACTED_IN]->(m1:${Movie})
-            CREATE (a1)-[:ACTED_IN]->(m2:${Movie})
-            CREATE (a2:${Actor})-[:ACTED_IN]->(m2)
-            CREATE (a3:${Actor})
-            SET a1 = $actorInput1, a2 = $actorInput2, a3 = $actorInput3,
-                m1 = $movieInput1, m2 = $movieInput2
+            CREATE (a1:${Actor})-[rel1:ACTED_IN]->(m1:${Movie})
+            CREATE (a1)-[rel2:ACTED_IN]->(m2:${Movie})
+            CREATE (a2:${Actor})-[rel3:ACTED_IN]->(m2)
+            CREATE (a3:${Actor})-[rel4:ACTED_IN]->(m2)
+            CREATE (a3)-[rel5:ACTED_IN]->(m3:${Movie})
+            CREATE (a4:${Actor})-[rel6:ACTED_IN]->(m4:${Movie})
+            CREATE (a4)-[rel7:ACTED_IN]->(m3)
+            CREATE (a4)-[rel8:ACTED_IN]->(m2)
+            CREATE (a5:${Actor})
+            CREATE (m5:${Movie})
+            SET a1 = $actorInput1, a2 = $actorInput2, a3 = $actorInput3, a4 = $actorInput4, a5 = $actorInput5,
+                m1 = $movieInput1, m2 = $movieInput2, m3 = $movieInput3, m4 = $movieInput4, m5 = $movieInput5,
+                rel1 = $actedInInput1, rel2 = $actedInInput2, rel3 = $actedInInput3, rel4 = $actedInInput4,
+                rel5 = $actedInInput5, rel6 = $actedInInput6, rel7 = $actedInInput7, rel8 = $actedInInput8
         `,
-            { actorInput1, actorInput2, actorInput3, movieInput1, movieInput2 }
+            {
+                actorInput1,
+                actorInput2,
+                actorInput3,
+                actorInput4,
+                actorInput5,
+                movieInput1,
+                movieInput2,
+                movieInput3,
+                movieInput4,
+                movieInput5,
+                actedInInput1,
+                actedInInput2,
+                actedInInput3,
+                actedInInput4,
+                actedInInput5,
+                actedInInput6,
+                actedInInput7,
+                actedInInput8,
+            }
         );
     });
 
@@ -116,27 +198,21 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [Actor.plural]: expect.toIncludeSameMembers([actorInput1]),
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput1, actorInput3, actorInput4]),
         });
     });
 
     test("should find aggregations at all levels within double nested relationships", async () => {
-        const queryExpectingResults = `
+        const query = `
             {
                 ${Actor.plural}(
                     where: {
-                        movies_SOME: { actors_ALL: { moviesAggregate: { count_GT: 1 } }, actorsAggregate: { count: 1 } }
-                    }
-                ) {
-                    name
-                }
-            }
-        `;
-        const queryExpectingNoResults = `
-            {
-                ${Actor.plural}(
-                    where: {
-                        movies_SOME: { actors_ALL: { moviesAggregate: { count_GT: 1 } }, actorsAggregate: { count: 0 } }
+                        movies_SOME: {
+                            actors_ALL: {
+                                moviesAggregate: { count_GT: 1 }
+                            },
+                            actorsAggregate: { count: 1 }
+                        }
                     }
                 ) {
                     name
@@ -144,31 +220,32 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
         `;
 
-        const resultExpectingResults = await graphql({
+        const result = await graphql({
             schema: await neoSchema.getSchema(),
-            source: queryExpectingResults,
-            contextValue: neo4j.getContextValues(),
-        });
-        const resultExpectingNoResults = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: queryExpectingNoResults,
+            source: query,
             contextValue: neo4j.getContextValues(),
         });
 
-        expect(resultExpectingResults.errors).toBeFalsy();
-        expect(resultExpectingResults.data).toEqual({
-            [Actor.plural]: expect.toIncludeSameMembers([actorInput1]),
-        });
-        expect(resultExpectingNoResults.errors).toBeFalsy();
-        expect(resultExpectingNoResults.data).toEqual({
-            [Actor.plural]: expect.toIncludeSameMembers([]),
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput1, actorInput4]),
         });
     });
 
     test("should find movies aggregate within triple nested relationships", async () => {
         const query = `
             {
-                ${Movie.plural}(where: { actors_SOME: { movies_SOME: { actors_ALL: { moviesAggregate: { count_GT: 1 } } } } }) {
+                ${Movie.plural}(
+                    where: {
+                        actors_SOME: {
+                            movies_SOME: {
+                                actors_ALL: {
+                                    moviesAggregate: { count_GT: 2 }
+                                }
+                            }
+                        }
+                    }
+                ) {
                     released
                 }
             }
@@ -182,12 +259,12 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [Movie.plural]: expect.toIncludeSameMembers([movieInput1, movieInput2]),
+            [Movie.plural]: expect.toIncludeSameMembers([movieInput2, movieInput3, movieInput4]),
         });
     });
 
     test("should find aggregations at all levels within within triple nested relationships", async () => {
-        const queryExpectingResults = `
+        const query = `
             {
                 ${Movie.plural}(
                     where: {
@@ -205,43 +282,16 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                 }
             }
         `;
-        const queryExpectingNoResults = `
-            {
-                ${Movie.plural}(
-                    where: {
-                        actors_SOME: {
-                            movies_SOME: {
-                                actors_ALL: { moviesAggregate: { count_GT: 1 } }
-                                actorsAggregate: { node: { name_AVERAGE_GT: 10 } }
-                            }
-                            moviesAggregate: { node: { released_MAX_GT: 1 } }
-                        }
-                        actorsAggregate: { node: { name_AVERAGE_EQUAL: 6 } }
-                    }
-                ) {
-                    released
-                }
-            }
-        `;
 
-        const resultExpectingResults = await graphql({
+        const result = await graphql({
             schema: await neoSchema.getSchema(),
-            source: queryExpectingResults,
-            contextValue: neo4j.getContextValues(),
-        });
-        const resultExpectingNoResults = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: queryExpectingNoResults,
+            source: query,
             contextValue: neo4j.getContextValues(),
         });
 
-        expect(resultExpectingResults.errors).toBeFalsy();
-        expect(resultExpectingResults.data).toEqual({
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
             [Movie.plural]: expect.toIncludeSameMembers([movieInput1, movieInput2]),
-        });
-        expect(resultExpectingNoResults.errors).toBeFalsy();
-        expect(resultExpectingNoResults.data).toEqual({
-            [Movie.plural]: expect.toIncludeSameMembers([]),
         });
     });
 
@@ -272,12 +322,12 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [Actor.plural]: expect.toIncludeSameMembers([actorInput1]),
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput1, actorInput3, actorInput4]),
         });
     });
 
     test("should find aggregations at all levels within double nested connections", async () => {
-        const queryExpectingResults = `
+        const query = `
             {
                 ${Actor.plural}(
                     where: {
@@ -295,43 +345,16 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                 }
             }
         `;
-        const queryExpectingNoResults = `
-            {
-                ${Actor.plural}(
-                    where: {
-                        movies_SOME: {
-                            actorsConnection_ALL: {
-                                node: {
-                                    moviesAggregate: { count_GT: 1 }
-                                }
-                            },
-                            actorsAggregate: { count: 0 }
-                        }
-                    }
-                ) {
-                    name
-                }
-            }
-        `;
 
-        const resultExpectingResults = await graphql({
+        const result = await graphql({
             schema: await neoSchema.getSchema(),
-            source: queryExpectingResults,
-            contextValue: neo4j.getContextValues(),
-        });
-        const resultExpectingNoResults = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: queryExpectingNoResults,
+            source: query,
             contextValue: neo4j.getContextValues(),
         });
 
-        expect(resultExpectingResults.errors).toBeFalsy();
-        expect(resultExpectingResults.data).toEqual({
-            [Actor.plural]: expect.toIncludeSameMembers([actorInput1]),
-        });
-        expect(resultExpectingNoResults.errors).toBeFalsy();
-        expect(resultExpectingNoResults.data).toEqual({
-            [Actor.plural]: expect.toIncludeSameMembers([]),
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput1, actorInput4]),
         });
     });
 
@@ -346,7 +369,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                                     node: {
                                         actorsConnection_ALL: { 
                                             node: {
-                                                moviesAggregate: { count_GT: 1 }
+                                                moviesAggregate: { count_GT: 2 }
                                             }
                                         }
                                     }
@@ -368,12 +391,12 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [Movie.plural]: expect.toIncludeSameMembers([movieInput1, movieInput2]),
+            [Movie.plural]: expect.toIncludeSameMembers([movieInput2, movieInput3, movieInput4]),
         });
     });
 
     test("should find aggregations at all levels within within triple nested connections", async () => {
-        const queryExpectingResults = `
+        const query = `
             {
                 ${Movie.plural}(
                     where: {
@@ -399,43 +422,16 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                 }
             }
         `;
-        const queryExpectingNoResults = `
-            {
-                ${Movie.plural}(
-                    where: {
-                        actors_SOME: {
-                            movies_SOME: {
-                                actors_ALL: { moviesAggregate: { count_GT: 1 } }
-                                actorsAggregate: { node: { name_AVERAGE_GT: 10 } }
-                            }
-                            moviesAggregate: { node: { released_MAX_GT: 1 } }
-                        }
-                        actorsAggregate: { node: { name_AVERAGE_EQUAL: 6 } }
-                    }
-                ) {
-                    released
-                }
-            }
-        `;
 
-        const resultExpectingResults = await graphql({
+        const result = await graphql({
             schema: await neoSchema.getSchema(),
-            source: queryExpectingResults,
-            contextValue: neo4j.getContextValues(),
-        });
-        const resultExpectingNoResults = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: queryExpectingNoResults,
+            source: query,
             contextValue: neo4j.getContextValues(),
         });
 
-        expect(resultExpectingResults.errors).toBeFalsy();
-        expect(resultExpectingResults.data).toEqual({
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
             [Movie.plural]: expect.toIncludeSameMembers([movieInput1, movieInput2]),
-        });
-        expect(resultExpectingNoResults.errors).toBeFalsy();
-        expect(resultExpectingNoResults.data).toEqual({
-            [Movie.plural]: expect.toIncludeSameMembers([]),
         });
     });
 
@@ -466,7 +462,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [Actor.plural]: expect.toIncludeSameMembers([actorInput1]),
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput1, actorInput3, actorInput4]),
         });
     });
 
@@ -497,7 +493,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [Actor.plural]: expect.toIncludeSameMembers([actorInput1]),
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput1, actorInput3, actorInput4]),
         });
     });
 });
