@@ -123,24 +123,24 @@ describe("Scalar", () => {
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               myCustomArrayScalar: [CustomScalar!]
               myCustomArrayScalar_INCLUDES: CustomScalar
-              myCustomArrayScalar_NOT: [CustomScalar!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              myCustomArrayScalar_NOT_INCLUDES: CustomScalar @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              myCustomArrayScalar_NOT: [CustomScalar!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              myCustomArrayScalar_NOT_INCLUDES: CustomScalar @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               myCustomScalar: CustomScalar
               myCustomScalar_IN: [CustomScalar]
-              myCustomScalar_NOT: CustomScalar @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              myCustomScalar_NOT_IN: [CustomScalar] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              myCustomScalar_NOT: CustomScalar @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              myCustomScalar_NOT_IN: [CustomScalar] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               myRequiredCustomArrayScalar: [CustomScalar!]
               myRequiredCustomArrayScalar_INCLUDES: CustomScalar
-              myRequiredCustomArrayScalar_NOT: [CustomScalar!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              myRequiredCustomArrayScalar_NOT_INCLUDES: CustomScalar @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              myRequiredCustomArrayScalar_NOT: [CustomScalar!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              myRequiredCustomArrayScalar_NOT_INCLUDES: CustomScalar @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {

@@ -136,7 +136,7 @@ describe("Connect Or Create", () => {
               NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -166,16 +166,16 @@ describe("Connect Or Create", () => {
               isan_AVERAGE_GTE: Float
               isan_AVERAGE_LT: Float
               isan_AVERAGE_LTE: Float
-              isan_EQUAL: String
-              isan_GT: Int
-              isan_GTE: Int
+              isan_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              isan_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              isan_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               isan_LONGEST_EQUAL: Int
               isan_LONGEST_GT: Int
               isan_LONGEST_GTE: Int
               isan_LONGEST_LT: Int
               isan_LONGEST_LTE: Int
-              isan_LT: Int
-              isan_LTE: Int
+              isan_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              isan_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               isan_SHORTEST_EQUAL: Int
               isan_SHORTEST_GT: Int
               isan_SHORTEST_GTE: Int
@@ -186,16 +186,16 @@ describe("Connect Or Create", () => {
               title_AVERAGE_GTE: Float
               title_AVERAGE_LT: Float
               title_AVERAGE_LTE: Float
-              title_EQUAL: String
-              title_GT: Int
-              title_GTE: Int
+              title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               title_LONGEST_EQUAL: Int
               title_LONGEST_GT: Int
               title_LONGEST_GTE: Int
               title_LONGEST_LT: Int
               title_LONGEST_LTE: Int
-              title_LT: Int
-              title_LTE: Int
+              title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               title_SHORTEST_EQUAL: Int
               title_SHORTEST_GT: Int
               title_SHORTEST_GTE: Int
@@ -272,11 +272,11 @@ describe("Connect Or Create", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -376,21 +376,21 @@ describe("Connect Or Create", () => {
               isan_CONTAINS: String
               isan_ENDS_WITH: String
               isan_IN: [String!]
-              isan_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              isan_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              isan_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              isan_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              isan_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isan_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -514,11 +514,11 @@ describe("Connect Or Create", () => {
               characterName_CONTAINS: String
               characterName_ENDS_WITH: String
               characterName_IN: [String]
-              characterName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              characterName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              characterName_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              characterName_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              characterName_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              characterName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              characterName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              characterName_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              characterName_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              characterName_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               characterName_STARTS_WITH: String
               screentime: Int
               screentime_GT: Int
@@ -526,8 +526,8 @@ describe("Connect Or Create", () => {
               screentime_IN: [Int!]
               screentime_LT: Int
               screentime_LTE: Int
-              screentime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              screentime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              screentime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              screentime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type Actor {
@@ -632,9 +632,9 @@ describe("Connect Or Create", () => {
               NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -659,16 +659,16 @@ describe("Connect Or Create", () => {
               characterName_AVERAGE_GTE: Float
               characterName_AVERAGE_LT: Float
               characterName_AVERAGE_LTE: Float
-              characterName_EQUAL: String
-              characterName_GT: Int
-              characterName_GTE: Int
+              characterName_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              characterName_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              characterName_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               characterName_LONGEST_EQUAL: Int
               characterName_LONGEST_GT: Int
               characterName_LONGEST_GTE: Int
               characterName_LONGEST_LT: Int
               characterName_LONGEST_LTE: Int
-              characterName_LT: Int
-              characterName_LTE: Int
+              characterName_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              characterName_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               characterName_SHORTEST_EQUAL: Int
               characterName_SHORTEST_GT: Int
               characterName_SHORTEST_GTE: Int
@@ -679,11 +679,11 @@ describe("Connect Or Create", () => {
               screentime_AVERAGE_GTE: Float
               screentime_AVERAGE_LT: Float
               screentime_AVERAGE_LTE: Float
-              screentime_EQUAL: Int
-              screentime_GT: Int
-              screentime_GTE: Int
-              screentime_LT: Int
-              screentime_LTE: Int
+              screentime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screentime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screentime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screentime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screentime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               screentime_MAX_EQUAL: Int
               screentime_MAX_GT: Int
               screentime_MAX_GTE: Int
@@ -716,16 +716,16 @@ describe("Connect Or Create", () => {
               isan_AVERAGE_GTE: Float
               isan_AVERAGE_LT: Float
               isan_AVERAGE_LTE: Float
-              isan_EQUAL: String
-              isan_GT: Int
-              isan_GTE: Int
+              isan_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              isan_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              isan_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               isan_LONGEST_EQUAL: Int
               isan_LONGEST_GT: Int
               isan_LONGEST_GTE: Int
               isan_LONGEST_LT: Int
               isan_LONGEST_LTE: Int
-              isan_LT: Int
-              isan_LTE: Int
+              isan_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              isan_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               isan_SHORTEST_EQUAL: Int
               isan_SHORTEST_GT: Int
               isan_SHORTEST_GTE: Int
@@ -736,16 +736,16 @@ describe("Connect Or Create", () => {
               title_AVERAGE_GTE: Float
               title_AVERAGE_LT: Float
               title_AVERAGE_LTE: Float
-              title_EQUAL: String
-              title_GT: Int
-              title_GTE: Int
+              title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               title_LONGEST_EQUAL: Int
               title_LONGEST_GT: Int
               title_LONGEST_GTE: Int
               title_LONGEST_LT: Int
               title_LONGEST_LTE: Int
-              title_LT: Int
-              title_LTE: Int
+              title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               title_SHORTEST_EQUAL: Int
               title_SHORTEST_GT: Int
               title_SHORTEST_GTE: Int
@@ -825,11 +825,11 @@ describe("Connect Or Create", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -936,21 +936,21 @@ describe("Connect Or Create", () => {
               isan_CONTAINS: String
               isan_ENDS_WITH: String
               isan_IN: [String!]
-              isan_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              isan_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              isan_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              isan_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              isan_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isan_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              isan_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               isan_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 

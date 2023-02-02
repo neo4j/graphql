@@ -227,7 +227,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               NOT: ResourceContainedByConnectionWhere
               OR: [ResourceContainedByConnectionWhere!]
               node: ResourceWhere
-              node_NOT: ResourceWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: ResourceWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ResourceContainedByCreateFieldInput {
@@ -254,11 +254,11 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               AND: [ResourceContainedByNodeAggregationWhereInput!]
               NOT: ResourceContainedByNodeAggregationWhereInput
               OR: [ResourceContainedByNodeAggregationWhereInput!]
-              createdAt_EQUAL: DateTime
-              createdAt_GT: DateTime
-              createdAt_GTE: DateTime
-              createdAt_LT: DateTime
-              createdAt_LTE: DateTime
+              createdAt_EQUAL: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              createdAt_GT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              createdAt_GTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              createdAt_LT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              createdAt_LTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               createdAt_MAX_EQUAL: DateTime
               createdAt_MAX_GT: DateTime
               createdAt_MAX_GTE: DateTime
@@ -269,32 +269,32 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               createdAt_MIN_GTE: DateTime
               createdAt_MIN_LT: DateTime
               createdAt_MIN_LTE: DateTime
-              id_EQUAL: ID
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
               name_AVERAGE_GTE: Float
               name_AVERAGE_LT: Float
               name_AVERAGE_LTE: Float
-              name_EQUAL: String
-              name_GT: Int
-              name_GTE: Int
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               name_LONGEST_EQUAL: Int
               name_LONGEST_GT: Int
               name_LONGEST_GTE: Int
               name_LONGEST_LT: Int
               name_LONGEST_LTE: Int
-              name_LT: Int
-              name_LTE: Int
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               name_SHORTEST_EQUAL: Int
               name_SHORTEST_GT: Int
               name_SHORTEST_GTE: Int
               name_SHORTEST_LT: Int
               name_SHORTEST_LTE: Int
-              updatedAt_EQUAL: DateTime
-              updatedAt_GT: DateTime
-              updatedAt_GTE: DateTime
-              updatedAt_LT: DateTime
-              updatedAt_LTE: DateTime
+              updatedAt_EQUAL: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              updatedAt_GT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              updatedAt_GTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              updatedAt_LT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              updatedAt_LTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               updatedAt_MAX_EQUAL: DateTime
               updatedAt_MAX_GT: DateTime
               updatedAt_MAX_GTE: DateTime
@@ -453,52 +453,52 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               createdAt_IN: [DateTime!]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
-              createdAt_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              createdAt_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              createdAt_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              createdAt_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               externalIds: [ID!]
               externalIds_INCLUDES: ID
-              externalIds_NOT: [ID!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              externalIds_NOT_INCLUDES: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              externalIds_NOT: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              externalIds_NOT_INCLUDES: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID!]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               properties: [Property!]
               properties_INCLUDES: Property
-              properties_NOT: [Property!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              properties_NOT_INCLUDES: Property @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              properties_NOT: [Property!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              properties_NOT_INCLUDES: Property @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               tags: [Tag!]
               tags_INCLUDES: Tag
-              tags_NOT: [Tag!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              tags_NOT_INCLUDES: Tag @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              tags_NOT: [Tag!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              tags_NOT_INCLUDES: Tag @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               type: ResourceType
               type_IN: [ResourceType!]
-              type_NOT: ResourceType @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              type_NOT_IN: [ResourceType!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              type_NOT: ResourceType @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              type_NOT_IN: [ResourceType!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               updatedAt: DateTime
               updatedAt_GT: DateTime
               updatedAt_GTE: DateTime
               updatedAt_IN: [DateTime!]
               updatedAt_LT: DateTime
               updatedAt_LTE: DateTime
-              updatedAt_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              updatedAt_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              updatedAt_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              updatedAt_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type ResourcesConnection {

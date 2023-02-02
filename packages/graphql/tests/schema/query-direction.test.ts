@@ -176,7 +176,7 @@ describe("Query Direction", () => {
               NOT: UserFriendsConnectionWhere
               OR: [UserFriendsConnectionWhere!]
               node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input UserFriendsCreateFieldInput {
@@ -207,16 +207,16 @@ describe("Query Direction", () => {
               name_AVERAGE_GTE: Float
               name_AVERAGE_LT: Float
               name_AVERAGE_LTE: Float
-              name_EQUAL: String
-              name_GT: Int
-              name_GTE: Int
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               name_LONGEST_EQUAL: Int
               name_LONGEST_GT: Int
               name_LONGEST_GTE: Int
               name_LONGEST_LT: Int
               name_LONGEST_LTE: Int
-              name_LT: Int
-              name_LTE: Int
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               name_SHORTEST_EQUAL: Int
               name_SHORTEST_GT: Int
               name_SHORTEST_GTE: Int
@@ -301,11 +301,11 @@ describe("Query Direction", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -469,7 +469,7 @@ describe("Query Direction", () => {
               NOT: UserFriendsConnectionWhere
               OR: [UserFriendsConnectionWhere!]
               node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input UserFriendsCreateFieldInput {
@@ -500,16 +500,16 @@ describe("Query Direction", () => {
               name_AVERAGE_GTE: Float
               name_AVERAGE_LT: Float
               name_AVERAGE_LTE: Float
-              name_EQUAL: String
-              name_GT: Int
-              name_GTE: Int
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               name_LONGEST_EQUAL: Int
               name_LONGEST_GT: Int
               name_LONGEST_GTE: Int
               name_LONGEST_LT: Int
               name_LONGEST_LTE: Int
-              name_LT: Int
-              name_LTE: Int
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               name_SHORTEST_EQUAL: Int
               name_SHORTEST_GT: Int
               name_SHORTEST_GTE: Int
@@ -594,11 +594,11 @@ describe("Query Direction", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -762,7 +762,7 @@ describe("Query Direction", () => {
               NOT: UserFriendsConnectionWhere
               OR: [UserFriendsConnectionWhere!]
               node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input UserFriendsCreateFieldInput {
@@ -793,16 +793,16 @@ describe("Query Direction", () => {
               name_AVERAGE_GTE: Float
               name_AVERAGE_LT: Float
               name_AVERAGE_LTE: Float
-              name_EQUAL: String
-              name_GT: Int
-              name_GTE: Int
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               name_LONGEST_EQUAL: Int
               name_LONGEST_GT: Int
               name_LONGEST_GTE: Int
               name_LONGEST_LT: Int
               name_LONGEST_LTE: Int
-              name_LT: Int
-              name_LTE: Int
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               name_SHORTEST_EQUAL: Int
               name_SHORTEST_GT: Int
               name_SHORTEST_GTE: Int
@@ -887,11 +887,11 @@ describe("Query Direction", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
