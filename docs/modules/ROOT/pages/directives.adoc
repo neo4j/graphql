@@ -80,6 +80,9 @@ Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogener
 NOTE: The plural argument of the `@node` directive has been deprecated and will be removed in version 4.0.
 Please use the xref::directives.adoc#plural-directive[`@plural` directive] instead.
 
+NOTE: The label and additionalLabels arguments of the `@node` directive have been deprecated and will be removed in version 4.0.
+Please use the xref::type-definitions/database-mapping.adoc#_labels[`labels argument`] instead.
+
 The `@node` directive is used to specify the configuration of a GraphQL object type which represents a Neo4j node.
 
 Reference: xref::type-definitions/database-mapping.adoc#type-definitions-node[`@node`]

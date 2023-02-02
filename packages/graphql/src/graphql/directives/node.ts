@@ -25,13 +25,11 @@ const pluralDescription =
     "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/" +
     "#_plural_argument_removed_from_node_and_replaced_with_plural. " +
     "Allows for the specification of the plural of the type name.";
-
-// TODO: add o v4 migration guide
 const labelDescription =
     "NOTE: The label argument has been deprecated and will be removed in version 4.0.0. " +
     "Please use the labels argument instead. More information can be found at " +
     "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/" +
-    "#_plural_argument_removed_from_node_and_replaced_with_plural. " +
+    "#_label_and_additionalLabels_arguments_removed_from_node_and_replaced_with_new_argument_labels. " +
     "Maps the GraphQL type to a custom Neo4j node label.";
 const additionalLabelsDescription =
     "NOTE: The additionalLabels argument has been deprecated and will be removed in version 4.0.0. " +
@@ -39,7 +37,7 @@ const additionalLabelsDescription =
     "If not used in conjunction with the also deprecated label argument, make sure to specify the GraphQL node type as first item in the array." +
     "More information can be found at " +
     "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/" +
-    "#_plural_argument_removed_from_node_and_replaced_with_plural. " +
+    "#_label_and_additionalLabels_arguments_removed_from_node_and_replaced_with_new_argument_labels. " +
     "Map the GraphQL type to match additional Neo4j node labels.";
 
 export const nodeDirective = new GraphQLDirective({
