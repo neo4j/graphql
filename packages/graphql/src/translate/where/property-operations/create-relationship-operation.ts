@@ -81,7 +81,6 @@ export function createRelationshipOperation({
         outerPattern: matchPattern,
         sourceNode: parentNode,
         collectingVariables: [],
-        nonCollectingVariables: [],
     });
 
     const { predicate: innerOperation, preComputedSubqueries } = createWherePredicate({
@@ -169,20 +168,28 @@ export function wrapAggregationSubqueries(
     );
     const withCollects: Cypher.With[] = [];
     while (outerRelationshipData.connectionPredicateData.length > 0) {
-        const lastConnectionIndex = outerRelationshipData.connectionPredicateData.length - 1;
+        const lastIndex = outerRelationshipData.connectionPredicateData.length - 1;
+        const collectingVariables = outerRelationshipData.connectionPredicateData[lastIndex].collectingVariables;
+
+        const nonCollectingVariables = outerRelationshipData.connectionPredicateData[0].collectingVariables.filter(
+            (variable) => {
+                return !collectingVariables.includes(variable);
+            }
+        );
+
         withCollects.push(
             new Cypher.With(
                 ...outerRelationshipData.connectionPredicateData.map((relData) => relData.sourceNode),
-                ...outerRelationshipData.connectionPredicateData[lastConnectionIndex].nonCollectingVariables,
-                ...outerRelationshipData.connectionPredicateData[lastConnectionIndex].collectingVariables.map(
-                    (returnVar) => [Cypher.collect(returnVar), returnVar] as any
-                )
+                ...nonCollectingVariables,
+                ...collectingVariables.map<[Cypher.Function, Cypher.Variable]>((returnVar) => [
+                    Cypher.collect(returnVar),
+                    returnVar,
+                ])
             )
         );
         outerRelationshipData.connectionPredicateData.pop();
     }
     const returnClause = new Cypher.Return(...outerRelationshipData.returnClauses);
-    // outerRelationshipData.collectingVariables = [];
     outerRelationshipData.returnClauses = [];
     return {
         predicate,

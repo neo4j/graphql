@@ -546,7 +546,6 @@ export type ConnectionPredicateData = {
     outerPattern: Cypher.Pattern;
     sourceNode: Cypher.Node;
     collectingVariables: Cypher.Variable[];
-    nonCollectingVariables: Cypher.Variable[];
 };
 
 export type OuterRelationshipData = {

@@ -124,7 +124,6 @@ export function createConnectionOperation({
             outerPattern: matchPattern,
             sourceNode: parentNode,
             collectingVariables: [],
-            nonCollectingVariables: [],
         });
 
         const innerOperation = createConnectionWherePropertyOperation({
