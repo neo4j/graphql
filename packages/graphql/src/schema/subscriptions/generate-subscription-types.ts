@@ -273,13 +273,18 @@ export function generateSubscriptionTypes({
             },
         });
 
-        const { created: createdWhere, deleted: deletedWhere } = generateSubscriptionConnectionWhereType({
-            node,
-            schemaComposer,
-            relationshipFields,
-            interfaceCommonFields,
-        });
-        if (node.relationFields.length > 0) {
+        const shouldCreateConnectionWhereTypes =
+            node.relationFields.length > 0 &&
+            node.relationFields.filter((rf) => nodesWithSubscriptionOperation.find((n) => n.name === rf.typeMeta.name))
+                .length > 0;
+        if (shouldCreateConnectionWhereTypes) {
+            const { created: createdWhere, deleted: deletedWhere } = generateSubscriptionConnectionWhereType({
+                node,
+                schemaComposer,
+                relationshipFields,
+                interfaceCommonFields,
+            });
+            // if (node.relationFields.length > 0) {
             subscriptionComposer.addFields({
                 [subscribeOperation.relationship_created]: {
                     args: { where: createdWhere },
@@ -304,6 +309,7 @@ export function generateSubscriptionTypes({
                     resolve: subscriptionResolve,
                 },
             });
+            // }
         }
     });
 }
