@@ -34,7 +34,7 @@ import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import { overwrite } from "./fields/overwrite";
-import { DEPRECATE_NOT, DEPRECATE_INVALID_AGGREGATION_FILTERS } from "../constants";
+import { DEPRECATE_NOT, DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS, DEPRECATE_INVALID_AGGREGATION_FILTERS } from "../constants";
 
 function createRelationshipFields({
     relationshipFields,
@@ -619,9 +619,21 @@ function createRelationshipFields({
                                     type: `${operator === "EQUAL" ? "String" : "Int"}`,
                                     directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
                                 },
-                                [`${field.fieldName}_AVERAGE_${operator}`]: "Float",
-                                [`${field.fieldName}_LONGEST_${operator}`]: "Int",
-                                [`${field.fieldName}_SHORTEST_${operator}`]: "Int",
+                                [`${field.fieldName}_AVERAGE_${operator}`]: {
+                                    type: "Float",
+                                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
+                                },
+                                [`${field.fieldName}_LONGEST_${operator}`]: {
+                                    type: "Int",
+                                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
+                                },
+                                [`${field.fieldName}_SHORTEST_${operator}`]: {
+                                    type: "Int",
+                                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
+                                },
+                                [`${field.fieldName}_AVERAGE_LENGTH_${operator}`]: "Float",
+                                [`${field.fieldName}_LONGEST_LENGTH_${operator}`]: "Int",
+                                [`${field.fieldName}_SHORTEST_LENGTH_${operator}`]: "Int",
                             };
                         }, {})
                     );
