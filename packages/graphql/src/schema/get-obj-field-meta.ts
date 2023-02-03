@@ -170,7 +170,6 @@ function getObjFieldMeta({
                             "auth",
                             "readonly",
                             "writeonly",
-                            "computed",
                             "customResolver",
                             "default",
                             "coalesce",
