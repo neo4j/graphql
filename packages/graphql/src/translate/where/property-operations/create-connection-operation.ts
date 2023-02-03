@@ -29,7 +29,6 @@ import { asArray, filterTruthy } from "../../../utils/utils";
 import { getCypherLogicalOperator, isLogicalOperator } from "../../utils/logical-operators";
 import { createRelationshipPredicate } from "./create-relationship-operation";
 
-
 export function createConnectionOperation({
     connectionField,
     value,

@@ -390,21 +390,21 @@ No Aggregation filters are available for ID.
 
 Fields of type `String` have the following operators:
 
-* `_AVERAGE_EQUAL`
-* `_AVERAGE_GT`
-* `_AVERAGE_GTE`
-* `_AVERAGE_LT`
-* `_AVERAGE_LTE`
-* `_SHORTEST_EQUAL`
-* `_SHORTEST_GT`
-* `_SHORTEST_GTE`
-* `_SHORTEST_LT`
-* `_SHORTEST_LTE`
-* `_LONGEST_EQUAL`
-* `_LONGEST_GT`
-* `_LONGEST_GTE`
-* `_LONGEST_LT`
-* `_LONGEST_LTE`
+* `_AVERAGE_LENGTH_EQUAL`
+* `_AVERAGE_LENGTH_GT`
+* `_AVERAGE_LENGTH_GTE`
+* `_AVERAGE_LENGTH_LT`
+* `_AVERAGE_LENGTH_LTE`
+* `_SHORTEST_LENGTH_EQUAL`
+* `_SHORTEST_LENGTH_GT`
+* `_SHORTEST_LENGTH_GTE`
+* `_SHORTEST_LENGTH_LT`
+* `_SHORTEST_LENGTH_LTE`
+* `_LONGEST_LENGTH_EQUAL`
+* `_LONGEST_LENGTH_GT`
+* `_LONGEST_LENGTH_GTE`
+* `_LONGEST_LENGTH_LT`
+* `_LONGEST_LENGTH_LTE`
 
 These operators are calculated against the length of each string.
 
@@ -413,7 +413,7 @@ These operators are calculated against the length of each string.
 [source, graphql, indent=0]
 ----
 query {
-    posts(where: { likesAggregate: { node: { name_LONGEST_GT: 5 } } }) {
+    posts(where: { likesAggregate: { node: { name_LONGEST_LENGTH_GT: 5 } } }) {
         content
     }
 }
