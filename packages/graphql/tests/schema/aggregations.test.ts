@@ -923,26 +923,41 @@ describe("Aggregations", () => {
               someLocalTime_MIN_GTE: LocalTime
               someLocalTime_MIN_LT: LocalTime
               someLocalTime_MIN_LTE: LocalTime
-              someString_AVERAGE_EQUAL: Float
-              someString_AVERAGE_GT: Float
-              someString_AVERAGE_GTE: Float
-              someString_AVERAGE_LT: Float
-              someString_AVERAGE_LTE: Float
+              someString_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_AVERAGE_LENGTH_EQUAL: Float
+              someString_AVERAGE_LENGTH_GT: Float
+              someString_AVERAGE_LENGTH_GTE: Float
+              someString_AVERAGE_LENGTH_LT: Float
+              someString_AVERAGE_LENGTH_LTE: Float
+              someString_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               someString_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someString_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someString_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              someString_LONGEST_EQUAL: Int
-              someString_LONGEST_GT: Int
-              someString_LONGEST_GTE: Int
-              someString_LONGEST_LT: Int
-              someString_LONGEST_LTE: Int
+              someString_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_LONGEST_LENGTH_EQUAL: Int
+              someString_LONGEST_LENGTH_GT: Int
+              someString_LONGEST_LENGTH_GTE: Int
+              someString_LONGEST_LENGTH_LT: Int
+              someString_LONGEST_LENGTH_LTE: Int
+              someString_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               someString_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someString_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              someString_SHORTEST_EQUAL: Int
-              someString_SHORTEST_GT: Int
-              someString_SHORTEST_GTE: Int
-              someString_SHORTEST_LT: Int
-              someString_SHORTEST_LTE: Int
+              someString_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_SHORTEST_LENGTH_EQUAL: Int
+              someString_SHORTEST_LENGTH_GT: Int
+              someString_SHORTEST_LENGTH_GTE: Int
+              someString_SHORTEST_LENGTH_LT: Int
+              someString_SHORTEST_LENGTH_LTE: Int
+              someString_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               someTime_EQUAL: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someTime_GT: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someTime_GTE: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
@@ -1110,26 +1125,41 @@ describe("Aggregations", () => {
               someLocalTime_MIN_GTE: LocalTime
               someLocalTime_MIN_LT: LocalTime
               someLocalTime_MIN_LTE: LocalTime
-              someString_AVERAGE_EQUAL: Float
-              someString_AVERAGE_GT: Float
-              someString_AVERAGE_GTE: Float
-              someString_AVERAGE_LT: Float
-              someString_AVERAGE_LTE: Float
+              someString_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_AVERAGE_LENGTH_EQUAL: Float
+              someString_AVERAGE_LENGTH_GT: Float
+              someString_AVERAGE_LENGTH_GTE: Float
+              someString_AVERAGE_LENGTH_LT: Float
+              someString_AVERAGE_LENGTH_LTE: Float
+              someString_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               someString_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someString_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someString_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              someString_LONGEST_EQUAL: Int
-              someString_LONGEST_GT: Int
-              someString_LONGEST_GTE: Int
-              someString_LONGEST_LT: Int
-              someString_LONGEST_LTE: Int
+              someString_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_LONGEST_LENGTH_EQUAL: Int
+              someString_LONGEST_LENGTH_GT: Int
+              someString_LONGEST_LENGTH_GTE: Int
+              someString_LONGEST_LENGTH_LT: Int
+              someString_LONGEST_LENGTH_LTE: Int
+              someString_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               someString_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someString_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              someString_SHORTEST_EQUAL: Int
-              someString_SHORTEST_GT: Int
-              someString_SHORTEST_GTE: Int
-              someString_SHORTEST_LT: Int
-              someString_SHORTEST_LTE: Int
+              someString_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_SHORTEST_LENGTH_EQUAL: Int
+              someString_SHORTEST_LENGTH_GT: Int
+              someString_SHORTEST_LENGTH_GTE: Int
+              someString_SHORTEST_LENGTH_LT: Int
+              someString_SHORTEST_LENGTH_LTE: Int
+              someString_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              someString_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               someTime_EQUAL: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someTime_GT: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               someTime_GTE: Time @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
