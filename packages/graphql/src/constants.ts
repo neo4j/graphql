@@ -73,7 +73,6 @@ export const LOGICAL_OPERATORS = ["AND", "OR", "NOT"] as const;
 
 // aggregation
 export const AGGREGATION_COMPARISON_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];
-export const AGGREGATION_AGGREGATE_OPERATORS = ["SHORTEST", "LONGEST", "MIN", "MAX", "SUM"];
 export const AGGREGATION_AGGREGATE_COUNT_OPERATORS = ["count", "count_LT", "count_LTE", "count_GT", "count_GTE"];
 
 // Types that you can average
