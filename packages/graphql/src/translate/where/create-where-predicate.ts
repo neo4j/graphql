@@ -24,6 +24,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { createPropertyWhere } from "./property-operations/create-property-where";
 import { getCypherLogicalOperator, isLogicalOperator, LogicalOperator } from "../utils/logical-operators";
 import type { ListPredicate } from "./utils";
+import { asArray } from "../../utils/utils";
 
 /** Translate a target node and GraphQL input into a Cypher operation o valid where expression */
 export function createWherePredicate({
@@ -56,7 +57,7 @@ export function createWherePredicate({
                 element,
                 targetElement,
                 context,
-                value: Array.isArray(value) ? value : [value],
+                value: asArray(value),
                 listPredicateStr,
                 requiredVariables,
             });
