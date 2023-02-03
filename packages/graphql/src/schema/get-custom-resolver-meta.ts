@@ -31,13 +31,7 @@ type CustomResolverMeta = {
     requiredFields: string[];
 };
 
-const DEPRECATION_WARNING =
-    "The @computed directive has been deprecated and will be removed in version 4.0.0. Please use " +
-    "the @customResolver directive instead. More information can be found at " +
-    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_computed_renamed_to_customresolver.";
 export const ERROR_MESSAGE = "Required fields of @customResolver must be a list of strings";
-
-let deprecationWarningShown = false;
 
 function getCustomResolverMeta(
     field: FieldDefinitionNode,
@@ -46,37 +40,18 @@ function getCustomResolverMeta(
     customResolvers?: IResolvers | IResolvers[],
     interfaceField?: FieldDefinitionNode
 ): CustomResolverMeta | undefined {
-    const deprecatedDirective =
-        field.directives?.find((x) => x.name.value === "computed") ||
-        interfaceField?.directives?.find((x) => x.name.value === "computed");
-
-    if (deprecatedDirective && !deprecationWarningShown) {
-        console.warn(DEPRECATION_WARNING);
-        deprecationWarningShown = true;
-    }
-
     const directive =
         field.directives?.find((x) => x.name.value === "customResolver") ||
         interfaceField?.directives?.find((x) => x.name.value === "customResolver");
-
-    if (!directive && !deprecatedDirective) {
+    if (!directive) {
         return undefined;
     }
 
-    // TODO: remove check for directive when removing @computed
-    if (
-        validateResolvers &&
-        object.kind !== Kind.INTERFACE_TYPE_DEFINITION &&
-        directive &&
-        !customResolvers?.[field.name.value]
-    ) {
+    if (validateResolvers && object.kind !== Kind.INTERFACE_TYPE_DEFINITION && !customResolvers?.[field.name.value]) {
         throw new Error(`Custom resolver for ${field.name.value} has not been provided`);
     }
 
-    const directiveFromArgument =
-        directive?.arguments?.find((arg) => arg.name.value === "requires") ||
-        deprecatedDirective?.arguments?.find((arg) => arg.name.value === "from");
-
+    const directiveFromArgument = directive?.arguments?.find((arg) => arg.name.value === "requires");
     if (!directiveFromArgument) {
         return {
             requiredFields: [],
