@@ -278,13 +278,15 @@ const b = new Cypher.Node();
 Cypher.related(new Cypher.Relationship()).withLength(2).to(b);
 ```
 
-With length options:
+The length options are 2 parameters:
 
 -   `*` - Any (minimum 1): `withLength("*")`
 -   `*2` - Exactly 2: `withLength(2)`
 -   `*3..5` - Between 3 and 5: `withLength(3,5)`
 -   `*3..` - 3 or more: `withLength(3, "*")`
 -   `*..5` - 5 or less: `withLength("*", 5)`
+
+Alternatively, a single parameter with min, max values could be used. Sugar syntax of a single number passed could be accepted.
 
 ---
 
