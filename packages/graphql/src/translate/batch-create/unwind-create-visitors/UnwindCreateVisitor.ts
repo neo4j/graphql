@@ -30,7 +30,7 @@ import type {
 import type { Node, Relationship } from "../../../classes";
 import createRelationshipValidationString from "../../create-relationship-validation-string";
 import { filterTruthy } from "../../../utils/utils";
-import Cypher, { Expr, Map, MapProjection } from "@neo4j/cypher-builder";
+import Cypher, { and, Expr, Map, MapProjection } from "@neo4j/cypher-builder";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createAuthAndParams } from "../../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
@@ -249,10 +249,10 @@ export class UnwindCreateVisitor implements Visitor {
             .filter((n) => n);
         if (usedAuthFields.length) {
             return new Cypher.RawCypher((env: Cypher.Environment) => {
-                const authClauses = usedAuthFields
-                    .map((authField) => {
-                        const [authCypher, authParams] = createAuthAndParams({
-                            entity: authField,
+                const fieldsPredicates = usedAuthFields
+                    .map((field) => {
+                        const [fieldAuthCypher, fieldAuthParam] = createAuthAndParams({
+                            entity: field,
                             operations: "CREATE",
                             context,
                             bind: {
@@ -261,33 +261,35 @@ export class UnwindCreateVisitor implements Visitor {
                             },
                             escapeQuotes: true,
                         });
-                        return [authCypher, authParams];
+                        if (fieldAuthCypher) {
+                            const cypher = Cypher.or(
+                                Cypher.isNull(unwindVar.property(field.fieldName)),
+                                new Cypher.RawCypher(() => fieldAuthCypher)
+                            );
+                            return [cypher, fieldAuthParam];
+                        }
                     })
-                    .reduce((accumulator, current) => {
-                        const [accumulatedCypher, accumulatedParams] = accumulator as [string, Record<string, any>];
-                        const [currentCypher, currentParams] = current as [string, Record<string, any>];
-                        const cypher = currentCypher ? `${accumulatedCypher} AND ${currentCypher}` : accumulatedCypher;
-                        const params = {
-                            ...accumulatedParams,
-                            ...currentParams,
+                    .filter((predicate) => predicate !== undefined) as unknown as [
+                    Cypher.BooleanOp,
+                    Record<string, any>
+                ];
+                if (fieldsPredicates.length) {
+                    const predicate = Cypher.not(
+                        Cypher.and(...fieldsPredicates.map((fieldPredicate) => fieldPredicate[0]))
+                    );
+
+                    const fieldsAuth = Cypher.concat(
+                        new Cypher.With("*"),
+                        new Cypher.CallProcedure(new Cypher.apoc.Validate(predicate, AUTH_FORBIDDEN_ERROR))
+                    ).getCypher(env);
+
+                    const fieldsPredicateParams = fieldsPredicates.reduce((prev, next) => {
+                        return {
+                            ...prev[1],
+                            ...next[1],
                         };
-                        return [cypher, params];
-                    }) as [string, Record<string, any>];
-
-                // The next line is needed to avoid to apply auth to a field that is not present for a particular input node.
-                const ignoreFieldClause = usedAuthFields.map((field) =>
-                    Cypher.isNotNull(unwindVar.property(field.fieldName))
-                );
-                const [authCyher, authParams] = authClauses;
-
-                const predicate = Cypher.and(...ignoreFieldClause, Cypher.not(new Cypher.RawCypher(() => authCyher)));
-                const fieldAuth = Cypher.concat(
-                    new Cypher.With("*"),
-                    new Cypher.CallProcedure(new Cypher.apoc.Validate(predicate, AUTH_FORBIDDEN_ERROR))
-                ).getCypher(env);
-
-                if (authCyher) {
-                    return [fieldAuth, authParams as [string, Record<string, any>]];
+                    }, {});
+                    return [fieldsAuth, fieldsPredicateParams as [string, Record<string, any>]];
                 }
             });
         }
