@@ -58,13 +58,13 @@ function transformNodes(nodes: NodeMap, readonly: boolean): GraphQLNodeMap {
 
         const uniqueTypeName = uniqueString(typeName, takenTypeNames);
         takenTypeNames.push(uniqueTypeName);
-
         const node = new GraphQLNode("type", uniqueTypeName);
         const nodeDirective = new NodeDirective();
-        if (mainLabel !== uniqueTypeName) {
-            nodeDirective.addLabel(mainLabel);
+
+        if (neo4jNode.labels.length > 1 || mainLabel !== uniqueTypeName) {
+            nodeDirective.addLabels(neo4jNode.labels);
         }
-        nodeDirective.addAdditionalLabels(neo4jNode.labels.slice(1));
+
         if (nodeDirective.toString().length) {
             node.addDirective(nodeDirective);
         }
