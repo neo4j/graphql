@@ -64,7 +64,7 @@ enum AuthenticationOperation {
 
 directive @authentication(
   enabled: Boolean! = true
-  operations: [AuthenticationOperation!]! = [READ, CREATE, UPDATE, DELETE]
+  operations: [AuthenticationOperation!]! = [READ, CREATE, UPDATE, DELETE, SUBSCRIBE]
 ) on OBJECT | FIELD_DEFINITION | SCHEMA | INTERFACE
 ```
 
@@ -77,15 +77,9 @@ The operations for authentication are not as fine-grained as for authorization, 
 
 The directive can be applied to individual objects, interfaces and fields, but can also be applied as a schema extension to enable global authentication.
 
-#### Authorization
+#### PROPOSAL: JWT payload specification
 
-The `@authorization` directive will not have a static definition, as the definition will be different depending on which location it has been applied in.
-
-The usage of the `@authorization` directive implies that authentication is required.
-
-##### JWT Payload
-
-Proposal: allow users to provide a schema describing what their JWT payload looks like. For example, this could be a JSON schema:
+Allow users to provide a schema describing what their JWT payload looks like. For example, this could be a JSON schema passed into the auth configuration:
 
 ```jsonschema
 {
@@ -105,6 +99,84 @@ Proposal: allow users to provide a schema describing what their JWT payload look
   "required": [ "sub" ]
 }
 ```
+
+#### PROPOSAL: Access control
+
+Sitting between authentication and authorization evaluation, access control rules will control who can access which top-level operations, as assessed at the beginning of resolver execution.
+
+```gql
+input StringWhere {
+  OR: [StringWhere!]
+  AND: [StringWhere!]
+  NOT: StringWhere
+  equals: String
+  in: [String!]
+  matches: String
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+
+input StringListWhere {
+  OR: [StringListWhere!]
+  AND: [StringListWhere!]
+  NOT: StringListWhere
+  all: [String!]
+  some: [String!]
+  single: String
+}
+
+input JWTPayloadWhere {
+  OR: [JWTPayloadWhere!]
+  AND: [JWTPayloadWhere!]
+  NOT: JWTPayloadWhere
+  sub: StringWhere
+  roles: StringListWhere
+}
+
+input AccessControlWhere {
+  OR: [AccessControlWhere!]
+  AND: [AccessControlWhere!]
+  NOT: AccessControlWhere
+  jwtPayload: JWTPayloadWhere
+}
+
+enum AccessControlOperation {
+  READ
+  CREATE
+  UPDATE
+  DELETE
+  SUBSCRIBE
+}
+
+input AccessControlAllowRule {
+  operations: [AccessControlOperation!]! = [READ, CREATE, UPDATE, DELETE, SUBSCRIBE]
+  requireAuthentication: Boolean! = true
+  where: AccessControlWhere!
+}
+
+directive @accessControl(
+  allow: [AccessControlAllowRule!]
+) on OBJECT | FIELD_DEFINITION | INTERFACE | SCHEMA
+```
+
+The proposal is that this will _only_ be in relation to top-level operations, and not when performing a nested operation on a type. Authorization rules as described below should be used for this use case.
+
+Giving an example of using the above, to prevent a `User` type having its delete Mutation called by anyone but an administrator, one could do:
+
+```gql
+type User @accessControl(allow: [{ operations: [DELETE], where: { jwtPayload: { roles: { single: "ADMIN" } } } }]) {
+  id: ID!
+}
+```
+
+This would perform a check of the JWT claim at the beginning of the resolver to check that the user has the appropriate role.
+
+#### Authorization
+
+The `@authorization` directive will not have a static definition, as the definition will be different depending on which location it has been applied in.
+
+The usage of the `@authorization` directive implies that authentication is required.
 
 ##### Directive
 
@@ -160,6 +232,9 @@ input UserWhere {
 }
 
 input UserAuthorizationWhere {
+  OR: [UserAuthorizationWhere!]
+  AND: [UserAuthorizationWhere!]
+  NOT: UserAuthorizationWhere
   jwtPayload: JWTPayloadWhere
   node: UserWhere
 }
@@ -168,13 +243,12 @@ enum AuthorizationFilterOperation {
   READ
   UPDATE
   DELETE
-  SUBSCRIBE
   CREATE_RELATIONSHIP
   DELETE_RELATIONSHIP
 }
 
 input UserAuthorizationFilterRule {
-  operations: [AuthorizationFilterOperation!]! = [READ, UPDATE, DELETE, SUBSCRIBE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  operations: [AuthorizationFilterOperation!]! = [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
   requireAuthentication: Boolean! = true
   where: UserAuthorizationWhere!
 }
@@ -228,7 +302,6 @@ Points to note from above:
     * READ
     * UPDATE
     * DELETE
-    * SUBSCRIBE
     * CREATE_RELATIONSHIP
     * DELETE_RELATIONSHIP
   * Pre validate:
@@ -396,6 +469,220 @@ RETURN this { .id, .name }
 ```
 
 If, following the Mutation operation, the rule is not satisfied, an error "Unauthorized" will be thrown.
+
+#### Subscriptions
+
+Subscriptions pose a very different authorization problem to the rest of the operations. Filter rules do not get applied in Cypher, but instead in JavaScript when handling events. Additionally, they do not support matching on properties of related nodes. There are different options for how this could be approached.
+
+The access control rules proposal above will deal with access to the root-level Subscription operations.
+
+##### Additional authorization rules for Subcriptions
+
+This approach would add a new argument, `filterSubscriptions`, to the proposal above. This will deal with the specific filtering requirements of Subscriptions.
+
+The example below builds on the above example, but only includes the relevant additions:
+
+```gql
+input StringWhere {
+  OR: [StringWhere!]
+  AND: [StringWhere!]
+  NOT: StringWhere
+  equals: String
+  in: [String!]
+  matches: String
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+
+input StringListWhere {
+  OR: [StringListWhere!]
+  AND: [StringListWhere!]
+  NOT: StringListWhere
+  all: [String!]
+  some: [String!]
+  single: String
+}
+
+input JWTPayloadWhere {
+  OR: [JWTPayloadWhere!]
+  AND: [JWTPayloadWhere!]
+  NOT: JWTPayloadWhere
+  sub: StringWhere
+  roles: StringListWhere
+}
+
+input UserSubscriptionWhere {
+  OR: [UserSubscriptionWhere!]
+  AND: [UserSubscriptionWhere!]
+  NOT: UserSubscriptionWhere
+  id: StringWhere
+  name: StringWhere
+}
+
+input UserAuthorizationSubscriptionWhere {
+  OR: [UserAuthorizationSubscriptionWhere!]
+  AND: [UserAuthorizationSubscriptionWhere!]
+  NOT: UserAuthorizationSubscriptionWhere
+  jwtPayload: JWTPayloadWhere
+  node: UserSubscriptionWhere
+}
+
+input UserAuthorizationFilterSubscriptionsRule {
+  requireAuthentication: Boolean! = true
+  where: UserAuthorizationSubscriptionWhere!
+}
+
+directive @authorization(
+  filter: [UserAuthorizationFilterRule!]
+  filterSubscriptions: [UserAuthorizationFilterSubscriptionsRule!]
+  validate: UserAuthorizationValidateRules
+) on OBJECT | FIELD_DEFINITION | INTERFACE
+```
+
+This could include optional operations to allow for the application of filters to particular event types.
+
+Advantages:
+
+* All authorization rules are specified in the same place
+
+Disadvantages:
+
+* More rules to reason with in the `@authorization` directive
+
+##### A directive purely for Subscriptions authorization
+
+Similar the first proposal, but avoids dirtying the `@authorization` directive by introducing a Subscriptions specific authorization directive:
+
+```gql
+input StringWhere {
+  OR: [StringWhere!]
+  AND: [StringWhere!]
+  NOT: StringWhere
+  equals: String
+  in: [String!]
+  matches: String
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+
+input StringListWhere {
+  OR: [StringListWhere!]
+  AND: [StringListWhere!]
+  NOT: StringListWhere
+  all: [String!]
+  some: [String!]
+  single: String
+}
+
+input JWTPayloadWhere {
+  OR: [JWTPayloadWhere!]
+  AND: [JWTPayloadWhere!]
+  NOT: JWTPayloadWhere
+  sub: StringWhere
+  roles: StringListWhere
+}
+
+input UserSubscriptionWhere {
+  OR: [UserSubscriptionWhere!]
+  AND: [UserSubscriptionWhere!]
+  NOT: UserSubscriptionWhere
+  id: StringWhere
+  name: StringWhere
+}
+
+input UserAuthorizationSubscriptionWhere {
+  OR: [UserAuthorizationSubscriptionWhere!]
+  AND: [UserAuthorizationSubscriptionWhere!]
+  NOT: UserAuthorizationSubscriptionWhere
+  jwtPayload: JWTPayloadWhere
+  node: UserSubscriptionWhere
+}
+
+input UserAuthorizationFilterSubscriptionsRule {
+  requireAuthentication: Boolean! = true
+  where: UserAuthorizationSubscriptionWhere!
+}
+
+directive @subscriptionsAuthorization(
+  filter: [UserAuthorizationFilterSubscriptionsRule!]
+) on OBJECT | FIELD_DEFINITION | INTERFACE
+```
+
+Advantages:
+
+* Highlights that Subscriptions authorization is somewhat different
+
+Disadvantages:
+
+* Even more directives, is it really that much of a burden to have an argument that some people won't use in a directive?
+
+##### A directive for configuring Subscriptions, with authorization within
+
+```gql
+input StringWhere {
+  OR: [StringWhere!]
+  AND: [StringWhere!]
+  NOT: StringWhere
+  equals: String
+  in: [String!]
+  matches: String
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+
+input StringListWhere {
+  OR: [StringListWhere!]
+  AND: [StringListWhere!]
+  NOT: StringListWhere
+  all: [String!]
+  some: [String!]
+  single: String
+}
+
+input JWTPayloadWhere {
+  OR: [JWTPayloadWhere!]
+  AND: [JWTPayloadWhere!]
+  NOT: JWTPayloadWhere
+  sub: StringWhere
+  roles: StringListWhere
+}
+
+input UserSubscriptionWhere {
+  OR: [UserSubscriptionWhere!]
+  AND: [UserSubscriptionWhere!]
+  NOT: UserSubscriptionWhere
+  id: StringWhere
+  name: StringWhere
+}
+
+input UserAuthorizationSubscriptionWhere {
+  OR: [UserAuthorizationSubscriptionWhere!]
+  AND: [UserAuthorizationSubscriptionWhere!]
+  NOT: UserAuthorizationSubscriptionWhere
+  jwtPayload: JWTPayloadWhere
+  node: UserSubscriptionWhere
+}
+
+input UserSubscriptionsAuthorizationRule {
+  requireAuthentication: Boolean! = true
+  where: UserAuthorizationSubscriptionWhere!
+}
+
+directive @subscriptions(
+  authorization: [UserAuthorizationFilterSubscriptionsRule!]
+) on OBJECT | FIELD_DEFINITION | INTERFACE
+```
+
+Advantages:
+
+* Highlights that Subscriptions authorization is somewhat different
+
+Disadvantages:
+
+* This is pretty much an anti-pattern - directives are meant to be specific instructions, and not generic objects like this
 
 #### Examples
 
