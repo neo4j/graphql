@@ -93,16 +93,8 @@ function generateConcreteEntity(definition: ObjectTypeDefinitionNode): ConcreteE
 }
 
 function getLabels(definition: ObjectTypeDefinitionNode, nodeDirectiveArguments: Record<string, unknown>): string[] {
-    // TODO: use when removing label & additionalLabels
-    // const nodeExplicitLabels = nodeDirectiveArguments.labels as string[];
-    // return nodeExplicitLabels ?? [definition.name.value];
-    if ((nodeDirectiveArguments.labels as string[] | undefined)?.length) {
-        return nodeDirectiveArguments.labels as string[];
-    }
-    const nodeLabel = nodeDirectiveArguments.label as string | undefined;
-    const additionalLabels = (nodeDirectiveArguments.additionalLabels || []) as string[];
-    const label = nodeLabel || definition.name.value;
-    return [label, ...additionalLabels];
+    const nodeExplicitLabels = nodeDirectiveArguments.labels as string[];
+    return nodeExplicitLabels ?? [definition.name.value];
 }
 
 function generateField(field: FieldDefinitionNode): Attribute | undefined {
