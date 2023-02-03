@@ -167,12 +167,12 @@ const movie = new Cypher.Node({ labels: ["Movie"] });
 const person = new Cypher.Node({ labels: ["Person"] });
 const movie2 = new Cypher.Node({ labels: ["Movie"] });
 
-const actedIn = new Cypher.Relationship({ type: "ACTED_IN" });
+const actedIn = new Cypher.Relationship({ type: "ACTED_IN", properties: { role: "neo" } });
 const directed = new Cypher.Relationship({ type: "DIRECTED" });
 
 movie
     .withProperties({ title: "The Matrix" })
-    .related(actedIn.withProperties({ role: "neo" }))
+    .related(actedIn)
     .withDirection("undirected")
     .to(person)
     .related(directed)
@@ -264,6 +264,29 @@ const this1 = new Cypher.Node({ labels: ["Label1", "Label2"] });
 new Cypher.Match(this1) // MATCH (m:Label1:Label2)
     .match(this1.withoutLabels()); // MATCH(m) // TODO: do not use labels here
 ```
+
+**Variable-length patterns**
+
+```cypher
+(a)-[*2]->(b)
+```
+
+```typescript
+const a = new Cypher.Node();
+const b = new Cypher.Node();
+
+Cypher.related(new Cypher.Relationship()).withLength(2).to(b);
+```
+
+With length options:
+
+-   `*` - Any (minimum 1): `withLength("*")`
+-   `*2` - Exactly 2: `withLength(2)`
+-   `*3..5` - Between 3 and 5: `withLength(3,5)`
+-   `*3..` - 3 or more: `withLength(3, "*")`
+-   `*..5` - 5 or less: `withLength("*", 5)`
+
+---
 
 For reference, this is a Java Cypher-DSL example:
 
