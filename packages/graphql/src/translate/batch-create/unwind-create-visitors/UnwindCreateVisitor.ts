@@ -30,7 +30,7 @@ import type {
 import type { Node, Relationship } from "../../../classes";
 import createRelationshipValidationString from "../../create-relationship-validation-string";
 import { filterTruthy } from "../../../utils/utils";
-import Cypher, { and, Expr, Map, MapProjection } from "@neo4j/cypher-builder";
+import Cypher, { Expr, Map, MapProjection } from "@neo4j/cypher-builder";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createAuthAndParams } from "../../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
