@@ -29,17 +29,17 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
     let neo4j: Neo4j;
 
     const typeDefs = `
-        type ContentPiece @node(additionalLabels: ["UNIVERSAL"]) {
+        type ContentPiece @node(labels: ["ContentPiece", "UNIVERSAL"]) {
             uid: String! @unique
             id: Int
         }
 
-        type Project @node(additionalLabels: ["UNIVERSAL"]) {
+        type Project @node(labels: ["Project", "UNIVERSAL"]) {
             uid: String! @unique
             id: Int
         }
 
-        type Community @node(additionalLabels: ["UNIVERSAL"]) {
+        type Community @node(labels: ["Community", "UNIVERSAL"]) {
             uid: String! @unique
             id: Int
             hasContentPieces: [ContentPiece!]!

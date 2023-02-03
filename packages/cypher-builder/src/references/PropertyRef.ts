@@ -18,7 +18,7 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import type { CypherCompilable } from "../types";
+import type { CypherCompilable, Expr } from "../types";
 import type { Reference } from "./Reference";
 import type { Variable } from "./Variable";
 
@@ -28,11 +28,11 @@ import type { Variable } from "./Variable";
  */
 export class PropertyRef implements CypherCompilable {
     private _variable: Variable;
-    private _property: string;
+    private propertyPath: Array<string | Expr>;
 
-    constructor(variable: Reference, property: string) {
+    constructor(variable: Reference, ...properties: Array<string | Expr>) {
         this._variable = variable;
-        this._property = property;
+        this.propertyPath = properties;
     }
 
     public get variable(): Variable {
@@ -40,8 +40,8 @@ export class PropertyRef implements CypherCompilable {
     }
 
     /** Access individual property via the PropertyRef class, using the dot notation */
-    public property(path: string): PropertyRef {
-        return new PropertyRef(this.variable, `${this._property}.${path}`);
+    public property(prop: string | Expr): PropertyRef {
+        return new PropertyRef(this._variable, ...this.propertyPath, prop);
     }
 
     /**
@@ -49,6 +49,18 @@ export class PropertyRef implements CypherCompilable {
      */
     public getCypher(env: CypherEnvironment): string {
         const variableStr = this.variable.getCypher(env);
-        return `${variableStr}.${this._property}`;
+
+        const propStr = this.propertyPath.map((prop) => this.getPropertyCypher(prop, env)).join("");
+
+        return `${variableStr}${propStr}`;
+    }
+
+    private getPropertyCypher(prop: string | Expr, env: CypherEnvironment): string {
+        if (typeof prop === "string") {
+            return `.${prop}`;
+        } else {
+            const exprStr = prop.getCypher(env);
+            return `[${exprStr}]`;
+        }
     }
 }

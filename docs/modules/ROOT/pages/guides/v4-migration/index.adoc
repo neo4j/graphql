@@ -154,6 +154,53 @@ type Tech @node(label: "TechDB") @plural(value: "Techs") {
 }
 ----
 
+[label-migration]
+=== `label` and `additionalLabels` arguments removed from `@node` and replaced with new argument `labels`
+
+There is no concept of a "main label" in the Neo4j database. As such, keeping these two separate arguments causes a disconnect between the database and the GraphQL library.
+As a result, the `label` and `additionalLabels` arguments have been condensed into a single argument `labels` which will accept a list of string labels that used when a node of the given GraphQL type is created.
+
+The equivalent of using just the `label` argument is now a list with a single value:
+
+[source, graphql, indent=0]
+----
+type Tech @node(label: "TechDB") {
+  name: String
+}
+# becomes
+type Tech @node(labels: ["TechDB"]) {
+  name: String
+}
+----
+
+When creating the equivalent of using just the `additionalLabels` argument now requires the first value in the list to be the GraphQL type name:
+
+[source, graphql, indent=0]
+----
+type Tech @node(additionalLabels: ["TechDB"]) {
+  name: String
+}
+# becomes
+type Tech @node(labels: ["Tech", "TechDB"]) {
+  name: String
+}
+----
+
+The equivalent of using both deprecated arguments is a list with all the values concatenated:
+
+[source, graphql, indent=0]
+----
+type Tech @node(label: "TechDB", additionalLabels: ["AwesomeTech"]) {
+  name: String
+}
+# becomes
+type Tech @node(labels: ["TechDB", "AwesomeTech"]) {
+  name: String
+}
+----
+
+As before, providing none of these arguments results in the node label being the same as the GraphQL type name.
+
 [full-text-migration]
 === `@fulltext` changes
 
