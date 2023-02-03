@@ -19,13 +19,6 @@
 
 import { DirectiveLocation, GraphQLDirective, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
 
-const pluralDescription =
-    "NOTE: The plural argument has been deprecated and will be removed in version 4.0.0. " +
-    "Please use the @plural directive instead. More information can be found at " +
-    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/" +
-    "#_plural_argument_removed_from_node_and_replaced_with_plural. " +
-    "Allows for the specification of the plural of the type name.";
-
 export const nodeDirective = new GraphQLDirective({
     name: "node",
     description: "Informs @neo4j/graphql of node metadata",
@@ -38,10 +31,6 @@ export const nodeDirective = new GraphQLDirective({
         additionalLabels: {
             description: "Map the GraphQL type to match additional Neo4j node labels",
             type: new GraphQLList(new GraphQLNonNull(GraphQLString)),
-        },
-        plural: {
-            description: pluralDescription,
-            type: GraphQLString,
         },
     },
 });
