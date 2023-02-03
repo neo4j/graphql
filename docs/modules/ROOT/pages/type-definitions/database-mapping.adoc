@@ -72,9 +72,6 @@ The same is applied to other operations such as `createTechs`. Note that databas
 [[type-definitions-node]]
 == `@node`
 
-NOTE: The plural argument has been deprecated and will be removed in version 4.0.
-Please use the xref::type-definitions/database-mapping.adoc#type-definitions-plural[`@plural` directive] instead.
-
 The `@node` directive is used to specify the configuration of a GraphQL object type which represents a Neo4j node.
 
 === Definition
@@ -229,9 +226,6 @@ type User @node(additionalLabels: ["$jwt.username"]) {
 ----
 
 ==== `plural`
-
-NOTE: The plural argument has been deprecated and will be removed in version 4.0.
-Please use the xref::type-definitions/database-mapping.adoc#type-definitions-plural[`@plural` directive] instead.
 
 The parameter `plural` redefines how to compose the plural of the type for the generated operations. This is particularly
 useful for types that are not correctly pluralized or are non-English words.

@@ -25,18 +25,15 @@ import Cypher from "@neo4j/cypher-builder";
 export interface NodeDirectiveConstructor {
     label?: string;
     additionalLabels?: string[];
-    plural?: string;
 }
 
 export class NodeDirective {
     public readonly label: string | undefined;
     public readonly additionalLabels: string[];
-    public readonly plural: string | undefined;
 
     constructor(input: NodeDirectiveConstructor) {
         this.label = input.label;
         this.additionalLabels = input.additionalLabels || [];
-        this.plural = input.plural;
     }
 
     public getLabelsString(typeName: string, context: Context): string {

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode, ObjectTypeDefinitionNode} from "graphql";
+import type { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
 import { parse } from "graphql";
 import parseNodeDirective from "./parse-node-directive";
 import { NodeDirective } from "../classes/NodeDirective";
@@ -74,20 +74,6 @@ describe("parseNodeDirective", () => {
         const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
         const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
         const expected = new NodeDirective({ label: "MyLabel", additionalLabels: ["Label", "AnotherLabel"] });
-
-        expect(parseNodeDirective(directive)).toMatchObject(expected);
-    });
-
-    test("should return a node directive with custom plural", () => {
-        const typeDefs = `
-            type TestType @node(plural: "testTypes") {
-                name: String
-            }
-        `;
-
-        const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
-        const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
-        const expected = new NodeDirective({ plural: "testTypes" });
 
         expect(parseNodeDirective(directive)).toMatchObject(expected);
     });
