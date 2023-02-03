@@ -17,19 +17,7 @@
  * limitations under the License.
  */
 
-import camelcase from "camelcase";
-import pluralize from "pluralize";
-import type { Direction } from "../types";
-
-export default function inferRelationshipFieldName(
-    relType: string,
-    fromType: string,
-    toType: string,
-    direction: Direction
-): string {
-    const sanitizedRelType = relType.replaceAll(/[\s/()\\`]/g, "");
-    if (direction === "OUT") {
-        return camelcase(sanitizedRelType + pluralize(toType));
-    }
-    return camelcase(pluralize(fromType) + sanitizedRelType);
+export function escapeLabel(label: string): string {
+    const escapedLabel = label.replace(/\\u0060/g, "`").replace(/`/g, "``");
+    return `\`${escapedLabel}\``;
 }
