@@ -17,23 +17,7 @@
  * limitations under the License.
  */
 
-export const DEPRECATE_NOT = {
-    name: "deprecated",
-    args: {
-        reason: "Negation filters will be deprecated, use the NOT operator to achieve the same behavior",
-    },
-};
-
-export const DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS = {
-    name: "deprecated",
-    args: {
-        reason: "Please use the explicit _LENGTH version for string aggregation.",
-    },
-};
-
-export const DEPRECATE_INVALID_AGGREGATION_FILTERS = {
-    name: "deprecated",
-    args: {
-        reason: "Aggregation filters that are not relying on an aggregating function will be deprecated.",
-    },
-};
+export function escapeLabel(label: string): string {
+    const escapedLabel = label.replace(/\\u0060/g, "`").replace(/`/g, "``");
+    return `\`${escapedLabel}\``;
+}
