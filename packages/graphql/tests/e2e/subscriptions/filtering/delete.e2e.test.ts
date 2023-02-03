@@ -27,6 +27,7 @@ import { ApolloTestServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
+import { delay } from "../../../../src/utils/utils";
 
 describe("Delete Subscription", () => {
     let neo4j: Neo4j;
@@ -565,6 +566,7 @@ describe("Delete Subscription", () => {
         await deleteMovie("title", "movie1");
         await deleteMovie("title", "movie2");
 
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {

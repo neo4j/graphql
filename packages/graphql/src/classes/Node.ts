@@ -307,15 +307,7 @@ class Node extends GraphElement {
         return this.nodeDirective?.labels?.[0] || this.nodeDirective?.label || this.name;
     }
     public getAllLabels(): string[] {
-        if (!this.nodeDirective) {
-            return [this.name];
-        }
-        if (this.nodeDirective.labels.length) {
-            return this.nodeDirective.labels;
-        }
-        return [this.nodeDirective.label || this.name, ...(this.nodeDirective.additionalLabels || [])];
-        // TODO: use when removing label & additionalLabels
-        // return this.nodeDirective?.labels || [this.name];
+        return this.nodeDirective?.labels || [this.name];
     }
 
     public getGlobalIdField(): string {
@@ -344,8 +336,8 @@ class Node extends GraphElement {
     }
 
     private generatePlural(inputPlural: string | undefined): string {
-        const name = inputPlural || this.nodeDirective?.plural || this.name;
-        const plural = inputPlural || this.nodeDirective?.plural ? camelcase(name) : pluralize(camelcase(name));
+        const name = inputPlural || this.plural || this.name;
+        const plural = inputPlural || this.plural ? camelcase(name) : pluralize(camelcase(name));
 
         return `${this.leadingUnderscores(name)}${plural}`;
     }

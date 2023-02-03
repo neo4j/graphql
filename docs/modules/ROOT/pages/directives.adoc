@@ -27,16 +27,6 @@ The `@coalesce` directive exposes a mechanism for querying against non-existent,
 
 Reference: xref::type-definitions/default-values.adoc#type-definitions-default-values-coalesce[`@coalesce`]
 
-== `@computed`
-
-NOTE: The `@computed` directive has been deprecated and will be removed in version 4.0.
-Please use the xref::directives.adoc#custom-resolver-directive[`@customResolver` directive] instead.
-
-The `@computed` directive specifies that a field will be resolved by a custom resolver, and allows the specification
-of any field dependencies.
-
-Reference: xref::custom-resolvers.adoc#custom-resolvers-computed[`@computed`]
-
 [[custom-resolver-directive]]
 == `@customResolver`
 
@@ -76,12 +66,6 @@ The `@id` directive marks a field as the unique ID for an object type, and allow
 Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-id[`@id`]
 
 == `@node`
-
-NOTE: The `plural`` argument of the `@node` directive has been deprecated and will be removed in version 4.0.
-Please use the xref::directives.adoc#plural-directive[`@plural` directive] instead.
-
-NOTE: The `label` and `additionalLabels`` arguments of the `@node` directive have been deprecated and will be removed in version 4.0.
-Please use the xref::type-definitions/database-mapping.adoc#_labels[`labels argument`] instead.
 
 The `@node` directive is used to specify the configuration of a GraphQL object type which represents a Neo4j node.
 
