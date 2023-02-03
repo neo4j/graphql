@@ -222,19 +222,19 @@ describe("generate", () => {
               AND?: InputMaybe<Array<UserWhere>>;
               NOT?: InputMaybe<UserWhere>;
               name?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
@@ -535,19 +535,19 @@ describe("generate", () => {
               AND?: InputMaybe<Array<UserWhere>>;
               NOT?: InputMaybe<UserWhere>;
               name?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
@@ -811,19 +811,19 @@ describe("generate", () => {
               AND?: InputMaybe<Array<UserWhere>>;
               NOT?: InputMaybe<UserWhere>;
               name?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
@@ -1219,10 +1219,10 @@ describe("generate", () => {
               AND?: InputMaybe<Array<ActedInWhere>>;
               NOT?: InputMaybe<ActedInWhere>;
               screenTime?: InputMaybe<Scalars[\\"Int\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               screenTime_NOT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_IN?: InputMaybe<Array<Scalars[\\"Int\\"]>>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               screenTime_NOT_IN?: InputMaybe<Array<Scalars[\\"Int\\"]>>;
               screenTime_LT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
@@ -1260,10 +1260,10 @@ describe("generate", () => {
               OR?: InputMaybe<Array<MovieActorsConnectionWhere>>;
               NOT?: InputMaybe<MovieActorsConnectionWhere>;
               edge?: InputMaybe<ActedInWhere>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               edge_NOT?: InputMaybe<ActedInWhere>;
               node?: InputMaybe<PersonWhere>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               node_NOT?: InputMaybe<PersonWhere>;
             };
 
@@ -1284,26 +1284,31 @@ describe("generate", () => {
               AND?: InputMaybe<Array<MovieActorsEdgeAggregationWhereInput>>;
               OR?: InputMaybe<Array<MovieActorsEdgeAggregationWhereInput>>;
               NOT?: InputMaybe<MovieActorsEdgeAggregationWhereInput>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               screenTime_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               screenTime_GT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_GT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_GT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_SUM_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               screenTime_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               screenTime_LT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_LT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_MAX_LT?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_SUM_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
               screenTime_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
               screenTime_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
@@ -1320,26 +1325,61 @@ describe("generate", () => {
               AND?: InputMaybe<Array<MovieActorsNodeAggregationWhereInput>>;
               OR?: InputMaybe<Array<MovieActorsNodeAggregationWhereInput>>;
               NOT?: InputMaybe<MovieActorsNodeAggregationWhereInput>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               name_EQUAL?: InputMaybe<Scalars[\\"String\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
               name_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
               name_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
               name_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               name_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
               name_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
               name_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
               name_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_AVERAGE_LENGTH_GT?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_LONGEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               name_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
               name_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
               name_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
               name_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_LONGEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               name_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
               name_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
               name_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
               name_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_AVERAGE_LENGTH_LT?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_LONGEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               name_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
               name_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
               name_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
               name_SHORTEST_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_LONGEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
             export type MovieActorsUpdateConnectionInput = {
@@ -1399,19 +1439,19 @@ describe("generate", () => {
               AND?: InputMaybe<Array<MovieWhere>>;
               NOT?: InputMaybe<MovieWhere>;
               title?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT?: InputMaybe<Scalars[\\"String\\"]>;
               title_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
               title_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               title_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               title_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               /** @deprecated Use \`actors_SOME\` instead. */
               actors?: InputMaybe<PersonWhere>;
@@ -1465,19 +1505,19 @@ describe("generate", () => {
               AND?: InputMaybe<Array<PersonWhere>>;
               NOT?: InputMaybe<PersonWhere>;
               name?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
               name_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"]>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              /** @deprecated Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior */
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
