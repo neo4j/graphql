@@ -268,12 +268,14 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 ${Movie.plural}(
                     where: {
-                        actors_SOME: {
+                        actors_SINGLE: {
                             movies_SOME: {
                                 actors_ALL: { moviesAggregate: { count_GT: 1 } }
                                 actorsAggregate: { node: { name_AVERAGE_LT: 10 } }
                             }
-                            moviesAggregate: { node: { released_MAX_GT: 1 } }
+                            moviesAggregate: { node: { released_AVERAGE_EQUAL: ${
+                                (movieInput2.released + movieInput1.released) / 2
+                            } } }
                         }
                         actorsAggregate: { node: { name_AVERAGE_GTE: 3 } }
                     }
@@ -412,7 +414,9 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                                         actorsAggregate: { node: { name_AVERAGE_LT: 10 } }
                                     }
                                 }
-                                moviesAggregate: { node: { released_MAX_GT: 1 } }
+                                moviesAggregate: { node: { released_AVERAGE_EQUAL: ${
+                                    (movieInput2.released + movieInput1.released) / 2
+                                } } }
                             }
                         }
                         actorsAggregate: { node: { name_AVERAGE_GTE: 3 } }
@@ -494,6 +498,108 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Actor.plural]: expect.toIncludeSameMembers([actorInput1, actorInput3, actorInput4]),
+        });
+    });
+
+    test("should find movies aggregate with triple nested mix of relations and connections", async () => {
+        const query = `
+            {
+                ${Movie.plural}(
+                    where: {
+                        actorsConnection_SOME: {
+                            node: {
+                                movies_SINGLE: {
+                                    actorsConnection_NONE: { 
+                                        node: {
+                                            moviesAggregate: { count_GT: 2 }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    released
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Movie.plural]: expect.toIncludeSameMembers([movieInput1, movieInput2]),
+        });
+    });
+
+    test("should find edge aggregations at all levels within double nested relationships", async () => {
+        const query = `
+            {
+                ${Actor.plural}(
+                    where: {
+                        movies_SINGLE: {
+                            actors_NONE: {
+                                moviesAggregate: { edge: { screenTime_AVERAGE_LTE: 1000 } }
+                            },
+                            actorsAggregate: { edge: { screenTime_AVERAGE_LTE: 1000 } }
+                        }
+                    }
+                ) {
+                    name
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput1, actorInput4]),
+        });
+    });
+
+    test("should be able to filter by edge properties and aggregations in nested connections", async () => {
+        const query = `
+            {
+                ${Actor.plural}(
+                    where: {
+                        moviesConnection_SINGLE: {
+                            node: {
+                                actorsConnection_NONE: {
+                                    node: { moviesAggregate: { count_GT: 1 } }
+                                    edge: {
+                                        roles_INCLUDES: "${actedInInput4.roles[0]}"
+                                    }
+                                }
+                            },
+                            edge: {
+                                roles_INCLUDES: "${actedInInput5.roles[0]}"
+                            }
+                        }
+                    }
+                ) {
+                    name
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput3]),
         });
     });
 });
