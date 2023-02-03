@@ -156,7 +156,7 @@ describe("Sort", () => {
               NOT: Node1RelatedToConnectionWhere
               OR: [Node1RelatedToConnectionWhere!]
               node: Node2Where
-              node_NOT: Node2Where @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: Node2Where @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input Node1RelatedToCreateFieldInput {
@@ -220,11 +220,11 @@ describe("Sort", () => {
               property_CONTAINS: String
               property_ENDS_WITH: String
               property_IN: [String!]
-              property_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              property_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              property_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              property_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              property_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              property_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              property_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              property_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              property_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              property_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               property_STARTS_WITH: String
               relatedTo: Node2Where @deprecated(reason: \\"Use \`relatedTo_SOME\` instead.\\")
               relatedToAggregate: Node1RelatedToAggregateInput
@@ -336,7 +336,7 @@ describe("Sort", () => {
               NOT: Node2RelatedToConnectionWhere
               OR: [Node2RelatedToConnectionWhere!]
               node: Node1Where
-              node_NOT: Node1Where @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: Node1Where @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input Node2RelatedToCreateFieldInput {
@@ -362,26 +362,41 @@ describe("Sort", () => {
               AND: [Node2RelatedToNodeAggregationWhereInput!]
               NOT: Node2RelatedToNodeAggregationWhereInput
               OR: [Node2RelatedToNodeAggregationWhereInput!]
-              property_AVERAGE_EQUAL: Float
-              property_AVERAGE_GT: Float
-              property_AVERAGE_GTE: Float
-              property_AVERAGE_LT: Float
-              property_AVERAGE_LTE: Float
-              property_EQUAL: String
-              property_GT: Int
-              property_GTE: Int
-              property_LONGEST_EQUAL: Int
-              property_LONGEST_GT: Int
-              property_LONGEST_GTE: Int
-              property_LONGEST_LT: Int
-              property_LONGEST_LTE: Int
-              property_LT: Int
-              property_LTE: Int
-              property_SHORTEST_EQUAL: Int
-              property_SHORTEST_GT: Int
-              property_SHORTEST_GTE: Int
-              property_SHORTEST_LT: Int
-              property_SHORTEST_LTE: Int
+              property_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_AVERAGE_LENGTH_EQUAL: Float
+              property_AVERAGE_LENGTH_GT: Float
+              property_AVERAGE_LENGTH_GTE: Float
+              property_AVERAGE_LENGTH_LT: Float
+              property_AVERAGE_LENGTH_LTE: Float
+              property_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              property_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              property_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              property_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_LONGEST_LENGTH_EQUAL: Int
+              property_LONGEST_LENGTH_GT: Int
+              property_LONGEST_LENGTH_GTE: Int
+              property_LONGEST_LENGTH_LT: Int
+              property_LONGEST_LENGTH_LTE: Int
+              property_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              property_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              property_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_SHORTEST_LENGTH_EQUAL: Int
+              property_SHORTEST_LENGTH_GT: Int
+              property_SHORTEST_LENGTH_GTE: Int
+              property_SHORTEST_LENGTH_LT: Int
+              property_SHORTEST_LENGTH_LTE: Int
+              property_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              property_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type Node2RelatedToRelationship {

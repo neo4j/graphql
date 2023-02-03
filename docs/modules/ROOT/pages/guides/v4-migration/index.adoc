@@ -360,36 +360,6 @@ type query {
 Additionally, escaping strings is no longer needed.
 
 
-== Updated Filters
-
-Starting from 4.0.0 negate filters, filters with the suffix `_NOT`, will be deprecated in favor of the more generic NOT operator.
-
-For instance:
-
-[source, graphql, indent=0]
-----
-query MoviesThatAreNotMatrix {
-  movies(where: {
-    title_NOT: "The Matrix"
-  }) {
-    title
-  }
-}
-----
-
-From version 4.0.0 the same can be achieved with:
-
-[source, graphql, indent=0]
-----
-query MoviesThatAreNotMatrix {
-  movies(where: {
-    NOT: { title: "The Matrix" }
-  }) {
-    title
-  }
-}
-----
-
 == Miscellaneous changes
 
 [[startup-validation]]
