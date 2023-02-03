@@ -24,12 +24,13 @@ import type { ObjectFields } from "../get-obj-field-meta";
 import { upperFirst } from "../../utils/upper-first";
 import type { RelationField } from "../../types";
 
+const isEmptyObject = (obj: Record<string, unknown>) => !Object.keys(obj).length;
+
 export function generateSubscriptionWhereType(
     node: Node,
     schemaComposer: SchemaComposer
 ): InputTypeComposer | undefined {
     const typeName = node.name;
-    // TODO: refactor
     if (schemaComposer.has(`${node.name}SubscriptionWhere`)) {
         return schemaComposer.getITC(`${node.name}SubscriptionWhere`);
     }
@@ -40,10 +41,9 @@ export function generateSubscriptionWhereType(
         ...node.temporalFields,
         ...node.pointFields,
     ]);
-    if (!Object.keys(whereFields).length) {
+    if (isEmptyObject(whereFields)) {
         return;
     }
-
     return schemaComposer.createInputTC({
         name: `${node.name}SubscriptionWhere`,
         fields: whereFields,
@@ -64,51 +64,33 @@ export function generateSubscriptionConnectionWhereType({
     const fieldName = node.subscriptionEventPayloadFieldNames.create_relationship;
     const typeName = node.name;
 
-    let connectedNode: InputTypeComposer | undefined = undefined;
-
-    // TODO: refactor and test
-
-    if (schemaComposer.has(`${typeName}SubscriptionWhere`)) {
-        connectedNode = schemaComposer.getITC(`${typeName}SubscriptionWhere`);
-    } else {
-        console.log("does not exist for ", typeName, ":", fieldName);
-    }
-
     const connectedRelationship = getRelationshipConnectionWhereTypes({
         node,
         schemaComposer,
         relationshipFields,
         interfaceCommonFields,
     });
-
-    if (!connectedNode && !connectedRelationship) {
+    const isConnectedNodeTypeNotExcluded = schemaComposer.has(`${typeName}SubscriptionWhere`);
+    if (!isConnectedNodeTypeNotExcluded && !connectedRelationship) {
         return;
     }
-
-    // const fields = objectFieldsToSubscriptionsWhereInputFields(typeName, [
-    //     ...node.primitiveFields,
-    //     ...node.enumFields,
-    //     ...node.scalarFields,
-    //     ...node.temporalFields,
-    //     ...node.pointFields,
-    // ]);
-    // if (Object.keys(fields).length) {
-    //     // console.log("???", typeName, schemaComposer.has(`${typeName}SubscriptionWhere`));
-    //     connectedNode = schemaComposer.getOrCreateITC(`${typeName}SubscriptionWhere`, (tc) => tc.addFields(fields));
-    // }
 
     return {
         created: schemaComposer.createInputTC({
             name: `${typeName}RelationshipCreatedSubscriptionWhere`,
             fields: {
-                ...(connectedNode && { [fieldName]: connectedNode }),
+                ...(isConnectedNodeTypeNotExcluded && {
+                    [fieldName]: schemaComposer.getITC(`${typeName}SubscriptionWhere`),
+                }),
                 ...(connectedRelationship && { createdRelationship: connectedRelationship }),
             },
         }),
         deleted: schemaComposer.createInputTC({
             name: `${typeName}RelationshipDeletedSubscriptionWhere`,
             fields: {
-                ...(connectedNode && { [fieldName]: connectedNode }),
+                ...(isConnectedNodeTypeNotExcluded && {
+                    [fieldName]: schemaComposer.getITC(`${typeName}SubscriptionWhere`),
+                }),
                 ...(connectedRelationship && { deletedRelationship: connectedRelationship }),
             },
         }),
@@ -267,7 +249,7 @@ function makeRelationshipToUnionTypeWhereType({
 
         return acc;
     }, {});
-    if (!Object.keys(unionNodeTypes).length) {
+    if (!Object.keys(unionTypes).length) {
         return;
     }
     return unionTypes;
