@@ -51,16 +51,16 @@ export class NodeDirective {
     }
 
     public getLabels(typeName: string, context: Context): string[] {
-        let finalLabels: string[] = [];
+        let labels: string[] = [];
         if (this.labels.length) {
-            finalLabels = [...this.labels];
+            labels = [...this.labels];
         } else {
             const mainLabel = this.label || typeName;
-            finalLabels = [mainLabel, ...this.additionalLabels];
+            labels = [mainLabel, ...this.additionalLabels];
         }
         // TODO: use when removing label & additionalLabels
-        // const finalLabels = !this.labels.length ? [typeName] : this.labels;
-        return this.mapLabelsWithContext(finalLabels, context);
+        // const labels = !this.labels.length ? [typeName] : this.labels;
+        return this.mapLabelsWithContext(labels, context);
     }
 
     private mapLabelsWithContext(labels: string[], context: Context): string[] {
