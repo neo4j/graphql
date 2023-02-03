@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
         driver = await neo4j.getDriver();
 
         const typeDefs = `
-            type ${workType} @node(additionalLabels: ["Resource"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
+            type ${workType} @node(labels: ["${workType}", "Resource"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 """
                 IRI
                 """
@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
                 title: [${titleType}!]! @relationship(type: "title", direction: OUT)
             }
 
-            type ${titleType} @node(additionalLabels: ["property"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
+            type ${titleType} @node(labels: ["${titleType}", "property"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 value: String
             }
         `;

@@ -33,11 +33,11 @@ describe("Node directive with unions", () => {
         typeDefs = gql`
             union Search = Movie | Genre
 
-            type Genre @node(label: "Category", additionalLabels: ["ExtraLabel1", "ExtraLabel2"]) {
+            type Genre @node(labels: ["Category", "ExtraLabel1", "ExtraLabel2"]) {
                 name: String
             }
 
-            type Movie @node(label: "Film") {
+            type Movie @node(labels: ["Film"]) {
                 title: String
                 search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
