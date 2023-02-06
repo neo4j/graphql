@@ -28,8 +28,6 @@ import { WithReturn } from "./mixins/WithReturn";
 import { mixin } from "./utils/mixin";
 import { WithSet } from "./mixins/WithSet";
 
-type Params = Record<string, Param<any>>;
-
 export interface Create extends WithReturn, WithSet {}
 
 /**
@@ -38,11 +36,11 @@ export interface Create extends WithReturn, WithSet {}
  */
 @mixin(WithReturn, WithSet)
 export class Create extends Clause {
-    private pattern: Pattern<NodeRef>;
+    private pattern: Pattern;
 
-    constructor(node: NodeRef, params: Params = {}) {
+    constructor(node: NodeRef) {
         super();
-        this.pattern = new Pattern(node).withParams(params);
+        this.pattern = new Pattern(node);
         this.setSubClause = new SetClause(this);
     }
 

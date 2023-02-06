@@ -1,161 +1,21 @@
-/*
- * Copyright (c) "Neo4j"
- * Neo4j Sweden AB [http://neo4j.com]
- *
- * This file is part of Neo4j.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import { stringifyObject } from "../utils/stringify-object";
+import type { CypherEnvironment } from "../Environment";
+import type { NodeProperties, NodeRef } from "../references/NodeRef";
+import type { RelationshipProperties, RelationshipRef } from "../references/RelationshipRef";
+import type { CypherCompilable } from "../types";
 import { escapeLabel } from "../utils/escape-label";
 import { padLeft } from "../utils/pad-left";
-import type { RelationshipRef } from "../references/RelationshipRef";
-import type { CypherEnvironment } from "../Environment";
-import type { Param } from "../references/Param";
-import type { CypherCompilable } from "../types";
-import type { NodeRef } from "../references/NodeRef";
+import { stringifyObject } from "../utils/stringify-object";
 
-export type MatchableElement = NodeRef | RelationshipRef;
+abstract class PatternElement<T extends NodeRef | RelationshipRef> implements CypherCompilable {
+    protected element: T;
 
-type ItemOption = { labels?: boolean; variable?: boolean };
-
-export type MatchPatternOptions = {
-    source?: ItemOption;
-    target?: ItemOption;
-    relationship?: {
-        type?: boolean;
-        variable?: boolean;
-    };
-    directed?: boolean;
-};
-
-type ParamsRecord = Record<string, Param<any>>;
-
-type MatchRelationshipParams = {
-    source?: ParamsRecord;
-    relationship?: ParamsRecord;
-    target?: ParamsRecord;
-};
-
-export type MatchParams<T extends MatchableElement> = T extends NodeRef ? ParamsRecord : MatchRelationshipParams;
-
-/** Represents a MATCH pattern
- * @group Other
- */
-export class Pattern<T extends MatchableElement = MatchableElement> implements CypherCompilable {
-    public readonly matchElement: T;
-    private parameters: MatchParams<T>;
-    private options: MatchPatternOptions;
-    private reversed = false;
-
-    constructor(input: T, options?: MatchPatternOptions) {
-        this.matchElement = input;
-        this.parameters = {};
-
-        const sourceOptions = {
-            labels: true,
-            variable: true,
-            ...(options?.source || {}),
-        };
-        const targetOptions = {
-            labels: true,
-            variable: true,
-            ...(options?.target || {}),
-        };
-        const relationshipOption = {
-            type: true,
-            variable: true,
-            ...(options?.relationship || {}),
-        };
-
-        this.options = {
-            source: sourceOptions,
-            target: targetOptions,
-            relationship: relationshipOption,
-            directed: options?.directed,
-        };
+    constructor(element: T) {
+        this.element = element;
     }
 
-    public withParams(parameters: MatchParams<T>): this {
-        this.parameters = parameters;
-        return this;
-    }
+    public abstract getCypher(env: CypherEnvironment): string;
 
-    /**
-     * @hidden
-     */
-    public getCypher(env: CypherEnvironment): string {
-        if (this.isRelationship(this.matchElement)) {
-            return this.getRelationshipCypher(env, this.matchElement);
-        }
-        return this.getNodeCypher(env, this.matchElement, this.parameters as MatchParams<NodeRef>);
-    }
-
-    /** Reverses the pattern direction, not the underlying relationship */
-    public reverse() {
-        if (!this.isRelationshipPattern()) throw new Error("Cannot reverse a node pattern");
-        this.reversed = true;
-    }
-
-    private isRelationshipPattern(): this is Pattern<RelationshipRef> {
-        return (this.matchElement as any).source;
-    }
-
-    private getRelationshipCypher(env: CypherEnvironment, relationship: RelationshipRef): string {
-        const referenceId = this.options?.relationship?.variable ? env.getReferenceId(relationship) : "";
-
-        const parameterOptions = this.parameters as MatchParams<RelationshipRef>;
-        const relationshipParamsStr = this.serializeParameters(parameterOptions.relationship || {}, env);
-
-        const relationshipType = this.options.relationship?.type ? this.getRelationshipTypesString(relationship) : "";
-
-        const sourceStr = this.getNodeCypher(env, relationship.source, parameterOptions.source, "source");
-        const targetStr = this.getNodeCypher(env, relationship.target, parameterOptions.target, "target");
-        const arrowStrs = this.getRelationshipArrows();
-
-        const relationshipStr = `${referenceId}${relationshipType}${relationshipParamsStr}`;
-
-        return `${sourceStr}${arrowStrs[0]}[${relationshipStr}]${arrowStrs[1]}${targetStr}`;
-    }
-
-    private getRelationshipArrows(): ["<-" | "-", "-" | "->"] {
-        if (this.options.directed === false) return ["-", "-"];
-        if (this.reversed) return ["<-", "-"];
-        return ["-", "->"];
-    }
-
-    // Note: This allows us to remove cycle dependency between pattern and relationship
-    private isRelationship(x: NodeRef | RelationshipRef): x is RelationshipRef {
-        return Boolean((x as any).source);
-    }
-
-    private getNodeCypher(
-        env: CypherEnvironment,
-        node: NodeRef,
-        parameters: ParamsRecord | undefined,
-        item: "source" | "target" = "source"
-    ): string {
-        const nodeOptions = this.options[item] as ItemOption;
-
-        const referenceId = nodeOptions.variable ? env.getReferenceId(node) : "";
-        const parametersStr = this.serializeParameters(parameters || {}, env);
-        const nodeLabelString = nodeOptions.labels ? this.getNodeLabelsString(node) : "";
-
-        return `(${referenceId}${nodeLabelString}${parametersStr})`;
-    }
-
-    private serializeParameters(parameters: ParamsRecord, env: CypherEnvironment): string {
+    protected serializeParameters(parameters: NodeProperties | RelationshipProperties, env: CypherEnvironment): string {
         if (Object.keys(parameters).length === 0) return "";
         const paramValues = Object.entries(parameters).reduce((acc, [key, param]) => {
             acc[key] = param.getCypher(env);
@@ -164,15 +24,90 @@ export class Pattern<T extends MatchableElement = MatchableElement> implements C
 
         return padLeft(stringifyObject(paramValues));
     }
+}
+
+export class Pattern extends PatternElement<NodeRef> {
+    private withLabels = true;
+    private previous: PartialPattern | undefined;
+
+    constructor(node: NodeRef, previous?: PartialPattern) {
+        super(node);
+        this.previous = previous;
+    }
+
+    public withoutLabels(): this {
+        this.withLabels = false;
+        return this;
+    }
+
+    public related(rel: RelationshipRef): PartialPattern {
+        return new PartialPattern(rel, this);
+    }
+
+    public getCypher(env: CypherEnvironment): string {
+        const prevStr = this.previous?.getCypher(env) || "";
+
+        const nodeRefId = `${this.element.getCypher(env)}`;
+
+        const propertiesStr = this.serializeParameters(this.element.properties || {}, env);
+        const nodeLabelStr = this.withLabels ? this.getNodeLabelsString(this.element) : "";
+
+        return `${prevStr}(${nodeRefId}${nodeLabelStr}${propertiesStr})`;
+    }
 
     private getNodeLabelsString(node: NodeRef): string {
         const escapedLabels = node.labels.map(escapeLabel);
         if (escapedLabels.length === 0) return "";
         return `:${escapedLabels.join(":")}`;
     }
+}
+
+type LengthOption = number | "*" | { min: number; max: number };
+
+export class PartialPattern extends PatternElement<RelationshipRef> {
+    private length: { min; max } = { min: 2, max: 2 };
+    private withLabels = true;
+    private previous: Pattern;
+    private direction: "left" | "right" | "undirected" = "left";
+
+    constructor(rel: RelationshipRef, parent: Pattern) {
+        super(rel);
+        this.previous = parent;
+    }
+
+    public to(node: NodeRef): Pattern {
+        return new Pattern(node, this);
+    }
+
+    public withoutLabels(): this {
+        this.withLabels = false;
+        return this;
+    }
+
+    public withDirection(direction: "left" | "right" | "undirected"): this {
+        this.direction = direction;
+        return this;
+    }
+
+    public withLength(option: LengthOption): this {
+        this.length = {
+            min: 2,
+            max: 2,
+        };
+        return this;
+    }
+
+    public getCypher(env: CypherEnvironment): string {
+        const prevStr = this.previous.getCypher(env);
+
+        const typeStr = this.getRelationshipTypesString(this.element);
+        const relStr = `${this.element.getCypher(env)}${typeStr}`;
+        const propertiesStr = this.serializeParameters(this.element.properties || {}, env);
+
+        return `${prevStr}-[${relStr}${propertiesStr}]->`;
+    }
 
     private getRelationshipTypesString(relationship: RelationshipRef): string {
-        // TODO: escapeLabel
-        return relationship.type ? `:${relationship.type}` : "";
+        return relationship.type ? `:${escapeLabel(relationship.type)}` : "";
     }
 }

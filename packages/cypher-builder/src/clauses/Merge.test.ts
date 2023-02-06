@@ -43,12 +43,10 @@ describe("CypherBuilder Merge", () => {
     test("Merge node with parameters", () => {
         const node = new Cypher.Node({
             labels: ["MyLabel"],
+            properties: { test: new Cypher.Param("test") },
         });
 
-        const query = new Cypher.Merge(node, { test: new Cypher.Param("test") }).onCreate([
-            node.property("age"),
-            new Cypher.Param(23),
-        ]);
+        const query = new Cypher.Merge(node).onCreate([node.property("age"), new Cypher.Param(23)]);
 
         const queryResult = query.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
@@ -70,9 +68,8 @@ describe("CypherBuilder Merge", () => {
         });
         const node2 = new Cypher.Node({});
 
-        const relationship = new Cypher.Relationship({ source: node1, target: node2 });
-
-        const query = new Cypher.Merge(relationship)
+        const relationship = new Cypher.Relationship();
+        const query = new Cypher.Merge(node1.pattern().withoutLabels().related(relationship).to(node2))
             .onCreate(
                 [node1.property("age"), new Cypher.Param(23)],
                 [node1.property("name"), new Cypher.Param("Keanu")],
@@ -82,12 +79,12 @@ describe("CypherBuilder Merge", () => {
 
         const queryResult = query.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-            "MERGE (this1)-[this0]->(this2)
+            "MERGE (this0)-[this1]->(this2)
             ON CREATE SET
-                this1.age = $param0,
-                this1.name = $param1,
-                this0.screentime = $param2
-            RETURN this1.title AS movie"
+                this0.age = $param0,
+                this0.name = $param1,
+                this1.screentime = $param2
+            RETURN this0.title AS movie"
         `);
         expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {

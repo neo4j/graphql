@@ -18,7 +18,6 @@
  */
 
 import type { NodeRef } from "./NodeRef";
-import { MatchPatternOptions, Pattern } from "../pattern/Pattern";
 import { Reference } from "./Reference";
 import type { Param } from "./Param";
 
@@ -30,11 +29,11 @@ export type RelationshipInput = {
 
 export type RelationshipProperties = Record<string, Param<any>>;
 
-export class NewRelationshipRef extends Reference {
+export class RelationshipRef extends Reference {
     private _type: string | undefined;
     public properties: RelationshipProperties;
 
-    constructor(input: { type?: string; properties?: RelationshipProperties }) {
+    constructor(input: { type?: string; properties?: RelationshipProperties } = {}) {
         super("this");
         this._type = input.type || undefined;
         this.properties = input.properties || {};
@@ -45,48 +44,48 @@ export class NewRelationshipRef extends Reference {
     }
 }
 
-/** Reference to a relationship property
- * @group References
- */
-export class RelationshipRef extends Reference {
-    private _source: NodeRef;
-    private _target: NodeRef;
-    private _type: string | undefined;
+// /** Reference to a relationship property
+//  * @group References
+//  */
+// export class RelationshipRef extends Reference {
+//     private _source: NodeRef;
+//     private _target: NodeRef;
+//     private _type: string | undefined;
 
-    constructor(input: RelationshipInput) {
-        super("this");
-        this._type = input.type || undefined;
-        this._source = input.source;
-        this._target = input.target;
-    }
+//     constructor(input: RelationshipInput) {
+//         super("this");
+//         this._type = input.type || undefined;
+//         this._source = input.source;
+//         this._target = input.target;
+//     }
 
-    public get source(): NodeRef {
-        return this._source;
-    }
+//     public get source(): NodeRef {
+//         return this._source;
+//     }
 
-    public get target(): NodeRef {
-        return this._target;
-    }
+//     public get target(): NodeRef {
+//         return this._target;
+//     }
 
-    public get type(): string | undefined {
-        return this._type;
-    }
+//     public get type(): string | undefined {
+//         return this._type;
+//     }
 
-    /** Sets the type of the relationship */
-    public withType(type: string): this {
-        this._type = type;
-        return this;
-    }
+//     /** Sets the type of the relationship */
+//     public withType(type: string): this {
+//         this._type = type;
+//         return this;
+//     }
 
-    /** Reverses the direction of the relationship */
-    public reverse(): void {
-        const oldTarget = this._target;
-        this._target = this._source;
-        this._source = oldTarget;
-    }
+//     /** Reverses the direction of the relationship */
+//     public reverse(): void {
+//         const oldTarget = this._target;
+//         this._target = this._source;
+//         this._source = oldTarget;
+//     }
 
-    /** Creates a new Pattern from this relationship */
-    public pattern(options: MatchPatternOptions = {}): Pattern<RelationshipRef> {
-        return new Pattern(this, options);
-    }
-}
+//     /** Creates a new Pattern from this relationship */
+//     public pattern(options: MatchPatternOptions = {}): Pattern<RelationshipRef> {
+//         return new Pattern(this, options);
+//     }
+// }

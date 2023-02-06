@@ -18,11 +18,10 @@
  */
 
 import { HasLabel } from "../expressions/HasLabel";
-import { NewPattern, PartialPattern } from "../pattern/NewPattern";
-import { MatchPatternOptions, Pattern } from "../pattern/Pattern";
+import { PartialPattern, Pattern } from "../pattern/Pattern";
 import type { Param } from "./Param";
 import { NamedReference, Reference } from "./Reference";
-import { NewRelationshipRef, RelationshipRef } from "./RelationshipRef";
+import { RelationshipRef } from "./RelationshipRef";
 
 export type NodeProperties = Record<string, Param<any>>;
 
@@ -44,16 +43,9 @@ export class NodeRef extends Reference {
         this.properties = options.properties || {};
     }
 
-    public related(relationship: NewRelationshipRef): PartialPattern {
-        const pattern = new NewPattern(this);
-        return pattern.related(relationship);
-    }
-
-    public relatedTo(node: NodeRef): RelationshipRef {
-        return new RelationshipRef({
-            source: this,
-            target: node,
-        });
+    public related(relationship?: RelationshipRef): PartialPattern {
+        if (!relationship) relationship = new RelationshipRef();
+        return this.pattern().related(relationship);
     }
 
     public hasLabels(...labels: string[]): HasLabel {
@@ -65,8 +57,8 @@ export class NodeRef extends Reference {
     }
 
     /** Creates a new Pattern from this node */
-    public pattern(options: Pick<MatchPatternOptions, "source"> = {}): Pattern<NodeRef> {
-        return new Pattern(this, options);
+    public pattern(): Pattern {
+        return new Pattern(this);
     }
 }
 
