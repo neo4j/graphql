@@ -96,7 +96,6 @@ export function createMatchClause({
             whereInput,
             context,
             element: node,
-            outerRelationshipData: { connectionPredicateData: [], returnClauses: [] }, // TODO - if this is still here this is an edge case that should be tested
         });
 
         preComputedWhereFieldSubqueries = preComputedSubqueries;

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Context, OuterRelationshipData, PredicateReturn } from "../../../types";
+import type { Context, PredicateReturn } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 import { GraphElement, Node } from "../../../classes";
 import { whereRegEx, WhereRegexGroups } from "../utils";
@@ -39,14 +39,12 @@ export function createPropertyWhere({
     element,
     targetElement,
     context,
-    outerRelationshipData,
 }: {
     key: string;
     value: any;
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
-    outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
     const match = whereRegEx.exec(key);
     if (!match) {
@@ -117,7 +115,6 @@ export function createPropertyWhere({
                 operator,
                 value,
                 isNot,
-                outerRelationshipData,
             });
         }
 
@@ -129,7 +126,6 @@ export function createPropertyWhere({
                 context,
                 parentNode: targetElement as Cypher.Node,
                 operator,
-                outerRelationshipData,
             });
         }
 

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Context, GraphQLWhereArg, RelationField, PredicateReturn, OuterRelationshipData } from "../../../types";
+import type { Context, GraphQLWhereArg, RelationField, PredicateReturn } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 
 import { createWherePredicate } from "../create-where-predicate";
@@ -31,7 +31,6 @@ export function createRelationshipOperation({
     operator,
     value,
     isNot,
-    outerRelationshipData,
 }: {
     relationField: RelationField;
     context: Context;
@@ -39,7 +38,6 @@ export function createRelationshipOperation({
     operator: string | undefined;
     value: GraphQLWhereArg;
     isNot: boolean;
-    outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
@@ -75,20 +73,12 @@ export function createRelationshipOperation({
         listPredicateStr = "single";
     }
 
-    outerRelationshipData.connectionPredicateData.push({
-        listPredicateType: listPredicateStr,
-        outerPattern: matchPattern,
-        sourceNode: parentNode,
-        collectingVariables: [],
-    });
-
     const { predicate: innerOperation, preComputedSubqueries } = createWherePredicate({
         // Nested properties here
         whereInput: value,
         targetElement: childNode,
         element: refNode,
         context,
-        outerRelationshipData,
     });
 
     if (innerOperation && preComputedSubqueries && !preComputedSubqueries.empty) {

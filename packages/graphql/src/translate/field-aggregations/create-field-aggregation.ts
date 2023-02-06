@@ -79,7 +79,6 @@ export function createFieldAggregation({
         whereInput: (field.args.where as GraphQLWhereArg) || {},
         context,
         element: referenceNode,
-        outerRelationshipData: { connectionPredicateData: [], returnClauses: [] }, // TODO - if this is still here this is an edge case that should be tested
     });
 
     const targetPattern = new Cypher.Relationship({

@@ -22,7 +22,6 @@ import type {
     ConnectionField,
     ConnectionWhereArg,
     Context,
-    OuterRelationshipData,
     PredicateReturn,
 } from "../../../types";
 import type { Node, Relationship } from "../../../classes";
@@ -41,14 +40,12 @@ export function createConnectionOperation({
     context,
     parentNode,
     operator,
-    outerRelationshipData,
 }: {
     connectionField: ConnectionField;
     value: any;
     context: Context;
     parentNode: Cypher.Node;
     operator: string | undefined;
-    outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
     let nodeEntries: Record<string, any>;
 
@@ -118,13 +115,6 @@ export function createConnectionOperation({
             (x) => x.name === connectionField.relationshipTypeName
         ) as Relationship;
 
-        outerRelationshipData.connectionPredicateData.push({
-            listPredicateType: listPredicateStr,
-            outerPattern: matchPattern,
-            sourceNode: parentNode,
-            collectingVariables: [],
-        });
-
         const innerOperation = createConnectionWherePropertyOperation({
             context,
             whereInput: entry[1],
@@ -132,7 +122,6 @@ export function createConnectionOperation({
             targetNode: childNode,
             edge: contextRelationship,
             node: refNode,
-            outerRelationshipData,
         });
 
         if (orOperatorMultipleNodeLabels) {
@@ -186,7 +175,6 @@ export function createConnectionWherePropertyOperation({
     targetNode,
     node,
     edge,
-    outerRelationshipData,
 }: {
     whereInput: ConnectionWhereArg;
     context: Context;
@@ -194,7 +182,6 @@ export function createConnectionWherePropertyOperation({
     edge: Relationship;
     edgeRef: Cypher.Variable;
     targetNode: Cypher.Node;
-    outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
     const preComputedSubqueriesResult: (Cypher.CompositeClause | undefined)[] = [];
     const params: (Cypher.Predicate | undefined)[] = [];
@@ -209,7 +196,6 @@ export function createConnectionWherePropertyOperation({
                     targetNode,
                     node,
                     edge,
-                    outerRelationshipData,
                 });
                 subOperations.push(predicate);
                 if (preComputedSubqueries && !preComputedSubqueries.empty)
@@ -227,7 +213,6 @@ export function createConnectionWherePropertyOperation({
                 whereInput: nestedProperties,
                 context,
                 element: edge,
-                outerRelationshipData,
             });
 
             params.push(result);
@@ -255,7 +240,6 @@ export function createConnectionWherePropertyOperation({
                 whereInput: nestedProperties,
                 context,
                 element: node,
-                outerRelationshipData,
             });
 
             // NOTE: _NOT is handled by the size()=0
