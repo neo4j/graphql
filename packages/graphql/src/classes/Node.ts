@@ -304,7 +304,18 @@ class Node extends GraphElement {
     }
 
     public getMainLabel(): string {
-        return this.nodeDirective?.label || this.name;
+        return this.nodeDirective?.labels?.[0] || this.nodeDirective?.label || this.name;
+    }
+    public getAllLabels(): string[] {
+        if (!this.nodeDirective) {
+            return [this.name];
+        }
+        if (this.nodeDirective.labels.length) {
+            return this.nodeDirective.labels;
+        }
+        return [this.nodeDirective.label || this.name, ...(this.nodeDirective.additionalLabels || [])];
+        // TODO: use when removing label & additionalLabels
+        // return this.nodeDirective?.labels || [this.name];
     }
 
     public getGlobalIdField(): string {

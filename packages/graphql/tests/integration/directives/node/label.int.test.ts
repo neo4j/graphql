@@ -46,7 +46,7 @@ describe("Node directive labels", () => {
     });
 
     test("custom labels", async () => {
-        const typeDefs = `type Movie @node(label: "${typeFilm.name}") {
+        const typeDefs = `type Movie @node(labels: ["${typeFilm.name}"]) {
             id: ID
             title: String
         }`;
@@ -73,7 +73,7 @@ describe("Node directive labels", () => {
     });
 
     test("custom jwt labels", async () => {
-        const typeDefs = `type Movie @node(label: "$jwt.filmLabel") {
+        const typeDefs = `type Movie @node(labels: ["$jwt.filmLabel"]) {
             id: ID
             title: String
         }`;
@@ -109,7 +109,7 @@ describe("Node directive labels", () => {
     });
 
     test("custom context labels", async () => {
-        const typeDefs = `type Movie @node(label: "$context.filmLabel") {
+        const typeDefs = `type Movie @node(labels: ["$context.filmLabel"]) {
             id: ID
             title: String
         }`;
