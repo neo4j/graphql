@@ -106,7 +106,6 @@ export function createPropertyWhere({
                 relationship,
                 context,
                 matchNode: targetElement,
-                outerRelationshipData,
             });
         }
 

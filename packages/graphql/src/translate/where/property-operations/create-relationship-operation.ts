@@ -21,7 +21,7 @@ import type { Context, GraphQLWhereArg, RelationField, PredicateReturn, OuterRel
 import Cypher from "@neo4j/cypher-builder";
 
 import { createWherePredicate } from "../create-where-predicate";
-import { getListPredicate } from "../utils";
+import { getListPredicate, ListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
 
 export function createRelationshipOperation({
@@ -41,7 +41,6 @@ export function createRelationshipOperation({
     isNot: boolean;
     outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
-    const topLevelRel = outerRelationshipData.connectionPredicateData.length === 0;
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
 
@@ -92,21 +91,26 @@ export function createRelationshipOperation({
         outerRelationshipData,
     });
 
-    const predicate = createRelationshipPredicate({
-        childNode,
-        matchPattern,
-        listPredicateStr,
-        innerOperation,
-    });
-
-    if (topLevelRel && preComputedSubqueries && !preComputedSubqueries.empty) {
-        return wrapAggregationSubqueries(outerRelationshipData, preComputedSubqueries, predicate);
+    if (innerOperation && preComputedSubqueries && !preComputedSubqueries.empty) {
+        return wrapAggregationSubqueries({
+            parentNode,
+            targetNode: childNode,
+            targetPattern: matchPattern,
+            preComputedSubqueries,
+            innerOperation,
+            listPredicateStr,
+        });
+    } else {
+        return {
+            predicate: createRelationshipPredicate({
+                childNode,
+                matchPattern,
+                listPredicateStr,
+                innerOperation,
+            }),
+            preComputedSubqueries,
+        };
     }
-
-    return {
-        predicate,
-        preComputedSubqueries,
-    };
 }
 
 export function createRelationshipPredicate({
@@ -117,7 +121,7 @@ export function createRelationshipPredicate({
     edgePredicate,
 }: {
     matchPattern: Cypher.Pattern;
-    listPredicateStr: string;
+    listPredicateStr: ListPredicate;
     childNode: Cypher.Node;
     innerOperation: Cypher.Predicate | undefined;
     edgePredicate?: boolean;
@@ -146,7 +150,7 @@ export function createRelationshipPredicate({
         }
         case "not":
         case "none":
-        case "some":
+        case "any":
         default: {
             const existsPredicate = new Cypher.Exists(matchClause);
             if (["not", "none"].includes(listPredicateStr)) {
@@ -157,46 +161,93 @@ export function createRelationshipPredicate({
     }
 }
 
-export function wrapAggregationSubqueries(
-    outerRelationshipData: OuterRelationshipData,
-    preComputedSubqueries: Cypher.CompositeClause,
-    predicate: Cypher.Predicate | undefined
-): PredicateReturn {
-    const topLevelNode = outerRelationshipData.connectionPredicateData[0].sourceNode;
-    const optionalMatches = outerRelationshipData.connectionPredicateData.map(
-        (relData) => new Cypher.OptionalMatch(relData.outerPattern)
+export function wrapAggregationSubqueries({
+    targetNode,
+    targetPattern,
+    preComputedSubqueries,
+    innerOperation,
+    listPredicateStr,
+    parentNode,
+}: {
+    parentNode: Cypher.Node;
+    targetNode: Cypher.Node;
+    targetPattern: Cypher.Pattern;
+    preComputedSubqueries: Cypher.CompositeClause;
+    innerOperation: Cypher.Predicate;
+    listPredicateStr: ListPredicate;
+}): PredicateReturn {
+    const matchPattern = new Cypher.Match(targetPattern);
+    const subqueryWith = new Cypher.With("*");
+    const returnVar = new Cypher.Variable();
+    subqueryWith.where(innerOperation);
+    const subqueryContents = Cypher.concat(
+        new Cypher.With(parentNode),
+        matchPattern,
+        preComputedSubqueries,
+        subqueryWith
     );
-    const withCollects: Cypher.With[] = [];
-    while (outerRelationshipData.connectionPredicateData.length > 0) {
-        const lastIndex = outerRelationshipData.connectionPredicateData.length - 1;
-        const collectingVariables = outerRelationshipData.connectionPredicateData[lastIndex].collectingVariables;
-
-        const nonCollectingVariables = outerRelationshipData.connectionPredicateData[0].collectingVariables.filter(
-            (variable) => {
-                return !collectingVariables.includes(variable);
+    switch (listPredicateStr) {
+        case "all": {
+            const subquery = new Cypher.Call(
+                Cypher.concat(
+                    subqueryContents,
+                    new Cypher.Return([Cypher.gt(Cypher.count(targetNode), new Cypher.Literal(0)), returnVar])
+                )
+            );
+            // Testing "ALL" requires testing that at least one element exists and that no elements not matching the filter exists
+            // const notExistsMatchClause = new Cypher.Match(matchPattern).where(Cypher.not(innerOperation));
+            const notExistsWith = new Cypher.With("*").where(Cypher.not(innerOperation));
+            const notExistsReturnVar = new Cypher.Variable();
+            const notExistsSubquery = new Cypher.Call(
+                Cypher.concat(
+                    new Cypher.With(parentNode),
+                    new Cypher.Match(targetPattern),
+                    preComputedSubqueries,
+                    notExistsWith,
+                    new Cypher.Return([Cypher.eq(Cypher.count(targetNode), new Cypher.Literal(0)), notExistsReturnVar])
+                )
+            );
+            // return Cypher.and(new Cypher.Exists(matchClause), Cypher.not(new Cypher.Exists(notExistsMatchClause)));
+            return {
+                predicate: Cypher.and(
+                    Cypher.eq(notExistsReturnVar, new Cypher.Literal(true)),
+                    Cypher.eq(returnVar, new Cypher.Literal(true))
+                ),
+                preComputedSubqueries: Cypher.concat(subquery, notExistsSubquery),
+            };
+        }
+        case "single": {
+            const subquery = new Cypher.Call(
+                Cypher.concat(
+                    subqueryContents,
+                    new Cypher.Return([Cypher.eq(Cypher.count(targetNode), new Cypher.Literal(1)), returnVar])
+                )
+            );
+            return {
+                predicate: Cypher.eq(returnVar, new Cypher.Literal(true)),
+                preComputedSubqueries: Cypher.concat(subquery),
+            };
+        }
+        case "not":
+        case "none":
+        case "any":
+        default: {
+            const subquery = new Cypher.Call(
+                Cypher.concat(
+                    subqueryContents,
+                    new Cypher.Return([Cypher.gt(Cypher.count(targetNode), new Cypher.Literal(0)), returnVar])
+                )
+            );
+            if (["not", "none"].includes(listPredicateStr)) {
+                return {
+                    predicate: Cypher.eq(returnVar, new Cypher.Literal(false)),
+                    preComputedSubqueries: Cypher.concat(subquery),
+                };
             }
-        );
-
-        withCollects.push(
-            new Cypher.With(
-                ...outerRelationshipData.connectionPredicateData.map((relData) => relData.sourceNode),
-                ...nonCollectingVariables,
-                ...collectingVariables.map<[Cypher.Function, Cypher.Variable]>((returnVar) => [
-                    Cypher.collect(returnVar),
-                    returnVar,
-                ])
-            )
-        );
-        outerRelationshipData.connectionPredicateData.pop();
+            return {
+                predicate: Cypher.eq(returnVar, new Cypher.Literal(true)),
+                preComputedSubqueries: Cypher.concat(subquery),
+            };
+        }
     }
-    const returnClause = new Cypher.Return(...outerRelationshipData.returnClauses);
-    outerRelationshipData.returnClauses = [];
-    return {
-        predicate,
-        preComputedSubqueries: Cypher.concat(
-            new Cypher.Call(
-                Cypher.concat(...optionalMatches, preComputedSubqueries, ...withCollects, returnClause)
-            ).innerWith(topLevelNode)
-        ),
-    };
 }

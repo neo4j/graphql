@@ -50,7 +50,6 @@ export function createConnectionOperation({
     operator: string | undefined;
     outerRelationshipData: OuterRelationshipData;
 }): PredicateReturn {
-    const topLevelRel = outerRelationshipData.connectionPredicateData.length === 0;
     let nodeEntries: Record<string, any>;
 
     if (!connectionField?.relationship.union) {
@@ -140,27 +139,39 @@ export function createConnectionOperation({
             innerOperation.predicate = Cypher.and(innerOperation.predicate, orOperatorMultipleNodeLabels);
         }
 
-        subqueries = Cypher.concat(subqueries, innerOperation.preComputedSubqueries);
         matchPatterns.push(matchPattern);
 
         if (listPredicateStr === "any" && !connectionField.relationship.typeMeta.array) {
             listPredicateStr = "single";
         }
 
-        const predicate = createRelationshipPredicate({
-            matchPattern,
-            listPredicateStr,
-            childNode,
-            innerOperation: innerOperation.predicate,
-            edgePredicate: true,
-        });
+        if (
+            innerOperation.predicate &&
+            innerOperation.preComputedSubqueries &&
+            !innerOperation.preComputedSubqueries.empty
+        ) {
+            const { predicate, preComputedSubqueries } = wrapAggregationSubqueries({
+                parentNode,
+                targetNode: childNode,
+                targetPattern: matchPattern,
+                preComputedSubqueries: innerOperation.preComputedSubqueries,
+                innerOperation: innerOperation.predicate,
+                listPredicateStr,
+            });
+            operations.push(predicate);
+            subqueries = Cypher.concat(subqueries, preComputedSubqueries);
+        } else {
+            const predicate = createRelationshipPredicate({
+                matchPattern,
+                listPredicateStr,
+                childNode,
+                innerOperation: innerOperation.predicate,
+                edgePredicate: true,
+            });
 
-        operations.push(predicate);
+            operations.push(predicate);
+        }
     });
-
-    if (topLevelRel && subqueries && !subqueries.empty) {
-        return wrapAggregationSubqueries(outerRelationshipData, subqueries, Cypher.and(...operations));
-    }
 
     return {
         predicate: Cypher.and(...operations),
