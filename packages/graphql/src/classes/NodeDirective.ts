@@ -26,19 +26,16 @@ export interface NodeDirectiveConstructor {
     label?: string;
     additionalLabels?: string[];
     labels?: string[];
-    plural?: string;
 }
 
 export class NodeDirective {
     public readonly label: string | undefined;
     public readonly additionalLabels: string[];
-    public readonly plural: string | undefined;
     public readonly labels: string[];
 
     constructor(input: NodeDirectiveConstructor) {
         this.label = input.label;
         this.additionalLabels = input.additionalLabels || [];
-        this.plural = input.plural;
         this.labels = input.labels || [];
     }
 
