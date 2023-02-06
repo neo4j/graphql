@@ -20,7 +20,7 @@
 import type { CypherEnvironment } from "../Environment";
 import type { RelationshipRef } from "../references/RelationshipRef";
 import { NodeRef } from "../references/NodeRef";
-import { MatchParams, Pattern } from "../Pattern";
+import { MatchParams, Pattern } from "../pattern/Pattern";
 import { Clause } from "./Clause";
 import { OnCreate, OnCreateParam } from "./sub-clauses/OnCreate";
 import { WithReturn } from "./mixins/WithReturn";

@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import Cypher from ".";
-import { CypherEnvironment } from "./Environment";
+import Cypher from "..";
+import { CypherEnvironment } from "../Environment";
 import { Pattern } from "./Pattern";
 
 describe("Pattern", () => {

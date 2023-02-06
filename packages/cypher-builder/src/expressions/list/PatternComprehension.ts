@@ -21,7 +21,7 @@ import { WithWhere } from "../../clauses/mixins/WithWhere";
 import { mixin } from "../../clauses/utils/mixin";
 import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
-import { MatchableElement, Pattern } from "../../Pattern";
+import { MatchableElement, Pattern } from "../../pattern/Pattern";
 import type { Expr } from "../../types";
 import { compileCypherIfExists } from "../../utils/compile-cypher-if-exists";
 

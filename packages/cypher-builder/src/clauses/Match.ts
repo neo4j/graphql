@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { MatchableElement, MatchParams, Pattern } from "../Pattern";
+import { MatchableElement, MatchParams, Pattern } from "../pattern/Pattern";
 import { Clause } from "./Clause";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import { WithReturn } from "./mixins/WithReturn";

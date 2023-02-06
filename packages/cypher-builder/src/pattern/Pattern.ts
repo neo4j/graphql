@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import { stringifyObject } from "./utils/stringify-object";
-import { escapeLabel } from "./utils/escape-label";
-import { padLeft } from "./utils/pad-left";
-import type { NodeRef } from "./references/NodeRef";
-import type { RelationshipRef } from "./references/RelationshipRef";
-import type { CypherEnvironment } from "./Environment";
-import type { Param } from "./references/Param";
-import type { CypherCompilable } from "./types";
+import { stringifyObject } from "../utils/stringify-object";
+import { escapeLabel } from "../utils/escape-label";
+import { padLeft } from "../utils/pad-left";
+import type { RelationshipRef } from "../references/RelationshipRef";
+import type { CypherEnvironment } from "../Environment";
+import type { Param } from "../references/Param";
+import type { CypherCompilable } from "../types";
+import type { NodeRef } from "../references/NodeRef";
 
 export type MatchableElement = NodeRef | RelationshipRef;
 

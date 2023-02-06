@@ -18,14 +18,32 @@
  */
 
 import type { NodeRef } from "./NodeRef";
-import { MatchPatternOptions, Pattern } from "../Pattern";
+import { MatchPatternOptions, Pattern } from "../pattern/Pattern";
 import { Reference } from "./Reference";
+import type { Param } from "./Param";
 
 export type RelationshipInput = {
     source: NodeRef;
     target: NodeRef;
     type?: string;
 };
+
+export type RelationshipProperties = Record<string, Param<any>>;
+
+export class NewRelationshipRef extends Reference {
+    private _type: string | undefined;
+    public properties: RelationshipProperties;
+
+    constructor(input: { type?: string; properties?: RelationshipProperties }) {
+        super("this");
+        this._type = input.type || undefined;
+        this.properties = input.properties || {};
+    }
+
+    public get type(): string | undefined {
+        return this._type;
+    }
+}
 
 /** Reference to a relationship property
  * @group References
