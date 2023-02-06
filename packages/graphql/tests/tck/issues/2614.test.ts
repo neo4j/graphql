@@ -32,7 +32,7 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
                 actors: [Actor!]!
             }
             
-            type Movie implements Production @node(label:"Film"){
+            type Movie implements Production @node(labels:["Film"]){
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 runtime: Int!

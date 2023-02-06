@@ -102,4 +102,48 @@ describe("Cypher -> Connections -> Filtering -> Node -> AND", () => {
             }"
         `);
     });
+
+    test("NOT", async () => {
+        const query = gql`
+            query {
+                movies {
+                    title
+                    actorsConnection(where: { node: { NOT: { firstName: "Tom" } } }) {
+                        edges {
+                            screenTime
+                            node {
+                                firstName
+                                lastName
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Movie\`)
+            CALL {
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE NOT (this_Actor.firstName = $this_connection_actorsConnectionparam0)
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { firstName: this_Actor.firstName, lastName: this_Actor.lastName } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+            }
+            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_connection_actorsConnectionparam0\\": \\"Tom\\"
+            }"
+        `);
+    });
 });

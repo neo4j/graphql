@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
@@ -36,7 +36,7 @@ describe("Delete Subscription", () => {
     let typeMovie: UniqueType;
 
     beforeEach(async () => {
-        typeMovie = generateUniqueType("Movie");
+        typeMovie = new UniqueType("Movie");
         const typeDefs = `
         type ${typeMovie} {
             id: ID
@@ -153,7 +153,6 @@ describe("Delete Subscription", () => {
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
-
     test("create subscription with where OR", async () => {
         await wsClient.subscribe(`
             subscription {
@@ -1000,6 +999,97 @@ describe("Delete Subscription", () => {
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
+    });
+    // NOT Operator tests
+    test("delete subscription with where NOT operator 1 result", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { NOT: { title: "movie3" } }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie3" });
+        await createMovie({ title: "movie4" });
+
+        await deleteMovie("title", "movie3");
+        await deleteMovie("title", "movie4");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie4" },
+                },
+            },
+        ]);
+    });
+    test("create subscription with where OR nested NOT OR match 1", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: {
+                OR: [
+                    { title: "movie1" },
+                    { 
+                        NOT: { 
+                            OR: [
+                                { title: "movie2" },
+                                { title: "movie3" }
+                            ]
+                        }
+                    }
+                ]
+            }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    title
+                }
+            }
+        }
+    `);
+
+        await createMovie({ title: "movie1", releasedIn: 2020 });
+        await createMovie({ title: "movie2", releasedIn: 2000 });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                },
+            },
+        ]);
+    });
+    test("subscription with NOT IN on Int", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { NOT: { releasedIn_IN: [2020, 2000] } }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    releasedIn
+                }
+            }
+           }
+        `);
+
+        await createMovie({ releasedIn: 2001 });
+        await createMovie({ releasedIn: 2000 });
+
+        await deleteMovie("releasedIn", 2001);
+        await deleteMovie("releasedIn", 2000);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { releasedIn: 2001 },
+                },
+            },
+        ]);
     });
 
     const makeTypedFieldValue = (value) => {

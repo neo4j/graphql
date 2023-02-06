@@ -19,7 +19,7 @@
 
 import { PropertyRef } from "./PropertyRef";
 import { ListIndex } from "../expressions/list/ListIndex";
-import type { CypherCompilable } from "../types";
+import type { CypherCompilable, Expr } from "../types";
 import type { CypherEnvironment } from "../Environment";
 
 /** Represents a reference that will be kept in the environment */
@@ -39,7 +39,7 @@ export abstract class Reference implements CypherCompilable {
     }
 
     /** Access individual property via the PropertyRef class, using the dot notation */
-    public property(path: string): PropertyRef {
+    public property(path: string | Expr): PropertyRef {
         return new PropertyRef(this, path);
     }
 

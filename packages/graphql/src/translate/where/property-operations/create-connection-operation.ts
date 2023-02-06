@@ -25,7 +25,8 @@ import type { WhereOperator } from "../types";
 // Recursive function
 
 import { createWherePredicate } from "../create-where-predicate";
-import { filterTruthy } from "../../../utils/utils";
+import { asArray, filterTruthy } from "../../../utils/utils";
+import { getCypherLogicalOperator, isLogicalOperator } from "../../utils/logical-operators";
 import { createRelationshipPredicate } from "./create-relationship-operation";
 
 export function createConnectionOperation({
@@ -193,9 +194,9 @@ export function createConnectionWherePropertyOperation({
     const preComputedSubqueriesResult: (Cypher.CompositeClause | undefined)[] = [];
     const params: (Cypher.Predicate | undefined)[] = [];
     Object.entries(whereInput).forEach(([key, value]) => {
-        if (key === "AND" || key === "OR") {
+        if (isLogicalOperator(key)) {
             const subOperations: (Cypher.Predicate | undefined)[] = [];
-            (value as Array<any>).forEach((input) => {
+            asArray(value).forEach((input) => {
                 const {
                     predicate,
                     preComputedSubqueries,
@@ -216,14 +217,9 @@ export function createConnectionWherePropertyOperation({
                 requiredVariables.push(...innerRequiredVariables);
                 aggregatingVariables.push(...innerAggregatingVariables);
             });
-            if (key === "AND") {
-                params.push(Cypher.and(...filterTruthy(subOperations)));
-                return;
-            }
-            if (key === "OR") {
-                params.push(Cypher.or(...filterTruthy(subOperations)));
-                return;
-            }
+            const cypherLogicalOperator = getCypherLogicalOperator(key);
+            params.push(cypherLogicalOperator(...filterTruthy(subOperations)));
+            return;
         }
 
         if (key.startsWith("edge")) {

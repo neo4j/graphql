@@ -21,7 +21,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/2249", () => {
     let driver: Driver;
@@ -39,9 +39,9 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
     });
 
     beforeEach(async () => {
-        Movie = generateUniqueType("Movie");
-        Person = generateUniqueType("Person");
-        Influencer = generateUniqueType("Influencer");
+        Movie = new UniqueType("Movie");
+        Person = new UniqueType("Person");
+        Influencer = new UniqueType("Influencer");
         session = await neo4j.getSession();
 
         const typeDefs = `

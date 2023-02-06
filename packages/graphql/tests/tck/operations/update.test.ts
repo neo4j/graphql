@@ -108,25 +108,21 @@ describe("Cypher Update", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
             WITH this
-            OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
-            SET this_actors0.name = $this_update_actors0_name
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
-            YIELD value AS _
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
+            	SET this_actors0.name = $this_update_actors0_name
+            	RETURN count(*) AS update_this_actors0
+            }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_update_actors0_where_Actorparam0\\": \\"old name\\",
+                \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"old name\\",
                 \\"this_update_actors0_name\\": \\"new name\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                },
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -192,35 +188,31 @@ describe("Cypher Update", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
             WITH this
-            OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
-            SET this_actors0.name = $this_update_actors0_name
-            WITH this, this_actors0
-            OPTIONAL MATCH (this_actors0)-[this_actors0_acted_in0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
-            WHERE this_actors0_movies0.id = $updateMovies_args_update_actors0_update_node_movies0_where_Movieparam0
-            CALL apoc.do.when(this_actors0_movies0 IS NOT NULL, \\\\\\"
-            SET this_actors0_movies0.title = $this_update_actors0_movies0_title
-            RETURN count(*) AS _
-            \\\\\\", \\\\\\"\\\\\\", {this:this, this_actors0:this_actors0, updateMovies: $updateMovies, this_actors0_movies0:this_actors0_movies0, auth:$auth,this_update_actors0_movies0_title:$this_update_actors0_movies0_title})
-            YIELD value AS _
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name,updateMovies_args_update_actors0_update_node_movies0_where_Movieparam0:$updateMovies_args_update_actors0_update_node_movies0_where_Movieparam0,this_update_actors0_movies0_title:$this_update_actors0_movies0_title})
-            YIELD value AS _
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
+            	SET this_actors0.name = $this_update_actors0_name
+            	WITH this, this_actors0
+            	CALL {
+            		WITH this, this_actors0
+            		MATCH (this_actors0)-[this_actors0_acted_in0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
+            		WHERE this_actors0_movies0.id = $updateMovies_args_update_actors0_update_node_movies0_where_this_actors0_movies0param0
+            		SET this_actors0_movies0.title = $this_update_actors0_movies0_title
+            		RETURN count(*) AS update_this_actors0_movies0
+            	}
+            	RETURN count(*) AS update_this_actors0
+            }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_update_actors0_where_Actorparam0\\": \\"old actor name\\",
+                \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"old actor name\\",
                 \\"this_update_actors0_name\\": \\"new actor name\\",
-                \\"updateMovies_args_update_actors0_update_node_movies0_where_Movieparam0\\": \\"old movie title\\",
+                \\"updateMovies_args_update_actors0_update_node_movies0_where_this_actors0_movies0param0\\": \\"old movie title\\",
                 \\"this_update_actors0_movies0_title\\": \\"new movie title\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                },
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -413,7 +405,7 @@ describe("Cypher Update", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
-            WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actorparam0
+            WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_this_disconnect_actors0param0
             CALL {
             	WITH this_disconnect_actors0, this_disconnect_actors0_rel, this
             	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel, this
@@ -430,7 +422,7 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_disconnect_actors0_where_Actorparam0\\": \\"Daniel\\",
+                \\"updateMovies_args_disconnect_actors0_where_this_disconnect_actors0param0\\": \\"Daniel\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -479,7 +471,7 @@ describe("Cypher Update", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
-            WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actorparam0
+            WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_this_disconnect_actors0param0
             CALL {
             	WITH this_disconnect_actors0, this_disconnect_actors0_rel, this
             	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel, this
@@ -493,7 +485,7 @@ describe("Cypher Update", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors1_rel:ACTED_IN]-(this_disconnect_actors1:Actor)
-            WHERE this_disconnect_actors1.name = $updateMovies_args_disconnect_actors1_where_Actorparam0
+            WHERE this_disconnect_actors1.name = $updateMovies_args_disconnect_actors1_where_this_disconnect_actors1param0
             CALL {
             	WITH this_disconnect_actors1, this_disconnect_actors1_rel, this
             	WITH collect(this_disconnect_actors1) as this_disconnect_actors1, this_disconnect_actors1_rel, this
@@ -510,8 +502,8 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_disconnect_actors0_where_Actorparam0\\": \\"Daniel\\",
-                \\"updateMovies_args_disconnect_actors1_where_Actorparam0\\": \\"Darrell\\",
+                \\"updateMovies_args_disconnect_actors0_where_this_disconnect_actors0param0\\": \\"Daniel\\",
+                \\"updateMovies_args_disconnect_actors1_where_this_disconnect_actors1param0\\": \\"Darrell\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -725,7 +717,7 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
-            WHERE (this_delete_actors0_relationship.screenTime = $updateMovies_args_delete_actors0_where_Actorparam0 AND this_delete_actors0.name = $updateMovies_args_delete_actors0_where_Actorparam1)
+            WHERE (this_delete_actors0_relationship.screenTime = $updateMovies_args_delete_actors0_where_this_delete_actors0param0 AND this_delete_actors0.name = $updateMovies_args_delete_actors0_where_this_delete_actors0param1)
             WITH this, collect(DISTINCT this_delete_actors0) AS this_delete_actors0_to_delete
             CALL {
             	WITH this_delete_actors0_to_delete
@@ -740,11 +732,11 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_delete_actors0_where_Actorparam0\\": {
+                \\"updateMovies_args_delete_actors0_where_this_delete_actors0param0\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 },
-                \\"updateMovies_args_delete_actors0_where_Actorparam1\\": \\"Actor to delete\\",
+                \\"updateMovies_args_delete_actors0_where_this_delete_actors0param1\\": \\"Actor to delete\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"delete\\": {
@@ -800,16 +792,16 @@ describe("Cypher Update", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
             WITH this
-            OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
-            SET this_actors0.name = $this_update_actors0_name
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
-            YIELD value AS _
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
+            	SET this_actors0.name = $this_update_actors0_name
+            	RETURN count(*) AS update_this_actors0
+            }
             WITH this
             OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
-            WHERE this_delete_actors0.name = $updateMovies_args_delete_actors0_where_Actorparam0
+            WHERE this_delete_actors0.name = $updateMovies_args_delete_actors0_where_this_delete_actors0param0
             WITH this, collect(DISTINCT this_delete_actors0) AS this_delete_actors0_to_delete
             CALL {
             	WITH this_delete_actors0_to_delete
@@ -824,13 +816,9 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_update_actors0_where_Actorparam0\\": \\"Actor to update\\",
+                \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"Actor to update\\",
                 \\"this_update_actors0_name\\": \\"Updated name\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                },
-                \\"updateMovies_args_delete_actors0_where_Actorparam0\\": \\"Actor to delete\\",
+                \\"updateMovies_args_delete_actors0_where_this_delete_actors0param0\\": \\"Actor to delete\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -891,7 +879,7 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_delete0_relationship:ACTED_IN]-(this_actors0_delete0:Actor)
-            WHERE this_actors0_delete0.name = $updateMovies_args_update_actors0_delete0_where_Actorparam0
+            WHERE this_actors0_delete0.name = $updateMovies_args_update_actors0_delete0_where_this_actors0_delete0param0
             WITH this, collect(DISTINCT this_actors0_delete0) AS this_actors0_delete0_to_delete
             CALL {
             	WITH this_actors0_delete0_to_delete
@@ -905,7 +893,7 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_update_actors0_delete0_where_Actorparam0\\": \\"Actor to delete\\",
+                \\"updateMovies_args_update_actors0_delete0_where_this_actors0_delete0param0\\": \\"Actor to delete\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -961,10 +949,10 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_delete0_relationship:ACTED_IN]-(this_actors0_delete0:Actor)
-            WHERE this_actors0_delete0.name = $updateMovies_args_update_actors0_delete0_where_Actorparam0
+            WHERE this_actors0_delete0.name = $updateMovies_args_update_actors0_delete0_where_this_actors0_delete0param0
             WITH this, this_actors0_delete0
             OPTIONAL MATCH (this_actors0_delete0)-[this_actors0_delete0_movies0_relationship:ACTED_IN]->(this_actors0_delete0_movies0:Movie)
-            WHERE this_actors0_delete0_movies0.id = $updateMovies_args_update_actors0_delete0_delete_movies0_where_Movieparam0
+            WHERE this_actors0_delete0_movies0.id = $updateMovies_args_update_actors0_delete0_delete_movies0_where_this_actors0_delete0_movies0param0
             WITH this, this_actors0_delete0, collect(DISTINCT this_actors0_delete0_movies0) AS this_actors0_delete0_movies0_to_delete
             CALL {
             	WITH this_actors0_delete0_movies0_to_delete
@@ -985,8 +973,8 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_update_actors0_delete0_where_Actorparam0\\": \\"Actor to delete\\",
-                \\"updateMovies_args_update_actors0_delete0_delete_movies0_where_Movieparam0\\": \\"2\\",
+                \\"updateMovies_args_update_actors0_delete0_where_this_actors0_delete0param0\\": \\"Actor to delete\\",
+                \\"updateMovies_args_update_actors0_delete0_delete_movies0_where_this_actors0_delete0_movies0param0\\": \\"2\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {

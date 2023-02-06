@@ -22,7 +22,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql, GraphQLError } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("https://github.com/neo4j/graphql/issues/2474", () => {
@@ -41,9 +41,9 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
     });
 
     beforeEach(async () => {
-        User = generateUniqueType("User");
-        Organization = generateUniqueType("Organization");
-        Group = generateUniqueType("Group");
+        User = new UniqueType("User");
+        Organization = new UniqueType("Organization");
+        Group = new UniqueType("Group");
 
         session = await neo4j.getSession();
 

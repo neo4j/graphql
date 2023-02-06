@@ -289,7 +289,7 @@ describe("Cypher Auth Roles", () => {
                 WITH *
                 CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH *
-                CALL apoc.util.validate((create_var1.password IS NOT NULL AND NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT (create_var1.password IS NULL OR any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this0
             }
             RETURN collect(create_this0 { .id }) AS data"
@@ -497,41 +497,41 @@ describe("Cypher Auth Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Comment\`)
             WITH this
-            OPTIONAL MATCH (this)<-[this_has_comment0_relationship:HAS_COMMENT]-(this_post0:Post)
-            CALL apoc.do.when(this_post0 IS NOT NULL, \\"
-            WITH this, this_post0
             CALL {
+            	WITH this
+            	MATCH (this)<-[this_has_comment0_relationship:HAS_COMMENT]-(this_post0:Post)
             	WITH this, this_post0
-            	OPTIONAL MATCH (this_post0_creator0_connect0_node:User)
-            	WHERE this_post0_creator0_connect0_node.id = $this_post0_creator0_connect0_node_param0
-            	WITH this, this_post0, this_post0_creator0_connect0_node
-            	CALL apoc.util.validate(NOT (any(auth_var1 IN [\\\\\\"admin\\\\\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND any(auth_var1 IN [\\\\\\"super-admin\\\\\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             	CALL {
-            		WITH *
-            		WITH this, collect(this_post0_creator0_connect0_node) as connectedNodes, collect(this_post0) as parentNodes
+            		WITH this, this_post0
+            		OPTIONAL MATCH (this_post0_creator0_connect0_node:User)
+            		WHERE this_post0_creator0_connect0_node.id = $this_post0_creator0_connect0_node_param0
+            		WITH this, this_post0, this_post0_creator0_connect0_node
+            		CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             		CALL {
-            			WITH connectedNodes, parentNodes
-            			UNWIND parentNodes as this_post0
-            			UNWIND connectedNodes as this_post0_creator0_connect0_node
-            			MERGE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0_node)
+            			WITH *
+            			WITH this, collect(this_post0_creator0_connect0_node) as connectedNodes, collect(this_post0) as parentNodes
+            			CALL {
+            				WITH connectedNodes, parentNodes
+            				UNWIND parentNodes as this_post0
+            				UNWIND connectedNodes as this_post0_creator0_connect0_node
+            				MERGE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0_node)
+            				RETURN count(*) AS _
+            			}
             			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
+            	WITH this, this_post0, this_post0_creator0_connect0_node
+            		RETURN count(*) AS connect_this_post0_creator0_connect_User
             	}
-            WITH this, this_post0, this_post0_creator0_connect0_node
-            	RETURN count(*) AS connect_this_post0_creator0_connect_User
+            	WITH this, this_post0
+            	CALL {
+            		WITH this_post0
+            		MATCH (this_post0)-[this_post0_creator_User_unique:HAS_POST]->(:User)
+            		WITH count(this_post0_creator_User_unique) as c
+            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
+            		RETURN c AS this_post0_creator_User_unique_ignored
+            	}
+            	RETURN count(*) AS update_this_post0
             }
-            WITH this, this_post0
-            CALL {
-            	WITH this_post0
-            	MATCH (this_post0)-[this_post0_creator_User_unique:HAS_POST]->(:User)
-            	WITH count(this_post0_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
-            	RETURN c AS this_post0_creator_User_unique_ignored
-            }
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateComments: $updateComments, this_post0:this_post0, auth:$auth,this_post0_creator0_connect0_node_param0:$this_post0_creator0_connect0_node_param0})
-            YIELD value AS _
             WITH this
             CALL {
             	WITH this
@@ -546,6 +546,7 @@ describe("Cypher Auth Roles", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_post0_creator0_connect0_node_param0\\": \\"user-id\\",
+                \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -557,30 +558,7 @@ describe("Cypher Auth Roles", () => {
                         ],
                         \\"sub\\": \\"super_admin\\"
                     }
-                },
-                \\"updateComments\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"post\\": {
-                                \\"update\\": {
-                                    \\"node\\": {
-                                        \\"creator\\": {
-                                            \\"connect\\": {
-                                                \\"where\\": {
-                                                    \\"node\\": {
-                                                        \\"id\\": \\"user-id\\"
-                                                    }
-                                                },
-                                                \\"overwrite\\": true
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });
@@ -673,35 +651,35 @@ describe("Cypher Auth Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Comment\`)
             WITH this
-            OPTIONAL MATCH (this)<-[this_has_comment0_relationship:HAS_COMMENT]-(this_post0:Post)
-            CALL apoc.do.when(this_post0 IS NOT NULL, \\"
-            WITH this, this_post0
             CALL {
-            WITH this, this_post0
-            OPTIONAL MATCH (this_post0)-[this_post0_creator0_disconnect0_rel:HAS_POST]->(this_post0_creator0_disconnect0:User)
-            WHERE this_post0_creator0_disconnect0.id = $updateComments_args_update_post_update_node_creator_disconnect_where_Userparam0
-            WITH this, this_post0, this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel
-            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\\\\\"super-admin\\\\\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND any(auth_var1 IN [\\\\\\"admin\\\\\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
-            CALL {
-            	WITH this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel, this_post0
-            	WITH collect(this_post0_creator0_disconnect0) as this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel, this_post0
-            	UNWIND this_post0_creator0_disconnect0 as x
-            	DELETE this_post0_creator0_disconnect0_rel
-            	RETURN count(*) AS _
+            	WITH this
+            	MATCH (this)<-[this_has_comment0_relationship:HAS_COMMENT]-(this_post0:Post)
+            	WITH this, this_post0
+            	CALL {
+            	WITH this, this_post0
+            	OPTIONAL MATCH (this_post0)-[this_post0_creator0_disconnect0_rel:HAS_POST]->(this_post0_creator0_disconnect0:User)
+            	WHERE this_post0_creator0_disconnect0.id = $updateComments_args_update_post_update_node_creator_disconnect_where_this_post0_creator0_disconnect0param0
+            	WITH this, this_post0, this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel
+            	CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	CALL {
+            		WITH this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel, this_post0
+            		WITH collect(this_post0_creator0_disconnect0) as this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel, this_post0
+            		UNWIND this_post0_creator0_disconnect0 as x
+            		DELETE this_post0_creator0_disconnect0_rel
+            		RETURN count(*) AS _
+            	}
+            	RETURN count(*) AS disconnect_this_post0_creator0_disconnect_User
+            	}
+            	WITH this, this_post0
+            	CALL {
+            		WITH this_post0
+            		MATCH (this_post0)-[this_post0_creator_User_unique:HAS_POST]->(:User)
+            		WITH count(this_post0_creator_User_unique) as c
+            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
+            		RETURN c AS this_post0_creator_User_unique_ignored
+            	}
+            	RETURN count(*) AS update_this_post0
             }
-            RETURN count(*) AS disconnect_this_post0_creator0_disconnect_User
-            }
-            WITH this, this_post0
-            CALL {
-            	WITH this_post0
-            	MATCH (this_post0)-[this_post0_creator_User_unique:HAS_POST]->(:User)
-            	WITH count(this_post0_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
-            	RETURN c AS this_post0_creator_User_unique_ignored
-            }
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateComments: $updateComments, this_post0:this_post0, auth:$auth,updateComments_args_update_post_update_node_creator_disconnect_where_Userparam0:$updateComments_args_update_post_update_node_creator_disconnect_where_Userparam0})
-            YIELD value AS _
             WITH this
             CALL {
             	WITH this
@@ -715,19 +693,7 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateComments_args_update_post_update_node_creator_disconnect_where_Userparam0\\": \\"user-id\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"super_admin\\"
-                    }
-                },
+                \\"updateComments_args_update_post_update_node_creator_disconnect_where_this_post0_creator0_disconnect0param0\\": \\"user-id\\",
                 \\"updateComments\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -749,7 +715,19 @@ describe("Cypher Auth Roles", () => {
                         }
                     }
                 },
-                \\"resolvedCallbacks\\": {}
+                \\"resolvedCallbacks\\": {},
+                \\"auth\\": {
+                    \\"isAuthenticated\\": true,
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"jwt\\": {
+                        \\"roles\\": [
+                            \\"admin\\"
+                        ],
+                        \\"sub\\": \\"super_admin\\"
+                    }
+                }
             }"
         `);
     });

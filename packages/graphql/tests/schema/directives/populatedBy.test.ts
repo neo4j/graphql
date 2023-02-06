@@ -183,46 +183,47 @@ describe("@populatedBy tests", () => {
 
                 input MovieWhere {
                   AND: [MovieWhere!]
+                  NOT: MovieWhere
                   OR: [MovieWhere!]
                   callback1: String
                   callback1_CONTAINS: String
                   callback1_ENDS_WITH: String
                   callback1_IN: [String!]
-                  callback1_NOT: String
-                  callback1_NOT_CONTAINS: String
-                  callback1_NOT_ENDS_WITH: String
-                  callback1_NOT_IN: [String!]
-                  callback1_NOT_STARTS_WITH: String
+                  callback1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback1_STARTS_WITH: String
                   callback2: String
                   callback2_CONTAINS: String
                   callback2_ENDS_WITH: String
                   callback2_IN: [String!]
-                  callback2_NOT: String
-                  callback2_NOT_CONTAINS: String
-                  callback2_NOT_ENDS_WITH: String
-                  callback2_NOT_IN: [String!]
-                  callback2_NOT_STARTS_WITH: String
+                  callback2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback2_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback2_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback2_STARTS_WITH: String
                   callback3: String
                   callback3_CONTAINS: String
                   callback3_ENDS_WITH: String
                   callback3_IN: [String!]
-                  callback3_NOT: String
-                  callback3_NOT_CONTAINS: String
-                  callback3_NOT_ENDS_WITH: String
-                  callback3_NOT_IN: [String!]
-                  callback3_NOT_STARTS_WITH: String
+                  callback3_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback3_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback3_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback3_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback3_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback3_STARTS_WITH: String
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_IN: [ID]
-                  id_NOT: ID
-                  id_NOT_CONTAINS: ID
-                  id_NOT_ENDS_WITH: ID
-                  id_NOT_IN: [ID]
-                  id_NOT_STARTS_WITH: ID
+                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -390,6 +391,7 @@ describe("@populatedBy tests", () => {
 
                 input MovieWhere {
                   AND: [MovieWhere!]
+                  NOT: MovieWhere
                   OR: [MovieWhere!]
                   callback1: Int
                   callback1_GT: Int
@@ -397,33 +399,33 @@ describe("@populatedBy tests", () => {
                   callback1_IN: [Int!]
                   callback1_LT: Int
                   callback1_LTE: Int
-                  callback1_NOT: Int
-                  callback1_NOT_IN: [Int!]
+                  callback1_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback1_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback2: Int
                   callback2_GT: Int
                   callback2_GTE: Int
                   callback2_IN: [Int!]
                   callback2_LT: Int
                   callback2_LTE: Int
-                  callback2_NOT: Int
-                  callback2_NOT_IN: [Int!]
+                  callback2_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback2_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback3: Int
                   callback3_GT: Int
                   callback3_GTE: Int
                   callback3_IN: [Int!]
                   callback3_LT: Int
                   callback3_LTE: Int
-                  callback3_NOT: Int
-                  callback3_NOT_IN: [Int!]
+                  callback3_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback3_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_IN: [ID]
-                  id_NOT: ID
-                  id_NOT_CONTAINS: ID
-                  id_NOT_ENDS_WITH: ID
-                  id_NOT_IN: [ID]
-                  id_NOT_STARTS_WITH: ID
+                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -665,16 +667,17 @@ describe("@populatedBy tests", () => {
 
                 input GenreWhere {
                   AND: [GenreWhere!]
+                  NOT: GenreWhere
                   OR: [GenreWhere!]
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_IN: [ID!]
-                  id_NOT: ID
-                  id_NOT_CONTAINS: ID
-                  id_NOT_ENDS_WITH: ID
-                  id_NOT_IN: [ID!]
-                  id_NOT_STARTS_WITH: ID
+                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -747,6 +750,7 @@ describe("@populatedBy tests", () => {
 
                 input MovieGenresAggregateInput {
                   AND: [MovieGenresAggregateInput!]
+                  NOT: MovieGenresAggregateInput
                   OR: [MovieGenresAggregateInput!]
                   count: Int
                   count_GT: Int
@@ -779,11 +783,12 @@ describe("@populatedBy tests", () => {
 
                 input MovieGenresConnectionWhere {
                   AND: [MovieGenresConnectionWhere!]
+                  NOT: MovieGenresConnectionWhere
                   OR: [MovieGenresConnectionWhere!]
                   edge: RelPropertiesWhere
-                  edge_NOT: RelPropertiesWhere
+                  edge_NOT: RelPropertiesWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   node: GenreWhere
-                  node_NOT: GenreWhere
+                  node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieGenresCreateFieldInput {
@@ -801,68 +806,114 @@ describe("@populatedBy tests", () => {
 
                 input MovieGenresEdgeAggregationWhereInput {
                   AND: [MovieGenresEdgeAggregationWhereInput!]
+                  NOT: MovieGenresEdgeAggregationWhereInput
                   OR: [MovieGenresEdgeAggregationWhereInput!]
-                  callback1_AVERAGE_EQUAL: Float
-                  callback1_AVERAGE_GT: Float
-                  callback1_AVERAGE_GTE: Float
-                  callback1_AVERAGE_LT: Float
-                  callback1_AVERAGE_LTE: Float
-                  callback1_EQUAL: String
-                  callback1_GT: Int
-                  callback1_GTE: Int
-                  callback1_LONGEST_EQUAL: Int
-                  callback1_LONGEST_GT: Int
-                  callback1_LONGEST_GTE: Int
-                  callback1_LONGEST_LT: Int
-                  callback1_LONGEST_LTE: Int
-                  callback1_LT: Int
-                  callback1_LTE: Int
-                  callback1_SHORTEST_EQUAL: Int
-                  callback1_SHORTEST_GT: Int
-                  callback1_SHORTEST_GTE: Int
-                  callback1_SHORTEST_LT: Int
-                  callback1_SHORTEST_LTE: Int
-                  callback2_AVERAGE_EQUAL: Float
-                  callback2_AVERAGE_GT: Float
-                  callback2_AVERAGE_GTE: Float
-                  callback2_AVERAGE_LT: Float
-                  callback2_AVERAGE_LTE: Float
-                  callback2_EQUAL: String
-                  callback2_GT: Int
-                  callback2_GTE: Int
-                  callback2_LONGEST_EQUAL: Int
-                  callback2_LONGEST_GT: Int
-                  callback2_LONGEST_GTE: Int
-                  callback2_LONGEST_LT: Int
-                  callback2_LONGEST_LTE: Int
-                  callback2_LT: Int
-                  callback2_LTE: Int
-                  callback2_SHORTEST_EQUAL: Int
-                  callback2_SHORTEST_GT: Int
-                  callback2_SHORTEST_GTE: Int
-                  callback2_SHORTEST_LT: Int
-                  callback2_SHORTEST_LTE: Int
-                  callback3_AVERAGE_EQUAL: Float
-                  callback3_AVERAGE_GT: Float
-                  callback3_AVERAGE_GTE: Float
-                  callback3_AVERAGE_LT: Float
-                  callback3_AVERAGE_LTE: Float
-                  callback3_EQUAL: String
-                  callback3_GT: Int
-                  callback3_GTE: Int
-                  callback3_LONGEST_EQUAL: Int
-                  callback3_LONGEST_GT: Int
-                  callback3_LONGEST_GTE: Int
-                  callback3_LONGEST_LT: Int
-                  callback3_LONGEST_LTE: Int
-                  callback3_LT: Int
-                  callback3_LTE: Int
-                  callback3_SHORTEST_EQUAL: Int
-                  callback3_SHORTEST_GT: Int
-                  callback3_SHORTEST_GTE: Int
-                  callback3_SHORTEST_LT: Int
-                  callback3_SHORTEST_LTE: Int
-                  id_EQUAL: ID
+                  callback1_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback1_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback1_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback1_AVERAGE_LENGTH_EQUAL: Float
+                  callback1_AVERAGE_LENGTH_GT: Float
+                  callback1_AVERAGE_LENGTH_GTE: Float
+                  callback1_AVERAGE_LENGTH_LT: Float
+                  callback1_AVERAGE_LENGTH_LTE: Float
+                  callback1_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback1_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback1_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback1_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback1_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback1_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback1_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback1_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback1_LONGEST_LENGTH_EQUAL: Int
+                  callback1_LONGEST_LENGTH_GT: Int
+                  callback1_LONGEST_LENGTH_GTE: Int
+                  callback1_LONGEST_LENGTH_LT: Int
+                  callback1_LONGEST_LENGTH_LTE: Int
+                  callback1_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback1_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback1_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback1_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback1_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback1_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback1_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback1_SHORTEST_LENGTH_EQUAL: Int
+                  callback1_SHORTEST_LENGTH_GT: Int
+                  callback1_SHORTEST_LENGTH_GTE: Int
+                  callback1_SHORTEST_LENGTH_LT: Int
+                  callback1_SHORTEST_LENGTH_LTE: Int
+                  callback1_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback1_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback2_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback2_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback2_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback2_AVERAGE_LENGTH_EQUAL: Float
+                  callback2_AVERAGE_LENGTH_GT: Float
+                  callback2_AVERAGE_LENGTH_GTE: Float
+                  callback2_AVERAGE_LENGTH_LT: Float
+                  callback2_AVERAGE_LENGTH_LTE: Float
+                  callback2_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback2_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback2_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback2_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback2_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback2_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback2_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback2_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback2_LONGEST_LENGTH_EQUAL: Int
+                  callback2_LONGEST_LENGTH_GT: Int
+                  callback2_LONGEST_LENGTH_GTE: Int
+                  callback2_LONGEST_LENGTH_LT: Int
+                  callback2_LONGEST_LENGTH_LTE: Int
+                  callback2_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback2_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback2_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback2_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback2_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback2_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback2_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback2_SHORTEST_LENGTH_EQUAL: Int
+                  callback2_SHORTEST_LENGTH_GT: Int
+                  callback2_SHORTEST_LENGTH_GTE: Int
+                  callback2_SHORTEST_LENGTH_LT: Int
+                  callback2_SHORTEST_LENGTH_LTE: Int
+                  callback2_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback2_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback3_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback3_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback3_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback3_AVERAGE_LENGTH_EQUAL: Float
+                  callback3_AVERAGE_LENGTH_GT: Float
+                  callback3_AVERAGE_LENGTH_GTE: Float
+                  callback3_AVERAGE_LENGTH_LT: Float
+                  callback3_AVERAGE_LENGTH_LTE: Float
+                  callback3_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback3_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback3_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback3_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback3_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback3_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback3_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback3_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback3_LONGEST_LENGTH_EQUAL: Int
+                  callback3_LONGEST_LENGTH_GT: Int
+                  callback3_LONGEST_LENGTH_GTE: Int
+                  callback3_LONGEST_LENGTH_LT: Int
+                  callback3_LONGEST_LENGTH_LTE: Int
+                  callback3_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback3_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback3_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback3_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback3_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback3_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback3_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback3_SHORTEST_LENGTH_EQUAL: Int
+                  callback3_SHORTEST_LENGTH_GT: Int
+                  callback3_SHORTEST_LENGTH_GTE: Int
+                  callback3_SHORTEST_LENGTH_LT: Int
+                  callback3_SHORTEST_LENGTH_LTE: Int
+                  callback3_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  callback3_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+                  id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                 }
 
                 input MovieGenresFieldInput {
@@ -872,8 +923,9 @@ describe("@populatedBy tests", () => {
 
                 input MovieGenresNodeAggregationWhereInput {
                   AND: [MovieGenresNodeAggregationWhereInput!]
+                  NOT: MovieGenresNodeAggregationWhereInput
                   OR: [MovieGenresNodeAggregationWhereInput!]
-                  id_EQUAL: ID
+                  id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                 }
 
                 type MovieGenresRelationship implements RelProperties {
@@ -926,6 +978,7 @@ describe("@populatedBy tests", () => {
 
                 input MovieWhere {
                   AND: [MovieWhere!]
+                  NOT: MovieWhere
                   OR: [MovieWhere!]
                   genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
                   genresAggregate: MovieGenresAggregateInput
@@ -948,11 +1001,11 @@ describe("@populatedBy tests", () => {
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_IN: [ID]
-                  id_NOT: ID
-                  id_NOT_CONTAINS: ID
-                  id_NOT_ENDS_WITH: ID
-                  id_NOT_IN: [ID]
-                  id_NOT_STARTS_WITH: ID
+                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -1012,46 +1065,47 @@ describe("@populatedBy tests", () => {
 
                 input RelPropertiesWhere {
                   AND: [RelPropertiesWhere!]
+                  NOT: RelPropertiesWhere
                   OR: [RelPropertiesWhere!]
                   callback1: String
                   callback1_CONTAINS: String
                   callback1_ENDS_WITH: String
                   callback1_IN: [String!]
-                  callback1_NOT: String
-                  callback1_NOT_CONTAINS: String
-                  callback1_NOT_ENDS_WITH: String
-                  callback1_NOT_IN: [String!]
-                  callback1_NOT_STARTS_WITH: String
+                  callback1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback1_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback1_STARTS_WITH: String
                   callback2: String
                   callback2_CONTAINS: String
                   callback2_ENDS_WITH: String
                   callback2_IN: [String!]
-                  callback2_NOT: String
-                  callback2_NOT_CONTAINS: String
-                  callback2_NOT_ENDS_WITH: String
-                  callback2_NOT_IN: [String!]
-                  callback2_NOT_STARTS_WITH: String
+                  callback2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback2_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback2_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback2_STARTS_WITH: String
                   callback3: String
                   callback3_CONTAINS: String
                   callback3_ENDS_WITH: String
                   callback3_IN: [String!]
-                  callback3_NOT: String
-                  callback3_NOT_CONTAINS: String
-                  callback3_NOT_ENDS_WITH: String
-                  callback3_NOT_IN: [String!]
-                  callback3_NOT_STARTS_WITH: String
+                  callback3_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback3_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback3_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback3_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback3_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback3_STARTS_WITH: String
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_IN: [ID!]
-                  id_NOT: ID
-                  id_NOT_CONTAINS: ID
-                  id_NOT_ENDS_WITH: ID
-                  id_NOT_IN: [ID!]
-                  id_NOT_STARTS_WITH: ID
+                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -1195,16 +1249,17 @@ describe("@populatedBy tests", () => {
 
                 input GenreWhere {
                   AND: [GenreWhere!]
+                  NOT: GenreWhere
                   OR: [GenreWhere!]
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_IN: [ID!]
-                  id_NOT: ID
-                  id_NOT_CONTAINS: ID
-                  id_NOT_ENDS_WITH: ID
-                  id_NOT_IN: [ID!]
-                  id_NOT_STARTS_WITH: ID
+                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -1284,6 +1339,7 @@ describe("@populatedBy tests", () => {
 
                 input MovieGenresAggregateInput {
                   AND: [MovieGenresAggregateInput!]
+                  NOT: MovieGenresAggregateInput
                   OR: [MovieGenresAggregateInput!]
                   count: Int
                   count_GT: Int
@@ -1316,11 +1372,12 @@ describe("@populatedBy tests", () => {
 
                 input MovieGenresConnectionWhere {
                   AND: [MovieGenresConnectionWhere!]
+                  NOT: MovieGenresConnectionWhere
                   OR: [MovieGenresConnectionWhere!]
                   edge: RelPropertiesWhere
-                  edge_NOT: RelPropertiesWhere
+                  edge_NOT: RelPropertiesWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   node: GenreWhere
-                  node_NOT: GenreWhere
+                  node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieGenresCreateFieldInput {
@@ -1338,17 +1395,18 @@ describe("@populatedBy tests", () => {
 
                 input MovieGenresEdgeAggregationWhereInput {
                   AND: [MovieGenresEdgeAggregationWhereInput!]
+                  NOT: MovieGenresEdgeAggregationWhereInput
                   OR: [MovieGenresEdgeAggregationWhereInput!]
                   callback1_AVERAGE_EQUAL: Float
                   callback1_AVERAGE_GT: Float
                   callback1_AVERAGE_GTE: Float
                   callback1_AVERAGE_LT: Float
                   callback1_AVERAGE_LTE: Float
-                  callback1_EQUAL: Int
-                  callback1_GT: Int
-                  callback1_GTE: Int
-                  callback1_LT: Int
-                  callback1_LTE: Int
+                  callback1_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback1_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback1_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback1_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback1_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                   callback1_MAX_EQUAL: Int
                   callback1_MAX_GT: Int
                   callback1_MAX_GTE: Int
@@ -1369,11 +1427,11 @@ describe("@populatedBy tests", () => {
                   callback2_AVERAGE_GTE: Float
                   callback2_AVERAGE_LT: Float
                   callback2_AVERAGE_LTE: Float
-                  callback2_EQUAL: Int
-                  callback2_GT: Int
-                  callback2_GTE: Int
-                  callback2_LT: Int
-                  callback2_LTE: Int
+                  callback2_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback2_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback2_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback2_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback2_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                   callback2_MAX_EQUAL: Int
                   callback2_MAX_GT: Int
                   callback2_MAX_GTE: Int
@@ -1394,11 +1452,11 @@ describe("@populatedBy tests", () => {
                   callback3_AVERAGE_GTE: Float
                   callback3_AVERAGE_LT: Float
                   callback3_AVERAGE_LTE: Float
-                  callback3_EQUAL: Int
-                  callback3_GT: Int
-                  callback3_GTE: Int
-                  callback3_LT: Int
-                  callback3_LTE: Int
+                  callback3_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback3_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback3_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback3_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  callback3_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                   callback3_MAX_EQUAL: Int
                   callback3_MAX_GT: Int
                   callback3_MAX_GTE: Int
@@ -1414,7 +1472,7 @@ describe("@populatedBy tests", () => {
                   callback3_SUM_GTE: Int
                   callback3_SUM_LT: Int
                   callback3_SUM_LTE: Int
-                  id_EQUAL: ID
+                  id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                 }
 
                 input MovieGenresFieldInput {
@@ -1424,8 +1482,9 @@ describe("@populatedBy tests", () => {
 
                 input MovieGenresNodeAggregationWhereInput {
                   AND: [MovieGenresNodeAggregationWhereInput!]
+                  NOT: MovieGenresNodeAggregationWhereInput
                   OR: [MovieGenresNodeAggregationWhereInput!]
-                  id_EQUAL: ID
+                  id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                 }
 
                 type MovieGenresRelationship implements RelProperties {
@@ -1478,6 +1537,7 @@ describe("@populatedBy tests", () => {
 
                 input MovieWhere {
                   AND: [MovieWhere!]
+                  NOT: MovieWhere
                   OR: [MovieWhere!]
                   genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
                   genresAggregate: MovieGenresAggregateInput
@@ -1500,11 +1560,11 @@ describe("@populatedBy tests", () => {
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_IN: [ID]
-                  id_NOT: ID
-                  id_NOT_CONTAINS: ID
-                  id_NOT_ENDS_WITH: ID
-                  id_NOT_IN: [ID]
-                  id_NOT_STARTS_WITH: ID
+                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -1564,6 +1624,7 @@ describe("@populatedBy tests", () => {
 
                 input RelPropertiesWhere {
                   AND: [RelPropertiesWhere!]
+                  NOT: RelPropertiesWhere
                   OR: [RelPropertiesWhere!]
                   callback1: Int
                   callback1_GT: Int
@@ -1571,33 +1632,33 @@ describe("@populatedBy tests", () => {
                   callback1_IN: [Int!]
                   callback1_LT: Int
                   callback1_LTE: Int
-                  callback1_NOT: Int
-                  callback1_NOT_IN: [Int!]
+                  callback1_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback1_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback2: Int
                   callback2_GT: Int
                   callback2_GTE: Int
                   callback2_IN: [Int!]
                   callback2_LT: Int
                   callback2_LTE: Int
-                  callback2_NOT: Int
-                  callback2_NOT_IN: [Int!]
+                  callback2_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback2_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback3: Int
                   callback3_GT: Int
                   callback3_GTE: Int
                   callback3_IN: [Int!]
                   callback3_LT: Int
                   callback3_LTE: Int
-                  callback3_NOT: Int
-                  callback3_NOT_IN: [Int!]
+                  callback3_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  callback3_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_IN: [ID!]
-                  id_NOT: ID
-                  id_NOT_CONTAINS: ID
-                  id_NOT_ENDS_WITH: ID
-                  id_NOT_IN: [ID!]
-                  id_NOT_STARTS_WITH: ID
+                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 

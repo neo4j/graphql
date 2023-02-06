@@ -24,7 +24,7 @@ import { gql } from "graphql-tag";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { toGlobalId } from "../../src/utils/global-ids";
-import { generateUniqueType } from "../utils/graphql-types";
+import { UniqueType } from "../utils/graphql-types";
 import { createJwtRequest } from "../utils/create-jwt-request";
 
 describe("Global node resolution", () => {
@@ -32,8 +32,8 @@ describe("Global node resolution", () => {
     let neo4j: Neo4j;
     const secret = "secret";
 
-    const typeFilm = generateUniqueType("Film");
-    const typeUser = generateUniqueType("User");
+    const typeFilm = new UniqueType("Film");
+    const typeUser = new UniqueType("User");
 
     beforeAll(async () => {
         neo4j = new Neo4j();

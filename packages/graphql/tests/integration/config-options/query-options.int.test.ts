@@ -20,9 +20,9 @@
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4j from "./neo4j";
-import { Neo4jGraphQL } from "../../src/classes";
-import { CypherRuntime } from "../../src";
+import Neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../src/classes";
+import { CypherRuntime } from "../../../src";
 
 describe("query options", () => {
     let driver: Driver;

@@ -1,5 +1,11 @@
 # @neo4j/introspector
 
+## 1.0.3
+
+### Patch Changes
+
+-   [#2826](https://github.com/neo4j/graphql/pull/2826) [`c2eaff8ef`](https://github.com/neo4j/graphql/commit/c2eaff8ef94b8cc6297be1435131967ea8a71115) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix injection through relationship labels on introspection
+
 ## 1.0.2
 
 ### Patch Changes
