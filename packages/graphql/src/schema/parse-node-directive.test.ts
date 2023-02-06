@@ -37,43 +37,30 @@ describe("parseNodeDirective", () => {
         );
     });
 
-    test("should return a node directive with a label", () => {
+    test("should return a node directive with labels, type name ignored", () => {
         const typeDefs = `
-            type TestType @node(label:"MyLabel") {
+            type TestType @node(labels:["Label", "AnotherLabel"]) {
                 name: String
             }
         `;
+
         const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
         const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
-        const expected = new NodeDirective({ label: "MyLabel" });
+        const expected = new NodeDirective({ labels: ["Label", "AnotherLabel"] });
 
         expect(parseNodeDirective(directive)).toMatchObject(expected);
     });
 
-    test("should return a node directive with additional labels", () => {
+    test("should return a node directive with labels, type name included", () => {
         const typeDefs = `
-            type TestType @node(additionalLabels:["Label", "AnotherLabel"]) {
+            type TestType @node(labels:["TestType", "Label", "AnotherLabel"]) {
                 name: String
             }
         `;
 
         const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
         const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
-        const expected = new NodeDirective({ additionalLabels: ["Label", "AnotherLabel"] });
-
-        expect(parseNodeDirective(directive)).toMatchObject(expected);
-    });
-
-    test("should return a node directive with a label and additional labels", () => {
-        const typeDefs = `
-            type TestType @node(label:"MyLabel", additionalLabels:["Label", "AnotherLabel"]) {
-                name: String
-            }
-        `;
-
-        const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
-        const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
-        const expected = new NodeDirective({ label: "MyLabel", additionalLabels: ["Label", "AnotherLabel"] });
+        const expected = new NodeDirective({ labels: ["TestType", "Label", "AnotherLabel"] });
 
         expect(parseNodeDirective(directive)).toMatchObject(expected);
     });

@@ -43,5 +43,6 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@fcf6fe9e4a0409cd9316a5011435be0f3327f1e1 # v2.3.1
         with:
           number: ${{ steps.get-pr-number.outputs.pr-number }}
+          header: performance
           path: ./performanceReport
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}

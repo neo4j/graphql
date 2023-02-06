@@ -852,7 +852,7 @@ describe("Node", () => {
                 name: "Film",
             })
                 .withNodeDirective({
-                    label: "$jwt.movielabel",
+                    labels: ["$jwt.movielabel"],
                 })
                 .instance();
 
@@ -877,7 +877,7 @@ describe("Node", () => {
                 name: "Film",
             })
                 .withNodeDirective({
-                    label: "$context.myKey",
+                    labels: ["$context.myKey"],
                 })
                 .instance();
 
@@ -899,8 +899,7 @@ describe("Node", () => {
                 name: "Film",
             })
                 .withNodeDirective({
-                    label: "Film",
-                    additionalLabels: ["$jwt.movielabel"],
+                    labels: ["Film", "$jwt.movielabel"],
                 })
                 .instance();
 

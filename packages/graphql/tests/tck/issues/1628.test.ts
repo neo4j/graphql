@@ -28,7 +28,7 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type frbr__Work @node(additionalLabels: ["Resource"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
+            type frbr__Work @node(labels: ["frbr__Work", "Resource"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 """
                 IRI
                 """
@@ -36,7 +36,9 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
                 dcterms__title: [dcterms_title!]! @relationship(type: "dcterms__title", direction: OUT)
             }
 
-            type dcterms_title @node(additionalLabels: ["property"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
+            type dcterms_title
+                @node(labels: ["dcterms_title", "property"])
+                @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 value: String
             }
         `;

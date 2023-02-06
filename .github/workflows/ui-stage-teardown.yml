@@ -25,6 +25,7 @@ jobs:
       - name: Comment on PR
         uses: marocchino/sticky-pull-request-comment@fcf6fe9e4a0409cd9316a5011435be0f3327f1e1 # v2.3.1
         with:
+          header: toolbox
           message: |
             Thanks for the UI updates.
 
