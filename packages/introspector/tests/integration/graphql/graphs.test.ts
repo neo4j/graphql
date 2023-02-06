@@ -144,14 +144,14 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type Actor @node(additionalLabels: [\\"Person\\"]) {
+            "type Actor @node(labels: [\\"Actor\\", \\"Person\\"]) {
             	actedInMovies: [Movie!]! @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	actedInPlays: [Play!]! @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	directedMovies: [Movie!]! @relationship(type: \\"DIRECTED\\", direction: OUT)
             	name: String!
             }
 
-            type Dog @node(additionalLabels: [\\"K9\\"]) {
+            type Dog @node(labels: [\\"Dog\\", \\"K9\\"]) {
             	actedInMovies: [Movie!]! @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	name: String!
             }
@@ -163,7 +163,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
             	title: String!
             }
 
-            type Play @node(additionalLabels: [\\"Theater\\"]) {
+            type Play @node(labels: [\\"Play\\", \\"Theater\\"]) {
             	actorsActedIn: [Actor!]! @relationship(type: \\"ACTED_IN\\", direction: IN)
             	title: String!
             }"
@@ -270,13 +270,13 @@ describe("GraphQL - Infer Schema on graphs", () => {
             	roles: [String]!
             }
 
-            type Actor_Label @node(label: \\"Actor-Label\\") {
+            type Actor_Label @node(labels: [\\"Actor-Label\\"]) {
             	actedInMovieLabels: [Movie_Label!]! @relationship(type: \\"ACTED-IN\\", direction: OUT, properties: \\"ActedInProperties\\")
             	movieLabelsWonPrizeFor: [Movie_Label!]! @relationship(type: \\"WON_PRIZE_FOR\\", direction: IN)
             	name: String!
             }
 
-            type Movie_Label @node(label: \\"Movie-Label\\") {
+            type Movie_Label @node(labels: [\\"Movie-Label\\"]) {
             	actorLabelsActedIn: [Actor_Label!]! @relationship(type: \\"ACTED-IN\\", direction: IN, properties: \\"ActedInProperties\\")
             	title: String!
             	wonPrizeForActorLabels: [Actor_Label!]! @relationship(type: \\"WON_PRIZE_FOR\\", direction: OUT)
