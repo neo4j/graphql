@@ -304,7 +304,7 @@ class Node extends GraphElement {
     }
 
     public getMainLabel(): string {
-        return this.nodeDirective?.labels?.[0] || this.nodeDirective?.label || this.name;
+        return this.nodeDirective?.labels?.[0] || this.name;
     }
     public getAllLabels(): string[] {
         return this.nodeDirective?.labels || [this.name];

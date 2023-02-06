@@ -23,19 +23,13 @@ import ContextParser from "../utils/context-parser";
 import Cypher from "@neo4j/cypher-builder";
 
 export interface NodeDirectiveConstructor {
-    label?: string;
-    additionalLabels?: string[];
     labels?: string[];
 }
 
 export class NodeDirective {
-    public readonly label: string | undefined;
-    public readonly additionalLabels: string[];
     public readonly labels: string[];
 
     constructor(input: NodeDirectiveConstructor) {
-        this.label = input.label;
-        this.additionalLabels = input.additionalLabels || [];
         this.labels = input.labels || [];
     }
 
