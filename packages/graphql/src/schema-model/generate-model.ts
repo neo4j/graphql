@@ -93,8 +93,10 @@ function generateConcreteEntity(definition: ObjectTypeDefinitionNode): ConcreteE
 }
 
 function getLabels(definition: ObjectTypeDefinitionNode, nodeDirectiveArguments: Record<string, unknown>): string[] {
-    const nodeExplicitLabels = nodeDirectiveArguments.labels as string[];
-    return nodeExplicitLabels ?? [definition.name.value];
+    if ((nodeDirectiveArguments.labels as string[] | undefined)?.length) {
+        return nodeDirectiveArguments.labels as string[];
+    }
+    return [definition.name.value];
 }
 
 function generateField(field: FieldDefinitionNode): Attribute | undefined {
