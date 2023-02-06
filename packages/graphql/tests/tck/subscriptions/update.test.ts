@@ -128,7 +128,7 @@ describe("Subscriptions metadata on update", () => {
             CALL {
             	WITH this, meta
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
             	WITH this_actors0 { .* } AS oldProps, this, meta, this_actors0
             	CALL {
             		WITH *
@@ -153,7 +153,7 @@ describe("Subscriptions metadata on update", () => {
             "{
                 \\"param0\\": \\"1\\",
                 \\"this_update_id\\": \\"2\\",
-                \\"updateMovies_args_update_actors0_where_Actorparam0\\": \\"arthur\\",
+                \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"arthur\\",
                 \\"this_update_actors0_name\\": \\"ford\\",
                 \\"updateMovies\\": {
                     \\"args\\": {

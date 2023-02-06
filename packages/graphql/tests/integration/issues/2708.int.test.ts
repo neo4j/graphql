@@ -21,7 +21,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("https://github.com/neo4j/graphql/issues/2708", () => {
@@ -59,10 +59,10 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
     beforeEach(async () => {
         session = await neo4j.getSession();
 
-        movieType = generateUniqueType("Movie");
-        genreType = generateUniqueType("Genre");
-        seriesType = generateUniqueType("Series");
-        inGenreInterface = generateUniqueType("InGenre");
+        movieType = new UniqueType("Movie");
+        genreType = new UniqueType("Genre");
+        seriesType = new UniqueType("Series");
+        inGenreInterface = new UniqueType("InGenre");
 
         const typeDefs = `
             type ${movieType.name} {
