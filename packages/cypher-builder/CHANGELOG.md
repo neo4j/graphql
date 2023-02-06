@@ -1,5 +1,11 @@
 # @neo4j/cypher-builder
 
+## 0.1.10
+
+### Patch Changes
+
+-   [#2827](https://github.com/neo4j/graphql/pull/2827) [`81df28ed9`](https://github.com/neo4j/graphql/commit/81df28ed9238c1b4692aabe8e1de438ba01ae914) Thanks [@angrykoala](https://github.com/angrykoala)! - Add support for square brackets syntax on varaible properties
+
 ## 0.1.9
 
 ### Patch Changes
