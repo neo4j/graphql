@@ -79,7 +79,7 @@ export function aggregatePreComputedWhereFields({
         refNode,
         relationship,
         aggregationTarget,
-        cypherRelation, // TODO - check this copy doesn't need to be made at a more nested level
+        cypherRelation,
         context
     );
     matchQuery.return(...returnProjections);

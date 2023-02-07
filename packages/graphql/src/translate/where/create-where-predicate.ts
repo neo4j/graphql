@@ -31,13 +31,11 @@ export function createWherePredicate({
     whereInput,
     context,
     element,
-    
 }: {
     targetElement: Cypher.Variable;
     whereInput: GraphQLWhereArg;
     context: Context;
-        element: GraphElement;
-    
+    element: GraphElement;
 }): PredicateReturn {
     const whereFields = Object.entries(whereInput);
     const predicates: Cypher.Predicate[] = [];
