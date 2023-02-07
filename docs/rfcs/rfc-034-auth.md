@@ -102,6 +102,8 @@ Allow users to provide a schema describing what their JWT payload looks like. Fo
 
 #### PROPOSAL: Access control
 
+##### Option 1: dedicated directive
+
 Sitting between authentication and authorization evaluation, access control rules will control who can access which top-level operations, as assessed at the beginning of resolver execution.
 
 ```gql
@@ -171,6 +173,34 @@ type User @accessControl(allow: [{ operations: [DELETE], where: { jwtPayload: { 
 ```
 
 This would perform a check of the JWT claim at the beginning of the resolver to check that the user has the appropriate role.
+
+##### Option 2: well documented third party solution
+
+By implementing anything ourselves, we will be implementing something which has been achieved countless times in various third party products.
+
+We could fulfil this requirement through the production of some high quality documentation and examples of how this could be achieved through a third party product, for example, GraphQL Shield.
+
+If we load API client's decoded JWT into the context, the following could be done by the user to, for instance, ensure all clients trying to subscribe have the "SUBSCRIBER" role:
+
+```js
+import { shield, rule } from "graphql-shield";
+import { applyMiddleware } from "graphql-middleware";
+
+const isSubscriber = rule()(async (parent, args, ctx, info) => {
+  return ctx.jwt.roles.includes("SUBSCRIBER")
+})
+
+const permissions = shield({
+  Subscription: {
+    "*": isSubscriber
+  }
+})
+
+// where schema is the output of Neo4jGraphQL.getSchema()
+schema = applyMiddleware(schema, permissions)
+```
+
+This approach could also be used to validate authentication status so that we only have to worry about Cypher level validation.
 
 #### Authorization
 
