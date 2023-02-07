@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
                 distribution: [DistributionHouse!]!
             }
 
-            type ${Movie} implements Production @node(label: "Film") {
+            type ${Movie} implements Production @node(labels: ["Film"]) {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 runtime: Int!
@@ -267,7 +267,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
                 distribution: [DistributionHouse!]!
             }
 
-            type ${Movie} implements Production @node(label: "Film") {
+            type ${Movie} implements Production @node(labels: ["Film"]) {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 runtime: Int!

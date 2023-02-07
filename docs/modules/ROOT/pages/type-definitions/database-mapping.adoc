@@ -75,6 +75,9 @@ The same is applied to other operations such as `createTechs`. Note that databas
 NOTE: The plural argument has been deprecated and will be removed in version 4.0.
 Please use the xref::type-definitions/database-mapping.adoc#type-definitions-plural[`@plural` directive] instead.
 
+NOTE: The label and additionalLabels arguments of the `@node` directive have been deprecated and will be removed in version 4.0.
+Please use the xref::type-definitions/database-mapping.adoc#_labels[`labels argument`] instead.
+
 The `@node` directive is used to specify the configuration of a GraphQL object type which represents a Neo4j node.
 
 === Definition
@@ -83,6 +86,8 @@ The `@node` directive is used to specify the configuration of a GraphQL object t
 ----
 """Informs @neo4j/graphql of node metadata"""
 directive @node(
+    """Map the GraphQL type to match Neo4j node labels"""
+    labels: [String]
     """Map the GraphQL type to a custom Neo4j node label"""
     label: String
     """Map the GraphQL type to match additional Neo4j node labels"""
@@ -95,7 +100,69 @@ directive @node(
 === Usage
 `@node` can be used with the following optional parameters.
 
+==== `labels`
+The parameter `labels` defines the list of label to be used in Neo4j instead of the GraphQL type name:
+
+[source, graphql, indent=0]
+----
+type Movie @node(labels: ["Film"]) {
+    title: String!
+}
+----
+
+This way, the following query:
+
+[source, graphql, indent=0]
+----
+{
+  movies {
+    title
+  }
+}
+----
+
+Generates the cypher query:
+
+[source, cypher, indent=0]
+----
+MATCH (this: Film)
+RETURN this { .title } as this
+----
+
+If the GraphQL type name should still be used as a label, it needs to be specified as well:
+
+[source, graphql, indent=0]
+----
+type Dog @node(labels: ["Dog", "K9"]) {
+    name: String!
+}
+----
+
+This way, the following query:
+
+[source, graphql, indent=0]
+----
+{
+  dogs {
+    name
+  }
+}
+----
+
+Generates the cypher query:
+
+[source, cypher, indent=0]
+----
+MATCH (this:Dog:K9)
+RETURN this { .name } as this
+----
+
+
 ==== `label`
+
+NOTE: The label and additionalLabels arguments of the `@node` directive have been deprecated and will be removed in version 4.0.
+Please use the xref::type-definitions/database-mapping.adoc#_labels[`labels argument`] instead.
+
 The parameter `label` defines the label to be used in Neo4j instead of the GraphQL type name:
 
 [source, graphql, indent=0]
@@ -175,6 +242,9 @@ neoSchema.getSchema().then((schema) => {
 ----
 
 ==== `additionalLabels`
+
+NOTE: The label and additionalLabels arguments of the `@node` directive have been deprecated and will be removed in version 4.0.
+Please use the xref::type-definitions/database-mapping.adoc#_labels[`labels argument`] instead.
 
 `additionalLabels` lets you define extra Neo4j labels that need to exist on the node for that GraphQL type.
 

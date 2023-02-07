@@ -31,7 +31,7 @@
         "@types/bcrypt": "5.0.0",
         "@types/debug": "4.1.7",
         "@types/dotenv": "8.2.0",
-        "@types/express": "4.17.16",
+        "@types/express": "4.17.17",
         "@types/jest": "29.4.0",
         "@types/jsonwebtoken": "9.0.1",
         "@types/node": "18.11.17",

@@ -31,12 +31,12 @@ describe("Node directive with additionalLabels", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Actor @node(additionalLabels: ["Person"]) {
+            type Actor @node(labels: ["Actor", "Person"]) {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Movie @node(label: "Film", additionalLabels: ["Multimedia"]) {
+            type Movie @node(labels: ["Film", "Multimedia"]) {
                 id: ID
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)

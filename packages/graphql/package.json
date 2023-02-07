@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql",
-    "version": "3.15.0",
+    "version": "3.16.0",
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": [
         "neo4j",
@@ -86,9 +86,9 @@
     "dependencies": {
         "@graphql-tools/merge": "^8.3.3",
         "@graphql-tools/resolvers-composition": "^6.5.3",
-        "@graphql-tools/schema": "9.0.15",
+        "@graphql-tools/schema": "9.0.16",
         "@graphql-tools/utils": "^9.0.0",
-        "@neo4j/cypher-builder": "~0.1.9",
+        "@neo4j/cypher-builder": "~0.1.10",
         "camelcase": "^6.3.0",
         "debug": "^4.3.4",
         "deep-equal": "^2.0.5",

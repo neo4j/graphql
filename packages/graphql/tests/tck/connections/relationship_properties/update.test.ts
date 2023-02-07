@@ -78,7 +78,7 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             CALL {
             	WITH this
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
             	SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
             	RETURN count(*) AS update_this_actors0
             }
@@ -88,7 +88,7 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"updateMovies_args_update_actors0_where_Actorparam0\\": \\"Tom Hanks\\",
+                \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"Tom Hanks\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -150,7 +150,7 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             CALL {
             	WITH this
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
             	SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
             	SET this_actors0.name = $this_update_actors0_name
             	RETURN count(*) AS update_this_actors0
@@ -161,7 +161,7 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"updateMovies_args_update_actors0_where_Actorparam0\\": \\"Tom Hanks\\",
+                \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"Tom Hanks\\",
                 \\"this_update_actors0_name\\": \\"Tom Hanks\\",
                 \\"updateMovies\\": {
                     \\"args\\": {

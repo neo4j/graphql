@@ -91,7 +91,7 @@ describe("Interface Relationships - Update update", () => {
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Movieparam0
+            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	SET this_actedIn0.title = $this_update_actedIn0_title
             	RETURN count(*) AS update_this_actedIn0
             }
@@ -103,7 +103,7 @@ describe("Interface Relationships - Update update", () => {
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Seriesparam0
+            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	SET this_actedIn0.title = $this_update_actedIn0_title
             	RETURN count(*) AS update_this_actedIn0
             }
@@ -114,9 +114,8 @@ describe("Interface Relationships - Update update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateActors_args_update_actedIn0_where_Movieparam0\\": \\"Old Title\\",
+                \\"updateActors_args_update_actedIn0_where_this_actedIn0param0\\": \\"Old Title\\",
                 \\"this_update_actedIn0_title\\": \\"New Title\\",
-                \\"updateActors_args_update_actedIn0_where_Seriesparam0\\": \\"Old Title\\",
                 \\"updateActors\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -174,7 +173,7 @@ describe("Interface Relationships - Update update", () => {
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Movieparam0
+            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	WITH this, this_actedIn0
             	CALL {
             		WITH this, this_actedIn0
@@ -192,7 +191,7 @@ describe("Interface Relationships - Update update", () => {
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Seriesparam0
+            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	WITH this, this_actedIn0
             	CALL {
             		WITH this, this_actedIn0
@@ -209,9 +208,8 @@ describe("Interface Relationships - Update update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateActors_args_update_actedIn0_where_Movieparam0\\": \\"Old Title\\",
+                \\"updateActors_args_update_actedIn0_where_this_actedIn0param0\\": \\"Old Title\\",
                 \\"this_update_actedIn0_actors0_name\\": \\"New Actor Name\\",
-                \\"updateActors_args_update_actedIn0_where_Seriesparam0\\": \\"Old Title\\",
                 \\"updateActors\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -279,7 +277,7 @@ describe("Interface Relationships - Update update", () => {
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Movieparam0
+            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	WITH this, this_actedIn0
             	CALL {
             		WITH this, this_actedIn0
@@ -297,7 +295,7 @@ describe("Interface Relationships - Update update", () => {
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Seriesparam0
+            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	RETURN count(*) AS update_this_actedIn0
             }
             RETURN count(*) AS update_this_Series
@@ -307,9 +305,8 @@ describe("Interface Relationships - Update update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateActors_args_update_actedIn0_where_Movieparam0\\": \\"Old Title\\",
+                \\"updateActors_args_update_actedIn0_where_this_actedIn0param0\\": \\"Old Title\\",
                 \\"this_update_actedIn0_on_Movie_actors0_name\\": \\"New Actor Name\\",
-                \\"updateActors_args_update_actedIn0_where_Seriesparam0\\": \\"Old Title\\",
                 \\"updateActors\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -384,7 +381,7 @@ describe("Interface Relationships - Update update", () => {
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Movieparam0
+            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	WITH this, this_actedIn0
             	CALL {
             		WITH this, this_actedIn0
@@ -402,7 +399,7 @@ describe("Interface Relationships - Update update", () => {
             CALL {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Seriesparam0
+            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	WITH this, this_actedIn0
             	CALL {
             		WITH this, this_actedIn0
@@ -419,9 +416,8 @@ describe("Interface Relationships - Update update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateActors_args_update_actedIn0_where_Movieparam0\\": \\"Old Title\\",
+                \\"updateActors_args_update_actedIn0_where_this_actedIn0param0\\": \\"Old Title\\",
                 \\"this_update_actedIn0_on_Movie_actors0_name\\": \\"Different Actor Name\\",
-                \\"updateActors_args_update_actedIn0_where_Seriesparam0\\": \\"Old Title\\",
                 \\"this_update_actedIn0_actors0_name\\": \\"New Actor Name\\",
                 \\"updateActors\\": {
                     \\"args\\": {

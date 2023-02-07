@@ -1,0 +1,81 @@
+name: Bug report (`@neo4j/graphql`)
+description: File a bug report for the Neo4j GraphQL Library, `@neo4j/graphql`. If you have a support agreement with Neo4j, please raise a bug report here, then link the GitHub issue to a new or existing Zendesk ticket.
+labels: ["bug report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+        Please provide us with the information we need below.
+
+        We will confirm the bug as soon as possible, and then discuss it at a weekly bug triage session.
+  - type: textarea
+    id: type-definitions
+    attributes:
+      label: Type definitions
+      description: Please provide us GraphQL type definitions we can use to reproduce the issue
+      placeholder: |
+        type Movie {
+          title: String!
+        }
+      render: GraphQL
+    validations:
+      required: true
+  - type: textarea
+    id: test-data
+    attributes:
+      label: Test data
+      description: If applicable, provide us Cypher or GraphQL Mutations we can use to generate test data
+      placeholder: 'CREATE (:Movie { title: "The Matrix" })'
+      render: Shell
+    validations:
+      required: false
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Please provide us the steps necessary to reproduce the bug
+      placeholder: |
+        1. Start a server
+        2. Execute a query
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: Please describe to us the bug you encountered
+    validations:
+      required: false
+  - type: textarea
+    id: expected-behaviour
+    attributes:
+      label: Expected behaviour
+      description: If it might not be clear to us, what behaviour did you expect here?
+    validations:
+      required: false
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: What version of our software are you running?
+      placeholder: "3.13.1"
+    validations:
+      required: true
+  - type: input
+    id: database-version
+    attributes:
+      label: Database version
+      description: What version of the Neo4j database are you running?
+      placeholder: "5.3"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This is really helpful if you were running with [debug enabled](https://neo4j.com/docs/graphql-manual/current/troubleshooting/#troubleshooting-debug-logging).
+      render: Shell
+    validations:
+      required: false
