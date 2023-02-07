@@ -669,4 +669,70 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             [Actor.plural]: expect.toIncludeSameMembers([actorInput2, actorInput3, actorInput4]),
         });
     });
+
+    test("should be able to use logical OR operators with aggregations in nested relationships", async () => {
+        const query = `
+            {
+                ${Actor.plural}(
+                    where: {
+                        movies_ALL: {
+                            actors_SOME: {
+                                OR: [
+                                    { name: "${actorInput4.name}" }
+                                    { moviesAggregate: { count_GT: 1 } }
+                                ]
+
+                            }
+                        }
+                    }
+                ) {
+                    name
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput1, actorInput2, actorInput3, actorInput4]),
+        });
+    });
+
+    test("should be able to use logical AND operators with aggregations in nested relationships", async () => {
+        const query = `
+            {
+                ${Actor.plural}(
+                    where: {
+                        movies_ALL: {
+                            actors_SOME: {
+                                AND: [
+                                    { name: "${actorInput4.name}" }
+                                    { moviesAggregate: { count_GT: 1 } }
+                                ]
+
+                            }
+                        }
+                    }
+                ) {
+                    name
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput2, actorInput3, actorInput4]),
+        });
+    });
 });
