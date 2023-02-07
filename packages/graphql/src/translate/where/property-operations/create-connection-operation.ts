@@ -18,12 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type {
-    ConnectionField,
-    ConnectionWhereArg,
-    Context,
-    PredicateReturn,
-} from "../../../types";
+import type { ConnectionField, ConnectionWhereArg, Context, PredicateReturn } from "../../../types";
 import type { Node, Relationship } from "../../../classes";
 import { getListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
@@ -143,9 +138,14 @@ export function createConnectionOperation({
                 parentNode,
                 targetNode: childNode,
                 targetPattern: matchPattern,
+                targetRelationship: relationship,
                 preComputedSubqueries: innerOperation.preComputedSubqueries,
                 innerOperation: innerOperation.predicate,
                 listPredicateStr,
+                refNode,
+                context,
+                whereInput: value,
+                refEdge: contextRelationship,
             });
             operations.push(predicate);
             subqueries = Cypher.concat(subqueries, preComputedSubqueries);

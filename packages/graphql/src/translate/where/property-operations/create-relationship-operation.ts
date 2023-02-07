@@ -23,6 +23,8 @@ import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../create-where-predicate";
 import { getListPredicate, ListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
+import type { GraphElement, Relationship } from "../../../classes";
+import { createConnectionWherePropertyOperation } from "./create-connection-operation";
 
 export function createRelationshipOperation({
     relationField,
@@ -86,9 +88,13 @@ export function createRelationshipOperation({
             parentNode,
             targetNode: childNode,
             targetPattern: matchPattern,
+            targetRelationship: relationship,
             preComputedSubqueries,
             innerOperation,
             listPredicateStr,
+            whereInput: value,
+            context,
+            refNode,
         });
     } else {
         return {
@@ -154,17 +160,27 @@ export function createRelationshipPredicate({
 export function wrapAggregationSubqueries({
     targetNode,
     targetPattern,
+    targetRelationship,
     preComputedSubqueries,
     innerOperation,
     listPredicateStr,
     parentNode,
+    refNode,
+    context,
+    whereInput,
+    refEdge,
 }: {
     parentNode: Cypher.Node;
     targetNode: Cypher.Node;
     targetPattern: Cypher.Pattern;
+    targetRelationship: Cypher.Relationship;
     preComputedSubqueries: Cypher.CompositeClause;
     innerOperation: Cypher.Predicate;
     listPredicateStr: ListPredicate;
+    refNode: GraphElement;
+    context: Context;
+    whereInput: any;
+    refEdge?: Relationship;
 }): PredicateReturn {
     const matchPattern = new Cypher.Match(targetPattern);
     const subqueryWith = new Cypher.With("*");
@@ -184,25 +200,39 @@ export function wrapAggregationSubqueries({
                     new Cypher.Return([Cypher.gt(Cypher.count(targetNode), new Cypher.Literal(0)), returnVar])
                 )
             );
-            // Testing "ALL" requires testing that at least one element exists and that no elements not matching the filter exists
-            // const notExistsMatchClause = new Cypher.Match(matchPattern).where(Cypher.not(innerOperation));
-            const notExistsWith = new Cypher.With("*").where(Cypher.not(innerOperation));
-            const notExistsReturnVar = new Cypher.Variable();
-            const notExistsSubquery = new Cypher.Call(
-                Cypher.concat(
-                    new Cypher.With(parentNode),
-                    new Cypher.Match(targetPattern),
-                    preComputedSubqueries,
-                    notExistsWith,
-                    new Cypher.Return([Cypher.eq(Cypher.count(targetNode), new Cypher.Literal(0)), notExistsReturnVar])
-                )
-            );
-            // return Cypher.and(new Cypher.Exists(matchClause), Cypher.not(new Cypher.Exists(notExistsMatchClause)));
+
+            const notNoneInnerPredicates = refEdge
+                ? createConnectionWherePropertyOperation({
+                      context,
+                      whereInput,
+                      edge: refEdge,
+                      node: refNode as unknown as any,
+                      targetNode,
+                      edgeRef: targetRelationship,
+                  })
+                : createWherePredicate({
+                      whereInput,
+                      targetElement: targetNode,
+                      element: refNode,
+                      context,
+                  });
+
+            const { predicate: notExistsPredicate, preComputedSubqueries: notExistsSubquery } =
+                wrapAggregationSubqueries({
+                    targetNode,
+                    parentNode,
+                    targetPattern,
+                    targetRelationship,
+                    preComputedSubqueries: notNoneInnerPredicates.preComputedSubqueries as any,
+                    innerOperation: Cypher.not(notNoneInnerPredicates.predicate as unknown as any),
+                    listPredicateStr: "none",
+                    whereInput,
+                    refNode,
+                    context,
+                    refEdge,
+                });
             return {
-                predicate: Cypher.and(
-                    Cypher.eq(notExistsReturnVar, new Cypher.Literal(true)),
-                    Cypher.eq(returnVar, new Cypher.Literal(true))
-                ),
+                predicate: Cypher.and(notExistsPredicate, Cypher.eq(returnVar, new Cypher.Literal(true))),
                 preComputedSubqueries: Cypher.concat(subquery, notExistsSubquery),
             };
         }
