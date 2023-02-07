@@ -602,4 +602,71 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             [Actor.plural]: expect.toIncludeSameMembers([actorInput3]),
         });
     });
+
+    test("should be able to filter by node properties, edge properties and aggregations in nested connections", async () => {
+        const query = `
+            {
+                ${Actor.plural}(
+                    where: {
+                        moviesConnection_SINGLE: {
+                            node: {
+                                actorsConnection_SOME: {
+                                    node: { 
+                                        name: "${actorInput4.name}"
+                                        moviesAggregate: { count_GT: 1 }
+                                    }
+                                    edge: {
+                                        roles_INCLUDES: "${actedInInput7.roles[0]}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    name
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput3, actorInput4]),
+        });
+    });
+
+    test("should be able to filter by node properties and aggregations in nested relationships", async () => {
+        const query = `
+            {
+                ${Actor.plural}(
+                    where: {
+                        movies_ALL: {
+                            actors_SOME: {
+                                name: "${actorInput4.name}"
+                                moviesAggregate: { count_GT: 1 }
+                            }
+                        }
+                    }
+                ) {
+                    name
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([actorInput2, actorInput3, actorInput4]),
+        });
+    });
 });
