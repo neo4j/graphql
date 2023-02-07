@@ -40,16 +40,16 @@ describe("Empty fields on unions due to escaped labels", () => {
         const typeDefs = gql`
             union Content = Blog | Post
 
-            type Blog @node(label: "${typeBlog.name}") {
+            type Blog @node(labels: ["${typeBlog.name}"]) {
                 title: String
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
-            type Post @node(label: "${typePost.name}") {
+            type Post @node(labels: ["${typePost.name}"]) {
                 content: String
             }
 
-            type User @node(label: "${typeUser.name}") {
+            type User @node(labels: ["${typeUser.name}"]) {
                 name: String
                 content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }

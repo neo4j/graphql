@@ -53,7 +53,7 @@ describe("Label cypher injection", () => {
         const typeMovie = new UniqueType("Movie");
 
         const typeDefs = `
-            type ${typeMovie} @node(label: "$context.label") {
+            type ${typeMovie} @node(labels: ["$context.label"]) {
                 title: String
             }
         `;
@@ -87,7 +87,7 @@ describe("Label cypher injection", () => {
         const typeMovie = new UniqueType("Movie");
 
         const typeDefs = `
-            type ${typeMovie} @node(label: "$jwt.label") {
+            type ${typeMovie} @node(labels: ["$jwt.label"]) {
                 title: String
             }
         `;

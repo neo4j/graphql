@@ -233,7 +233,8 @@ describe("@fulltext directive", () => {
         const type = new UniqueType("Movie");
 
         const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(label: "${label}") {
+            #type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(label: "${label}") {
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(labels: ["${label}"]) {
                 title: String!
             }
         `;
@@ -329,7 +330,8 @@ describe("@fulltext directive", () => {
         const type = new UniqueType("Movie");
 
         const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(label: "${label}") {
+            #type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(label: "${label}") {
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(labels: ["${label}"]) {
                 title: String! @alias(property: "newTitle")
             }
         `;

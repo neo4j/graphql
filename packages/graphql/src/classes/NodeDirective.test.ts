@@ -31,21 +31,21 @@ describe("NodeDirective", () => {
     });
 
     test("should generate label string with directive label", () => {
-        const instance = new NodeDirective({ label: "MyOtherLabel" });
+        const instance = new NodeDirective({ labels: ["MyOtherLabel"] });
         const labelString = instance.getLabelsString("MyLabel", defaultContext);
 
         expect(labelString).toBe(":`MyOtherLabel`");
     });
 
     test("should generate label string adding additional labels to input typename", () => {
-        const instance = new NodeDirective({ additionalLabels: ["Label1", "Label2"] });
+        const instance = new NodeDirective({ labels: ["MyLabel", "Label1", "Label2"] });
         const labelString = instance.getLabelsString("MyLabel", defaultContext);
 
         expect(labelString).toBe(":`MyLabel`:`Label1`:`Label2`");
     });
 
     test("should generate label string adding additional labels to directive label", () => {
-        const instance = new NodeDirective({ label: "MyOtherLabel", additionalLabels: ["Label1", "Label2"] });
+        const instance = new NodeDirective({ labels: ["MyOtherLabel", "Label1", "Label2"] });
         const labelString = instance.getLabelsString("MyLabel", defaultContext);
 
         expect(labelString).toBe(":`MyOtherLabel`:`Label1`:`Label2`");
@@ -61,7 +61,7 @@ describe("NodeDirective", () => {
     test("should escape context labels", () => {
         const context = new ContextBuilder({ escapeTest1: "123-321", escapeTest2: "He`l`lo" }).instance();
         const instance = new NodeDirective({
-            additionalLabels: ["$context.escapeTest1", "$context.escapeTest2"],
+            labels: ["label", "$context.escapeTest1", "$context.escapeTest2"],
         });
         const labelString = instance.getLabelsString("label", context);
         expect(labelString).toBe(":`label`:`123-321`:`He``l``lo`");
@@ -70,7 +70,7 @@ describe("NodeDirective", () => {
     test("should escape jwt labels", () => {
         const context = new ContextBuilder({ jwt: { escapeTest1: "123-321", escapeTest2: "He`l`lo" } }).instance();
         const instance = new NodeDirective({
-            additionalLabels: ["$jwt.escapeTest1", "$jwt.escapeTest2"],
+            labels: ["label", "$jwt.escapeTest1", "$jwt.escapeTest2"],
         });
         const labelString = instance.getLabelsString("label", context);
         expect(labelString).toBe(":`label`:`123-321`:`He``l``lo`");
@@ -79,7 +79,7 @@ describe("NodeDirective", () => {
     test("should throw if jwt variable is missing in context", () => {
         const context = new ContextBuilder({}).instance();
         const instance = new NodeDirective({
-            additionalLabels: ["$jwt.var1"],
+            labels: ["label", "$jwt.var1"],
         });
         expect(() => {
             instance.getLabelsString("label", context);
@@ -89,7 +89,7 @@ describe("NodeDirective", () => {
     test("should throw if context variable is missing in context", () => {
         const context = new ContextBuilder({}).instance();
         const instance = new NodeDirective({
-            additionalLabels: ["$context.var1"],
+            labels: ["label", "$context.var1"],
         });
         expect(() => {
             instance.getLabelsString("label", context);

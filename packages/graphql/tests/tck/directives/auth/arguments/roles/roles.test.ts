@@ -289,7 +289,7 @@ describe("Cypher Auth Roles", () => {
                 WITH *
                 CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH *
-                CALL apoc.util.validate((create_var1.password IS NOT NULL AND NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT (create_var1.password IS NULL OR any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this0
             }
             RETURN collect(create_this0 { .id }) AS data"
@@ -658,7 +658,7 @@ describe("Cypher Auth Roles", () => {
             	CALL {
             	WITH this, this_post0
             	OPTIONAL MATCH (this_post0)-[this_post0_creator0_disconnect0_rel:HAS_POST]->(this_post0_creator0_disconnect0:User)
-            	WHERE this_post0_creator0_disconnect0.id = $updateComments_args_update_post_update_node_creator_disconnect_where_Userparam0
+            	WHERE this_post0_creator0_disconnect0.id = $updateComments_args_update_post_update_node_creator_disconnect_where_this_post0_creator0_disconnect0param0
             	WITH this, this_post0, this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel
             	CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	CALL {
@@ -693,7 +693,7 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateComments_args_update_post_update_node_creator_disconnect_where_Userparam0\\": \\"user-id\\",
+                \\"updateComments_args_update_post_update_node_creator_disconnect_where_this_post0_creator0_disconnect0param0\\": \\"user-id\\",
                 \\"updateComments\\": {
                     \\"args\\": {
                         \\"update\\": {

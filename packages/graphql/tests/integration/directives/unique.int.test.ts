@@ -398,7 +398,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const additionalType = new UniqueType("Additional");
 
             const typeDefs = `
-                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
+                type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) {
                     someIntProperty: Int!
                     title: String! @unique
                 }
@@ -440,7 +440,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const baseType = new UniqueType("Base");
             const additionalType = new UniqueType("Additional");
             const typeDefs = `
-                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
+                type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) {
                     someIntProperty: Int!
                     title: String! @unique
                 }
@@ -502,7 +502,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const baseType = new UniqueType("Base");
             const additionalType = new UniqueType("Additional");
             const typeDefs = `
-                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
+                type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) {
                     someStringProperty: String! @unique @alias(property: "someAlias")
                     title: String!
                 }
@@ -587,7 +587,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const baseType = new UniqueType("Base");
             const additionalType = new UniqueType("Additional");
             const typeDefs = `
-                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) {
+                type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) {
                     someStringProperty: String! @unique @alias(property: "someAlias")
                     title: String!
                 }
@@ -1064,7 +1064,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const baseType = new UniqueType("Base");
             const additionalType = new UniqueType("Additional");
             const typeDefs = `
-                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
+                type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
                     someIdProperty: ID! @id @alias(property: "someAlias")
                     title: String!
                 }
@@ -1105,7 +1105,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const baseType = new UniqueType("Base");
             const additionalType = new UniqueType("Additional");
             const typeDefs = `
-                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
+                type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
                     someIdProperty: ID! @id @alias(property: "someAlias")
                     title: String!
                 }
