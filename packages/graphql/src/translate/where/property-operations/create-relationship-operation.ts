@@ -23,7 +23,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../create-where-predicate";
 import { getListPredicate, ListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
-import type { GraphElement, Relationship } from "../../../classes";
+import type { Node, Relationship } from "../../../classes";
 import { createConnectionWherePropertyOperation } from "./create-connection-operation";
 
 export function createRelationshipOperation({
@@ -177,7 +177,7 @@ export function wrapAggregationSubqueries({
     preComputedSubqueries: Cypher.CompositeClause;
     innerOperation: Cypher.Predicate;
     listPredicateStr: ListPredicate;
-    refNode: GraphElement;
+    refNode: Node;
     context: Context;
     whereInput: any;
     refEdge?: Relationship;
@@ -206,7 +206,7 @@ export function wrapAggregationSubqueries({
                       context,
                       whereInput,
                       edge: refEdge,
-                      node: refNode as unknown as any,
+                      node: refNode,
                       targetNode,
                       edgeRef: targetRelationship,
                   })
@@ -217,24 +217,27 @@ export function wrapAggregationSubqueries({
                       context,
                   });
 
-            const { predicate: notExistsPredicate, preComputedSubqueries: notExistsSubquery } =
-                wrapAggregationSubqueries({
-                    targetNode,
-                    parentNode,
-                    targetPattern,
-                    targetRelationship,
-                    preComputedSubqueries: notNoneInnerPredicates.preComputedSubqueries as any,
-                    innerOperation: Cypher.not(notNoneInnerPredicates.predicate as unknown as any),
-                    listPredicateStr: "none",
-                    whereInput,
-                    refNode,
-                    context,
-                    refEdge,
-                });
-            return {
-                predicate: Cypher.and(notExistsPredicate, Cypher.eq(returnVar, new Cypher.Literal(true))),
-                preComputedSubqueries: Cypher.concat(subquery, notExistsSubquery),
-            };
+            if (notNoneInnerPredicates.predicate && notNoneInnerPredicates.preComputedSubqueries) {
+                const { predicate: notExistsPredicate, preComputedSubqueries: notExistsSubquery } =
+                    wrapAggregationSubqueries({
+                        targetNode,
+                        parentNode,
+                        targetPattern,
+                        targetRelationship,
+                        preComputedSubqueries: notNoneInnerPredicates.preComputedSubqueries,
+                        innerOperation: Cypher.not(notNoneInnerPredicates.predicate),
+                        listPredicateStr: "none",
+                        whereInput,
+                        refNode,
+                        context,
+                        refEdge,
+                    });
+                return {
+                    predicate: Cypher.and(notExistsPredicate, Cypher.eq(returnVar, new Cypher.Literal(true))),
+                    preComputedSubqueries: Cypher.concat(subquery, notExistsSubquery),
+                };
+            }
+            return { predicate: undefined };
         }
         case "single": {
             const subquery = new Cypher.Call(
