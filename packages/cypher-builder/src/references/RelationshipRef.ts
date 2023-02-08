@@ -34,12 +34,10 @@ export type RelationshipProperties = Record<string, Param<any>>;
  */
 export class RelationshipRef extends Reference {
     private _type: string | undefined;
-    public properties: RelationshipProperties;
 
-    constructor(input: { type?: string; properties?: RelationshipProperties } = {}) {
+    constructor(input: { type?: string } = {}) {
         super("this");
         this._type = input.type || undefined;
-        this.properties = input.properties || {};
     }
 
     public get type(): string | undefined {

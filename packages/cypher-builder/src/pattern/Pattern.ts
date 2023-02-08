@@ -19,6 +19,7 @@
 
 import type { CypherEnvironment } from "../Environment";
 import type { NodeRef } from "../references/NodeRef";
+import type { Param } from "../references/Param";
 import { RelationshipRef } from "../references/RelationshipRef";
 import { escapeLabel } from "../utils/escape-label";
 import { PartialPattern } from "./PartialPattern";
@@ -26,9 +27,10 @@ import { PatternElement } from "./PatternElement";
 
 export class Pattern extends PatternElement<NodeRef> {
     private withLabels = true;
-    private withProperties = true;
+    // private withProperties = true;
     private withVariable = true;
     private previous: PartialPattern | undefined;
+    private properties: Record<string, Param> | undefined;
 
     constructor(node: NodeRef, previous?: PartialPattern) {
         super(node);
@@ -45,8 +47,8 @@ export class Pattern extends PatternElement<NodeRef> {
         return this;
     }
 
-    public withoutProperties(): this {
-        this.withProperties = false;
+    public withProperties(properties: Record<string, Param>): this {
+        this.properties = properties;
         return this;
     }
 
@@ -60,7 +62,7 @@ export class Pattern extends PatternElement<NodeRef> {
 
         const nodeRefId = this.withVariable ? `${this.element.getCypher(env)}` : "";
 
-        const propertiesStr = this.withProperties ? this.serializeParameters(this.element.properties || {}, env) : "";
+        const propertiesStr = this.properties ? this.serializeParameters(this.properties || {}, env) : "";
         const nodeLabelStr = this.withLabels ? this.getNodeLabelsString(this.element) : "";
 
         return `${prevStr}(${nodeRefId}${nodeLabelStr}${propertiesStr})`;

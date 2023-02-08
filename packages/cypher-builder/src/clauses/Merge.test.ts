@@ -43,10 +43,16 @@ describe("CypherBuilder Merge", () => {
     test("Merge node with parameters", () => {
         const node = new Cypher.Node({
             labels: ["MyLabel"],
-            properties: { test: new Cypher.Param("test") },
         });
 
-        const query = new Cypher.Merge(node).onCreate([node.property("age"), new Cypher.Param(23)]);
+        const nodeProps = {
+            test: new Cypher.Param("test"),
+        };
+
+        const query = new Cypher.Merge(new Cypher.Pattern(node).withProperties(nodeProps)).onCreate([
+            node.property("age"),
+            new Cypher.Param(23),
+        ]);
 
         const queryResult = query.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`

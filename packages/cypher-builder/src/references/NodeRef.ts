@@ -25,7 +25,6 @@ export type NodeProperties = Record<string, Param<any>>;
 
 type NodeRefOptions = {
     labels?: string[];
-    properties?: NodeProperties;
 };
 
 /** Represents a node reference
@@ -33,12 +32,10 @@ type NodeRefOptions = {
  */
 export class NodeRef extends Reference {
     public labels: string[];
-    public properties: NodeProperties;
 
     constructor(options: NodeRefOptions = {}) {
         super("this");
         this.labels = options.labels || [];
-        this.properties = options.properties || {};
     }
 
     public hasLabels(...labels: string[]): HasLabel {

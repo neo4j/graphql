@@ -38,9 +38,14 @@ export interface Create extends WithReturn, WithSet {}
 export class Create extends Clause {
     private pattern: Pattern;
 
-    constructor(node: NodeRef) {
+    constructor(pattern: NodeRef | Pattern) {
         super();
-        this.pattern = new Pattern(node);
+        if (pattern instanceof Pattern) {
+            this.pattern = pattern;
+        } else {
+            this.pattern = new Pattern(pattern);
+        }
+
         this.setSubClause = new SetClause(this);
     }
 

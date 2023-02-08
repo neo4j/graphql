@@ -22,16 +22,17 @@ import type { RelationshipRef } from "../references/RelationshipRef";
 import { NodeRef } from "../references/NodeRef";
 import { Pattern } from "./Pattern";
 import { PatternElement } from "./PatternElement";
+import type { Param } from "../references/Param";
 
 type LengthOption = number | "*" | { min: number; max: number };
 
 export class PartialPattern extends PatternElement<RelationshipRef> {
     private length: { min; max } = { min: 2, max: 2 };
     private withType = true;
-    private withProperties = true;
     private withVariable = true;
     private direction: "left" | "right" | "undirected" = "right";
     private previous: Pattern;
+    private properties: Record<string, Param> | undefined;
 
     constructor(rel: RelationshipRef, previous: Pattern) {
         super(rel);
@@ -53,13 +54,13 @@ export class PartialPattern extends PatternElement<RelationshipRef> {
         return this;
     }
 
-    public withoutProperties(): this {
-        this.withProperties = false;
+    public withDirection(direction: "left" | "right" | "undirected"): this {
+        this.direction = direction;
         return this;
     }
 
-    public withDirection(direction: "left" | "right" | "undirected"): this {
-        this.direction = direction;
+    public withProperties(properties: Record<string, Param>): this {
+        this.properties = properties;
         return this;
     }
 
@@ -76,7 +77,8 @@ export class PartialPattern extends PatternElement<RelationshipRef> {
 
         const typeStr = this.withType ? this.getRelationshipTypesString(this.element) : "";
         const relStr = this.withVariable ? `${this.element.getCypher(env)}` : "";
-        const propertiesStr = this.withProperties ? this.serializeParameters(this.element.properties || {}, env) : "";
+
+        const propertiesStr = this.properties ? this.serializeParameters(this.properties || {}, env) : "";
 
         const leftArrow = this.direction === "left" ? "<-" : "-";
         const rightArrow = this.direction === "right" ? "->" : "-";

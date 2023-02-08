@@ -22,9 +22,9 @@ describe("Patterns", () => {
         });
 
         test("Node with parameters and labels", () => {
-            const node = new Cypher.Node({ labels: ["TestLabel"], properties: { name: new Cypher.Param("test") } });
+            const node = new Cypher.Node({ labels: ["TestLabel"] });
 
-            const pattern = new Cypher.Pattern(node);
+            const pattern = new Cypher.Pattern(node).withProperties({ name: new Cypher.Param("test") });
             const queryResult = new TestClause(pattern).build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`"(this0:\`TestLabel\` { name: $param0 })"`);
             expect(queryResult.params).toMatchInlineSnapshot(`
@@ -63,20 +63,24 @@ describe("Patterns", () => {
         test("Simple Pattern with properties", () => {
             const a = new Cypher.Node({
                 labels: ["Person", "Actor"],
-                properties: {
-                    name: new Cypher.Param("Arthur"),
-                    surname: new Cypher.Param("Dent"),
-                },
             });
+
+            const aProperties = {
+                name: new Cypher.Param("Arthur"),
+                surname: new Cypher.Param("Dent"),
+            };
             const b = new Cypher.Node();
             const rel = new Cypher.Relationship({
                 type: "ACTED_IN",
-                properties: {
-                    roles: new Cypher.Param(["neo"]),
-                },
             });
 
-            const query = new TestClause(new Cypher.Pattern(a).related(rel).to(b));
+            const query = new TestClause(
+                new Cypher.Pattern(a)
+                    .withProperties(aProperties)
+                    .related(rel)
+                    .withProperties({ roles: new Cypher.Param(["neo"]) })
+                    .to(b)
+            );
             const queryResult = query.build();
             expect(queryResult.cypher).toMatchInlineSnapshot(
                 `"(this0:\`Person\`:\`Actor\` { name: $param0, surname: $param1 })-[this1:ACTED_IN { roles: $param2 }]->(this2)"`
