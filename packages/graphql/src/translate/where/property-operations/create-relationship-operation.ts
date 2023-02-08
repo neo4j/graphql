@@ -150,11 +150,11 @@ export function createRelationPredicate({
               targetElement: targetNode,
               element: refNode,
               context,
-        });
-    
-        if (orOperatorMultipleNodeLabels) {
-            innerOperation.predicate = Cypher.and(innerOperation.predicate, orOperatorMultipleNodeLabels);
-        }
+          });
+
+    if (orOperatorMultipleNodeLabels) {
+        innerOperation.predicate = Cypher.and(innerOperation.predicate, orOperatorMultipleNodeLabels);
+    }
 
     if (
         innerOperation.predicate &&
