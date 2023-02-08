@@ -69,47 +69,124 @@ export function createRelationshipOperation({
         return { predicate: exists };
     }
 
-    let listPredicateStr = getListPredicate(operator as WhereOperator);
+    return createRelationPredicate({
+        targetNode: childNode,
+        targetPattern: matchPattern,
+        targetRelationship: relationship,
+        parentNode,
+        refNode,
+        context,
+        relationField,
+        whereInput: value,
+        whereOperator: operator as WhereOperator,
+    });
+}
+
+export function createRelationPredicate({
+    targetNode,
+    targetPattern,
+    targetRelationship,
+    parentNode,
+    refNode,
+    context,
+    relationField,
+    whereInput,
+    whereOperator,
+    refEdge,
+}: {
+    parentNode: Cypher.Node;
+    targetNode: Cypher.Node;
+    targetPattern: Cypher.Pattern;
+    targetRelationship: Cypher.Relationship;
+    refNode: Node;
+    context: Context;
+    relationField: RelationField;
+    whereInput: GraphQLWhereArg;
+    whereOperator: WhereOperator;
+    refEdge?: Relationship;
+}): PredicateReturn {
+    let labelsOfNodesImplementingInterface: string[] | undefined;
+    let labels = refNode.getLabels(context);
+
+    const nodeOnObj = whereInput?.node?._on;
+    const hasOnlyNodeObjectFilter = whereInput?.node && !nodeOnObj;
+    if (hasOnlyNodeObjectFilter) {
+        const nodesImplementingInterface = context.nodes.filter((x) =>
+            x.interfaces.some((i) => i.name.value === relationField.typeMeta.name)
+        );
+        labelsOfNodesImplementingInterface = nodesImplementingInterface.map((n) => n.getLabels(context)).flat();
+        if (labelsOfNodesImplementingInterface?.length) {
+            // set labels to an empty array. We check for the possible interface implementations in the WHERE clause instead (that is Neo4j 4.x safe)
+            labels = [];
+        }
+    }
+
+    let orOperatorMultipleNodeLabels: Cypher.Predicate | undefined;
+    if (labelsOfNodesImplementingInterface?.length) {
+        orOperatorMultipleNodeLabels = Cypher.or(
+            ...labelsOfNodesImplementingInterface.map((label: string) => targetNode.hasLabel(label))
+        );
+    }
+
+    targetNode.labels = labels;
+
+    let listPredicateStr = getListPredicate(whereOperator);
 
     if (listPredicateStr === "any" && !relationField.typeMeta.array) {
         listPredicateStr = "single";
     }
 
-    const { predicate: innerOperation, preComputedSubqueries } = createWherePredicate({
-        // Nested properties here
-        whereInput: value,
-        targetElement: childNode,
-        element: refNode,
-        context,
-    });
+    const innerOperation = refEdge
+        ? createConnectionWherePropertyOperation({
+              context,
+              whereInput,
+              edge: refEdge,
+              node: refNode,
+              targetNode,
+              edgeRef: targetRelationship,
+          })
+        : createWherePredicate({
+              whereInput,
+              targetElement: targetNode,
+              element: refNode,
+              context,
+        });
+    
+        if (orOperatorMultipleNodeLabels) {
+            innerOperation.predicate = Cypher.and(innerOperation.predicate, orOperatorMultipleNodeLabels);
+        }
 
-    if (innerOperation && preComputedSubqueries && !preComputedSubqueries.empty) {
-        return wrapAggregationSubqueries({
+    if (
+        innerOperation.predicate &&
+        innerOperation.preComputedSubqueries &&
+        !innerOperation.preComputedSubqueries.empty
+    ) {
+        return createRelationPredicateWithSubqueries({
             parentNode,
-            targetNode: childNode,
-            targetPattern: matchPattern,
-            targetRelationship: relationship,
-            preComputedSubqueries,
-            innerOperation,
+            targetNode,
+            targetPattern,
+            targetRelationship,
+            preComputedSubqueries: innerOperation.preComputedSubqueries,
+            innerOperation: innerOperation.predicate,
             listPredicateStr,
-            whereInput: value,
+            whereInput,
             context,
             refNode,
+            refEdge,
         });
-    } else {
-        return {
-            predicate: createRelationshipPredicate({
-                childNode,
-                matchPattern,
-                listPredicateStr,
-                innerOperation,
-            }),
-            preComputedSubqueries,
-        };
     }
+    return {
+        predicate: createSimpleRelationshipPredicate({
+            childNode: targetNode,
+            matchPattern: targetPattern,
+            listPredicateStr,
+            innerOperation: innerOperation.predicate,
+            edgePredicate: refEdge ? true : false,
+        }),
+    };
 }
 
-export function createRelationshipPredicate({
+function createSimpleRelationshipPredicate({
     matchPattern,
     listPredicateStr,
     childNode,
@@ -157,7 +234,7 @@ export function createRelationshipPredicate({
     }
 }
 
-export function wrapAggregationSubqueries({
+function createRelationPredicateWithSubqueries({
     targetNode,
     targetPattern,
     targetRelationship,
@@ -219,7 +296,7 @@ export function wrapAggregationSubqueries({
 
             if (notNoneInnerPredicates.predicate && notNoneInnerPredicates.preComputedSubqueries) {
                 const { predicate: notExistsPredicate, preComputedSubqueries: notExistsSubquery } =
-                    wrapAggregationSubqueries({
+                    createRelationPredicateWithSubqueries({
                         targetNode,
                         parentNode,
                         targetPattern,

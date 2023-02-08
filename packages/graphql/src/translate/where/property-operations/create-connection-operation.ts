@@ -20,14 +20,13 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConnectionField, ConnectionWhereArg, Context, PredicateReturn } from "../../../types";
 import type { Node, Relationship } from "../../../classes";
-import { getListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
 // Recursive function
 
 import { createWherePredicate } from "../create-where-predicate";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { getCypherLogicalOperator, isLogicalOperator } from "../../utils/logical-operators";
-import { createRelationshipPredicate, wrapAggregationSubqueries } from "./create-relationship-operation";
+import { createRelationPredicate } from "./create-relationship-operation";
 
 export function createConnectionOperation({
     connectionField,
@@ -68,29 +67,7 @@ export function createConnectionOperation({
 
         const relationField = connectionField.relationship;
 
-        let labelsOfNodesImplementingInterface;
-        let labels = refNode.getLabels(context);
-
-        const hasOnlyNodeObjectFilter = entry[1]?.node && !nodeOnObj;
-        if (hasOnlyNodeObjectFilter) {
-            const nodesImplementingInterface = context.nodes.filter((x) =>
-                x.interfaces.some((i) => i.name.value === entry[0])
-            );
-            labelsOfNodesImplementingInterface = nodesImplementingInterface.map((n) => n.getLabels(context)).flat();
-            if (labelsOfNodesImplementingInterface?.length) {
-                // set labels to an empty array. We check for the possible interface implementations in the WHERE clause instead (that is Neo4j 4.x safe)
-                labels = [];
-            }
-        }
-
-        const childNode = new Cypher.Node({ labels });
-
-        let orOperatorMultipleNodeLabels;
-        if (labelsOfNodesImplementingInterface?.length) {
-            orOperatorMultipleNodeLabels = Cypher.or(
-                ...labelsOfNodesImplementingInterface.map((label: string) => childNode.hasLabel(label))
-            );
-        }
+        const childNode = new Cypher.Node();
 
         const relationship = new Cypher.Relationship({
             source: relationField.direction === "IN" ? childNode : parentNode,
@@ -104,62 +81,27 @@ export function createConnectionOperation({
             relationship: { variable: true },
         });
 
-        let listPredicateStr = getListPredicate(operator as WhereOperator);
-
         const contextRelationship = context.relationships.find(
             (x) => x.name === connectionField.relationshipTypeName
         ) as Relationship;
 
-        const innerOperation = createConnectionWherePropertyOperation({
-            context,
-            whereInput: entry[1],
-            edgeRef: relationship,
-            targetNode: childNode,
-            edge: contextRelationship,
-            node: refNode,
-        });
-
-        if (orOperatorMultipleNodeLabels) {
-            innerOperation.predicate = Cypher.and(innerOperation.predicate, orOperatorMultipleNodeLabels);
-        }
-
         matchPatterns.push(matchPattern);
 
-        if (listPredicateStr === "any" && !connectionField.relationship.typeMeta.array) {
-            listPredicateStr = "single";
-        }
+        const { predicate, preComputedSubqueries } = createRelationPredicate({
+            targetNode: childNode,
+            targetPattern: matchPattern,
+            targetRelationship: relationship,
+            parentNode,
+            refNode,
+            context,
+            relationField,
+            whereInput: entry[1],
+            whereOperator: operator as WhereOperator,
+            refEdge: contextRelationship,
+        });
 
-        if (
-            innerOperation.predicate &&
-            innerOperation.preComputedSubqueries &&
-            !innerOperation.preComputedSubqueries.empty
-        ) {
-            const { predicate, preComputedSubqueries } = wrapAggregationSubqueries({
-                parentNode,
-                targetNode: childNode,
-                targetPattern: matchPattern,
-                targetRelationship: relationship,
-                preComputedSubqueries: innerOperation.preComputedSubqueries,
-                innerOperation: innerOperation.predicate,
-                listPredicateStr,
-                refNode,
-                context,
-                whereInput: value,
-                refEdge: contextRelationship,
-            });
-            operations.push(predicate);
-            subqueries = Cypher.concat(subqueries, preComputedSubqueries);
-        } else {
-            const predicate = createRelationshipPredicate({
-                matchPattern,
-                listPredicateStr,
-                childNode,
-                innerOperation: innerOperation.predicate,
-                edgePredicate: true,
-            });
-
-            operations.push(predicate);
-        }
+        operations.push(predicate);
+        subqueries = Cypher.concat(subqueries, preComputedSubqueries);
     });
 
     return {
