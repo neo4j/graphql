@@ -50,8 +50,7 @@ export function createRelationshipOperation({
     const relationship = new Cypher.Relationship({ type: relationField.type });
     const direction = getCypherRelationshipDirection(relationField);
 
-    const matchPattern = parentNode
-        .pattern()
+    const matchPattern = new Cypher.Pattern(parentNode)
         .withoutProperties()
         .withoutLabels()
         .related(relationship)

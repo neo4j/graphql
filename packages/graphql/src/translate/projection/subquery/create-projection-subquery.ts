@@ -63,8 +63,7 @@ export function createProjectionSubquery({
     const relationship = new Cypher.Relationship({
         type: relationField.type,
     });
-    const pattern = parentNode
-        .pattern()
+    const pattern = new Cypher.Pattern(parentNode)
         .withoutLabels()
         .related(relationship)
         .withDirection(relationshipDirection)

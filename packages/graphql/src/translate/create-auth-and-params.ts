@@ -410,16 +410,14 @@ function createRelationshipPredicate({
     });
 
     const direction = getCypherRelationshipDirection(relationField);
-    const innerPattern = nodeRef
-        .pattern()
+    const innerPattern = new Cypher.Pattern(nodeRef)
         .withoutLabels()
         .related(relationship)
         .withDirection(direction)
         .withoutVariable()
         .to(targetNodeRef);
 
-    const existsPattern = nodeRef
-        .pattern()
+    const existsPattern = new Cypher.Pattern(nodeRef)
         .withoutLabels()
         .related(relationship)
         .withDirection(direction)

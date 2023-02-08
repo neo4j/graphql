@@ -19,7 +19,7 @@
 
 import type { CypherEnvironment } from "../Environment";
 import type { NodeRef } from "../references/NodeRef";
-import type { RelationshipRef } from "../references/RelationshipRef";
+import { RelationshipRef } from "../references/RelationshipRef";
 import { escapeLabel } from "../utils/escape-label";
 import { PartialPattern } from "./PartialPattern";
 import { PatternElement } from "./PatternElement";
@@ -50,7 +50,8 @@ export class Pattern extends PatternElement<NodeRef> {
         return this;
     }
 
-    public related(rel: RelationshipRef): PartialPattern {
+    public related(rel?: RelationshipRef): PartialPattern {
+        if (!rel) rel = new RelationshipRef();
         return new PartialPattern(rel, this);
     }
 

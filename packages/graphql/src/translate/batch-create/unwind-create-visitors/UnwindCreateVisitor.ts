@@ -156,8 +156,7 @@ export class UnwindCreateVisitor implements Visitor {
         if (direction === "left") direction = "right";
         else if (direction === "right") direction = "left";
 
-        const relationshipPattern = currentNode
-            .pattern()
+        const relationshipPattern = new Cypher.Pattern(currentNode)
             .withoutLabels()
             .related(relationshipVar)
             .withDirection(direction)

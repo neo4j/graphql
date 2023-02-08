@@ -128,7 +128,7 @@ function createInterfaceSubquery({
         type: field.type,
     });
     const direction = getCypherRelationshipDirection(field, resolveTree.args);
-    const pattern = parentNode.related(relationshipRef).withDirection(direction).to(relatedNode);
+    const pattern = new Cypher.Pattern(parentNode).related(relationshipRef).withDirection(direction).to(relatedNode);
 
     const withClause = new Cypher.With(...fullWithVars.map((f) => new Cypher.NamedVariable(f)));
     const matchQuery = new Cypher.Match(pattern);

@@ -69,7 +69,8 @@ describe("CypherBuilder Merge", () => {
         const node2 = new Cypher.Node({});
 
         const relationship = new Cypher.Relationship();
-        const query = new Cypher.Merge(node1.pattern().withoutLabels().related(relationship).to(node2))
+        const pattern = new Cypher.Pattern(node1).withoutLabels().related(relationship).to(node2);
+        const query = new Cypher.Merge(pattern)
             .onCreate(
                 [node1.property("age"), new Cypher.Param(23)],
                 [node1.property("name"), new Cypher.Param("Keanu")],

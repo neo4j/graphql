@@ -18,11 +18,8 @@
  */
 
 import { HasLabel } from "../expressions/HasLabel";
-import type { PartialPattern } from "../pattern/PartialPattern";
-import { Pattern } from "../pattern/Pattern";
 import type { Param } from "./Param";
 import { NamedReference, Reference } from "./Reference";
-import { RelationshipRef } from "./RelationshipRef";
 
 export type NodeProperties = Record<string, Param<any>>;
 
@@ -44,22 +41,12 @@ export class NodeRef extends Reference {
         this.properties = options.properties || {};
     }
 
-    public related(relationship?: RelationshipRef): PartialPattern {
-        if (!relationship) relationship = new RelationshipRef();
-        return this.pattern().related(relationship);
-    }
-
     public hasLabels(...labels: string[]): HasLabel {
         return new HasLabel(this, labels);
     }
 
     public hasLabel(label: string): HasLabel {
         return new HasLabel(this, [label]);
-    }
-
-    /** Creates a new Pattern from this node */
-    public pattern(): Pattern {
-        return new Pattern(this);
     }
 }
 

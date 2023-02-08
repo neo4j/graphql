@@ -85,7 +85,10 @@ export function createFieldAggregation({
     });
 
     const relationship = new Cypher.Relationship({ type: relationAggregationField.type });
-    const targetPattern = sourceRef.related(relationship).withDirection(relationshipDirection).to(targetRef);
+    const targetPattern = new Cypher.Pattern(sourceRef)
+        .related(relationship)
+        .withDirection(relationshipDirection)
+        .to(targetRef);
 
     const matchWherePattern = createMatchWherePattern(targetPattern, preComputedSubqueries, authData, predicate);
     const projectionMap = new Cypher.Map();

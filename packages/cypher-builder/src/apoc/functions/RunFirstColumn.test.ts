@@ -47,7 +47,7 @@ describe("RunFirstColumn", () => {
 
         const topQuery = new Cypher.Match(node).where(Cypher.eq(node.property("title"), param1));
 
-        const nestedPattern = node.pattern().withoutLabels();
+        const nestedPattern = new Cypher.Pattern(node).withoutLabels();
         const releasedParam = new Cypher.Param(1999);
         const subQuery = new Cypher.Match(nestedPattern).set([node.property("released"), releasedParam]).return(node);
         const apocCall = new Cypher.apoc.RunFirstColumn(subQuery, [node, releasedParam]);

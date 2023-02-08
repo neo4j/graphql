@@ -49,7 +49,7 @@ export class Match extends Clause {
         if (pattern instanceof Pattern) {
             this.pattern = pattern;
         } else {
-            this.pattern = pattern.pattern();
+            this.pattern = new Pattern(pattern);
         }
     }
 

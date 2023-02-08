@@ -64,7 +64,10 @@ export function createEdgeSubquery({
         type: field.relationship.type,
     });
     const direction = getCypherRelationshipDirection(field.relationship, resolveTree.args);
-    const relPattern = parentNodeRef.related(relationshipRef).withDirection(direction).to(relatedNodeRef);
+    const relPattern = new Cypher.Pattern(parentNodeRef)
+        .related(relationshipRef)
+        .withDirection(direction)
+        .to(relatedNodeRef);
 
     const matchClause = new Cypher.Match(relPattern);
     const predicates: Cypher.Predicate[] = [];

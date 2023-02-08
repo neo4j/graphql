@@ -28,7 +28,7 @@ describe("RelationshipRef", () => {
 
         const node2 = new Cypher.Node({ labels: ["Movie"] });
 
-        const actedIn = node1.related(new Cypher.Relationship({ type: "ACTED_IN" })).to(node2);
+        const actedIn = new Cypher.Pattern(node1).related(new Cypher.Relationship({ type: "ACTED_IN" })).to(node2);
         const testClause = new TestClause(actedIn);
 
         const queryResult = testClause.build();

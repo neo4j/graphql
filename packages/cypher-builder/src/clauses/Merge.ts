@@ -44,7 +44,7 @@ export class Merge extends Clause {
         if (pattern instanceof Pattern) {
             this.pattern = pattern;
         } else {
-            this.pattern = pattern.pattern();
+            this.pattern = new Pattern(pattern);
         }
 
         this.onCreateClause = new OnCreate(this);

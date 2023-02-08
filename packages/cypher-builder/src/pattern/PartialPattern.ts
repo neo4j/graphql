@@ -18,8 +18,8 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import type { NodeRef } from "../references/NodeRef";
 import type { RelationshipRef } from "../references/RelationshipRef";
+import { NodeRef } from "../references/NodeRef";
 import { Pattern } from "./Pattern";
 import { PatternElement } from "./PatternElement";
 
@@ -30,15 +30,16 @@ export class PartialPattern extends PatternElement<RelationshipRef> {
     private withType = true;
     private withProperties = true;
     private withVariable = true;
-    private previous: Pattern;
     private direction: "left" | "right" | "undirected" = "right";
+    private previous: Pattern;
 
-    constructor(rel: RelationshipRef, parent: Pattern) {
+    constructor(rel: RelationshipRef, previous: Pattern) {
         super(rel);
-        this.previous = parent;
+        this.previous = previous;
     }
 
-    public to(node: NodeRef): Pattern {
+    public to(node?: NodeRef): Pattern {
+        if (!node) node = new NodeRef();
         return new Pattern(node, this);
     }
 

@@ -29,6 +29,9 @@ export type RelationshipInput = {
 
 export type RelationshipProperties = Record<string, Param<any>>;
 
+/** Reference to a relationship property
+ * @group References
+ */
 export class RelationshipRef extends Reference {
     private _type: string | undefined;
     public properties: RelationshipProperties;
@@ -43,49 +46,3 @@ export class RelationshipRef extends Reference {
         return this._type;
     }
 }
-
-// /** Reference to a relationship property
-//  * @group References
-//  */
-// export class RelationshipRef extends Reference {
-//     private _source: NodeRef;
-//     private _target: NodeRef;
-//     private _type: string | undefined;
-
-//     constructor(input: RelationshipInput) {
-//         super("this");
-//         this._type = input.type || undefined;
-//         this._source = input.source;
-//         this._target = input.target;
-//     }
-
-//     public get source(): NodeRef {
-//         return this._source;
-//     }
-
-//     public get target(): NodeRef {
-//         return this._target;
-//     }
-
-//     public get type(): string | undefined {
-//         return this._type;
-//     }
-
-//     /** Sets the type of the relationship */
-//     public withType(type: string): this {
-//         this._type = type;
-//         return this;
-//     }
-
-//     /** Reverses the direction of the relationship */
-//     public reverse(): void {
-//         const oldTarget = this._target;
-//         this._target = this._source;
-//         this._source = oldTarget;
-//     }
-
-//     /** Creates a new Pattern from this relationship */
-//     public pattern(options: MatchPatternOptions = {}): Pattern<RelationshipRef> {
-//         return new Pattern(this, options);
-//     }
-// }

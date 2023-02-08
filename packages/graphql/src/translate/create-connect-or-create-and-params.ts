@@ -233,7 +233,7 @@ function mergeStatement({
 
     const relationship = new Cypher.Relationship({ type: relationField.type });
     const direction = getCypherRelationshipDirection(relationField);
-    const relationshipPattern = parentNode
+    const relationshipPattern = new Cypher.Pattern(parentNode)
         .related(relationship)
         .withDirection(direction)
         .to(node)
