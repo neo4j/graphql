@@ -99,6 +99,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         screenTime: 8904,
     };
 
+    const updatedName = "a new name!";
+
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
@@ -733,6 +735,89 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Actor.plural]: expect.toIncludeSameMembers([actorInput2, actorInput3, actorInput4]),
+        });
+    });
+
+    test("should be able to filter update mutations by node properties, edge properties and aggregations in nested connections", async () => {
+        const query = `
+            mutation {
+                ${Actor.operations.update}(
+                    where: {
+                        moviesConnection_SINGLE: {
+                            node: {
+                                actorsConnection_NONE: {
+                                    node: { moviesAggregate: { count_GT: 1 } }
+                                    edge: {
+                                        roles_INCLUDES: "${actedInInput4.roles[0]}"
+                                    }
+                                }
+                            },
+                            edge: {
+                                roles_INCLUDES: "${actedInInput5.roles[0]}"
+                            }
+                        }
+                    }
+                    update: { name: "${updatedName}" }
+
+                ) {
+                    ${Actor.plural} {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Actor.operations.update]: {
+                [Actor.plural]: expect.toIncludeSameMembers([{ name: updatedName }]),
+            },
+        });
+    });
+
+    test("should be able to filter delete mutations by node properties, edge properties and aggregations in nested connections", async () => {
+        const query = `
+            mutation {
+                ${Actor.operations.delete}(
+                    where: {
+                        moviesConnection_SINGLE: {
+                            node: {
+                                actorsConnection_SOME: {
+                                    node: { 
+                                        name: "${actorInput4.name}"
+                                        moviesAggregate: { count_GT: 1 }
+                                    }
+                                    edge: {
+                                        roles_INCLUDES: "${actedInInput7.roles[0]}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                ) {
+                    nodesDeleted
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Actor.operations.delete]: {
+                nodesDeleted: 2,
+            },
         });
     });
 });
