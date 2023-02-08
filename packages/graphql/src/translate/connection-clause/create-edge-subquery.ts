@@ -91,7 +91,6 @@ export function createEdgeSubquery({
         where: { varName: relatedNodeRef, node: relatedNode },
     });
     if (authPredicate) predicates.push(authPredicate);
-
     const authAllowPredicate = createAuthPredicates({
         operations: "READ",
         entity: relatedNode,

@@ -28,6 +28,7 @@ import { NodeAuth } from "../classes/NodeAuth";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import { getOrCreateCypherNode } from "./utils/get-or-create-cypher-variable";
+import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
 
 interface Allow {
     varName: string | Cypher.Node;
@@ -407,12 +408,21 @@ function createRelationshipPredicate({
     const relationship = new Cypher.Relationship({
         type: relationField.type,
     });
-    const innerPattern = nodeRef.pattern().withoutLabels().related(relationship).withoutVariable().to(targetNodeRef);
+
+    const direction = getCypherRelationshipDirection(relationField);
+    const innerPattern = nodeRef
+        .pattern()
+        .withoutLabels()
+        .related(relationship)
+        .withDirection(direction)
+        .withoutVariable()
+        .to(targetNodeRef);
 
     const existsPattern = nodeRef
         .pattern()
         .withoutLabels()
         .related(relationship)
+        .withDirection(direction)
         .withoutVariable()
         .to(targetNodeRef)
         .withoutVariable();

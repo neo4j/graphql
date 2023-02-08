@@ -18,7 +18,8 @@
  */
 
 import { HasLabel } from "../expressions/HasLabel";
-import { PartialPattern, Pattern } from "../pattern/Pattern";
+import type { PartialPattern } from "../pattern/PartialPattern";
+import { Pattern } from "../pattern/Pattern";
 import type { Param } from "./Param";
 import { NamedReference, Reference } from "./Reference";
 import { RelationshipRef } from "./RelationshipRef";
