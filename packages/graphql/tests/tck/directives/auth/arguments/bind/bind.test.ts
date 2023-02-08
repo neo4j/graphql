@@ -149,7 +149,7 @@ describe("Cypher Auth Allow", () => {
                     CREATE (create_this5:\`Post\`)
                     SET
                         create_this5.id = create_var3.id
-                    MERGE (create_this5)<-[create_this6:HAS_POST]-(create_this0)
+                    MERGE (create_this0)-[create_this6:HAS_POST]->(create_this5)
                     WITH create_this5, create_var3
                     CALL {
                         WITH create_this5, create_var3
@@ -158,7 +158,7 @@ describe("Cypher Auth Allow", () => {
                         CREATE (create_this10:\`User\`)
                         SET
                             create_this10.id = create_var8.id
-                        MERGE (create_this10)-[create_this11:HAS_POST]->(create_this5)
+                        MERGE (create_this5)<-[create_this11:HAS_POST]-(create_this10)
                         WITH *
                         CALL apoc.util.validate(NOT ((create_this10.id IS NOT NULL AND create_this10.id = $create_this10auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                         RETURN collect(NULL) AS create_var12

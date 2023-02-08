@@ -166,7 +166,7 @@ describe("Batch Create, Auth", () => {
                     SET
                         create_this6.name = create_var4.name,
                         create_this6.id = randomUUID()
-                    MERGE (create_this6)-[create_this7:ACTED_IN]->(create_this1)
+                    MERGE (create_this1)<-[create_this7:ACTED_IN]-(create_this6)
                     SET
                         create_this7.year = create_var5.year
                     WITH create_this6

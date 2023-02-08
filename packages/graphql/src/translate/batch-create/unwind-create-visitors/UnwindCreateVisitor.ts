@@ -151,27 +151,14 @@ export class UnwindCreateVisitor implements Visitor {
 
         const relationshipVar = new Cypher.Relationship({ type: relationField.type });
 
-        let direction = getCypherRelationshipDirection(relationField);
+        const direction = getCypherRelationshipDirection(relationField);
 
-        if (direction === "left") direction = "right";
-        else if (direction === "right") direction = "left";
-
-        const relationshipPattern = new Cypher.Pattern(currentNode)
+        const relationshipPattern = new Cypher.Pattern(parentVar as Cypher.Node)
             .withoutLabels()
             .related(relationshipVar)
             .withDirection(direction)
-            .to(parentVar as Cypher.Node)
+            .to(currentNode)
             .withoutLabels();
-
-        // const relationshipClause = new Cypher.Relationship({
-        //     source: currentNode,
-        //     target: parentVar as Cypher.Node,
-        //     type: relationField.type,
-        // });
-
-        // if (relationField.direction === "OUT") {
-        //     relationshipClause.reverse();
-        // }
 
         const mergeClause = new Cypher.Merge(relationshipPattern);
 

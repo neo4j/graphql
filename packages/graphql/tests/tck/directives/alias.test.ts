@@ -187,7 +187,7 @@ describe("Cypher alias directive", () => {
                     SET
                         create_this6.title = create_var4.title,
                         create_this6.ratingPropInDb = create_var4.rating
-                    MERGE (create_this6)<-[create_this7:ACTED_IN]-(create_this1)
+                    MERGE (create_this1)-[create_this7:ACTED_IN]->(create_this6)
                     SET
                         create_this7.characterPropInDb = create_var5.character,
                         create_this7.screenTime = create_var5.screenTime

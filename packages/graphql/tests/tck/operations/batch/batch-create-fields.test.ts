@@ -191,7 +191,7 @@ describe("Batch Create, Scalar types", () => {
                         create_this5.name = create_var3.name,
                         create_this5.createdAt = datetime(),
                         create_this5.id = randomUUID()
-                    MERGE (create_this5)-[create_this6:ACTED_IN]->(create_this0)
+                    MERGE (create_this0)<-[create_this6:ACTED_IN]-(create_this5)
                     SET
                         create_this6.year = create_var4.year
                     WITH create_this5, create_var3
@@ -202,7 +202,7 @@ describe("Batch Create, Scalar types", () => {
                         CREATE (create_this10:\`Website\`)
                         SET
                             create_this10.address = create_var8.address
-                        MERGE (create_this10)<-[create_this11:HAS_WEBSITE]-(create_this5)
+                        MERGE (create_this5)-[create_this11:HAS_WEBSITE]->(create_this10)
                         RETURN collect(NULL) AS create_var12
                     }
                     WITH create_this5
@@ -223,7 +223,7 @@ describe("Batch Create, Scalar types", () => {
                     CREATE (create_this17:\`Website\`)
                     SET
                         create_this17.address = create_var15.address
-                    MERGE (create_this17)<-[create_this18:HAS_WEBSITE]-(create_this0)
+                    MERGE (create_this0)-[create_this18:HAS_WEBSITE]->(create_this17)
                     RETURN collect(NULL) AS create_var19
                 }
                 WITH create_this0
@@ -325,7 +325,7 @@ describe("Batch Create, Scalar types", () => {
                         create_this6.name = create_var4.name,
                         create_this6.createdAt = datetime(),
                         create_this6.id = randomUUID()
-                    MERGE (create_this6)-[create_this7:ACTED_IN]->(create_this1)
+                    MERGE (create_this1)<-[create_this7:ACTED_IN]-(create_this6)
                     SET
                         create_this7.year = create_var5.year
                     WITH create_this6

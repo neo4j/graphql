@@ -201,7 +201,7 @@ describe("tck/rfs/003", () => {
                                 CREATE (create_this5:\`Director\`)
                                 SET
                                     create_this5.id = create_var3.id
-                                MERGE (create_this5)-[create_this6:DIRECTED]->(create_this0)
+                                MERGE (create_this0)<-[create_this6:DIRECTED]-(create_this5)
                                 WITH create_this5
                                 CALL {
                                 	WITH create_this5
@@ -295,7 +295,7 @@ describe("tck/rfs/003", () => {
                                 CREATE (create_this5:\`Director\`)
                                 SET
                                     create_this5.id = create_var3.id
-                                MERGE (create_this5)-[create_this6:DIRECTED]->(create_this0)
+                                MERGE (create_this0)<-[create_this6:DIRECTED]-(create_this5)
                                 WITH create_this5
                                 CALL {
                                 	WITH create_this5

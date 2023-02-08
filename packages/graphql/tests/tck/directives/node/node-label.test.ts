@@ -220,7 +220,7 @@ describe("Label in Node directive", () => {
                     CREATE (create_this5:\`Person\`)
                     SET
                         create_this5.name = create_var3.name
-                    MERGE (create_this5)-[create_this6:ACTED_IN]->(create_this0)
+                    MERGE (create_this0)<-[create_this6:ACTED_IN]-(create_this5)
                     RETURN collect(NULL) AS create_var7
                 }
                 RETURN create_this0
