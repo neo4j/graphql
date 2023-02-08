@@ -1377,7 +1377,7 @@ describe("tck/rfs/003", () => {
                         WITH *
                         CALL {
                             WITH this
-                            MATCH (this_director:\`Director\`)-[update_this0:DIRECTED]->(this)
+                            MATCH (this)<-[update_this0:DIRECTED]-(this_director:\`Director\`)
                             WITH this_director { .id } AS this_director
                             RETURN head(collect(this_director)) AS this_director
                         }
@@ -1498,7 +1498,7 @@ describe("tck/rfs/003", () => {
                         WITH *
                         CALL {
                             WITH this
-                            MATCH (this_director:\`Director\`)-[update_this0:DIRECTED]->(this)
+                            MATCH (this)<-[update_this0:DIRECTED]-(this_director:\`Director\`)
                             WITH this_director { .id } AS this_director
                             RETURN head(collect(this_director)) AS this_director
                         }

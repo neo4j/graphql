@@ -97,7 +97,7 @@ describe("Node directive with additionalLabels", () => {
             "MATCH (this:\`Film\`:\`Multimedia\`)
             CALL {
                 WITH this
-                MATCH (this_actors:\`Actor\`:\`Person\`)-[this0:ACTED_IN]->(this)
+                MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Actor\`:\`Person\`)
                 WITH this_actors { .name } AS this_actors
                 RETURN collect(this_actors) AS this_actors
             }

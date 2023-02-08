@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                 MATCH (this)-[this0:SOLD_AT_AUCTION_AS]->(this_auction:\`AuctionItem\`)
                 CALL {
                     WITH this_auction
-                    MATCH (this_auction_buyer:\`Organization\`)-[this1:BOUGHT_ITEM_AT_AUCTION]->(this_auction)
+                    MATCH (this_auction)<-[this1:BOUGHT_ITEM_AT_AUCTION]-(this_auction_buyer:\`Organization\`)
                     WITH this_auction_buyer { .name, dbId: this_auction_buyer.id } AS this_auction_buyer
                     RETURN head(collect(this_auction_buyer)) AS this_auction_buyer
                 }

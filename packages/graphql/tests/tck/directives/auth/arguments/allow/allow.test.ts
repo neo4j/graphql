@@ -205,7 +205,7 @@ describe("Cypher Auth Allow", () => {
             WHERE apoc.util.validatePredicate(NOT ((exists((this)<-[:HAS_POST]-(:\`User\`)) AND any(this0 IN [(this)<-[:HAS_POST]-(this0:\`User\`) | this0] WHERE (this0.id IS NOT NULL AND this0.id = $param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                MATCH (this_creator:\`User\`)-[this1:HAS_POST]->(this)
+                MATCH (this)<-[this1:HAS_POST]-(this_creator:\`User\`)
                 WHERE (apoc.util.validatePredicate(NOT ((this_creator.id IS NOT NULL AND this_creator.id = $param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ((this_creator.id IS NOT NULL AND this_creator.id = $this_creatorauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 WITH this_creator { .password } AS this_creator
                 RETURN head(collect(this_creator)) AS this_creator

@@ -202,7 +202,7 @@ describe("Batch Create, Scalar types", () => {
                         CREATE (create_this10:\`Website\`)
                         SET
                             create_this10.address = create_var8.address
-                        MERGE (create_this5)-[create_this11:HAS_WEBSITE]->(create_this10)
+                        MERGE (create_this10)<-[create_this11:HAS_WEBSITE]-(create_this5)
                         RETURN collect(NULL) AS create_var12
                     }
                     WITH create_this5
@@ -223,7 +223,7 @@ describe("Batch Create, Scalar types", () => {
                     CREATE (create_this17:\`Website\`)
                     SET
                         create_this17.address = create_var15.address
-                    MERGE (create_this0)-[create_this18:HAS_WEBSITE]->(create_this17)
+                    MERGE (create_this17)<-[create_this18:HAS_WEBSITE]-(create_this0)
                     RETURN collect(NULL) AS create_var19
                 }
                 WITH create_this0
@@ -350,7 +350,7 @@ describe("Batch Create, Scalar types", () => {
             }
             CALL {
                 WITH create_this1
-                MATCH (create_this1_actors:\`Actor\`)-[create_this0:ACTED_IN]->(create_this1)
+                MATCH (create_this1)<-[create_this0:ACTED_IN]-(create_this1_actors:\`Actor\`)
                 WITH create_this1_actors { .name } AS create_this1_actors
                 RETURN collect(create_this1_actors) AS create_this1_actors
             }
@@ -562,7 +562,7 @@ describe("Batch Create, Scalar types", () => {
                 ON CREATE SET
                     this4_actors_connectOrCreate0.createdAt = datetime(),
                     this4_actors_connectOrCreate0.name = $this4_actors_connectOrCreate_param1
-                MERGE (this4_actors_connectOrCreate0)-[this4_actors_connectOrCreate_this0:ACTED_IN]->(this4)
+                MERGE (this4)<-[this4_actors_connectOrCreate_this0:ACTED_IN]-(this4_actors_connectOrCreate0)
                 RETURN COUNT(*) AS _
             }
             WITH this4
@@ -583,7 +583,7 @@ describe("Batch Create, Scalar types", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this0)
+                MATCH (this0)<-[create_this1:ACTED_IN]-(this0_actors:\`Actor\`)
                 WITH this0_actors { .name } AS this0_actors
                 RETURN collect(this0_actors) AS this0_actors
             }
@@ -595,7 +595,7 @@ describe("Batch Create, Scalar types", () => {
             }
             CALL {
                 WITH this1
-                MATCH (this1_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this1)
+                MATCH (this1)<-[create_this1:ACTED_IN]-(this1_actors:\`Actor\`)
                 WITH this1_actors { .name } AS this1_actors
                 RETURN collect(this1_actors) AS this1_actors
             }
@@ -607,7 +607,7 @@ describe("Batch Create, Scalar types", () => {
             }
             CALL {
                 WITH this2
-                MATCH (this2_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this2)
+                MATCH (this2)<-[create_this1:ACTED_IN]-(this2_actors:\`Actor\`)
                 WITH this2_actors { .name } AS this2_actors
                 RETURN collect(this2_actors) AS this2_actors
             }
@@ -619,7 +619,7 @@ describe("Batch Create, Scalar types", () => {
             }
             CALL {
                 WITH this3
-                MATCH (this3_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this3)
+                MATCH (this3)<-[create_this1:ACTED_IN]-(this3_actors:\`Actor\`)
                 WITH this3_actors { .name } AS this3_actors
                 RETURN collect(this3_actors) AS this3_actors
             }
@@ -631,7 +631,7 @@ describe("Batch Create, Scalar types", () => {
             }
             CALL {
                 WITH this4
-                MATCH (this4_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this4)
+                MATCH (this4)<-[create_this1:ACTED_IN]-(this4_actors:\`Actor\`)
                 WITH this4_actors { .name } AS this4_actors
                 RETURN collect(this4_actors) AS this4_actors
             }

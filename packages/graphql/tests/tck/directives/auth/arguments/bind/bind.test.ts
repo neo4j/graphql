@@ -149,7 +149,7 @@ describe("Cypher Auth Allow", () => {
                     CREATE (create_this5:\`Post\`)
                     SET
                         create_this5.id = create_var3.id
-                    MERGE (create_this0)-[create_this6:HAS_POST]->(create_this5)
+                    MERGE (create_this5)<-[create_this6:HAS_POST]-(create_this0)
                     WITH create_this5, create_var3
                     CALL {
                         WITH create_this5, create_var3

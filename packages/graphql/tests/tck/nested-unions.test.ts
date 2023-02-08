@@ -149,7 +149,7 @@ describe("Nested Unions", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this_actors:\`LeadActor\`)-[update_this0:ACTED_IN]->(this)
+                    MATCH (this)<-[update_this0:ACTED_IN]-(this_actors:\`LeadActor\`)
                     CALL {
                         WITH this_actors
                         CALL {
@@ -170,7 +170,7 @@ describe("Nested Unions", () => {
                     RETURN this_actors AS this_actors
                     UNION
                     WITH *
-                    MATCH (this_actors:\`Extra\`)-[update_this3:ACTED_IN]->(this)
+                    MATCH (this)<-[update_this3:ACTED_IN]-(this_actors:\`Extra\`)
                     WITH this_actors { __resolveType: \\"Extra\\" } AS this_actors
                     RETURN this_actors AS this_actors
                 }
@@ -261,7 +261,7 @@ describe("Nested Unions", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this_actors:\`LeadActor\`)-[update_this0:ACTED_IN]->(this)
+                    MATCH (this)<-[update_this0:ACTED_IN]-(this_actors:\`LeadActor\`)
                     CALL {
                         WITH this_actors
                         CALL {
@@ -282,7 +282,7 @@ describe("Nested Unions", () => {
                     RETURN this_actors AS this_actors
                     UNION
                     WITH *
-                    MATCH (this_actors:\`Extra\`)-[update_this3:ACTED_IN]->(this)
+                    MATCH (this)<-[update_this3:ACTED_IN]-(this_actors:\`Extra\`)
                     WITH this_actors { __resolveType: \\"Extra\\" } AS this_actors
                     RETURN this_actors AS this_actors
                 }

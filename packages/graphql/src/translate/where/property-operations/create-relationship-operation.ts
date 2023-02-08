@@ -53,10 +53,11 @@ export function createRelationshipOperation({
     const matchPattern = parentNode
         .pattern()
         .withoutProperties()
+        .withoutLabels()
         .related(relationship)
+        .withoutVariable()
         .withDirection(direction)
-        .to(childNode)
-        .withoutLabels();
+        .to(childNode);
     // const matchPattern = relationship.pattern({
     //     source: relationField.direction === "IN" ? { variable: true } : { labels: false },
     //     target: relationField.direction === "IN" ? { labels: false } : { variable: true },

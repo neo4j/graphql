@@ -137,5 +137,10 @@ function createNestedPredicate({
             subqueries = Cypher.concat(subqueries, preComputedSubqueries);
     });
     const logicalOperator = getCypherLogicalOperator(key);
-    return { predicate: logicalOperator(...nested), preComputedSubqueries: subqueries, requiredVariables, aggregatingVariables  };
+    return {
+        predicate: logicalOperator(...nested),
+        preComputedSubqueries: subqueries,
+        requiredVariables,
+        aggregatingVariables,
+    };
 }

@@ -106,7 +106,6 @@ export function createConnectionOperation({
             .related(relationship)
             .withDirection(direction)
             .to(childNode);
-
         // const relationship = new Cypher.Relationship({
         //     source: relationField.direction === "IN" ? childNode : parentNode,
         //     target: relationField.direction === "IN" ? parentNode : childNode,
@@ -142,7 +141,6 @@ export function createConnectionOperation({
         requiredVariables.push(...innerOperation.requiredVariables);
         aggregatingVariables.push(...innerOperation.aggregatingVariables);
         matchPatterns.push(matchPattern);
-
         if (listPredicateStr === "any" && !connectionField.relationship.typeMeta.array) {
             listPredicateStr = "single";
         }

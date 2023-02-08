@@ -75,7 +75,7 @@ describe("Field Level Aggregations Alias", () => {
             "MATCH (this:\`Film\`)
             CALL {
                 WITH this
-                MATCH (this_actorsAggregate_this0:\`Person\`)-[this_actorsAggregate_this1:ACTED_IN]->(this)
+                MATCH (this)<-[this_actorsAggregate_this1:ACTED_IN]-(this_actorsAggregate_this0:\`Person\`)
                 WITH this_actorsAggregate_this0
                 ORDER BY size(this_actorsAggregate_this0.name) DESC
                 WITH collect(this_actorsAggregate_this0.name) AS list

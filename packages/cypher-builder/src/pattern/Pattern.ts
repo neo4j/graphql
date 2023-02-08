@@ -143,13 +143,13 @@ export class PartialPattern extends PatternElement<RelationshipRef> {
         const prevStr = this.previous.getCypher(env);
 
         const typeStr = this.withType ? this.getRelationshipTypesString(this.element) : "";
-        const relStr = this.withVariable ? `${this.element.getCypher(env)}${typeStr}` : "";
+        const relStr = this.withVariable ? `${this.element.getCypher(env)}` : "";
         const propertiesStr = this.withProperties ? this.serializeParameters(this.element.properties || {}, env) : "";
 
         const leftArrow = this.direction === "left" ? "<-" : "-";
         const rightArrow = this.direction === "right" ? "->" : "-";
 
-        return `${prevStr}${leftArrow}[${relStr}${propertiesStr}]${rightArrow}`;
+        return `${prevStr}${leftArrow}[${relStr}${typeStr}${propertiesStr}]${rightArrow}`;
     }
 
     private getRelationshipTypesString(relationship: RelationshipRef): string {
