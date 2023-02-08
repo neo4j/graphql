@@ -2761,9 +2761,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:0.17.5":
-  version: 0.17.5
-  resolution: "@neo4j-ndl/react@npm:0.17.5"
+"@neo4j-ndl/react@npm:0.17.6":
+  version: 0.17.6
+  resolution: "@neo4j-ndl/react@npm:0.17.6"
   dependencies:
     "@heroicons/react": ^1.0.5
     "@neo4j-ndl/base": ^0.16.3
@@ -2777,7 +2777,7 @@ __metadata:
     tinycolor2: ^1.4.2
   peerDependencies:
     react: 17.x
-  checksum: dc182f56ad341e9039ca3d83a4530da7a46b67517ffb74cd00e7f1857fef55d44829f0e29b776743df2e4839f21cbcbe1c879d1daa89c2387209c2e340cf61ee
+  checksum: bf35cf04c229ffede78b91c8f4a96bc06767dc0bbfffaea4a35715aca89401571050589d6707ad0484953052747359a8a78db346b871f6bb584f1795168d7758
   languageName: node
   linkType: hard
 
@@ -2874,7 +2874,7 @@ __metadata:
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
     "@neo4j-ndl/base": 0.16.3
-    "@neo4j-ndl/react": 0.17.5
+    "@neo4j-ndl/react": 0.17.6
     "@neo4j/graphql": 3.16.0
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.30.0
