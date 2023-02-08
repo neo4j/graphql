@@ -405,38 +405,49 @@ function createRelationshipPredicate({
     context: Context;
 }): Cypher.Predicate {
     const relationship = new Cypher.Relationship({
-        source: nodeRef,
-        target: targetNodeRef,
         type: relationField.type,
     });
+    const innerPattern = nodeRef.pattern().withoutLabels().related(relationship).withoutVariable().to(targetNodeRef);
 
-    const innerPattern = relationship.pattern({
-        relationship: {
-            variable: false,
-        },
-        source: {
-            variable: true,
-            labels: false,
-        },
-    });
+    // const relationship = new Cypher.Relationship({
+    //     source: nodeRef,
+    //     target: targetNodeRef,
+    //     type: relationField.type,
+    // });
 
-    const existsPattern = relationship.pattern({
-        target: {
-            variable: false,
-        },
-        source: {
-            variable: true,
-            labels: false,
-        },
-        relationship: {
-            variable: false,
-        },
-    });
+    // const innerPattern = relationship.pattern({
+    //     relationship: {
+    //         variable: false,
+    //     },
+    //     source: {
+    //         variable: true,
+    //         labels: false,
+    //     },
+    // });
 
-    if (relationField.direction === "IN") {
-        innerPattern.reverse();
-        existsPattern.reverse();
-    }
+    // const existsPattern = relationship.pattern({
+    //     target: {
+    //         variable: false,
+    //     },
+    //     source: {
+    //         variable: true,
+    //         labels: false,
+    //     },
+    //     relationship: {
+    //         variable: false,
+    //     },
+    // });
+    const existsPattern = nodeRef
+        .pattern()
+        .withoutLabels()
+        .related(relationship)
+        .withoutVariable()
+        .to(targetNodeRef)
+        .withoutVariable();
+    // if (relationField.direction === "IN") {
+    //     innerPattern.reverse();
+    //     existsPattern.reverse();
+    // }
 
     let predicateFunction: Cypher.PredicateFunction;
     if (kind === "allow") {

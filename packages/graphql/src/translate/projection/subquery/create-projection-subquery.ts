@@ -21,7 +21,7 @@ import type { Node } from "../../../classes";
 import type { Context, GraphQLOptionsArg, GraphQLWhereArg, RelationField } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../../where/create-where-predicate";
-import type { RelationshipDirection } from "../../../utils/get-relationship-direction";
+import type { CypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 import { createAuthPredicates } from "../../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
@@ -49,7 +49,7 @@ export function createProjectionSubquery({
     nestedProjection: string;
     nestedSubqueries: Cypher.Clause[];
     relationField: RelationField;
-    relationshipDirection: RelationshipDirection;
+    relationshipDirection: CypherRelationshipDirection;
     optionsInput: GraphQLOptionsArg;
     authValidateStrs: string[] | undefined;
     addSkipAndLimit?: boolean;
@@ -59,18 +59,28 @@ export function createProjectionSubquery({
     const targetNode = new Cypher.NamedNode(alias, {
         labels: node.getLabels(context),
     });
-
+    // console.log(relationshipDirection);
     const relationship = new Cypher.Relationship({
-        source: parentNode,
-        target: targetNode,
         type: relationField.type,
     });
-    if (relationshipDirection === "IN") {
-        relationship.reverse();
-    }
+    const pattern = parentNode
+        .pattern()
+        .withoutLabels()
+        .related(relationship)
+        .withDirection(relationshipDirection)
+        .to(targetNode);
+    // console.log(pattern);
+    // const relationship = new Cypher.Relationship({
+    //     source: parentNode,
+    //     target: targetNode,
+    //     type: relationField.type,
+    // });
+    // if (relationshipDirection === "IN") {
+    //     relationship.reverse();
+    // }
 
-    const isUndirected = relationshipDirection === "undirected";
-    const pattern = relationship.pattern({ directed: !isUndirected });
+    // const isUndirected = relationshipDirection === "undirected";
+    // const pattern = relationship.pattern({ directed: !isUndirected });
 
     const subqueryMatch = new Cypher.Match(pattern);
     const predicates: Cypher.Predicate[] = [];

@@ -21,7 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Node } from "../../classes";
 import type { Context, RelationField, GraphQLWhereArg } from "../../types";
 
-import { getRelationshipDirection } from "../../utils/get-relationship-direction";
+import { getCypherRelationshipDirection } from "../../utils/get-relationship-direction";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../where/create-where-predicate";
 
@@ -42,20 +42,13 @@ export function createCountExpression({
     authCallWhere: Cypher.Predicate | undefined;
     targetNode: Cypher.Node;
 }): { countProjection: Cypher.Expr; preComputedSubqueries: Cypher.CompositeClause | undefined } {
-    const relationship = new Cypher.Relationship({
-        source: sourceNode,
-        target: targetNode,
-        type: relationAggregationField.type,
-    });
-
-    const direction = getRelationshipDirection(relationAggregationField, {
+    const relationshipDirection = getCypherRelationshipDirection(relationAggregationField, {
         directed: field.args.directed as boolean | undefined,
     });
-    if (direction === "IN") relationship.reverse();
 
-    const relationshipPattern = relationship.pattern({
-        directed: !(direction === "undirected"),
-    });
+    const relationship = new Cypher.Relationship({ type: relationAggregationField.type });
+    const targetPattern = sourceNode.related(relationship).withDirection(relationshipDirection).to(targetNode);
+
     const { predicate: wherePredicate, preComputedSubqueries } = createWherePredicate({
         element: referenceNode,
         context,
@@ -63,8 +56,7 @@ export function createCountExpression({
         targetElement: targetNode,
     });
 
-    const patternComprehension = new Cypher.PatternComprehension(relationshipPattern, targetNode);
-
+    const patternComprehension = new Cypher.PatternComprehension(targetPattern, targetNode);
     if (wherePredicate) {
         patternComprehension.where(wherePredicate);
     }

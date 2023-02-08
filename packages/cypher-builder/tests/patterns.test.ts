@@ -36,6 +36,7 @@ describe("Patterns", () => {
     });
 
     describe("relationships", () => {
+        //TODO: test without variables (:Movie)-[]-(a:Person)
         test("Simple relationship Pattern", () => {
             const a = new Cypher.Node();
             const b = new Cypher.Node();

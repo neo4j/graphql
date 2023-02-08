@@ -28,6 +28,7 @@ import { createWherePredicate } from "../create-where-predicate";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { getCypherLogicalOperator, isLogicalOperator } from "../../utils/logical-operators";
 import { createRelationshipPredicate } from "./create-relationship-operation";
+import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 
 export function createConnectionOperation({
     connectionField,
@@ -95,17 +96,28 @@ export function createConnectionOperation({
             );
         }
 
-        const relationship = new Cypher.Relationship({
-            source: relationField.direction === "IN" ? childNode : parentNode,
-            target: relationField.direction === "IN" ? parentNode : childNode,
-            type: relationField.type,
-        });
+        const relationship = new Cypher.Relationship({ type: relationField.type });
 
-        const matchPattern = relationship.pattern({
-            source: relationField.direction === "IN" ? { variable: true } : { labels: false },
-            target: relationField.direction === "IN" ? { labels: false } : { variable: true },
-            relationship: { variable: true },
-        });
+        const direction = getCypherRelationshipDirection(relationField);
+        const matchPattern = parentNode
+            .pattern()
+            .withoutProperties()
+            .withoutLabels()
+            .related(relationship)
+            .withDirection(direction)
+            .to(childNode);
+
+        // const relationship = new Cypher.Relationship({
+        //     source: relationField.direction === "IN" ? childNode : parentNode,
+        //     target: relationField.direction === "IN" ? parentNode : childNode,
+        //     type: relationField.type,
+        // });
+
+        // const matchPattern = relationship.pattern({
+        //     source: relationField.direction === "IN" ? { variable: true } : { labels: false },
+        //     target: relationField.direction === "IN" ? { labels: false } : { variable: true },
+        //     relationship: { variable: true },
+        // });
 
         let listPredicateStr = getListPredicate(operator as WhereOperator);
 

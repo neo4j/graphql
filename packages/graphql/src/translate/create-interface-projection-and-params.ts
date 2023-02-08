@@ -24,7 +24,7 @@ import { filterInterfaceNodes } from "../utils/filter-interface-nodes";
 import { createAuthPredicates } from "./create-auth-and-params";
 
 import createProjectionAndParams from "./create-projection-and-params";
-import { getRelationshipDirection } from "../utils/get-relationship-direction";
+import { getCypherRelationshipDirection, getRelationshipDirection } from "../utils/get-relationship-direction";
 import Cypher from "@neo4j/cypher-builder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import type { Node } from "../classes";
@@ -125,20 +125,26 @@ function createInterfaceSubquery({
     });
 
     const relationshipRef = new Cypher.Relationship({
-        source: parentNode,
-        target: relatedNode,
         type: field.type,
     });
+    const direction = getCypherRelationshipDirection(field, resolveTree.args);
+    const pattern = parentNode.related(relationshipRef).withDirection(direction).to(relatedNode);
 
-    const direction = getRelationshipDirection(field, resolveTree.args);
-    const pattern = relationshipRef.pattern({
-        source: {
-            labels: false,
-        },
-        directed: direction !== "undirected",
-    });
+    // const relationshipRef = new Cypher.Relationship({
+    //     source: parentNode,
+    //     target: relatedNode,
+    //     type: field.type,
+    // });
 
-    if (direction === "IN") pattern.reverse();
+    // const direction = getRelationshipDirection(field, resolveTree.args);
+    // const pattern = relationshipRef.pattern({
+    //     source: {
+    //         labels: false,
+    //     },
+    //     directed: direction !== "undirected",
+    // });
+
+    // if (direction === "IN") pattern.reverse();
 
     const withClause = new Cypher.With(...fullWithVars.map((f) => new Cypher.NamedVariable(f)));
     const matchQuery = new Cypher.Match(pattern);

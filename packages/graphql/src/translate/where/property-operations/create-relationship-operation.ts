@@ -23,6 +23,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../create-where-predicate";
 import { getListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
+import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 
 export function createRelationshipOperation({
     relationField,
@@ -46,21 +47,24 @@ export function createRelationshipOperation({
 
     const childNode = new Cypher.Node({ labels: refNode.getLabels(context) });
 
-    const relationship = new Cypher.Relationship({
-        source: relationField.direction === "IN" ? childNode : parentNode,
-        target: relationField.direction === "IN" ? parentNode : childNode,
-        type: relationField.type,
-    });
+    const relationship = new Cypher.Relationship({ type: relationField.type });
+    const direction = getCypherRelationshipDirection(relationField);
 
-    const matchPattern = relationship.pattern({
-        source: relationField.direction === "IN" ? { variable: true } : { labels: false },
-        target: relationField.direction === "IN" ? { labels: false } : { variable: true },
-        relationship: { variable: false },
-    });
-
+    const matchPattern = parentNode
+        .pattern()
+        .withoutProperties()
+        .related(relationship)
+        .withDirection(direction)
+        .to(childNode)
+        .withoutLabels();
+    // const matchPattern = relationship.pattern({
+    //     source: relationField.direction === "IN" ? { variable: true } : { labels: false },
+    //     target: relationField.direction === "IN" ? { labels: false } : { variable: true },
+    //     relationship: { variable: false },
+    // });
     // TODO: check null in return projection
     if (value === null) {
-        const existsSubquery = new Cypher.Match(matchPattern, {});
+        const existsSubquery = new Cypher.Match(matchPattern);
         const exists = new Cypher.Exists(existsSubquery);
         if (!isNot) {
             // Bit confusing, but basically checking for not null is the same as checking for relationship exists

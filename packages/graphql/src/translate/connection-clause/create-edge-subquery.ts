@@ -25,12 +25,12 @@ import { createAuthPredicates } from "../create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
 import { createConnectionWherePropertyOperation } from "../where/property-operations/create-connection-operation";
 import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
-import { getPattern } from "../utils/get-pattern";
 
 import { createEdgeProjection } from "./connection-projection";
 import { getEdgeSortFieldKeys } from "./get-sort-fields";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";
+import { getCypherRelationshipDirection } from "../../utils/get-relationship-direction";
 
 /** Create the match, filtering and projection of the edge and the nested node */
 export function createEdgeSubquery({
@@ -61,16 +61,40 @@ export function createEdgeSubquery({
     });
 
     const relationshipRef = new Cypher.Relationship({
-        source: parentNodeRef,
-        target: relatedNodeRef,
         type: field.relationship.type,
     });
+    const direction = getCypherRelationshipDirection(field.relationship, resolveTree.args);
+    const relPattern = parentNodeRef.related(relationshipRef).withDirection(direction).to(relatedNodeRef);
+    // const relationshipRef = new Cypher.Relationship({
+    //     source: parentNodeRef,
+    //     target: relatedNodeRef,
+    //     type: field.relationship.type,
+    // });
 
-    const relPattern = getPattern({
-        relationship: relationshipRef,
-        field: field.relationship,
-        resolveTree,
-    });
+    // const relPattern = getPattern({
+    //     relationship: relationshipRef,
+    //     field: field.relationship,
+    //     resolveTree,
+    // });
+
+    // /** Returns a CypherBuilder pattern taking field direction params into account */
+    // export function getPattern({
+    //     relationship,
+    //     resolveTree,
+    //     field,
+    // }: {
+    //     relationship: Cypher.Relationship;
+    //     resolveTree: ResolveTree;
+    //     field: RelationField;
+    // }): Cypher.Pattern {
+    //     const direction = getRelationshipDirection(field, resolveTree.args);
+
+    //     const relPattern = relationship.pattern({
+    //         directed: direction !== "undirected",
+    //     });
+    //     if (direction === "IN") relPattern.reverse();
+    //     return relPattern;
+    // }
 
     const matchClause = new Cypher.Match(relPattern);
     const predicates: Cypher.Predicate[] = [];
@@ -150,11 +174,5 @@ export function createEdgeSubquery({
     }
 
     matchClause.where(Cypher.and(...predicates));
-
-    return Cypher.concat(
-        matchClause,
-        withSortClause,
-        ...projection.subqueries,
-        withReturn
-    );
+    return Cypher.concat(matchClause, withSortClause, ...projection.subqueries, withReturn);
 }
