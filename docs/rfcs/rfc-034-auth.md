@@ -51,6 +51,8 @@ Authentication and authorization features will be configured by two directives, 
 
 #### Authentication
 
+##### Option 1: `@authentication` directive
+
 The `@authentication` directive will have a definition as follows:
 
 ```gql
@@ -76,6 +78,32 @@ The arguments have the following utility:
 The operations for authentication are not as fine-grained as for authorization, and they can be seen as linking directly to root-level operations, rather than nested operations such as `connect` and `disconnect`.
 
 The directive can be applied to individual objects, interfaces and fields, but can also be applied as a schema extension to enable global authentication.
+
+##### Option 2: GraphQL Shield
+
+An alternative proposal is that if a user wants to simply apply basic authentication rules, to guide them towards using GraphQL Shield for this purpose.
+
+When we verify and decode a JWT, we put it into the context. We could provide a documentation guide with a code snippet to the following to simply check for the existence of that in the context:
+
+```js
+import { shield, rule } from "graphql-shield";
+import { applyMiddleware } from "graphql-middleware";
+
+const isAuthenticated = rule()(async (parent, args, ctx, info) => {
+  return ctx.jwt
+})
+
+const permissions = shield({
+  {
+    Mutation: {
+      "*": isAuthenticated,
+    }
+  },
+})
+
+// where schema is the output of Neo4jGraphQL.getSchema()
+schema = applyMiddleware(schema, permissions)
+```
 
 #### PROPOSAL: JWT payload specification
 
