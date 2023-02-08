@@ -69,18 +69,6 @@ export function createProjectionSubquery({
         .related(relationship)
         .withDirection(relationshipDirection)
         .to(targetNode);
-    // console.log(pattern);
-    // const relationship = new Cypher.Relationship({
-    //     source: parentNode,
-    //     target: targetNode,
-    //     type: relationField.type,
-    // });
-    // if (relationshipDirection === "IN") {
-    //     relationship.reverse();
-    // }
-
-    // const isUndirected = relationshipDirection === "undirected";
-    // const pattern = relationship.pattern({ directed: !isUndirected });
 
     const subqueryMatch = new Cypher.Match(pattern);
     const predicates: Cypher.Predicate[] = [];

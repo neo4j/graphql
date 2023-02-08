@@ -64,38 +64,7 @@ export function createEdgeSubquery({
         type: field.relationship.type,
     });
     const direction = getCypherRelationshipDirection(field.relationship, resolveTree.args);
-    // const relPattern = parentNodeRef.related(relationshipRef).withDirection(direction).to(relatedNodeRef);
     const relPattern = parentNodeRef.related(relationshipRef).withDirection(direction).to(relatedNodeRef);
-    // const relationshipRef = new Cypher.Relationship({
-    //     source: parentNodeRef,
-    //     target: relatedNodeRef,
-    //     type: field.relationship.type,
-    // });
-
-    // const relPattern = getPattern({
-    //     relationship: relationshipRef,
-    //     field: field.relationship,
-    //     resolveTree,
-    // });
-
-    // /** Returns a CypherBuilder pattern taking field direction params into account */
-    // export function getPattern({
-    //     relationship,
-    //     resolveTree,
-    //     field,
-    // }: {
-    //     relationship: Cypher.Relationship;
-    //     resolveTree: ResolveTree;
-    //     field: RelationField;
-    // }): Cypher.Pattern {
-    //     const direction = getRelationshipDirection(field, resolveTree.args);
-
-    //     const relPattern = relationship.pattern({
-    //         directed: direction !== "undirected",
-    //     });
-    //     if (direction === "IN") relPattern.reverse();
-    //     return relPattern;
-    // }
 
     const matchClause = new Cypher.Match(relPattern);
     const predicates: Cypher.Predicate[] = [];

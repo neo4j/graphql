@@ -409,34 +409,6 @@ function createRelationshipPredicate({
     });
     const innerPattern = nodeRef.pattern().withoutLabels().related(relationship).withoutVariable().to(targetNodeRef);
 
-    // const relationship = new Cypher.Relationship({
-    //     source: nodeRef,
-    //     target: targetNodeRef,
-    //     type: relationField.type,
-    // });
-
-    // const innerPattern = relationship.pattern({
-    //     relationship: {
-    //         variable: false,
-    //     },
-    //     source: {
-    //         variable: true,
-    //         labels: false,
-    //     },
-    // });
-
-    // const existsPattern = relationship.pattern({
-    //     target: {
-    //         variable: false,
-    //     },
-    //     source: {
-    //         variable: true,
-    //         labels: false,
-    //     },
-    //     relationship: {
-    //         variable: false,
-    //     },
-    // });
     const existsPattern = nodeRef
         .pattern()
         .withoutLabels()
@@ -444,10 +416,6 @@ function createRelationshipPredicate({
         .withoutVariable()
         .to(targetNodeRef)
         .withoutVariable();
-    // if (relationField.direction === "IN") {
-    //     innerPattern.reverse();
-    //     existsPattern.reverse();
-    // }
 
     let predicateFunction: Cypher.PredicateFunction;
     if (kind === "allow") {

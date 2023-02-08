@@ -240,12 +240,6 @@ function mergeStatement({
         .withoutProperties()
         .withoutLabels();
 
-    // const relationship = new Cypher.Relationship({
-    //     source: relationField.direction === "IN" ? node : parentNode,
-    //     target: relationField.direction === "IN" ? parentNode : node,
-    //     type: relationField.type,
-    // });
-
     const onCreateRelationshipParams = Object.entries(rawRelationshipParams).map(
         ([key, param]): [Cypher.PropertyRef, Cypher.Param] => {
             return [relationship.property(key), param];

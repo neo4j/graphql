@@ -58,11 +58,7 @@ export function createRelationshipOperation({
         .withoutVariable()
         .withDirection(direction)
         .to(childNode);
-    // const matchPattern = relationship.pattern({
-    //     source: relationField.direction === "IN" ? { variable: true } : { labels: false },
-    //     target: relationField.direction === "IN" ? { labels: false } : { variable: true },
-    //     relationship: { variable: false },
-    // });
+
     // TODO: check null in return projection
     if (value === null) {
         const existsSubquery = new Cypher.Match(matchPattern);

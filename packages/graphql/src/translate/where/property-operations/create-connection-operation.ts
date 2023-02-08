@@ -106,17 +106,6 @@ export function createConnectionOperation({
             .related(relationship)
             .withDirection(direction)
             .to(childNode);
-        // const relationship = new Cypher.Relationship({
-        //     source: relationField.direction === "IN" ? childNode : parentNode,
-        //     target: relationField.direction === "IN" ? parentNode : childNode,
-        //     type: relationField.type,
-        // });
-
-        // const matchPattern = relationship.pattern({
-        //     source: relationField.direction === "IN" ? { variable: true } : { labels: false },
-        //     target: relationField.direction === "IN" ? { labels: false } : { variable: true },
-        //     relationship: { variable: true },
-        // });
 
         let listPredicateStr = getListPredicate(operator as WhereOperator);
 

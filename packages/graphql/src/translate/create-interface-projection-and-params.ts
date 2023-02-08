@@ -130,22 +130,6 @@ function createInterfaceSubquery({
     const direction = getCypherRelationshipDirection(field, resolveTree.args);
     const pattern = parentNode.related(relationshipRef).withDirection(direction).to(relatedNode);
 
-    // const relationshipRef = new Cypher.Relationship({
-    //     source: parentNode,
-    //     target: relatedNode,
-    //     type: field.type,
-    // });
-
-    // const direction = getRelationshipDirection(field, resolveTree.args);
-    // const pattern = relationshipRef.pattern({
-    //     source: {
-    //         labels: false,
-    //     },
-    //     directed: direction !== "undirected",
-    // });
-
-    // if (direction === "IN") pattern.reverse();
-
     const withClause = new Cypher.With(...fullWithVars.map((f) => new Cypher.NamedVariable(f)));
     const matchQuery = new Cypher.Match(pattern);
     const predicates: Cypher.Predicate[] = [];
