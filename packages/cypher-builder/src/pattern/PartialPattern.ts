@@ -24,10 +24,15 @@ import { Pattern } from "./Pattern";
 import { PatternElement } from "./PatternElement";
 import type { Param } from "../references/Param";
 
-type LengthOption = number | "*" | { min: number; max: number };
+type LengthOption =
+    | number
+    | "*"
+    | { min: number; max?: number }
+    | { min?: number; max: number }
+    | { min: number; max: number };
 
 export class PartialPattern extends PatternElement<RelationshipRef> {
-    private length: { min; max } = { min: 2, max: 2 };
+    private length: LengthOption | undefined;
     private withType = true;
     private withVariable = true;
     private direction: "left" | "right" | "undirected" = "right";
@@ -65,10 +70,7 @@ export class PartialPattern extends PatternElement<RelationshipRef> {
     }
 
     public withLength(option: LengthOption): this {
-        this.length = {
-            min: 2,
-            max: 2,
-        };
+        this.length = option;
         return this;
     }
 
@@ -80,10 +82,23 @@ export class PartialPattern extends PatternElement<RelationshipRef> {
 
         const propertiesStr = this.properties ? this.serializeParameters(this.properties || {}, env) : "";
 
+        const lengthStr = this.generateLengthStr();
+
         const leftArrow = this.direction === "left" ? "<-" : "-";
         const rightArrow = this.direction === "right" ? "->" : "-";
 
-        return `${prevStr}${leftArrow}[${relStr}${typeStr}${propertiesStr}]${rightArrow}`;
+        return `${prevStr}${leftArrow}[${relStr}${typeStr}${lengthStr}${propertiesStr}]${rightArrow}`;
+    }
+
+    private generateLengthStr(): string {
+        if (this.length === undefined) return "";
+        if (typeof this.length === "number") {
+            return `*${this.length}`;
+        } else if (this.length === "*") {
+            return "*";
+        } else {
+            return `*${this.length.min || ""}..${this.length.max || ""}`;
+        }
     }
 
     private getRelationshipTypesString(relationship: RelationshipRef): string {

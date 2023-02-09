@@ -1,4 +1,4 @@
-import Cypher from "..";
+import Cypher, { Param } from "..";
 import { TestClause } from "../utils/TestClause";
 
 describe("Patterns", () => {
@@ -114,6 +114,88 @@ describe("Patterns", () => {
             expect(queryResult.cypher).toMatchInlineSnapshot(
                 `"(this0)-[this1:ACTED_IN]->(this2)-[this3:ACTED_IN]->(this4:\`TestLabel\`)"`
             );
+
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        });
+    });
+
+    describe("variable length", () => {
+        const a = new Cypher.Node();
+        const b = new Cypher.Node();
+        const actedInRelationship = new Cypher.Relationship({ type: "ACTED_IN" });
+
+        test("variable length with exact value", () => {
+            const query = new TestClause(new Cypher.Pattern(a).related(actedInRelationship).withLength(2).to(b));
+            const queryResult = query.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`"(this0)-[this1:ACTED_IN*2]->(this2)"`);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        });
+
+        test("variable length with *", () => {
+            const query = new TestClause(new Cypher.Pattern(a).related(actedInRelationship).withLength("*").to(b));
+            const queryResult = query.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`"(this0)-[this1:ACTED_IN*]->(this2)"`);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        });
+
+        test("variable length with max only", () => {
+            const query = new TestClause(
+                new Cypher.Pattern(a).related(actedInRelationship).withLength({ max: 2 }).to(b)
+            );
+            const queryResult = query.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`"(this0)-[this1:ACTED_IN*..2]->(this2)"`);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        });
+
+        test("variable length with min only", () => {
+            const query = new TestClause(
+                new Cypher.Pattern(a).related(actedInRelationship).withLength({ min: 2 }).to(b)
+            );
+            const queryResult = query.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`"(this0)-[this1:ACTED_IN*2..]->(this2)"`);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        });
+
+        test("variable length with min and max", () => {
+            const query = new TestClause(
+                new Cypher.Pattern(a).related(actedInRelationship).withLength({ min: 2, max: 4 }).to(b)
+            );
+            const queryResult = query.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`"(this0)-[this1:ACTED_IN*2..4]->(this2)"`);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        });
+
+        test("variable length with exact value and properties", () => {
+            const query = new TestClause(
+                new Cypher.Pattern(a)
+                    .related(actedInRelationship)
+                    .withProperties({
+                        value: new Param(100),
+                    })
+                    .withLength(2)
+                    .to(b)
+            );
+            const queryResult = query.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(
+                `"(this0)-[this1:ACTED_IN*2 { value: $param0 }]->(this2)"`
+            );
+
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": 100,
+                }
+            `);
+        });
+
+        test("variable length with empty relationship", () => {
+            const query = new TestClause(new Cypher.Pattern(a).related().withoutVariable().withLength(2).to(b));
+            const queryResult = query.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`"(this0)-[*2]->(this1)"`);
 
             expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
         });

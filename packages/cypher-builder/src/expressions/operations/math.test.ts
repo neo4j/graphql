@@ -1,4 +1,4 @@
-import Cypher from "../src";
+import Cypher from "../..";
 
 test("Match node with mathematical operator", () => {
     const yearParam = new Cypher.Param(2000);
