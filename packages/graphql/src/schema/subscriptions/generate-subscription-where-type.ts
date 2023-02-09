@@ -133,7 +133,6 @@ function getRelationshipConnectionWhereTypes({
     if (isEmptyObject(relationsFieldInputWhereTypeFields)) {
         return;
     }
-    // TODO: getORCreate??
     const relationsFieldInputWhereType = schemaComposer.createInputTC({
         name: `${name}RelationshipsSubscriptionWhere`,
         fields: relationsFieldInputWhereTypeFields,

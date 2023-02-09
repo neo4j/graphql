@@ -85,7 +85,7 @@ function buildRelationshipDestinationAbstractType({
 }) {
     const unionNodeTypes = relationField.union?.nodes;
     if (unionNodeTypes) {
-        const unionNodes = unionNodeTypes?.map((typeName) => nodeNameToEventPayloadTypes[typeName]).filter((x) => x);
+        const unionNodes = unionNodeTypes?.map((typeName) => nodeNameToEventPayloadTypes[typeName]).filter(Boolean);
         return buildRelationshipDestinationUnionNodeType({ unionNodes, relationNodeTypeName, schemaComposer });
     }
     const interfaceNodeTypeNames = relationField.interface?.implementations;
@@ -93,7 +93,7 @@ function buildRelationshipDestinationAbstractType({
         const relevantInterfaceFields = interfaceCommonFields.get(relationNodeTypeName) || ({} as ObjectFields);
         const interfaceNodes = interfaceNodeTypeNames
             .map((name: string) => nodeNameToEventPayloadTypes[name])
-            .filter((x) => x);
+            .filter(Boolean);
         return buildRelationshipDestinationInterfaceNodeType({
             schemaComposer,
             relevantInterface: relevantInterfaceFields,
