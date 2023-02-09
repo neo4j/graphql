@@ -31,7 +31,7 @@ describe("Node Directive", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Post @node(label: "Comment") {
+            type Post @node(labels: ["Comment"]) {
                 id: ID
                 content: String
                 creator: User! @relationship(type: "HAS_POST", direction: IN)
@@ -39,7 +39,7 @@ describe("Node Directive", () => {
 
             extend type Post @auth(rules: [{ operations: [DELETE], roles: ["admin"] }])
 
-            type User @node(label: "Person") {
+            type User @node(labels: ["Person"]) {
                 id: ID
                 name: String
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)

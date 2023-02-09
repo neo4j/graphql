@@ -735,10 +735,10 @@ describe("tck/rfs/003", () => {
                             WHERE this.id = $param0
                             WITH this
                             OPTIONAL MATCH (this)<-[this_delete_director0_relationship:DIRECTED]-(this_delete_director0:Director)
-                            WHERE this_delete_director0.id = $updateMovies_args_delete_director_where_Directorparam0
+                            WHERE this_delete_director0.id = $updateMovies_args_delete_director_where_this_delete_director0param0
                             WITH this, this_delete_director0
                             OPTIONAL MATCH (this_delete_director0)-[this_delete_director0_address0_relationship:HAS_ADDRESS]->(this_delete_director0_address0:Address)
-                            WHERE this_delete_director0_address0.id = $updateMovies_args_delete_director_delete_address_where_Addressparam0
+                            WHERE this_delete_director0_address0.id = $updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0
                             WITH this, this_delete_director0, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
                             CALL {
                             	WITH this_delete_director0_address0_to_delete
@@ -775,8 +775,8 @@ describe("tck/rfs/003", () => {
                         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                             "{
                                 \\"param0\\": \\"movieId-4\\",
-                                \\"updateMovies_args_delete_director_where_Directorparam0\\": \\"directorId-3\\",
-                                \\"updateMovies_args_delete_director_delete_address_where_Addressparam0\\": \\"some-address\\",
+                                \\"updateMovies_args_delete_director_where_this_delete_director0param0\\": \\"directorId-3\\",
+                                \\"updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0\\": \\"some-address\\",
                                 \\"updateMovies\\": {
                                     \\"args\\": {
                                         \\"delete\\": {
@@ -858,10 +858,10 @@ describe("tck/rfs/003", () => {
                             WHERE this.id = $param0
                             WITH this
                             OPTIONAL MATCH (this)<-[this_delete_director0_relationship:DIRECTED]-(this_delete_director0:Director)
-                            WHERE this_delete_director0.id = $updateMovies_args_delete_director_where_Directorparam0
+                            WHERE this_delete_director0.id = $updateMovies_args_delete_director_where_this_delete_director0param0
                             WITH this, this_delete_director0
                             OPTIONAL MATCH (this_delete_director0)-[this_delete_director0_address0_relationship:HAS_ADDRESS]->(this_delete_director0_address0:Address)
-                            WHERE this_delete_director0_address0.id = $updateMovies_args_delete_director_delete_address_where_Addressparam0
+                            WHERE this_delete_director0_address0.id = $updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0
                             WITH this, this_delete_director0, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
                             CALL {
                             	WITH this_delete_director0_address0_to_delete
@@ -898,8 +898,8 @@ describe("tck/rfs/003", () => {
                         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                             "{
                                 \\"param0\\": \\"movieId-4\\",
-                                \\"updateMovies_args_delete_director_where_Directorparam0\\": \\"directorId-3\\",
-                                \\"updateMovies_args_delete_director_delete_address_where_Addressparam0\\": \\"some-address\\",
+                                \\"updateMovies_args_delete_director_where_this_delete_director0param0\\": \\"directorId-3\\",
+                                \\"updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0\\": \\"some-address\\",
                                 \\"updateMovies\\": {
                                     \\"args\\": {
                                         \\"delete\\": {
@@ -1248,7 +1248,7 @@ describe("tck/rfs/003", () => {
                         CALL {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
-                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Directorparam0
+                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_this_disconnect_director0param0
                         CALL {
                         	WITH this_disconnect_director0, this_disconnect_director0_rel, this
                         	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
@@ -1273,7 +1273,7 @@ describe("tck/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"param0\\": \\"movieId-5\\",
-                            \\"updateMovies_args_disconnect_director_where_Directorparam0\\": \\"directorId-5\\",
+                            \\"updateMovies_args_disconnect_director_where_this_disconnect_director0param0\\": \\"directorId-5\\",
                             \\"updateMovies\\": {
                                 \\"args\\": {
                                     \\"disconnect\\": {
@@ -1364,7 +1364,7 @@ describe("tck/rfs/003", () => {
                         CALL {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
-                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Directorparam0
+                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_this_disconnect_director0param0
                         CALL {
                         	WITH this_disconnect_director0, this_disconnect_director0_rel, this
                         	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
@@ -1395,7 +1395,7 @@ describe("tck/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"param0\\": \\"movieId-6\\",
-                            \\"updateMovies_args_disconnect_director_where_Directorparam0\\": \\"directorId-6\\",
+                            \\"updateMovies_args_disconnect_director_where_this_disconnect_director0param0\\": \\"directorId-6\\",
                             \\"this_connect_director0_node_param0\\": \\"directorId2-6\\",
                             \\"updateMovies\\": {
                                 \\"args\\": {
@@ -1485,7 +1485,7 @@ describe("tck/rfs/003", () => {
                         CALL {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
-                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Directorparam0
+                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_this_disconnect_director0param0
                         CALL {
                         	WITH this_disconnect_director0, this_disconnect_director0_rel, this
                         	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
@@ -1516,7 +1516,7 @@ describe("tck/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"param0\\": \\"movieId-6\\",
-                            \\"updateMovies_args_disconnect_director_where_Directorparam0\\": \\"directorId-6\\",
+                            \\"updateMovies_args_disconnect_director_where_this_disconnect_director0param0\\": \\"directorId-6\\",
                             \\"this_connect_director0_node_param0\\": \\"directorId2-6\\",
                             \\"updateMovies\\": {
                                 \\"args\\": {

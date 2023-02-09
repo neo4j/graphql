@@ -29,13 +29,13 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type BibliographicReference @node(additionalLabels: ["Resource"]) {
+            type BibliographicReference @node(labels: ["BibliographicReference", "Resource"]) {
                 iri: ID! @unique @alias(property: "uri")
                 prefLabel: [String]
                 isInPublication: [Concept!]! @relationship(type: "isInPublication", direction: OUT)
             }
 
-            type Concept @node(additionalLabels: ["Resource"]) {
+            type Concept @node(labels: ["Concept", "Resource"]) {
                 iri: ID! @unique @alias(property: "uri")
                 prefLabel: [String]!
             }

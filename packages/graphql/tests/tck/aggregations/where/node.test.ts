@@ -29,11 +29,11 @@ describe("Cypher Where Aggregations with @node directive", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type User @node(label: "_User", additionalLabels: ["additionalUser"]) {
+            type User @node(labels: ["_User", "additionalUser"]) {
                 someName: String
             }
 
-            type Post @node(label: "_Post", additionalLabels: ["additionalPost"]) {
+            type Post @node(labels: ["_Post", "additionalPost"]) {
                 content: String!
                 likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }

@@ -31,12 +31,12 @@ describe("Label in Node directive", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Actor @node(label: "Person") {
+            type Actor @node(labels: ["Person"]) {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Movie @node(label: "Film") {
+            type Movie @node(labels: ["Film"]) {
                 id: ID
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -321,7 +321,7 @@ describe("Label in Node directive", () => {
             CALL {
             	WITH this
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
-            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
             	SET this_actors0.name = $this_update_actors0_name
             	RETURN count(*) AS update_this_actors0
             }
@@ -331,7 +331,7 @@ describe("Label in Node directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_update_actors0_where_Actorparam0\\": \\"old name\\",
+                \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"old name\\",
                 \\"this_update_actors0_name\\": \\"new name\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
@@ -433,7 +433,7 @@ describe("Label in Node directive", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:\`Person\`)
-            WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actorparam0
+            WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_this_disconnect_actors0param0
             CALL {
             	WITH this_disconnect_actors0, this_disconnect_actors0_rel, this
             	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel, this
@@ -450,7 +450,7 @@ describe("Label in Node directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_disconnect_actors0_where_Actorparam0\\": \\"Daniel\\",
+                \\"updateMovies_args_disconnect_actors0_where_this_disconnect_actors0param0\\": \\"Daniel\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -517,7 +517,7 @@ describe("Label in Node directive", () => {
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
-            WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
+            WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
             WITH this, collect(DISTINCT this_actors0) AS this_actors0_to_delete
             CALL {
             	WITH this_actors0_to_delete
@@ -546,7 +546,7 @@ describe("Label in Node directive", () => {
                         }
                     }
                 },
-                \\"this_deleteMovies_args_delete_actors0_where_Actorparam0\\": \\"Actor to delete\\"
+                \\"this_deleteMovies_args_delete_actors0_where_this_actors0param0\\": \\"Actor to delete\\"
             }"
         `);
     });

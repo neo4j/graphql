@@ -29,12 +29,12 @@ describe("Field Level Aggregations Alias", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Movie @node(label: "Film") {
+            type Movie @node(labels: ["Film"]) {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Actor @node(label: "Person") {
+            type Actor @node(labels: ["Person"]) {
                 name: String
                 age: Int
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
