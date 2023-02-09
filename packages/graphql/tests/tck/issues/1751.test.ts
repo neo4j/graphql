@@ -86,10 +86,10 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
             OPTIONAL MATCH (this)-[this_admins0_relationship:HAS_ADMINISTRATOR]->(this_admins0:Admin)
             CALL {
                 WITH this_admins0
-                MATCH (this_deleteOrganizations_args_delete_admins0_where_Adminthis2:\`Organization\`)-[this_deleteOrganizations_args_delete_admins0_where_Adminthis1:HAS_ADMINISTRATOR]->(this_admins0)
-                RETURN count(this_deleteOrganizations_args_delete_admins0_where_Adminthis2) = $this_deleteOrganizations_args_delete_admins0_where_Adminparam0 AS this_deleteOrganizations_args_delete_admins0_where_Adminvar0
+                MATCH (this_deleteOrganizations_args_delete_admins0_where_this_admins0this2:\`Organization\`)-[this_deleteOrganizations_args_delete_admins0_where_this_admins0this1:HAS_ADMINISTRATOR]->(this_admins0)
+                RETURN count(this_deleteOrganizations_args_delete_admins0_where_this_admins0this2) = $this_deleteOrganizations_args_delete_admins0_where_this_admins0param0 AS this_deleteOrganizations_args_delete_admins0_where_this_admins0var0
             }
-            WITH *, CASE this_deleteOrganizations_args_delete_admins0_where_Adminvar0 = true
+            WITH *, CASE this_deleteOrganizations_args_delete_admins0_where_this_admins0var0 = true
                 WHEN true THEN [ this_admins0_relationship, this_admins0 ]
                 ELSE [ NULL, NULL ]
             END AS aggregateWhereFiltervar0
@@ -128,7 +128,7 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
                         }
                     }
                 },
-                \\"this_deleteOrganizations_args_delete_admins0_where_Adminparam0\\": {
+                \\"this_deleteOrganizations_args_delete_admins0_where_this_admins0param0\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 }

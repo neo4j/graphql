@@ -18,51 +18,39 @@
  */
 
 import { gql } from "apollo-server";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
-describe("Cypher Disconnect", () => {
-    let typeDefs: DocumentNode;
+describe("https://github.com/neo4j/graphql/issues/2782", () => {
     let neoSchema: Neo4jGraphQL;
 
+    const typeDefs = gql`
+        type Product {
+            id: ID!
+            name: String
+            colors: [Color!]! @relationship(type: "HAS_COLOR", direction: OUT)
+            photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
+        }
+
+        type Color {
+            id: ID!
+            name: String!
+            photos: [Photo!]! @relationship(type: "OF_COLOR", direction: IN)
+        }
+
+        type Photo {
+            id: ID!
+            color: Color @relationship(type: "OF_COLOR", direction: OUT)
+        }
+    `;
+
     beforeAll(() => {
-        typeDefs = gql`
-            type Product {
-                id: ID!
-                name: String
-                sizes: [Size!]! @relationship(type: "HAS_SIZE", direction: OUT)
-                colors: [Color!]! @relationship(type: "HAS_COLOR", direction: OUT)
-                photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
-            }
-
-            type Size {
-                id: ID!
-                name: String!
-            }
-
-            type Color {
-                id: ID!
-                name: String!
-                photos: [Photo!]! @relationship(type: "OF_COLOR", direction: IN)
-            }
-
-            type Photo {
-                id: ID!
-                description: String!
-                url: String!
-                color: Color! @relationship(type: "OF_COLOR", direction: OUT)
-            }
-        `;
-
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 
-    test("Recursive Disconnect", async () => {
+    test("should  correctly set nested disconnect parameters", async () => {
         const query = gql`
             mutation {
                 updateProducts(
@@ -105,10 +93,7 @@ describe("Cypher Disconnect", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Product\`)
