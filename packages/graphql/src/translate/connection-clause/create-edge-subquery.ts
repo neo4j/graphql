@@ -151,10 +151,5 @@ export function createEdgeSubquery({
 
     matchClause.where(Cypher.and(...predicates));
 
-    return Cypher.concat(
-        matchClause,
-        withSortClause,
-        ...projection.subqueries,
-        withReturn
-    );
+    return Cypher.concat(matchClause, withSortClause, ...projection.subqueries, withReturn);
 }

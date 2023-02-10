@@ -1710,28 +1710,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-common-types@npm:6.2.1":
-  version: 6.2.1
-  resolution: "@fortawesome/fontawesome-common-types@npm:6.2.1"
-  checksum: 1a6e202beac46bc7e7bf791b37b6164b15453cc70b078456121c77d516a1077a1cfdab8aa9c77358c71f87f54560c0d9cbfb440cfb871f6d0f1f4671aabf9a0a
+"@fortawesome/fontawesome-common-types@npm:6.3.0":
+  version: 6.3.0
+  resolution: "@fortawesome/fontawesome-common-types@npm:6.3.0"
+  checksum: ece71539190abb17144861c58d65b6cd818d38a28cc3c9694325f5dca13739b2d78655e7bc1cba58cc13947f5ca80659e87c5c8bee7beb77d7f991e508312146
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-svg-core@npm:6.2.1":
-  version: 6.2.1
-  resolution: "@fortawesome/fontawesome-svg-core@npm:6.2.1"
+"@fortawesome/fontawesome-svg-core@npm:6.3.0":
+  version: 6.3.0
+  resolution: "@fortawesome/fontawesome-svg-core@npm:6.3.0"
   dependencies:
-    "@fortawesome/fontawesome-common-types": 6.2.1
-  checksum: 16caf6052b77c03826274325d4bd76d11cba486411c3101a635d3342dd764df8f5b4789456c9caa1667c232853a670f91dddf0449218e5fea7a27f4396b838af
+    "@fortawesome/fontawesome-common-types": 6.3.0
+  checksum: 2479d4b0dc45bba2638b05ba816df91fad6331cd3254d846705a0c342dc12259724706066c71461809804b4f41f15425439cfbabc42d7918e6c26b2b467b4b59
   languageName: node
   linkType: hard
 
-"@fortawesome/free-solid-svg-icons@npm:6.2.1":
-  version: 6.2.1
-  resolution: "@fortawesome/free-solid-svg-icons@npm:6.2.1"
+"@fortawesome/free-solid-svg-icons@npm:6.3.0":
+  version: 6.3.0
+  resolution: "@fortawesome/free-solid-svg-icons@npm:6.3.0"
   dependencies:
-    "@fortawesome/fontawesome-common-types": 6.2.1
-  checksum: a24170b676fced926cccdd08171357b20714483ceddeb052985a9acae3a347ffe853de2e757bf95cc7add74807d82eb1cc578e17430c32ca2c6a844c8276f91a
+    "@fortawesome/fontawesome-common-types": 6.3.0
+  checksum: 5cffcdb954f9ea8d48c6872118f21840f206d6279a6b803a31563e48fee34fbf5bc05848f5dedf07fc16f60910712c6bd0dc83f7a4e408cf062153a48022525d
   languageName: node
   linkType: hard
 
@@ -2754,19 +2754,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:0.16.3, @neo4j-ndl/base@npm:^0.16.3":
-  version: 0.16.3
-  resolution: "@neo4j-ndl/base@npm:0.16.3"
-  checksum: d37f166d29f3f5f02d68bc905ea03148e6934db68b88334c4b78068f59a6cce1a859e1a71812a7c6ec8c6c43761d8ad7c58ffbc9524769fd85b6026b041ae4d0
+"@neo4j-ndl/base@npm:0.16.4, @neo4j-ndl/base@npm:^0.16.4":
+  version: 0.16.4
+  resolution: "@neo4j-ndl/base@npm:0.16.4"
+  checksum: 2c983d3462420bb00013bd1b122c6d537174698fa0f751601013c42d9353b8e1b2a5c82dfb8353c521966e3e7dc697c4e0bb3e6e1322fc1e0fe0c70871f7df79
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:0.17.6":
-  version: 0.17.6
-  resolution: "@neo4j-ndl/react@npm:0.17.6"
+"@neo4j-ndl/react@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@neo4j-ndl/react@npm:0.17.7"
   dependencies:
     "@heroicons/react": ^1.0.5
-    "@neo4j-ndl/base": ^0.16.3
+    "@neo4j-ndl/base": ^0.16.4
     classnames: ^2.3.1
     detect-browser: ^5.3.0
     react-dropzone: ^14.0.0
@@ -2777,7 +2777,7 @@ __metadata:
     tinycolor2: ^1.4.2
   peerDependencies:
     react: 17.x
-  checksum: bf35cf04c229ffede78b91c8f4a96bc06767dc0bbfffaea4a35715aca89401571050589d6707ad0484953052747359a8a78db346b871f6bb584f1795168d7758
+  checksum: fcdcb37fc23772ea7e5882b39b54e12ee5d464d82bd6b33d0c86c7984650288432167b660b873068408dfa280a97b72ca91f17a8a68664278ec0c63ae4d347ac
   languageName: node
   linkType: hard
 
@@ -2873,8 +2873,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@neo4j-ndl/base": 0.16.3
-    "@neo4j-ndl/react": 0.17.6
+    "@neo4j-ndl/base": 0.16.4
+    "@neo4j-ndl/react": 0.17.7
     "@neo4j/graphql": 3.16.0
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.30.0
@@ -15759,8 +15759,8 @@ __metadata:
   resolution: "neo-push-client@workspace:examples/neo-push/client"
   dependencies:
     "@apollo/client": 3.7.7
-    "@fortawesome/fontawesome-svg-core": 6.2.1
-    "@fortawesome/free-solid-svg-icons": 6.2.1
+    "@fortawesome/fontawesome-svg-core": 6.3.0
+    "@fortawesome/free-solid-svg-icons": 6.3.0
     "@fortawesome/react-fontawesome": 0.2.0
     "@tsconfig/create-react-app": 1.0.3
     "@types/react-dom": 18.0.10
