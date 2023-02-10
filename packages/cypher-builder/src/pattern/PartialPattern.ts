@@ -31,6 +31,9 @@ type LengthOption =
     | { min?: number; max: number }
     | { min: number; max: number };
 
+/** Partial pattern, cannot be used until connected to a node
+ * @group Patterns
+ */
 export class PartialPattern extends PatternElement<RelationshipRef> {
     private length: LengthOption | undefined;
     private withType = true;

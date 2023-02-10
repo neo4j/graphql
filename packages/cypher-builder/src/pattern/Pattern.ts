@@ -25,9 +25,12 @@ import { escapeLabel } from "../utils/escape-label";
 import { PartialPattern } from "./PartialPattern";
 import { PatternElement } from "./PatternElement";
 
+/** Represents a pattern of a single node or n-relationships to be used in clauses.
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/patterns/)
+ * @group Patterns
+ */
 export class Pattern extends PatternElement<NodeRef> {
     private withLabels = true;
-    // private withProperties = true;
     private withVariable = true;
     private previous: PartialPattern | undefined;
     private properties: Record<string, Param> | undefined;
@@ -57,6 +60,9 @@ export class Pattern extends PatternElement<NodeRef> {
         return new PartialPattern(rel, this);
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const prevStr = this.previous?.getCypher(env) || "";
 
