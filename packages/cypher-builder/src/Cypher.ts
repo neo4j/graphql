@@ -59,7 +59,7 @@ export { MapExpr as Map } from "./expressions/map/MapExpr";
 export { MapProjection } from "./expressions/map/MapProjection";
 
 // --Operations
-export { or, and, not } from "./expressions/operations/boolean";
+export { or, and, not, xor } from "./expressions/operations/boolean";
 export {
     eq,
     gt,
