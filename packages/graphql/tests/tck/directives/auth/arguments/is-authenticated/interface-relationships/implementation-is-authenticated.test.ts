@@ -278,9 +278,7 @@ describe("Cypher Auth isAuthenticated", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content0_node
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_content0_node
             	RETURN count(*) AS connect_this_connect_content_Comment
@@ -298,9 +296,7 @@ describe("Cypher Auth isAuthenticated", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content1_node
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_content1_node
             	RETURN count(*) AS connect_this_connect_content_Post
@@ -355,7 +351,6 @@ describe("Cypher Auth isAuthenticated", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_content_Comment
             }
@@ -369,7 +364,6 @@ describe("Cypher Auth isAuthenticated", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_content_Post
             }
@@ -489,7 +483,6 @@ describe("Cypher Auth isAuthenticated", () => {
             	WITH this_content_Comment0_to_delete
             	UNWIND this_content_Comment0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
             WITH this
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
@@ -500,7 +493,6 @@ describe("Cypher Auth isAuthenticated", () => {
             	WITH this_content_Post0_to_delete
             	UNWIND this_content_Post0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
             DETACH DELETE this"
         `);

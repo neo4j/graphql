@@ -390,9 +390,7 @@ describe("Label in Node directive", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_actors0_node
             			MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actors0_node
             	RETURN count(*) AS connect_this_connect_actors_Actor
@@ -439,7 +437,6 @@ describe("Label in Node directive", () => {
             	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel, this
             	UNWIND this_disconnect_actors0 as x
             	DELETE this_disconnect_actors0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
@@ -523,7 +520,6 @@ describe("Label in Node directive", () => {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
             DETACH DELETE this"
         `);

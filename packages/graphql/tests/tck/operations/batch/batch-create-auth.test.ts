@@ -389,9 +389,7 @@ describe("Batch Create, Auth", () => {
             			UNWIND parentNodes as this3
             			UNWIND connectedNodes as this3_actors_connect0_node
             			MERGE (this3)<-[this3_actors_connect0_relationship:ACTED_IN]-(this3_actors_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this3, this3_actors_connect0_node
             	RETURN count(*) AS connect_this3_actors_connect_Actor
@@ -420,7 +418,6 @@ describe("Batch Create, Auth", () => {
                 MERGE (this4_actors_connectOrCreate0)-[this4_actors_connectOrCreate_this0:ACTED_IN]->(this4)
                 WITH *
                 CALL apoc.util.validate(NOT ((this4_actors_connectOrCreate0.id IS NOT NULL AND this4_actors_connectOrCreate0.id = $this4_actors_connectOrCreate0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN COUNT(*) AS _
             }
             WITH this4
             CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])

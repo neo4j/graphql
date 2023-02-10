@@ -49,7 +49,7 @@ function createConnectAndParams({
     fromCreate,
     insideDoWhen,
     includeRelationshipValidation,
-    isFirstLevel = true,
+    isFirstLevel = true
 }: {
     withVars: string[];
     value: any;
@@ -117,12 +117,12 @@ function createConnectAndParams({
                         }
 
                         return args;
-                    }, {}),
+                    }, {})
                 },
                 context,
                 node: relatedNode,
                 varName: nodeName,
-                recursing: true,
+                recursing: true
             });
             if (rootNodeWhereCypher) {
                 whereStrs.push(rootNodeWhereCypher);
@@ -147,13 +147,13 @@ function createConnectAndParams({
                             }
 
                             return args;
-                        }, {}),
+                        }, {})
                     },
                     context,
                     node: relatedNode,
                     varName: `${nodeName}`,
                     chainStr: `${nodeName}_on_${relatedNode.name}`,
-                    recursing: true,
+                    recursing: true
                 });
                 if (onTypeNodeWhereCypher) {
                     whereStrs.push(onTypeNodeWhereCypher);
@@ -171,7 +171,7 @@ function createConnectAndParams({
                 operations: "CONNECT",
                 entity: relatedNode,
                 context,
-                where: { varName: nodeName, node: relatedNode },
+                where: { varName: nodeName, node: relatedNode }
             });
             if (whereAuth[0]) {
                 whereStrs.push(whereAuth[0]);
@@ -205,7 +205,7 @@ function createConnectAndParams({
                     operations: "CONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: node, varName: name },
+                    allow: { parentNode: node, varName: name }
                 });
 
                 if (!str) {
@@ -241,7 +241,7 @@ function createConnectAndParams({
         const withVarsInner = [
             ...withVars.filter((v) => v !== parentVar),
             `collect(${nodeName}) as connectedNodes`,
-            `collect(${parentVar}) as parentNodes`,
+            `collect(${parentVar}) as parentNodes`
         ];
         if (context.subscriptionsEnabled) {
             withVarsInner.push(`[] as meta`);
@@ -264,7 +264,7 @@ function createConnectAndParams({
                 varName: relationshipName,
                 relationship,
                 operation: "CREATE",
-                callbackBucket,
+                callbackBucket
             });
             subquery.push(`\t\t\t${setA[0]}`);
             params = { ...params, ...setA[1] };
@@ -284,12 +284,10 @@ function createConnectAndParams({
                 toVariable,
                 typename: relationField.type,
                 fromTypename,
-                toTypename,
+                toTypename
             });
             subquery.push(`\t\t\tWITH ${eventWithMetaStr} as meta`);
             subquery.push(`\t\t\tRETURN collect(meta) as update_meta`);
-        } else {
-            subquery.push(`\t\t\tRETURN count(*) AS _`);
         }
 
         subquery.push("\t\t}");
@@ -297,11 +295,8 @@ function createConnectAndParams({
         if (context.subscriptionsEnabled) {
             subquery.push(`\t\tWITH meta + update_meta as meta`);
             subquery.push(`\t\tRETURN meta AS connect_meta`);
-            subquery.push("\t}");
-        } else {
-            subquery.push(`\t\tRETURN count(*) AS _`);
-            subquery.push("\t}");
         }
+        subquery.push("\t}");
 
         let innerMetaStr = "";
         if (context.subscriptionsEnabled) {
@@ -312,7 +307,7 @@ function createConnectAndParams({
             const relValidationStrs: string[] = [];
             const matrixItems = [
                 [parentNode, parentVar],
-                [relatedNode, nodeName],
+                [relatedNode, nodeName]
             ] as [Node, string][];
 
             matrixItems.forEach((mi) => {
@@ -320,7 +315,7 @@ function createConnectAndParams({
                     node: mi[0],
                     context,
                     varName: mi[1],
-                    ...(isOverwriteNotAllowed && { relationshipFieldNotOverwritable: relationField.fieldName }),
+                    ...(isOverwriteNotAllowed && { relationshipFieldNotOverwritable: relationField.fieldName })
                 });
                 if (relValidationStr) {
                     relValidationStrs.push(relValidationStr);
@@ -390,7 +385,7 @@ function createConnectAndParams({
                                     parentNode: relatedNode,
                                     labelOverride: relField.union ? newRefNode.name : "",
                                     includeRelationshipValidation: true,
-                                    isFirstLevel: false,
+                                    isFirstLevel: false
                                 });
                                 r.connects.push(recurse[0]);
                                 r.params = { ...r.params, ...recurse[1] };
@@ -439,7 +434,7 @@ function createConnectAndParams({
                                         refNodes: [newRefNode],
                                         parentNode: relatedNode,
                                         labelOverride: relField.union ? newRefNode.name : "",
-                                        isFirstLevel: false,
+                                        isFirstLevel: false
                                     });
                                     r.connects.push(recurse[0]);
                                     r.params = { ...r.params, ...recurse[1] };
@@ -469,7 +464,7 @@ function createConnectAndParams({
                     escapeQuotes: Boolean(insideDoWhen),
                     skipIsAuthenticated: true,
                     skipRoles: true,
-                    bind: { parentNode: node, varName: nodeName },
+                    bind: { parentNode: node, varName: nodeName }
                 });
 
                 if (!str) {
@@ -511,7 +506,7 @@ function createConnectAndParams({
                 operations: "CONNECT",
                 entity: parentNode,
                 context,
-                where: { varName: parentVar, node: parentNode },
+                where: { varName: parentVar, node: parentNode }
             });
             if (whereAuth[0]) {
                 res.connects.push(`WITH ${withVars.join(", ")}`);
@@ -565,7 +560,7 @@ function createConnectAndParams({
 
     const { connects, params } = ((relationField.typeMeta.array ? value : [value]) as any[]).reduce(reducer, {
         connects: [],
-        params: {},
+        params: {}
     });
 
     return [connects.join("\n"), params];

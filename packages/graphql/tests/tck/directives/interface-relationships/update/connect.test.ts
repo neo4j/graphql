@@ -96,9 +96,7 @@ describe("Interface Relationships - Update connect", () => {
             			UNWIND connectedNodes as this_connect_actedIn0_node
             			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             			SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actedIn0_node
             	RETURN count(*) AS connect_this_connect_actedIn_Movie
@@ -116,9 +114,7 @@ describe("Interface Relationships - Update connect", () => {
             			UNWIND connectedNodes as this_connect_actedIn1_node
             			MERGE (this)-[this_connect_actedIn1_relationship:ACTED_IN]->(this_connect_actedIn1_node)
             			SET this_connect_actedIn1_relationship.screenTime = $this_connect_actedIn1_relationship_screenTime
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actedIn1_node
             	RETURN count(*) AS connect_this_connect_actedIn_Series
@@ -184,9 +180,7 @@ describe("Interface Relationships - Update connect", () => {
             			UNWIND connectedNodes as this_connect_actedIn0_node
             			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             			SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actedIn0_node
             CALL {
@@ -202,9 +196,7 @@ describe("Interface Relationships - Update connect", () => {
             			UNWIND connectedNodes as this_connect_actedIn0_node_actors0_node
             			MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_actors0_node)
             			SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actedIn0_node, this_connect_actedIn0_node_actors0_node
             	RETURN count(*) AS connect_this_connect_actedIn0_node_actors_Actor
@@ -224,9 +216,7 @@ describe("Interface Relationships - Update connect", () => {
             			UNWIND connectedNodes as this_connect_actedIn1_node
             			MERGE (this)-[this_connect_actedIn1_relationship:ACTED_IN]->(this_connect_actedIn1_node)
             			SET this_connect_actedIn1_relationship.screenTime = $this_connect_actedIn1_relationship_screenTime
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actedIn1_node
             CALL {
@@ -242,9 +232,7 @@ describe("Interface Relationships - Update connect", () => {
             			UNWIND connectedNodes as this_connect_actedIn1_node_actors0_node
             			MERGE (this_connect_actedIn1_node)<-[this_connect_actedIn1_node_actors0_relationship:ACTED_IN]-(this_connect_actedIn1_node_actors0_node)
             			SET this_connect_actedIn1_node_actors0_relationship.screenTime = $this_connect_actedIn1_node_actors0_relationship_screenTime
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actedIn1_node, this_connect_actedIn1_node_actors0_node
             	RETURN count(*) AS connect_this_connect_actedIn1_node_actors_Actor
@@ -326,9 +314,7 @@ describe("Interface Relationships - Update connect", () => {
             			UNWIND connectedNodes as this_connect_actedIn0_node
             			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             			SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actedIn0_node
             CALL {
@@ -344,9 +330,7 @@ describe("Interface Relationships - Update connect", () => {
             			UNWIND connectedNodes as this_connect_actedIn0_node_on_Movie0_actors0_node
             			MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_on_Movie0_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_on_Movie0_actors0_node)
             			SET this_connect_actedIn0_node_on_Movie0_actors0_relationship.screenTime = $this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actedIn0_node, this_connect_actedIn0_node_on_Movie0_actors0_node
             	RETURN count(*) AS connect_this_connect_actedIn0_node_on_Movie0_actors_Actor
@@ -366,9 +350,7 @@ describe("Interface Relationships - Update connect", () => {
             			UNWIND connectedNodes as this_connect_actedIn1_node
             			MERGE (this)-[this_connect_actedIn1_relationship:ACTED_IN]->(this_connect_actedIn1_node)
             			SET this_connect_actedIn1_relationship.screenTime = $this_connect_actedIn1_relationship_screenTime
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actedIn1_node
             	RETURN count(*) AS connect_this_connect_actedIn_Series
@@ -449,9 +431,7 @@ describe("Interface Relationships - Update connect", () => {
             			UNWIND connectedNodes as this_connect_actedIn0_node
             			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             			SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actedIn0_node
             CALL {
@@ -467,9 +447,7 @@ describe("Interface Relationships - Update connect", () => {
             			UNWIND connectedNodes as this_connect_actedIn0_node_on_Movie0_actors0_node
             			MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_on_Movie0_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_on_Movie0_actors0_node)
             			SET this_connect_actedIn0_node_on_Movie0_actors0_relationship.screenTime = $this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actedIn0_node, this_connect_actedIn0_node_on_Movie0_actors0_node
             	RETURN count(*) AS connect_this_connect_actedIn0_node_on_Movie0_actors_Actor
@@ -489,9 +467,7 @@ describe("Interface Relationships - Update connect", () => {
             			UNWIND connectedNodes as this_connect_actedIn1_node
             			MERGE (this)-[this_connect_actedIn1_relationship:ACTED_IN]->(this_connect_actedIn1_node)
             			SET this_connect_actedIn1_relationship.screenTime = $this_connect_actedIn1_relationship_screenTime
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actedIn1_node
             CALL {
@@ -507,9 +483,7 @@ describe("Interface Relationships - Update connect", () => {
             			UNWIND connectedNodes as this_connect_actedIn1_node_actors0_node
             			MERGE (this_connect_actedIn1_node)<-[this_connect_actedIn1_node_actors0_relationship:ACTED_IN]-(this_connect_actedIn1_node_actors0_node)
             			SET this_connect_actedIn1_node_actors0_relationship.screenTime = $this_connect_actedIn1_node_actors0_relationship_screenTime
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actedIn1_node, this_connect_actedIn1_node_actors0_node
             	RETURN count(*) AS connect_this_connect_actedIn1_node_actors_Actor

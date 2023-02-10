@@ -43,7 +43,7 @@ function createDeleteAndParams({
     context,
     insideDoWhen,
     parameterPrefix,
-    recursing,
+    recursing
 }: {
     parentVar: string;
     deleteInput: any;
@@ -110,7 +110,7 @@ function createDeleteAndParams({
                             const {
                                 cypher: whereCypher,
                                 subquery: preComputedSubqueries,
-                                params: whereParams,
+                                params: whereParams
                             } = createConnectionWhereAndParams({
                                 nodeVariable: variableName,
                                 whereInput: d.where,
@@ -120,7 +120,7 @@ function createDeleteAndParams({
                                 relationship,
                                 parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
                                     relationField.union ? `.${refNode.name}` : ""
-                                }${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
+                                }${relationField.typeMeta.array ? `[${index}]` : ""}.where`
                             });
                             if (whereCypher) {
                                 whereStrs.push(whereCypher);
@@ -139,7 +139,7 @@ function createDeleteAndParams({
                         operations: "DELETE",
                         entity: refNode,
                         context,
-                        where: { varName: variableName, node: refNode },
+                        where: { varName: variableName, node: refNode }
                     });
                     if (whereAuth[0]) {
                         whereStrs.push(whereAuth[0]);
@@ -150,7 +150,7 @@ function createDeleteAndParams({
                         if (aggregationWhere) {
                             const columns = [
                                 new Cypher.NamedVariable(relationshipVariable),
-                                new Cypher.NamedVariable(variableName),
+                                new Cypher.NamedVariable(variableName)
                             ];
                             const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
                             const { cypher } = caseWhereClause.build("aggregateWhereFilter");
@@ -165,7 +165,7 @@ function createDeleteAndParams({
                         operations: "DELETE",
                         context,
                         escapeQuotes: Boolean(insideDoWhen),
-                        allow: { parentNode: refNode, varName: variableName },
+                        allow: { parentNode: refNode, varName: variableName }
                     });
                     if (allowAuth[0]) {
                         const quote = insideDoWhen ? `\\"` : `"`;
@@ -209,7 +209,7 @@ function createDeleteAndParams({
                             parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
                                 relationField.union ? `.${refNode.name}` : ""
                             }${relationField.typeMeta.array ? `[${index}]` : ""}.delete`,
-                            recursing: false,
+                            recursing: false
                         });
                         res.strs.push(deleteAndParams[0]);
                         res.params = { ...res.params, ...deleteAndParams[1] };
@@ -232,7 +232,7 @@ function createDeleteAndParams({
                                     }${relationField.typeMeta.array ? `[${index}]` : ""}.delete._on.${
                                         refNode.name
                                     }[${onDeleteIndex}]`,
-                                    recursing: false,
+                                    recursing: false
                                 });
                                 res.strs.push(onDeleteAndParams[0]);
                                 res.params = { ...res.params, ...onDeleteAndParams[1] };
@@ -258,7 +258,7 @@ function createDeleteAndParams({
                         const metaObjectStr = createEventMetaObject({
                             event: "delete",
                             nodeVariable: "n",
-                            typename: refNode.name,
+                            typename: refNode.name
                         });
                         const [fromVariable, toVariable] =
                             relationField.direction === "IN" ? ["n", parentVar] : [parentVar, "n"];
@@ -271,7 +271,7 @@ function createDeleteAndParams({
                             toVariable,
                             typename: relationField.type,
                             fromTypename,
-                            toTypename,
+                            toTypename
                         });
                         const reduceStr = `REDUCE(m=${META_CYPHER_VARIABLE}, n IN ${nodeToDelete} | m + ${metaObjectStr} + ${eventWithMetaStr}) AS ${META_CYPHER_VARIABLE}`;
                         res.strs.push(
@@ -283,7 +283,6 @@ function createDeleteAndParams({
                     res.strs.push(`\tWITH ${variableName}_to_delete`);
                     res.strs.push(`\tUNWIND ${variableName}_to_delete AS x`);
                     res.strs.push(`\tDETACH DELETE x`);
-                    res.strs.push("\tRETURN count(*) AS _"); // Avoids CANNOT END WITH DETACH DELETE ERROR
                     res.strs.push("}");
                     // TODO - relationship validation
 

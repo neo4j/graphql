@@ -175,9 +175,7 @@ describe("Cypher Create Pringles", () => {
             			UNWIND parentNodes as this0_photos1_node
             			UNWIND connectedNodes as this0_photos1_node_color_connect0_node
             			MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_photos1_node, this0_photos1_node_color_connect0_node
             	RETURN count(*) AS connect_this0_photos1_node_color_connect_Color
@@ -209,9 +207,7 @@ describe("Cypher Create Pringles", () => {
             			UNWIND parentNodes as this0_photos2_node
             			UNWIND connectedNodes as this0_photos2_node_color_connect0_node
             			MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_photos2_node, this0_photos2_node_color_connect0_node
             	RETURN count(*) AS connect_this0_photos2_node_color_connect_Color
@@ -312,7 +308,6 @@ describe("Cypher Create Pringles", () => {
             		WITH collect(this_photos0_color0_disconnect0) as this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
             		UNWIND this_photos0_color0_disconnect0 as x
             		DELETE this_photos0_color0_disconnect0_rel
-            		RETURN count(*) AS _
             	}
             	RETURN count(*) AS disconnect_this_photos0_color0_disconnect_Color
             	}
@@ -329,9 +324,7 @@ describe("Cypher Create Pringles", () => {
             				UNWIND parentNodes as this_photos0
             				UNWIND connectedNodes as this_photos0_color0_connect0_node
             				MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
-            				RETURN count(*) AS _
             			}
-            			RETURN count(*) AS _
             		}
             	WITH this, this_photos0, this_photos0_color0_connect0_node
             		RETURN count(*) AS connect_this_photos0_color0_connect_Color

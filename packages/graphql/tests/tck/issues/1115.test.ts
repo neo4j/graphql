@@ -85,7 +85,6 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                 MERGE (this_connectOrCreate_children0)-[this_connectOrCreate_children_this0:HAS]->(this)
                 WITH *
                 CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"upstream\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN COUNT(*) AS _
             }
             WITH this
             CALL {
@@ -96,7 +95,6 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                 MERGE (this_connectOrCreate_children1)-[this_connectOrCreate_children_this1:HAS]->(this)
                 WITH *
                 CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"upstream\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN COUNT(*) AS _
             }
             WITH *
             RETURN 'Query cannot conclude with CALL'"

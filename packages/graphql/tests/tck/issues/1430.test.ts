@@ -148,9 +148,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_interface0_node
             			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_interface0_node
             	RETURN count(*) AS connect_this_connect_interface_ChildOne
@@ -167,9 +165,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_interface1_node
             			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_interface1_node
             	RETURN count(*) AS connect_this_connect_interface_ChildTwo

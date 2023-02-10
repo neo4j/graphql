@@ -534,9 +534,7 @@ describe("Batch Create, Scalar types", () => {
             			UNWIND parentNodes as this3
             			UNWIND connectedNodes as this3_actors_connect0_node
             			MERGE (this3)<-[this3_actors_connect0_relationship:ACTED_IN]-(this3_actors_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this3, this3_actors_connect0_node
             	RETURN count(*) AS connect_this3_actors_connect_Actor
@@ -563,7 +561,6 @@ describe("Batch Create, Scalar types", () => {
                     this4_actors_connectOrCreate0.createdAt = datetime(),
                     this4_actors_connectOrCreate0.name = $this4_actors_connectOrCreate_param1
                 MERGE (this4_actors_connectOrCreate0)-[this4_actors_connectOrCreate_this0:ACTED_IN]->(this4)
-                RETURN COUNT(*) AS _
             }
             WITH this4
             CALL {
