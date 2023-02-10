@@ -47,7 +47,10 @@ export function createCountExpression({
     });
 
     const relationship = new Cypher.Relationship({ type: relationAggregationField.type });
-    const targetPattern = sourceNode.related(relationship).withDirection(relationshipDirection).to(targetNode);
+    const targetPattern = new Cypher.Pattern(sourceNode)
+        .related(relationship)
+        .withDirection(relationshipDirection)
+        .to(targetNode);
 
     const { predicate: wherePredicate, preComputedSubqueries } = createWherePredicate({
         element: referenceNode,
