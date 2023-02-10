@@ -32,7 +32,7 @@ import type {
     Neo4jGraphQLPlugins,
     Neo4jGraphQLCallbacks,
     Neo4jFeaturesSettings,
-    StartupValidationConfig,
+    StartupValidationConfig
 } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import type Node from "./Node";
@@ -170,8 +170,7 @@ class Neo4jGraphQL {
             driver,
             driverConfig,
             nodes: this.nodes,
-            options: input.options,
-            dbInfo: this.dbInfo,
+            options: input.options
         });
     }
 
@@ -197,7 +196,7 @@ class Neo4jGraphQL {
 
     private async getNeo4jDatabaseInfo(driver: Driver, driverConfig?: DriverConfig): Promise<Neo4jDatabaseInfo> {
         const executorConstructorParam: ExecutorConstructorParam = {
-            executionContext: driver,
+            executionContext: driver
         };
 
         if (driverConfig?.database) {
@@ -222,13 +221,13 @@ class Neo4jGraphQL {
             nodes: this.nodes,
             relationships: this.relationships,
             schemaModel: this.schemaModel,
-            plugins: this.plugins,
+            plugins: this.plugins
         };
 
         const resolversComposition = {
             "Query.*": [wrapResolver(wrapResolverArgs)],
             "Mutation.*": [wrapResolver(wrapResolverArgs)],
-            "Subscription.*": [wrapSubscription(wrapResolverArgs)],
+            "Subscription.*": [wrapSubscription(wrapResolverArgs)]
         };
 
         // Merge generated and custom resolvers
@@ -249,7 +248,7 @@ class Neo4jGraphQL {
                 validateResolvers,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
                 callbacks: this.config.callbacks,
-                userCustomResolvers: this.resolvers,
+                userCustomResolvers: this.resolvers
             });
 
             const schemaModel = generateModel(document);
@@ -264,7 +263,7 @@ class Neo4jGraphQL {
 
             const schema = makeExecutableSchema({
                 typeDefs,
-                resolvers: wrappedResolvers,
+                resolvers: wrappedResolvers
             });
 
             resolve(this.addDefaultFieldResolvers(schema));
@@ -281,12 +280,12 @@ class Neo4jGraphQL {
         if (this.config?.startupValidation === false) {
             return {
                 validateTypeDefs: false,
-                validateResolvers: false,
+                validateResolvers: false
             };
         }
 
         // TODO - remove in 4.0.0 when skipValidateTypeDefs is removed
-        if (this.config?.skipValidateTypeDefs === true) validateTypeDefs = false
+        if (this.config?.skipValidateTypeDefs === true) validateTypeDefs = false;
 
         if (typeof this.config?.startupValidation === "object") {
             if (this.config?.startupValidation.typeDefs === false) validateTypeDefs = false;
@@ -295,7 +294,7 @@ class Neo4jGraphQL {
 
         return {
             validateTypeDefs,
-            validateResolvers,
+            validateResolvers
         };
     }
 
