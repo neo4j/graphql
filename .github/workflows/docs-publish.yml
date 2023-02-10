@@ -47,7 +47,7 @@ jobs:
           npm install -g surge
           surge ./site neo4j-graphql-docs-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
       - name: Comment on PR
-        uses: marocchino/sticky-pull-request-comment@fcf6fe9e4a0409cd9316a5011435be0f3327f1e1 # v2.3.1
+        uses: marocchino/sticky-pull-request-comment@4608256f7929fbb5ae5f6a2fd255da7c577b46b0 # v2.4.0
         with:
           number: ${{ steps.get-pr-number.outputs.pr-number }}
           header: docs

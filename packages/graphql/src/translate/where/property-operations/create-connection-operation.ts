@@ -20,14 +20,13 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConnectionField, ConnectionWhereArg, Context, PredicateReturn } from "../../../types";
 import type { Node, Relationship } from "../../../classes";
-import { getListPredicate, ListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
 // Recursive function
 
 import { createWherePredicate } from "../create-where-predicate";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { getCypherLogicalOperator, isLogicalOperator } from "../../utils/logical-operators";
-import { createRelationshipPredicate } from "./create-relationship-operation";
+import { createRelationPredicate } from "./create-relationship-operation";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 
 export function createConnectionOperation({
@@ -36,14 +35,12 @@ export function createConnectionOperation({
     context,
     parentNode,
     operator,
-    requiredVariables,
 }: {
     connectionField: ConnectionField;
     value: any;
     context: Context;
     parentNode: Cypher.Node;
     operator: string | undefined;
-    requiredVariables: Cypher.Variable[];
 }): PredicateReturn {
     let nodeEntries: Record<string, any>;
 
@@ -55,7 +52,6 @@ export function createConnectionOperation({
 
     let subqueries: Cypher.CompositeClause | undefined;
     const operations: (Cypher.Predicate | undefined)[] = [];
-    const aggregatingVariables: Cypher.Variable[] = [];
     const matchPatterns: Cypher.Pattern[] = [];
 
     Object.entries(nodeEntries).forEach((entry) => {
@@ -72,29 +68,7 @@ export function createConnectionOperation({
 
         const relationField = connectionField.relationship;
 
-        let labelsOfNodesImplementingInterface;
-        let labels = refNode.getLabels(context);
-
-        const hasOnlyNodeObjectFilter = entry[1]?.node && !nodeOnObj;
-        if (hasOnlyNodeObjectFilter) {
-            const nodesImplementingInterface = context.nodes.filter((x) =>
-                x.interfaces.some((i) => i.name.value === entry[0])
-            );
-            labelsOfNodesImplementingInterface = nodesImplementingInterface.map((n) => n.getLabels(context)).flat();
-            if (labelsOfNodesImplementingInterface?.length) {
-                // set labels to an empty array. We check for the possible interface implementations in the WHERE clause instead (that is Neo4j 4.x safe)
-                labels = [];
-            }
-        }
-
-        const childNode = new Cypher.Node({ labels });
-
-        let orOperatorMultipleNodeLabels;
-        if (labelsOfNodesImplementingInterface?.length) {
-            orOperatorMultipleNodeLabels = Cypher.or(
-                ...labelsOfNodesImplementingInterface.map((label: string) => childNode.hasLabel(label))
-            );
-        }
+        const childNode = new Cypher.Node();
 
         const relationship = new Cypher.Relationship({ type: relationField.type });
 
@@ -105,67 +79,32 @@ export function createConnectionOperation({
             .withDirection(direction)
             .to(childNode);
 
-        let listPredicateStr = getListPredicate(operator as WhereOperator);
-
         const contextRelationship = context.relationships.find(
             (x) => x.name === connectionField.relationshipTypeName
         ) as Relationship;
-        const innerOperation = createConnectionWherePropertyOperation({
-            context,
-            whereInput: entry[1],
-            edgeRef: relationship,
-            targetNode: childNode,
-            edge: contextRelationship,
-            node: refNode,
-            listPredicateStr,
-        });
 
-        if (orOperatorMultipleNodeLabels) {
-            innerOperation.predicate = Cypher.and(innerOperation.predicate, orOperatorMultipleNodeLabels);
-        }
-
-        subqueries = Cypher.concat(subqueries, innerOperation.preComputedSubqueries);
-        requiredVariables.push(...innerOperation.requiredVariables);
-        aggregatingVariables.push(...innerOperation.aggregatingVariables);
         matchPatterns.push(matchPattern);
-        if (listPredicateStr === "any" && !connectionField.relationship.typeMeta.array) {
-            listPredicateStr = "single";
-        }
 
-        const predicate = createRelationshipPredicate({
-            matchPattern,
-            listPredicateStr,
-            childNode,
-            innerOperation: innerOperation.predicate,
-            edgePredicate: true,
+        const { predicate, preComputedSubqueries } = createRelationPredicate({
+            targetNode: childNode,
+            targetPattern: matchPattern,
+            targetRelationship: relationship,
+            parentNode,
+            refNode,
+            context,
+            relationField,
+            whereInput: entry[1],
+            whereOperator: operator as WhereOperator,
+            refEdge: contextRelationship,
         });
 
         operations.push(predicate);
+        subqueries = Cypher.concat(subqueries, preComputedSubqueries);
     });
 
-    if (aggregatingVariables && aggregatingVariables.length) {
-        const aggregatingWithClause = new Cypher.With(
-            parentNode,
-            ...requiredVariables,
-            ...(aggregatingVariables.map((returnVar) => [Cypher.collect(returnVar), returnVar]) as any)
-        );
-
-        return {
-            predicate: Cypher.and(...operations),
-            preComputedSubqueries: Cypher.concat(
-                ...matchPatterns.map((matchPattern) => new Cypher.OptionalMatch(matchPattern)),
-                subqueries,
-                aggregatingWithClause
-            ),
-            requiredVariables: [...requiredVariables, ...aggregatingVariables],
-            aggregatingVariables: [],
-        };
-    }
     return {
         predicate: Cypher.and(...operations),
         preComputedSubqueries: subqueries,
-        requiredVariables: requiredVariables,
-        aggregatingVariables: [],
     };
 }
 
@@ -176,7 +115,6 @@ export function createConnectionWherePropertyOperation({
     targetNode,
     node,
     edge,
-    listPredicateStr,
 }: {
     whereInput: ConnectionWhereArg;
     context: Context;
@@ -184,35 +122,24 @@ export function createConnectionWherePropertyOperation({
     edge: Relationship;
     edgeRef: Cypher.Variable;
     targetNode: Cypher.Node;
-    listPredicateStr?: ListPredicate;
 }): PredicateReturn {
-    const requiredVariables: Cypher.Variable[] = [];
-    const aggregatingVariables: Cypher.Variable[] = [];
     const preComputedSubqueriesResult: (Cypher.CompositeClause | undefined)[] = [];
     const params: (Cypher.Predicate | undefined)[] = [];
     Object.entries(whereInput).forEach(([key, value]) => {
         if (isLogicalOperator(key)) {
             const subOperations: (Cypher.Predicate | undefined)[] = [];
             asArray(value).forEach((input) => {
-                const {
-                    predicate,
-                    preComputedSubqueries,
-                    requiredVariables: innerRequiredVariables,
-                    aggregatingVariables: innerAggregatingVariables,
-                } = createConnectionWherePropertyOperation({
+                const { predicate, preComputedSubqueries } = createConnectionWherePropertyOperation({
                     context,
                     whereInput: input,
                     edgeRef,
                     targetNode,
                     node,
                     edge,
-                    listPredicateStr,
                 });
                 subOperations.push(predicate);
                 if (preComputedSubqueries && !preComputedSubqueries.empty)
                     preComputedSubqueriesResult.push(preComputedSubqueries);
-                requiredVariables.push(...innerRequiredVariables);
-                aggregatingVariables.push(...innerAggregatingVariables);
             });
             const cypherLogicalOperator = getCypherLogicalOperator(key);
             params.push(cypherLogicalOperator(...filterTruthy(subOperations)));
@@ -221,24 +148,16 @@ export function createConnectionWherePropertyOperation({
 
         if (key.startsWith("edge")) {
             const nestedProperties: Record<string, any> = value;
-            const {
-                predicate: result,
-                preComputedSubqueries,
-                requiredVariables: innerRequiredVariables,
-                aggregatingVariables: innerAggregatingVariables,
-            } = createWherePredicate({
+            const { predicate: result, preComputedSubqueries } = createWherePredicate({
                 targetElement: edgeRef,
                 whereInput: nestedProperties,
                 context,
                 element: edge,
-                listPredicateStr,
             });
 
             params.push(result);
             if (preComputedSubqueries && !preComputedSubqueries.empty)
                 preComputedSubqueriesResult.push(preComputedSubqueries);
-            requiredVariables.push(...innerRequiredVariables);
-            aggregatingVariables.push(...innerAggregatingVariables);
             return;
         }
 
@@ -256,25 +175,17 @@ export function createConnectionWherePropertyOperation({
                 throw new Error("_on is used as the only argument and node is not present within");
             }
 
-            const {
-                predicate: result,
-                preComputedSubqueries,
-                requiredVariables: innerRequiredVariables,
-                aggregatingVariables: innerAggregatingVariables,
-            } = createWherePredicate({
+            const { predicate: result, preComputedSubqueries } = createWherePredicate({
                 targetElement: targetNode,
                 whereInput: nestedProperties,
                 context,
                 element: node,
-                listPredicateStr,
             });
 
             // NOTE: _NOT is handled by the size()=0
             params.push(result);
             if (preComputedSubqueries && !preComputedSubqueries.empty)
                 preComputedSubqueriesResult.push(preComputedSubqueries);
-            requiredVariables.push(...innerRequiredVariables);
-            aggregatingVariables.push(...innerAggregatingVariables);
             return;
         }
     });
@@ -283,8 +194,6 @@ export function createConnectionWherePropertyOperation({
         preComputedSubqueries: preComputedSubqueriesResult.length
             ? Cypher.concat(...preComputedSubqueriesResult)
             : undefined,
-        requiredVariables,
-        aggregatingVariables,
     };
 }
 
