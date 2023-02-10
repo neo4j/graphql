@@ -38,57 +38,6 @@ describe("Functions", () => {
         `);
     });
 
-    describe("date()", () => {
-        test("date without parameters", () => {
-            const dateFunction = Cypher.date();
-            const queryResult = new TestClause(dateFunction).build();
-
-            expect(queryResult.cypher).toMatchInlineSnapshot(`"date()"`);
-
-            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
-        });
-
-        test("date with timezone string parameter", () => {
-            const dateFunction = Cypher.date(new Cypher.Param("9999-01-01"));
-            const queryResult = new TestClause(dateFunction).build();
-
-            expect(queryResult.cypher).toMatchInlineSnapshot(`"date($param0)"`);
-
-            expect(queryResult.params).toMatchInlineSnapshot(`
-Object {
-  "param0": "9999-01-01",
-}
-`);
-        });
-
-        test("date with timezone string literal", () => {
-            const dateFunction = Cypher.date(new Cypher.Literal("9999-01-01"));
-            const queryResult = new TestClause(dateFunction).build();
-
-            expect(queryResult.cypher).toMatchInlineSnapshot(`"date(\\"9999-01-01\\")"`);
-
-            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
-        });
-
-        test("date with timezone object", () => {
-            const dateFunction = Cypher.date(new Cypher.Map({ timezone: new Cypher.Literal("America/Los Angeles") }));
-            const queryResult = new TestClause(dateFunction).build();
-
-            expect(queryResult.cypher).toMatchInlineSnapshot(`"date({ timezone: \\"America/Los Angeles\\" })"`);
-
-            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
-        });
-    });
-
-    test("cypherDatetime", () => {
-        const datetimeFn = Cypher.datetime();
-        const queryResult = new TestClause(datetimeFn).build();
-
-        expect(queryResult.cypher).toMatchInlineSnapshot(`"datetime()"`);
-
-        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
-    });
-
     test("custom function", () => {
         const myFunction = new Cypher.Function("myFunction", [new Cypher.Literal("test"), new Cypher.Param("test2")]);
         const queryResult = new TestClause(myFunction).build();

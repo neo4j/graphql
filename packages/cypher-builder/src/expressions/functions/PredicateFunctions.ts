@@ -23,7 +23,7 @@ import { Where } from "../../clauses/sub-clauses/Where";
 import type { Expr, Predicate } from "../../types";
 import { compileCypherIfExists } from "../../utils/compile-cypher-if-exists";
 import type { Variable } from "../../references/Variable";
-import { CypherFunction } from "./CypherFunction";
+import { CypherFunction } from "./CypherFunctions";
 
 /** Represents a predicate function that can be used in a WHERE statement
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/predicate/)
