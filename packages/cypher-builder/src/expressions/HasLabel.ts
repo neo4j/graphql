@@ -41,6 +41,7 @@ export class HasLabel extends CypherASTNode {
         this.expectedLabels = expectedLabels;
     }
 
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const nodeId = this.node.getCypher(env);
         const labelsStr = this.expectedLabels

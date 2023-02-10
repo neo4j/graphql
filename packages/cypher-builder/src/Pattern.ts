@@ -92,9 +92,7 @@ export class Pattern<T extends MatchableElement = MatchableElement> implements C
         return this;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         if (this.isRelationship(this.matchElement)) {
             return this.getRelationshipCypher(env, this.matchElement);

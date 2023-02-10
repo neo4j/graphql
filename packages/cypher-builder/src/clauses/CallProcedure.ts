@@ -34,9 +34,7 @@ export class CallProcedure extends Clause {
         this.procedure = procedure;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const procedureCypher = this.procedure.getCypher(env);
         return `CALL ${procedureCypher}`;

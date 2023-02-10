@@ -91,9 +91,7 @@ export class Match<T extends MatchableElement> extends Clause {
         return this;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const nodeCypher = this.pattern.getCypher(env);
 

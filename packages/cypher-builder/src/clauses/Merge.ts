@@ -57,9 +57,7 @@ export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
         return this;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const mergeStr = `MERGE ${this.pattern.getCypher(env)}`;
         const setCypher = compileCypherIfExists(this.setSubClause, env, { prefix: "\n" });
