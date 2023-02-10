@@ -68,6 +68,7 @@ tmp/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/graphql.code-snippets
+!.vscode/settings.json
 
 # OSX
 .DS_Store
