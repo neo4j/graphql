@@ -110,15 +110,47 @@ export function cypherDatetime(): CypherFunction {
     return new CypherFunction("datetime");
 }
 
-// TODO: Add optional input to date functions - https://neo4j.com/docs/cypher-manual/current/functions/#header-query-functions-temporal-instant-types
-
 /**
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-date)
  * @group Expressions
  * @category Cypher Functions
+ * @example
+ *
+ * Using date without parameters:
+ *
+ * ```ts
+ * Cypher.Date()
+ * ```
+ *
+ * _Cypher:_
+ * ```cypher
+ * date()
+ * ```
+ *
+ * ---
+ *
+ * Date with parameters:
+ *
+ * ```ts
+ * Cypher.Date(new Cypher.param('9999-01-01'))
+ * ```
+ *
+ * _Cypher:_
+ * ```cypher
+ * date($param1)
+ * ```
+ *
+ * _Params:_
+ * ```json
+ * {
+ *   param1: "9999-01-01"
+ * }
+ * ```
+ *
+ *
  */
-export function cypherDate(): CypherFunction {
-    return new CypherFunction("date");
+export function cypherDate(timezone?: Expr): CypherFunction {
+    return new CypherFunction("date", timezone ? [timezone] : undefined);
 }
 
 /**
