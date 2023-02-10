@@ -28,7 +28,7 @@ import createPointElement from "./projection/elements/create-point-element";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
-import { getCypherRelationshipDirection, getRelationshipDirection } from "../utils/get-relationship-direction";
+import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";

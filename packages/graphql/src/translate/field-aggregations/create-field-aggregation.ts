@@ -27,7 +27,7 @@ import { createMatchWherePattern } from "./aggregation-sub-queries";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
-import { getCypherRelationshipDirection, getRelationshipDirection } from "../../utils/get-relationship-direction";
+import { getCypherRelationshipDirection } from "../../utils/get-relationship-direction";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../where/create-where-predicate";
 

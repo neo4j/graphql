@@ -19,7 +19,6 @@
 
 import type { CypherEnvironment } from "../Environment";
 import type { NodeRef } from "../references/NodeRef";
-import type { Param } from "../references/Param";
 import { Pattern } from "../pattern/Pattern";
 import { SetClause } from "./sub-clauses/Set";
 import { Clause } from "./Clause";

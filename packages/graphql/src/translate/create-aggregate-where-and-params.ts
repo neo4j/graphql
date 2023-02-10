@@ -30,7 +30,6 @@ import { getCypherLogicalOperator, isLogicalOperator, LogicalOperator } from "./
 import mapToDbProperty from "../utils/map-to-db-property";
 import { asArray } from "../utils/utils";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
-import { Pattern } from "@neo4j/cypher-builder";
 
 type WhereFilter = Record<string | LogicalOperator, any>;
 
@@ -66,7 +65,7 @@ export function aggregatePreComputedWhereFields(
         type: relationField.type,
     });
 
-    const matchPattern = new Pattern(matchNode as Cypher.Node)
+    const matchPattern = new Cypher.Pattern(matchNode as Cypher.Node)
         .withoutLabels()
         .related(cypherRelation)
         .withDirection(direction)

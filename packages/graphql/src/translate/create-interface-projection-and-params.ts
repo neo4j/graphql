@@ -24,7 +24,7 @@ import { filterInterfaceNodes } from "../utils/filter-interface-nodes";
 import { createAuthPredicates } from "./create-auth-and-params";
 
 import createProjectionAndParams from "./create-projection-and-params";
-import { getCypherRelationshipDirection, getRelationshipDirection } from "../utils/get-relationship-direction";
+import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
 import Cypher from "@neo4j/cypher-builder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import type { Node } from "../classes";
