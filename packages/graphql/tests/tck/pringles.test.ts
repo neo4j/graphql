@@ -306,7 +306,7 @@ describe("Cypher Create Pringles", () => {
             	CALL {
             	WITH this, this_photos0
             	OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
-            	WHERE this_photos0_color0_disconnect0.name = $updateProducts_args_update_photos0_update_node_color_disconnect_where_this_photos0_color0_disconnect0param0
+            	WHERE this_photos0_color0_disconnect0.name = $updateProducts_args_update_photos0_update_node_color_disconnect_where_Color_this_photos0_color0_disconnect0param0
             	CALL {
             		WITH this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
             		WITH collect(this_photos0_color0_disconnect0) as this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
@@ -354,7 +354,7 @@ describe("Cypher Create Pringles", () => {
                 \\"param0\\": \\"Pringles\\",
                 \\"updateProducts_args_update_photos0_where_this_photos0param0\\": \\"Green Photo\\",
                 \\"this_update_photos0_description\\": \\"Light Green Photo\\",
-                \\"updateProducts_args_update_photos0_update_node_color_disconnect_where_this_photos0_color0_disconnect0param0\\": \\"Green\\",
+                \\"updateProducts_args_update_photos0_update_node_color_disconnect_where_Color_this_photos0_color0_disconnect0param0\\": \\"Green\\",
                 \\"this_photos0_color0_connect0_node_param0\\": \\"Light Green\\",
                 \\"updateProducts\\": {
                     \\"args\\": {

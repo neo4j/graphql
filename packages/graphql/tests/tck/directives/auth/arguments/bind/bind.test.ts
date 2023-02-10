@@ -429,7 +429,7 @@ describe("Cypher Auth Allow", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
-            WHERE this_disconnect_creator0.id = $updatePosts_args_disconnect_creator_where_this_disconnect_creator0param0
+            WHERE this_disconnect_creator0.id = $updatePosts_args_disconnect_creator_where_User_this_disconnect_creator0param0
             CALL {
             	WITH this_disconnect_creator0, this_disconnect_creator0_rel, this
             	WITH collect(this_disconnect_creator0) as this_disconnect_creator0, this_disconnect_creator0_rel, this
@@ -456,7 +456,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"post-id\\",
-                \\"updatePosts_args_disconnect_creator_where_this_disconnect_creator0param0\\": \\"user-id\\",
+                \\"updatePosts_args_disconnect_creator_where_User_this_disconnect_creator0param0\\": \\"user-id\\",
                 \\"this_disconnect_creator0auth_param0\\": \\"id-01\\",
                 \\"updatePosts\\": {
                     \\"args\\": {
