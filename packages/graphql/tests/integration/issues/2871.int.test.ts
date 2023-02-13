@@ -34,6 +34,43 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
     let SecondLevel: UniqueType;
     let ThirdLevel: UniqueType;
 
+    const firstLevelInput1 = {
+        id: "1",
+        createdAt: new Date(10000000).toISOString(),
+    };
+    const firstLevelInput2 = {
+        id: "2",
+        createdAt: new Date(20000000).toISOString(),
+    };
+    const firstLevelInput3 = {
+        id: "3",
+        createdAt: new Date(30000000).toISOString(),
+    };
+    const secondLevelInput1 = {
+        id: "4",
+        createdAt: new Date(40000000).toISOString(),
+    };
+    const secondLevelInput2 = {
+        id: "5",
+        createdAt: new Date(50000000).toISOString(),
+    };
+    const secondLevelInput3 = {
+        id: "6",
+        createdAt: new Date(60000000).toISOString(),
+    };
+    const thirdLevelInput1 = {
+        id: "7",
+        createdAt: new Date(70000000).toISOString(),
+    };
+    const thirdLevelInput2 = {
+        id: "8",
+        createdAt: new Date(80000000).toISOString(),
+    };
+    const thirdLevelInput3 = {
+        id: "9",
+        createdAt: new Date(90000000).toISOString(),
+    };
+
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
@@ -45,6 +82,31 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         FirstLevel = new UniqueType("FirstLevel");
         SecondLevel = new UniqueType("SecondLevel");
         ThirdLevel = new UniqueType("ThirdLevel");
+
+        await session.run(
+            `
+            CREATE (f1:${FirstLevel})-[:HAS_SECOND_LEVEL]->(s1:${SecondLevel})-[:HAS_THIRD_LEVEL]->(t1:${ThirdLevel})
+            CREATE (f2:${FirstLevel})-[:HAS_SECOND_LEVEL]->(s2:${SecondLevel})-[:HAS_THIRD_LEVEL]->(t2:${ThirdLevel})
+            CREATE (f3:${FirstLevel})
+            CREATE (s3:${SecondLevel})
+            CREATE (s2)-[:HAS_THIRD_LEVEL]->(t3:${ThirdLevel})
+            SET f1 = $firstLevelInput1, f2 = $firstLevelInput2, f3 = $firstLevelInput3,
+                s1 = $secondLevelInput1, s2 = $secondLevelInput2, s3 = $secondLevelInput3,
+                t1 = $thirdLevelInput1, t2 = $thirdLevelInput2, t3 = $thirdLevelInput3
+            
+        `,
+            {
+                firstLevelInput1,
+                firstLevelInput2,
+                firstLevelInput3,
+                secondLevelInput1,
+                secondLevelInput2,
+                secondLevelInput3,
+                thirdLevelInput1,
+                thirdLevelInput2,
+                thirdLevelInput3,
+            }
+        );
 
         const typeDefs = `
             type ${FirstLevel} {
@@ -80,11 +142,12 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         await driver.close();
     });
 
-    test("should not throw error", async () => {
+    test("should be able to filter by SOME nested within single relationship", async () => {
         const query = `
             query {
-                ${FirstLevel.plural}(where: { secondLevel: { thirdLevel: { id: "test" } } }) {
+                ${FirstLevel.plural}(where: { secondLevel: { thirdLevel_SOME: { id: "${thirdLevelInput3.id}" } } }) {
                     id
+                    createdAt
                 }
             }
         `;
@@ -95,5 +158,75 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
             contextValue: neo4j.getContextValues(),
         });
         expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [FirstLevel.plural]: expect.toIncludeSameMembers([firstLevelInput2]),
+        });
+    });
+
+    test("should be able to filter by ALL nested within single relationship", async () => {
+        const queryExpectingEmptyList = `
+            query {
+                ${FirstLevel.plural}(where: { secondLevel: { thirdLevel_ALL: { id: "${thirdLevelInput3.id}" } } }) {
+                    id
+                    createdAt
+                }
+            }
+        `;
+
+        const queryExpectingData = `
+            query {
+                ${FirstLevel.plural}(where: { secondLevel: { thirdLevel_ALL: { id: "${thirdLevelInput1.id}" } } }) {
+                    id
+                    createdAt
+                }
+            }
+        `;
+
+        const resultExpectingEmptyList = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: queryExpectingEmptyList,
+            contextValue: neo4j.getContextValues(),
+        });
+        const resultExpectingData = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: queryExpectingData,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(resultExpectingEmptyList.errors).toBeFalsy();
+        expect(resultExpectingData.errors).toBeFalsy();
+        expect(resultExpectingEmptyList.data).toEqual({
+            [FirstLevel.plural]: [],
+        });
+        expect(resultExpectingData.data).toEqual({
+            [FirstLevel.plural]: expect.toIncludeSameMembers([firstLevelInput1]),
+        });
+    });
+
+    test("should not match if SOME second level relationships meet nested predicates", async () => {
+        await session.run(`
+            CREATE (f4:${FirstLevel})-[:HAS_SECOND_LEVEL]->(s4:${SecondLevel})
+            CREATE (f4)-[:HAS_SECOND_LEVEL]->(s5:${SecondLevel})
+        `);
+
+        const query = `
+            query {
+                ${FirstLevel.plural}(where: { secondLevel: { thirdLevel_NONE: { id: "25" } } }) {
+                    id
+                    createdAt
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [FirstLevel.plural]: expect.toIncludeSameMembers([firstLevelInput1, firstLevelInput2]),
+        });
     });
 });
