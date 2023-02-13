@@ -23,7 +23,7 @@ import Cypher from "@neo4j/cypher-builder";
 // Recursive function
 import { createPropertyWhere } from "./property-operations/create-property-where";
 import { getCypherLogicalOperator, isLogicalOperator, LogicalOperator } from "../utils/logical-operators";
-import type { ListPredicate } from "./utils";
+import { asArray } from "../../utils/utils";
 
 /** Translate a target node and GraphQL input into a Cypher operation o valid where expression */
 export function createWherePredicate({
@@ -31,54 +31,40 @@ export function createWherePredicate({
     whereInput,
     context,
     element,
-    listPredicateStr,
 }: {
     targetElement: Cypher.Variable;
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
-    listPredicateStr?: ListPredicate;
 }): PredicateReturn {
     const whereFields = Object.entries(whereInput);
     const predicates: Cypher.Predicate[] = [];
-    const requiredVariables: Cypher.Variable[] = [];
-    const aggregatingVariables: Cypher.Variable[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
     whereFields.forEach(([key, value]) => {
         if (isLogicalOperator(key)) {
-            const {
-                predicate,
-                preComputedSubqueries,
-                requiredVariables: innerRequiredVariables,
-                aggregatingVariables: innerAggregatingVariables,
-            } = createNestedPredicate({
+            const { predicate, preComputedSubqueries } = createNestedPredicate({
                 key: key as LogicalOperator,
                 element,
                 targetElement,
                 context,
-                value: Array.isArray(value) ? value : [value],
-                listPredicateStr,
-                requiredVariables,
+                value: asArray(value),
             });
             if (predicate) {
                 predicates.push(predicate);
-                requiredVariables.push(...innerRequiredVariables);
-                aggregatingVariables.push(...innerAggregatingVariables);
                 if (preComputedSubqueries && !preComputedSubqueries.empty)
                     subqueries = Cypher.concat(subqueries, preComputedSubqueries);
             }
             return;
         }
-        const {
-            predicate,
-            preComputedSubqueries,
-            requiredVariables: innerRequiredVariables,
-            aggregatingVariables: innerAggregatingVariables,
-        } = createPropertyWhere({ key, value, element, targetElement, context, listPredicateStr, requiredVariables });
+        const { predicate, preComputedSubqueries } = createPropertyWhere({
+            key,
+            value,
+            element,
+            targetElement,
+            context,
+        });
         if (predicate) {
             predicates.push(predicate);
-            requiredVariables.push(...innerRequiredVariables);
-            aggregatingVariables.push(...innerAggregatingVariables);
             if (preComputedSubqueries && !preComputedSubqueries.empty)
                 subqueries = Cypher.concat(subqueries, preComputedSubqueries);
             return;
@@ -88,8 +74,6 @@ export function createWherePredicate({
     return {
         predicate: Cypher.and(...predicates),
         preComputedSubqueries: subqueries,
-        requiredVariables,
-        aggregatingVariables,
     };
 }
 
@@ -99,47 +83,29 @@ function createNestedPredicate({
     targetElement,
     context,
     value,
-    listPredicateStr,
-    requiredVariables,
 }: {
     key: LogicalOperator;
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
     value: Array<GraphQLWhereArg>;
-    listPredicateStr?: ListPredicate;
-    requiredVariables: Cypher.Variable[];
 }): PredicateReturn {
     const nested: Cypher.Predicate[] = [];
-    const aggregatingVariables: Cypher.Variable[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
 
     value.forEach((v) => {
-        const {
-            predicate,
-            preComputedSubqueries,
-            requiredVariables: innerReturnVariables,
-            aggregatingVariables: innerAggregatingVariables,
-        } = createWherePredicate({
+        const { predicate, preComputedSubqueries } = createWherePredicate({
             whereInput: v,
             element,
             targetElement,
             context,
-            listPredicateStr,
         });
         if (predicate) {
             nested.push(predicate);
         }
-        requiredVariables.push(...innerReturnVariables);
-        aggregatingVariables.push(...innerAggregatingVariables);
         if (preComputedSubqueries && !preComputedSubqueries.empty)
             subqueries = Cypher.concat(subqueries, preComputedSubqueries);
     });
     const logicalOperator = getCypherLogicalOperator(key);
-    return {
-        predicate: logicalOperator(...nested),
-        preComputedSubqueries: subqueries,
-        requiredVariables,
-        aggregatingVariables,
-    };
+    return { predicate: logicalOperator(...nested), preComputedSubqueries: subqueries };
 }

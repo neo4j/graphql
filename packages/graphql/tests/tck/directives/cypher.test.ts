@@ -603,7 +603,7 @@ describe("Cypher directive", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this_actors:\`Actor\`)-[this0:ACTED_IN]->(this)
+                    MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Actor\`)
                     WITH this_actors { .name } AS this_actors
                     RETURN collect(this_actors) AS this_actors
                 }
@@ -671,7 +671,7 @@ describe("Cypher directive", () => {
                 WITH m as this
                 CALL {
                     WITH this
-                    MATCH (this_actors:\`Actor\`)-[this0:ACTED_IN]->(this)
+                    MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Actor\`)
                     WITH this_actors { .name } AS this_actors
                     RETURN collect(this_actors) AS this_actors
                 }
@@ -743,7 +743,7 @@ describe("Cypher directive", () => {
                     WITH m AS this_custom
                     CALL {
                         WITH this_custom
-                        MATCH (this_custom_actors:\`Actor\`)-[this0:ACTED_IN]->(this_custom)
+                        MATCH (this_custom)<-[this0:ACTED_IN]-(this_custom_actors:\`Actor\`)
                         WITH this_custom_actors { .name } AS this_custom_actors
                         RETURN collect(this_custom_actors) AS this_custom_actors
                     }

@@ -543,6 +543,4 @@ export interface Neo4jFeaturesSettings {
 export type PredicateReturn = {
     predicate: Cypher.Predicate | undefined;
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
-    requiredVariables: Cypher.Variable[];
-    aggregatingVariables: Cypher.Variable[];
 };

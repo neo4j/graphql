@@ -32,6 +32,9 @@ export { Foreach } from "./clauses/Foreach";
 
 export { concat } from "./clauses/utils/concat";
 
+// Patterns
+export { Pattern } from "./pattern/Pattern";
+
 // Variables and references
 export { NodeRef as Node, NamedNode } from "./references/NodeRef";
 export { RelationshipRef as Relationship } from "./references/RelationshipRef";
@@ -59,7 +62,7 @@ export { MapExpr as Map } from "./expressions/map/MapExpr";
 export { MapProjection } from "./expressions/map/MapProjection";
 
 // --Operations
-export { or, and, not } from "./expressions/operations/boolean";
+export { or, and, not, xor } from "./expressions/operations/boolean";
 export {
     eq,
     gt,
@@ -115,7 +118,6 @@ export type { ProjectionColumn } from "./clauses/sub-clauses/Projection";
 export type { SetParam } from "./clauses/sub-clauses/Set";
 export type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
 export type { Order } from "./clauses/sub-clauses/OrderBy";
-export type { Pattern } from "./Pattern";
 export type { CompositeClause } from "./clauses/utils/concat";
 
 // utils

@@ -69,7 +69,7 @@ describe("Field Level Aggregations", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this_actorsAggregate_this1:\`Actor\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
+                MATCH (this)<-[this_actorsAggregate_this0:ACTED_IN]-(this_actorsAggregate_this1:\`Actor\`)
                 RETURN count(this_actorsAggregate_this1) AS this_actorsAggregate_var2
             }
             RETURN this { .title, actorsAggregate: { count: this_actorsAggregate_var2 } } AS this"
@@ -104,12 +104,12 @@ describe("Field Level Aggregations", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this_actorsAggregate_this1:\`Actor\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
+                MATCH (this)<-[this_actorsAggregate_this0:ACTED_IN]-(this_actorsAggregate_this1:\`Actor\`)
                 RETURN count(this_actorsAggregate_this1) AS this_actorsAggregate_var2
             }
             CALL {
                 WITH this
-                MATCH (this_actorsAggregate_this1:\`Actor\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
+                MATCH (this)<-[this_actorsAggregate_this0:ACTED_IN]-(this_actorsAggregate_this1:\`Actor\`)
                 WITH this_actorsAggregate_this1
                 ORDER BY size(this_actorsAggregate_this1.name) DESC
                 WITH collect(this_actorsAggregate_this1.name) AS list
@@ -148,7 +148,7 @@ describe("Field Level Aggregations", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this_actorsAggregate_this0:\`Actor\`)-[this_actorsAggregate_this1:ACTED_IN]->(this)
+                MATCH (this)<-[this_actorsAggregate_this1:ACTED_IN]-(this_actorsAggregate_this0:\`Actor\`)
                 RETURN { min: min(this_actorsAggregate_this0.age), max: max(this_actorsAggregate_this0.age), average: avg(this_actorsAggregate_this0.age), sum: sum(this_actorsAggregate_this0.age) }  AS this_actorsAggregate_var2
             }
             RETURN this { actorsAggregate: { node: { age: this_actorsAggregate_var2 } } } AS this"
@@ -183,7 +183,7 @@ describe("Field Level Aggregations", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this_actorsAggregate_this0:\`Actor\`)-[this_actorsAggregate_this1:ACTED_IN]->(this)
+                MATCH (this)<-[this_actorsAggregate_this1:ACTED_IN]-(this_actorsAggregate_this0:\`Actor\`)
                 WITH this_actorsAggregate_this0
                 ORDER BY size(this_actorsAggregate_this0.name) DESC
                 WITH collect(this_actorsAggregate_this0.name) AS list

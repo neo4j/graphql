@@ -75,7 +75,7 @@ describe("Field Level Aggregations Alias", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this_actorsAggregate_this0:\`Actor\`)-[this_actorsAggregate_this1:ACTED_IN]->(this)
+                MATCH (this)<-[this_actorsAggregate_this1:ACTED_IN]-(this_actorsAggregate_this0:\`Actor\`)
                 WITH this_actorsAggregate_this0
                 ORDER BY size(this_actorsAggregate_this0.name) DESC
                 WITH collect(this_actorsAggregate_this0.name) AS list
@@ -111,7 +111,7 @@ describe("Field Level Aggregations Alias", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this_actorsAggregate_this1:\`Actor\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
+                MATCH (this)<-[this_actorsAggregate_this0:ACTED_IN]-(this_actorsAggregate_this1:\`Actor\`)
                 RETURN { min: min(this_actorsAggregate_this0.screentime), max: max(this_actorsAggregate_this0.screentime), average: avg(this_actorsAggregate_this0.screentime), sum: sum(this_actorsAggregate_this0.screentime) }  AS this_actorsAggregate_var2
             }
             RETURN this { actorsAggregate: { edge: { time: this_actorsAggregate_var2 } } } AS this"

@@ -149,6 +149,53 @@ type Tech @node(label: "TechDB") @plural(value: "Techs") {
 }
 ----
 
+[label-migration]
+=== `label` and `additionalLabels` arguments removed from `@node` and replaced with new argument `labels`
+
+There is no concept of a "main label" in the Neo4j database. As such, keeping these two separate arguments causes a disconnect between the database and the GraphQL library.
+As a result, the `label` and `additionalLabels` arguments have been condensed into a single argument `labels` which will accept a list of string labels that used when a node of the given GraphQL type is created.
+
+The equivalent of using just the `label` argument is now a list with a single value:
+
+[source, graphql, indent=0]
+----
+type Tech @node(label: "TechDB") {
+  name: String
+}
+# becomes
+type Tech @node(labels: ["TechDB"]) {
+  name: String
+}
+----
+
+When creating the equivalent of using just the `additionalLabels` argument now requires the first value in the list to be the GraphQL type name:
+
+[source, graphql, indent=0]
+----
+type Tech @node(additionalLabels: ["TechDB"]) {
+  name: String
+}
+# becomes
+type Tech @node(labels: ["Tech", "TechDB"]) {
+  name: String
+}
+----
+
+The equivalent of using both deprecated arguments is a list with all the values concatenated:
+
+[source, graphql, indent=0]
+----
+type Tech @node(label: "TechDB", additionalLabels: ["AwesomeTech"]) {
+  name: String
+}
+# becomes
+type Tech @node(labels: ["TechDB", "AwesomeTech"]) {
+  name: String
+}
+----
+
+As before, providing none of these arguments results in the node label being the same as the GraphQL type name.
+
 [full-text-migration]
 === `@fulltext` changes
 
@@ -354,36 +401,6 @@ type query {
 
 Additionally, escaping strings is no longer needed.
 
-
-== Updated Filters
-
-Starting from 4.0.0 negate filters, filters with the suffix `_NOT`, will be deprecated in favor of the more generic NOT operator.
-
-For instance:
-
-[source, graphql, indent=0]
-----
-query MoviesThatAreNotMatrix {
-  movies(where: {
-    title_NOT: "The Matrix"
-  }) {
-    title
-  }
-}
-----
-
-From version 4.0.0 the same can be achieved with:
-
-[source, graphql, indent=0]
-----
-query MoviesThatAreNotMatrix {
-  movies(where: {
-    NOT: { title: "The Matrix" }
-  }) {
-    title
-  }
-}
-----
 
 == Miscellaneous changes
 

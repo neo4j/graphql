@@ -121,11 +121,11 @@ describe("Subscriptions", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -148,11 +148,11 @@ describe("Subscriptions", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -269,7 +269,7 @@ describe("Subscriptions", () => {
               NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -293,26 +293,41 @@ describe("Subscriptions", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
-              name_AVERAGE_EQUAL: Float
-              name_AVERAGE_GT: Float
-              name_AVERAGE_GTE: Float
-              name_AVERAGE_LT: Float
-              name_AVERAGE_LTE: Float
-              name_EQUAL: String
-              name_GT: Int
-              name_GTE: Int
-              name_LONGEST_EQUAL: Int
-              name_LONGEST_GT: Int
-              name_LONGEST_GTE: Int
-              name_LONGEST_LT: Int
-              name_LONGEST_LTE: Int
-              name_LT: Int
-              name_LTE: Int
-              name_SHORTEST_EQUAL: Int
-              name_SHORTEST_GT: Int
-              name_SHORTEST_GTE: Int
-              name_SHORTEST_LT: Int
-              name_SHORTEST_LTE: Int
+              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LENGTH_EQUAL: Float
+              name_AVERAGE_LENGTH_GT: Float
+              name_AVERAGE_LENGTH_GTE: Float
+              name_AVERAGE_LENGTH_LT: Float
+              name_AVERAGE_LENGTH_LTE: Float
+              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LENGTH_EQUAL: Int
+              name_LONGEST_LENGTH_GT: Int
+              name_LONGEST_LENGTH_GTE: Int
+              name_LONGEST_LENGTH_LT: Int
+              name_LONGEST_LENGTH_LTE: Int
+              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int
+              name_SHORTEST_LENGTH_GT: Int
+              name_SHORTEST_LENGTH_GTE: Int
+              name_SHORTEST_LENGTH_LT: Int
+              name_SHORTEST_LENGTH_LTE: Int
+              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type MovieActorsRelationship {
@@ -455,28 +470,28 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieUpdateInput {
@@ -510,8 +525,8 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -535,20 +550,20 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -757,7 +772,7 @@ describe("Subscriptions", () => {
               NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -788,11 +803,11 @@ describe("Subscriptions", () => {
               actorCount_AVERAGE_GTE: Float
               actorCount_AVERAGE_LT: Float
               actorCount_AVERAGE_LTE: Float
-              actorCount_EQUAL: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_LT: Int
-              actorCount_LTE: Int
+              actorCount_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               actorCount_MAX_EQUAL: Int
               actorCount_MAX_GT: Int
               actorCount_MAX_GTE: Int
@@ -813,11 +828,11 @@ describe("Subscriptions", () => {
               averageRating_AVERAGE_GTE: Float
               averageRating_AVERAGE_LT: Float
               averageRating_AVERAGE_LTE: Float
-              averageRating_EQUAL: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_LT: Float
-              averageRating_LTE: Float
+              averageRating_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               averageRating_MAX_EQUAL: Float
               averageRating_MAX_GT: Float
               averageRating_MAX_GTE: Float
@@ -833,7 +848,7 @@ describe("Subscriptions", () => {
               averageRating_SUM_GTE: Float
               averageRating_SUM_LT: Float
               averageRating_SUM_LTE: Float
-              id_EQUAL: ID
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
             type ActorMoviesRelationship {
@@ -874,7 +889,6 @@ describe("Subscriptions", () => {
             }
 
             input ActorRelationshipCreatedSubscriptionWhere {
-              actor: ActorSubscriptionWhere
               createdRelationship: ActorRelationshipsSubscriptionWhere
             }
 
@@ -885,15 +899,12 @@ describe("Subscriptions", () => {
             }
 
             input ActorRelationshipDeletedSubscriptionWhere {
-              actor: ActorSubscriptionWhere
               deletedRelationship: ActorRelationshipsSubscriptionWhere
             }
 
             input ActorRelationshipsSubscriptionWhere {
               movies: ActorMoviesRelationshipSubscriptionWhere
             }
-
-            input ActorSubscriptionWhere
 
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
@@ -1027,7 +1038,7 @@ describe("Subscriptions", () => {
               NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -1052,10 +1063,6 @@ describe("Subscriptions", () => {
             type MovieActorsRelationship {
               cursor: String!
               node: Actor!
-            }
-
-            input MovieActorsRelationshipSubscriptionWhere {
-              node: ActorSubscriptionWhere
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -1147,7 +1154,6 @@ describe("Subscriptions", () => {
             }
 
             input MovieRelationshipCreatedSubscriptionWhere {
-              createdRelationship: MovieRelationshipsSubscriptionWhere
               movie: MovieSubscriptionWhere
             }
 
@@ -1159,12 +1165,7 @@ describe("Subscriptions", () => {
             }
 
             input MovieRelationshipDeletedSubscriptionWhere {
-              deletedRelationship: MovieRelationshipsSubscriptionWhere
               movie: MovieSubscriptionWhere
-            }
-
-            input MovieRelationshipsSubscriptionWhere {
-              actors: MovieActorsRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -1187,28 +1188,28 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieUpdateInput {
@@ -1242,8 +1243,8 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -1267,20 +1268,20 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -1323,11 +1324,11 @@ describe("Subscriptions", () => {
             }
 
             type Subscription {
-              actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-              actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
+              actorCreated: ActorCreatedEvent!
+              actorDeleted: ActorDeletedEvent!
               actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
               actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
-              actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
+              actorUpdated: ActorUpdatedEvent!
               movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
               movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
               movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
@@ -1507,7 +1508,7 @@ describe("Subscriptions", () => {
               NOT: MovieActorsPersonConnectionWhere
               OR: [MovieActorsPersonConnectionWhere!]
               node: PersonWhere
-              node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsPersonCreateFieldInput {
@@ -1529,10 +1530,6 @@ describe("Subscriptions", () => {
               create: [MovieActorsPersonCreateFieldInput!]
             }
 
-            input MovieActorsPersonSubscriptionWhere {
-              node: PersonSubscriptionWhere
-            }
-
             input MovieActorsPersonUpdateConnectionInput {
               node: PersonUpdateInput
             }
@@ -1551,11 +1548,6 @@ describe("Subscriptions", () => {
               node: Actor!
             }
 
-            input MovieActorsRelationshipSubscriptionWhere {
-              Person: MovieActorsPersonSubscriptionWhere
-              Star: MovieActorsStarSubscriptionWhere
-            }
-
             input MovieActorsStarConnectFieldInput {
               connect: [StarConnectInput!]
               where: StarConnectWhere
@@ -1566,7 +1558,7 @@ describe("Subscriptions", () => {
               NOT: MovieActorsStarConnectionWhere
               OR: [MovieActorsStarConnectionWhere!]
               node: StarWhere
-              node_NOT: StarWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: StarWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsStarCreateFieldInput {
@@ -1586,10 +1578,6 @@ describe("Subscriptions", () => {
             input MovieActorsStarFieldInput {
               connect: [MovieActorsStarConnectFieldInput!]
               create: [MovieActorsStarCreateFieldInput!]
-            }
-
-            input MovieActorsStarSubscriptionWhere {
-              node: StarSubscriptionWhere
             }
 
             input MovieActorsStarUpdateConnectionInput {
@@ -1686,7 +1674,6 @@ describe("Subscriptions", () => {
             }
 
             input MovieRelationshipCreatedSubscriptionWhere {
-              createdRelationship: MovieRelationshipsSubscriptionWhere
               movie: MovieSubscriptionWhere
             }
 
@@ -1698,12 +1685,7 @@ describe("Subscriptions", () => {
             }
 
             input MovieRelationshipDeletedSubscriptionWhere {
-              deletedRelationship: MovieRelationshipsSubscriptionWhere
               movie: MovieSubscriptionWhere
-            }
-
-            input MovieRelationshipsSubscriptionWhere {
-              actors: MovieActorsRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -1726,28 +1708,28 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieUpdateInput {
@@ -1781,8 +1763,8 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               actorsConnection_ALL: MovieActorsConnectionWhere
               actorsConnection_NONE: MovieActorsConnectionWhere
@@ -1795,20 +1777,20 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -1943,7 +1925,7 @@ describe("Subscriptions", () => {
               NOT: PersonMoviesConnectionWhere
               OR: [PersonMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input PersonMoviesCreateFieldInput {
@@ -1974,11 +1956,11 @@ describe("Subscriptions", () => {
               actorCount_AVERAGE_GTE: Float
               actorCount_AVERAGE_LT: Float
               actorCount_AVERAGE_LTE: Float
-              actorCount_EQUAL: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_LT: Int
-              actorCount_LTE: Int
+              actorCount_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               actorCount_MAX_EQUAL: Int
               actorCount_MAX_GT: Int
               actorCount_MAX_GTE: Int
@@ -1999,11 +1981,11 @@ describe("Subscriptions", () => {
               averageRating_AVERAGE_GTE: Float
               averageRating_AVERAGE_LT: Float
               averageRating_AVERAGE_LTE: Float
-              averageRating_EQUAL: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_LT: Float
-              averageRating_LTE: Float
+              averageRating_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               averageRating_MAX_EQUAL: Float
               averageRating_MAX_GT: Float
               averageRating_MAX_GTE: Float
@@ -2019,7 +2001,7 @@ describe("Subscriptions", () => {
               averageRating_SUM_GTE: Float
               averageRating_SUM_LT: Float
               averageRating_SUM_LTE: Float
-              id_EQUAL: ID
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
             type PersonMoviesRelationship {
@@ -2061,7 +2043,6 @@ describe("Subscriptions", () => {
 
             input PersonRelationshipCreatedSubscriptionWhere {
               createdRelationship: PersonRelationshipsSubscriptionWhere
-              person: PersonSubscriptionWhere
             }
 
             type PersonRelationshipDeletedEvent {
@@ -2072,14 +2053,11 @@ describe("Subscriptions", () => {
 
             input PersonRelationshipDeletedSubscriptionWhere {
               deletedRelationship: PersonRelationshipsSubscriptionWhere
-              person: PersonSubscriptionWhere
             }
 
             input PersonRelationshipsSubscriptionWhere {
               movies: PersonMoviesRelationshipSubscriptionWhere
             }
-
-            input PersonSubscriptionWhere
 
             input PersonUpdateInput {
               movies: [PersonMoviesUpdateFieldInput!]
@@ -2237,7 +2215,7 @@ describe("Subscriptions", () => {
               NOT: StarMoviesConnectionWhere
               OR: [StarMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input StarMoviesCreateFieldInput {
@@ -2268,11 +2246,11 @@ describe("Subscriptions", () => {
               actorCount_AVERAGE_GTE: Float
               actorCount_AVERAGE_LT: Float
               actorCount_AVERAGE_LTE: Float
-              actorCount_EQUAL: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_LT: Int
-              actorCount_LTE: Int
+              actorCount_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               actorCount_MAX_EQUAL: Int
               actorCount_MAX_GT: Int
               actorCount_MAX_GTE: Int
@@ -2293,11 +2271,11 @@ describe("Subscriptions", () => {
               averageRating_AVERAGE_GTE: Float
               averageRating_AVERAGE_LT: Float
               averageRating_AVERAGE_LTE: Float
-              averageRating_EQUAL: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_LT: Float
-              averageRating_LTE: Float
+              averageRating_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               averageRating_MAX_EQUAL: Float
               averageRating_MAX_GT: Float
               averageRating_MAX_GTE: Float
@@ -2313,7 +2291,7 @@ describe("Subscriptions", () => {
               averageRating_SUM_GTE: Float
               averageRating_SUM_LT: Float
               averageRating_SUM_LTE: Float
-              id_EQUAL: ID
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
             type StarMoviesRelationship {
@@ -2355,7 +2333,6 @@ describe("Subscriptions", () => {
 
             input StarRelationshipCreatedSubscriptionWhere {
               createdRelationship: StarRelationshipsSubscriptionWhere
-              star: StarSubscriptionWhere
             }
 
             type StarRelationshipDeletedEvent {
@@ -2366,14 +2343,11 @@ describe("Subscriptions", () => {
 
             input StarRelationshipDeletedSubscriptionWhere {
               deletedRelationship: StarRelationshipsSubscriptionWhere
-              star: StarSubscriptionWhere
             }
 
             input StarRelationshipsSubscriptionWhere {
               movies: StarMoviesRelationshipSubscriptionWhere
             }
-
-            input StarSubscriptionWhere
 
             input StarUpdateInput {
               movies: [StarMoviesUpdateFieldInput!]
@@ -2419,16 +2393,16 @@ describe("Subscriptions", () => {
               movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
               movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
               movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
-              personCreated(where: PersonSubscriptionWhere): PersonCreatedEvent!
-              personDeleted(where: PersonSubscriptionWhere): PersonDeletedEvent!
+              personCreated: PersonCreatedEvent!
+              personDeleted: PersonDeletedEvent!
               personRelationshipCreated(where: PersonRelationshipCreatedSubscriptionWhere): PersonRelationshipCreatedEvent!
               personRelationshipDeleted(where: PersonRelationshipDeletedSubscriptionWhere): PersonRelationshipDeletedEvent!
-              personUpdated(where: PersonSubscriptionWhere): PersonUpdatedEvent!
-              starCreated(where: StarSubscriptionWhere): StarCreatedEvent!
-              starDeleted(where: StarSubscriptionWhere): StarDeletedEvent!
+              personUpdated: PersonUpdatedEvent!
+              starCreated: StarCreatedEvent!
+              starDeleted: StarDeletedEvent!
               starRelationshipCreated(where: StarRelationshipCreatedSubscriptionWhere): StarRelationshipCreatedEvent!
               starRelationshipDeleted(where: StarRelationshipDeletedSubscriptionWhere): StarRelationshipDeletedEvent!
-              starUpdated(where: StarSubscriptionWhere): StarUpdatedEvent!
+              starUpdated: StarUpdatedEvent!
             }
 
             type UpdateInfo {
@@ -2513,8 +2487,8 @@ describe("Subscriptions", () => {
               screenTime_IN: [Int]
               screenTime_LT: Int
               screenTime_LTE: Int
-              screenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              screenTime_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              screenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              screenTime_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActedInUpdateInput {
@@ -2533,8 +2507,8 @@ describe("Subscriptions", () => {
               screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
-              screenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              screenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type Actor {
@@ -2637,7 +2611,7 @@ describe("Subscriptions", () => {
               NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -2668,11 +2642,11 @@ describe("Subscriptions", () => {
               actorCount_AVERAGE_GTE: Float
               actorCount_AVERAGE_LT: Float
               actorCount_AVERAGE_LTE: Float
-              actorCount_EQUAL: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_LT: Int
-              actorCount_LTE: Int
+              actorCount_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               actorCount_MAX_EQUAL: Int
               actorCount_MAX_GT: Int
               actorCount_MAX_GTE: Int
@@ -2693,11 +2667,11 @@ describe("Subscriptions", () => {
               averageRating_AVERAGE_GTE: Float
               averageRating_AVERAGE_LT: Float
               averageRating_AVERAGE_LTE: Float
-              averageRating_EQUAL: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_LT: Float
-              averageRating_LTE: Float
+              averageRating_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               averageRating_MAX_EQUAL: Float
               averageRating_MAX_GT: Float
               averageRating_MAX_GTE: Float
@@ -2713,7 +2687,7 @@ describe("Subscriptions", () => {
               averageRating_SUM_GTE: Float
               averageRating_SUM_LT: Float
               averageRating_SUM_LTE: Float
-              id_EQUAL: ID
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
             type ActorMoviesRelationship {
@@ -2754,7 +2728,6 @@ describe("Subscriptions", () => {
             }
 
             input ActorRelationshipCreatedSubscriptionWhere {
-              actor: ActorSubscriptionWhere
               createdRelationship: ActorRelationshipsSubscriptionWhere
             }
 
@@ -2765,15 +2738,12 @@ describe("Subscriptions", () => {
             }
 
             input ActorRelationshipDeletedSubscriptionWhere {
-              actor: ActorSubscriptionWhere
               deletedRelationship: ActorRelationshipsSubscriptionWhere
             }
 
             input ActorRelationshipsSubscriptionWhere {
               movies: ActorMoviesRelationshipSubscriptionWhere
             }
-
-            input ActorSubscriptionWhere
 
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
@@ -2929,9 +2899,9 @@ describe("Subscriptions", () => {
               NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -2958,11 +2928,11 @@ describe("Subscriptions", () => {
               screenTime_AVERAGE_GTE: Float
               screenTime_AVERAGE_LT: Float
               screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_LT: Int
-              screenTime_LTE: Int
+              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               screenTime_MAX_EQUAL: Int
               screenTime_MAX_GT: Int
               screenTime_MAX_GTE: Int
@@ -2993,7 +2963,6 @@ describe("Subscriptions", () => {
 
             input MovieActorsRelationshipSubscriptionWhere {
               edge: ActedInSubscriptionWhere
-              node: ActorSubscriptionWhere
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -3132,28 +3101,28 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieUpdateInput {
@@ -3187,8 +3156,8 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -3212,20 +3181,20 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -3268,11 +3237,11 @@ describe("Subscriptions", () => {
             }
 
             type Subscription {
-              actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-              actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
+              actorCreated: ActorCreatedEvent!
+              actorDeleted: ActorDeletedEvent!
               actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
               actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
-              actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
+              actorUpdated: ActorUpdatedEvent!
               movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
               movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
               movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
@@ -3391,11 +3360,11 @@ describe("Subscriptions", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -3418,11 +3387,11 @@ describe("Subscriptions", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -3535,7 +3504,7 @@ describe("Subscriptions", () => {
               NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -3559,26 +3528,41 @@ describe("Subscriptions", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
-              name_AVERAGE_EQUAL: Float
-              name_AVERAGE_GT: Float
-              name_AVERAGE_GTE: Float
-              name_AVERAGE_LT: Float
-              name_AVERAGE_LTE: Float
-              name_EQUAL: String
-              name_GT: Int
-              name_GTE: Int
-              name_LONGEST_EQUAL: Int
-              name_LONGEST_GT: Int
-              name_LONGEST_GTE: Int
-              name_LONGEST_LT: Int
-              name_LONGEST_LTE: Int
-              name_LT: Int
-              name_LTE: Int
-              name_SHORTEST_EQUAL: Int
-              name_SHORTEST_GT: Int
-              name_SHORTEST_GTE: Int
-              name_SHORTEST_LT: Int
-              name_SHORTEST_LTE: Int
+              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LENGTH_EQUAL: Float
+              name_AVERAGE_LENGTH_GT: Float
+              name_AVERAGE_LENGTH_GTE: Float
+              name_AVERAGE_LENGTH_LT: Float
+              name_AVERAGE_LENGTH_LTE: Float
+              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LENGTH_EQUAL: Int
+              name_LONGEST_LENGTH_GT: Int
+              name_LONGEST_LENGTH_GTE: Int
+              name_LONGEST_LENGTH_LT: Int
+              name_LONGEST_LENGTH_LTE: Int
+              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int
+              name_SHORTEST_LENGTH_GT: Int
+              name_SHORTEST_LENGTH_GTE: Int
+              name_SHORTEST_LENGTH_LT: Int
+              name_SHORTEST_LENGTH_LTE: Int
+              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type MovieActorsRelationship {
@@ -3678,8 +3662,8 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -3703,20 +3687,20 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated in version 4.0.0, use the NOT operator to achieve the same behavior\\")
+              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -3785,6 +3769,2555 @@ describe("Subscriptions", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }"
+        `);
+    });
+
+    test("Type with relationship to a subscriptions excluded type", async () => {
+        const typeDefs = gql`
+            type User @exclude(operations: [CREATE, DELETE, UPDATE, SUBSCRIBE]) {
+                username: String!
+                name: String
+            }
+            type Agreement {
+                id: Int!
+                name: String
+                owner: User @relationship(type: "OWNED_BY", direction: OUT)
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                subscriptions: plugin,
+            } as any,
+        });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+              subscription: Subscription
+            }
+
+            type Agreement {
+              id: Int!
+              name: String
+              owner(directed: Boolean = true, options: UserOptions, where: UserWhere): User
+              ownerAggregate(directed: Boolean = true, where: UserWhere): AgreementUserOwnerAggregationSelection
+              ownerConnection(after: String, directed: Boolean = true, first: Int, sort: [AgreementOwnerConnectionSort!], where: AgreementOwnerConnectionWhere): AgreementOwnerConnection!
+            }
+
+            type AgreementAggregateSelection {
+              count: Int!
+              id: IntAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNullable!
+            }
+
+            input AgreementConnectInput {
+              owner: AgreementOwnerConnectFieldInput
+            }
+
+            input AgreementCreateInput {
+              id: Int!
+              name: String
+              owner: AgreementOwnerFieldInput
+            }
+
+            type AgreementCreatedEvent {
+              createdAgreement: AgreementEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input AgreementDeleteInput {
+              owner: AgreementOwnerDeleteFieldInput
+            }
+
+            type AgreementDeletedEvent {
+              deletedAgreement: AgreementEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input AgreementDisconnectInput {
+              owner: AgreementOwnerDisconnectFieldInput
+            }
+
+            type AgreementEdge {
+              cursor: String!
+              node: Agreement!
+            }
+
+            type AgreementEventPayload {
+              id: Int!
+              name: String
+            }
+
+            input AgreementOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more AgreementSort objects to sort Agreements by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [AgreementSort!]
+            }
+
+            input AgreementOwnerAggregateInput {
+              AND: [AgreementOwnerAggregateInput!]
+              NOT: AgreementOwnerAggregateInput
+              OR: [AgreementOwnerAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: AgreementOwnerNodeAggregationWhereInput
+            }
+
+            input AgreementOwnerConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: UserConnectWhere
+            }
+
+            type AgreementOwnerConnection {
+              edges: [AgreementOwnerRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input AgreementOwnerConnectionSort {
+              node: UserSort
+            }
+
+            input AgreementOwnerConnectionWhere {
+              AND: [AgreementOwnerConnectionWhere!]
+              NOT: AgreementOwnerConnectionWhere
+              OR: [AgreementOwnerConnectionWhere!]
+              node: UserWhere
+              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input AgreementOwnerCreateFieldInput {
+              node: UserCreateInput!
+            }
+
+            input AgreementOwnerDeleteFieldInput {
+              where: AgreementOwnerConnectionWhere
+            }
+
+            input AgreementOwnerDisconnectFieldInput {
+              where: AgreementOwnerConnectionWhere
+            }
+
+            input AgreementOwnerFieldInput {
+              connect: AgreementOwnerConnectFieldInput
+              create: AgreementOwnerCreateFieldInput
+            }
+
+            input AgreementOwnerNodeAggregationWhereInput {
+              AND: [AgreementOwnerNodeAggregationWhereInput!]
+              NOT: AgreementOwnerNodeAggregationWhereInput
+              OR: [AgreementOwnerNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LENGTH_EQUAL: Float
+              name_AVERAGE_LENGTH_GT: Float
+              name_AVERAGE_LENGTH_GTE: Float
+              name_AVERAGE_LENGTH_LT: Float
+              name_AVERAGE_LENGTH_LTE: Float
+              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LENGTH_EQUAL: Int
+              name_LONGEST_LENGTH_GT: Int
+              name_LONGEST_LENGTH_GTE: Int
+              name_LONGEST_LENGTH_LT: Int
+              name_LONGEST_LENGTH_LTE: Int
+              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int
+              name_SHORTEST_LENGTH_GT: Int
+              name_SHORTEST_LENGTH_GTE: Int
+              name_SHORTEST_LENGTH_LT: Int
+              name_SHORTEST_LENGTH_LTE: Int
+              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              username_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              username_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              username_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              username_AVERAGE_LENGTH_EQUAL: Float
+              username_AVERAGE_LENGTH_GT: Float
+              username_AVERAGE_LENGTH_GTE: Float
+              username_AVERAGE_LENGTH_LT: Float
+              username_AVERAGE_LENGTH_LTE: Float
+              username_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              username_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              username_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              username_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              username_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              username_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              username_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              username_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              username_LONGEST_LENGTH_EQUAL: Int
+              username_LONGEST_LENGTH_GT: Int
+              username_LONGEST_LENGTH_GTE: Int
+              username_LONGEST_LENGTH_LT: Int
+              username_LONGEST_LENGTH_LTE: Int
+              username_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              username_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              username_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              username_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              username_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              username_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              username_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              username_SHORTEST_LENGTH_EQUAL: Int
+              username_SHORTEST_LENGTH_GT: Int
+              username_SHORTEST_LENGTH_GTE: Int
+              username_SHORTEST_LENGTH_LT: Int
+              username_SHORTEST_LENGTH_LTE: Int
+              username_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              username_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+            }
+
+            type AgreementOwnerRelationship {
+              cursor: String!
+              node: User!
+            }
+
+            input AgreementOwnerUpdateConnectionInput {
+              node: UserUpdateInput
+            }
+
+            input AgreementOwnerUpdateFieldInput {
+              connect: AgreementOwnerConnectFieldInput
+              create: AgreementOwnerCreateFieldInput
+              delete: AgreementOwnerDeleteFieldInput
+              disconnect: AgreementOwnerDisconnectFieldInput
+              update: AgreementOwnerUpdateConnectionInput
+              where: AgreementOwnerConnectionWhere
+            }
+
+            input AgreementRelationInput {
+              owner: AgreementOwnerCreateFieldInput
+            }
+
+            type AgreementRelationshipCreatedEvent {
+              agreement: AgreementEventPayload!
+              event: EventType!
+              relationshipFieldName: String!
+              timestamp: Float!
+            }
+
+            input AgreementRelationshipCreatedSubscriptionWhere {
+              agreement: AgreementSubscriptionWhere
+            }
+
+            type AgreementRelationshipDeletedEvent {
+              agreement: AgreementEventPayload!
+              event: EventType!
+              relationshipFieldName: String!
+              timestamp: Float!
+            }
+
+            input AgreementRelationshipDeletedSubscriptionWhere {
+              agreement: AgreementSubscriptionWhere
+            }
+
+            \\"\\"\\"
+            Fields to sort Agreements by. The order in which sorts are applied is not guaranteed when specifying many fields in one AgreementSort object.
+            \\"\\"\\"
+            input AgreementSort {
+              id: SortDirection
+              name: SortDirection
+            }
+
+            input AgreementSubscriptionWhere {
+              AND: [AgreementSubscriptionWhere!]
+              NOT: AgreementSubscriptionWhere
+              OR: [AgreementSubscriptionWhere!]
+              id: Int
+              id_GT: Int
+              id_GTE: Int
+              id_IN: [Int]
+              id_LT: Int
+              id_LTE: Int
+              id_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+            }
+
+            input AgreementUpdateInput {
+              id: Int
+              id_DECREMENT: Int
+              id_INCREMENT: Int
+              name: String
+              owner: AgreementOwnerUpdateFieldInput
+            }
+
+            type AgreementUpdatedEvent {
+              event: EventType!
+              previousState: AgreementEventPayload!
+              timestamp: Float!
+              updatedAgreement: AgreementEventPayload!
+            }
+
+            type AgreementUserOwnerAggregationSelection {
+              count: Int!
+              node: AgreementUserOwnerNodeAggregateSelection
+            }
+
+            type AgreementUserOwnerNodeAggregateSelection {
+              name: StringAggregateSelectionNullable!
+              username: StringAggregateSelectionNonNullable!
+            }
+
+            input AgreementWhere {
+              AND: [AgreementWhere!]
+              NOT: AgreementWhere
+              OR: [AgreementWhere!]
+              id: Int
+              id_GT: Int
+              id_GTE: Int
+              id_IN: [Int!]
+              id_LT: Int
+              id_LTE: Int
+              id_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+              owner: UserWhere @deprecated(reason: \\"Use \`owner_SOME\` instead.\\")
+              ownerAggregate: AgreementOwnerAggregateInput
+              ownerConnection: AgreementOwnerConnectionWhere
+              ownerConnection_NOT: AgreementOwnerConnectionWhere @deprecated(reason: \\"Use \`ownerConnection_NONE\` instead.\\")
+              owner_NOT: UserWhere @deprecated(reason: \\"Use \`owner_NONE\` instead.\\")
+            }
+
+            type AgreementsConnection {
+              edges: [AgreementEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type CreateAgreementsMutationResponse {
+              agreements: [Agreement!]!
+              info: CreateInfo!
+            }
+
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            enum EventType {
+              CREATE
+              CREATE_RELATIONSHIP
+              DELETE
+              DELETE_RELATIONSHIP
+              UPDATE
+            }
+
+            type IntAggregateSelectionNonNullable {
+              average: Float!
+              max: Int!
+              min: Int!
+              sum: Int!
+            }
+
+            type Mutation {
+              createAgreements(input: [AgreementCreateInput!]!): CreateAgreementsMutationResponse!
+              deleteAgreements(delete: AgreementDeleteInput, where: AgreementWhere): DeleteInfo!
+              updateAgreements(connect: AgreementConnectInput, create: AgreementRelationInput, delete: AgreementDeleteInput, disconnect: AgreementDisconnectInput, update: AgreementUpdateInput, where: AgreementWhere): UpdateAgreementsMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type Query {
+              agreements(options: AgreementOptions, where: AgreementWhere): [Agreement!]!
+              agreementsAggregate(where: AgreementWhere): AgreementAggregateSelection!
+              agreementsConnection(after: String, first: Int, sort: [AgreementSort], where: AgreementWhere): AgreementsConnection!
+              users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+            }
+
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
+            }
+
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
+            }
+
+            type Subscription {
+              agreementCreated(where: AgreementSubscriptionWhere): AgreementCreatedEvent!
+              agreementDeleted(where: AgreementSubscriptionWhere): AgreementDeletedEvent!
+              agreementRelationshipCreated(where: AgreementRelationshipCreatedSubscriptionWhere): AgreementRelationshipCreatedEvent!
+              agreementRelationshipDeleted(where: AgreementRelationshipDeletedSubscriptionWhere): AgreementRelationshipDeletedEvent!
+              agreementUpdated(where: AgreementSubscriptionWhere): AgreementUpdatedEvent!
+            }
+
+            type UpdateAgreementsMutationResponse {
+              agreements: [Agreement!]!
+              info: UpdateInfo!
+            }
+
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type User {
+              name: String
+              username: String!
+            }
+
+            type UserAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNullable!
+              username: StringAggregateSelectionNonNullable!
+            }
+
+            input UserConnectWhere {
+              node: UserWhere!
+            }
+
+            input UserCreateInput {
+              name: String
+              username: String!
+            }
+
+            type UserEdge {
+              cursor: String!
+              node: User!
+            }
+
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
+            input UserSort {
+              name: SortDirection
+              username: SortDirection
+            }
+
+            input UserUpdateInput {
+              name: String
+              username: String
+            }
+
+            input UserWhere {
+              AND: [UserWhere!]
+              NOT: UserWhere
+              OR: [UserWhere!]
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+              username: String
+              username_CONTAINS: String
+              username_ENDS_WITH: String
+              username_IN: [String!]
+              username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_STARTS_WITH: String
+            }
+
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }"
+        `);
+    });
+
+    test("Type with relationship to a subscriptions excluded type + Union type", async () => {
+        const typeDefs = gql`
+            type Movie {
+                id: ID
+                actorCount: Int
+                averageRating: Float
+                isActive: Boolean
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+
+            union Actor = Star | Person
+
+            type Star @exclude(operations: [SUBSCRIBE]) {
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+            type Person {
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                subscriptions: plugin,
+            } as any,
+        });
+
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+              subscription: Subscription
+            }
+
+            union Actor = Person | Star
+
+            input ActorWhere {
+              Person: PersonWhere
+              Star: StarWhere
+            }
+
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
+
+            type CreatePeopleMutationResponse {
+              info: CreateInfo!
+              people: [Person!]!
+            }
+
+            type CreateStarsMutationResponse {
+              info: CreateInfo!
+              stars: [Star!]!
+            }
+
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            enum EventType {
+              CREATE
+              CREATE_RELATIONSHIP
+              DELETE
+              DELETE_RELATIONSHIP
+              UPDATE
+            }
+
+            type FloatAggregateSelectionNullable {
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
+            }
+
+            type IDAggregateSelectionNullable {
+              longest: ID
+              shortest: ID
+            }
+
+            type IntAggregateSelectionNullable {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
+            type Movie {
+              actorCount: Int
+              actors(directed: Boolean = true, options: QueryOptions, where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+              averageRating: Float
+              id: ID
+              isActive: Boolean
+            }
+
+            input MovieActorsConnectInput {
+              Person: [MovieActorsPersonConnectFieldInput!]
+              Star: [MovieActorsStarConnectFieldInput!]
+            }
+
+            type MovieActorsConnection {
+              edges: [MovieActorsRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input MovieActorsConnectionWhere {
+              Person: MovieActorsPersonConnectionWhere
+              Star: MovieActorsStarConnectionWhere
+            }
+
+            input MovieActorsCreateFieldInput {
+              Person: [MovieActorsPersonCreateFieldInput!]
+              Star: [MovieActorsStarCreateFieldInput!]
+            }
+
+            input MovieActorsCreateInput {
+              Person: MovieActorsPersonFieldInput
+              Star: MovieActorsStarFieldInput
+            }
+
+            input MovieActorsDeleteInput {
+              Person: [MovieActorsPersonDeleteFieldInput!]
+              Star: [MovieActorsStarDeleteFieldInput!]
+            }
+
+            input MovieActorsDisconnectInput {
+              Person: [MovieActorsPersonDisconnectFieldInput!]
+              Star: [MovieActorsStarDisconnectFieldInput!]
+            }
+
+            input MovieActorsPersonConnectFieldInput {
+              connect: [PersonConnectInput!]
+              where: PersonConnectWhere
+            }
+
+            input MovieActorsPersonConnectionWhere {
+              AND: [MovieActorsPersonConnectionWhere!]
+              NOT: MovieActorsPersonConnectionWhere
+              OR: [MovieActorsPersonConnectionWhere!]
+              node: PersonWhere
+              node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input MovieActorsPersonCreateFieldInput {
+              node: PersonCreateInput!
+            }
+
+            input MovieActorsPersonDeleteFieldInput {
+              delete: PersonDeleteInput
+              where: MovieActorsPersonConnectionWhere
+            }
+
+            input MovieActorsPersonDisconnectFieldInput {
+              disconnect: PersonDisconnectInput
+              where: MovieActorsPersonConnectionWhere
+            }
+
+            input MovieActorsPersonFieldInput {
+              connect: [MovieActorsPersonConnectFieldInput!]
+              create: [MovieActorsPersonCreateFieldInput!]
+            }
+
+            input MovieActorsPersonUpdateConnectionInput {
+              node: PersonUpdateInput
+            }
+
+            input MovieActorsPersonUpdateFieldInput {
+              connect: [MovieActorsPersonConnectFieldInput!]
+              create: [MovieActorsPersonCreateFieldInput!]
+              delete: [MovieActorsPersonDeleteFieldInput!]
+              disconnect: [MovieActorsPersonDisconnectFieldInput!]
+              update: MovieActorsPersonUpdateConnectionInput
+              where: MovieActorsPersonConnectionWhere
+            }
+
+            type MovieActorsRelationship {
+              cursor: String!
+              node: Actor!
+            }
+
+            input MovieActorsStarConnectFieldInput {
+              connect: [StarConnectInput!]
+              where: StarConnectWhere
+            }
+
+            input MovieActorsStarConnectionWhere {
+              AND: [MovieActorsStarConnectionWhere!]
+              NOT: MovieActorsStarConnectionWhere
+              OR: [MovieActorsStarConnectionWhere!]
+              node: StarWhere
+              node_NOT: StarWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input MovieActorsStarCreateFieldInput {
+              node: StarCreateInput!
+            }
+
+            input MovieActorsStarDeleteFieldInput {
+              delete: StarDeleteInput
+              where: MovieActorsStarConnectionWhere
+            }
+
+            input MovieActorsStarDisconnectFieldInput {
+              disconnect: StarDisconnectInput
+              where: MovieActorsStarConnectionWhere
+            }
+
+            input MovieActorsStarFieldInput {
+              connect: [MovieActorsStarConnectFieldInput!]
+              create: [MovieActorsStarCreateFieldInput!]
+            }
+
+            input MovieActorsStarUpdateConnectionInput {
+              node: StarUpdateInput
+            }
+
+            input MovieActorsStarUpdateFieldInput {
+              connect: [MovieActorsStarConnectFieldInput!]
+              create: [MovieActorsStarCreateFieldInput!]
+              delete: [MovieActorsStarDeleteFieldInput!]
+              disconnect: [MovieActorsStarDisconnectFieldInput!]
+              update: MovieActorsStarUpdateConnectionInput
+              where: MovieActorsStarConnectionWhere
+            }
+
+            input MovieActorsUpdateInput {
+              Person: [MovieActorsPersonUpdateFieldInput!]
+              Star: [MovieActorsStarUpdateFieldInput!]
+            }
+
+            type MovieAggregateSelection {
+              actorCount: IntAggregateSelectionNullable!
+              averageRating: FloatAggregateSelectionNullable!
+              count: Int!
+              id: IDAggregateSelectionNullable!
+            }
+
+            input MovieConnectInput {
+              actors: MovieActorsConnectInput
+            }
+
+            input MovieConnectWhere {
+              node: MovieWhere!
+            }
+
+            input MovieCreateInput {
+              actorCount: Int
+              actors: MovieActorsCreateInput
+              averageRating: Float
+              id: ID
+              isActive: Boolean
+            }
+
+            type MovieCreatedEvent {
+              createdMovie: MovieEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input MovieDeleteInput {
+              actors: MovieActorsDeleteInput
+            }
+
+            type MovieDeletedEvent {
+              deletedMovie: MovieEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input MovieDisconnectInput {
+              actors: MovieActorsDisconnectInput
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
+            type MovieEventPayload {
+              actorCount: Int
+              averageRating: Float
+              id: ID
+              isActive: Boolean
+            }
+
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
+            }
+
+            input MovieRelationInput {
+              actors: MovieActorsCreateFieldInput
+            }
+
+            type MovieRelationshipCreatedEvent {
+              event: EventType!
+              movie: MovieEventPayload!
+              relationshipFieldName: String!
+              timestamp: Float!
+            }
+
+            input MovieRelationshipCreatedSubscriptionWhere {
+              movie: MovieSubscriptionWhere
+            }
+
+            type MovieRelationshipDeletedEvent {
+              event: EventType!
+              movie: MovieEventPayload!
+              relationshipFieldName: String!
+              timestamp: Float!
+            }
+
+            input MovieRelationshipDeletedSubscriptionWhere {
+              movie: MovieSubscriptionWhere
+            }
+
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
+            input MovieSort {
+              actorCount: SortDirection
+              averageRating: SortDirection
+              id: SortDirection
+              isActive: SortDirection
+            }
+
+            input MovieSubscriptionWhere {
+              AND: [MovieSubscriptionWhere!]
+              NOT: MovieSubscriptionWhere
+              OR: [MovieSubscriptionWhere!]
+              actorCount: Int
+              actorCount_GT: Int
+              actorCount_GTE: Int
+              actorCount_IN: [Int]
+              actorCount_LT: Int
+              actorCount_LTE: Int
+              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRating: Float
+              averageRating_GT: Float
+              averageRating_GTE: Float
+              averageRating_IN: [Float]
+              averageRating_LT: Float
+              averageRating_LTE: Float
+              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              isActive: Boolean
+              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input MovieUpdateInput {
+              actorCount: Int
+              actorCount_DECREMENT: Int
+              actorCount_INCREMENT: Int
+              actors: MovieActorsUpdateInput
+              averageRating: Float
+              averageRating_ADD: Float
+              averageRating_DIVIDE: Float
+              averageRating_MULTIPLY: Float
+              averageRating_SUBTRACT: Float
+              id: ID
+              isActive: Boolean
+            }
+
+            type MovieUpdatedEvent {
+              event: EventType!
+              previousState: MovieEventPayload!
+              timestamp: Float!
+              updatedMovie: MovieEventPayload!
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              actorCount: Int
+              actorCount_GT: Int
+              actorCount_GTE: Int
+              actorCount_IN: [Int]
+              actorCount_LT: Int
+              actorCount_LTE: Int
+              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              actorsConnection_ALL: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere
+              averageRating: Float
+              averageRating_GT: Float
+              averageRating_GTE: Float
+              averageRating_IN: [Float]
+              averageRating_LT: Float
+              averageRating_LTE: Float
+              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              isActive: Boolean
+              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Mutation {
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
+              createStars(input: [StarCreateInput!]!): CreateStarsMutationResponse!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+              deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
+              deleteStars(delete: StarDeleteInput, where: StarWhere): DeleteInfo!
+              updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updatePeople(connect: PersonConnectInput, create: PersonRelationInput, delete: PersonDeleteInput, disconnect: PersonDisconnectInput, update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
+              updateStars(connect: StarConnectInput, create: StarRelationInput, delete: StarDeleteInput, disconnect: StarDisconnectInput, update: StarUpdateInput, where: StarWhere): UpdateStarsMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type PeopleConnection {
+              edges: [PersonEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Person {
+              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(directed: Boolean = true, where: MovieWhere): PersonMovieMoviesAggregationSelection
+              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonMoviesConnectionSort!], where: PersonMoviesConnectionWhere): PersonMoviesConnection!
+            }
+
+            type PersonAggregateSelection {
+              count: Int!
+            }
+
+            input PersonConnectInput {
+              movies: [PersonMoviesConnectFieldInput!]
+            }
+
+            input PersonConnectWhere {
+              node: PersonWhere!
+            }
+
+            type PersonConnectedRelationships {
+              movies: PersonMoviesConnectedRelationship
+            }
+
+            input PersonCreateInput {
+              movies: PersonMoviesFieldInput
+            }
+
+            type PersonCreatedEvent {
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input PersonDeleteInput {
+              movies: [PersonMoviesDeleteFieldInput!]
+            }
+
+            type PersonDeletedEvent {
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input PersonDisconnectInput {
+              movies: [PersonMoviesDisconnectFieldInput!]
+            }
+
+            type PersonEdge {
+              cursor: String!
+              node: Person!
+            }
+
+            type PersonMovieMoviesAggregationSelection {
+              count: Int!
+              node: PersonMovieMoviesNodeAggregateSelection
+            }
+
+            type PersonMovieMoviesNodeAggregateSelection {
+              actorCount: IntAggregateSelectionNullable!
+              averageRating: FloatAggregateSelectionNullable!
+              id: IDAggregateSelectionNullable!
+            }
+
+            input PersonMoviesAggregateInput {
+              AND: [PersonMoviesAggregateInput!]
+              NOT: PersonMoviesAggregateInput
+              OR: [PersonMoviesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: PersonMoviesNodeAggregationWhereInput
+            }
+
+            input PersonMoviesConnectFieldInput {
+              connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: MovieConnectWhere
+            }
+
+            type PersonMoviesConnectedRelationship {
+              node: MovieEventPayload!
+            }
+
+            type PersonMoviesConnection {
+              edges: [PersonMoviesRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input PersonMoviesConnectionSort {
+              node: MovieSort
+            }
+
+            input PersonMoviesConnectionWhere {
+              AND: [PersonMoviesConnectionWhere!]
+              NOT: PersonMoviesConnectionWhere
+              OR: [PersonMoviesConnectionWhere!]
+              node: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input PersonMoviesCreateFieldInput {
+              node: MovieCreateInput!
+            }
+
+            input PersonMoviesDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: PersonMoviesConnectionWhere
+            }
+
+            input PersonMoviesDisconnectFieldInput {
+              disconnect: MovieDisconnectInput
+              where: PersonMoviesConnectionWhere
+            }
+
+            input PersonMoviesFieldInput {
+              connect: [PersonMoviesConnectFieldInput!]
+              create: [PersonMoviesCreateFieldInput!]
+            }
+
+            input PersonMoviesNodeAggregationWhereInput {
+              AND: [PersonMoviesNodeAggregationWhereInput!]
+              NOT: PersonMoviesNodeAggregationWhereInput
+              OR: [PersonMoviesNodeAggregationWhereInput!]
+              actorCount_AVERAGE_EQUAL: Float
+              actorCount_AVERAGE_GT: Float
+              actorCount_AVERAGE_GTE: Float
+              actorCount_AVERAGE_LT: Float
+              actorCount_AVERAGE_LTE: Float
+              actorCount_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_MAX_EQUAL: Int
+              actorCount_MAX_GT: Int
+              actorCount_MAX_GTE: Int
+              actorCount_MAX_LT: Int
+              actorCount_MAX_LTE: Int
+              actorCount_MIN_EQUAL: Int
+              actorCount_MIN_GT: Int
+              actorCount_MIN_GTE: Int
+              actorCount_MIN_LT: Int
+              actorCount_MIN_LTE: Int
+              actorCount_SUM_EQUAL: Int
+              actorCount_SUM_GT: Int
+              actorCount_SUM_GTE: Int
+              actorCount_SUM_LT: Int
+              actorCount_SUM_LTE: Int
+              averageRating_AVERAGE_EQUAL: Float
+              averageRating_AVERAGE_GT: Float
+              averageRating_AVERAGE_GTE: Float
+              averageRating_AVERAGE_LT: Float
+              averageRating_AVERAGE_LTE: Float
+              averageRating_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_MAX_EQUAL: Float
+              averageRating_MAX_GT: Float
+              averageRating_MAX_GTE: Float
+              averageRating_MAX_LT: Float
+              averageRating_MAX_LTE: Float
+              averageRating_MIN_EQUAL: Float
+              averageRating_MIN_GT: Float
+              averageRating_MIN_GTE: Float
+              averageRating_MIN_LT: Float
+              averageRating_MIN_LTE: Float
+              averageRating_SUM_EQUAL: Float
+              averageRating_SUM_GT: Float
+              averageRating_SUM_GTE: Float
+              averageRating_SUM_LT: Float
+              averageRating_SUM_LTE: Float
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+            }
+
+            type PersonMoviesRelationship {
+              cursor: String!
+              node: Movie!
+            }
+
+            input PersonMoviesRelationshipSubscriptionWhere {
+              node: MovieSubscriptionWhere
+            }
+
+            input PersonMoviesUpdateConnectionInput {
+              node: MovieUpdateInput
+            }
+
+            input PersonMoviesUpdateFieldInput {
+              connect: [PersonMoviesConnectFieldInput!]
+              create: [PersonMoviesCreateFieldInput!]
+              delete: [PersonMoviesDeleteFieldInput!]
+              disconnect: [PersonMoviesDisconnectFieldInput!]
+              update: PersonMoviesUpdateConnectionInput
+              where: PersonMoviesConnectionWhere
+            }
+
+            input PersonOptions {
+              limit: Int
+              offset: Int
+            }
+
+            input PersonRelationInput {
+              movies: [PersonMoviesCreateFieldInput!]
+            }
+
+            type PersonRelationshipCreatedEvent {
+              createdRelationship: PersonConnectedRelationships!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input PersonRelationshipCreatedSubscriptionWhere {
+              createdRelationship: PersonRelationshipsSubscriptionWhere
+            }
+
+            type PersonRelationshipDeletedEvent {
+              deletedRelationship: PersonConnectedRelationships!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input PersonRelationshipDeletedSubscriptionWhere {
+              deletedRelationship: PersonRelationshipsSubscriptionWhere
+            }
+
+            input PersonRelationshipsSubscriptionWhere {
+              movies: PersonMoviesRelationshipSubscriptionWhere
+            }
+
+            input PersonUpdateInput {
+              movies: [PersonMoviesUpdateFieldInput!]
+            }
+
+            type PersonUpdatedEvent {
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input PersonWhere {
+              AND: [PersonWhere!]
+              NOT: PersonWhere
+              OR: [PersonWhere!]
+              movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
+              moviesAggregate: PersonMoviesAggregateInput
+              moviesConnection: PersonMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              moviesConnection_ALL: PersonMoviesConnectionWhere
+              moviesConnection_NONE: PersonMoviesConnectionWhere
+              moviesConnection_NOT: PersonMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              moviesConnection_SINGLE: PersonMoviesConnectionWhere
+              moviesConnection_SOME: PersonMoviesConnectionWhere
+              \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
+              movies_ALL: MovieWhere
+              \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
+              movies_NONE: MovieWhere
+              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
+              \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
+              movies_SINGLE: MovieWhere
+              \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
+              movies_SOME: MovieWhere
+            }
+
+            type Query {
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              people(options: PersonOptions, where: PersonWhere): [Person!]!
+              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+              peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
+              stars(options: StarOptions, where: StarWhere): [Star!]!
+              starsAggregate(where: StarWhere): StarAggregateSelection!
+              starsConnection(after: String, first: Int, where: StarWhere): StarsConnection!
+            }
+
+            input QueryOptions {
+              limit: Int
+              offset: Int
+            }
+
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type Star {
+              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(directed: Boolean = true, where: MovieWhere): StarMovieMoviesAggregationSelection
+              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [StarMoviesConnectionSort!], where: StarMoviesConnectionWhere): StarMoviesConnection!
+            }
+
+            type StarAggregateSelection {
+              count: Int!
+            }
+
+            input StarConnectInput {
+              movies: [StarMoviesConnectFieldInput!]
+            }
+
+            input StarConnectWhere {
+              node: StarWhere!
+            }
+
+            input StarCreateInput {
+              movies: StarMoviesFieldInput
+            }
+
+            input StarDeleteInput {
+              movies: [StarMoviesDeleteFieldInput!]
+            }
+
+            input StarDisconnectInput {
+              movies: [StarMoviesDisconnectFieldInput!]
+            }
+
+            type StarEdge {
+              cursor: String!
+              node: Star!
+            }
+
+            type StarMovieMoviesAggregationSelection {
+              count: Int!
+              node: StarMovieMoviesNodeAggregateSelection
+            }
+
+            type StarMovieMoviesNodeAggregateSelection {
+              actorCount: IntAggregateSelectionNullable!
+              averageRating: FloatAggregateSelectionNullable!
+              id: IDAggregateSelectionNullable!
+            }
+
+            input StarMoviesAggregateInput {
+              AND: [StarMoviesAggregateInput!]
+              NOT: StarMoviesAggregateInput
+              OR: [StarMoviesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: StarMoviesNodeAggregationWhereInput
+            }
+
+            input StarMoviesConnectFieldInput {
+              connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: MovieConnectWhere
+            }
+
+            type StarMoviesConnection {
+              edges: [StarMoviesRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input StarMoviesConnectionSort {
+              node: MovieSort
+            }
+
+            input StarMoviesConnectionWhere {
+              AND: [StarMoviesConnectionWhere!]
+              NOT: StarMoviesConnectionWhere
+              OR: [StarMoviesConnectionWhere!]
+              node: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input StarMoviesCreateFieldInput {
+              node: MovieCreateInput!
+            }
+
+            input StarMoviesDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: StarMoviesConnectionWhere
+            }
+
+            input StarMoviesDisconnectFieldInput {
+              disconnect: MovieDisconnectInput
+              where: StarMoviesConnectionWhere
+            }
+
+            input StarMoviesFieldInput {
+              connect: [StarMoviesConnectFieldInput!]
+              create: [StarMoviesCreateFieldInput!]
+            }
+
+            input StarMoviesNodeAggregationWhereInput {
+              AND: [StarMoviesNodeAggregationWhereInput!]
+              NOT: StarMoviesNodeAggregationWhereInput
+              OR: [StarMoviesNodeAggregationWhereInput!]
+              actorCount_AVERAGE_EQUAL: Float
+              actorCount_AVERAGE_GT: Float
+              actorCount_AVERAGE_GTE: Float
+              actorCount_AVERAGE_LT: Float
+              actorCount_AVERAGE_LTE: Float
+              actorCount_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              actorCount_MAX_EQUAL: Int
+              actorCount_MAX_GT: Int
+              actorCount_MAX_GTE: Int
+              actorCount_MAX_LT: Int
+              actorCount_MAX_LTE: Int
+              actorCount_MIN_EQUAL: Int
+              actorCount_MIN_GT: Int
+              actorCount_MIN_GTE: Int
+              actorCount_MIN_LT: Int
+              actorCount_MIN_LTE: Int
+              actorCount_SUM_EQUAL: Int
+              actorCount_SUM_GT: Int
+              actorCount_SUM_GTE: Int
+              actorCount_SUM_LT: Int
+              actorCount_SUM_LTE: Int
+              averageRating_AVERAGE_EQUAL: Float
+              averageRating_AVERAGE_GT: Float
+              averageRating_AVERAGE_GTE: Float
+              averageRating_AVERAGE_LT: Float
+              averageRating_AVERAGE_LTE: Float
+              averageRating_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              averageRating_MAX_EQUAL: Float
+              averageRating_MAX_GT: Float
+              averageRating_MAX_GTE: Float
+              averageRating_MAX_LT: Float
+              averageRating_MAX_LTE: Float
+              averageRating_MIN_EQUAL: Float
+              averageRating_MIN_GT: Float
+              averageRating_MIN_GTE: Float
+              averageRating_MIN_LT: Float
+              averageRating_MIN_LTE: Float
+              averageRating_SUM_EQUAL: Float
+              averageRating_SUM_GT: Float
+              averageRating_SUM_GTE: Float
+              averageRating_SUM_LT: Float
+              averageRating_SUM_LTE: Float
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+            }
+
+            type StarMoviesRelationship {
+              cursor: String!
+              node: Movie!
+            }
+
+            input StarMoviesUpdateConnectionInput {
+              node: MovieUpdateInput
+            }
+
+            input StarMoviesUpdateFieldInput {
+              connect: [StarMoviesConnectFieldInput!]
+              create: [StarMoviesCreateFieldInput!]
+              delete: [StarMoviesDeleteFieldInput!]
+              disconnect: [StarMoviesDisconnectFieldInput!]
+              update: StarMoviesUpdateConnectionInput
+              where: StarMoviesConnectionWhere
+            }
+
+            input StarOptions {
+              limit: Int
+              offset: Int
+            }
+
+            input StarRelationInput {
+              movies: [StarMoviesCreateFieldInput!]
+            }
+
+            input StarUpdateInput {
+              movies: [StarMoviesUpdateFieldInput!]
+            }
+
+            input StarWhere {
+              AND: [StarWhere!]
+              NOT: StarWhere
+              OR: [StarWhere!]
+              movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
+              moviesAggregate: StarMoviesAggregateInput
+              moviesConnection: StarMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              moviesConnection_ALL: StarMoviesConnectionWhere
+              moviesConnection_NONE: StarMoviesConnectionWhere
+              moviesConnection_NOT: StarMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              moviesConnection_SINGLE: StarMoviesConnectionWhere
+              moviesConnection_SOME: StarMoviesConnectionWhere
+              \\"\\"\\"Return Stars where all of the related Movies match this filter\\"\\"\\"
+              movies_ALL: MovieWhere
+              \\"\\"\\"Return Stars where none of the related Movies match this filter\\"\\"\\"
+              movies_NONE: MovieWhere
+              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
+              \\"\\"\\"Return Stars where one of the related Movies match this filter\\"\\"\\"
+              movies_SINGLE: MovieWhere
+              \\"\\"\\"Return Stars where some of the related Movies match this filter\\"\\"\\"
+              movies_SOME: MovieWhere
+            }
+
+            type StarsConnection {
+              edges: [StarEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Subscription {
+              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
+              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
+              movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
+              movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
+              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
+              personCreated: PersonCreatedEvent!
+              personDeleted: PersonDeletedEvent!
+              personRelationshipCreated(where: PersonRelationshipCreatedSubscriptionWhere): PersonRelationshipCreatedEvent!
+              personRelationshipDeleted(where: PersonRelationshipDeletedSubscriptionWhere): PersonRelationshipDeletedEvent!
+              personUpdated: PersonUpdatedEvent!
+            }
+
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }
+
+            type UpdatePeopleMutationResponse {
+              info: UpdateInfo!
+              people: [Person!]!
+            }
+
+            type UpdateStarsMutationResponse {
+              info: UpdateInfo!
+              stars: [Star!]!
+            }"
+        `);
+    });
+
+    test("Type with relationship to a subscriptions excluded type + Interface type", async () => {
+        const typeDefs = gql`
+            type Movie implements Production @exclude(operations: [SUBSCRIBE]) {
+                title: String!
+                id: ID @unique
+                director: Creature!
+            }
+
+            type Series implements Production {
+                title: String!
+                episode: Int!
+                id: ID @unique
+                director: Creature!
+            }
+
+            interface Production {
+                #title: String!
+                id: ID
+                director: Creature! @relationship(type: "DIRECTED", direction: IN)
+            }
+
+            type Person implements Creature {
+                #name: String!
+                #id: ID @unique
+                movies: Production!
+            }
+
+            interface Creature {
+                #name: String!
+                #id: ID
+                movies: Production! @relationship(type: "DIRECTED", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                subscriptions: plugin,
+            } as any,
+        });
+
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+              subscription: Subscription
+            }
+
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
+
+            type CreatePeopleMutationResponse {
+              info: CreateInfo!
+              people: [Person!]!
+            }
+
+            type CreateSeriesMutationResponse {
+              info: CreateInfo!
+              series: [Series!]!
+            }
+
+            interface Creature {
+              movies(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): Production!
+              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
+            }
+
+            input CreatureConnectInput {
+              _on: CreatureImplementationsConnectInput
+              movies: CreatureMoviesConnectFieldInput
+            }
+
+            input CreatureConnectWhere {
+              node: CreatureWhere!
+            }
+
+            input CreatureCreateInput {
+              Person: PersonCreateInput
+            }
+
+            input CreatureDeleteInput {
+              _on: CreatureImplementationsDeleteInput
+              movies: CreatureMoviesDeleteFieldInput
+            }
+
+            input CreatureDisconnectInput {
+              _on: CreatureImplementationsDisconnectInput
+              movies: CreatureMoviesDisconnectFieldInput
+            }
+
+            interface CreatureEventPayload {
+              movies: Production!
+              moviesConnection: CreatureMoviesConnection!
+            }
+
+            input CreatureImplementationsConnectInput {
+              Person: [PersonConnectInput!]
+            }
+
+            input CreatureImplementationsDeleteInput {
+              Person: [PersonDeleteInput!]
+            }
+
+            input CreatureImplementationsDisconnectInput {
+              Person: [PersonDisconnectInput!]
+            }
+
+            input CreatureImplementationsUpdateInput {
+              Person: PersonUpdateInput
+            }
+
+            input CreatureImplementationsWhere {
+              Person: PersonWhere
+            }
+
+            input CreatureMoviesConnectFieldInput {
+              connect: ProductionConnectInput
+              where: ProductionConnectWhere
+            }
+
+            type CreatureMoviesConnection {
+              edges: [CreatureMoviesRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input CreatureMoviesConnectionSort {
+              node: ProductionSort
+            }
+
+            input CreatureMoviesConnectionWhere {
+              AND: [CreatureMoviesConnectionWhere!]
+              NOT: CreatureMoviesConnectionWhere
+              OR: [CreatureMoviesConnectionWhere!]
+              node: ProductionWhere
+              node_NOT: ProductionWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input CreatureMoviesCreateFieldInput {
+              node: ProductionCreateInput!
+            }
+
+            input CreatureMoviesDeleteFieldInput {
+              delete: ProductionDeleteInput
+              where: CreatureMoviesConnectionWhere
+            }
+
+            input CreatureMoviesDisconnectFieldInput {
+              disconnect: ProductionDisconnectInput
+              where: CreatureMoviesConnectionWhere
+            }
+
+            input CreatureMoviesFieldInput {
+              connect: CreatureMoviesConnectFieldInput
+              create: CreatureMoviesCreateFieldInput
+            }
+
+            type CreatureMoviesRelationship {
+              cursor: String!
+              node: Production!
+            }
+
+            input CreatureMoviesUpdateConnectionInput {
+              node: ProductionUpdateInput
+            }
+
+            input CreatureMoviesUpdateFieldInput {
+              connect: CreatureMoviesConnectFieldInput
+              create: CreatureMoviesCreateFieldInput
+              delete: CreatureMoviesDeleteFieldInput
+              disconnect: CreatureMoviesDisconnectFieldInput
+              update: CreatureMoviesUpdateConnectionInput
+              where: CreatureMoviesConnectionWhere
+            }
+
+            input CreatureOptions {
+              limit: Int
+              offset: Int
+            }
+
+            input CreatureUpdateInput {
+              _on: CreatureImplementationsUpdateInput
+              movies: CreatureMoviesUpdateFieldInput
+            }
+
+            input CreatureWhere {
+              _on: CreatureImplementationsWhere
+              moviesConnection: CreatureMoviesConnectionWhere
+              moviesConnection_NOT: CreatureMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+            }
+
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            enum EventType {
+              CREATE
+              CREATE_RELATIONSHIP
+              DELETE
+              DELETE_RELATIONSHIP
+              UPDATE
+            }
+
+            type IDAggregateSelectionNullable {
+              longest: ID
+              shortest: ID
+            }
+
+            type IntAggregateSelectionNonNullable {
+              average: Float!
+              max: Int!
+              min: Int!
+              sum: Int!
+            }
+
+            type Movie implements Production {
+              director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
+              directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              id: ID
+              title: String!
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNullable!
+              title: StringAggregateSelectionNonNullable!
+            }
+
+            input MovieConnectInput {
+              director: MovieDirectorConnectFieldInput
+            }
+
+            input MovieCreateInput {
+              director: ProductionDirectorFieldInput
+              id: ID
+              title: String!
+            }
+
+            input MovieDeleteInput {
+              director: MovieDirectorDeleteFieldInput
+            }
+
+            input MovieDirectorConnectFieldInput {
+              connect: CreatureConnectInput
+              where: CreatureConnectWhere
+            }
+
+            input MovieDirectorCreateFieldInput {
+              node: CreatureCreateInput!
+            }
+
+            input MovieDirectorDeleteFieldInput {
+              delete: CreatureDeleteInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            input MovieDirectorDisconnectFieldInput {
+              disconnect: CreatureDisconnectInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            input MovieDirectorUpdateConnectionInput {
+              node: CreatureUpdateInput
+            }
+
+            input MovieDirectorUpdateFieldInput {
+              connect: MovieDirectorConnectFieldInput
+              create: MovieDirectorCreateFieldInput
+              delete: MovieDirectorDeleteFieldInput
+              disconnect: MovieDirectorDisconnectFieldInput
+              update: MovieDirectorUpdateConnectionInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            input MovieDisconnectInput {
+              director: MovieDirectorDisconnectFieldInput
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
+            }
+
+            input MovieRelationInput {
+              director: MovieDirectorCreateFieldInput
+            }
+
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
+            input MovieSort {
+              id: SortDirection
+              title: SortDirection
+            }
+
+            input MovieUpdateInput {
+              director: MovieDirectorUpdateFieldInput
+              id: ID
+              title: String
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              directorConnection: ProductionDirectorConnectionWhere
+              directorConnection_NOT: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_NONE\` instead.\\")
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String!]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Mutation {
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
+              createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+              deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
+              deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
+              updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updatePeople(connect: PersonConnectInput, create: PersonRelationInput, delete: PersonDeleteInput, disconnect: PersonDisconnectInput, update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
+              updateSeries(connect: SeriesConnectInput, create: SeriesRelationInput, delete: SeriesDeleteInput, disconnect: SeriesDisconnectInput, update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type PeopleConnection {
+              edges: [PersonEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Person implements Creature {
+              movies(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): Production!
+              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
+            }
+
+            type PersonAggregateSelection {
+              count: Int!
+            }
+
+            input PersonConnectInput {
+              movies: PersonMoviesConnectFieldInput
+            }
+
+            type PersonConnectedRelationships {
+              movies: PersonMoviesConnectedRelationship
+            }
+
+            input PersonCreateInput {
+              movies: CreatureMoviesFieldInput
+            }
+
+            type PersonCreatedEvent {
+              createdPerson: PersonEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input PersonDeleteInput {
+              movies: PersonMoviesDeleteFieldInput
+            }
+
+            type PersonDeletedEvent {
+              deletedPerson: PersonEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input PersonDisconnectInput {
+              movies: PersonMoviesDisconnectFieldInput
+            }
+
+            type PersonEdge {
+              cursor: String!
+              node: Person!
+            }
+
+            type PersonEventPayload implements CreatureEventPayload {
+              movies: Production!
+              moviesConnection: CreatureMoviesConnection!
+            }
+
+            input PersonMoviesConnectFieldInput {
+              connect: ProductionConnectInput
+              where: ProductionConnectWhere
+            }
+
+            type PersonMoviesConnectedRelationship {
+              node: ProductionEventPayload!
+            }
+
+            input PersonMoviesCreateFieldInput {
+              node: ProductionCreateInput!
+            }
+
+            input PersonMoviesDeleteFieldInput {
+              delete: ProductionDeleteInput
+              where: CreatureMoviesConnectionWhere
+            }
+
+            input PersonMoviesDisconnectFieldInput {
+              disconnect: ProductionDisconnectInput
+              where: CreatureMoviesConnectionWhere
+            }
+
+            input PersonMoviesRelationshipSubscriptionWhere {
+              node: ProductionSubscriptionWhere
+            }
+
+            input PersonMoviesUpdateConnectionInput {
+              node: ProductionUpdateInput
+            }
+
+            input PersonMoviesUpdateFieldInput {
+              connect: PersonMoviesConnectFieldInput
+              create: PersonMoviesCreateFieldInput
+              delete: PersonMoviesDeleteFieldInput
+              disconnect: PersonMoviesDisconnectFieldInput
+              update: PersonMoviesUpdateConnectionInput
+              where: CreatureMoviesConnectionWhere
+            }
+
+            input PersonOptions {
+              limit: Int
+              offset: Int
+            }
+
+            input PersonRelationInput {
+              movies: PersonMoviesCreateFieldInput
+            }
+
+            type PersonRelationshipCreatedEvent {
+              createdRelationship: PersonConnectedRelationships!
+              event: EventType!
+              person: PersonEventPayload!
+              relationshipFieldName: String!
+              timestamp: Float!
+            }
+
+            input PersonRelationshipCreatedSubscriptionWhere {
+              createdRelationship: PersonRelationshipsSubscriptionWhere
+            }
+
+            type PersonRelationshipDeletedEvent {
+              deletedRelationship: PersonConnectedRelationships!
+              event: EventType!
+              person: PersonEventPayload!
+              relationshipFieldName: String!
+              timestamp: Float!
+            }
+
+            input PersonRelationshipDeletedSubscriptionWhere {
+              deletedRelationship: PersonRelationshipsSubscriptionWhere
+            }
+
+            input PersonRelationshipsSubscriptionWhere {
+              movies: PersonMoviesRelationshipSubscriptionWhere
+            }
+
+            input PersonUpdateInput {
+              movies: PersonMoviesUpdateFieldInput
+            }
+
+            type PersonUpdatedEvent {
+              event: EventType!
+              previousState: PersonEventPayload!
+              timestamp: Float!
+              updatedPerson: PersonEventPayload!
+            }
+
+            input PersonWhere {
+              AND: [PersonWhere!]
+              NOT: PersonWhere
+              OR: [PersonWhere!]
+              moviesConnection: CreatureMoviesConnectionWhere
+              moviesConnection_NOT: CreatureMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+            }
+
+            interface Production {
+              director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
+              directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              id: ID
+            }
+
+            input ProductionConnectInput {
+              _on: ProductionImplementationsConnectInput
+              director: ProductionDirectorConnectFieldInput
+            }
+
+            input ProductionConnectWhere {
+              node: ProductionWhere!
+            }
+
+            input ProductionCreateInput {
+              Movie: MovieCreateInput
+              Series: SeriesCreateInput
+            }
+
+            input ProductionDeleteInput {
+              _on: ProductionImplementationsDeleteInput
+              director: ProductionDirectorDeleteFieldInput
+            }
+
+            input ProductionDirectorConnectFieldInput {
+              where: CreatureConnectWhere
+            }
+
+            type ProductionDirectorConnection {
+              edges: [ProductionDirectorRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ProductionDirectorConnectionWhere {
+              AND: [ProductionDirectorConnectionWhere!]
+              NOT: ProductionDirectorConnectionWhere
+              OR: [ProductionDirectorConnectionWhere!]
+              node: CreatureWhere
+              node_NOT: CreatureWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input ProductionDirectorCreateFieldInput {
+              node: CreatureCreateInput!
+            }
+
+            input ProductionDirectorDeleteFieldInput {
+              where: ProductionDirectorConnectionWhere
+            }
+
+            input ProductionDirectorDisconnectFieldInput {
+              where: ProductionDirectorConnectionWhere
+            }
+
+            input ProductionDirectorFieldInput {
+              connect: ProductionDirectorConnectFieldInput
+              create: ProductionDirectorCreateFieldInput
+            }
+
+            type ProductionDirectorRelationship {
+              cursor: String!
+              node: Creature!
+            }
+
+            input ProductionDirectorUpdateConnectionInput {
+              node: CreatureUpdateInput
+            }
+
+            input ProductionDirectorUpdateFieldInput {
+              connect: ProductionDirectorConnectFieldInput
+              create: ProductionDirectorCreateFieldInput
+              delete: ProductionDirectorDeleteFieldInput
+              disconnect: ProductionDirectorDisconnectFieldInput
+              update: ProductionDirectorUpdateConnectionInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            input ProductionDisconnectInput {
+              _on: ProductionImplementationsDisconnectInput
+              director: ProductionDirectorDisconnectFieldInput
+            }
+
+            interface ProductionEventPayload {
+              director: Creature!
+              directorConnection: ProductionDirectorConnection!
+              id: ID
+            }
+
+            input ProductionImplementationsConnectInput {
+              Movie: [MovieConnectInput!]
+              Series: [SeriesConnectInput!]
+            }
+
+            input ProductionImplementationsDeleteInput {
+              Movie: [MovieDeleteInput!]
+              Series: [SeriesDeleteInput!]
+            }
+
+            input ProductionImplementationsDisconnectInput {
+              Movie: [MovieDisconnectInput!]
+              Series: [SeriesDisconnectInput!]
+            }
+
+            input ProductionImplementationsSubscriptionWhere {
+              Series: SeriesSubscriptionWhere
+            }
+
+            input ProductionImplementationsUpdateInput {
+              Movie: MovieUpdateInput
+              Series: SeriesUpdateInput
+            }
+
+            input ProductionImplementationsWhere {
+              Movie: MovieWhere
+              Series: SeriesWhere
+            }
+
+            input ProductionOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ProductionSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
+            \\"\\"\\"
+            input ProductionSort {
+              id: SortDirection
+            }
+
+            input ProductionSubscriptionWhere {
+              AND: [ProductionSubscriptionWhere!]
+              NOT: ProductionSubscriptionWhere
+              OR: [ProductionSubscriptionWhere!]
+              _on: ProductionImplementationsSubscriptionWhere
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+            }
+
+            input ProductionUpdateInput {
+              _on: ProductionImplementationsUpdateInput
+              director: ProductionDirectorUpdateFieldInput
+              id: ID
+            }
+
+            input ProductionWhere {
+              _on: ProductionImplementationsWhere
+              directorConnection: ProductionDirectorConnectionWhere
+              directorConnection_NOT: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_NONE\` instead.\\")
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+            }
+
+            type Query {
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              people(options: PersonOptions, where: PersonWhere): [Person!]!
+              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+              peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
+              series(options: SeriesOptions, where: SeriesWhere): [Series!]!
+              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
+            }
+
+            type Series implements Production {
+              director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
+              directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              episode: Int!
+              id: ID
+              title: String!
+            }
+
+            type SeriesAggregateSelection {
+              count: Int!
+              episode: IntAggregateSelectionNonNullable!
+              id: IDAggregateSelectionNullable!
+              title: StringAggregateSelectionNonNullable!
+            }
+
+            input SeriesConnectInput {
+              director: SeriesDirectorConnectFieldInput
+            }
+
+            type SeriesConnectedRelationships {
+              director: SeriesDirectorConnectedRelationship
+            }
+
+            type SeriesConnection {
+              edges: [SeriesEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input SeriesCreateInput {
+              director: ProductionDirectorFieldInput
+              episode: Int!
+              id: ID
+              title: String!
+            }
+
+            type SeriesCreatedEvent {
+              createdSeries: SeriesEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input SeriesDeleteInput {
+              director: SeriesDirectorDeleteFieldInput
+            }
+
+            type SeriesDeletedEvent {
+              deletedSeries: SeriesEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input SeriesDirectorConnectFieldInput {
+              connect: CreatureConnectInput
+              where: CreatureConnectWhere
+            }
+
+            type SeriesDirectorConnectedRelationship {
+              node: CreatureEventPayload!
+            }
+
+            input SeriesDirectorCreateFieldInput {
+              node: CreatureCreateInput!
+            }
+
+            input SeriesDirectorDeleteFieldInput {
+              delete: CreatureDeleteInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            input SeriesDirectorDisconnectFieldInput {
+              disconnect: CreatureDisconnectInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            input SeriesDirectorUpdateConnectionInput {
+              node: CreatureUpdateInput
+            }
+
+            input SeriesDirectorUpdateFieldInput {
+              connect: SeriesDirectorConnectFieldInput
+              create: SeriesDirectorCreateFieldInput
+              delete: SeriesDirectorDeleteFieldInput
+              disconnect: SeriesDirectorDisconnectFieldInput
+              update: SeriesDirectorUpdateConnectionInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            input SeriesDisconnectInput {
+              director: SeriesDirectorDisconnectFieldInput
+            }
+
+            type SeriesEdge {
+              cursor: String!
+              node: Series!
+            }
+
+            type SeriesEventPayload implements ProductionEventPayload {
+              director: Creature!
+              directorConnection: ProductionDirectorConnection!
+              episode: Int!
+              id: ID
+              title: String!
+            }
+
+            input SeriesOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [SeriesSort!]
+            }
+
+            input SeriesRelationInput {
+              director: SeriesDirectorCreateFieldInput
+            }
+
+            type SeriesRelationshipCreatedEvent {
+              createdRelationship: SeriesConnectedRelationships!
+              event: EventType!
+              relationshipFieldName: String!
+              series: SeriesEventPayload!
+              timestamp: Float!
+            }
+
+            input SeriesRelationshipCreatedSubscriptionWhere {
+              series: SeriesSubscriptionWhere
+            }
+
+            type SeriesRelationshipDeletedEvent {
+              deletedRelationship: SeriesConnectedRelationships!
+              event: EventType!
+              relationshipFieldName: String!
+              series: SeriesEventPayload!
+              timestamp: Float!
+            }
+
+            input SeriesRelationshipDeletedSubscriptionWhere {
+              series: SeriesSubscriptionWhere
+            }
+
+            \\"\\"\\"
+            Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
+            \\"\\"\\"
+            input SeriesSort {
+              episode: SortDirection
+              id: SortDirection
+              title: SortDirection
+            }
+
+            input SeriesSubscriptionWhere {
+              AND: [SeriesSubscriptionWhere!]
+              NOT: SeriesSubscriptionWhere
+              OR: [SeriesSubscriptionWhere!]
+              episode: Int
+              episode_GT: Int
+              episode_GTE: Int
+              episode_IN: [Int]
+              episode_LT: Int
+              episode_LTE: Int
+              episode_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              episode_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
+            }
+
+            input SeriesUpdateInput {
+              director: SeriesDirectorUpdateFieldInput
+              episode: Int
+              episode_DECREMENT: Int
+              episode_INCREMENT: Int
+              id: ID
+              title: String
+            }
+
+            type SeriesUpdatedEvent {
+              event: EventType!
+              previousState: SeriesEventPayload!
+              timestamp: Float!
+              updatedSeries: SeriesEventPayload!
+            }
+
+            input SeriesWhere {
+              AND: [SeriesWhere!]
+              NOT: SeriesWhere
+              OR: [SeriesWhere!]
+              directorConnection: ProductionDirectorConnectionWhere
+              directorConnection_NOT: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_NONE\` instead.\\")
+              episode: Int
+              episode_GT: Int
+              episode_GTE: Int
+              episode_IN: [Int!]
+              episode_LT: Int
+              episode_LTE: Int
+              episode_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              episode_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String!]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
+            }
+
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
+            }
+
+            type Subscription {
+              personCreated: PersonCreatedEvent!
+              personDeleted: PersonDeletedEvent!
+              personRelationshipCreated(where: PersonRelationshipCreatedSubscriptionWhere): PersonRelationshipCreatedEvent!
+              personRelationshipDeleted(where: PersonRelationshipDeletedSubscriptionWhere): PersonRelationshipDeletedEvent!
+              personUpdated: PersonUpdatedEvent!
+              seriesCreated(where: SeriesSubscriptionWhere): SeriesCreatedEvent!
+              seriesDeleted(where: SeriesSubscriptionWhere): SeriesDeletedEvent!
+              seriesRelationshipCreated(where: SeriesRelationshipCreatedSubscriptionWhere): SeriesRelationshipCreatedEvent!
+              seriesRelationshipDeleted(where: SeriesRelationshipDeletedSubscriptionWhere): SeriesRelationshipDeletedEvent!
+              seriesUpdated(where: SeriesSubscriptionWhere): SeriesUpdatedEvent!
+            }
+
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }
+
+            type UpdatePeopleMutationResponse {
+              info: UpdateInfo!
+              people: [Person!]!
+            }
+
+            type UpdateSeriesMutationResponse {
+              info: UpdateInfo!
+              series: [Series!]!
             }"
         `);
     });

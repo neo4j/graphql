@@ -53,9 +53,9 @@ export type WhereRegexGroups = {
     prefix?: string;
 };
 
-export type aggregationOperators = "SHORTEST" | "LONGEST" | "MIN" | "MAX" | "SUM";
+export type aggregationOperators = "AVERAGE" | "SHORTEST" | "LONGEST" | "MIN" | "MAX" | "SUM";
 export const aggregationFieldRegEx =
-    /(?<fieldName>[_A-Za-z]\w*?)(?:_(?<aggregationOperator>AVERAGE|MAX|MIN|SUM|SHORTEST|LONGEST))?(?:_(?<logicalOperator>EQUAL|GT|GTE|LT|LTE))?$/;
+    /(?<fieldName>[_A-Za-z]\w*?)(?:_(?<aggregationOperator>AVERAGE|MAX|MIN|SUM|SHORTEST|LONGEST))?(?:_LENGTH)?(?:_(?<logicalOperator>EQUAL|GT|GTE|LT|LTE))?$/;
 export type AggregationFieldRegexGroups = {
     fieldName: string;
     aggregationOperator?: aggregationOperators;

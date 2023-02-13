@@ -384,32 +384,27 @@ query {
 
 ==== `ID`
 
-You can only use the `_EQUAL` operator on types of `ID`.
+No Aggregation filters are available for ID.
 
 ==== `String`
 
 Fields of type `String` have the following operators:
 
-* `_EQUAL`
-* `_GT`
-* `_GTE`
-* `_LT`
-* `_LTE`
-* `_AVERAGE_EQUAL`
-* `_AVERAGE_GT`
-* `_AVERAGE_GTE`
-* `_AVERAGE_LT`
-* `_AVERAGE_LTE`
-* `_SHORTEST_EQUAL`
-* `_SHORTEST_GT`
-* `_SHORTEST_GTE`
-* `_SHORTEST_LT`
-* `_SHORTEST_LTE`
-* `_LONGEST_EQUAL`
-* `_LONGEST_GT`
-* `_LONGEST_GTE`
-* `_LONGEST_LT`
-* `_LONGEST_LTE`
+* `_AVERAGE_LENGTH_EQUAL`
+* `_AVERAGE_LENGTH_GT`
+* `_AVERAGE_LENGTH_GTE`
+* `_AVERAGE_LENGTH_LT`
+* `_AVERAGE_LENGTH_LTE`
+* `_SHORTEST_LENGTH_EQUAL`
+* `_SHORTEST_LENGTH_GT`
+* `_SHORTEST_LENGTH_GTE`
+* `_SHORTEST_LENGTH_LT`
+* `_SHORTEST_LENGTH_LTE`
+* `_LONGEST_LENGTH_EQUAL`
+* `_LONGEST_LENGTH_GT`
+* `_LONGEST_LENGTH_GTE`
+* `_LONGEST_LENGTH_LT`
+* `_LONGEST_LENGTH_LTE`
 
 These operators are calculated against the length of each string.
 
@@ -418,7 +413,7 @@ These operators are calculated against the length of each string.
 [source, graphql, indent=0]
 ----
 query {
-    posts(where: { likesAggregate: { node: { name_LONGEST_GT: 5 } } }) {
+    posts(where: { likesAggregate: { node: { name_LONGEST_LENGTH_GT: 5 } } }) {
         content
     }
 }
@@ -434,11 +429,6 @@ Numerical types include the following:
 
 The types in the list above have the following operators:
 
-* `_EQUAL`
-* `_GT`
-* `_GTE`
-* `_LT`
-* `_LTE`
 * `_AVERAGE_EQUAL`
 * `_AVERAGE_GT`
 * `_AVERAGE_GTE`
@@ -483,11 +473,6 @@ Temporal types include the following:
 
 The types listed above have the following aggregation operators:
 
-* `_EQUAL`
-* `_GT`
-* `_GTE`
-* `_LT`
-* `_LTE`
 * `_MIN_EQUAL`
 * `_MIN_GT`
 * `_MIN_GTE`
