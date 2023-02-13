@@ -20,10 +20,11 @@
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
+import { generateUniqueType } from "../../utils/graphql-types";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
 
-describe("2620", () => {
+describe("https://github.com/neo4j/graphql/issues/2620", () => {
     let driver: Driver;
     let neo4j: Neo4j;
 
@@ -39,34 +40,40 @@ describe("2620", () => {
     test("should be able to get fields in union of common interface", async () => {
         const session = await neo4j.getSession();
 
+        const hasNameType = generateUniqueType("HasName")
+        const postType = generateUniqueType("Post")
+        const userType = generateUniqueType("User")
+        const groupType = generateUniqueType("Group")
+        const unionType = generateUniqueType("PostSubject")
+
         const typeDefs = `
-          interface HasName {
+          interface ${hasNameType.name} {
             name: String!
           }
 
-          type Post {
+          type ${postType.name} {
             id: ID! @id
-            subject: PostSubject! @relationship(type: "POST_FOR", direction: OUT)
+            subject: ${unionType.name}! @relationship(type: "POST_FOR", direction: OUT)
           }
 
-          type User implements HasName {
+          type ${userType.name} implements ${hasNameType.name} {
             name: String!
           }
-          type Group implements HasName {
+          type ${groupType} implements ${hasNameType.name} {
             name: String!
           }
 
-          union PostSubject = User | Group
+          union ${unionType.name} = ${userType.name} | ${groupType.name}
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const query = `
           query {
-              posts {
+              ${postType.plural} {
                 id
                 subject {
-                  ... on HasName {
+                  ... on ${hasNameType.name} {
                     name
                   }
                 }
@@ -74,36 +81,30 @@ describe("2620", () => {
           }
         `;
 
-        const userId = generate({
-            charset: "alphabetic",
-        });
-        const postId = generate({
-            charset: "alphabetic",
-        });
+        const userId = generate({ charset: "alphabetic" });
+        const postId = generate({ charset: "alphabetic" });
+        const userName = generate({ charset: "alphabetic" });
 
         try {
             await session.run(
                 `
-                    CREATE (post:Post { id: $postId })
-                    CREATE (user:User { id: $userId, name: "user-name" })
+                    CREATE (post:${postType.name} { id: $postId })
+                    CREATE (user:${userType.name} { id: $userId, name: $userName })
                     MERGE (post)-[:POST_FOR]->(user)
-            `,
-                {
-                    userId,
-                    postId,
-                }
+                `,
+                { userId, postId, userName }
             );
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any)?.posts?.[0]?.subject?.id).toBe(userId);
+            expect(gqlResult.data?.[postType.plural]?.[0]?.subject?.name).toBe(userName);
         } finally {
             await session.close();
         }
