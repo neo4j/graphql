@@ -177,9 +177,11 @@ export function createRelationPredicate({
     }
     return {
         predicate: createSimpleRelationshipPredicate({
+            childNode: targetNode,
             matchPattern: targetPattern,
             listPredicateStr,
             innerOperation: innerOperation.predicate,
+            edgePredicate: refEdge ? true : false,
         }),
     };
 }
@@ -187,11 +189,14 @@ export function createRelationPredicate({
 function createSimpleRelationshipPredicate({
     matchPattern,
     listPredicateStr,
+    childNode,
     innerOperation,
 }: {
     matchPattern: Cypher.Pattern;
     listPredicateStr: ListPredicate;
+    childNode: Cypher.Node;
     innerOperation: Cypher.Predicate | undefined;
+    edgePredicate?: boolean;
 }): Cypher.Predicate | undefined {
     if (!innerOperation) return undefined;
     const matchClause = new Cypher.Match(matchPattern).where(innerOperation);
@@ -203,10 +208,10 @@ function createSimpleRelationshipPredicate({
             return Cypher.and(new Cypher.Exists(matchClause), Cypher.not(new Cypher.Exists(notExistsMatchClause)));
         }
         case "single": {
-            const sizeFunction = Cypher.size(
-                new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(innerOperation)
+            const patternComprehension = new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(
+                innerOperation
             );
-            return Cypher.eq(sizeFunction, new Cypher.Literal(1));
+            return Cypher.single(childNode, patternComprehension, new Cypher.Literal(true));
         }
         case "not":
         case "none":
