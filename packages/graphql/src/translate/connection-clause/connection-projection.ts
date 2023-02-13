@@ -162,8 +162,8 @@ function createConnectionNodeProjection({
     }
     return {
         subqueries: projectionSubqueries,
-        projection: new Cypher.RawCypher(() => {
-            return [`${nodeProjectionAndParams.projection}`, nodeProjectionAndParams.params];
+        projection: new Cypher.RawCypher((env) => {
+            return [`${nodeProjectionAndParams.projection.getCypher(env)}`, nodeProjectionAndParams.params];
         }),
     };
 }

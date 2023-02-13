@@ -83,7 +83,7 @@ export default async function unwindCreate({
         }, {});
 
         projectionCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
-            return `${rootNodeVariable.getCypher(env)} ${projection.projection
+            return `${rootNodeVariable.getCypher(env)} ${projection.projection.getCypher(env)
                 // First look to see if projection param is being reassigned
                 // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
                 .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")

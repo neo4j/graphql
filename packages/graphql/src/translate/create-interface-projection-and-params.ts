@@ -192,7 +192,7 @@ function createInterfaceSubquery({
     }
 
     const {
-        projection: projectionStr,
+        projection,
         subqueries: projectionSubQueries,
         subqueriesBeforeSort,
     } = createProjectionAndParams({
@@ -206,7 +206,7 @@ function createInterfaceSubquery({
 
     const projectionSubqueryClause = Cypher.concat(...subqueriesBeforeSort, ...projectionSubQueries);
 
-    const returnClause = new Cypher.Return([new Cypher.RawCypher(projectionStr), `${nodeVariable}_${field.fieldName}`]);
+    const returnClause = new Cypher.Return([projection, `${nodeVariable}_${field.fieldName}`]);
 
     if (preComputedWhereFieldSubqueries && preComputedWhereFieldSubqueries?.empty) {
         const preComputedWhereFieldsWith = new Cypher.With("*");

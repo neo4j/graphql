@@ -65,7 +65,6 @@ export default async function translateUpdate({
     const createStrs: string[] = [];
     let deleteStr = "";
     let projAuth = "";
-    let projStr = "";
     let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
     const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
@@ -395,6 +394,7 @@ export default async function translateUpdate({
     }
 
     let projectionSubquery: Cypher.Clause | undefined;
+    let projStr: Cypher.Expr | undefined;
     if (nodeProjection?.fieldsByTypeName) {
         const projection = createProjectionAndParams({
             node,
@@ -447,7 +447,7 @@ export default async function translateUpdate({
                       `UNWIND (CASE ${META_CYPHER_VARIABLE} WHEN [] then [null] else ${META_CYPHER_VARIABLE} end) AS m`,
                   ]
                 : []),
-            returnStatement,
+            returnStatement.getCypher(env),
         ]
             .filter(Boolean)
             .join("\n");
@@ -470,22 +470,24 @@ export default async function translateUpdate({
 
 function generateUpdateReturnStatement(
     varName: string | undefined,
-    projStr: string | undefined,
+    projStr: Cypher.Expr | undefined,
     subscriptionsEnabled: boolean
-): string {
-    const statements: string[] = [];
-
+): Cypher.Clause {
+    let statements;
     if (varName && projStr) {
-        statements.push(`collect(DISTINCT ${varName} ${projStr}) AS data`);
+        statements = new Cypher.RawCypher((env) => `collect(DISTINCT ${varName} ${projStr.getCypher(env)}) AS data`);
     }
 
     if (subscriptionsEnabled) {
-        statements.push(`collect(DISTINCT m) as ${META_CYPHER_VARIABLE}`);
+        statements = Cypher.concat(
+            statements,
+            new Cypher.RawCypher(`, collect(DISTINCT m) as ${META_CYPHER_VARIABLE}`)
+        );
     }
 
-    if (statements.length === 0) {
-        statements.push("'Query cannot conclude with CALL'");
+    if (!statements) {
+        statements = new Cypher.RawCypher("'Query cannot conclude with CALL'");
     }
 
-    return `RETURN ${statements.join(", ")}`;
+    return new Cypher.Return(statements);
 }

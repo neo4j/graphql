@@ -79,11 +79,11 @@ export function translateCypherDirectiveProjection({
             chainStr: param,
         });
 
-        projectionExpr = new Cypher.RawCypher(`${param} ${str}`);
+        projectionExpr = new Cypher.RawCypher((env) => `${param} ${str.getCypher(env)}`);
         res.params = { ...res.params, ...p };
         subqueries.push(...nestedSubqueriesBeforeSort, ...nestedSubqueries);
     } else if (entity instanceof CompositeEntity) {
-        const unionProjections: Array<{ predicate: Cypher.Predicate; projection: string }> = [];
+        const unionProjections: Array<{ predicate: Cypher.Predicate; projection: Cypher.Expr }> = [];
         const labelsSubPredicates: Cypher.Predicate[] = [];
 
         const fieldFieldsKeys = Object.keys(fieldFields);
@@ -125,15 +125,17 @@ export function translateCypherDirectiveProjection({
                         const withAndSubqueries = Cypher.concat(beforeCallWith, ...nestedSubqueries);
                         subqueries.push(withAndSubqueries);
                     }
+                    const projection = new Cypher.RawCypher((env) => `{ __resolveType: "${refNode.name}", ${str.getCypher(env).replace("{", "")}`)
                     unionProjections.push({
-                        projection: `{ __resolveType: "${refNode.name}", ${str.replace("{", "")}`,
+                        projection,
                         predicate: labelsSubPredicate,
                     });
 
                     res.params = { ...res.params, ...p };
                 } else {
+                    const projection = new Cypher.RawCypher(() => `{ __resolveType: "${refNode.name}" }`)
                     unionProjections.push({
-                        projection: `{ __resolveType: "${refNode.name}" }`,
+                        projection,
                         predicate: labelsSubPredicate,
                     });
                 }
@@ -143,7 +145,7 @@ export function translateCypherDirectiveProjection({
         hasUnionLabelsPredicate = Cypher.or(...labelsSubPredicates);
         projectionExpr = new Cypher.Case();
         for (const { projection, predicate } of unionProjections) {
-            projectionExpr.when(predicate).then(new Cypher.RawCypher(`${param} ${projection}`));
+            projectionExpr.when(predicate).then(new Cypher.RawCypher((env) => `${param} ${projection.getCypher(env)}`));
         }
     }
 

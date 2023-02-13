@@ -53,7 +53,7 @@ export function translateTopLevelCypher({
         cypherStrs.push(`CALL apoc.util.validate(NOT (${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
     }
 
-    let projectionStr = "";
+    let projectionStr;
     const projectionAuthStrs: string[] = [];
     const projectionSubqueries: Cypher.Clause[] = [];
     const connectionProjectionStrs: string[] = [];
@@ -61,14 +61,18 @@ export function translateTopLevelCypher({
     const referenceNode = context.nodes.find((x) => x.name === field.typeMeta.name);
 
     if (referenceNode) {
-        const recurse = createProjectionAndParams({
+        const {
+            projection: str,
+            params: p,
+            meta,
+            subqueries,
+            subqueriesBeforeSort,
+        } = createProjectionAndParams({
             resolveTree,
             node: referenceNode,
             context,
             varName: `this`,
         });
-
-        const { projection: str, params: p, meta, subqueries, subqueriesBeforeSort } = recurse;
         projectionStr = str;
         projectionSubqueries.push(...subqueriesBeforeSort, ...subqueries);
         params = { ...params, ...p };
@@ -83,7 +87,7 @@ export function translateTopLevelCypher({
     const entity = context.schemaModel.entities.get(field.typeMeta.name);
 
     if (entity instanceof CompositeEntity) {
-        const headStrs: string[] = [];
+        const headStrs: (Cypher.Clause | string)[] = [];
         const referencedNodes =
             entity.concreteEntities
                 ?.map((u) => context.nodes.find((n) => n.name === u.name))
@@ -94,8 +98,8 @@ export function translateTopLevelCypher({
             if (node) {
                 const labelsStatements = node.getLabels(context).map((label) => `"${label}" IN labels(this)`);
                 unionWhere.push(`(${labelsStatements.join("AND")})`);
-
-                const innerHeadStr: string[] = [`[ this IN [this] WHERE (${labelsStatements.join(" AND ")})`];
+                // TODO Migrate to CypherBuilder
+                let innerHeadStr = `[ this IN [this] WHERE (${labelsStatements.join(" AND ")})`;
 
                 if (resolveTree.fieldsByTypeName[node.name]) {
                     const {
@@ -111,26 +115,31 @@ export function translateTopLevelCypher({
                     });
 
                     projectionSubqueries.push(...subqueries);
+                    const innerNodePartialProjection = new Cypher.RawCypher((env) => {
+                        return innerHeadStr.concat(
+                            [
+                                `| this { __resolveType: "${node.name}", `,
+                                ...str.getCypher(env).replace("{", "").split(""),
+                            ].join("")
+                        ).concat("]");
+                    });
 
-                    innerHeadStr.push(
-                        [`| this { __resolveType: "${node.name}", `, ...str.replace("{", "").split("")].join("")
-                    );
                     params = { ...params, ...p };
 
                     if (meta.authValidateStrs?.length) {
                         projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
                     }
+                    headStrs.push(innerNodePartialProjection);
                 } else {
-                    innerHeadStr.push(`| this { __resolveType: "${node.name}" } `);
+                    innerHeadStr = `${innerHeadStr}| this { __resolveType: "${node.name}" }]`;
+                    headStrs.push(innerHeadStr);
                 }
-
-                innerHeadStr.push(`]`);
-
-                headStrs.push(innerHeadStr.join(" "));
             }
         });
 
-        projectionStr = `${headStrs.join(" + ")}`;
+        projectionStr = new Cypher.RawCypher(
+            (env) => `${headStrs.map((headStr) => typeof headStr === "string" ? headStr : headStr.getCypher(env)).join(" + ")}`
+        );
     }
 
     const initApocParamsStrs = ["auth: $auth", ...(context.cypherParams ? ["cypherParams: $cypherParams"] : [])];
@@ -199,9 +208,9 @@ export function translateTopLevelCypher({
         if (field.isScalar || field.isEnum) {
             cypherStrs.push(`RETURN this`);
         } else if (entity instanceof CompositeEntity) {
-            cypherStrs.push(`RETURN head( ${projectionStr} ) AS this`);
+            cypherStrs.push(`RETURN head( ${projectionStr.getCypher(env)} ) AS this`);
         } else {
-            cypherStrs.push(`RETURN this ${projectionStr} AS this`);
+            cypherStrs.push(`RETURN this ${projectionStr.getCypher(env)} AS this`);
         }
         return [cypherStrs.join("\n"), params];
     }).build();

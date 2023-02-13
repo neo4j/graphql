@@ -117,8 +117,8 @@ export function translateRead(
         });
     }
 
-    const projectionExpression = new Cypher.RawCypher(() => {
-        return [`${varName} ${projection.projection}`, projection.params];
+    const projectionExpression = new Cypher.RawCypher((env) => {
+        return [`${varName} ${projection.projection.getCypher(env)}`, projection.params];
     });
 
     let returnClause = new Cypher.Return([projectionExpression, varName]);

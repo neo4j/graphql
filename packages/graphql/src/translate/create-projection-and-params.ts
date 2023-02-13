@@ -51,7 +51,7 @@ export interface ProjectionMeta {
 }
 
 export type ProjectionResult = {
-    projection: string;
+    projection: Cypher.Expr;
     params: Record<string, any>;
     meta: ProjectionMeta;
     subqueries: Array<Cypher.Clause>;
@@ -180,13 +180,21 @@ export default function createProjectionAndParams({
 
                     const direction = getCypherRelationshipDirection(relationField, field.args);
 
-                    let nestedProjection = [
+                    /*    let nestedProjection = [
                         ` { __resolveType: "${refNode.name}", `,
                         recurse.projection.replace("{", ""),
-                    ].join("");
+                    ].join(""); */
 
+                    let nestedProjection = new Cypher.RawCypher((env) => {
+                        return [
+                            ` { __resolveType: "${refNode.name}", `,
+                            recurse.projection.getCypher(env).replace("{", ""),
+                        ].join("");
+                    });
                     if (!hasFields) {
-                        nestedProjection = `{ __resolveType: "${refNode.name}" }`;
+                        nestedProjection = new Cypher.RawCypher(() => {
+                            return `{ __resolveType: "${refNode.name}" }`;
+                        });
                     }
                     const subquery = createProjectionSubquery({
                         parentNode,
@@ -318,7 +326,6 @@ export default function createProjectionAndParams({
 
         return res;
     }
-
     let existingProjection = { ...resolveTree.fieldsByTypeName[node.name] };
 
     if (context.fulltextIndex) {
@@ -381,9 +388,11 @@ export default function createProjectionAndParams({
         subqueries: [],
         subqueriesBeforeSort: [],
     });
-
+    const projectionCypher = new Cypher.RawCypher(() => {
+        return `{ ${projection.join(", ")} }`;
+    });
     return {
-        projection: `{ ${projection.join(", ")} }`,
+        projection: projectionCypher,
         params,
         meta,
         subqueries,
@@ -448,7 +457,7 @@ function createFulltextProjection({
 }): ProjectionResult {
     if (!resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.singular]) {
         return {
-            projection: "{ }",
+            projection: new Cypher.Map(),
             params: {},
             meta: {},
             subqueries: [],

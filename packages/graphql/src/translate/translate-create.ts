@@ -27,6 +27,7 @@ import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
 import unwindCreate from "./unwind-create";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
+import { RawCypher } from "@neo4j/cypher-builder";
 
 export default async function translateCreate({
     context,
@@ -82,7 +83,7 @@ export default async function translateCreate({
                 callbackBucket,
             });
             create.push(`${createAndParams[0]}`);
-    
+
             if (context.subscriptionsEnabled) {
                 const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;
                 create.push(`RETURN ${varName}, ${META_CYPHER_VARIABLE} AS ${metaVariable}`);
@@ -90,7 +91,7 @@ export default async function translateCreate({
             } else {
                 create.push(`RETURN ${varName}`);
             }
-    
+
             create.push(`}`);
             res.createStrs.push(create.join("\n"));
             res.params = { ...res.params, ...createAndParams[1] };
@@ -103,7 +104,7 @@ export default async function translateCreate({
     };
 
     let replacedProjectionParams: Record<string, unknown> = {};
-    let projectionStr: string | undefined;
+    let projectionExpr: Cypher.Expr | undefined;
     let authCalls: string | undefined;
 
     if (metaNames.length > 0) {
@@ -126,23 +127,26 @@ export default async function translateCreate({
                 " AND "
             )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
         }
-    
+
         replacedProjectionParams = Object.entries(projection.params).reduce((res, [key, value]) => {
             return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
         }, {});
-    
-        projectionStr = createStrs
-            .map(
-                (_, i) =>
-                    `\nthis${i} ${projection.projection
-                        // First look to see if projection param is being reassigned
-                        // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
-                        .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-                        .replace(/\$REPLACE_ME/g, "$projection")
-                        .replace(/REPLACE_ME/g, `this${i}`)}`
-            )
-            .join(", ");
-        
+
+        projectionExpr = new Cypher.RawCypher((env) => {
+            return createStrs
+                .map(
+                    (_, i) =>
+                        `\nthis${i} ${projection.projection
+                            .getCypher(env)
+                            // First look to see if projection param is being reassigned
+                            // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
+                            .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
+                            .replace(/\$REPLACE_ME/g, "$projection")
+                            .replace(/REPLACE_ME/g, `this${i}`)}`
+                )
+                .join(", ");
+        });
+
         authCalls = createStrs
             .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
             .join("\n");
@@ -190,7 +194,7 @@ export default async function translateCreate({
           }, {})
         : {};
 
-    const returnStatement = generateCreateReturnStatement(projectionStr, context.subscriptionsEnabled);
+    const returnStatement = generateCreateReturnStatement(projectionExpr, context.subscriptionsEnabled);
     const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
     const createQuery = new Cypher.RawCypher((env) => {
@@ -211,7 +215,7 @@ export default async function translateCreate({
             ...replacedConnectionStrs,
             ...replacedInterfaceStrs,
             ...replacedProjectionSubqueryStrs,
-            returnStatement,
+            returnStatement.getCypher(env),
         ])
             .filter(Boolean)
             .join("\n");
@@ -239,20 +243,25 @@ export default async function translateCreate({
         },
     };
 }
-function generateCreateReturnStatement(projectionStr: string | undefined, subscriptionsEnabled: boolean): string {
-    const statements: string[] = [];
+function generateCreateReturnStatement(
+    projectionExpr: Cypher.Expr | undefined,
+    subscriptionsEnabled: boolean
+): Cypher.Clause {
+    const statements = new Cypher.RawCypher((env) => {
+        let statStr;
+        if (projectionExpr) {
+            statStr = `[${projectionExpr.getCypher(env)}] AS data`;
+        }
 
-    if (projectionStr) {
-        statements.push(`[${projectionStr}] AS data`);
-    }
+        if (subscriptionsEnabled) {
+            statStr = statStr ? `${statStr}, ${META_CYPHER_VARIABLE}` : META_CYPHER_VARIABLE;
+        }
 
-    if (subscriptionsEnabled) {
-        statements.push(META_CYPHER_VARIABLE);
-    }
+        if (!statStr) {
+            statStr = "'Query cannot conclude with CALL'";
+        }
+        return statStr;
+    });
 
-    if (statements.length === 0) {
-        statements.push("'Query cannot conclude with CALL'");
-    }
-
-    return `RETURN ${statements.join(", ")}`;
+    return new Cypher.Return(statements);
 }

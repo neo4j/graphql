@@ -46,7 +46,7 @@ export function createProjectionSubquery({
     node: Node;
     context: Context;
     alias: string; // TODO: this should be output variable instead
-    nestedProjection: string;
+    nestedProjection: Cypher.Expr;
     nestedSubqueries: Cypher.Clause[];
     relationField: RelationField;
     relationshipDirection: CypherRelationshipDirection;
@@ -74,7 +74,7 @@ export function createProjectionSubquery({
 
     const projection = new Cypher.RawCypher((env) => {
         // TODO: use MapProjection
-        return `${targetNode.getCypher(env)} ${nestedProjection}`;
+        return `${targetNode.getCypher(env)} ${nestedProjection.getCypher(env)}`;
     });
 
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
