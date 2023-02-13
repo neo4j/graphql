@@ -29,12 +29,10 @@ describe("https://github.com/neo4j/graphql/issues/2847", () => {
     let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
     let session: Session;
-    const secret = "secret";
 
     let Movie: UniqueType;
     let Actor: UniqueType;
     let Product: UniqueType;
-    let Show: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -47,7 +45,6 @@ describe("https://github.com/neo4j/graphql/issues/2847", () => {
         Movie = new UniqueType("Movie");
         Actor = new UniqueType("Actor");
         Product = new UniqueType("Product");
-        Show = new UniqueType("Show");
 
         const typeDefs = `
           interface ${Product} {
