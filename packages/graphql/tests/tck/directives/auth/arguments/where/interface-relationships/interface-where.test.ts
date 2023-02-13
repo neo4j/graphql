@@ -169,13 +169,13 @@ describe("Cypher Auth Where", () => {
                     WITH *
                     MATCH (this)-[this0:HAS_CONTENT]->(this_content:\`Comment\`)
                     WHERE (exists((this_content)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this1 IN [(this_content)<-[:HAS_CONTENT]-(this1:\`User\`) | this1] WHERE (this1.id IS NOT NULL AND this1.id = $param1)))
-                    WITH this_content { __resolveType: \\"Comment\\"} AS this_content
+                    WITH this_content { __resolveType: \\"Comment\\" } AS this_content
                     RETURN this_content AS this_content
                     UNION
                     WITH *
                     MATCH (this)-[this2:HAS_CONTENT]->(this_content:\`Post\`)
                     WHERE (exists((this_content)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this3 IN [(this_content)<-[:HAS_CONTENT]-(this3:\`User\`) | this3] WHERE (this3.id IS NOT NULL AND this3.id = $param2)))
-                    WITH this_content { __resolveType: \\"Post\\",  .id } AS this_content
+                    WITH this_content { __resolveType: \\"Post\\", .id } AS this_content
                     RETURN this_content AS this_content
                 }
                 WITH this_content

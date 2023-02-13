@@ -83,12 +83,12 @@ describe("Cypher Union", () => {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this_search:\`Genre\`)
                     WHERE apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this_search { __resolveType: \\"Genre\\",  .name } AS this_search
+                    WITH this_search { __resolveType: \\"Genre\\", .name } AS this_search
                     RETURN this_search AS this_search
                     UNION
                     WITH *
                     MATCH (this)-[this1:SEARCH]->(this_search:\`Movie\`)
-                    WITH this_search { __resolveType: \\"Movie\\",  .title } AS this_search
+                    WITH this_search { __resolveType: \\"Movie\\", .title } AS this_search
                     RETURN this_search AS this_search
                 }
                 WITH this_search
@@ -130,12 +130,12 @@ describe("Cypher Union", () => {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this_search:\`Genre\`)
                     WHERE apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this_search { __resolveType: \\"Genre\\",  .name } AS this_search
+                    WITH this_search { __resolveType: \\"Genre\\", .name } AS this_search
                     RETURN this_search AS this_search
                     UNION
                     WITH *
                     MATCH (this)-[this1:SEARCH]->(this_search:\`Movie\`)
-                    WITH this_search { __resolveType: \\"Movie\\"} AS this_search
+                    WITH this_search { __resolveType: \\"Movie\\" } AS this_search
                     RETURN this_search AS this_search
                 }
                 WITH this_search
@@ -184,13 +184,13 @@ describe("Cypher Union", () => {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this_search:\`Genre\`)
                     WHERE (this_search.name = $param1 AND apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    WITH this_search { __resolveType: \\"Genre\\",  .name } AS this_search
+                    WITH this_search { __resolveType: \\"Genre\\", .name } AS this_search
                     RETURN this_search AS this_search
                     UNION
                     WITH *
                     MATCH (this)-[this1:SEARCH]->(this_search:\`Movie\`)
                     WHERE this_search.title = $param3
-                    WITH this_search { __resolveType: \\"Movie\\",  .title } AS this_search
+                    WITH this_search { __resolveType: \\"Movie\\", .title } AS this_search
                     RETURN this_search AS this_search
                 }
                 WITH this_search

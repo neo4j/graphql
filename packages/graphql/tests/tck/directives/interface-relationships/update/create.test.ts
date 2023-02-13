@@ -101,12 +101,12 @@ describe("Interface Relationships - Update create", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[update_this0:ACTED_IN]->(this_actedIn:\`Movie\`)
-                    WITH this_actedIn { __resolveType: \\"Movie\\",  .runtime, .title } AS this_actedIn
+                    WITH this_actedIn { __resolveType: \\"Movie\\", .runtime, .title } AS this_actedIn
                     RETURN this_actedIn AS this_actedIn
                     UNION
                     WITH *
                     MATCH (this)-[update_this1:ACTED_IN]->(this_actedIn:\`Series\`)
-                    WITH this_actedIn { __resolveType: \\"Series\\",  .episodes, .title } AS this_actedIn
+                    WITH this_actedIn { __resolveType: \\"Series\\", .episodes, .title } AS this_actedIn
                     RETURN this_actedIn AS this_actedIn
                 }
                 WITH this_actedIn

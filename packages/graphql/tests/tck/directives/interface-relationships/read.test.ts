@@ -89,12 +89,12 @@ describe("Interface Relationships", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:ACTED_IN]->(this_actedIn:\`Movie\`)
-                    WITH this_actedIn { __resolveType: \\"Movie\\",  .runtime, .title } AS this_actedIn
+                    WITH this_actedIn { __resolveType: \\"Movie\\", .runtime, .title } AS this_actedIn
                     RETURN this_actedIn AS this_actedIn
                     UNION
                     WITH *
                     MATCH (this)-[this1:ACTED_IN]->(this_actedIn:\`Series\`)
-                    WITH this_actedIn { __resolveType: \\"Series\\",  .episodes, .title } AS this_actedIn
+                    WITH this_actedIn { __resolveType: \\"Series\\", .episodes, .title } AS this_actedIn
                     RETURN this_actedIn AS this_actedIn
                 }
                 WITH this_actedIn
@@ -135,12 +135,12 @@ describe("Interface Relationships", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:CURRENTLY_ACTING_IN]->(this_currentlyActingIn:\`Movie\`)
-                    WITH this_currentlyActingIn { __resolveType: \\"Movie\\",  .runtime, .title } AS this_currentlyActingIn
+                    WITH this_currentlyActingIn { __resolveType: \\"Movie\\", .runtime, .title } AS this_currentlyActingIn
                     RETURN this_currentlyActingIn AS this_currentlyActingIn
                     UNION
                     WITH *
                     MATCH (this)-[this1:CURRENTLY_ACTING_IN]->(this_currentlyActingIn:\`Series\`)
-                    WITH this_currentlyActingIn { __resolveType: \\"Series\\",  .episodes, .title } AS this_currentlyActingIn
+                    WITH this_currentlyActingIn { __resolveType: \\"Series\\", .episodes, .title } AS this_currentlyActingIn
                     RETURN this_currentlyActingIn AS this_currentlyActingIn
                 }
                 WITH this_currentlyActingIn
@@ -181,12 +181,12 @@ describe("Interface Relationships", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:ACTED_IN]->(this_actedIn:\`Movie\`)
-                    WITH this_actedIn { __resolveType: \\"Movie\\",  .runtime, .title } AS this_actedIn
+                    WITH this_actedIn { __resolveType: \\"Movie\\", .runtime, .title } AS this_actedIn
                     RETURN this_actedIn AS this_actedIn
                     UNION
                     WITH *
                     MATCH (this)-[this1:ACTED_IN]->(this_actedIn:\`Series\`)
-                    WITH this_actedIn { __resolveType: \\"Series\\",  .episodes, .title } AS this_actedIn
+                    WITH this_actedIn { __resolveType: \\"Series\\", .episodes, .title } AS this_actedIn
                     RETURN this_actedIn AS this_actedIn
                 }
                 WITH this_actedIn
@@ -239,7 +239,7 @@ describe("Interface Relationships", () => {
                     WITH *
                     MATCH (this)-[this0:ACTED_IN]->(this_actedIn:\`Movie\`)
                     WHERE this_actedIn.title STARTS WITH $param0
-                    WITH this_actedIn { __resolveType: \\"Movie\\",  .runtime, .title } AS this_actedIn
+                    WITH this_actedIn { __resolveType: \\"Movie\\", .runtime, .title } AS this_actedIn
                     RETURN this_actedIn AS this_actedIn
                 }
                 WITH this_actedIn
@@ -285,13 +285,13 @@ describe("Interface Relationships", () => {
                     WITH *
                     MATCH (this)-[this0:ACTED_IN]->(this_actedIn:\`Movie\`)
                     WHERE this_actedIn.title STARTS WITH $param0
-                    WITH this_actedIn { __resolveType: \\"Movie\\",  .runtime, .title } AS this_actedIn
+                    WITH this_actedIn { __resolveType: \\"Movie\\", .runtime, .title } AS this_actedIn
                     RETURN this_actedIn AS this_actedIn
                     UNION
                     WITH *
                     MATCH (this)-[this1:ACTED_IN]->(this_actedIn:\`Series\`)
                     WHERE this_actedIn.title STARTS WITH $param1
-                    WITH this_actedIn { __resolveType: \\"Series\\",  .episodes, .title } AS this_actedIn
+                    WITH this_actedIn { __resolveType: \\"Series\\", .episodes, .title } AS this_actedIn
                     RETURN this_actedIn AS this_actedIn
                 }
                 WITH this_actedIn

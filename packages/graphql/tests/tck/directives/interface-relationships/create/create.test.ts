@@ -113,12 +113,12 @@ describe("Interface Relationships - Create create", () => {
                 CALL {
                     WITH *
                     MATCH (this0)-[create_this0:ACTED_IN]->(this0_actedIn:\`Movie\`)
-                    WITH this0_actedIn { __resolveType: \\"Movie\\",  .runtime, .title } AS this0_actedIn
+                    WITH this0_actedIn { __resolveType: \\"Movie\\", .runtime, .title } AS this0_actedIn
                     RETURN this0_actedIn AS this0_actedIn
                     UNION
                     WITH *
                     MATCH (this0)-[create_this1:ACTED_IN]->(this0_actedIn:\`Series\`)
-                    WITH this0_actedIn { __resolveType: \\"Series\\",  .episodes, .title } AS this0_actedIn
+                    WITH this0_actedIn { __resolveType: \\"Series\\", .episodes, .title } AS this0_actedIn
                     RETURN this0_actedIn AS this0_actedIn
                 }
                 WITH this0_actedIn

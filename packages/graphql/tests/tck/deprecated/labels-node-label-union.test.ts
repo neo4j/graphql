@@ -87,13 +87,13 @@ describe("Node directive with unions", () => {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this_search:\`Category\`:\`ExtraLabel1\`:\`ExtraLabel2\`)
                     WHERE this_search.name = $param1
-                    WITH this_search { __resolveType: \\"Genre\\",  .name } AS this_search
+                    WITH this_search { __resolveType: \\"Genre\\", .name } AS this_search
                     RETURN this_search AS this_search
                     UNION
                     WITH *
                     MATCH (this)-[this1:SEARCH]->(this_search:\`Film\`)
                     WHERE this_search.title = $param2
-                    WITH this_search { __resolveType: \\"Movie\\",  .title } AS this_search
+                    WITH this_search { __resolveType: \\"Movie\\", .title } AS this_search
                     RETURN this_search AS this_search
                 }
                 WITH this_search

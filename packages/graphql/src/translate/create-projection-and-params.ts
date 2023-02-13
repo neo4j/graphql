@@ -186,10 +186,10 @@ export default function createProjectionAndParams({
 
                     const direction = getCypherRelationshipDirection(relationField, field.args);
 
-                    const nestedProj = recurse.projection.replace(/{|}/gm, "");
+                    const nestedProj = recurse.projection.replace(/{|}/gm, "").trim();
 
-                    const nestedProjString = nestedProj.trim().length ? `, ${nestedProj}` : "";
-                    const nestedProjection = `{ __resolveType: "${refNode.name}"${nestedProjString}}`;
+                    const nestedProjString = nestedProj.length ? `, ${nestedProj}` : "";
+                    const nestedProjection = `{ __resolveType: "${refNode.name}"${nestedProjString} }`;
 
                     const subquery = createProjectionSubquery({
                         parentNode,

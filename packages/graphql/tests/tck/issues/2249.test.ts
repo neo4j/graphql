@@ -111,12 +111,12 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
                 CALL {
                     WITH *
                     MATCH (this)<-[update_this0:REVIEWED]-(this_reviewers:\`Person\`)
-                    WITH this_reviewers { __resolveType: \\"Person\\",  .name, .reputation } AS this_reviewers
+                    WITH this_reviewers { __resolveType: \\"Person\\", .name, .reputation } AS this_reviewers
                     RETURN this_reviewers AS this_reviewers
                     UNION
                     WITH *
                     MATCH (this)<-[update_this1:REVIEWED]-(this_reviewers:\`Influencer\`)
-                    WITH this_reviewers { __resolveType: \\"Influencer\\"} AS this_reviewers
+                    WITH this_reviewers { __resolveType: \\"Influencer\\" } AS this_reviewers
                     RETURN this_reviewers AS this_reviewers
                 }
                 WITH this_reviewers
