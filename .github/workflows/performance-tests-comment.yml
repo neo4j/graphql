@@ -40,7 +40,7 @@ jobs:
           case "$number" in ''|*[!0-9]*) echo "Provided PR number is not an integer"; exit 1 ;; esac
           echo "pr-number=$number" >> "$GITHUB_OUTPUT"
       - name: Comment on PR
-        uses: marocchino/sticky-pull-request-comment@4608256f7929fbb5ae5f6a2fd255da7c577b46b0 # v2.4.0
+        uses: marocchino/sticky-pull-request-comment@3d60a5b2dae89d44e0c6ddc69dd7536aec2071cd # v2.5.0
         with:
           number: ${{ steps.get-pr-number.outputs.pr-number }}
           header: performance

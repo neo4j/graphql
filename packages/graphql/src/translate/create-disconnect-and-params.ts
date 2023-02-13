@@ -95,7 +95,9 @@ function createDisconnectAndParams({
                     context,
                     relationshipVariable: relVarName,
                     relationship,
-                    parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
+                    parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where.${
+                        relatedNode.name
+                    }`,
                 });
                 if (whereCypher) {
                     whereStrs.push(whereCypher);
