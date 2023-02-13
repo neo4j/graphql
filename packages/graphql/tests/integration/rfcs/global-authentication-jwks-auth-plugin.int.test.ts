@@ -72,7 +72,9 @@ describe("Global authentication - Auth JWKS plugin", () => {
             typeDefs,
             plugins: {
                 auth: new Neo4jGraphQLAuthJWKSPlugin({
-                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    jwksOptions: {
+                        jwksUri: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    },
                     globalAuthentication: true,
                 }),
             },
@@ -99,7 +101,9 @@ describe("Global authentication - Auth JWKS plugin", () => {
             typeDefs,
             plugins: {
                 auth: new Neo4jGraphQLAuthJWKSPlugin({
-                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    jwksOptions: {
+                        jwksUri: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    },
                     globalAuthentication: true,
                 }),
             },
@@ -130,7 +134,9 @@ describe("Global authentication - Auth JWKS plugin", () => {
             typeDefs,
             plugins: {
                 auth: new Neo4jGraphQLAuthJWKSPlugin({
-                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    jwksOptions: {
+                        jwksUri: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    },
                     globalAuthentication: true,
                 }),
             },
