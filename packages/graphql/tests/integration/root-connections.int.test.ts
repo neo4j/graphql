@@ -22,15 +22,15 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
-import { generateUniqueType } from "../utils/graphql-types";
+import { UniqueType } from "../utils/graphql-types";
 
 describe("root-connections", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
 
-    const pilotType = generateUniqueType("Pilot");
-    const aircraftType = generateUniqueType("Aircraft");
+    const pilotType = new UniqueType("Pilot");
+    const aircraftType = new UniqueType("Aircraft");
 
     const typeDefs = `
           type ${pilotType.name} {
@@ -218,10 +218,10 @@ describe("root-connections", () => {
             expect(result.errors).toBeFalsy();
             expect(result?.data?.[aircraftType.operations.connection]).toEqual({
                 totalCount: 20,
-                edges: expect.toIncludeSameMembers(sortedAircrafts.slice(0, 10).map((node) => ({
+                edges: sortedAircrafts.slice(0, 10).map((node) => ({
                     cursor: expect.any(String),
                     node,
-                }))),
+                })),
                 pageInfo: {
                     hasNextPage: true,
                     endCursor: "YXJyYXljb25uZWN0aW9uOjk=",
@@ -297,10 +297,10 @@ describe("root-connections", () => {
             expect(result.errors).toBeFalsy();
             expect(result?.data?.[aircraftType.operations.connection]).toEqual({
                 totalCount: 20,
-                edges: expect.toIncludeSameMembers(sortedAircrafts.slice(0, 10).map((node) => ({
+                edges: sortedAircrafts.slice(0, 10).map((node) => ({
                     cursor: expect.any(String),
                     node,
-                }))),
+                })),
                 pageInfo: {
                     hasNextPage: true,
                     endCursor: "YXJyYXljb25uZWN0aW9uOjk=",

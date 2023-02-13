@@ -14,9 +14,9 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@apollo/client": "3.7.4",
-        "@fortawesome/fontawesome-svg-core": "6.2.1",
-        "@fortawesome/free-solid-svg-icons": "6.2.1",
+        "@apollo/client": "3.7.7",
+        "@fortawesome/fontawesome-svg-core": "6.3.0",
+        "@fortawesome/free-solid-svg-icons": "6.3.0",
         "@fortawesome/react-fontawesome": "0.2.0",
         "@types/react-dom": "18.0.10",
         "@types/react-router-dom": "5.3.3",
@@ -25,15 +25,15 @@
         "dotenv-webpack": "8.0.1",
         "graphql": "16.6.0",
         "react": "18.2.0",
-        "react-bootstrap": "2.7.0",
+        "react-bootstrap": "2.7.1",
         "react-dom": "18.2.0",
-        "react-markdown": "8.0.4",
+        "react-markdown": "8.0.5",
         "react-mde": "11.5.0",
-        "react-router-dom": "6.6.2",
+        "react-router-dom": "6.8.1",
         "showdown": "2.1.0",
         "style-loader": "3.3.1",
         "ts-loader": "9.4.2",
-        "typescript": "4.9.4"
+        "typescript": "4.9.5"
     },
     "devDependencies": {
         "@tsconfig/create-react-app": "1.0.3",

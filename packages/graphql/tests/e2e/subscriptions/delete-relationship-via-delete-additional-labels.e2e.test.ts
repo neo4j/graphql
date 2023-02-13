@@ -20,7 +20,7 @@
 import type { Driver } from "neo4j-driver";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
@@ -45,22 +45,22 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
     let typeDefs: string;
 
     beforeEach(async () => {
-        typeActor = generateUniqueType("Actor");
-        typePerson = generateUniqueType("Person");
-        typeDinosaur = generateUniqueType("Dinosaur");
-        typeMovie = generateUniqueType("Movie");
-        typeFilm = generateUniqueType("Film");
-        typeSeries = generateUniqueType("Series");
-        typeProduction = generateUniqueType("Production");
+        typeActor = new UniqueType("Actor");
+        typePerson = new UniqueType("Person");
+        typeDinosaur = new UniqueType("Dinosaur");
+        typeMovie = new UniqueType("Movie");
+        typeFilm = new UniqueType("Film");
+        typeSeries = new UniqueType("Series");
+        typeProduction = new UniqueType("Production");
 
         typeDefs = `
-             type ${typeActor} @node(additionalLabels: ["${typePerson}"]) {
+             type ${typeActor} @node(labels: ["${typeActor}", "${typePerson}"]) {
                  name: String
                  movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                  productions: [${typeProduction}!]! @relationship(type: "PART_OF", direction: OUT)
              }
 
-            type ${typeDinosaur} @node(label: "${typePerson}") {
+            type ${typeDinosaur} @node(labels: ["${typePerson}"]) {
                 name: String
                 movies: [${typeMovie}!]! @relationship(type: "DIRECTED", direction: OUT)
             }
@@ -70,20 +70,20 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 movies: [${typeMovie}!]! @relationship(type: "DIRECTED", direction: OUT)
             }
 
-            type ${typeMovie} @node(label: "${typeFilm}", additionalLabels: ["Multimedia"]) {
+            type ${typeMovie} @node(labels: ["${typeFilm}", "Multimedia"]) {
                 id: ID
                 title: String
                 actors: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
                 directors: [${typePerson}!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
-             type ${typeSeries} @node(additionalLabels: ["${typeProduction}"]) {
+             type ${typeSeries} @node(labels: ["${typeSeries}", "${typeProduction}"]) {
                  title: String
                  actors: [${typeActor}!]! @relationship(type: "PART_OF", direction: IN)
                  productions: [${typeProduction}!]! @relationship(type: "IS_A", direction: OUT)
              }
 
-             type ${typeProduction} @node(additionalLabels: ["${typeSeries}"]) {
+             type ${typeProduction}  @node(labels: ["${typeProduction}", "${typeSeries}"])  {
                  title: String
                  actors: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
              }

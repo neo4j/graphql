@@ -29,11 +29,11 @@ describe("Cypher Where Aggregations with @node directive", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type User @node(label: "_User", additionalLabels: ["additionalUser"]) {
+            type User @node(labels: ["_User", "additionalUser"]) {
                 someName: String
             }
 
-            type Post @node(label: "_Post", additionalLabels: ["additionalPost"]) {
+            type Post @node(labels: ["_Post", "additionalPost"]) {
                 content: String!
                 likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -63,7 +63,7 @@ describe("Cypher Where Aggregations with @node directive", () => {
             "MATCH (this:\`_Post\`:\`additionalPost\`)
             CALL {
                 WITH this
-                MATCH (this1:\`_User\`:\`additionalUser\`)-[this0:LIKES]->(this:\`_Post\`:\`additionalPost\`)
+                MATCH (this)<-[this0:LIKES]-(this1:\`_User\`:\`additionalUser\`)
                 RETURN any(var2 IN collect(size(this1.someName)) WHERE var2 > $param0) AS var3
             }
             WITH *

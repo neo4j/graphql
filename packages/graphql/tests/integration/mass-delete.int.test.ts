@@ -21,7 +21,7 @@ import { DocumentNode, graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { cleanNodes } from "../utils/clean-nodes";
 import { Neo4jGraphQL } from "../../src";
-import { generateUniqueType, UniqueType } from "../utils/graphql-types";
+import { UniqueType } from "../utils/graphql-types";
 import Neo4j from "./neo4j";
 import { gql } from "apollo-server";
 
@@ -41,8 +41,8 @@ describe("Mass Delete", () => {
     });
 
     beforeEach(async () => {
-        personType = generateUniqueType("Person");
-        movieType = generateUniqueType("Movie");
+        personType = new UniqueType("Person");
+        movieType = new UniqueType("Movie");
 
         typeDefs = gql`
             type ${personType.name} {

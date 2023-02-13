@@ -65,7 +65,6 @@ export function createConnectionClause({
         returnVariable: edgeItem,
         whereInput,
     });
-
     const edgesList = new Cypher.NamedVariable("edges");
     const totalCount = new Cypher.NamedVariable("totalCount");
     const withClause = new Cypher.With([Cypher.collect(edgeItem), edgesList]).with(edgesList, [

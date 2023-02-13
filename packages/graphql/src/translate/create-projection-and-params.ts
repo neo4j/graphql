@@ -28,7 +28,7 @@ import createPointElement from "./projection/elements/create-point-element";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
-import { getRelationshipDirection } from "../utils/get-relationship-direction";
+import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
@@ -100,7 +100,7 @@ export default function createProjectionAndParams({
                     entity: authableField,
                     operations: "READ",
                     context,
-                    allow: { parentNode: node, varName, chainStr: param },
+                    allow: { parentNode: node, varName },
                 });
                 if (allowAndParams[0]) {
                     if (!res.meta.authValidateStrs) {
@@ -178,7 +178,7 @@ export default function createProjectionAndParams({
                     });
                     res.params = { ...res.params, ...recurse.params };
 
-                    const direction = getRelationshipDirection(relationField, field.args);
+                    const direction = getCypherRelationshipDirection(relationField, field.args);
 
                     let nestedProjection = [
                         ` { __resolveType: "${refNode.name}", `,
@@ -234,7 +234,7 @@ export default function createProjectionAndParams({
 
             const parentNode = new Cypher.NamedNode(chainStr || varName);
 
-            const direction = getRelationshipDirection(relationField, field.args);
+            const direction = getCypherRelationshipDirection(relationField, field.args);
             const subquery = createProjectionSubquery({
                 parentNode,
                 whereInput,

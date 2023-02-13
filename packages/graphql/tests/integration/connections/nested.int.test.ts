@@ -23,8 +23,7 @@ import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import type { UniqueType } from "../../utils/graphql-types";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("Connections Alias", () => {
     let driver: Driver;
@@ -45,8 +44,8 @@ describe("Connections Alias", () => {
     });
 
     beforeEach(async () => {
-        typeMovie = generateUniqueType("Movie");
-        typeActor = generateUniqueType("Actor");
+        typeMovie = new UniqueType("Movie");
+        typeActor = new UniqueType("Actor");
         session = await neo4j.getSession();
 
         const typeDefs = gql`

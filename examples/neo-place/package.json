@@ -1,6 +1,6 @@
 {
     "name": "neo-place",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "private": true,
     "description": "Subscriptions example",
     "engines": {
@@ -35,9 +35,9 @@
     },
     "homepage": "https://github.com/neo4j/graphql#readme",
     "dependencies": {
-        "@neo4j/graphql": "^3.13.0",
-        "@neo4j/graphql-plugin-auth": "^2.0.0",
-        "@neo4j/graphql-plugin-subscriptions-amqp": "^1.0.0",
+        "@neo4j/graphql": "^3.15.0",
+        "@neo4j/graphql-plugin-auth": "^2.1.0",
+        "@neo4j/graphql-plugin-subscriptions-amqp": "^2.0.0",
         "apollo-server-core": "^3.11.1",
         "apollo-server-express": "^3.11.1",
         "dotenv": "^16.0.3",
@@ -53,6 +53,6 @@
     },
     "devDependencies": {
         "concurrently": "7.6.0",
-        "parcel": "2.8.2"
+        "parcel": "2.8.3"
     }
 }

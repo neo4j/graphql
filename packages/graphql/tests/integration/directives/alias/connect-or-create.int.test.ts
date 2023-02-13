@@ -20,7 +20,7 @@
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { cleanNodes } from "../../../utils/clean-nodes";
@@ -41,8 +41,8 @@ describe("@alias directive", () => {
 
     beforeEach(async () => {
         session = await neo4j.getSession();
-        typeMovie = generateUniqueType("Movie");
-        typeActor = generateUniqueType("Actor");
+        typeMovie = new UniqueType("Movie");
+        typeActor = new UniqueType("Actor");
 
         const typeDefs = `
             type ${typeActor} {

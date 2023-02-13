@@ -22,12 +22,12 @@ import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/1364", () => {
-    const testActor = generateUniqueType("Actor");
-    const testMovie = generateUniqueType("Movie");
-    const testGenre = generateUniqueType("Genre");
+    const testActor = new UniqueType("Actor");
+    const testMovie = new UniqueType("Movie");
+    const testGenre = new UniqueType("Genre");
 
     let schema: GraphQLSchema;
     let driver: Driver;
