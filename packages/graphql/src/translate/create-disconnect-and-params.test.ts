@@ -108,7 +108,7 @@ describe("createDisconnectAndParams", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this0_rel:SIMILAR]->(this0:Movie)
-            WHERE this0.title = $this0_where_this0param0
+            WHERE this0.title = $this0_where_Movie_this0param0
             CALL {
             	WITH this0, this0_rel, this
             	WITH collect(this0) as this0, this0_rel, this
@@ -119,7 +119,7 @@ describe("createDisconnectAndParams", () => {
             CALL {
             WITH this, this0
             OPTIONAL MATCH (this0)-[this0_similarMovies0_rel:SIMILAR]->(this0_similarMovies0:Movie)
-            WHERE this0_similarMovies0.title = $this0_disconnect_similarMovies0_where_this0_similarMovies0param0
+            WHERE this0_similarMovies0.title = $this0_disconnect_similarMovies0_where_Movie_this0_similarMovies0param0
             CALL {
             	WITH this0_similarMovies0, this0_similarMovies0_rel, this0
             	WITH collect(this0_similarMovies0) as this0_similarMovies0, this0_similarMovies0_rel, this0

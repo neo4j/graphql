@@ -158,7 +158,7 @@ describe("Cypher Auth Allow", () => {
                         CREATE (create_this10:\`User\`)
                         SET
                             create_this10.id = create_var8.id
-                        MERGE (create_this10)-[create_this11:HAS_POST]->(create_this5)
+                        MERGE (create_this5)<-[create_this11:HAS_POST]-(create_this10)
                         WITH *
                         CALL apoc.util.validate(NOT ((create_this10.id IS NOT NULL AND create_this10.id = $create_this10auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                         RETURN collect(NULL) AS create_var12
@@ -429,7 +429,7 @@ describe("Cypher Auth Allow", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
-            WHERE this_disconnect_creator0.id = $updatePosts_args_disconnect_creator_where_this_disconnect_creator0param0
+            WHERE this_disconnect_creator0.id = $updatePosts_args_disconnect_creator_where_User_this_disconnect_creator0param0
             CALL {
             	WITH this_disconnect_creator0, this_disconnect_creator0_rel, this
             	WITH collect(this_disconnect_creator0) as this_disconnect_creator0, this_disconnect_creator0_rel, this
@@ -456,7 +456,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"post-id\\",
-                \\"updatePosts_args_disconnect_creator_where_this_disconnect_creator0param0\\": \\"user-id\\",
+                \\"updatePosts_args_disconnect_creator_where_User_this_disconnect_creator0param0\\": \\"user-id\\",
                 \\"this_disconnect_creator0auth_param0\\": \\"id-01\\",
                 \\"updatePosts\\": {
                     \\"args\\": {
