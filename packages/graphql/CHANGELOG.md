@@ -1,5 +1,16 @@
 # @neo4j/graphql
 
+## 3.16.1
+
+### Patch Changes
+
+-   [#2810](https://github.com/neo4j/graphql/pull/2810) [`0fe3a6853`](https://github.com/neo4j/graphql/commit/0fe3a68536e0cc5ec2cdd05057d038ca38358ff8) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #2803 - invalid cypher when using aggregation filters within nested relationships/connections
+
+-   [#2877](https://github.com/neo4j/graphql/pull/2877) [`79ef38c5d`](https://github.com/neo4j/graphql/commit/79ef38c5dd43da19a64b0e7c25019209e19415f3) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #2871 - invalid cypher for relationship filters nested within a SINGLE relationship
+
+-   Updated dependencies [[`81df28ed9`](https://github.com/neo4j/graphql/commit/81df28ed9238c1b4692aabe8e1de438ba01ae914), [`4fdb5135f`](https://github.com/neo4j/graphql/commit/4fdb5135fa3bdb84b87893d14afe263ad5ed020f), [`d4455881c`](https://github.com/neo4j/graphql/commit/d4455881c83f9ec597e657d92b9c9c126721541b)]:
+    -   @neo4j/cypher-builder@0.2.0
+
 ## 3.16.0
 
 ### Minor Changes
