@@ -87,15 +87,21 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             SET this_create_interface_ChildOne0_node_ChildOne.name = $this_create_interface_ChildOne0_node_ChildOne_name
             MERGE (this)-[:HAS_INTERFACE]->(this_create_interface_ChildOne0_node_ChildOne)
             WITH *
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:HAS_INTERFACE]->(this_ChildOne:\`ChildOne\`)
-                RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS this_interface
-                UNION
-                WITH this
-                MATCH (this)-[update_this1:HAS_INTERFACE]->(this_ChildTwo:\`ChildTwo\`)
-                RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS this_interface
+                CALL {
+                    WITH *
+                    MATCH (this)-[update_this0:HAS_INTERFACE]->(this_interface:\`ChildOne\`)
+                    WITH this_interface { __resolveType: \\"ChildOne\\" ,  .id, .name } AS this_interface
+                    RETURN this_interface AS this_interface
+                    UNION
+                    WITH *
+                    MATCH (this)-[update_this1:HAS_INTERFACE]->(this_interface:\`ChildTwo\`)
+                    WITH this_interface { __resolveType: \\"ChildTwo\\" ,  .id, .name } AS this_interface
+                    RETURN this_interface AS this_interface
+                }
+                WITH this_interface
+                RETURN head(collect(this_interface)) AS this_interface
             }
             RETURN collect(DISTINCT this { .id, interface: this_interface }) AS data"
         `);
@@ -175,15 +181,21 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             	RETURN count(*) AS connect_this_connect_interface_ChildTwo
             }
             WITH *
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:HAS_INTERFACE]->(this_ChildOne:\`ChildOne\`)
-                RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS this_interface
-                UNION
-                WITH this
-                MATCH (this)-[update_this1:HAS_INTERFACE]->(this_ChildTwo:\`ChildTwo\`)
-                RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS this_interface
+                CALL {
+                    WITH *
+                    MATCH (this)-[update_this0:HAS_INTERFACE]->(this_interface:\`ChildOne\`)
+                    WITH this_interface { __resolveType: \\"ChildOne\\" ,  .id, .name } AS this_interface
+                    RETURN this_interface AS this_interface
+                    UNION
+                    WITH *
+                    MATCH (this)-[update_this1:HAS_INTERFACE]->(this_interface:\`ChildTwo\`)
+                    WITH this_interface { __resolveType: \\"ChildTwo\\" ,  .id, .name } AS this_interface
+                    RETURN this_interface AS this_interface
+                }
+                WITH this_interface
+                RETURN head(collect(this_interface)) AS this_interface
             }
             RETURN collect(DISTINCT this { .id, interface: this_interface }) AS data"
         `);

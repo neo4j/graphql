@@ -137,45 +137,26 @@ export default function createProjectionAndParams({
                     const interfaceImplementations = context.nodes.filter((x) =>
                         relationField.interface?.implementations?.includes(x.name)
                     );
-                    // Enrich concrete types with shared filters
-                    const interfaceSharedFilters = Object.entries(field.args.where || {}).filter(
-                        ([key]) => key !== "_on"
-                    );
 
-                    interfaceImplementations.forEach((node) => {
-                        interfaceSharedFilters.forEach(([sharedFilterKey, sharedFilterValue]) => {
-                            field.args.where = field.args.where as Record<string, any>;
-                            if (!Object.prototype.hasOwnProperty.call(field.args.where, "_on")) {
-                                field.args.where["_on"] = {};
-                            }
-
-                            if (field.args.where["_on"][node.name]) {
-                                field.args.where["_on"][node.name][sharedFilterKey] = field.args.where["_on"][
-                                    node.name
-                                ][sharedFilterKey]
-                                    ? field.args.where["_on"][node.name][sharedFilterKey]
-                                    : sharedFilterValue;
-                            } else {
-                                field.args.where["_on"][node.name] = {
-                                    [sharedFilterKey]: sharedFilterValue,
-                                };
-                            }
-                        });
-                    });
-
+                    if (field.args.where) {
+                        // Enrich concrete types with shared filters
+                        field.args.where = addSharedFiltersToInterfaceImplementation(
+                            field.args.where as GraphQLWhereArg,
+                            interfaceImplementations
+                        );
+                    }
+                    const hasImplementationsFilters = Object.prototype.hasOwnProperty.call(field.args.where || {}, "_on");
                     referenceNodes = interfaceImplementations.filter(
                         (x) =>
                             // where is not defined
                             !field.args.where ||
                             // where exists but has no filters defined
                             Object.keys(field.args.where).length === 0 ||
-                            // where exists but has only shared filters
-                            !Object.prototype.hasOwnProperty.call(field.args.where, "_on") ||
                             // where exists and has a filter on this implementation
-                            (Object.prototype.hasOwnProperty.call(field.args.where, "_on") &&
+                            (hasImplementationsFilters &&
                                 Object.prototype.hasOwnProperty.call(field.args.where["_on"], x.name))
                     );
-                    if (field.args.where != null && typeof field.args.where == "object" && field.args.where["_on"]) {
+                    if (field.args.where != null && typeof field.args.where === "object" && hasImplementationsFilters) {
                         field.args.where = {
                             ...field.args.where,
                             ...(field.args.where["_on"] as Record<string, any>),
@@ -490,4 +471,27 @@ function createFulltextProjection({
         literalElements,
         resolveType,
     });
+}
+
+function addSharedFiltersToInterfaceImplementation(where: GraphQLWhereArg, implementations: Node[]) {
+    const interfaceSharedFilters = Object.entries(where || {}).filter(([key]) => key !== "_on");
+    implementations.forEach((node) => {
+        interfaceSharedFilters.forEach(([sharedFilterKey, sharedFilterValue]) => {
+            if (!Object.prototype.hasOwnProperty.call(where, "_on")) {
+                where["_on"] = {};
+            }
+            let nodeWhere = where["_on"][node.name];
+            if (nodeWhere) {
+                nodeWhere[sharedFilterKey] = nodeWhere[sharedFilterKey]
+                    ? nodeWhere[sharedFilterKey]
+                    : sharedFilterValue;
+            } else {
+                nodeWhere = {
+                    [sharedFilterKey]: sharedFilterValue,
+                };
+            }
+            where["_on"][node.name] = nodeWhere;
+        });
+    });
+    return where;
 }

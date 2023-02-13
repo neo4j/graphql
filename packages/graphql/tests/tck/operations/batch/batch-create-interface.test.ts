@@ -210,33 +210,37 @@ describe("Batch Create, Interface", () => {
             }
             RETURN this1
             }
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:EMPLOYED]-(this0_Actor:\`Actor\`)
-                RETURN { __resolveType: \\"Actor\\", name: this0_Actor.name } AS this0_workers
-                UNION
-                WITH this0
-                MATCH (this0)<-[create_this1:EMPLOYED]-(this0_Modeler:\`Modeler\`)
-                RETURN { __resolveType: \\"Modeler\\", name: this0_Modeler.name } AS this0_workers
+                CALL {
+                    WITH *
+                    MATCH (this0_workers:\`Actor\`)-[create_this0:EMPLOYED]->(this0)
+                    WITH this0_workers { __resolveType: \\"Actor\\" ,  .name } AS this0_workers
+                    RETURN this0_workers AS this0_workers
+                    UNION
+                    WITH *
+                    MATCH (this0_workers:\`Modeler\`)-[create_this1:EMPLOYED]->(this0)
+                    WITH this0_workers { __resolveType: \\"Modeler\\" ,  .name } AS this0_workers
+                    RETURN this0_workers AS this0_workers
+                }
+                WITH this0_workers
+                RETURN collect(this0_workers) AS this0_workers
             }
-            RETURN collect(this0_workers) AS this0_workers
-            }
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this1
-                MATCH (this1)<-[create_this0:EMPLOYED]-(this1_Actor:\`Actor\`)
-                RETURN { __resolveType: \\"Actor\\", name: this1_Actor.name } AS this1_workers
-                UNION
-                WITH this1
-                MATCH (this1)<-[create_this1:EMPLOYED]-(this1_Modeler:\`Modeler\`)
-                RETURN { __resolveType: \\"Modeler\\", name: this1_Modeler.name } AS this1_workers
-            }
-            RETURN collect(this1_workers) AS this1_workers
+                CALL {
+                    WITH *
+                    MATCH (this1_workers:\`Actor\`)-[create_this0:EMPLOYED]->(this1)
+                    WITH this1_workers { __resolveType: \\"Actor\\" ,  .name } AS this1_workers
+                    RETURN this1_workers AS this1_workers
+                    UNION
+                    WITH *
+                    MATCH (this1_workers:\`Modeler\`)-[create_this1:EMPLOYED]->(this1)
+                    WITH this1_workers { __resolveType: \\"Modeler\\" ,  .name } AS this1_workers
+                    RETURN this1_workers AS this1_workers
+                }
+                WITH this1_workers
+                RETURN collect(this1_workers) AS this1_workers
             }
             RETURN [
             this0 { .id, workers: this0_workers },
@@ -433,19 +437,21 @@ describe("Batch Create, Interface", () => {
                 WITH this0_website { .address } AS this0_website
                 RETURN head(collect(this0_website)) AS this0_website
             }
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this1:EMPLOYED]-(this0_Actor:\`Actor\`)
-                RETURN { __resolveType: \\"Actor\\", name: this0_Actor.name } AS this0_workers
-                UNION
-                WITH this0
-                MATCH (this0)<-[create_this2:EMPLOYED]-(this0_Modeler:\`Modeler\`)
-                RETURN { __resolveType: \\"Modeler\\", name: this0_Modeler.name } AS this0_workers
-            }
-            RETURN collect(this0_workers) AS this0_workers
+                CALL {
+                    WITH *
+                    MATCH (this0_workers:\`Actor\`)-[create_this1:EMPLOYED]->(this0)
+                    WITH this0_workers { __resolveType: \\"Actor\\" ,  .name } AS this0_workers
+                    RETURN this0_workers AS this0_workers
+                    UNION
+                    WITH *
+                    MATCH (this0_workers:\`Modeler\`)-[create_this2:EMPLOYED]->(this0)
+                    WITH this0_workers { __resolveType: \\"Modeler\\" ,  .name } AS this0_workers
+                    RETURN this0_workers AS this0_workers
+                }
+                WITH this0_workers
+                RETURN collect(this0_workers) AS this0_workers
             }
             CALL {
                 WITH this1
@@ -453,19 +459,21 @@ describe("Batch Create, Interface", () => {
                 WITH this1_website { .address } AS this1_website
                 RETURN head(collect(this1_website)) AS this1_website
             }
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this1
-                MATCH (this1)<-[create_this1:EMPLOYED]-(this1_Actor:\`Actor\`)
-                RETURN { __resolveType: \\"Actor\\", name: this1_Actor.name } AS this1_workers
-                UNION
-                WITH this1
-                MATCH (this1)<-[create_this2:EMPLOYED]-(this1_Modeler:\`Modeler\`)
-                RETURN { __resolveType: \\"Modeler\\", name: this1_Modeler.name } AS this1_workers
-            }
-            RETURN collect(this1_workers) AS this1_workers
+                CALL {
+                    WITH *
+                    MATCH (this1_workers:\`Actor\`)-[create_this1:EMPLOYED]->(this1)
+                    WITH this1_workers { __resolveType: \\"Actor\\" ,  .name } AS this1_workers
+                    RETURN this1_workers AS this1_workers
+                    UNION
+                    WITH *
+                    MATCH (this1_workers:\`Modeler\`)-[create_this2:EMPLOYED]->(this1)
+                    WITH this1_workers { __resolveType: \\"Modeler\\" ,  .name } AS this1_workers
+                    RETURN this1_workers AS this1_workers
+                }
+                WITH this1_workers
+                RETURN collect(this1_workers) AS this1_workers
             }
             CALL {
                 WITH this2
@@ -473,19 +481,21 @@ describe("Batch Create, Interface", () => {
                 WITH this2_website { .address } AS this2_website
                 RETURN head(collect(this2_website)) AS this2_website
             }
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this2
-                MATCH (this2)<-[create_this1:EMPLOYED]-(this2_Actor:\`Actor\`)
-                RETURN { __resolveType: \\"Actor\\", name: this2_Actor.name } AS this2_workers
-                UNION
-                WITH this2
-                MATCH (this2)<-[create_this2:EMPLOYED]-(this2_Modeler:\`Modeler\`)
-                RETURN { __resolveType: \\"Modeler\\", name: this2_Modeler.name } AS this2_workers
-            }
-            RETURN collect(this2_workers) AS this2_workers
+                CALL {
+                    WITH *
+                    MATCH (this2_workers:\`Actor\`)-[create_this1:EMPLOYED]->(this2)
+                    WITH this2_workers { __resolveType: \\"Actor\\" ,  .name } AS this2_workers
+                    RETURN this2_workers AS this2_workers
+                    UNION
+                    WITH *
+                    MATCH (this2_workers:\`Modeler\`)-[create_this2:EMPLOYED]->(this2)
+                    WITH this2_workers { __resolveType: \\"Modeler\\" ,  .name } AS this2_workers
+                    RETURN this2_workers AS this2_workers
+                }
+                WITH this2_workers
+                RETURN collect(this2_workers) AS this2_workers
             }
             CALL {
                 WITH this3
@@ -493,19 +503,21 @@ describe("Batch Create, Interface", () => {
                 WITH this3_website { .address } AS this3_website
                 RETURN head(collect(this3_website)) AS this3_website
             }
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this3
-                MATCH (this3)<-[create_this1:EMPLOYED]-(this3_Actor:\`Actor\`)
-                RETURN { __resolveType: \\"Actor\\", name: this3_Actor.name } AS this3_workers
-                UNION
-                WITH this3
-                MATCH (this3)<-[create_this2:EMPLOYED]-(this3_Modeler:\`Modeler\`)
-                RETURN { __resolveType: \\"Modeler\\", name: this3_Modeler.name } AS this3_workers
-            }
-            RETURN collect(this3_workers) AS this3_workers
+                CALL {
+                    WITH *
+                    MATCH (this3_workers:\`Actor\`)-[create_this1:EMPLOYED]->(this3)
+                    WITH this3_workers { __resolveType: \\"Actor\\" ,  .name } AS this3_workers
+                    RETURN this3_workers AS this3_workers
+                    UNION
+                    WITH *
+                    MATCH (this3_workers:\`Modeler\`)-[create_this2:EMPLOYED]->(this3)
+                    WITH this3_workers { __resolveType: \\"Modeler\\" ,  .name } AS this3_workers
+                    RETURN this3_workers AS this3_workers
+                }
+                WITH this3_workers
+                RETURN collect(this3_workers) AS this3_workers
             }
             RETURN [
             this0 { .id, website: this0_website, workers: this0_workers },

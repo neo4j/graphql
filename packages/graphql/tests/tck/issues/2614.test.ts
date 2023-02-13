@@ -73,16 +73,17 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this_Movie:\`Film\`)
-                WHERE this_Movie.title = $param0
-                RETURN { __resolveType: \\"Movie\\", title: this_Movie.title } AS this_actedIn
-            }
-            RETURN collect(this_actedIn) AS this_actedIn
+                CALL {
+                    WITH *
+                    MATCH (this)-[this0:ACTED_IN]->(this_actedIn:\`Film\`)
+                    WHERE this_actedIn.title = $param0
+                    WITH this_actedIn { __resolveType: \\"Movie\\" ,  .title } AS this_actedIn
+                    RETURN this_actedIn AS this_actedIn
+                }
+                WITH this_actedIn
+                RETURN collect(this_actedIn) AS this_actedIn
             }
             RETURN this { actedIn: this_actedIn } AS this"
         `);
