@@ -76,7 +76,7 @@ describe("#582", () => {
             WHERE (this.type = $param0 AND EXISTS {
                 MATCH (this)-[this0:EDGE]->(this1:\`Entity\`)
                 WHERE (this1.type = $param1 AND EXISTS {
-                    MATCH (this3:\`Entity\`)-[this2:EDGE]->(this1)
+                    MATCH (this1)<-[this2:EDGE]-(this3:\`Entity\`)
                     WHERE this3.type = $param2
                 })
             })
@@ -129,7 +129,7 @@ describe("#582", () => {
             WHERE (this.type = $param0 AND EXISTS {
                 MATCH (this)-[this0:EDGE]->(this1:\`Entity\`)
                 WHERE (this1.type = $param1 AND EXISTS {
-                    MATCH (this3:\`Entity\`)-[this2:EDGE]->(this1)
+                    MATCH (this1)<-[this2:EDGE]-(this3:\`Entity\`)
                     WHERE (this3.type = $param2 AND EXISTS {
                         MATCH (this3)-[this4:EDGE]->(this5:\`Entity\`)
                         WHERE this5.type = $param3

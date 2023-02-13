@@ -45,6 +45,9 @@ class BinaryOp extends BooleanOp {
         this.addChildren(...this.children);
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const childrenStrs = this.children.map((c) => c.getCypher(env)).filter(Boolean);
 
@@ -64,6 +67,9 @@ class NotOp extends BooleanOp {
         this.addChildren(this.child);
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const childStr = this.child.getCypher(env);
 

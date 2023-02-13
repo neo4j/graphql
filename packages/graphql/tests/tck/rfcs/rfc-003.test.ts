@@ -201,7 +201,7 @@ describe("tck/rfs/003", () => {
                                 CREATE (create_this5:\`Director\`)
                                 SET
                                     create_this5.id = create_var3.id
-                                MERGE (create_this5)-[create_this6:DIRECTED]->(create_this0)
+                                MERGE (create_this0)<-[create_this6:DIRECTED]-(create_this5)
                                 WITH create_this5
                                 CALL {
                                 	WITH create_this5
@@ -295,7 +295,7 @@ describe("tck/rfs/003", () => {
                                 CREATE (create_this5:\`Director\`)
                                 SET
                                     create_this5.id = create_var3.id
-                                MERGE (create_this5)-[create_this6:DIRECTED]->(create_this0)
+                                MERGE (create_this0)<-[create_this6:DIRECTED]-(create_this5)
                                 WITH create_this5
                                 CALL {
                                 	WITH create_this5
@@ -1377,7 +1377,7 @@ describe("tck/rfs/003", () => {
                         WITH *
                         CALL {
                             WITH this
-                            MATCH (this_director:\`Director\`)-[update_this0:DIRECTED]->(this)
+                            MATCH (this)<-[update_this0:DIRECTED]-(this_director:\`Director\`)
                             WITH this_director { .id } AS this_director
                             RETURN head(collect(this_director)) AS this_director
                         }
@@ -1498,7 +1498,7 @@ describe("tck/rfs/003", () => {
                         WITH *
                         CALL {
                             WITH this
-                            MATCH (this_director:\`Director\`)-[update_this0:DIRECTED]->(this)
+                            MATCH (this)<-[update_this0:DIRECTED]-(this_director:\`Director\`)
                             WITH this_director { .id } AS this_director
                             RETURN head(collect(this_director)) AS this_director
                         }

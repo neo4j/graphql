@@ -28,10 +28,10 @@ describe("RelationshipRef", () => {
 
         const node2 = new Cypher.Node({ labels: ["Movie"] });
 
-        const actedIn = node1.relatedTo(node2).withType("ACTED_IN");
-        const testClause = new TestClause(actedIn.pattern());
+        const actedIn = new Cypher.Pattern(node1).related(new Cypher.Relationship({ type: "ACTED_IN" })).to(node2);
+        const testClause = new TestClause(actedIn);
 
         const queryResult = testClause.build();
-        expect(queryResult.cypher).toMatchInlineSnapshot(`"(this1:\`Actor\`)-[this0:ACTED_IN]->(this2:\`Movie\`)"`);
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"(this0:\`Actor\`)-[this1:ACTED_IN]->(this2:\`Movie\`)"`);
     });
 });

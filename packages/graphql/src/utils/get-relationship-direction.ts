@@ -23,11 +23,27 @@ import type { RelationField } from "../types";
 
 export type DirectionString = "-" | "->" | "<-";
 export type RelationshipDirection = "IN" | "OUT" | "undirected";
+export type CypherRelationshipDirection = "left" | "right" | "undirected";
 
 type DirectionResult = {
     inStr: DirectionString;
     outStr: DirectionString;
 };
+
+export function getCypherRelationshipDirection(
+    relationField: RelationField,
+    fieldArgs: { directed?: boolean } = {}
+): CypherRelationshipDirection {
+    const direction = getRelationshipDirection(relationField, fieldArgs);
+    switch (direction) {
+        case "IN":
+            return "left";
+        case "OUT":
+            return "right";
+        case "undirected":
+            return "undirected";
+    }
+}
 
 export function getRelationshipDirection(
     relationField: RelationField,

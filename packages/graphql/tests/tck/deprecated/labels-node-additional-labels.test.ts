@@ -94,15 +94,15 @@ describe("Node directive with additionalLabels", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`:\`Multimedia\`)
-            CALL {
-                WITH this
-                MATCH (this_actors:\`Actor\`:\`Person\`)-[this0:ACTED_IN]->(this)
-                WITH this_actors { .name } AS this_actors
-                RETURN collect(this_actors) AS this_actors
-            }
-            RETURN this { .title, actors: this_actors } AS this"
-        `);
+"MATCH (this:\`Film\`:\`Multimedia\`)
+CALL {
+    WITH this
+    MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Actor\`:\`Person\`)
+    WITH this_actors { .name } AS this_actors
+    RETURN collect(this_actors) AS this_actors
+}
+RETURN this { .title, actors: this_actors } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -129,27 +129,27 @@ describe("Node directive with additionalLabels", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
-            CALL {
-                WITH create_var1
-                CREATE (create_this0:\`Film\`:\`Multimedia\`)
-                SET
-                    create_this0.id = create_var1.id
-                WITH create_this0, create_var1
-                CALL {
-                    WITH create_this0, create_var1
-                    UNWIND create_var1.actors.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
-                    CREATE (create_this5:\`Actor\`:\`Person\`)
-                    SET
-                        create_this5.name = create_var3.name
-                    MERGE (create_this5)-[create_this6:ACTED_IN]->(create_this0)
-                    RETURN collect(NULL) AS create_var7
-                }
-                RETURN create_this0
-            }
-            RETURN collect(create_this0 { .id }) AS data"
-        `);
+"UNWIND $create_param0 AS create_var1
+CALL {
+    WITH create_var1
+    CREATE (create_this0:\`Film\`:\`Multimedia\`)
+    SET
+        create_this0.id = create_var1.id
+    WITH create_this0, create_var1
+    CALL {
+        WITH create_this0, create_var1
+        UNWIND create_var1.actors.create AS create_var2
+        WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
+        CREATE (create_this5:\`Actor\`:\`Person\`)
+        SET
+            create_this5.name = create_var3.name
+        MERGE (create_this0)<-[create_this6:ACTED_IN]-(create_this5)
+        RETURN collect(NULL) AS create_var7
+    }
+    RETURN create_this0
+}
+RETURN collect(create_this0 { .id }) AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
