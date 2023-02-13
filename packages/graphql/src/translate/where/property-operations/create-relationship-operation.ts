@@ -181,7 +181,6 @@ export function createRelationPredicate({
             matchPattern: targetPattern,
             listPredicateStr,
             innerOperation: innerOperation.predicate,
-            edgePredicate: refEdge ? true : false,
         }),
     };
 }
@@ -196,7 +195,6 @@ function createSimpleRelationshipPredicate({
     listPredicateStr: ListPredicate;
     childNode: Cypher.Node;
     innerOperation: Cypher.Predicate | undefined;
-    edgePredicate?: boolean;
 }): Cypher.Predicate | undefined {
     if (!innerOperation) return undefined;
     const matchClause = new Cypher.Match(matchPattern).where(innerOperation);

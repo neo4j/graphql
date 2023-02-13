@@ -174,7 +174,8 @@ query DeeplyNestedWithRelationshipFilters {
     }
 }
 
-query DeeplyNestedWithRelationshipSingleFilters {
+# Skipped due to cypher bug causing poor performance of deeply nested SINGLE filters on Neo4j 5
+query DeeplyNestedWithRelationshipSingleFilters_skip {
     people(
         where: {
             name_STARTS_WITH: "T"
