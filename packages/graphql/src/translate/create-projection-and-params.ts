@@ -21,7 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { mergeDeep } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
-import type { GraphQLOptionsArg, GraphQLWhereArg, Context, RelationField, GraphQLSortArg } from "../types";
+import type { GraphQLOptionsArg, GraphQLWhereArg, Context, GraphQLSortArg } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
@@ -33,7 +33,6 @@ import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjec
 import { removeDuplicates } from "../utils/utils";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
-import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import { createConnectionClause } from "./connection-clause/create-connection-clause";
 import { translateCypherDirectiveProjection } from "./projection/subquery/translate-cypher-directive-projection";
 
@@ -132,43 +131,97 @@ export default function createProjectionAndParams({
                 optionsInput.limit = referenceNode.queryOptions.getLimit(optionsInput.limit);
             }
 
-            if (relationField.interface) {
-                const interfaceResolveTree = field;
+            if (relationField.interface || relationField.union) {
+                let referenceNodes;
+                if (relationField.interface) {
+                    const interfaceImplementations = context.nodes.filter((x) =>
+                        relationField.interface?.implementations?.includes(x.name)
+                    );
+                    // Enrich concrete types with shared filters
+                    const interfaceSharedFilters = Object.entries(field.args.where || {}).filter(
+                        ([key]) => key !== "_on"
+                    );
 
-                const prevRelationshipFields: string[] = [];
-                const relationshipField = node.relationFields.find(
-                    (x) => x.fieldName === interfaceResolveTree.name
-                ) as RelationField;
-                const interfaceProjection = createInterfaceProjectionAndParams({
-                    resolveTree: interfaceResolveTree,
-                    field: relationshipField,
-                    context,
-                    nodeVariable: varName,
-                    withVars: prevRelationshipFields,
-                });
-                res.subqueries.push(interfaceProjection);
-                res.projection.push(`${field.alias}: ${varName}_${field.name}`);
-                return res;
-            }
+                    interfaceImplementations.forEach((node) => {
+                        interfaceSharedFilters.forEach(([sharedFilterKey, sharedFilterValue]) => {
+                            field.args.where = field.args.where as Record<string, any>;
+                            if (!Object.prototype.hasOwnProperty.call(field.args.where, "_on")) {
+                                field.args.where["_on"] = {};
+                            }
 
-            if (relationField.union) {
-                const referenceNodes = context.nodes.filter(
-                    (x) =>
-                        relationField.union?.nodes?.includes(x.name) &&
-                        (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name))
-                );
+                            if (field.args.where["_on"][node.name]) {
+                                field.args.where["_on"][node.name][sharedFilterKey] = field.args.where["_on"][
+                                    node.name
+                                ][sharedFilterKey]
+                                    ? field.args.where["_on"][node.name][sharedFilterKey]
+                                    : sharedFilterValue;
+                            } else {
+                                field.args.where["_on"][node.name] = {
+                                    [sharedFilterKey]: sharedFilterValue,
+                                };
+                            }
+                        });
+                    });
+
+                    referenceNodes = interfaceImplementations.filter(
+                        (x) =>
+                            // where is not defined
+                            !field.args.where ||
+                            // where exists but has no filters defined
+                            Object.keys(field.args.where).length === 0 ||
+                            // where exists but has only shared filters
+                            !Object.prototype.hasOwnProperty.call(field.args.where, "_on") ||
+                            // where exists and has a filter on this implementation
+                            (Object.prototype.hasOwnProperty.call(field.args.where, "_on") &&
+                                Object.prototype.hasOwnProperty.call(field.args.where["_on"], x.name))
+                    );
+                    if (field.args.where != null && typeof field.args.where == "object" && field.args.where["_on"]) {
+                        field.args.where = {
+                            ...field.args.where,
+                            ...(field.args.where["_on"] as Record<string, any>),
+                        };
+                        delete field.args.where["_on"];
+                    }
+
+                    /*       if (field.args.where != null && typeof field.args.where == "object") {
+                        // enrich concrete types with shared filters
+                        const interfaceSharedFilters = Object.entries(field.args.where || {}).filter(
+                            ([key]) => key !== "_on"
+                        );
+
+                        interfaceImplementations.forEach((node) => {
+                            interfaceSharedFilters.forEach(([sharedFilterKey, sharedFilterValue]) => {
+                                field.args.where = field.args.where as Record<string, any>;
+                                if (field.args.where[node.name]) {
+                                    field.args.where[node.name][sharedFilterKey] = sharedFilterValue;
+                                } else {
+                                    field.args.where[node.name] = {
+                                        [sharedFilterKey]: sharedFilterValue,
+                                    };
+                                }
+                            });
+                        });
+
+                        if (field.args.where["_on"]) {
+                            field.args.where = {
+                                ...field.args.where,
+                                ...(field.args.where["_on"] as Record<string, any>),
+                            };
+                            delete field.args.where["_on"];
+                        }
+                    } */
+                } else {
+                    referenceNodes = context.nodes.filter(
+                        (x) =>
+                            relationField.union?.nodes?.includes(x.name) &&
+                            (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name))
+                    );
+                }
 
                 const parentNode = new Cypher.NamedNode(chainStr || varName);
-
                 const unionSubqueries: Cypher.Clause[] = [];
                 const unionVariableName = `${param}`;
                 for (const refNode of referenceNodes) {
-                    const refNodeInterfaceNames = node.interfaces.map(
-                        (implementedInterface) => implementedInterface.name.value
-                    );
-                    const hasFields = Object.keys(field.fieldsByTypeName).some((fieldByTypeName) =>
-                        [refNode.name, ...refNodeInterfaceNames].includes(fieldByTypeName)
-                    );
                     const recurse = createProjectionAndParams({
                         resolveTree: field,
                         node: refNode,
@@ -180,17 +233,14 @@ export default function createProjectionAndParams({
 
                     const direction = getRelationshipDirection(relationField, field.args);
 
-                    let nestedProjection = [
-                        ` { __resolveType: "${refNode.name}", `,
-                        recurse.projection.replace("{", ""),
-                    ].join("");
+                    const nestedProj = recurse.projection.replace(/{|}/gm, "");
 
-                    if (!hasFields) {
-                        nestedProjection = `{ __resolveType: "${refNode.name}" }`;
-                    }
+                    const nestedProjString = nestedProj.trim().length ? `, ${nestedProj}` : "";
+                    const nestedProjection = `{ __resolveType: "${refNode.name}" ${nestedProjString}}`;
+
                     const subquery = createProjectionSubquery({
                         parentNode,
-                        whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
+                        whereInput: field.args.where ? field.args.where[refNode.name] : {},
                         node: refNode,
                         context,
                         alias: unionVariableName,
@@ -219,7 +269,6 @@ export default function createProjectionAndParams({
                 const unionAndSort = Cypher.concat(new Cypher.Call(unionClause), collectAndLimitStatements);
                 res.subqueries.push(new Cypher.Call(unionAndSort).innerWith(parentNode));
                 res.projection.push(`${alias}: ${unionVariableName}`);
-
                 return res;
             }
 

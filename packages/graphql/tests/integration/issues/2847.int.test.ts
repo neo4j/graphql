@@ -51,20 +51,16 @@ describe("https://github.com/neo4j/graphql/issues/2847", () => {
 
         const typeDefs = `
           interface ${Product} {
-            title: String!
+            name: String!
           }
           
           type ${Movie} implements ${Product} {
-            title: String!
+            name: String!
           }
-          
-          type ${Show} implements ${Product} {
-            title: String!
-          }
-
+        
           type ${Actor} {
             name: String!
-            product: ${Product}! @relationship(type: "HAS_PRODUCT", direction: OUT)
+            product: ${Product} @relationship(type: "HAS_PRODUCT", direction: OUT)
           }
         `;
 
@@ -97,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/2847", () => {
                 ${Actor.plural} {
                   name
                   product {
-                    title
+                    name
                   } 
                 }
               }
@@ -113,7 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/2847", () => {
             [Actor.plural]: expect.toIncludeSameMembers([
                 {
                     name: "Keanu",
-                    product: []
+                    product: null
                 },
             ])
         });
