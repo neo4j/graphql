@@ -2781,7 +2781,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/cypher-builder@workspace:packages/cypher-builder, @neo4j/cypher-builder@~0.1.10":
+"@neo4j/cypher-builder@workspace:packages/cypher-builder, @neo4j/cypher-builder@~0.2.0":
   version: 0.0.0-use.local
   resolution: "@neo4j/cypher-builder@workspace:packages/cypher-builder"
   dependencies:
@@ -2803,7 +2803,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^3.0.0
     "@graphql-codegen/typescript": ^2.6.0
     "@graphql-tools/merge": ^8.3.3
-    "@neo4j/graphql": ^3.16.0
+    "@neo4j/graphql": ^3.16.1
     "@neo4j/graphql-plugin-auth": ^2.1.0
     "@types/jest": 29.4.0
     "@types/node": 18.11.17
@@ -2875,7 +2875,7 @@ __metadata:
   dependencies:
     "@neo4j-ndl/base": 0.16.4
     "@neo4j-ndl/react": 0.17.7
-    "@neo4j/graphql": 3.16.0
+    "@neo4j/graphql": 3.16.1
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.30.0
     "@tsconfig/create-react-app": 1.0.3
@@ -2930,7 +2930,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@3.16.0, @neo4j/graphql@^3.13.0, @neo4j/graphql@^3.15.0, @neo4j/graphql@^3.16.0, @neo4j/graphql@^3.5.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@3.16.1, @neo4j/graphql@^3.13.0, @neo4j/graphql@^3.15.0, @neo4j/graphql@^3.16.0, @neo4j/graphql@^3.16.1, @neo4j/graphql@^3.5.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -2939,7 +2939,7 @@ __metadata:
     "@graphql-tools/resolvers-composition": ^6.5.3
     "@graphql-tools/schema": 9.0.16
     "@graphql-tools/utils": ^9.0.0
-    "@neo4j/cypher-builder": ~0.1.10
+    "@neo4j/cypher-builder": ~0.2.0
     "@neo4j/graphql-plugin-auth": ^2.1.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
@@ -15254,7 +15254,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "migration@workspace:examples/migration"
   dependencies:
-    "@neo4j/graphql": ^3.16.0
+    "@neo4j/graphql": ^3.16.1
     apollo-server: 3.11.1
     graphql: 16.6.0
     neo4j-driver: 5.5.0
