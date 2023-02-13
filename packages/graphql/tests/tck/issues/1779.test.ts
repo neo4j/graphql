@@ -65,10 +65,10 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
                 WITH this
                 MATCH (this)-[this0:attends]->(this_attends:\`School\`)
                 WHERE (EXISTS {
-                    MATCH (this1:\`Person\`)-[:attends]->(this_attends)
+                    MATCH (this_attends)<-[:attends]-(this1:\`Person\`)
                     WHERE this1.age > $param0
                 } AND NOT (EXISTS {
-                    MATCH (this1:\`Person\`)-[:attends]->(this_attends)
+                    MATCH (this_attends)<-[:attends]-(this1:\`Person\`)
                     WHERE NOT (this1.age > $param0)
                 }))
                 WITH this_attends { .name } AS this_attends

@@ -84,7 +84,7 @@ describe("Cypher Alias", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this_actors:\`Actor\`)-[this0:ACTED_IN]->(this)
+                MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Actor\`)
                 WITH this_actors { aliasActorsName: this_actors.name } AS this_actors
                 RETURN collect(this_actors) AS this_actors
             }
