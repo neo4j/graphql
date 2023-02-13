@@ -30,7 +30,7 @@ import type {
     Neo4jGraphQLPlugins,
     Neo4jGraphQLCallbacks,
     Neo4jFeaturesSettings,
-    StartupValidationConfig,
+    StartupValidationConfig
 } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import type Node from "./Node";
@@ -126,10 +126,7 @@ class Neo4jGraphQL {
         if (!this.executableSchema) {
             this.executableSchema = this.generateExecutableSchema();
 
-            if (!this.pluginsInit) {
-                this.pluginsInit = this.pluginsSetup();
-            }
-            await this.pluginsInit;
+            await this.pluginsSetup();
         }
 
         return this.executableSchema;
@@ -147,10 +144,7 @@ class Neo4jGraphQL {
         if (!this.subgraphSchema) {
             this.subgraphSchema = this.generateSubgraphSchema();
 
-            if (!this.pluginsInit) {
-                this.pluginsInit = this.pluginsSetup();
-            }
-            await this.pluginsInit;
+            await this.pluginsSetup();
         }
 
         return this.subgraphSchema;
@@ -196,7 +190,7 @@ class Neo4jGraphQL {
             driverConfig,
             nodes: this.nodes,
             options: input.options,
-            dbInfo: this.dbInfo,
+            dbInfo: this.dbInfo
         });
     }
 
@@ -226,7 +220,7 @@ class Neo4jGraphQL {
 
     private async getNeo4jDatabaseInfo(driver: Driver, driverConfig?: DriverConfig): Promise<Neo4jDatabaseInfo> {
         const executorConstructorParam: ExecutorConstructorParam = {
-            executionContext: driver,
+            executionContext: driver
         };
 
         if (driverConfig?.database) {
@@ -251,13 +245,13 @@ class Neo4jGraphQL {
             nodes: this.nodes,
             relationships: this.relationships,
             schemaModel: this.schemaModel,
-            plugins: this.plugins,
+            plugins: this.plugins
         };
 
         const resolversComposition = {
             "Query.*": [wrapResolver(wrapResolverArgs)],
             "Mutation.*": [wrapResolver(wrapResolverArgs)],
-            "Subscription.*": [wrapSubscription(wrapResolverArgs)],
+            "Subscription.*": [wrapSubscription(wrapResolverArgs)]
         };
 
         // Merge generated and custom resolvers
@@ -281,7 +275,7 @@ class Neo4jGraphQL {
                 validateResolvers,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
                 callbacks: this.config.callbacks,
-                userCustomResolvers: this.schemaDefinition.resolvers,
+                userCustomResolvers: this.schemaDefinition.resolvers
             });
 
             this.schemaModel = generateModel(document);
@@ -295,7 +289,7 @@ class Neo4jGraphQL {
             const schema = makeExecutableSchema({
                 ...this.schemaDefinition,
                 typeDefs,
-                resolvers: wrappedResolvers,
+                resolvers: wrappedResolvers
             });
 
             resolve(this.addDefaultFieldResolvers(schema));
@@ -322,7 +316,7 @@ class Neo4jGraphQL {
             generateSubscriptions: Boolean(this.plugins?.subscriptions),
             callbacks: this.config.callbacks,
             userCustomResolvers: this.schemaDefinition.resolvers,
-            subgraph,
+            subgraph
         });
 
         this.schemaModel = generateModel(document);
@@ -336,7 +330,7 @@ class Neo4jGraphQL {
 
         const schema = subgraph.buildSchema({
             typeDefs: subgraphTypeDefs,
-            resolvers: wrappedResolvers as Record<string, any>,
+            resolvers: wrappedResolvers as Record<string, any>
         });
 
         return this.addDefaultFieldResolvers(schema);
@@ -352,7 +346,7 @@ class Neo4jGraphQL {
         if (this.config?.startupValidation === false) {
             return {
                 validateTypeDefs: false,
-                validateResolvers: false,
+                validateResolvers: false
             };
         }
 
@@ -366,18 +360,28 @@ class Neo4jGraphQL {
 
         return {
             validateTypeDefs,
-            validateResolvers,
+            validateResolvers
         };
     }
 
-    private async pluginsSetup(): Promise<void> {
-        const subscriptionsPlugin = this.plugins?.subscriptions;
-        if (subscriptionsPlugin) {
-            subscriptionsPlugin.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
-            if (subscriptionsPlugin.init) {
-                await subscriptionsPlugin.init();
-            }
+    private pluginsSetup(): Promise<void> {
+        if (this.pluginsInit) {
+            return this.pluginsInit;
         }
+
+        const setup = async () => {
+            const subscriptionsPlugin = this.plugins?.subscriptions;
+            if (subscriptionsPlugin) {
+                subscriptionsPlugin.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
+                if (subscriptionsPlugin.init) {
+                    await subscriptionsPlugin.init();
+                }
+            }
+        };
+
+        this.pluginsInit = setup();
+
+        return this.pluginsInit;
     }
 }
 
