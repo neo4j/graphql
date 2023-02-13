@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/560", () => {
     let driver: Driver;
@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
     });
 
     test("should not throw when Point is null", async () => {
-        const testLog = generateUniqueType("Log");
+        const testLog = new UniqueType("Log");
 
         const typeDefs = gql`
             type ${testLog.name} {
@@ -105,7 +105,7 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
     });
 
     test("should not throw when CartesianPoint is null", async () => {
-        const testLog = generateUniqueType("Log");
+        const testLog = new UniqueType("Log");
 
         const typeDefs = gql`
             type ${testLog.name} {

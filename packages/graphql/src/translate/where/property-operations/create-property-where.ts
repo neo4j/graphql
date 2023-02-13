@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Context } from "../../../types";
+import type { Context, PredicateReturn } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 import { GraphElement, Node } from "../../../classes";
 import { whereRegEx, WhereRegexGroups } from "../utils";
@@ -45,10 +45,7 @@ export function createPropertyWhere({
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
-}): {
-    predicate: Cypher.Predicate | undefined;
-    preComputedSubquery?: Cypher.Call | undefined;
-} {
+}): PredicateReturn {
     const match = whereRegEx.exec(key);
     if (!match) {
         throw new Error(`Failed to match key in filter: ${key}`);
@@ -94,10 +91,20 @@ export function createPropertyWhere({
         }
 
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
+        const relationTypeName = node.connectionFields.find(
+            (x) => x.relationship.fieldName === fieldName
+        )?.relationshipTypeName;
+        const relationship = context.relationships.find((x) => x.name === relationTypeName);
 
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
-            return aggregatePreComputedWhereFields(value, relationField, context, targetElement);
+            return aggregatePreComputedWhereFields({
+                value,
+                relationField,
+                relationship,
+                context,
+                matchNode: targetElement,
+            });
         }
 
         if (relationField) {

@@ -25,7 +25,11 @@ describe("CypherBuilder Match", () => {
             labels: ["Movie"],
         });
 
-        const matchQuery = new Cypher.Match(movieNode, { test: new Cypher.Param("test-value") });
+        const matchQuery = new Cypher.Match(
+            new Cypher.Pattern(movieNode).withProperties({
+                test: new Cypher.Param("test-value"),
+            })
+        );
 
         const queryResult = matchQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`"MATCH (this0:\`Movie\` { test: $param0 })"`);
@@ -71,9 +75,10 @@ describe("CypherBuilder Match", () => {
             labels: ["Movie"],
         });
 
-        const matchQuery = new Cypher.OptionalMatch(movieNode, { test: new Cypher.Param("test-value") }).return(
-            movieNode
-        );
+        const pattern = new Cypher.Pattern(movieNode).withProperties({
+            test: new Cypher.Param("test-value"),
+        });
+        const matchQuery = new Cypher.OptionalMatch(pattern).return(movieNode);
 
         const queryResult = matchQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
@@ -98,7 +103,11 @@ describe("CypherBuilder Match", () => {
                 labels: ["Movie"],
             });
 
-            const matchQuery = new Cypher.Match(movieNode, { test: new Cypher.Param("test-value") })
+            const matchQuery = new Cypher.Match(
+                new Cypher.Pattern(movieNode).withProperties({
+                    test: new Cypher.Param("test-value"),
+                })
+            )
                 .where(movieNode, { id: idParam, name: nameParam, age: ageParam })
                 .return(movieNode);
 
@@ -127,7 +136,11 @@ describe("CypherBuilder Match", () => {
                 labels: ["Movie"],
             });
 
-            const matchQuery = new Cypher.Match(movieNode, { test: new Cypher.Param("test-value") })
+            const matchQuery = new Cypher.Match(
+                new Cypher.Pattern(movieNode).withProperties({
+                    test: new Cypher.Param("test-value"),
+                })
+            )
                 .where(movieNode, { id: idParam, name: nameParam })
                 .return([movieNode.property("name"), "myAlias"]);
 
@@ -154,7 +167,11 @@ describe("CypherBuilder Match", () => {
                 labels: ["Movie"],
             });
 
-            const matchQuery = new Cypher.Match(movieNode, { test: testParam })
+            const matchQuery = new Cypher.Match(
+                new Cypher.Pattern(movieNode).withProperties({
+                    test: testParam,
+                })
+            )
                 .where(Cypher.isNull(movieNode.property("name")))
                 .return(movieNode);
 

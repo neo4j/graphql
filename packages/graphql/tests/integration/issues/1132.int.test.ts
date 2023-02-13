@@ -24,7 +24,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import Neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 
@@ -50,8 +50,8 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
     describe("CONNECT", () => {
         test("should assert that the error is associated with the correct node", async () => {
-            const testSource = generateUniqueType("Source");
-            const testTarget = generateUniqueType("Target");
+            const testSource = new UniqueType("Source");
+            const testTarget = new UniqueType("Target");
 
             const typeDefs = gql`
                 type ${testSource.name} @auth(rules: [{ operations: [CONNECT], allow: { id: "$jwt.sub" } }]) {
@@ -106,8 +106,8 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
         });
 
         test("should allow user to connect when associated with the correct node", async () => {
-            const testSource = generateUniqueType("Source");
-            const testTarget = generateUniqueType("Target");
+            const testSource = new UniqueType("Source");
+            const testTarget = new UniqueType("Target");
 
             const typeDefs = gql`
                 type ${testSource.name} @auth(rules: [{ operations: [CONNECT], allow: { id: "$jwt.sub" } }]) {
@@ -178,8 +178,8 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
     describe("DISCONNECT", () => {
         test("should assert that the error is associated with the correct node", async () => {
-            const testSource = generateUniqueType("Source");
-            const testTarget = generateUniqueType("Target");
+            const testSource = new UniqueType("Source");
+            const testTarget = new UniqueType("Target");
 
             const typeDefs = gql`
                 type ${testSource.name} {
@@ -237,8 +237,8 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
         });
 
         test("should allow the disconnect when jwt.sub is associated with the correct node", async () => {
-            const testSource = generateUniqueType("Source");
-            const testTarget = generateUniqueType("Target");
+            const testSource = new UniqueType("Source");
+            const testTarget = new UniqueType("Target");
 
             const typeDefs = gql`
                 type ${testSource.name} {

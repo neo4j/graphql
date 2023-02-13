@@ -33,6 +33,8 @@ import { FieldAggregationComposer } from "../aggregations/field-aggregation-comp
 import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
+import { overwrite } from "./fields/overwrite";
+import { DEPRECATE_NOT, DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS, DEPRECATE_INVALID_AGGREGATION_FILTERS } from "../constants";
 
 function createRelationshipFields({
     relationshipFields,
@@ -441,13 +443,20 @@ function createRelationshipFields({
                     name: whereName,
                     fields: {
                         node: `${n.name}Where`,
-                        node_NOT: `${n.name}Where`,
+                        node_NOT: {
+                            type: `${n.name}Where`,
+                            directives: [DEPRECATE_NOT],
+                        },
                         AND: `[${whereName}!]`,
                         OR: `[${whereName}!]`,
+                        NOT: whereName,
                         ...(rel.properties
                             ? {
                                   edge: `${rel.properties}Where`,
-                                  edge_NOT: `${rel.properties}Where`,
+                                  edge_NOT: {
+                                      type: `${rel.properties}Where`,
+                                      directives: [DEPRECATE_NOT],
+                                  },
                               }
                             : {}),
                     },
@@ -585,13 +594,17 @@ function createRelationshipFields({
                 fields: {
                     AND: `[${name}!]`,
                     OR: `[${name}!]`,
+                    NOT: name,
                 },
             });
 
             fields.forEach((field) => {
                 if (field.typeMeta.name === "ID") {
                     aggregationInput.addFields({
-                        [`${field.fieldName}_EQUAL`]: "ID",
+                        [`${field.fieldName}_EQUAL`]: {
+                            type: `ID`,
+                            directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                        },
                     });
 
                     return;
@@ -602,10 +615,25 @@ function createRelationshipFields({
                         AGGREGATION_COMPARISON_OPERATORS.reduce((res, operator) => {
                             return {
                                 ...res,
-                                [`${field.fieldName}_${operator}`]: `${operator === "EQUAL" ? "String" : "Int"}`,
-                                [`${field.fieldName}_AVERAGE_${operator}`]: "Float",
-                                [`${field.fieldName}_LONGEST_${operator}`]: "Int",
-                                [`${field.fieldName}_SHORTEST_${operator}`]: "Int",
+                                [`${field.fieldName}_${operator}`]: {
+                                    type: `${operator === "EQUAL" ? "String" : "Int"}`,
+                                    directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                                },
+                                [`${field.fieldName}_AVERAGE_${operator}`]: {
+                                    type: "Float",
+                                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
+                                },
+                                [`${field.fieldName}_LONGEST_${operator}`]: {
+                                    type: "Int",
+                                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
+                                },
+                                [`${field.fieldName}_SHORTEST_${operator}`]: {
+                                    type: "Int",
+                                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
+                                },
+                                [`${field.fieldName}_AVERAGE_LENGTH_${operator}`]: "Float",
+                                [`${field.fieldName}_LONGEST_LENGTH_${operator}`]: "Int",
+                                [`${field.fieldName}_SHORTEST_LENGTH_${operator}`]: "Int",
                             };
                         }, {})
                     );
@@ -628,7 +656,10 @@ function createRelationshipFields({
 
                             return {
                                 ...res,
-                                [`${field.fieldName}_${operator}`]: field.typeMeta.name,
+                                [`${field.fieldName}_${operator}`]: {
+                                    type: field.typeMeta.name,
+                                    directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                                },
                                 [`${field.fieldName}_AVERAGE_${operator}`]: averageType,
                                 [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
                                 [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
@@ -646,7 +677,10 @@ function createRelationshipFields({
                     AGGREGATION_COMPARISON_OPERATORS.reduce(
                         (res, operator) => ({
                             ...res,
-                            [`${field.fieldName}_${operator}`]: field.typeMeta.name,
+                            [`${field.fieldName}_${operator}`]: {
+                                type: field.typeMeta.name,
+                                directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                            },
                             [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
                             [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
                         }),
@@ -668,6 +702,7 @@ function createRelationshipFields({
                 count_GTE: "Int",
                 AND: `[${relationshipWhereTypeInputName}!]`,
                 OR: `[${relationshipWhereTypeInputName}!]`,
+                NOT: relationshipWhereTypeInputName,
                 ...(nodeWhereAggregationInput ? { node: nodeWhereAggregationInput } : {}),
                 ...(edgeWhereAggregationInput ? { edge: edgeWhereAggregationInput } : {}),
             },
@@ -677,11 +712,25 @@ function createRelationshipFields({
             ...{
                 [rel.fieldName]: {
                     type: `${n.name}Where`,
-                    directives: deprecatedDirectives,
+                    directives: [
+                        {
+                            name: "deprecated",
+                            args: {
+                                reason: `Use \`${rel.fieldName}_SOME\` instead.`,
+                            },
+                        },
+                    ],
                 },
                 [`${rel.fieldName}_NOT`]: {
                     type: `${n.name}Where`,
-                    directives: deprecatedDirectives,
+                    directives: [
+                        {
+                            name: "deprecated",
+                            args: {
+                                reason: `Use \`${rel.fieldName}_NONE\` instead.`,
+                            },
+                        },
+                    ],
                 },
                 [`${rel.fieldName}Aggregate`]: {
                     type: whereAggregateInput,
@@ -709,24 +758,6 @@ function createRelationshipFields({
                     {}
                 )
             );
-
-            // Deprecate existing filters
-            whereInput.setFieldDirectives(rel.fieldName, [
-                {
-                    name: "deprecated",
-                    args: {
-                        reason: `Use \`${rel.fieldName}_SOME\` instead.`,
-                    },
-                },
-            ]);
-            whereInput.setFieldDirectives(`${rel.fieldName}_NOT`, [
-                {
-                    name: "deprecated",
-                    args: {
-                        reason: `Use \`${rel.fieldName}_NONE\` instead.`,
-                    },
-                },
-            ]);
         }
 
         const createName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}CreateFieldInput`;
@@ -758,7 +789,9 @@ function createRelationshipFields({
                 ...(hasNonGeneratedProperties
                     ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
                     : {}),
+                overwrite,
             });
+            tc.makeFieldNonNull("overwrite");
         });
 
         if (!rel.writeonly) {

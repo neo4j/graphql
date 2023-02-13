@@ -18,13 +18,13 @@
  */
 
 import { gql } from "apollo-server";
-import type { DocumentNode} from "graphql";
+import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Integer, Session } from "neo4j-driver";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src";
 import { getQuerySource } from "../../../utils/get-query-source";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import type { Neo4jGraphQLSubscriptionsPlugin } from "../../../../src/types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 
@@ -35,8 +35,8 @@ describe("Create -> ConnectOrCreate", () => {
     let typeDefs: DocumentNode;
     let plugin: Neo4jGraphQLSubscriptionsPlugin;
 
-    const typeMovie = generateUniqueType("Movie");
-    const typeActor = generateUniqueType("Actor");
+    const typeMovie = new UniqueType("Movie");
+    const typeActor = new UniqueType("Actor");
 
     let neoSchema: Neo4jGraphQL;
 

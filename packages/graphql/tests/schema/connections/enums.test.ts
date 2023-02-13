@@ -71,11 +71,12 @@ describe("Enums", () => {
 
             input ActedInWhere {
               AND: [ActedInWhere!]
+              NOT: ActedInWhere
               OR: [ActedInWhere!]
               roleType: RoleType
               roleType_IN: [RoleType!]
-              roleType_NOT: RoleType
-              roleType_NOT_IN: [RoleType!]
+              roleType_NOT: RoleType @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              roleType_NOT_IN: [RoleType!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type Actor {
@@ -127,6 +128,7 @@ describe("Enums", () => {
 
             input ActorMoviesAggregateInput {
               AND: [ActorMoviesAggregateInput!]
+              NOT: ActorMoviesAggregateInput
               OR: [ActorMoviesAggregateInput!]
               count: Int
               count_GT: Int
@@ -139,6 +141,10 @@ describe("Enums", () => {
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: MovieConnectWhere
             }
 
@@ -155,11 +161,12 @@ describe("Enums", () => {
 
             input ActorMoviesConnectionWhere {
               AND: [ActorMoviesConnectionWhere!]
+              NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -184,27 +191,43 @@ describe("Enums", () => {
 
             input ActorMoviesNodeAggregationWhereInput {
               AND: [ActorMoviesNodeAggregationWhereInput!]
+              NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
-              title_AVERAGE_EQUAL: Float
-              title_AVERAGE_GT: Float
-              title_AVERAGE_GTE: Float
-              title_AVERAGE_LT: Float
-              title_AVERAGE_LTE: Float
-              title_EQUAL: String
-              title_GT: Int
-              title_GTE: Int
-              title_LONGEST_EQUAL: Int
-              title_LONGEST_GT: Int
-              title_LONGEST_GTE: Int
-              title_LONGEST_LT: Int
-              title_LONGEST_LTE: Int
-              title_LT: Int
-              title_LTE: Int
-              title_SHORTEST_EQUAL: Int
-              title_SHORTEST_GT: Int
-              title_SHORTEST_GTE: Int
-              title_SHORTEST_LT: Int
-              title_SHORTEST_LTE: Int
+              title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_LENGTH_EQUAL: Float
+              title_AVERAGE_LENGTH_GT: Float
+              title_AVERAGE_LENGTH_GTE: Float
+              title_AVERAGE_LENGTH_LT: Float
+              title_AVERAGE_LENGTH_LTE: Float
+              title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_LENGTH_EQUAL: Int
+              title_LONGEST_LENGTH_GT: Int
+              title_LONGEST_LENGTH_GTE: Int
+              title_LONGEST_LENGTH_LT: Int
+              title_LONGEST_LENGTH_LTE: Int
+              title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_LENGTH_EQUAL: Int
+              title_SHORTEST_LENGTH_GT: Int
+              title_SHORTEST_LENGTH_GTE: Int
+              title_SHORTEST_LENGTH_LT: Int
+              title_SHORTEST_LENGTH_LTE: Int
+              title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type ActorMoviesRelationship implements ActedIn {
@@ -254,6 +277,7 @@ describe("Enums", () => {
 
             input ActorWhere {
               AND: [ActorWhere!]
+              NOT: ActorWhere
               OR: [ActorWhere!]
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: ActorMoviesAggregateInput
@@ -276,11 +300,11 @@ describe("Enums", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String!]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String!]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -330,6 +354,7 @@ describe("Enums", () => {
 
             input MovieActorsAggregateInput {
               AND: [MovieActorsAggregateInput!]
+              NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
               count: Int
               count_GT: Int
@@ -342,6 +367,10 @@ describe("Enums", () => {
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              \\"\\"\\"
+              overwrite: Boolean! = true
               where: ActorConnectWhere
             }
 
@@ -358,11 +387,12 @@ describe("Enums", () => {
 
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
+              NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ActorWhere
-              node_NOT: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -387,27 +417,43 @@ describe("Enums", () => {
 
             input MovieActorsNodeAggregationWhereInput {
               AND: [MovieActorsNodeAggregationWhereInput!]
+              NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
-              name_AVERAGE_EQUAL: Float
-              name_AVERAGE_GT: Float
-              name_AVERAGE_GTE: Float
-              name_AVERAGE_LT: Float
-              name_AVERAGE_LTE: Float
-              name_EQUAL: String
-              name_GT: Int
-              name_GTE: Int
-              name_LONGEST_EQUAL: Int
-              name_LONGEST_GT: Int
-              name_LONGEST_GTE: Int
-              name_LONGEST_LT: Int
-              name_LONGEST_LTE: Int
-              name_LT: Int
-              name_LTE: Int
-              name_SHORTEST_EQUAL: Int
-              name_SHORTEST_GT: Int
-              name_SHORTEST_GTE: Int
-              name_SHORTEST_LT: Int
-              name_SHORTEST_LTE: Int
+              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LENGTH_EQUAL: Float
+              name_AVERAGE_LENGTH_GT: Float
+              name_AVERAGE_LENGTH_GTE: Float
+              name_AVERAGE_LENGTH_LT: Float
+              name_AVERAGE_LENGTH_LTE: Float
+              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LENGTH_EQUAL: Int
+              name_LONGEST_LENGTH_GT: Int
+              name_LONGEST_LENGTH_GTE: Int
+              name_LONGEST_LENGTH_LT: Int
+              name_LONGEST_LENGTH_LTE: Int
+              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int
+              name_SHORTEST_LENGTH_GT: Int
+              name_SHORTEST_LENGTH_GTE: Int
+              name_SHORTEST_LENGTH_LT: Int
+              name_SHORTEST_LENGTH_LTE: Int
+              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type MovieActorsRelationship implements ActedIn {
@@ -488,6 +534,7 @@ describe("Enums", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
@@ -510,11 +557,11 @@ describe("Enums", () => {
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String!]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String!]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 

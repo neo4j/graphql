@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("Date", () => {
     let driver: Driver;
@@ -162,7 +162,7 @@ describe("Date", () => {
         test("should find a movie (with a Date)", async () => {
             const session = await neo4j.getSession();
 
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 type ${randomType.name} {

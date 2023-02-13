@@ -47,16 +47,12 @@ type UniqueTypeOperations = {
 export class UniqueType {
     public readonly name: string;
 
-    constructor(baseName: string, uniqueName: boolean) {
-        if (uniqueName) {
-            this.name = `${generate({
-                length: 8,
-                charset: "alphabetic",
-                readable: true,
-            })}${baseName}`;
-        } else {
-            this.name = baseName;
-        }
+    constructor(baseName: string) {
+        this.name = `${generate({
+            length: 8,
+            charset: "alphabetic",
+            readable: true,
+        })}${baseName}`;
     }
 
     public get plural(): string {
@@ -108,6 +104,9 @@ export class UniqueType {
     }
 }
 
-export function generateUniqueType(baseName: string, unique = true): UniqueType {
-    return new UniqueType(baseName, unique);
+/** Generates unique type
+ * @deprecated use new UniqueType instead
+ */
+export function generateUniqueType(baseName: string): UniqueType {
+    return new UniqueType(baseName);
 }

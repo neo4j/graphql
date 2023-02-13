@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("Empty fields on unions due to escaped labels", () => {
     let driver: Driver;
@@ -30,9 +30,9 @@ describe("Empty fields on unions due to escaped labels", () => {
     let session: Session;
     let neoSchema: Neo4jGraphQL;
 
-    const typeBlog = generateUniqueType("Blog");
-    const typePost = generateUniqueType("Post");
-    const typeUser = generateUniqueType("User");
+    const typeBlog = new UniqueType("Blog");
+    const typePost = new UniqueType("Post");
+    const typeUser = new UniqueType("User");
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -40,16 +40,16 @@ describe("Empty fields on unions due to escaped labels", () => {
         const typeDefs = gql`
             union Content = Blog | Post
 
-            type Blog @node(label: "${typeBlog.name}") {
+            type Blog @node(labels: ["${typeBlog.name}"]) {
                 title: String
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
-            type Post @node(label: "${typePost.name}") {
+            type Post @node(labels: ["${typePost.name}"]) {
                 content: String
             }
 
-            type User @node(label: "${typeUser.name}") {
+            type User @node(labels: ["${typeUser.name}"]) {
                 name: String
                 content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }

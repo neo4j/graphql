@@ -36,6 +36,9 @@ export class Exists extends CypherASTNode {
         this.subQuery = rootQuery;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const subQueryStr = this.subQuery.getCypher(env);
         const paddedSubQuery = padBlock(subQueryStr);

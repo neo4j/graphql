@@ -22,12 +22,12 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/1127", () => {
-    const customerType = generateUniqueType("Customer");
-    const addressType = generateUniqueType("Address");
-    const postalCodeType = generateUniqueType("PostalCode");
+    const customerType = new UniqueType("Customer");
+    const addressType = new UniqueType("Address");
+    const postalCodeType = new UniqueType("PostalCode");
 
     let schema: GraphQLSchema;
     let driver: Driver;

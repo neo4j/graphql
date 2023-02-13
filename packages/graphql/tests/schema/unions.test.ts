@@ -112,16 +112,17 @@ describe("Unions", () => {
 
             input GenreWhere {
               AND: [GenreWhere!]
+              NOT: GenreWhere
               OR: [GenreWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
             }
 
@@ -229,9 +230,10 @@ describe("Unions", () => {
 
             input MovieSearchGenreConnectionWhere {
               AND: [MovieSearchGenreConnectionWhere!]
+              NOT: MovieSearchGenreConnectionWhere
               OR: [MovieSearchGenreConnectionWhere!]
               node: GenreWhere
-              node_NOT: GenreWhere
+              node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieSearchGenreCreateFieldInput {
@@ -271,9 +273,10 @@ describe("Unions", () => {
 
             input MovieSearchMovieConnectionWhere {
               AND: [MovieSearchMovieConnectionWhere!]
+              NOT: MovieSearchMovieConnectionWhere
               OR: [MovieSearchMovieConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieSearchMovieCreateFieldInput {
@@ -332,16 +335,17 @@ describe("Unions", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_IN: [ID]
-              id_NOT: ID
-              id_NOT_CONTAINS: ID
-              id_NOT_ENDS_WITH: ID
-              id_NOT_IN: [ID]
-              id_NOT_STARTS_WITH: ID
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               searchConnection: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_SOME\` instead.\\")
               searchConnection_ALL: MovieSearchConnectionWhere

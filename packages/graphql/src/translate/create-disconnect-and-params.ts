@@ -95,7 +95,9 @@ function createDisconnectAndParams({
                     context,
                     relationshipVariable: relVarName,
                     relationship,
-                    parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
+                    parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where.${
+                        relatedNode.name
+                    }`,
                 });
                 if (whereCypher) {
                     whereStrs.push(whereCypher);
@@ -141,7 +143,7 @@ function createDisconnectAndParams({
         ];
 
         const preAuth = nodeMatrix.reduce(
-            (result: Res, { node, name }, i) => {
+            (result: Res, { node, name }) => {
                 if (!node.auth) {
                     return result;
                 }
@@ -151,7 +153,7 @@ function createDisconnectAndParams({
                     operations: "DISCONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: node, varName: name, chainStr: `${name}${node.name}${i}_allow` },
+                    allow: { parentNode: node, varName: name },
                 });
 
                 if (!str) {
@@ -344,7 +346,7 @@ function createDisconnectAndParams({
         }
 
         const postAuth = [parentNode, relatedNode].reduce(
-            (result: Res, node, i) => {
+            (result: Res, node) => {
                 if (!node.auth) {
                     return result;
                 }
@@ -356,7 +358,7 @@ function createDisconnectAndParams({
                     escapeQuotes: Boolean(insideDoWhen),
                     skipRoles: true,
                     skipIsAuthenticated: true,
-                    bind: { parentNode: node, varName: variableName, chainStr: `${variableName}${node.name}${i}_bind` },
+                    bind: { parentNode: node, varName: variableName },
                 });
 
                 if (!str) {

@@ -71,7 +71,9 @@ export class CypherEnvironment {
     }
 
     public addNamedParamReference(name: string, param: Param): void {
-        this.addParam(name, param);
+        if (!this.references.has(param)) {
+            this.addParam(name, param);
+        }
     }
 
     public addExtraParams(params: Record<string, Param>): void {
