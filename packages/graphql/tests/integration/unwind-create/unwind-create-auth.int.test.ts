@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 
 /*
@@ -49,7 +49,7 @@ describe("unwind-create field-level auth rules", () => {
         test("should raise an error if a user is created with the id different from the JWT", async () => {
             const session = await neo4j.getSession();
 
-            const User = generateUniqueType("User");
+            const User = new UniqueType("User");
 
             const typeDefs = `
                 type ${User} {
@@ -106,7 +106,7 @@ describe("unwind-create field-level auth rules", () => {
         test("should not raise an error if a user is created without id", async () => {
             const session = await neo4j.getSession();
 
-            const User = generateUniqueType("User");
+            const User = new UniqueType("User");
 
             const typeDefs = `
             type ${User} {
@@ -165,7 +165,7 @@ describe("unwind-create field-level auth rules", () => {
     describe("role", () => {
         test("should raise an error if a user is created with a role different from the JWT", async () => {
             const session = await neo4j.getSession();
-            const User = generateUniqueType("User");
+            const User = new UniqueType("User");
             const roles = ["admin"];
 
             const typeDefs = `
@@ -224,7 +224,7 @@ describe("unwind-create field-level auth rules", () => {
         test("should not raise an error if a user is created without id", async () => {
             const session = await neo4j.getSession();
 
-            const User = generateUniqueType("User");
+            const User = new UniqueType("User");
             const roles = ["admin"];
             const typeDefs = `
             type ${User} {

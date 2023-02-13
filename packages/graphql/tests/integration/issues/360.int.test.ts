@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("360", () => {
     let driver: Driver;
@@ -39,7 +39,7 @@ describe("360", () => {
     test("should return all nodes when AND is used and members are optional", async () => {
         const session = await neo4j.getSession();
 
-        const type = generateUniqueType("Event");
+        const type = new UniqueType("Event");
 
         const typeDefs = `
             type ${type.name} {
@@ -88,7 +88,7 @@ describe("360", () => {
     test("should return all nodes when OR is used and members are optional", async () => {
         const session = await neo4j.getSession();
 
-        const type = generateUniqueType("Event");
+        const type = new UniqueType("Event");
 
         const typeDefs = `
             type ${type.name} {
@@ -137,7 +137,7 @@ describe("360", () => {
     test("should recreate given test in issue and return correct results", async () => {
         const session = await neo4j.getSession();
 
-        const type = generateUniqueType("Event");
+        const type = new UniqueType("Event");
 
         const typeDefs = `
             type ${type.name} {

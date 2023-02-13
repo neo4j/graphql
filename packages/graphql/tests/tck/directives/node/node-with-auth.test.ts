@@ -31,7 +31,7 @@ describe("Node Directive", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Post @node(label: "Comment") {
+            type Post @node(labels: ["Comment"]) {
                 id: ID
                 content: String
                 creator: User! @relationship(type: "HAS_POST", direction: IN)
@@ -39,7 +39,7 @@ describe("Node Directive", () => {
 
             extend type Post @auth(rules: [{ operations: [DELETE], roles: ["admin"] }])
 
-            type User @node(label: "Person") {
+            type User @node(labels: ["Person"]) {
                 id: ID
                 name: String
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
@@ -103,10 +103,7 @@ describe("Node Directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Comment\`)
-            WHERE EXISTS {
-                MATCH (this0:\`Person\`)-[:HAS_POST]->(this)
-                WHERE this0.id = $param0
-            }
+            WHERE single(this0 IN [(this)<-[:HAS_POST]-(this0:\`Person\`) WHERE this0.id = $param0 | 1] WHERE true)
             WITH this
             CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             DETACH DELETE this"

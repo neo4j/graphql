@@ -26,7 +26,7 @@ import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { runCypher } from "../../../utils/run-cypher";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 
 describe("auth/is-authenticated", () => {
     let driver: Driver;
@@ -45,8 +45,8 @@ describe("auth/is-authenticated", () => {
     });
 
     beforeEach(async () => {
-        Product = generateUniqueType("Product");
-        User = generateUniqueType("User");
+        Product = new UniqueType("Product");
+        User = new UniqueType("User");
         const session = await neo4j.getSession();
         await runCypher(
             session,
@@ -326,7 +326,7 @@ describe("auth/is-authenticated", () => {
     describe("connect", () => {
         test("should throw if not authenticated", async () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = generateUniqueType("Post");
+            const Post = new UniqueType("Post");
 
             const typeDefs = `
                 type ${Post} {
@@ -403,7 +403,7 @@ describe("auth/is-authenticated", () => {
     describe("disconnect", () => {
         test("should throw if not authenticated", async () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const Post = generateUniqueType("Post");
+            const Post = new UniqueType("Post");
 
             const typeDefs = `
                 type ${Post} {
@@ -670,7 +670,7 @@ describe("auth/is-authenticated", () => {
 
         test("should throw if not authenticated on Field definition @cypher", async () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            const History = generateUniqueType("History");
+            const History = new UniqueType("History");
 
             const typeDefs = `
                 type ${History} {

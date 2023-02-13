@@ -166,7 +166,7 @@ describe("Batch Create, Auth", () => {
                     SET
                         create_this6.name = create_var4.name,
                         create_this6.id = randomUUID()
-                    MERGE (create_this6)-[create_this7:ACTED_IN]->(create_this1)
+                    MERGE (create_this1)<-[create_this7:ACTED_IN]-(create_this6)
                     SET
                         create_this7.year = create_var5.year
                     WITH create_this6
@@ -193,7 +193,7 @@ describe("Batch Create, Auth", () => {
             }
             CALL {
                 WITH create_this1
-                MATCH (create_this1_actors:\`Actor\`)-[create_this0:ACTED_IN]->(create_this1)
+                MATCH (create_this1)<-[create_this0:ACTED_IN]-(create_this1_actors:\`Actor\`)
                 WHERE apoc.util.validatePredicate(NOT ((create_this1_actors.id IS NOT NULL AND create_this1_actors.id = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this1_actors { .name } AS create_this1_actors
                 RETURN collect(create_this1_actors) AS create_this1_actors
@@ -417,7 +417,7 @@ describe("Batch Create, Auth", () => {
                 MERGE (this4_actors_connectOrCreate0:\`Actor\` { id: $this4_actors_connectOrCreate_param0 })
                 ON CREATE SET
                     this4_actors_connectOrCreate0.name = $this4_actors_connectOrCreate_param1
-                MERGE (this4_actors_connectOrCreate0)-[this4_actors_connectOrCreate_this0:ACTED_IN]->(this4)
+                MERGE (this4)<-[this4_actors_connectOrCreate_this0:ACTED_IN]-(this4_actors_connectOrCreate0)
                 WITH *
                 CALL apoc.util.validate(NOT ((this4_actors_connectOrCreate0.id IS NOT NULL AND this4_actors_connectOrCreate0.id = $this4_actors_connectOrCreate0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN COUNT(*) AS _
@@ -442,7 +442,7 @@ describe("Batch Create, Auth", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this0)
+                MATCH (this0)<-[create_this1:ACTED_IN]-(this0_actors:\`Actor\`)
                 WHERE apoc.util.validatePredicate(NOT ((this0_actors.id IS NOT NULL AND this0_actors.id = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this0_actors { .name } AS this0_actors
                 RETURN collect(this0_actors) AS this0_actors
@@ -455,7 +455,7 @@ describe("Batch Create, Auth", () => {
             }
             CALL {
                 WITH this1
-                MATCH (this1_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this1)
+                MATCH (this1)<-[create_this1:ACTED_IN]-(this1_actors:\`Actor\`)
                 WHERE apoc.util.validatePredicate(NOT ((this1_actors.id IS NOT NULL AND this1_actors.id = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this1_actors { .name } AS this1_actors
                 RETURN collect(this1_actors) AS this1_actors
@@ -468,7 +468,7 @@ describe("Batch Create, Auth", () => {
             }
             CALL {
                 WITH this2
-                MATCH (this2_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this2)
+                MATCH (this2)<-[create_this1:ACTED_IN]-(this2_actors:\`Actor\`)
                 WHERE apoc.util.validatePredicate(NOT ((this2_actors.id IS NOT NULL AND this2_actors.id = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this2_actors { .name } AS this2_actors
                 RETURN collect(this2_actors) AS this2_actors
@@ -481,7 +481,7 @@ describe("Batch Create, Auth", () => {
             }
             CALL {
                 WITH this3
-                MATCH (this3_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this3)
+                MATCH (this3)<-[create_this1:ACTED_IN]-(this3_actors:\`Actor\`)
                 WHERE apoc.util.validatePredicate(NOT ((this3_actors.id IS NOT NULL AND this3_actors.id = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this3_actors { .name } AS this3_actors
                 RETURN collect(this3_actors) AS this3_actors
@@ -494,7 +494,7 @@ describe("Batch Create, Auth", () => {
             }
             CALL {
                 WITH this4
-                MATCH (this4_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this4)
+                MATCH (this4)<-[create_this1:ACTED_IN]-(this4_actors:\`Actor\`)
                 WHERE apoc.util.validatePredicate(NOT ((this4_actors.id IS NOT NULL AND this4_actors.id = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this4_actors { .name } AS this4_actors
                 RETURN collect(this4_actors) AS this4_actors

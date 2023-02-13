@@ -22,7 +22,7 @@ import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("@customResolver directive", () => {
     let driver: Driver;
@@ -34,7 +34,7 @@ describe("@customResolver directive", () => {
         lastName: "a second name!",
     };
 
-    const testType = generateUniqueType("User");
+    const testType = new UniqueType("User");
     const customResolverField = "fullName";
 
     const typeDefs = `
@@ -284,7 +284,7 @@ describe("@customResolver directive", () => {
             }).rejects.toThrow(`Custom resolver for ${customResolverField} has not been provided`);
         });
         test("Check throws error if custom resolver defined for interface", async () => {
-            const interfaceType = generateUniqueType("UserInterface");
+            const interfaceType = new UniqueType("UserInterface");
             const typeDefs = `
                 interface ${interfaceType.name} {
                     ${customResolverField}: String @customResolver(requires: ["firstName", "lastName"])
@@ -297,7 +297,7 @@ describe("@customResolver directive", () => {
                     ${customResolverField}: String
                 }
             `;
-            
+
             const testResolver = () => "Some value";
             const resolvers = {
                 [interfaceType.name]: {

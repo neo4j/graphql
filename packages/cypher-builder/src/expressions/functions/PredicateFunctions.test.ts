@@ -23,7 +23,7 @@ import Cypher from "../..";
 describe("Predicate Functions", () => {
     test("exists", () => {
         const node = new Cypher.Node({ labels: ["Movie"] });
-        const existsFn = Cypher.exists(node.pattern());
+        const existsFn = Cypher.exists(new Cypher.Pattern(node));
 
         const queryResult = new TestClause(existsFn).build();
 
@@ -59,7 +59,7 @@ describe("Predicate Functions", () => {
         const exprVariable = new Cypher.Param([1, 2, 5]);
 
         const anyFn = Cypher.all(variable, exprVariable);
-        const existsFn = Cypher.exists(node.pattern());
+        const existsFn = Cypher.exists(new Cypher.Pattern(node));
 
         const andExpr = Cypher.and(anyFn, existsFn);
 

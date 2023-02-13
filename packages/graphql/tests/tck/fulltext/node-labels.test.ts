@@ -28,7 +28,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
         const typeDefs = gql`
             type Movie
                 @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                @node(additionalLabels: ["AnotherLabel"]) {
+                @node(labels: ["Movie", "AnotherLabel"]) {
                 title: String
             }
         `;
@@ -64,7 +64,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
         const typeDefs = gql`
             type Movie
                 @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                @node(additionalLabels: ["$jwt.label"]) {
+                @node(labels: ["Movie", "$jwt.label"]) {
                 title: String
             }
         `;

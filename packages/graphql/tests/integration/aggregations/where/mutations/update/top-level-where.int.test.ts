@@ -21,7 +21,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../../../../utils/graphql-types";
+import { UniqueType } from "../../../../../utils/graphql-types";
 import { cleanNodes } from "../../../../../utils/clean-nodes";
 
 describe("Delete using top level aggregate where", () => {
@@ -51,8 +51,8 @@ describe("Delete using top level aggregate where", () => {
     });
 
     beforeEach(async () => {
-        userType = generateUniqueType("User");
-        postType = generateUniqueType("Post");
+        userType = new UniqueType("User");
+        postType = new UniqueType("Post");
 
         session = await neo4j.getSession();
 
@@ -252,6 +252,53 @@ describe("Delete using top level aggregate where", () => {
         });
     });
 
+
+    test("AND within an AND, with NOT", async () => {
+        const query = `
+            mutation {
+                ${postType.operations.update}(where: { 
+                    likesAggregate: {
+                        AND: [
+                            { NOT: { count_GT: 2 } }
+                            {
+                                AND: [
+                                    {
+                                        node: {
+                                            NOT: { testString_SHORTEST_GTE: 4 }
+                                        }
+                                    }
+                                    {
+                                        node: {
+                                            testString_EQUAL: "${testString5}"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }) {
+                    ${postType.plural} {
+                        id
+                        content
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [postType.operations.update]: {
+                [postType.plural]: expect.toBeArrayOfSize(1),
+            },
+        });
+    });
+
     test("OR within an OR", async () => {
         const query = `
             mutation {
@@ -264,6 +311,52 @@ describe("Delete using top level aggregate where", () => {
                                     {
                                         node: {
                                             testString_SHORTEST_LT: 4
+                                        }
+                                    }
+                                    {
+                                        node: {
+                                            testString_EQUAL: "${testString5}"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }) {
+                    ${postType.plural} {
+                        id
+                        content
+                    }
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [postType.operations.update]: {
+                [postType.plural]: expect.toBeArrayOfSize(4),
+            },
+        });
+    });
+
+    test("OR within an OR, with NOT", async () => {
+        const query = `
+            mutation {
+                ${postType.operations.update}(where: { 
+                    likesAggregate: {
+                        OR: [
+                            { NOT: { count_GT: 2 } }
+                            {
+                                OR: [
+                                    {
+                                        node: {
+                                            NOT: { testString_SHORTEST_GTE: 4 }
                                         }
                                     }
                                     {

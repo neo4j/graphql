@@ -22,16 +22,16 @@ import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
 import { createJwtHeader } from "../../../utils/create-jwt-request";
+import { UniqueType } from "../../../utils/graphql-types";
 
 describe("Subscription auth roles", () => {
-    const typeMovie = generateUniqueType("Movie");
+    const typeMovie = new UniqueType("Movie");
     let neo4j: Neo4j;
     let driver: Driver;
     let jwtToken: string;

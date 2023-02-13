@@ -51,6 +51,9 @@ export class ComparisonOp extends CypherASTNode {
         this.rightExpr = right;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const leftStr = this.leftExpr ? `${this.leftExpr.getCypher(env)} ` : "";
         const rightStr = this.rightExpr ? ` ${this.rightExpr.getCypher(env)}` : "";

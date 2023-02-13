@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/introspector",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Introspect a Neo4j database model/schema",
     "keywords": [
         "neo4j",
@@ -33,13 +33,13 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@neo4j/graphql": "^3.8.0",
-        "@types/jest": "29.2.6",
+        "@neo4j/graphql": "^3.16.0",
+        "@types/jest": "29.4.0",
         "@types/node": "18.11.17",
         "@types/pluralize": "0.0.29",
-        "jest": "29.3.1",
+        "jest": "29.4.2",
         "ts-jest": "29.0.5",
-        "typescript": "4.9.4"
+        "typescript": "4.9.5"
     },
     "dependencies": {
         "camelcase": "^6.3.0",
