@@ -74,12 +74,12 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
                 CALL {
                     WITH *
                     MATCH (this)<-[this0:ACTED_IN]-(this_subjects:\`Person\`)
-                    WITH this_subjects { __resolveType: \\"Person\\" ,  .id } AS this_subjects
+                    WITH this_subjects { __resolveType: \\"Person\\",  .id } AS this_subjects
                     RETURN this_subjects AS this_subjects
                     UNION
                     WITH *
                     MATCH (this)<-[this1:ACTED_IN]-(this_subjects:\`Place\`)
-                    WITH this_subjects { __resolveType: \\"Place\\" ,  .id } AS this_subjects
+                    WITH this_subjects { __resolveType: \\"Place\\",  .id } AS this_subjects
                     RETURN this_subjects AS this_subjects
                 }
                 WITH this_subjects
@@ -90,12 +90,12 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this2:ACTED_IN]->(this_objects:\`Person\`)
-                    WITH this_objects { __resolveType: \\"Person\\" ,  .id } AS this_objects
+                    WITH this_objects { __resolveType: \\"Person\\",  .id } AS this_objects
                     RETURN this_objects AS this_objects
                     UNION
                     WITH *
                     MATCH (this)-[this3:ACTED_IN]->(this_objects:\`Place\`)
-                    WITH this_objects { __resolveType: \\"Place\\" ,  .id } AS this_objects
+                    WITH this_objects { __resolveType: \\"Place\\",  .id } AS this_objects
                     RETURN this_objects AS this_objects
                 }
                 WITH this_objects

@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
                     WITH *
                     MATCH (this)-[this0:ACTED_IN]->(this_actedIn:\`Film\`)
                     WHERE this_actedIn.title = $param0
-                    WITH this_actedIn { __resolveType: \\"Movie\\" ,  .title } AS this_actedIn
+                    WITH this_actedIn { __resolveType: \\"Movie\\",  .title } AS this_actedIn
                     RETURN this_actedIn AS this_actedIn
                 }
                 WITH this_actedIn

@@ -87,17 +87,17 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:RELATES_TO]-(this_releatsTo:\`Series\`)
-                    WITH this_releatsTo { __resolveType: \\"Series\\" ,  .productTitle } AS this_releatsTo
+                    WITH this_releatsTo { __resolveType: \\"Series\\",  .productTitle } AS this_releatsTo
                     RETURN this_releatsTo AS this_releatsTo
                     UNION
                     WITH *
                     MATCH (this)-[this1:RELATES_TO]-(this_releatsTo:\`Season\`)
-                    WITH this_releatsTo { __resolveType: \\"Season\\" ,  .productTitle } AS this_releatsTo
+                    WITH this_releatsTo { __resolveType: \\"Season\\",  .productTitle } AS this_releatsTo
                     RETURN this_releatsTo AS this_releatsTo
                     UNION
                     WITH *
                     MATCH (this)-[this2:RELATES_TO]-(this_releatsTo:\`ProgrammeItem\`)
-                    WITH this_releatsTo { __resolveType: \\"ProgrammeItem\\" ,  .productTitle } AS this_releatsTo
+                    WITH this_releatsTo { __resolveType: \\"ProgrammeItem\\",  .productTitle } AS this_releatsTo
                     RETURN this_releatsTo AS this_releatsTo
                 }
                 WITH this_releatsTo

@@ -189,7 +189,7 @@ export default function createProjectionAndParams({
                     const nestedProj = recurse.projection.replace(/{|}/gm, "");
 
                     const nestedProjString = nestedProj.trim().length ? `, ${nestedProj}` : "";
-                    const nestedProjection = `{ __resolveType: "${refNode.name}" ${nestedProjString}}`;
+                    const nestedProjection = `{ __resolveType: "${refNode.name}"${nestedProjString}}`;
 
                     const subquery = createProjectionSubquery({
                         parentNode,
