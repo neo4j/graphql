@@ -52,9 +52,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
             config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
-            },
+                    secret
+                })
+            }
         });
     });
 
@@ -94,7 +94,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req,
+            req
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -102,7 +102,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE distance(this_Actor.currentLocation, point($this_connection_actorsConnectionparam0.point)) = $this_connection_actorsConnectionparam0.distance
+                WHERE point.distance(this_Actor.currentLocation, point($this_connection_actorsConnectionparam0.point)) = $this_connection_actorsConnectionparam0.distance
                 WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, currentLocation: (CASE
                     WHEN this_Actor.currentLocation IS NOT NULL THEN { point: this_Actor.currentLocation }
                     ELSE NULL
