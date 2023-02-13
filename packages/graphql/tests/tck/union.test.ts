@@ -453,7 +453,7 @@ describe("Cypher Union", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_search_Genre0_disconnect0_rel:SEARCH]->(this_search_Genre0_disconnect0:Genre)
-            WHERE this_search_Genre0_disconnect0.name = $updateMovies_args_update_search_Genre0_disconnect0_where_this_search_Genre0_disconnect0param0
+            WHERE this_search_Genre0_disconnect0.name = $updateMovies_args_update_search_Genre0_disconnect0_where_Genre_this_search_Genre0_disconnect0param0
             CALL {
             	WITH this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel, this
             	WITH collect(this_search_Genre0_disconnect0) as this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel, this
@@ -469,7 +469,7 @@ describe("Cypher Union", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some movie\\",
-                \\"updateMovies_args_update_search_Genre0_disconnect0_where_this_search_Genre0_disconnect0param0\\": \\"some genre\\",
+                \\"updateMovies_args_update_search_Genre0_disconnect0_where_Genre_this_search_Genre0_disconnect0param0\\": \\"some genre\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -522,7 +522,7 @@ describe("Cypher Union", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_search_Genre0_rel:SEARCH]->(this_disconnect_search_Genre0:Genre)
-            WHERE this_disconnect_search_Genre0.name = $updateMovies_args_disconnect_search_Genre0_where_this_disconnect_search_Genre0param0
+            WHERE this_disconnect_search_Genre0.name = $updateMovies_args_disconnect_search_Genre0_where_Genre_this_disconnect_search_Genre0param0
             CALL {
             	WITH this_disconnect_search_Genre0, this_disconnect_search_Genre0_rel, this
             	WITH collect(this_disconnect_search_Genre0) as this_disconnect_search_Genre0, this_disconnect_search_Genre0_rel, this
@@ -539,7 +539,7 @@ describe("Cypher Union", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some movie\\",
-                \\"updateMovies_args_disconnect_search_Genre0_where_this_disconnect_search_Genre0param0\\": \\"some genre\\",
+                \\"updateMovies_args_disconnect_search_Genre0_where_Genre_this_disconnect_search_Genre0param0\\": \\"some genre\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {

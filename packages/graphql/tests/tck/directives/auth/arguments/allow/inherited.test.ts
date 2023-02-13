@@ -198,7 +198,7 @@ describe("@auth allow when inherited from interface", () => {
             WHERE apoc.util.validatePredicate(NOT ((exists((this)<-[:HAS_POST]-(:\`User\`)) AND any(this0 IN [(this)<-[:HAS_POST]-(this0:\`User\`) | this0] WHERE (this0.id IS NOT NULL AND this0.id = $param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                MATCH (this_creator:\`User\`)-[this1:HAS_POST]->(this)
+                MATCH (this)<-[this1:HAS_POST]-(this_creator:\`User\`)
                 WHERE (apoc.util.validatePredicate(NOT ((this_creator.id IS NOT NULL AND this_creator.id = $param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ((this_creator.id IS NOT NULL AND this_creator.id = $this_creatorauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 WITH this_creator { .password } AS this_creator
                 RETURN head(collect(this_creator)) AS this_creator
@@ -555,7 +555,7 @@ describe("@auth allow when inherited from interface", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
-            WHERE this_disconnect_posts0.id = $updateUsers_args_disconnect_posts0_where_this_disconnect_posts0param0
+            WHERE this_disconnect_posts0.id = $updateUsers_args_disconnect_posts0_where_Post_this_disconnect_posts0param0
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0) AND (exists((this_disconnect_posts0)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this_disconnect_posts0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_posts0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -574,7 +574,7 @@ describe("@auth allow when inherited from interface", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"user-id\\",
-                \\"updateUsers_args_disconnect_posts0_where_this_disconnect_posts0param0\\": \\"post-id\\",
+                \\"updateUsers_args_disconnect_posts0_where_Post_this_disconnect_posts0param0\\": \\"post-id\\",
                 \\"thisauth_param0\\": \\"user-id\\",
                 \\"this_disconnect_posts0auth_param0\\": \\"user-id\\",
                 \\"updateUsers\\": {
@@ -639,7 +639,7 @@ describe("@auth allow when inherited from interface", () => {
             CALL {
             WITH this, this_post0_disconnect0
             OPTIONAL MATCH (this_post0_disconnect0)<-[this_post0_disconnect0_creator0_rel:HAS_POST]-(this_post0_disconnect0_creator0:User)
-            WHERE this_post0_disconnect0_creator0.id = $updateComments_args_update_post_disconnect_disconnect_creator_where_this_post0_disconnect0_creator0param0
+            WHERE this_post0_disconnect0_creator0.id = $updateComments_args_update_post_disconnect_disconnect_creator_where_User_this_post0_disconnect0_creator0param0
             WITH this, this_post0_disconnect0, this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel
             CALL apoc.util.validate(NOT ((exists((this_post0_disconnect0)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this_post0_disconnect0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_post0_disconnect0auth_param0))) AND (this_post0_disconnect0_creator0.id IS NOT NULL AND this_post0_disconnect0_creator0.id = $this_post0_disconnect0_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -676,7 +676,7 @@ describe("@auth allow when inherited from interface", () => {
                 \\"param0\\": \\"comment-id\\",
                 \\"thisauth_param0\\": \\"user-id\\",
                 \\"this_post0_disconnect0auth_param0\\": \\"user-id\\",
-                \\"updateComments_args_update_post_disconnect_disconnect_creator_where_this_post0_disconnect0_creator0param0\\": \\"user-id\\",
+                \\"updateComments_args_update_post_disconnect_disconnect_creator_where_User_this_post0_disconnect0_creator0param0\\": \\"user-id\\",
                 \\"this_post0_disconnect0_creator0auth_param0\\": \\"user-id\\",
                 \\"updateComments\\": {
                     \\"args\\": {

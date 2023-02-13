@@ -1710,28 +1710,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-common-types@npm:6.2.1":
-  version: 6.2.1
-  resolution: "@fortawesome/fontawesome-common-types@npm:6.2.1"
-  checksum: 1a6e202beac46bc7e7bf791b37b6164b15453cc70b078456121c77d516a1077a1cfdab8aa9c77358c71f87f54560c0d9cbfb440cfb871f6d0f1f4671aabf9a0a
+"@fortawesome/fontawesome-common-types@npm:6.3.0":
+  version: 6.3.0
+  resolution: "@fortawesome/fontawesome-common-types@npm:6.3.0"
+  checksum: ece71539190abb17144861c58d65b6cd818d38a28cc3c9694325f5dca13739b2d78655e7bc1cba58cc13947f5ca80659e87c5c8bee7beb77d7f991e508312146
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-svg-core@npm:6.2.1":
-  version: 6.2.1
-  resolution: "@fortawesome/fontawesome-svg-core@npm:6.2.1"
+"@fortawesome/fontawesome-svg-core@npm:6.3.0":
+  version: 6.3.0
+  resolution: "@fortawesome/fontawesome-svg-core@npm:6.3.0"
   dependencies:
-    "@fortawesome/fontawesome-common-types": 6.2.1
-  checksum: 16caf6052b77c03826274325d4bd76d11cba486411c3101a635d3342dd764df8f5b4789456c9caa1667c232853a670f91dddf0449218e5fea7a27f4396b838af
+    "@fortawesome/fontawesome-common-types": 6.3.0
+  checksum: 2479d4b0dc45bba2638b05ba816df91fad6331cd3254d846705a0c342dc12259724706066c71461809804b4f41f15425439cfbabc42d7918e6c26b2b467b4b59
   languageName: node
   linkType: hard
 
-"@fortawesome/free-solid-svg-icons@npm:6.2.1":
-  version: 6.2.1
-  resolution: "@fortawesome/free-solid-svg-icons@npm:6.2.1"
+"@fortawesome/free-solid-svg-icons@npm:6.3.0":
+  version: 6.3.0
+  resolution: "@fortawesome/free-solid-svg-icons@npm:6.3.0"
   dependencies:
-    "@fortawesome/fontawesome-common-types": 6.2.1
-  checksum: a24170b676fced926cccdd08171357b20714483ceddeb052985a9acae3a347ffe853de2e757bf95cc7add74807d82eb1cc578e17430c32ca2c6a844c8276f91a
+    "@fortawesome/fontawesome-common-types": 6.3.0
+  checksum: 5cffcdb954f9ea8d48c6872118f21840f206d6279a6b803a31563e48fee34fbf5bc05848f5dedf07fc16f60910712c6bd0dc83f7a4e408cf062153a48022525d
   languageName: node
   linkType: hard
 
@@ -2754,19 +2754,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:0.16.3, @neo4j-ndl/base@npm:^0.16.3":
-  version: 0.16.3
-  resolution: "@neo4j-ndl/base@npm:0.16.3"
-  checksum: d37f166d29f3f5f02d68bc905ea03148e6934db68b88334c4b78068f59a6cce1a859e1a71812a7c6ec8c6c43761d8ad7c58ffbc9524769fd85b6026b041ae4d0
+"@neo4j-ndl/base@npm:0.16.4, @neo4j-ndl/base@npm:^0.16.4":
+  version: 0.16.4
+  resolution: "@neo4j-ndl/base@npm:0.16.4"
+  checksum: 2c983d3462420bb00013bd1b122c6d537174698fa0f751601013c42d9353b8e1b2a5c82dfb8353c521966e3e7dc697c4e0bb3e6e1322fc1e0fe0c70871f7df79
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:0.17.6":
-  version: 0.17.6
-  resolution: "@neo4j-ndl/react@npm:0.17.6"
+"@neo4j-ndl/react@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@neo4j-ndl/react@npm:0.17.7"
   dependencies:
     "@heroicons/react": ^1.0.5
-    "@neo4j-ndl/base": ^0.16.3
+    "@neo4j-ndl/base": ^0.16.4
     classnames: ^2.3.1
     detect-browser: ^5.3.0
     react-dropzone: ^14.0.0
@@ -2777,7 +2777,7 @@ __metadata:
     tinycolor2: ^1.4.2
   peerDependencies:
     react: 17.x
-  checksum: bf35cf04c229ffede78b91c8f4a96bc06767dc0bbfffaea4a35715aca89401571050589d6707ad0484953052747359a8a78db346b871f6bb584f1795168d7758
+  checksum: fcdcb37fc23772ea7e5882b39b54e12ee5d464d82bd6b33d0c86c7984650288432167b660b873068408dfa280a97b72ca91f17a8a68664278ec0c63ae4d347ac
   languageName: node
   linkType: hard
 
@@ -2790,7 +2790,7 @@ __metadata:
     expect-type: 0.15.0
     jest: 29.4.2
     ts-jest: 29.0.5
-    typedoc: 0.23.24
+    typedoc: 0.23.25
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -2873,8 +2873,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@neo4j-ndl/base": 0.16.3
-    "@neo4j-ndl/react": 0.17.6
+    "@neo4j-ndl/base": 0.16.4
+    "@neo4j-ndl/react": 0.17.7
     "@neo4j/graphql": 3.16.0
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.30.0
@@ -2909,14 +2909,14 @@ __metadata:
     parse5: 7.1.2
     postcss: 8.4.21
     postcss-loader: 7.0.2
-    prettier: 2.8.3
+    prettier: 2.8.4
     process: 0.11.10
     randomstring: 1.2.3
     react: 18.2.0
     react-dom: 18.2.0
     react-resizable: 3.0.4
     style-loader: 3.3.1
-    tailwindcss: 3.2.4
+    tailwindcss: 3.2.6
     terser-webpack-plugin: 5.3.6
     ts-jest: 29.0.5
     ts-loader: 9.4.2
@@ -5648,6 +5648,13 @@ __metadata:
   version: 6.0.1
   resolution: "ansi-regex@npm:6.0.1"
   checksum: 1ff8b7667cded1de4fa2c9ae283e979fc87036864317da86a2e546725f96406746411d0d85e87a2d12fa5abd715d90006de7fa4fa0477c92321ad3b4c7d4e169
+  languageName: node
+  linkType: hard
+
+"ansi-sequence-parser@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "ansi-sequence-parser@npm:1.1.0"
+  checksum: 75f4d3a4c555655a698aec05b5763cbddcd16ccccdbfd178fb0aa471ab74fdf98e031b875ef26e64be6a95cf970c89238744b26de6e34af97f316d5186b1df53
   languageName: node
   linkType: hard
 
@@ -9697,9 +9704,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:8.33.0":
-  version: 8.33.0
-  resolution: "eslint@npm:8.33.0"
+"eslint@npm:8.34.0":
+  version: 8.34.0
+  resolution: "eslint@npm:8.34.0"
   dependencies:
     "@eslint/eslintrc": ^1.4.1
     "@humanwhocodes/config-array": ^0.11.8
@@ -9742,7 +9749,7 @@ __metadata:
     text-table: ^0.2.0
   bin:
     eslint: bin/eslint.js
-  checksum: 727e63ab8b7acf281442323c5971f6afdd5b656fbcebc4476cf54e35af51b2f180617433fc5e1952f0449ca3f43a905527f9407ea4b8a7ea7562fc9c3f278d4c
+  checksum: 4e13e9eb05ac2248efbb6acae0b2325091235d5c47ba91a4775c7d6760778cbcd358a773ebd42f4629d2ad89e27c02f5d66eb1f737d75d9f5fc411454f83b2e5
   languageName: node
   linkType: hard
 
@@ -14802,12 +14809,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^4.2.5":
-  version: 4.2.5
-  resolution: "marked@npm:4.2.5"
+"marked@npm:^4.2.12":
+  version: 4.2.12
+  resolution: "marked@npm:4.2.12"
   bin:
     marked: bin/marked.js
-  checksum: dd7da20a3983c66b516463fad5dc8d15dc70e137d20b6dc491e134f671e84bd2ed5f859e2c35f21e56830a122e4356b9e574bcde49b72b7ad6bc121a215a1a98
+  checksum: bd551cd61028ee639d4ca2ccdfcc5a6ba4227c1b143c4538f3cde27f569dcb57df8e6313560394645b418b84a7336c07ab1e438b89b6324c29d7d8cdd3102d63
   languageName: node
   linkType: hard
 
@@ -15388,12 +15395,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^5.1.2":
-  version: 5.1.2
-  resolution: "minimatch@npm:5.1.2"
+"minimatch@npm:^6.1.6":
+  version: 6.1.6
+  resolution: "minimatch@npm:6.1.6"
   dependencies:
     brace-expansion: ^2.0.1
-  checksum: 32ffda25b9fb8270a1c1beafdb7489dc0e411af553495136509a945691f63c9b6b000eeeaaf8bffe3efa609c1d6d3bc0f5a106f6c3443b5c05da649100ded964
+  checksum: 707b026e0adc610be6c02f24173d84811e5b8cc2e434881e47ef00a72be5fbea9323b7158d7bf065782b1e1d5c50d7d80cd72f2602255f2fddfb1d2f02e9092c
   languageName: node
   linkType: hard
 
@@ -15759,8 +15766,8 @@ __metadata:
   resolution: "neo-push-client@workspace:examples/neo-push/client"
   dependencies:
     "@apollo/client": 3.7.7
-    "@fortawesome/fontawesome-svg-core": 6.2.1
-    "@fortawesome/free-solid-svg-icons": 6.2.1
+    "@fortawesome/fontawesome-svg-core": 6.3.0
+    "@fortawesome/free-solid-svg-icons": 6.3.0
     "@fortawesome/react-fontawesome": 0.2.0
     "@tsconfig/create-react-app": 1.0.3
     "@types/react-dom": 18.0.10
@@ -15772,7 +15779,7 @@ __metadata:
     graphql: 16.6.0
     html-webpack-plugin: 5.5.0
     react: 18.2.0
-    react-bootstrap: 2.7.0
+    react-bootstrap: 2.7.1
     react-dom: 18.2.0
     react-markdown: 8.0.5
     react-mde: 11.5.0
@@ -15891,7 +15898,7 @@ __metadata:
     "@typescript-eslint/parser": 5.51.0
     concurrently: 7.6.0
     dotenv: 16.0.3
-    eslint: 8.33.0
+    eslint: 8.34.0
     eslint-config-prettier: 8.6.0
     eslint-formatter-summary: 1.1.0
     eslint-import-resolver-typescript: 3.5.3
@@ -15906,7 +15913,7 @@ __metadata:
     lint-staged: 13.1.1
     neo4j-driver: 5.5.0
     npm-run-all: 4.1.5
-    prettier: 2.8.3
+    prettier: 2.8.4
     set-tz: 0.2.0
     ts-jest: 29.0.5
     typescript: 4.9.5
@@ -17850,7 +17857,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-selector-parser@npm:^6.0.10, postcss-selector-parser@npm:^6.0.2, postcss-selector-parser@npm:^6.0.4, postcss-selector-parser@npm:^6.0.5, postcss-selector-parser@npm:^6.0.9":
+"postcss-selector-parser@npm:^6.0.10, postcss-selector-parser@npm:^6.0.11, postcss-selector-parser@npm:^6.0.2, postcss-selector-parser@npm:^6.0.4, postcss-selector-parser@npm:^6.0.5, postcss-selector-parser@npm:^6.0.9":
   version: 6.0.11
   resolution: "postcss-selector-parser@npm:6.0.11"
   dependencies:
@@ -17890,7 +17897,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:8.4.21":
+"postcss@npm:8.4.21, postcss@npm:^8.0.9":
   version: 8.4.21
   resolution: "postcss@npm:8.4.21"
   dependencies:
@@ -17901,7 +17908,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.4.12, postcss@npm:^8.4.18":
+"postcss@npm:^8.4.12":
   version: 8.4.19
   resolution: "postcss@npm:8.4.19"
   dependencies:
@@ -17993,12 +18000,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:2.8.3":
-  version: 2.8.3
-  resolution: "prettier@npm:2.8.3"
+"prettier@npm:2.8.4":
+  version: 2.8.4
+  resolution: "prettier@npm:2.8.4"
   bin:
     prettier: bin-prettier.js
-  checksum: 92f2ceb522d454370e02082aa74ad27388672f7cee8975028b59517c069fe643bdc73e322675c8faf2ff173d7a626d1a6389f26b474000308e793aa25fff46e5
+  checksum: c173064bf3df57b6d93d19aa98753b9b9dd7657212e33b41ada8e2e9f9884066bb9ca0b4005b89b3ab137efffdf8fbe0b462785aba20364798ff4303aadda57e
   languageName: node
   linkType: hard
 
@@ -18452,9 +18459,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-bootstrap@npm:2.7.0":
-  version: 2.7.0
-  resolution: "react-bootstrap@npm:2.7.0"
+"react-bootstrap@npm:2.7.1":
+  version: 2.7.1
+  resolution: "react-bootstrap@npm:2.7.1"
   dependencies:
     "@babel/runtime": ^7.17.2
     "@restart/hooks": ^0.4.6
@@ -18475,7 +18482,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 55b6b8b0ea0857b42f06f4bb31b431e58e4829a189ba2a309aee223949a63c1f2a1b3c35ad4b0940aad7147b9b778c764f58ac737d00bdf154c1b85a57ad4094
+  checksum: 1acc5eba7ff54dffd9950bb1ae52e4eb32fd52b5306b4932a2cefd8dab946f23478f67a1edff61acad5ab12c3b0dbf3204bf881c55f9207247b10f9b48e159d4
   languageName: node
   linkType: hard
 
@@ -19732,14 +19739,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shiki@npm:^0.12.1":
-  version: 0.12.1
-  resolution: "shiki@npm:0.12.1"
+"shiki@npm:^0.14.1":
+  version: 0.14.1
+  resolution: "shiki@npm:0.14.1"
   dependencies:
+    ansi-sequence-parser: ^1.1.0
     jsonc-parser: ^3.2.0
     vscode-oniguruma: ^1.7.0
     vscode-textmate: ^8.0.0
-  checksum: a5d78a79d282f5c5168786980c66e82f075e91fa015097456486624fc5775688d685ad9b1972b0617d7f1ef50927d21b61dca476247a6f6c6b7042046e89a979
+  checksum: b19ea337cc84da69d99ca39d109f82946e0c56c11cc4c67b3b91cc14a9479203365fd0c9e0dd87e908f493ab409dc6f1849175384b6ca593ce7da884ae1edca2
   languageName: node
   linkType: hard
 
@@ -20765,9 +20773,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:3.2.4":
-  version: 3.2.4
-  resolution: "tailwindcss@npm:3.2.4"
+"tailwindcss@npm:3.2.6":
+  version: 3.2.6
+  resolution: "tailwindcss@npm:3.2.6"
   dependencies:
     arg: ^5.0.2
     chokidar: ^3.5.3
@@ -20783,12 +20791,12 @@ __metadata:
     normalize-path: ^3.0.0
     object-hash: ^3.0.0
     picocolors: ^1.0.0
-    postcss: ^8.4.18
+    postcss: ^8.0.9
     postcss-import: ^14.1.0
     postcss-js: ^4.0.0
     postcss-load-config: ^3.1.4
     postcss-nested: 6.0.0
-    postcss-selector-parser: ^6.0.10
+    postcss-selector-parser: ^6.0.11
     postcss-value-parser: ^4.2.0
     quick-lru: ^5.1.1
     resolve: ^1.22.1
@@ -20797,7 +20805,7 @@ __metadata:
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: ec187d180c722ec4f57537f2216c7b21269b525f12aaf353cea464d939c3e6286a1221eb3e1206e45d1f015f296171309ad4d9952899b0245cd07d9500a9401f
+  checksum: 908451ff7b334b2aec2a0ba5bf426a786a3f190b440a1f8ede206d889448ffda3b77349829f06dc297336fd0b5edc696ae5f23b808d6444bb5c689f218e95323
   languageName: node
   linkType: hard
 
@@ -21565,19 +21573,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc@npm:0.23.24":
-  version: 0.23.24
-  resolution: "typedoc@npm:0.23.24"
+"typedoc@npm:0.23.25":
+  version: 0.23.25
+  resolution: "typedoc@npm:0.23.25"
   dependencies:
     lunr: ^2.3.9
-    marked: ^4.2.5
-    minimatch: ^5.1.2
-    shiki: ^0.12.1
+    marked: ^4.2.12
+    minimatch: ^6.1.6
+    shiki: ^0.14.1
   peerDependencies:
     typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x
   bin:
     typedoc: bin/typedoc
-  checksum: b04f9afcba9a38d35631b08ca345f52700f9138f59b9729d7bfecf127c2a75dd6a053594db68f3141e4d7e63b701ffa5421cbdeb95f86b254257e05e240f4da0
+  checksum: 2089d6da0293e63f6d3fac9460e9427fb6bfd56ddf669f2f13bef9435aa69ca7e72a8754e8951788db69432356e419c48b811105c8a74a47cab1f92a0bdad75b
   languageName: node
   linkType: hard
 

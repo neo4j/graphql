@@ -379,7 +379,7 @@ describe("@auth allow on specific interface implementation", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
-            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_this_disconnect_content0param0
+            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Comment_this_disconnect_content0param0
             CALL {
             	WITH this_disconnect_content0, this_disconnect_content0_rel, this
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
@@ -392,7 +392,7 @@ describe("@auth allow on specific interface implementation", () => {
             CALL {
             	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
-            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_this_disconnect_content0param0
+            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
             CALL apoc.util.validate(NOT ((exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_content0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -411,7 +411,8 @@ describe("@auth allow on specific interface implementation", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"user-id\\",
-                \\"updateUsers_args_disconnect_content0_where_this_disconnect_content0param0\\": \\"post-id\\",
+                \\"updateUsers_args_disconnect_content0_where_Comment_this_disconnect_content0param0\\": \\"post-id\\",
+                \\"updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0\\": \\"post-id\\",
                 \\"this_disconnect_content0auth_param0\\": \\"user-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
@@ -464,7 +465,7 @@ describe("@auth allow on specific interface implementation", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
-            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_this_disconnect_content0param0
+            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Comment_this_disconnect_content0param0
             CALL {
             	WITH this_disconnect_content0, this_disconnect_content0_rel, this
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
@@ -477,7 +478,7 @@ describe("@auth allow on specific interface implementation", () => {
             CALL {
             	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
-            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_this_disconnect_content0param0
+            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
             CALL apoc.util.validate(NOT ((exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_content0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -490,7 +491,7 @@ describe("@auth allow on specific interface implementation", () => {
             CALL {
             WITH this, this_disconnect_content0
             OPTIONAL MATCH (this_disconnect_content0)-[this_disconnect_content0_comments0_rel:HAS_COMMENT]->(this_disconnect_content0_comments0:Comment)
-            WHERE this_disconnect_content0_comments0.id = $updateUsers_args_disconnect_content0_disconnect__on_Post0_comments0_where_this_disconnect_content0_comments0param0
+            WHERE this_disconnect_content0_comments0.id = $updateUsers_args_disconnect_content0_disconnect__on_Post0_comments0_where_Comment_this_disconnect_content0_comments0param0
             WITH this, this_disconnect_content0, this_disconnect_content0_comments0, this_disconnect_content0_comments0_rel
             CALL apoc.util.validate(NOT ((exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_content0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -511,9 +512,10 @@ describe("@auth allow on specific interface implementation", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"user-id\\",
-                \\"updateUsers_args_disconnect_content0_where_this_disconnect_content0param0\\": \\"post-id\\",
+                \\"updateUsers_args_disconnect_content0_where_Comment_this_disconnect_content0param0\\": \\"post-id\\",
+                \\"updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0\\": \\"post-id\\",
                 \\"this_disconnect_content0auth_param0\\": \\"user-id\\",
-                \\"updateUsers_args_disconnect_content0_disconnect__on_Post0_comments0_where_this_disconnect_content0_comments0param0\\": \\"comment-id\\",
+                \\"updateUsers_args_disconnect_content0_disconnect__on_Post0_comments0_where_Comment_this_disconnect_content0_comments0param0\\": \\"comment-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
                         \\"disconnect\\": {

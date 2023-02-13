@@ -23,13 +23,12 @@ import Cypher from "@neo4j/cypher-builder";
 import { dedent } from "graphql-compose";
 
 export function createMatchWherePattern(
-    matchPattern: Cypher.Relationship,
-    directed: boolean,
+    matchPattern: Cypher.Pattern,
     preComputedWhereFields: Cypher.CompositeClause | undefined,
     auth: Cypher.Predicate | undefined,
     wherePredicate: Cypher.Predicate | undefined
 ): Cypher.Clause {
-    const matchClause = new Cypher.Match(matchPattern.pattern({ directed }));
+    const matchClause = new Cypher.Match(matchPattern);
     const whereClause = preComputedWhereFields && !preComputedWhereFields?.empty ? new Cypher.With("*") : matchClause;
     if (wherePredicate) whereClause.where(wherePredicate);
     if (auth) whereClause.where(auth);
