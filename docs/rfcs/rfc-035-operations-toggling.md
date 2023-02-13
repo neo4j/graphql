@@ -312,3 +312,108 @@ type Movie @aggregation @writeonly {
 
 extend type schema @aggregation
 ```
+
+## Open questions
+
+* Difficult to de-conflict between `@write` and `writeOperations` argument inside `@relationship` - this will be confusing, especially given the default value of the `writeOperations` argument
+
+## Problem
+
+The current `@exclude` directive does not offer the level of granularity that our users desire. We have a number of GitHub issues proposing new features in this area:
+
+* [#1672](https://github.com/neo4j/graphql/issues/1672) proposes the need to selectively disable aggregation and connection fields
+* [#2804](https://github.com/neo4j/graphql/issues/2804) proposes the need to selectively disable filtering and sorting
+* [#1034](https://github.com/neo4j/graphql/issues/1034) proposes being able to use `@exclude` on field definitions
+* [#850](https://github.com/neo4j/graphql/issues/850) proposes being able to use `@exclude` on relationship fields
+
+## Solution
+
+It is likely that a single directive for this functionality is no longer desired, given the ever-expanding capabilities of the library.
+
+This RFC will discuss some options on how functionality might be split.
+
+### Write operations
+
+Write operations can be bundled together, given that they are either grouped within the `Mutation` type, or as nested operations.
+
+However, even these two groupings highlight a discrepancy in functionality - the difference between root operations and nested relationship operations.
+
+#### Root-level write operations
+
+The current root-level operations are as follows:
+
+* `CREATE`
+* `DELETE`
+* `UPDATE`
+
+It makes sense for these to be togglable at both a global and type level. This should be done using a directive such as:
+
+```gql
+enum WriteOperation {
+  CREATE
+  DELETE
+  UPDATE
+}
+
+directive @write(
+  operations: [WriteOperation!]! = [CREATE, UPDATE, DELETE]
+) on SCHEMA | OBJECT
+```
+
+The implication here is that all three write operations are enabled for the whole schema by default. Let's say you want to disable `DELETE` operations for the whole schema. This will be achievable by simply doing:
+
+```gql
+extend schema @write(operations: [CREATE, UPDATE])
+```
+
+However, let's say you had a type `Comment` that you want to be able to delete as an exception. You could do:
+
+```gql
+type Comment @write(operations: [CREATE, DELETE, UPDATE])
+
+extend schema @write(operations: [CREATE, UPDATE])
+```
+
+Alternatively, you could do the following as by default `operations` is set to all:
+
+```gql
+type Comment @write
+
+extend schema @write(operations: [CREATE, UPDATE])
+```
+
+This brings us to an important point: object-level `@write` directives overwrite the specifications of the schema-level `@write` directive.
+
+#### Nested write operations
+
+Nested operations have additional operations given they are performed over relationships:
+
+* `CREATE`
+* `DELETE`
+* `UPDATE`
+* `CONNECT`
+* `DISCONNECT`
+
+Given that relationships are intended to be extremely contextual, it seems to be against the philosophy of a graph database to globally toggle `CONNECT` and `DISCONNECT` operations.
+
+Instead, these will be configurable within the `@relationship` directive, which will now have definition (note that existing enums have not been defined):
+
+```gql
+enum RelationshipWriteOperation {
+  CREATE
+  DELETE
+  UPDATE
+  CONNECT
+  DISCONNECT
+}
+
+directive @relationship (
+  type: String!
+  direction: RelationshipDirection!
+  properties: String
+  queryDirection: RelationshipQueryDirection
+  writeOperations: [RelationshipWriteOperation!]! = [CREATE, DELETE, UPDATE, CONNECT, DISCONNECT]
+) on FIELD_DEFINITION
+```
+
+Note, once again, all nested operations are enabled by default.
