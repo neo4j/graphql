@@ -182,34 +182,6 @@ export default function createProjectionAndParams({
                         };
                         delete field.args.where["_on"];
                     }
-
-                    /*       if (field.args.where != null && typeof field.args.where == "object") {
-                        // enrich concrete types with shared filters
-                        const interfaceSharedFilters = Object.entries(field.args.where || {}).filter(
-                            ([key]) => key !== "_on"
-                        );
-
-                        interfaceImplementations.forEach((node) => {
-                            interfaceSharedFilters.forEach(([sharedFilterKey, sharedFilterValue]) => {
-                                field.args.where = field.args.where as Record<string, any>;
-                                if (field.args.where[node.name]) {
-                                    field.args.where[node.name][sharedFilterKey] = sharedFilterValue;
-                                } else {
-                                    field.args.where[node.name] = {
-                                        [sharedFilterKey]: sharedFilterValue,
-                                    };
-                                }
-                            });
-                        });
-
-                        if (field.args.where["_on"]) {
-                            field.args.where = {
-                                ...field.args.where,
-                                ...(field.args.where["_on"] as Record<string, any>),
-                            };
-                            delete field.args.where["_on"];
-                        }
-                    } */
                 } else {
                     referenceNodes = context.nodes.filter(
                         (x) =>
