@@ -151,7 +151,7 @@ describe("Mixed nesting", () => {
                     WHERE NOT (this_Actor_Movie.title = $this_Actor_connection_moviesConnectionparam0)
                     CALL {
                         WITH this_Actor_Movie
-                        MATCH (this_Actor_Movie_actors:\`Actor\`)-[this_Actor_connection_moviesConnectionthis1:ACTED_IN]->(this_Actor_Movie)
+                        MATCH (this_Actor_Movie)<-[this_Actor_connection_moviesConnectionthis1:ACTED_IN]-(this_Actor_Movie_actors:\`Actor\`)
                         WHERE NOT (this_Actor_Movie_actors.name = $this_Actor_connection_moviesConnectionparam1)
                         WITH this_Actor_Movie_actors { .name } AS this_Actor_Movie_actors
                         RETURN collect(this_Actor_Movie_actors) AS this_Actor_Movie_actors
@@ -209,7 +209,7 @@ describe("Mixed nesting", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this_actors:\`Actor\`)-[this0:ACTED_IN]->(this)
+                MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Actor\`)
                 WHERE this_actors.name = $param1
                 CALL {
                     WITH this_actors
