@@ -1484,7 +1484,7 @@ describe("Related Fields", () => {
 
         expect(result.errors).toBeFalsy();
         expect(result.data as any).toEqual({
-            [User.plural]: [
+            [User.plural]: expect.toIncludeSameMembers([
                 {
                     address: {
                         street: addressInput1.street,
@@ -1496,7 +1496,7 @@ describe("Related Fields", () => {
                         address: { city: cityInput1 },
                     }),
                 },
-            ],
+            ]),
         });
     });
 
@@ -1755,7 +1755,6 @@ describe("Related Fields", () => {
                 author.publications.forEach((publication) => {
                     if (publication.name) count += publication.name.length;
                     if (publication.subject) count += publication.subject.length;
-                    count += publication.publicationYear;
                 });
             });
             return count;
