@@ -118,6 +118,7 @@ export default function getCustomResolverMeta({
     }
 
     if (directiveFromArgument?.value.kind === Kind.STRING) {
+        // TODO - does this make this a breaking change?
         const selectionSetDocument = parse(`{ ${directiveFromArgument.value.value} }`);
         validateSelectionSet(document, object, selectionSetDocument);
         const requiredFieldsResolveTree = selectionSetToResolveTree(
@@ -140,7 +141,7 @@ export default function getCustomResolverMeta({
             directiveFromArgument.value.values.map((v) => (v as StringValueNode).value) ?? []
         );
         const selectionSetDocument = parse(`{ ${requiredFields.join(" ")} }`);
-        validateSelectionSet(document, object, selectionSetDocument);
+        // We don't validate for a list to avoid making this a breaking change
         const requiredFieldsResolveTree = selectionSetToResolveTree(
             object.fields || [],
             objects,
@@ -191,7 +192,7 @@ function validateSelectionSet(
     });
     const errors = validate(validationSchema, selectionSetDocument);
     if (errors.length) {
-        throw new Error(errors.join("\n"));
+        throw new Error(`Invalid selection set provided to @customResolver on ${object.name.value}`);
     }
 }
 
@@ -248,7 +249,7 @@ function nestedSelectionSetToResolveTrees(
         let nestedResolveTree = {};
         if (selection.kind === Kind.FRAGMENT_SPREAD) {
             // Support for these can be added later if there is time
-            throw new Error("Fragment spreads are not supported in customResolver requires");
+            throw new Error("Fragment spreads are not supported in @customResolver requires");
         }
         if (selection.kind === Kind.INLINE_FRAGMENT) {
             if (!selection.selectionSet) {

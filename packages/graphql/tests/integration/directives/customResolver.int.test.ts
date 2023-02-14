@@ -478,6 +478,94 @@ describe("Related Fields", () => {
         });
     });
 
+    test("should throw an error if requiring a field that does not exist", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
+                { userInput1, addressInput1 }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const typeDefs = gql`
+            type ${Address} {
+                street: String!
+                city: String!
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                fullName: String @customResolver(requires: "firstName lastName address { city } doesNotExist")
+            }
+        `;
+
+        const fullNameResolver = ({ firstName, lastName, address }) => `${firstName} ${lastName} from ${address.city}`;
+
+        const resolvers = {
+            [User.name]: {
+                fullName: fullNameResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(
+            `Invalid selection set provided to @customResolver on ${User}`
+        );
+    });
+
+    test("should throw an error if requiring a related field that does not exist", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
+                { userInput1, addressInput1 }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const typeDefs = gql`
+            type ${Address} {
+                street: String!
+                city: String!
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                fullName: String @customResolver(requires: "firstName lastName address { city doesNotExist }")
+            }
+        `;
+
+        const fullNameResolver = ({ firstName, lastName, address }) => `${firstName} ${lastName} from ${address.city}`;
+
+        const resolvers = {
+            [User.name]: {
+                fullName: fullNameResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(
+            `Invalid selection set provided to @customResolver on ${User}`
+        );
+    });
+
     test("should fetch required fields when other fields are also selected", async () => {
         const session = await neo4j.getSession();
         try {
@@ -1805,5 +1893,77 @@ describe("Related Fields", () => {
                 },
             ]),
         });
+    });
+
+    test("should throw an error if not using ...on for related unions", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `
+                    CREATE (user1:${User})-[:FOLLOWS]->(author1:${Author})-[:WROTE]->(book1:${Book})
+                    SET user1 = $userInput1, author1 = $authorInput1, book1 = $bookInput1
+                    CREATE (user1)-[:FOLLOWS]->(author2:${Author})-[:WROTE]->(journal1:${Journal}) SET author2 = $authorInput2, journal1 = $journalInput1
+                    CREATE (author1)-[:WROTE]->(journal1)
+                `,
+                { userInput1, authorInput1, authorInput2, bookInput1, journalInput1 }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const typeDefs = gql`
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                followedAuthors: [${Author}!]! @relationship(type: "FOLLOWS", direction: OUT)
+                customResolverField: Int @customResolver(requires: "followedAuthors { name publications { ...on ${Book} { title } subject } } firstName")
+            }
+
+            union ${Publication} = ${Book} | ${Journal}
+
+            type ${Author} {
+                name: String!
+                publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
+            }
+
+            type ${Book} {
+                title: String!
+                author: ${Author}! @relationship(type: "WROTE", direction: IN)
+            }
+
+            type ${Journal} {
+                subject: String!
+                author: ${Author}! @relationship(type: "WROTE", direction: IN)
+            }
+        `;
+
+        const customResolver = ({ firstName, followedAuthors }) => {
+            let count = 0;
+            count += firstName.length;
+            followedAuthors.forEach((author) => {
+                count += author.name.length;
+                author.publications.forEach((publication) => {
+                    if (publication.name) count += publication.name.length;
+                    if (publication.subject) count += publication.subject.length;
+                });
+            });
+            return count;
+        };
+
+        const resolvers = {
+            [User.name]: {
+                customResolverField: customResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(
+            `Invalid selection set provided to @customResolver on ${User}`
+        );
     });
 });
