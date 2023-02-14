@@ -400,7 +400,7 @@ export default async function translateUpdate({
             node,
             context,
             resolveTree: nodeProjection,
-            varName,
+            varName: new Cypher.NamedNode(varName),
         });
         projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
         projStr = projection.projection;

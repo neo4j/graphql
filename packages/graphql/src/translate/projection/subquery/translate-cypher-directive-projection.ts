@@ -26,7 +26,7 @@ import createProjectionAndParams, { ProjectionMeta } from "../../create-projecti
 import { CompositeEntity } from "../../../schema-model/entity/CompositeEntity";
 
 interface Res {
-    projection: string[];
+    projection: Cypher.Expr[];
     params: any;
     meta: ProjectionMeta;
     subqueries: Array<Cypher.Clause>;
@@ -40,16 +40,16 @@ export function translateCypherDirectiveProjection({
     node,
     alias,
     param,
-    chainStr,
+    nodeRef,
     res,
 }: {
     context: Context;
     cypherField: CypherField;
     field: ResolveTree;
     node: Node;
-    chainStr: string;
+    nodeRef: Cypher.Node;
     alias: string;
-    param: string;
+    param: Cypher.Relationship | Cypher.Node;
     res: Res;
 }): Res {
     const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
@@ -60,7 +60,7 @@ export function translateCypherDirectiveProjection({
 
     const fieldFields = field.fieldsByTypeName;
 
-    const returnVariable = new Cypher.NamedVariable(param);
+    const returnVariable = param;
     const subqueries: Cypher.Clause[] = [];
     let projectionExpr: Cypher.Expr | undefined;
     let hasUnionLabelsPredicate: Cypher.Predicate | undefined;
@@ -75,11 +75,10 @@ export function translateCypherDirectiveProjection({
             resolveTree: field,
             node: referenceNode || node,
             context,
-            varName: param,
-            chainStr: param,
+            varName: returnVariable,
         });
 
-        projectionExpr = new Cypher.RawCypher((env) => `${param} ${str.getCypher(env)}`);
+        projectionExpr = new Cypher.RawCypher((env) => `${param.getCypher(env)} ${str.getCypher(env)}`);
         res.params = { ...res.params, ...p };
         subqueries.push(...nestedSubqueriesBeforeSort, ...nestedSubqueries);
     } else if (entity instanceof CompositeEntity) {
@@ -98,13 +97,13 @@ export function translateCypherDirectiveProjection({
         }
         referencedNodes.forEach((refNode, index) => {
             if (refNode) {
-                const cypherNodeRef = new Cypher.NamedNode(param);
+                const cypherNodeRef = param as Cypher.Node;
                 const hasLabelsPredicates = refNode.getLabels(context).map((label) => cypherNodeRef.hasLabel(label));
                 const labelsSubPredicate = Cypher.and(...hasLabelsPredicates);
 
                 labelsSubPredicates.push(labelsSubPredicate);
 
-                const subqueryParam = `${param}_${index}`;
+                const subqueryParam = new Cypher.Node();
                 if (fieldFields[refNode.name]) {
                     const {
                         projection: str,
@@ -118,14 +117,16 @@ export function translateCypherDirectiveProjection({
                     });
 
                     if (nestedSubqueries.length > 0) {
-                        const projectionVariable = new Cypher.NamedVariable(subqueryParam);
+                        const projectionVariable = subqueryParam;
 
                         const beforeCallWith = new Cypher.With("*", [cypherNodeRef, projectionVariable]);
 
                         const withAndSubqueries = Cypher.concat(beforeCallWith, ...nestedSubqueries);
                         subqueries.push(withAndSubqueries);
                     }
-                    const projection = new Cypher.RawCypher((env) => `{ __resolveType: "${refNode.name}", ${str.getCypher(env).replace("{", "")}`)
+                    const projection = new Cypher.RawCypher(
+                        (env) => `{ __resolveType: "${refNode.name}", ${str.getCypher(env).replace("{", "")}`
+                    );
                     unionProjections.push({
                         projection,
                         predicate: labelsSubPredicate,
@@ -133,7 +134,7 @@ export function translateCypherDirectiveProjection({
 
                     res.params = { ...res.params, ...p };
                 } else {
-                    const projection = new Cypher.RawCypher(() => `{ __resolveType: "${refNode.name}" }`)
+                    const projection = new Cypher.RawCypher(() => `{ __resolveType: "${refNode.name}" }`);
                     unionProjections.push({
                         projection,
                         predicate: labelsSubPredicate,
@@ -150,7 +151,6 @@ export function translateCypherDirectiveProjection({
     }
 
     let customCypherClause: Cypher.Clause | undefined;
-    const nodeRef = new Cypher.NamedNode(chainStr);
 
     // Null default argument values are not passed into the resolve tree therefore these are not being passed to
     // `apocParams` below causing a runtime error when executing.
@@ -162,21 +162,22 @@ export function translateCypherDirectiveProjection({
         {}
     );
     const extraArgs = { ...nullArgumentValues, ...field.args };
-
+    const a = new Cypher.NamedNode("a-023-023-20-");
+    const b = new Cypher.NamedNode("ASDDSDSADSA");
     if (!cypherField.columnName) {
         const runCypherInApocClause = createCypherDirectiveApocProcedure({
-            nodeRef,
+            nodeRef: b,
             expectMultipleValues,
             context,
             cypherField,
             extraArgs,
         });
-        customCypherClause = new Cypher.Unwind([runCypherInApocClause, param]);
+        customCypherClause = new Cypher.Unwind([runCypherInApocClause, a]);
     } else {
         customCypherClause = createCypherDirectiveSubquery({
             cypherField,
-            nodeRef,
-            resultVariable: param,
+            nodeRef: b,
+            resultVariable: a,
             extraArgs,
         });
     }
@@ -185,13 +186,13 @@ export function translateCypherDirectiveProjection({
 
     const returnClause = createReturnClause({
         isArray,
-        returnVariable,
+        returnVariable: a,
         projectionExpr,
     });
 
     const callSt = new Cypher.Call(
         Cypher.concat(customCypherClause, unionExpression, ...subqueries, returnClause)
-    ).innerWith(new Cypher.NamedVariable(chainStr));
+    ).innerWith(nodeRef);
 
     const sortInput = (context.resolveTree.args.sort ??
         (context.resolveTree.args.options as any)?.sort ??
@@ -207,8 +208,9 @@ export function translateCypherDirectiveProjection({
     } else {
         res.subqueries.push(callSt);
     }
-
-    res.projection.push(`${alias}: ${param}`);
+    const aliasVar = new Cypher.NamedVariable(alias);
+    const paramVar = param;
+    res.projection.push(new Cypher.RawCypher((env) => `${aliasVar.getCypher(env)}: ${paramVar.getCypher(env)}`));
     return res;
 }
 
@@ -254,7 +256,7 @@ function createCypherDirectiveSubquery({
 }: {
     cypherField: CypherField;
     nodeRef: Cypher.Node;
-    resultVariable: string;
+    resultVariable: Cypher.Variable;
     extraArgs: Record<string, any>;
 }): Cypher.Clause {
     const innerWithAlias = new Cypher.With([nodeRef, new Cypher.NamedNode("this")]);

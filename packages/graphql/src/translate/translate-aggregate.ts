@@ -120,7 +120,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                         createDatetimeElement({
                             resolveTree: entry[1],
                             field: field as TemporalField,
-                            variable: varName,
+                            variable: new Cypher.NamedVariable(varName),
                             valueOverride: `${operator}(this.${fieldName})`,
                         })
                     );

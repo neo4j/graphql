@@ -39,12 +39,12 @@ type AggregationFields = {
 
 export function createFieldAggregation({
     context,
-    nodeLabel,
+    nodeVar,
     node,
     field,
 }: {
     context: Context;
-    nodeLabel: string;
+    nodeVar: Cypher.Node;
     node: Node;
     field: ResolveTree;
 }): { projectionCypher: string; projectionSubqueryCypher: string; projectionParams: Record<string, any> } | undefined {
@@ -62,7 +62,7 @@ export function createFieldAggregation({
 
     if (!referenceNode || !referenceRelation) return undefined;
 
-    const sourceRef = new Cypher.NamedNode(nodeLabel);
+    const sourceRef = nodeVar;
     const targetRef = new Cypher.Node({ labels: referenceNode.getLabels(context) });
 
     const fieldPathBase = `${node.name}${referenceNode.name}${upperFirst(relationAggregationField.fieldName)}`;
@@ -138,8 +138,8 @@ export function createFieldAggregation({
         projectionSubqueryCypher = projectionSubqueries?.getCypher(env) || "";
         return projectionMap.getCypher(env);
     });
-
-    const result = rawProjection.build(`${nodeLabel}_${field.alias}_`);
+    // TODO remove math.randome PLEASE
+    const result = rawProjection.build(`${Math.random() * 1000}_${field.alias}_`);
 
     return {
         projectionCypher: result.cypher,

@@ -27,7 +27,6 @@ import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
 import unwindCreate from "./unwind-create";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
-import { RawCypher } from "@neo4j/cypher-builder";
 
 export default async function translateCreate({
     context,
@@ -118,7 +117,7 @@ export default async function translateCreate({
             node,
             context,
             resolveTree: nodeProjection,
-            varName: "REPLACE_ME",
+            varName: new Cypher.NamedNode("REPLACE_ME"),
         });
 
         projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);

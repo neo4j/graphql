@@ -29,7 +29,7 @@ export default function createPointElement({
 }: {
     resolveTree: ResolveTree;
     field: PointField;
-    variable: string;
+    variable: Cypher.Node | Cypher.Variable;
 }): string {
     const expression = createPointExpression({ resolveTree, field, variable });
 
@@ -47,7 +47,7 @@ export function createPointExpression({
 }: {
     resolveTree: ResolveTree;
     field: PointField;
-    variable: string | Cypher.Variable;
+    variable: Cypher.Variable;
 }): Cypher.Expr {
     const isArray = field.typeMeta.array;
 

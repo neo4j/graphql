@@ -45,7 +45,7 @@ export function createProjectionSubquery({
     whereInput?: GraphQLWhereArg;
     node: Node;
     context: Context;
-    alias: string; // TODO: this should be output variable instead
+    alias: Cypher.Node; // TODO: this should be output variable instead
     nestedProjection: Cypher.Expr;
     nestedSubqueries: Cypher.Clause[];
     relationField: RelationField;
@@ -56,9 +56,7 @@ export function createProjectionSubquery({
     collect?: boolean;
 }): Cypher.Clause {
     const isArray = relationField.typeMeta.array;
-    const targetNode = new Cypher.NamedNode(alias, {
-        labels: node.getLabels(context),
-    });
+    const targetNode = alias;
     // console.log(relationshipDirection);
     const relationship = new Cypher.Relationship({
         type: relationField.type,
@@ -131,7 +129,7 @@ export function createProjectionSubquery({
         predicates.push(authStatement);
     }
 
-    const returnVariable = new Cypher.NamedVariable(alias);
+    const returnVariable = alias;
     const withStatement: Cypher.With = new Cypher.With([projection, returnVariable]); // This only works if nestedProjection is a map
     if (addSkipAndLimit) {
         addSortAndLimitOptionsToClause({

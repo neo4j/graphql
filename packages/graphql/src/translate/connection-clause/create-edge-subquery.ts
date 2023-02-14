@@ -47,7 +47,7 @@ export function createEdgeSubquery({
     resolveTree: ResolveTree;
     field: ConnectionField;
     context: Context;
-    parentNode: string;
+    parentNode: Cypher.Node;
     relatedNode: Node;
     returnVariable: Cypher.Variable;
     whereInput: ConnectionWhereArg;

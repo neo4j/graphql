@@ -30,7 +30,7 @@ export function createDatetimeElement({
 }: {
     resolveTree: ResolveTree;
     field: TemporalField;
-    variable: string;
+    variable: Cypher.Variable | Cypher.Node;
     valueOverride?: string;
 }): string {
     const dbFieldName = field.dbPropertyName || resolveTree.name;

@@ -74,7 +74,7 @@ export default async function unwindCreate({
             node,
             context,
             resolveTree: nodeProjection,
-            varName: "REPLACE_ME",
+            varName: new Cypher.NamedNode("REPLACE_ME"),
         });
         projectionSubquery = Cypher.concat(...projection.subqueries);
 

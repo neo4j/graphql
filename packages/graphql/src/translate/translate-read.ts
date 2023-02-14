@@ -60,7 +60,7 @@ export function translateRead(
         node,
         context,
         resolveTree,
-        varName,
+        varName: new Cypher.NamedNode(varName),
     });
 
     if (projection.meta?.authValidateStrs?.length) {

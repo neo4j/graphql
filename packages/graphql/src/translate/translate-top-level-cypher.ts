@@ -71,7 +71,7 @@ export function translateTopLevelCypher({
             resolveTree,
             node: referenceNode,
             context,
-            varName: `this`,
+            varName: new Cypher.NamedNode(`this`),
         });
         projectionStr = str;
         projectionSubqueries.push(...subqueriesBeforeSort, ...subqueries);
@@ -111,7 +111,7 @@ export function translateTopLevelCypher({
                         resolveTree,
                         node,
                         context,
-                        varName: "this",
+                        varName: new Cypher.NamedNode("this"),
                     });
 
                     projectionSubqueries.push(...subqueries);

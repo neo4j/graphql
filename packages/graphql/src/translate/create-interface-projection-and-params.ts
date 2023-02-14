@@ -199,7 +199,7 @@ function createInterfaceSubquery({
         resolveTree,
         node: refNode,
         context,
-        varName: param,
+        varName: new Cypher.NamedNode(param),
         literalElements: true,
         resolveType: true,
     });
