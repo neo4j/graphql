@@ -17,8 +17,10 @@
  * limitations under the License.
  */
 
+import { mergeSchemas } from "@graphql-tools/schema";
 import type { IResolvers } from "@graphql-tools/utils";
-import type {
+import { gql } from "apollo-server-express";
+import {
     FieldDefinitionNode,
     StringValueNode,
     InterfaceTypeDefinitionNode,
@@ -27,9 +29,24 @@ import type {
     SelectionSetNode,
     TypeNode,
     UnionTypeDefinitionNode,
+    validate,
+    Kind,
+    parse,
+    GraphQLSchema,
+    extendSchema,
+    GraphQLDirective,
+    DirectiveLocation,
 } from "graphql";
-import { Kind, parse } from "graphql";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
+import { scalars } from "..";
+import * as directives from "../graphql/directives";
+import { SortDirection } from "../graphql/enums/SortDirection";
+import { CartesianPointDistance } from "../graphql/input-objects/CartesianPointDistance";
+import { CartesianPointInput } from "../graphql/input-objects/CartesianPointInput";
+import { PointDistance } from "../graphql/input-objects/PointDistance";
+import { PointInput } from "../graphql/input-objects/PointInput";
+import { CartesianPoint } from "../graphql/objects/CartesianPoint";
+import { Point } from "../graphql/objects/Point";
 import { generateResolveTree } from "../translate/utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 
@@ -47,6 +64,7 @@ export const DEPRECATED_ERROR_MESSAGE = "Required fields of @customResolver must
 let deprecationWarningShown = false;
 
 export default function getCustomResolverMeta({
+    document,
     field,
     object,
     objects,
@@ -56,6 +74,7 @@ export default function getCustomResolverMeta({
     customResolvers,
     interfaceField,
 }: {
+    document: DocumentNode;
     field: FieldDefinitionNode;
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
@@ -102,6 +121,7 @@ export default function getCustomResolverMeta({
 
     if (directiveFromArgument?.value.kind === Kind.STRING) {
         const selectionSetDocument = parse(`{ ${directiveFromArgument.value.value} }`);
+        validateSelectionSet(document, object, selectionSetDocument);
         const requiredFieldsResolveTree = selectionSetToResolveTree(
             object.fields || [],
             objects,
@@ -122,6 +142,7 @@ export default function getCustomResolverMeta({
             directiveFromArgument.value.values.map((v) => (v as StringValueNode).value) ?? []
         );
         const selectionSetDocument = parse(`{ ${requiredFields.join(" ")} }`);
+        validateSelectionSet(document, object, selectionSetDocument);
         const requiredFieldsResolveTree = selectionSetToResolveTree(
             object.fields || [],
             objects,
@@ -137,6 +158,47 @@ export default function getCustomResolverMeta({
     }
 
     return undefined;
+}
+
+function validateSelectionSet(
+    document: DocumentNode,
+    object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    selectionSetDocument: DocumentNode
+) {
+    const baseSchema = extendSchema(
+        new GraphQLSchema({
+            directives: [
+                ...Object.values(directives),
+                new GraphQLDirective({
+                    name: "auth",
+                    locations: [DirectiveLocation.FIELD_DEFINITION, DirectiveLocation.OBJECT],
+                }), // TODO better definitions and check for other dynamic directives
+            ],
+            types: [
+                ...Object.values(scalars),
+                Point,
+                CartesianPoint,
+                PointInput,
+                PointDistance,
+                CartesianPointInput,
+                CartesianPointDistance,
+                SortDirection,
+            ],
+        }),
+        document
+    );
+    const validationSchema = mergeSchemas({
+        schemas: [baseSchema],
+        typeDefs: gql`
+                schema {
+                    query: ${object.name.value}
+                }
+            `,
+    });
+    const errors = validate(validationSchema, selectionSetDocument);
+    if (errors.length) {
+        throw new Error(errors.join("\n"));
+    }
 }
 
 function selectionSetToResolveTree(

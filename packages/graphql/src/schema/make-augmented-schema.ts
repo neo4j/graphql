@@ -155,7 +155,7 @@ function makeAugmentedSchema(
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
-    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers, validateResolvers });
+    const getNodesResult = getNodes(document, definitionNodes, { callbacks, userCustomResolvers, validateResolvers });
 
     const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames, floatWhereInTypeDefs } =
         getNodesResult;
@@ -200,6 +200,7 @@ function makeAugmentedSchema(
         });
 
         const relFields = getObjFieldMeta({
+            document,
             enums: enumTypes,
             interfaces: interfaceTypes,
             objects: objectTypes,
@@ -289,6 +290,7 @@ function makeAugmentedSchema(
         );
 
         const interfaceFields = getObjFieldMeta({
+            document,
             enums: enumTypes,
             interfaces: [...interfaceTypes, ...interfaceRelationships],
             objects: objectTypes,
@@ -797,6 +799,7 @@ function makeAugmentedSchema(
 
         if (cypherType) {
             const objectFields = getObjFieldMeta({
+                document,
                 obj: cypherType,
                 scalars: scalarTypes,
                 enums: enumTypes,
@@ -836,6 +839,7 @@ function makeAugmentedSchema(
 
     interfaceTypes.forEach((inter) => {
         const objectFields = getObjFieldMeta({
+            document,
             obj: inter,
             scalars: scalarTypes,
             enums: enumTypes,
