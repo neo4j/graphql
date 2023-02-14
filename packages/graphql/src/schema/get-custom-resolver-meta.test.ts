@@ -17,34 +17,452 @@
  * limitations under the License.
  */
 
-import type { FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
+import type {
+    DocumentNode,
+    FieldDefinitionNode,
+    InterfaceTypeDefinitionNode,
+    ObjectTypeDefinitionNode,
+    UnionTypeDefinitionNode,
+} from "graphql";
 import { Kind } from "graphql";
 import getCustomResolverMeta, { DEPRECATED_ERROR_MESSAGE } from "./get-custom-resolver-meta";
 
 describe("getCustomResolverMeta", () => {
-    const fieldName = "someFieldName";
-    const objectName = "someObjectName";
-    const interfaceName = "anInterface";
-    const object: ObjectTypeDefinitionNode = {
-        kind: Kind.OBJECT_TYPE_DEFINITION,
-        name: {
-            kind: Kind.NAME,
-            value: objectName,
-        },
-        interfaces: [
-            {
-                kind: Kind.NAMED_TYPE,
-                name: {
-                    kind: Kind.NAME,
-                    value: interfaceName,
-                },
+    const authorType = "Author";
+    const bookType = "Book";
+    const journalType = "Journal";
+    const publicationInterface = "Publication";
+
+    const customResolverField = "publicationsWithAuthor";
+
+    const objects: ObjectTypeDefinitionNode[] = [
+        {
+            kind: Kind.OBJECT_TYPE_DEFINITION,
+            description: undefined,
+            name: {
+                kind: Kind.NAME,
+                value: authorType,
             },
-        ],
+            interfaces: [],
+            directives: [],
+            fields: [
+                {
+                    kind: Kind.FIELD_DEFINITION,
+                    description: undefined,
+                    name: {
+                        kind: Kind.NAME,
+                        value: "name",
+                    },
+                    arguments: [],
+                    type: {
+                        kind: Kind.NON_NULL_TYPE,
+                        type: {
+                            kind: Kind.NAMED_TYPE,
+                            name: {
+                                kind: Kind.NAME,
+                                value: "String",
+                            },
+                        },
+                    },
+                    directives: [],
+                },
+                {
+                    kind: Kind.FIELD_DEFINITION,
+                    description: undefined,
+                    name: {
+                        kind: Kind.NAME,
+                        value: "publications",
+                    },
+                    arguments: [],
+                    type: {
+                        kind: Kind.NON_NULL_TYPE,
+                        type: {
+                            kind: Kind.LIST_TYPE,
+                            type: {
+                                kind: Kind.NON_NULL_TYPE,
+                                type: {
+                                    kind: Kind.NAMED_TYPE,
+                                    name: {
+                                        kind: Kind.NAME,
+                                        value: publicationInterface,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    directives: [
+                        {
+                            kind: Kind.DIRECTIVE,
+                            name: {
+                                kind: Kind.NAME,
+                                value: "relationship",
+                            },
+                            arguments: [
+                                {
+                                    kind: Kind.ARGUMENT,
+                                    name: {
+                                        kind: Kind.NAME,
+                                        value: "type",
+                                    },
+                                    value: {
+                                        kind: Kind.STRING,
+                                        value: "WROTE",
+                                        block: false,
+                                    },
+                                },
+                                {
+                                    kind: Kind.ARGUMENT,
+                                    name: {
+                                        kind: Kind.NAME,
+                                        value: "direction",
+                                    },
+                                    value: {
+                                        kind: Kind.ENUM,
+                                        value: "OUT",
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    kind: Kind.FIELD_DEFINITION,
+                    description: undefined,
+                    name: {
+                        kind: Kind.NAME,
+                        value: customResolverField,
+                    },
+                    arguments: [],
+                    type: {
+                        kind: Kind.NON_NULL_TYPE,
+                        type: {
+                            kind: Kind.LIST_TYPE,
+                            type: {
+                                kind: Kind.NON_NULL_TYPE,
+                                type: {
+                                    kind: Kind.NAMED_TYPE,
+                                    name: {
+                                        kind: Kind.NAME,
+                                        value: "String",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    directives: [
+                        {
+                            kind: Kind.DIRECTIVE,
+                            name: {
+                                kind: Kind.NAME,
+                                value: "customResolver",
+                            },
+                            arguments: [
+                                {
+                                    kind: Kind.ARGUMENT,
+                                    name: {
+                                        kind: Kind.NAME,
+                                        value: "requires",
+                                    },
+                                    value: {
+                                        kind: Kind.STRING,
+                                        value: "name publications { publicationYear ...on Book { title } ... on Journal { subject } }",
+                                        block: false,
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            kind: Kind.OBJECT_TYPE_DEFINITION,
+            description: undefined,
+            name: {
+                kind: Kind.NAME,
+                value: bookType,
+            },
+            interfaces: [
+                {
+                    kind: Kind.NAMED_TYPE,
+                    name: {
+                        kind: Kind.NAME,
+                        value: publicationInterface,
+                    },
+                },
+            ],
+            directives: [],
+            fields: [
+                {
+                    kind: Kind.FIELD_DEFINITION,
+                    description: undefined,
+                    name: {
+                        kind: Kind.NAME,
+                        value: "title",
+                    },
+                    arguments: [],
+                    type: {
+                        kind: Kind.NON_NULL_TYPE,
+                        type: {
+                            kind: Kind.NAMED_TYPE,
+                            name: {
+                                kind: Kind.NAME,
+                                value: "String",
+                            },
+                        },
+                    },
+                    directives: [],
+                },
+                {
+                    kind: Kind.FIELD_DEFINITION,
+                    description: undefined,
+                    name: {
+                        kind: Kind.NAME,
+                        value: "publicationYear",
+                    },
+                    arguments: [],
+                    type: {
+                        kind: Kind.NON_NULL_TYPE,
+                        type: {
+                            kind: Kind.NAMED_TYPE,
+                            name: {
+                                kind: Kind.NAME,
+                                value: "Int",
+                            },
+                        },
+                    },
+                    directives: [],
+                },
+                {
+                    kind: Kind.FIELD_DEFINITION,
+                    description: undefined,
+                    name: {
+                        kind: Kind.NAME,
+                        value: "author",
+                    },
+                    arguments: [],
+                    type: {
+                        kind: Kind.NON_NULL_TYPE,
+                        type: {
+                            kind: Kind.LIST_TYPE,
+                            type: {
+                                kind: Kind.NON_NULL_TYPE,
+                                type: {
+                                    kind: Kind.NAMED_TYPE,
+                                    name: {
+                                        kind: Kind.NAME,
+                                        value: authorType,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    directives: [
+                        {
+                            kind: Kind.DIRECTIVE,
+                            name: {
+                                kind: Kind.NAME,
+                                value: "relationship",
+                            },
+                            arguments: [
+                                {
+                                    kind: Kind.ARGUMENT,
+                                    name: {
+                                        kind: Kind.NAME,
+                                        value: "type",
+                                    },
+                                    value: {
+                                        kind: Kind.STRING,
+                                        value: "WROTE",
+                                        block: false,
+                                    },
+                                },
+                                {
+                                    kind: Kind.ARGUMENT,
+                                    name: {
+                                        kind: Kind.NAME,
+                                        value: "direction",
+                                    },
+                                    value: {
+                                        kind: Kind.ENUM,
+                                        value: "IN",
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            kind: Kind.OBJECT_TYPE_DEFINITION,
+            description: undefined,
+            name: {
+                kind: Kind.NAME,
+                value: journalType,
+            },
+            interfaces: [
+                {
+                    kind: Kind.NAMED_TYPE,
+                    name: {
+                        kind: Kind.NAME,
+                        value: publicationInterface,
+                    },
+                },
+            ],
+            directives: [],
+            fields: [
+                {
+                    kind: Kind.FIELD_DEFINITION,
+                    description: undefined,
+                    name: {
+                        kind: Kind.NAME,
+                        value: "subject",
+                    },
+                    arguments: [],
+                    type: {
+                        kind: Kind.NON_NULL_TYPE,
+                        type: {
+                            kind: Kind.NAMED_TYPE,
+                            name: {
+                                kind: Kind.NAME,
+                                value: "String",
+                            },
+                        },
+                    },
+                    directives: [],
+                },
+                {
+                    kind: Kind.FIELD_DEFINITION,
+                    description: undefined,
+                    name: {
+                        kind: Kind.NAME,
+                        value: "publicationYear",
+                    },
+                    arguments: [],
+                    type: {
+                        kind: Kind.NON_NULL_TYPE,
+                        type: {
+                            kind: Kind.NAMED_TYPE,
+                            name: {
+                                kind: Kind.NAME,
+                                value: "Int",
+                            },
+                        },
+                    },
+                    directives: [],
+                },
+                {
+                    kind: Kind.FIELD_DEFINITION,
+                    description: undefined,
+                    name: {
+                        kind: Kind.NAME,
+                        value: "author",
+                    },
+                    arguments: [],
+                    type: {
+                        kind: Kind.NON_NULL_TYPE,
+                        type: {
+                            kind: Kind.LIST_TYPE,
+                            type: {
+                                kind: Kind.NON_NULL_TYPE,
+                                type: {
+                                    kind: Kind.NAMED_TYPE,
+                                    name: {
+                                        kind: Kind.NAME,
+                                        value: authorType,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    directives: [
+                        {
+                            kind: Kind.DIRECTIVE,
+                            name: {
+                                kind: Kind.NAME,
+                                value: "relationship",
+                            },
+                            arguments: [
+                                {
+                                    kind: Kind.ARGUMENT,
+                                    name: {
+                                        kind: Kind.NAME,
+                                        value: "type",
+                                    },
+                                    value: {
+                                        kind: Kind.STRING,
+                                        value: "WROTE",
+                                        block: false,
+                                    },
+                                },
+                                {
+                                    kind: Kind.ARGUMENT,
+                                    name: {
+                                        kind: Kind.NAME,
+                                        value: "direction",
+                                    },
+                                    value: {
+                                        kind: Kind.ENUM,
+                                        value: "IN",
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+    ];
+
+    const interfaces: InterfaceTypeDefinitionNode[] = [
+        {
+            kind: Kind.INTERFACE_TYPE_DEFINITION,
+            description: undefined,
+            name: {
+                kind: Kind.NAME,
+                value: publicationInterface,
+            },
+            interfaces: [],
+            directives: [],
+            fields: [
+                {
+                    kind: Kind.FIELD_DEFINITION,
+                    description: undefined,
+                    name: {
+                        kind: Kind.NAME,
+                        value: "publicationYear",
+                    },
+                    arguments: [],
+                    type: {
+                        kind: Kind.NON_NULL_TYPE,
+                        type: {
+                            kind: Kind.NAMED_TYPE,
+                            name: {
+                                kind: Kind.NAME,
+                                value: "Int",
+                            },
+                        },
+                    },
+                    directives: [],
+                },
+            ],
+        },
+    ];
+
+    const unions: UnionTypeDefinitionNode[] = [];
+
+    const document: DocumentNode = {
+        kind: Kind.DOCUMENT,
+        definitions: [...objects, ...interfaces, ...unions],
     };
 
+    const object = objects.find((obj) => obj.name.value === authorType) as ObjectTypeDefinitionNode;
+
     const resolvers = {
-        [fieldName]: () => 25,
+        [customResolverField]: () => 25,
     };
+
     test("should return undefined if no directive found", () => {
         // @ts-ignore
         const field: FieldDefinitionNode = {
@@ -68,100 +486,24 @@ describe("getCustomResolverMeta", () => {
             ],
             name: {
                 kind: Kind.NAME,
-                value: fieldName,
+                value: customResolverField,
             },
         };
 
-        const result = getCustomResolverMeta(field, object, true, resolvers);
+        const result = getCustomResolverMeta({
+            document,
+            field,
+            object,
+            objects,
+            validateResolvers: true,
+            interfaces,
+            unions,
+            customResolvers: resolvers,
+        });
 
         expect(result).toBeUndefined();
     });
-    test("should throw if requires not a list - all strings", () => {
-        const field: FieldDefinitionNode = {
-            directives: [
-                {
-                    // @ts-ignore
-                    name: {
-                        value: "customResolver",
-                        // @ts-ignore
-                    },
-                    arguments: [
-                        {
-                            // @ts-ignore
-                            name: { value: "requires" },
-                            // @ts-ignore
-                            value: { kind: Kind.BOOLEAN },
-                        },
-                    ],
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 2" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 3" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 4" },
-                },
-            ],
-            name: {
-                kind: Kind.NAME,
-                value: fieldName,
-            },
-        };
-
-        expect(() => getCustomResolverMeta(field, object, true, resolvers)).toThrow(DEPRECATED_ERROR_MESSAGE);
-    });
-    test("should throw if requires not a list of strings", () => {
-        const field: FieldDefinitionNode = {
-            directives: [
-                {
-                    // @ts-ignore
-                    name: {
-                        value: "customResolver",
-                        // @ts-ignore
-                    },
-                    arguments: [
-                        {
-                            // @ts-ignore
-                            name: { value: "requires" },
-                            // @ts-ignore
-                            value: {
-                                kind: Kind.LIST,
-                                values: [
-                                    { kind: Kind.STRING, value: "field1" },
-                                    { kind: Kind.STRING, value: "field2" },
-                                    { kind: Kind.BOOLEAN, value: true },
-                                ],
-                            },
-                        },
-                    ],
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 2" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 3" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 4" },
-                },
-            ],
-            name: {
-                kind: Kind.NAME,
-                value: fieldName,
-            },
-        };
-
-        expect(() => getCustomResolverMeta(field, object, true, resolvers)).toThrow(DEPRECATED_ERROR_MESSAGE);
-    });
-    test("should return the correct meta if no requires argument", () => {
+    test("should return undefined if no requires argument", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -186,15 +528,22 @@ describe("getCustomResolverMeta", () => {
             ],
             name: {
                 kind: Kind.NAME,
-                value: fieldName,
+                value: customResolverField,
             },
         };
 
-        const result = getCustomResolverMeta(field, object, true, resolvers);
-
-        expect(result).toMatchObject({
-            requiredFields: [],
+        const result = getCustomResolverMeta({
+            document,
+            field,
+            object,
+            objects,
+            validateResolvers: true,
+            interfaces,
+            unions,
+            customResolvers: resolvers,
         });
+
+        expect(result).toBeUndefined();
     });
     test("should return the correct meta with requires argument", () => {
         const requiredFields = ["field1", "field2", "field3"];
@@ -236,11 +585,20 @@ describe("getCustomResolverMeta", () => {
             ],
             name: {
                 kind: Kind.NAME,
-                value: fieldName,
+                value: customResolverField,
             },
         };
 
-        const result = getCustomResolverMeta(field, object, true, resolvers);
+        const result = getCustomResolverMeta({
+            document,
+            field,
+            object,
+            objects,
+            validateResolvers: true,
+            interfaces,
+            unions,
+            customResolvers: resolvers,
+        });
 
         expect(result).toMatchObject({
             requiredFields,
@@ -286,15 +644,24 @@ describe("getCustomResolverMeta", () => {
             ],
             name: {
                 kind: Kind.NAME,
-                value: fieldName,
+                value: customResolverField,
             },
         };
 
         const resolvers = {};
 
-        expect(() => getCustomResolverMeta(field, object, true, resolvers)).toThrow(
-            `Custom resolver for ${fieldName} has not been provided`
-        );
+        expect(() =>
+            getCustomResolverMeta({
+                document,
+                field,
+                object,
+                objects,
+                validateResolvers: true,
+                interfaces,
+                unions,
+                customResolvers: resolvers,
+            })
+        ).toThrow(`Custom resolver for ${customResolverField} has not been provided`);
     });
     test("Check throws error if customResolver defined on interface", () => {
         const requiredFields = ["field1", "field2", "field3"];
@@ -336,19 +703,28 @@ describe("getCustomResolverMeta", () => {
             ],
             name: {
                 kind: Kind.NAME,
-                value: fieldName,
+                value: customResolverField,
             },
         };
 
         const resolvers = {
-            [interfaceName]: {
-                [fieldName]: () => "Hello World!",
+            [publicationInterface]: {
+                [customResolverField]: () => "Hello World!",
             },
         };
 
-        expect(() => getCustomResolverMeta(field, object, true, resolvers)).toThrow(
-            `Custom resolver for ${fieldName} has not been provided`
-        );
+        expect(() =>
+            getCustomResolverMeta({
+                document,
+                field,
+                object,
+                objects,
+                validateResolvers: true,
+                interfaces,
+                unions,
+                customResolvers: resolvers,
+            })
+        ).toThrow(`Custom resolver for ${customResolverField} has not been provided`);
     });
 
     test("Check does not throw error if validateResolvers false", () => {
@@ -391,16 +767,27 @@ describe("getCustomResolverMeta", () => {
             ],
             name: {
                 kind: Kind.NAME,
-                value: fieldName,
+                value: customResolverField,
             },
         };
 
         const resolvers = {
-            [interfaceName]: {
-                [fieldName]: () => "Hello World!",
+            [publicationInterface]: {
+                [customResolverField]: () => "Hello World!",
             },
         };
 
-        expect(() => getCustomResolverMeta(field, object, false, resolvers)).not.toThrow();
+        expect(() =>
+            getCustomResolverMeta({
+                document,
+                field,
+                object,
+                objects,
+                validateResolvers: true,
+                interfaces,
+                unions,
+                customResolvers: resolvers,
+            })
+        ).not.toThrow();
     });
 });
