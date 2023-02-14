@@ -112,12 +112,12 @@ describe("@auth allow with interface relationships", () => {
                 WITH this
                 MATCH (this)-[this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
                 WHERE apoc.util.validatePredicate(NOT ((exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND any(this1 IN [(this_Comment)<-[:HAS_CONTENT]-(this1:\`User\`) | this1] WHERE (this1.id IS NOT NULL AND this1.id = $param1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN { __resolveType: \\"Comment\\", id: this_Comment.id, content: this_Comment.content } AS this_content
+                RETURN { __resolveType: \\"Comment\\", __id: id(this_Comment), id: this_Comment.id, content: this_Comment.content } AS this_content
                 UNION
                 WITH this
                 MATCH (this)-[this2:HAS_CONTENT]->(this_Post:\`Post\`)
                 WHERE apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(this3 IN [(this_Post)<-[:HAS_CONTENT]-(this3:\`User\`) | this3] WHERE (this3.id IS NOT NULL AND this3.id = $param2)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN { __resolveType: \\"Post\\", id: this_Post.id, content: this_Post.content } AS this_content
+                RETURN { __resolveType: \\"Post\\", __id: id(this_Post), id: this_Post.id, content: this_Post.content } AS this_content
             }
             RETURN collect(this_content) AS this_content
             }
@@ -164,7 +164,7 @@ describe("@auth allow with interface relationships", () => {
                 WITH this
                 MATCH (this)-[this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
                 WHERE (apoc.util.validatePredicate(NOT ((exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND any(this1 IN [(this_Comment)<-[:HAS_CONTENT]-(this1:\`User\`) | this1] WHERE (this1.id IS NOT NULL AND this1.id = $param2)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND this_Comment.id = $param3)
-                RETURN { __resolveType: \\"Comment\\" } AS this_content
+                RETURN { __resolveType: \\"Comment\\", __id: id(this_Comment) } AS this_content
                 UNION
                 WITH this
                 MATCH (this)-[this2:HAS_CONTENT]->(this_Post:\`Post\`)
@@ -176,7 +176,7 @@ describe("@auth allow with interface relationships", () => {
                     WITH this_Post_comments { .content } AS this_Post_comments
                     RETURN collect(this_Post_comments) AS this_Post_comments
                 }
-                RETURN { __resolveType: \\"Post\\", comments: this_Post_comments } AS this_content
+                RETURN { __resolveType: \\"Post\\", __id: id(this_Post), comments: this_Post_comments } AS this_content
             }
             RETURN collect(this_content) AS this_content
             }
@@ -279,12 +279,12 @@ describe("@auth allow with interface relationships", () => {
                 WITH this
                 MATCH (this)-[update_this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
                 WHERE apoc.util.validatePredicate(NOT ((exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND any(update_this1 IN [(this_Comment)<-[:HAS_CONTENT]-(update_this1:\`User\`) | update_this1] WHERE (update_this1.id IS NOT NULL AND update_this1.id = $update_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN { __resolveType: \\"Comment\\", id: this_Comment.id } AS this_content
+                RETURN { __resolveType: \\"Comment\\", __id: id(this_Comment), id: this_Comment.id } AS this_content
                 UNION
                 WITH this
                 MATCH (this)-[update_this2:HAS_CONTENT]->(this_Post:\`Post\`)
                 WHERE apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(update_this3 IN [(this_Post)<-[:HAS_CONTENT]-(update_this3:\`User\`) | update_this3] WHERE (update_this3.id IS NOT NULL AND update_this3.id = $update_param1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS this_content
+                RETURN { __resolveType: \\"Post\\", __id: id(this_Post), id: this_Post.id } AS this_content
             }
             RETURN collect(this_content) AS this_content
             }

@@ -169,12 +169,12 @@ describe("Cypher Auth Where", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
-                RETURN { __resolveType: \\"Comment\\" } AS this_content
+                RETURN { __resolveType: \\"Comment\\", __id: id(this_Comment) } AS this_content
                 UNION
                 WITH this
                 MATCH (this)-[this1:HAS_CONTENT]->(this_Post:\`Post\`)
                 WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this2 IN [(this_Post)<-[:HAS_CONTENT]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param1)))
-                RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS this_content
+                RETURN { __resolveType: \\"Post\\", __id: id(this_Post), id: this_Post.id } AS this_content
             }
             RETURN collect(this_content) AS this_content
             }
@@ -220,13 +220,13 @@ describe("Cypher Auth Where", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
-                    WITH { node: { __resolveType: \\"Comment\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Comment\\", __id: id(this_Comment) } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis1:HAS_CONTENT]->(this_Post:\`Post\`)
                     WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis2 IN [(this_Post)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis2:\`User\`) | this_connection_contentConnectionthis2] WHERE (this_connection_contentConnectionthis2.id IS NOT NULL AND this_connection_contentConnectionthis2.id = $this_connection_contentConnectionparam0)))
-                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", __id: id(this_Post), id: this_Post.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -276,13 +276,13 @@ describe("Cypher Auth Where", () => {
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
                     WHERE this_Comment.id = $this_connection_contentConnectionparam0
-                    WITH { node: { __resolveType: \\"Comment\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Comment\\", __id: id(this_Comment) } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis1:HAS_CONTENT]->(this_Post:\`Post\`)
                     WHERE (this_Post.id = $this_connection_contentConnectionparam1 AND (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis2 IN [(this_Post)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis2:\`User\`) | this_connection_contentConnectionthis2] WHERE (this_connection_contentConnectionthis2.id IS NOT NULL AND this_connection_contentConnectionthis2.id = $this_connection_contentConnectionparam2))))
-                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", __id: id(this_Post), id: this_Post.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges

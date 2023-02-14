@@ -75,7 +75,7 @@ export {
     contains,
     startsWith,
     endsWith,
-    matches,
+    matches
 } from "./expressions/operations/comparison";
 export { plus, minus } from "./expressions/operations/math";
 
@@ -99,6 +99,8 @@ export {
     avg,
     sum,
     randomUUID,
+    id,
+    elementId
 } from "./expressions/functions/CypherFunction";
 
 export * from "./expressions/functions/StringFunctions";

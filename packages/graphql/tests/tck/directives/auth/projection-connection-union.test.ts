@@ -106,7 +106,7 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
                         WITH edges, size(edges) AS totalCount
                         RETURN { edges: edges, totalCount: totalCount } AS this_Post_creatorConnection
                     }
-                    WITH { node: { __resolveType: \\"Post\\", content: this_Post.content, creatorConnection: this_Post_creatorConnection } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", __id: id(this_Post), content: this_Post.content, creatorConnection: this_Post_creatorConnection } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges

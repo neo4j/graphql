@@ -330,7 +330,7 @@ describe("Math operators", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:MARRIED_WITH]->(this_Star:\`Star\`)
-                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS this_marriedWith
+                RETURN { __resolveType: \\"Star\\", __id: id(this_Star), marriageLength: this_Star.marriageLength } AS this_marriedWith
             }
             RETURN collect(DISTINCT this { .name, marriedWith: this_marriedWith }) AS data"
         `);
@@ -401,7 +401,7 @@ describe("Math operators", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:MARRIED_WITH]->(this_Star:\`Star\`)
-                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS this_marriedWith
+                RETURN { __resolveType: \\"Star\\", __id: id(this_Star), marriageLength: this_Star.marriageLength } AS this_marriedWith
             }
             RETURN collect(DISTINCT this { .name, marriedWith: this_marriedWith }) AS data"
         `);
