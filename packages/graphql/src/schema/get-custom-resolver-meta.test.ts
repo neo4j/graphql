@@ -25,7 +25,8 @@ import type {
     UnionTypeDefinitionNode,
 } from "graphql";
 import { Kind } from "graphql";
-import getCustomResolverMeta, { DEPRECATED_ERROR_MESSAGE } from "./get-custom-resolver-meta";
+import { generateResolveTree } from "../translate/utils/resolveTree";
+import getCustomResolverMeta from "./get-custom-resolver-meta";
 
 describe("getCustomResolverMeta", () => {
     const authorType = "Author";
@@ -601,7 +602,10 @@ describe("getCustomResolverMeta", () => {
         });
 
         expect(result).toMatchObject({
-            requiredFields,
+            requiredFields: requiredFields.reduce((res, field) => {
+                res = { ...res, ...generateResolveTree({ name: field }) };
+                return res;
+            }, {}),
         });
     });
     test("Check throws error if customResolver is not provided", () => {
@@ -783,7 +787,7 @@ describe("getCustomResolverMeta", () => {
                 field,
                 object,
                 objects,
-                validateResolvers: true,
+                validateResolvers: false,
                 interfaces,
                 unions,
                 customResolvers: resolvers,
