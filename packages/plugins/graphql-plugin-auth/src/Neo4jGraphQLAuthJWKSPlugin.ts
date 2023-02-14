@@ -19,7 +19,7 @@
 
 import type { VerifyOptions, GetPublicKeyOrSecret } from "jsonwebtoken";
 import { verify } from "jsonwebtoken";
-import type { Options as JwksOptions} from "jwks-rsa";
+import type { Options as JwksOptions } from "jwks-rsa";
 import { JwksClient } from "jwks-rsa";
 import Debug from "debug";
 import { DEBUG_PREFIX } from "./constants";
@@ -111,7 +111,7 @@ class Neo4jGraphQLAuthJWKSPlugin {
 
         const getKey: GetPublicKeyOrSecret = (header, callback) => {
             this.client?.getSigningKey(header.kid, (err, key) => {
-                var signingKey = key?.getPublicKey();
+                const signingKey = key?.getPublicKey();
                 callback(err, signingKey);
             });
         };

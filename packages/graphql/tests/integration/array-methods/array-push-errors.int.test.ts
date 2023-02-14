@@ -21,13 +21,12 @@ import { gql } from "apollo-server";
 import { graphql, GraphQLError } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
-import { IncomingMessage } from "http";
-import { Socket } from "net";
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
 import { UniqueType } from "../../utils/graphql-types";
+import { createJwtRequest } from "../../../tests/utils/create-jwt-request";
 
 describe("array-push", () => {
     let driver: Driver;
@@ -91,7 +90,7 @@ describe("array-push", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -137,20 +136,16 @@ describe("array-push", () => {
 
         await session.run(cypher, { movieTitle });
 
-        const token = "not valid token";
-
-        const socket = new Socket({ readable: true });
-        const req = new IncomingMessage(socket);
-        req.headers.authorization = `Bearer ${token}`;
+        const req = createJwtRequest('invalid secret');
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
         });
 
         expect(gqlResult.errors).toBeDefined();
-        expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Unauthenticated"))).toBeTruthy();
+        expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
         expect(gqlResult.data).toBeNull();
     });
 
@@ -190,7 +185,7 @@ describe("array-push", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -238,7 +233,7 @@ describe("array-push", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
         });
 
         if (gqlResult.errors) {
@@ -326,7 +321,7 @@ describe("array-push", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, payIncrement },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
         });
 
         if (gqlResult.errors) {

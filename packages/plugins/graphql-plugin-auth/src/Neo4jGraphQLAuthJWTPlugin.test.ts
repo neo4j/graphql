@@ -22,7 +22,7 @@ import * as jsonwebtoken from "jsonwebtoken";
 import Neo4jGraphQLAuthJWTPlugin from "./Neo4jGraphQLAuthJWTPlugin";
 
 describe("Neo4jGraphQLAuthJWTPlugin", () => {
-    const secret: string = "secret";
+    const secret = "secret";
     const payload = {
         sub: "my-id",
     };

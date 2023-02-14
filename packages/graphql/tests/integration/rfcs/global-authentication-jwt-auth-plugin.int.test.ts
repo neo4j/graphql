@@ -104,11 +104,7 @@ describe("Global authentication - Auth JWT plugin", () => {
         });
 
         expect(gqlResult.errors).toBeDefined();
-        expect(
-            (gqlResult.errors as unknown as Neo4jGraphQLAuthenticationError[]).some((el) =>
-                el.message.includes("Unauthenticated")
-            )
-        ).toBeTruthy();
+        expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid token" })]);
         expect(gqlResult.data).toBeNull();
     });
 
@@ -124,7 +120,8 @@ describe("Global authentication - Auth JWT plugin", () => {
             },
         });
 
-        const req = createJwtRequest("wrong-secret", { sub: "test" });
+        const req = createJwtRequest("invalid secret", { sub: "test" });
+        console.log(req)
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
@@ -133,11 +130,7 @@ describe("Global authentication - Auth JWT plugin", () => {
         });
 
         expect(gqlResult.errors).toBeDefined();
-        expect(
-            (gqlResult.errors as unknown as Neo4jGraphQLAuthenticationError[]).some((el) =>
-                el.message.includes("Unauthenticated")
-            )
-        ).toBeTruthy();
+        expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
         expect(gqlResult.data).toBeNull();
     });
 

@@ -164,7 +164,7 @@ describe("Subscription authentication", () => {
                             `);
             await wsClient.waitForNextEvent();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authenticated" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
         });
     });
 

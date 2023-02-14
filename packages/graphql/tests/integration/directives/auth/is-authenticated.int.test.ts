@@ -20,23 +20,23 @@
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { IncomingMessage } from "http";
-import { Socket } from "net";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { runCypher } from "../../../utils/run-cypher";
 import { UniqueType } from "../../../utils/graphql-types";
+import { createJwtRequest } from "../../../../tests/utils/create-jwt-request";
 
 describe("auth/is-authenticated", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+    const secret = "secret"
 
     let Product: UniqueType;
     let User: UniqueType;
 
     const jwtPlugin = new Neo4jGraphQLAuthJWTPlugin({
-        secret: "secret",
+        secret,
     });
 
     beforeAll(async () => {
@@ -84,20 +84,16 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
-
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtRequest('invalid secret');
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
             } finally {
                 await session.close();
             }
@@ -123,20 +119,16 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
-
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtRequest('invalid secret');
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
             } finally {
                 await session.close();
             }
@@ -169,20 +161,16 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
-
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtRequest('invalid secret');
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
             } finally {
                 await session.close();
             }
@@ -213,20 +201,16 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
-
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtRequest('invalid secret');
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
             } finally {
                 await session.close();
             }
@@ -259,20 +243,16 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
-
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtRequest('invalid secret');
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
             } finally {
                 await session.close();
             }
@@ -303,20 +283,16 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
-
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtRequest('invalid secret');
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
             } finally {
                 await session.close();
             }
@@ -374,26 +350,22 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            // missing super-admin
-            const token = "not valid token";
-
             try {
                 await session.run(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${userId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                // missing super-admin
+                const req = createJwtRequest('invalid secret');
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
             } finally {
                 await session.close();
             }
@@ -451,26 +423,22 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            // missing super-admin
-            const token = "not valid token";
-
             try {
                 await session.run(`
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${userId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                // Missing super-admin
+                const req = createJwtRequest('invalid secret');
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
             } finally {
                 await session.close();
             }
@@ -501,20 +469,16 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
-
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtRequest('invalid secret');
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
             } finally {
                 await session.close();
             }
@@ -557,24 +521,20 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
-
             try {
                 await session.run(`
                     CREATE (:${User} {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtRequest('invalid secret');
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
             } finally {
                 await session.close();
             }
@@ -606,20 +566,16 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
-
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtRequest('invalid secret');
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
             } finally {
                 await session.close();
             }
@@ -649,20 +605,16 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
-
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtRequest('invalid secret');
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
             } finally {
                 await session.close();
             }
@@ -697,20 +649,16 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
-
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtRequest('invalid secret');
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                expect(gqlResult.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
             } finally {
                 await session.close();
             }

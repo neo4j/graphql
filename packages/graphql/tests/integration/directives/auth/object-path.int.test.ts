@@ -257,7 +257,9 @@ describe("auth/object-path", () => {
             typeDefs,
             plugins: {
                 auth: new Neo4jGraphQLAuthJWKSPlugin({
-                    jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json",
+                    jwksOptions: {
+                        jwksUri: "https://myAuthTest.auth0.com/.well-known/jwks.json"
+                    },
                 }),
             },
         });

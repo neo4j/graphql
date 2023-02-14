@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Secret, GetPublicKeyOrSecret, VerifyOptions, VerifyErrors } from "jsonwebtoken";
+import type { Secret, VerifyOptions } from "jsonwebtoken";
 import { decode, verify } from "jsonwebtoken";
 import Debug from "debug";
 import { DEBUG_PREFIX } from "./constants";

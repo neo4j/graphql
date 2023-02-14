@@ -139,7 +139,7 @@ describe("Subscription auth roles", () => {
 
         await wsClient.waitForNextEvent();
         expect(wsClient.events).toEqual([]);
-        expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
+        expect(wsClient.errors).toEqual([expect.objectContaining({ message: "invalid signature" })]);
     });
 
     async function createMovie(title: string, graphQLServer: TestGraphQLServer): Promise<Response> {

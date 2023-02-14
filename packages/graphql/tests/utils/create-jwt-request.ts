@@ -19,7 +19,7 @@
 
 import { Socket } from "net";
 import { IncomingMessage } from "http";
-import jsonwebtoken from "jsonwebtoken";
+import { sign } from "jsonwebtoken";
 
 /** Creates a JWT valid request with the given secret and the extraData in the JWT token */
 
@@ -32,7 +32,7 @@ export function createJwtRequest(secret: string, extraData: Record<string, any> 
 }
 
 export function createJwtHeader(secret: string, extraData: Record<string, any> = {}): string {
-    const token = jsonwebtoken.sign(
+    const token = sign(
         {
             roles: [],
             ...extraData,

@@ -66,6 +66,6 @@ describe("Neo4jGraphQLAuthJWKSPlugin", () => {
             },
         });
 
-        expect(plugin.isClientSet).toBeTruthy()
+        expect(plugin.isClientSet()).toBeTruthy()
     });
 });

@@ -180,10 +180,10 @@ describe("Subscription global authentication", () => {
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
             expect(wsClient.errors).toBeDefined();
-            expect((wsClient.errors as any)[0].message).toBe("Unauthenticated");
+            expect((wsClient.errors as any)[0].message).toBe("invalid token");
         });
 
-        test("global authentication for supertest client", async () => {
+        test("should generate error with invalid token", async () => {
             wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
             await wsClient.subscribe(`
                 subscription {
@@ -198,7 +198,7 @@ describe("Subscription global authentication", () => {
             const result = await createMovie("movie1", server, "Bearer xxx.invalidtoken.xxx");
 
             expect(result.body.errors).toBeDefined();
-            expect(result.body.errors[0].message).toBe("Unauthenticated");
+            expect(result.body.errors[0].message).toBe("invalid token");
             expect(wsClient.events).toEqual([]);
             expect(wsClient.errors).toEqual([]);
         });
