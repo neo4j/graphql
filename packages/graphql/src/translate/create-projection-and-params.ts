@@ -140,7 +140,7 @@ export default function createProjectionAndParams({
 
                     if (field.args.where) {
                         // Enrich concrete types with shared filters
-                        field.args.where = addSharedFiltersToInterfaceImplementation(
+                        field.args.where = addSharedFiltersToInterfaceImplementations(
                             field.args.where as GraphQLWhereArg,
                             interfaceImplementations
                         );
@@ -473,7 +473,7 @@ function createFulltextProjection({
     });
 }
 
-function addSharedFiltersToInterfaceImplementation(where: GraphQLWhereArg, implementations: Node[]) {
+function addSharedFiltersToInterfaceImplementations(where: GraphQLWhereArg, implementations: Node[]) {
     const interfaceSharedFilters = Object.entries(where || {}).filter(([key]) => key !== "_on");
     implementations.forEach((node) => {
         interfaceSharedFilters.forEach(([sharedFilterKey, sharedFilterValue]) => {
