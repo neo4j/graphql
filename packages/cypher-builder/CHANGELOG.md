@@ -1,5 +1,17 @@
 # @neo4j/cypher-builder
 
+## 0.2.0
+
+### Minor Changes
+
+-   [#2855](https://github.com/neo4j/graphql/pull/2855) [`d4455881c`](https://github.com/neo4j/graphql/commit/d4455881c83f9ec597e657d92b9c9c126721541b) Thanks [@angrykoala](https://github.com/angrykoala)! - Support for patterns with multiple relationships and variable-length patterns
+
+### Patch Changes
+
+-   [#2827](https://github.com/neo4j/graphql/pull/2827) [`81df28ed9`](https://github.com/neo4j/graphql/commit/81df28ed9238c1b4692aabe8e1de438ba01ae914) Thanks [@angrykoala](https://github.com/angrykoala)! - Add support for square brackets syntax on variable properties
+
+-   [#2862](https://github.com/neo4j/graphql/pull/2862) [`4fdb5135f`](https://github.com/neo4j/graphql/commit/4fdb5135fa3bdb84b87893d14afe263ad5ed020f) Thanks [@angrykoala](https://github.com/angrykoala)! - Add XOR operation
+
 ## 0.1.10
 
 ### Patch Changes

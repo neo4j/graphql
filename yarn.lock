@@ -2781,7 +2781,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/cypher-builder@workspace:packages/cypher-builder, @neo4j/cypher-builder@~0.1.10":
+"@neo4j/cypher-builder@workspace:packages/cypher-builder, @neo4j/cypher-builder@~0.2.0":
   version: 0.0.0-use.local
   resolution: "@neo4j/cypher-builder@workspace:packages/cypher-builder"
   dependencies:
@@ -2803,7 +2803,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^3.0.0
     "@graphql-codegen/typescript": ^2.6.0
     "@graphql-tools/merge": ^8.3.3
-    "@neo4j/graphql": ^3.16.0
+    "@neo4j/graphql": ^3.16.1
     "@neo4j/graphql-plugin-auth": ^2.1.0
     "@types/jest": 29.4.0
     "@types/node": 18.11.17
@@ -2863,7 +2863,7 @@ __metadata:
     supertest: 6.3.3
     ts-jest: 29.0.5
     typescript: 4.9.5
-    ws: 8.12.0
+    ws: 8.12.1
   peerDependencies:
     "@neo4j/graphql": ^3.15.0
   languageName: unknown
@@ -2875,7 +2875,7 @@ __metadata:
   dependencies:
     "@neo4j-ndl/base": 0.16.4
     "@neo4j-ndl/react": 0.17.7
-    "@neo4j/graphql": 3.16.0
+    "@neo4j/graphql": 3.16.1
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.30.0
     "@tsconfig/create-react-app": 1.0.3
@@ -2930,7 +2930,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@3.16.0, @neo4j/graphql@^3.13.0, @neo4j/graphql@^3.15.0, @neo4j/graphql@^3.16.0, @neo4j/graphql@^3.5.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@3.16.1, @neo4j/graphql@^3.13.0, @neo4j/graphql@^3.15.0, @neo4j/graphql@^3.16.0, @neo4j/graphql@^3.16.1, @neo4j/graphql@^3.5.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -2939,7 +2939,7 @@ __metadata:
     "@graphql-tools/resolvers-composition": ^6.5.3
     "@graphql-tools/schema": 9.0.16
     "@graphql-tools/utils": ^9.0.0
-    "@neo4j/cypher-builder": ~0.1.10
+    "@neo4j/cypher-builder": ~0.2.0
     "@neo4j/graphql-plugin-auth": ^2.1.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
@@ -2983,7 +2983,7 @@ __metadata:
     ts-node: 10.9.1
     typescript: 4.9.5
     uuid: ^9.0.0
-    ws: 8.12.0
+    ws: 8.12.1
   peerDependencies:
     graphql: ^16.0.0
     neo4j-driver: ^4.1.0 || ^5.0.0
@@ -14185,9 +14185,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:13.1.1":
-  version: 13.1.1
-  resolution: "lint-staged@npm:13.1.1"
+"lint-staged@npm:13.1.2":
+  version: 13.1.2
+  resolution: "lint-staged@npm:13.1.2"
   dependencies:
     cli-truncate: ^3.1.0
     colorette: ^2.0.19
@@ -14204,7 +14204,7 @@ __metadata:
     yaml: ^2.1.3
   bin:
     lint-staged: bin/lint-staged.js
-  checksum: 8e5093c7e982a2f6d6449927a40156a812644479df1d2760aee8bf05df3a314e022d8f7e275e57fd61769ee57e3cf7b062ed3c6e4934a63848300b877e269daa
+  checksum: f854ad5c88542b8f06e27f3b4046927a4f3d4a451a04e079526559d819a325762268f65bd2df7156bcc0cb5f531f621c42cdb824b403f537c78305adc9e56a54
   languageName: node
   linkType: hard
 
@@ -15254,7 +15254,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "migration@workspace:examples/migration"
   dependencies:
-    "@neo4j/graphql": ^3.16.0
+    "@neo4j/graphql": ^3.16.1
     apollo-server: 3.11.1
     graphql: 16.6.0
     neo4j-driver: 5.5.0
@@ -15910,7 +15910,7 @@ __metadata:
     graphql: 16.6.0
     husky: 8.0.3
     jest: 29.4.2
-    lint-staged: 13.1.1
+    lint-staged: 13.1.2
     neo4j-driver: 5.5.0
     npm-run-all: 4.1.5
     prettier: 2.8.4
@@ -23031,9 +23031,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.12.0":
-  version: 8.12.0
-  resolution: "ws@npm:8.12.0"
+"ws@npm:8.12.1":
+  version: 8.12.1
+  resolution: "ws@npm:8.12.1"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -23042,7 +23042,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 818ff3f8749c172a95a114cceb8b89cedd27e43a82d65c7ad0f7882b1e96a2ee6709e3746a903c3fa88beec0c8bae9a9fcd75f20858b32a166dfb7519316a5d7
+  checksum: 97301c1c4d838fc81bd413f370f75c12aabe44527b31323b761eab3043a9ecb7e32ffd668548382c9a6a5ad3a1c3a9249608e8338e6b939f2f9540f1e21970b5
   languageName: node
   linkType: hard
 
