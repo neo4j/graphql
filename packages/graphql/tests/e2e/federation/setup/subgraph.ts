@@ -17,16 +17,25 @@
  * limitations under the License.
  */
 
-import type { IAST, Visitor } from "./types";
-import { v4 as uuidv4 } from "uuid";
+import type { TypeSource } from "@graphql-tools/utils";
+import type { GraphQLSchema } from "graphql";
+import type * as neo4j from "neo4j-driver";
+import { Neo4jGraphQL } from "../../../../src";
 
-export abstract class AST implements IAST {
-    id = uuidv4();
-    children: IAST[] = [];
+export class TestSubgraph {
+    library: Neo4jGraphQL;
 
-    addChildren(node: IAST): void {
-        this.children.push(node);
+    constructor({ typeDefs, resolvers, driver }: { typeDefs: TypeSource; resolvers?: any; driver: neo4j.Driver }) {
+        this.library = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+            driver,
+        });
     }
 
-    abstract accept(visitor: Visitor): void;
+    public async getSchema(): Promise<GraphQLSchema> {
+        const schema = await this.library.getSubgraphSchema();
+
+        return schema;
+    }
 }
