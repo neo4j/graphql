@@ -34,8 +34,6 @@ import {
     parse,
     GraphQLSchema,
     extendSchema,
-    GraphQLDirective,
-    DirectiveLocation,
 } from "graphql";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { scalars } from "..";
@@ -167,13 +165,7 @@ function validateSelectionSet(
 ) {
     const baseSchema = extendSchema(
         new GraphQLSchema({
-            directives: [
-                ...Object.values(directives),
-                new GraphQLDirective({
-                    name: "auth",
-                    locations: [DirectiveLocation.FIELD_DEFINITION, DirectiveLocation.OBJECT],
-                }), // TODO better definitions and check for other dynamic directives
-            ],
+            directives: Object.values(directives),
             types: [
                 ...Object.values(scalars),
                 Point,
@@ -185,7 +177,8 @@ function validateSelectionSet(
                 SortDirection,
             ],
         }),
-        document
+        document,
+        { assumeValid: true }
     );
     const validationSchema = mergeSchemas({
         schemas: [baseSchema],
@@ -194,6 +187,7 @@ function validateSelectionSet(
                     query: ${object.name.value}
                 }
             `,
+        assumeValid: true,
     });
     const errors = validate(validationSchema, selectionSetDocument);
     if (errors.length) {
