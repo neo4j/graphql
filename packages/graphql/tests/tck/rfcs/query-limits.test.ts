@@ -173,7 +173,7 @@ describe("tck/rfcs/query-limits", () => {
                 LIMIT $param0
                 CALL {
                     WITH this
-                    MATCH (this_actors:\`Person\`)-[this0:ACTED_IN]->(this)
+                    MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Person\`)
                     WITH this_actors { .id } AS this_actors
                     LIMIT $param1
                     RETURN collect(this_actors) AS this_actors
@@ -386,7 +386,7 @@ describe("tck/rfcs/query-limits", () => {
                 LIMIT $param0
                 CALL {
                     WITH this
-                    MATCH (this_actors:\`Person\`)-[this0:ACTED_IN]->(this)
+                    MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Person\`)
                     WITH this_actors { .id } AS this_actors
                     LIMIT $param1
                     RETURN collect(this_actors) AS this_actors

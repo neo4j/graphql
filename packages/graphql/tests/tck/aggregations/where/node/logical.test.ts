@@ -65,7 +65,7 @@ describe("Cypher Aggregations where node with Logical AND + OR", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
                 RETURN any(var2 IN collect(this1.someFloat) WHERE var2 = $param0) AS var3, any(var4 IN collect(this1.someFloat) WHERE var4 = $param1) AS var5
             }
             WITH *
@@ -99,7 +99,7 @@ describe("Cypher Aggregations where node with Logical AND + OR", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this:\`Post\`)
+                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
                 RETURN any(var2 IN collect(this1.someFloat) WHERE var2 = $param0) AS var3, any(var4 IN collect(this1.someFloat) WHERE var4 = $param1) AS var5
             }
             WITH *
@@ -111,6 +111,39 @@ describe("Cypher Aggregations where node with Logical AND + OR", () => {
             "{
                 \\"param0\\": 10,
                 \\"param1\\": 11
+            }"
+        `);
+    });
+
+    test("NOT", async () => {
+        const query = gql`
+            {
+                posts(where: { likesAggregate: { node: { NOT: { someFloat_EQUAL: 10 } } } }) {
+                    content
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Post\`)
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                RETURN any(var2 IN collect(this1.someFloat) WHERE var2 = $param0) AS var3
+            }
+            WITH *
+            WHERE NOT (var3 = true)
+            RETURN this { .content } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": 10
             }"
         `);
     });

@@ -34,23 +34,18 @@ NOTE: Filtering on xref::type-definitions/types.adoc#type-definitions-types-temp
 The following case-sensitive comparison operators are only available for use on `String` and `ID` types:
 
 * `_STARTS_WITH`
-* `_NOT_STARTS_WITH`
 * `_ENDS_WITH`
-* `_NOT_ENDS_WITH`
 * `_CONTAINS`
-* `_NOT_CONTAINS`
 
 === Array comparison
 
 The following two comparison operators are available on non-array fields, and accept an array argument:
 
 * `_IN`
-* `_NOT_IN`
 
 Conversely, the following operators are available on array fields, and accept a single argument:
 
 * `_INCLUDES`
-* `_NOT_INCLUDES`
 
 These four operators are available for all types apart from `Boolean`.
 
@@ -75,6 +70,7 @@ type Movie {
     title: String
     genre: String
     averageRating: Float
+    releasedIn: Int
 }
 ----
 Below are some example of how filtering can be applied when creating a subscription.
@@ -152,7 +148,7 @@ we can filter our movies by their genre with the `NOT` filter:
 [source, graphql, indent=0]
 ----
 subscription {
-    movieDeleted(where: {genre_NOT: "Comedy"}) {
+    movieDeleted(where: { NOT: { genre: "Comedy" } }) {
         deletedMovie {
             title
         }
@@ -167,26 +163,24 @@ NOTE: `Where` will only filter by existing properties right before deletion.
 [[combining-operators]]
 === Combining operators
 
-All above-mentioned operators can be combined using the `AND`/`OR` operators. 
+All above-mentioned operators can be combined using the `AND`/`OR`/`NOT` operators. 
 They accept an array argument with items of the same format as the `where` argument, which means they can also be nested to form complex combinations.
 
-Say we are picky fans of comedy movies and we only accept ratings below 7 for movies released before the 2000's. 
-As an exception we also like the movie "The Matrix". However, we do not like any of its sequels. 
+Say we like comedy movies except for romantic comedies from early 2000, although our favorite movies are ones from the Matrix Trilogy.
 We could subscribe to any updates that we are interested in as follows:
 
 [source, graphql, indent=0]
 ----
 subscription {
-    movieUpdate(where: {
+    movieUpdated(where: {
         OR: [
-            {title_ENDS_WITH: "The Matrix"},
-            {AND: [
-                {genre: "comedy"},
-                {OR: [
-                    {releasedIn_LTE: 2000},
-                    {releasedIn_GT: 2000, averageRating_GT: 7}
-                ]}
-            ]}
+            { title_CONTAINS: "Matrix" },
+            { genre: "comedy" },
+            { AND: [ 
+                { NOT: { genre: "romantic comedy" } },
+                { releasedIn_GT: 2000 },
+                { releasedIn_LTE: 2005 }
+            ] },
         ]
     }) {
         updatedMovie {
@@ -254,7 +248,7 @@ The following example filters the subscriptions to newly created relationships t
 [source, graphql, indent=0]
 ----
 subscription {
-    movieRelationshipCreated(where: { movie: { genre_NOT: "Drama" }, createdRelationship: { actors: { edge: { screenTime_GT: 10 } } } }) {
+    movieRelationshipCreated(where: { movie: { NOT: { genre: "Drama" } }, createdRelationship: { actors: { edge: { screenTime_GT: 10 } } } }) {
         movie {
             title
         }
@@ -629,7 +623,7 @@ One reason why this might be done is to include some filters on the `Actor` type
             directors: { 
                 Actor: { # include some relationships of type `DIRECTED` to an `Actor` type, that conform to the filters
                     node: {
-                        name_NOT: "Tom Hardy"
+                        NOT: { name: "Tom Hardy" }
                     }
                 }
             }
@@ -647,7 +641,7 @@ To include filters on the `Actor` type but also include `Person` type in the res
             directors: { 
                 Actor: { # include some relationships of type `DIRECTED` to an `Actor` type, that conform to the filters
                     node: {
-                        name_NOT: "Tom Hardy"
+                        NOT: { name: "Tom Hardy" }
                     }
                 },
                 Person: {} # include all relationships of type `DIRECTED` to a `Person` type

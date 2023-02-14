@@ -29,12 +29,12 @@ describe("Field Level Aggregations Alias", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Movie @node(label: "Film") {
+            type Movie @node(labels: ["Film"]) {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Actor @node(label: "Person") {
+            type Actor @node(labels: ["Person"]) {
                 name: String
                 age: Int
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
@@ -75,7 +75,7 @@ describe("Field Level Aggregations Alias", () => {
             "MATCH (this:\`Film\`)
             CALL {
                 WITH this
-                MATCH (this_actorsAggregate_this0:\`Person\`)-[this_actorsAggregate_this1:ACTED_IN]->(this)
+                MATCH (this)<-[this_actorsAggregate_this1:ACTED_IN]-(this_actorsAggregate_this0:\`Person\`)
                 WITH this_actorsAggregate_this0
                 ORDER BY size(this_actorsAggregate_this0.name) DESC
                 WITH collect(this_actorsAggregate_this0.name) AS list

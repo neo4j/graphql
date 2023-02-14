@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
     let driver: Driver;
@@ -38,7 +38,7 @@ describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
     });
 
     test("should create user without related friend in many-to-many relationship", async () => {
-        const user = generateUniqueType("User");
+        const user = new UniqueType("User");
 
         const typeDefs = gql`
             type ${user.name} {

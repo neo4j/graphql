@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
@@ -31,6 +31,7 @@ import { delay } from "../../../src/utils/utils";
 
 describe("Delete Relationship Subscription", () => {
     let neo4j: Neo4j;
+    let session: Session;
     let driver: Driver;
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
@@ -42,10 +43,10 @@ describe("Delete Relationship Subscription", () => {
     let typeDefs: string;
 
     beforeEach(async () => {
-        typeActor = generateUniqueType("Actor");
-        typeMovie = generateUniqueType("Movie");
-        typePerson = generateUniqueType("Person");
-        typeInfluencer = generateUniqueType("Influencer");
+        typeActor = new UniqueType("Actor");
+        typeMovie = new UniqueType("Movie");
+        typePerson = new UniqueType("Person");
+        typeInfluencer = new UniqueType("Influencer");
 
         typeDefs = `
             type ${typeMovie} {
@@ -99,6 +100,7 @@ describe("Delete Relationship Subscription", () => {
 
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+        session = driver.session();
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
@@ -123,10 +125,10 @@ describe("Delete Relationship Subscription", () => {
         await wsClient.close();
         await wsClient2.close();
 
-        const session = driver.session();
         await cleanNodes(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
 
         await server.close();
+        await session.close();
         await driver.close();
     });
 
@@ -285,7 +287,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -431,8 +433,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -558,7 +559,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -712,7 +713,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -910,7 +911,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1152,7 +1153,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1389,7 +1390,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1616,7 +1617,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1852,7 +1853,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2136,7 +2137,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2465,7 +2466,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2764,7 +2765,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -3053,7 +3054,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -3375,8 +3376,8 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
-        await delay(2);
+        await delay(3);
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 

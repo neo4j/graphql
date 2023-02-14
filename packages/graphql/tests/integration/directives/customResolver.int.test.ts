@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
 import { Neo4jGraphQLAuthJWTPlugin } from "../../../../plugins/graphql-plugin-auth/src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
@@ -38,7 +38,7 @@ describe("@customResolver directive", () => {
         lastName: "a second name!",
     };
 
-    const testType = generateUniqueType("User");
+    const testType = new UniqueType("User");
     const customResolverField = "fullName";
 
     const typeDefs = `
@@ -288,7 +288,7 @@ describe("@customResolver directive", () => {
             }).rejects.toThrow(`Custom resolver for ${customResolverField} has not been provided`);
         });
         test("Check throws error if custom resolver defined for interface", async () => {
-            const interfaceType = generateUniqueType("UserInterface");
+            const interfaceType = new UniqueType("UserInterface");
             const typeDefs = `
                 interface ${interfaceType.name} {
                     ${customResolverField}: String @customResolver(requires: "firstName lastName")
@@ -388,14 +388,14 @@ describe("Related Fields", () => {
     });
 
     beforeEach(() => {
-        Publication = generateUniqueType("Publication");
-        Author = generateUniqueType("Author");
-        Book = generateUniqueType("Book");
-        Journal = generateUniqueType("Journal");
-        User = generateUniqueType("User");
-        Address = generateUniqueType("Address");
-        City = generateUniqueType("City");
-        State = generateUniqueType("State");
+        Publication = new UniqueType("Publication");
+        Author = new UniqueType("Author");
+        Book = new UniqueType("Book");
+        Journal = new UniqueType("Journal");
+        User = new UniqueType("User");
+        Address = new UniqueType("Address");
+        City = new UniqueType("City");
+        State = new UniqueType("State");
     });
 
     afterEach(async () => {

@@ -50,6 +50,7 @@ export default function getCustomResolverMeta({
     field,
     object,
     objects,
+    validateResolvers,
     interfaces,
     unions,
     customResolvers,
@@ -58,6 +59,7 @@ export default function getCustomResolverMeta({
     field: FieldDefinitionNode;
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
+    validateResolvers: boolean;
     interfaces: InterfaceTypeDefinitionNode[];
     unions: UnionTypeDefinitionNode[];
     customResolvers?: IResolvers | IResolvers[];
@@ -81,7 +83,12 @@ export default function getCustomResolverMeta({
     }
 
     // TODO: remove check for directive when removing @computed
-    if (object.kind !== Kind.INTERFACE_TYPE_DEFINITION && directive && !customResolvers?.[field.name.value]) {
+    if (
+        validateResolvers &&
+        object.kind !== Kind.INTERFACE_TYPE_DEFINITION &&
+        directive &&
+        !customResolvers?.[field.name.value]
+    ) {
         throw new Error(`Custom resolver for ${field.name.value} has not been provided`);
     }
 

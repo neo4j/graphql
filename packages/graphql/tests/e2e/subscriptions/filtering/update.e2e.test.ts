@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
@@ -37,8 +37,8 @@ describe("Update Subscriptions", () => {
     let typeActor: UniqueType;
 
     beforeEach(async () => {
-        typeMovie = generateUniqueType("Movie");
-        typeActor = generateUniqueType("Actor");
+        typeMovie = new UniqueType("Movie");
+        typeActor = new UniqueType("Actor");
         const typeDefs = `
          type ${typeMovie} {
             id: ID
@@ -1002,6 +1002,86 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "some_movie_wrong8", "some_movie_wrong88");
 
         expect(onReturnError).toHaveBeenCalled();
+        expect(wsClient.events).toEqual([]);
+    });
+    // NOT operator tests
+    test("update subscription with where filter NOT 1 result", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { NOT: { title: "movie5" } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie5" });
+        await createMovie({ title: "movie6" });
+
+        await updateMovie("title", "movie5", "movie7");
+        await updateMovie("title", "movie6", "movie8");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.updated]: {
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie8" },
+                },
+            },
+        ]);
+    });
+    test("update subscription with where filter NOT multiple results", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { NOT: { title: "movie2" } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie5" });
+        await createMovie({ title: "movie6" });
+
+        await updateMovie("title", "movie5", "movie7");
+        await updateMovie("title", "movie6", "movie8");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.updated]: {
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie7" },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.updated]: {
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie8" },
+                },
+            },
+        ]);
+    });
+    test("create subscription with where property + OR match nothing, NOT", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { title: "movie2", OR: [{ releasedIn: 2001}, {title: "movie2", releasedIn: 2020}] }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", releasedIn: 2020 });
+        await createMovie({ title: "movie2", releasedIn: 2000 });
+        await createMovie({ title: "movie3", releasedIn: 2001 });
+
+        await updateMovie("title", "movie1", "movie4");
+        await updateMovie("title", "movie2", "movie5");
+        await updateMovie("title", "movie3", "movie6");
+
+        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
 

@@ -24,7 +24,7 @@ import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { IncomingMessage } from "http";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src";
-import { generateUniqueType } from "../utils/graphql-types";
+import { UniqueType } from "../utils/graphql-types";
 import { createJwtRequest } from "../utils/create-jwt-request";
 
 describe("Interfaces tests", () => {
@@ -35,9 +35,9 @@ describe("Interfaces tests", () => {
     let driver: Driver;
     let session: Session;
 
-    const SomeNodeType = generateUniqueType("SomeNode");
-    const OtherNodeType = generateUniqueType("OtherNode");
-    const MyImplementationType = generateUniqueType("MyImplementation");
+    const SomeNodeType = new UniqueType("SomeNode");
+    const OtherNodeType = new UniqueType("OtherNode");
+    const MyImplementationType = new UniqueType("MyImplementation");
 
     async function graphqlQuery(query: string, req: IncomingMessage) {
         return graphql({

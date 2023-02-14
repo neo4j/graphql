@@ -22,7 +22,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("Node directive labels", () => {
@@ -30,7 +30,7 @@ describe("Node directive labels", () => {
     let neo4j: Neo4j;
     let session: Session;
 
-    const typeFilm = generateUniqueType("Film");
+    const typeFilm = new UniqueType("Film");
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -46,7 +46,7 @@ describe("Node directive labels", () => {
     });
 
     test("custom labels", async () => {
-        const typeDefs = `type Movie @node(label: "${typeFilm.name}") {
+        const typeDefs = `type Movie @node(labels: ["${typeFilm.name}"]) {
             id: ID
             title: String
         }`;
@@ -73,7 +73,7 @@ describe("Node directive labels", () => {
     });
 
     test("custom jwt labels", async () => {
-        const typeDefs = `type Movie @node(label: "$jwt.filmLabel") {
+        const typeDefs = `type Movie @node(labels: ["$jwt.filmLabel"]) {
             id: ID
             title: String
         }`;
@@ -109,7 +109,7 @@ describe("Node directive labels", () => {
     });
 
     test("custom context labels", async () => {
-        const typeDefs = `type Movie @node(label: "$context.filmLabel") {
+        const typeDefs = `type Movie @node(labels: ["$context.filmLabel"]) {
             id: ID
             title: String
         }`;

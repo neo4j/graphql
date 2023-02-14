@@ -95,7 +95,9 @@ function createDisconnectAndParams({
                     context,
                     relationshipVariable: relVarName,
                     relationship,
-                    parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
+                    parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where.${
+                        relatedNode.name
+                    }`,
                 });
                 if (whereCypher) {
                     whereStrs.push(whereCypher);
@@ -141,7 +143,7 @@ function createDisconnectAndParams({
         ];
 
         const preAuth = nodeMatrix.reduce(
-            (result: Res, { node, name }, i) => {
+            (result: Res, { node, name }) => {
                 if (!node.auth) {
                     return result;
                 }
@@ -344,7 +346,7 @@ function createDisconnectAndParams({
         }
 
         const postAuth = [parentNode, relatedNode].reduce(
-            (result: Res, node, i) => {
+            (result: Res, node) => {
                 if (!node.auth) {
                     return result;
                 }

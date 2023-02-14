@@ -32,6 +32,7 @@ import type {
     Neo4jGraphQLPlugins,
     Neo4jGraphQLCallbacks,
     Neo4jFeaturesSettings,
+    StartupValidationConfig,
 } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import type Node from "./Node";
@@ -53,7 +54,13 @@ export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
     enableRegex?: boolean;
     enableDebug?: boolean;
+    /**
+     * @deprecated This argument has been deprecated and will be removed in v4.0.0.
+     * Please use startupValidation instead. More information can be found at
+     * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#startup-validation
+     */
     skipValidateTypeDefs?: boolean;
+    startupValidation?: StartupValidationConfig;
     queryOptions?: CypherQueryOptions;
     callbacks?: Neo4jGraphQLCallbacks;
 }
@@ -227,10 +234,13 @@ class Neo4jGraphQL {
         return new Promise((resolve) => {
             const document = getDocument(this.schemaDefinition.typeDefs);
 
+            const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
+
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
                 enableRegex: this.config?.enableRegex,
-                skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
+                validateTypeDefs,
+                validateResolvers,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
                 callbacks: this.config.callbacks,
                 userCustomResolvers: this.schemaDefinition.resolvers,
@@ -254,6 +264,34 @@ class Neo4jGraphQL {
 
             resolve(this.addDefaultFieldResolvers(schema));
         });
+    }
+
+    private parseStartupValidationConfig(): {
+        validateTypeDefs: boolean;
+        validateResolvers: boolean;
+    } {
+        let validateTypeDefs = true;
+        let validateResolvers = true;
+
+        if (this.config?.startupValidation === false) {
+            return {
+                validateTypeDefs: false,
+                validateResolvers: false,
+            };
+        }
+
+        // TODO - remove in 4.0.0 when skipValidateTypeDefs is removed
+        if (this.config?.skipValidateTypeDefs === true) validateTypeDefs = false
+
+        if (typeof this.config?.startupValidation === "object") {
+            if (this.config?.startupValidation.typeDefs === false) validateTypeDefs = false;
+            if (this.config?.startupValidation.resolvers === false) validateResolvers = false;
+        }
+
+        return {
+            validateTypeDefs,
+            validateResolvers,
+        };
     }
 
     private async pluginsSetup(): Promise<void> {

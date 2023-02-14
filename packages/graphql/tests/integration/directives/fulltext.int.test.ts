@@ -24,7 +24,7 @@ import { generate } from "randomstring";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { upperFirst } from "../../../src/utils/upper-first";
 import { delay } from "../../../src/utils/utils";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
@@ -140,8 +140,8 @@ describe("@fulltext directive", () => {
                 return;
             }
 
-            personType = generateUniqueType("Person");
-            movieType = generateUniqueType("Movie");
+            personType = new UniqueType("Person");
+            movieType = new UniqueType("Movie");
             queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
             personTypeLowerFirst = personType.singular;
 
@@ -1976,7 +1976,7 @@ describe("@fulltext directive", () => {
                 return;
             }
 
-            personType = generateUniqueType("Person");
+            personType = new UniqueType("Person");
             personTypeLowerFirst = personType.singular;
             queryType = "CustomQueryName";
 
@@ -2122,7 +2122,7 @@ describe("@fulltext directive", () => {
                 return;
             }
 
-            movieType = generateUniqueType("Movie");
+            movieType = new UniqueType("Movie");
             const movieTypeLowerFirst = movieType.singular;
             const queryType1 = "CustomQueryName";
             const queryType2 = "CustomQueryName2";
@@ -2264,7 +2264,7 @@ describe("@fulltext directive", () => {
         `;
 
         beforeEach(() => {
-            type = generateUniqueType("Movie");
+            type = new UniqueType("Movie");
         });
 
         afterEach(async () => {
@@ -2382,7 +2382,7 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = gql`
-                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) @node(label: "${label}") {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) @node(labels: ["${label}"]) {
                     title: String!
                 }
             `;
@@ -2423,7 +2423,7 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = gql`
-                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) @node(label: "${label}") {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) @node(labels: ["${label}"]) {
                     title: String! @alias(property: "${aliasName}")
                 }
             `;
@@ -2682,10 +2682,10 @@ describe("@fulltext directive", () => {
                 return;
             }
 
-            const baseType = generateUniqueType("Base");
-            const additionalType = generateUniqueType("Additional");
+            const baseType = new UniqueType("Base");
+            const additionalType = new UniqueType("Additional");
             const typeDefs = `
-                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
+                type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
                     title: String!
                 }
             `;
@@ -2722,10 +2722,10 @@ describe("@fulltext directive", () => {
                 return;
             }
 
-            const baseType = generateUniqueType("Base");
-            const additionalType = generateUniqueType("Additional");
+            const baseType = new UniqueType("Base");
+            const additionalType = new UniqueType("Additional");
             const typeDefs = `
-                type ${baseType.name} @node(additionalLabels: ["${additionalType.name}"]) @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
+                type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
                     title: String!
                 }
             `;
