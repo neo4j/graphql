@@ -397,19 +397,31 @@ describe("Alias", () => {
               actedIn: MovieWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
               actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Actors where all of the related actedInConnections match this filter
+              \\"\\"\\"
               actedInConnection_ALL: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related actedInConnections match this filter
+              \\"\\"\\"
               actedInConnection_NONE: ActorActedInConnectionWhere
               actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Actors where one of the related actedInConnections match this filter
+              \\"\\"\\"
               actedInConnection_SINGLE: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related actedInConnections match this filter
+              \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where all of the related actedIns match this filter\\"\\"\\"
               actedIn_ALL: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where none of the related actedIns match this filter\\"\\"\\"
               actedIn_NONE: MovieWhere
               actedIn_NOT: MovieWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where one of the related actedIns match this filter\\"\\"\\"
               actedIn_SINGLE: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where some of the related actedIns match this filter\\"\\"\\"
               actedIn_SOME: MovieWhere
               city: String
               city_CONTAINS: String

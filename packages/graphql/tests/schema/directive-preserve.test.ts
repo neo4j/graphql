@@ -469,19 +469,31 @@ describe("Directive-preserve", () => {
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: GenreMoviesAggregateInput
               moviesConnection: GenreMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Genres where all of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_ALL: GenreMoviesConnectionWhere
+              \\"\\"\\"
+              Return Genres where none of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_NONE: GenreMoviesConnectionWhere
               moviesConnection_NOT: GenreMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Genres where one of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SINGLE: GenreMoviesConnectionWhere
+              \\"\\"\\"
+              Return Genres where some of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SOME: GenreMoviesConnectionWhere
-              \\"\\"\\"Return Genres where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Genres where all of the related movies match this filter\\"\\"\\"
               movies_ALL: MovieWhere
-              \\"\\"\\"Return Genres where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Genres where none of the related movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
-              \\"\\"\\"Return Genres where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Genres where one of the related movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
-              \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Genres where some of the related movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
               name: String
               name_CONTAINS: String
@@ -720,19 +732,31 @@ describe("Directive-preserve", () => {
               genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
               genresAggregate: MovieGenresAggregateInput @deprecated(reason: \\"Do not use\\")
               genresConnection: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related genresConnections match this filter
+              \\"\\"\\"
               genresConnection_ALL: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where none of the related genresConnections match this filter
+              \\"\\"\\"
               genresConnection_NONE: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use\\")
               genresConnection_NOT: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related genresConnections match this filter
+              \\"\\"\\"
               genresConnection_SINGLE: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where some of the related genresConnections match this filter
+              \\"\\"\\"
               genresConnection_SOME: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where all of the related genres match this filter\\"\\"\\"
               genres_ALL: GenreWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where none of the related genres match this filter\\"\\"\\"
               genres_NONE: GenreWhere @deprecated(reason: \\"Do not use\\")
               genres_NOT: GenreWhere @deprecated(reason: \\"Use \`genres_NONE\` instead.\\")
-              \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where one of the related genres match this filter\\"\\"\\"
               genres_SINGLE: GenreWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where some of the related genres match this filter\\"\\"\\"
               genres_SOME: GenreWhere @deprecated(reason: \\"Do not use\\")
               imdbRating: Float
               imdbRating_GT: Float
@@ -1031,10 +1055,22 @@ describe("Directive-preserve", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Actors where all of the related actedInConnections match this filter
+              \\"\\"\\"
               actedInConnection_ALL: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related actedInConnections match this filter
+              \\"\\"\\"
               actedInConnection_NONE: ActorActedInConnectionWhere
               actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Actors where one of the related actedInConnections match this filter
+              \\"\\"\\"
               actedInConnection_SINGLE: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related actedInConnections match this filter
+              \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
               name: String
               name_CONTAINS: String
@@ -1270,19 +1306,31 @@ describe("Directive-preserve", () => {
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Do not use\\")
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where none of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
               actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where some of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where all of the related actors match this filter\\"\\"\\"
               actors_ALL: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where none of the related actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere @deprecated(reason: \\"Do not use\\")
               actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where one of the related actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where some of the related actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Do not use\\")
               runtime: Int
               runtime_GT: Int
@@ -1687,19 +1735,31 @@ describe("Directive-preserve", () => {
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: SeriesActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Series where all of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_ALL: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_NONE: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Series where one of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SOME: ProductionActorsConnectionWhere
-              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where all of the related actors match this filter\\"\\"\\"
               actors_ALL: ActorWhere
-              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where none of the related actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where one of the related actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
-              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where some of the related actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
               episodes: Int
               episodes_GT: Int
@@ -1961,10 +2021,22 @@ describe("Directive-preserve", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Actors where all of the related actedInConnections match this filter
+              \\"\\"\\"
               actedInConnection_ALL: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related actedInConnections match this filter
+              \\"\\"\\"
               actedInConnection_NONE: ActorActedInConnectionWhere
               actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Actors where one of the related actedInConnections match this filter
+              \\"\\"\\"
               actedInConnection_SINGLE: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related actedInConnections match this filter
+              \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
               name: String
               name_CONTAINS: String
@@ -2200,19 +2272,31 @@ describe("Directive-preserve", () => {
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Do not use\\")
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where none of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
               actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where some of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where all of the related actors match this filter\\"\\"\\"
               actors_ALL: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where none of the related actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere @deprecated(reason: \\"Do not use\\")
               actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where one of the related actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where some of the related actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Do not use\\")
               runtime: Int
               runtime_GT: Int
@@ -2617,19 +2701,31 @@ describe("Directive-preserve", () => {
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: SeriesActorsAggregateInput @deprecated(reason: \\"Do not use\\")
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Series where all of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Series where none of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
               actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Series where one of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Series where some of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where all of the related actors match this filter\\"\\"\\"
               actors_ALL: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where none of the related actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere @deprecated(reason: \\"Do not use\\")
               actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where one of the related actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where some of the related actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Do not use\\")
               episodes: Int
               episodes_GT: Int
@@ -2910,19 +3006,31 @@ describe("Directive-preserve", () => {
               posts: PostWhere @deprecated(reason: \\"Use \`posts_SOME\` instead.\\")
               postsAggregate: BlogPostsAggregateInput
               postsConnection: BlogPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Blogs where all of the related postsConnections match this filter
+              \\"\\"\\"
               postsConnection_ALL: BlogPostsConnectionWhere
+              \\"\\"\\"
+              Return Blogs where none of the related postsConnections match this filter
+              \\"\\"\\"
               postsConnection_NONE: BlogPostsConnectionWhere
               postsConnection_NOT: BlogPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Blogs where one of the related postsConnections match this filter
+              \\"\\"\\"
               postsConnection_SINGLE: BlogPostsConnectionWhere
+              \\"\\"\\"
+              Return Blogs where some of the related postsConnections match this filter
+              \\"\\"\\"
               postsConnection_SOME: BlogPostsConnectionWhere
-              \\"\\"\\"Return Blogs where all of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Return Blogs where all of the related posts match this filter\\"\\"\\"
               posts_ALL: PostWhere
-              \\"\\"\\"Return Blogs where none of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Return Blogs where none of the related posts match this filter\\"\\"\\"
               posts_NONE: PostWhere
               posts_NOT: PostWhere @deprecated(reason: \\"Use \`posts_NONE\` instead.\\")
-              \\"\\"\\"Return Blogs where one of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Return Blogs where one of the related posts match this filter\\"\\"\\"
               posts_SINGLE: PostWhere
-              \\"\\"\\"Return Blogs where some of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Return Blogs where some of the related posts match this filter\\"\\"\\"
               posts_SOME: PostWhere
               title: String
               title_CONTAINS: String
@@ -3308,10 +3416,22 @@ describe("Directive-preserve", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               contentConnection: UserContentConnectionWhere @deprecated(reason: \\"Use \`contentConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Users where all of the related contentConnections match this filter
+              \\"\\"\\"
               contentConnection_ALL: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"
+              Return Users where none of the related contentConnections match this filter
+              \\"\\"\\"
               contentConnection_NONE: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
               contentConnection_NOT: UserContentConnectionWhere @deprecated(reason: \\"Use \`contentConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Users where one of the related contentConnections match this filter
+              \\"\\"\\"
               contentConnection_SINGLE: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"
+              Return Users where some of the related contentConnections match this filter
+              \\"\\"\\"
               contentConnection_SOME: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
               name: String
               name_CONTAINS: String

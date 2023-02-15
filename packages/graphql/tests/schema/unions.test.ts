@@ -348,10 +348,22 @@ describe("Unions", () => {
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               searchConnection: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related searchConnections match this filter
+              \\"\\"\\"
               searchConnection_ALL: MovieSearchConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related searchConnections match this filter
+              \\"\\"\\"
               searchConnection_NONE: MovieSearchConnectionWhere
               searchConnection_NOT: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related searchConnections match this filter
+              \\"\\"\\"
               searchConnection_SINGLE: MovieSearchConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related searchConnections match this filter
+              \\"\\"\\"
               searchConnection_SOME: MovieSearchConnectionWhere
             }
 

@@ -371,26 +371,38 @@ describe("Pluralize consistency", () => {
               my_friend: super_friendWhere @deprecated(reason: \\"Use \`my_friend_SOME\` instead.\\")
               my_friendAggregate: super_userMy_friendAggregateInput
               my_friendConnection: super_userMy_friendConnectionWhere @deprecated(reason: \\"Use \`my_friendConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return super_users where all of the related my_friendConnections match this filter
+              \\"\\"\\"
               my_friendConnection_ALL: super_userMy_friendConnectionWhere
+              \\"\\"\\"
+              Return super_users where none of the related my_friendConnections match this filter
+              \\"\\"\\"
               my_friendConnection_NONE: super_userMy_friendConnectionWhere
               my_friendConnection_NOT: super_userMy_friendConnectionWhere @deprecated(reason: \\"Use \`my_friendConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return super_users where one of the related my_friendConnections match this filter
+              \\"\\"\\"
               my_friendConnection_SINGLE: super_userMy_friendConnectionWhere
+              \\"\\"\\"
+              Return super_users where some of the related my_friendConnections match this filter
+              \\"\\"\\"
               my_friendConnection_SOME: super_userMy_friendConnectionWhere
               \\"\\"\\"
-              Return super_users where all of the related super_friends match this filter
+              Return super_users where all of the related my_friends match this filter
               \\"\\"\\"
               my_friend_ALL: super_friendWhere
               \\"\\"\\"
-              Return super_users where none of the related super_friends match this filter
+              Return super_users where none of the related my_friends match this filter
               \\"\\"\\"
               my_friend_NONE: super_friendWhere
               my_friend_NOT: super_friendWhere @deprecated(reason: \\"Use \`my_friend_NONE\` instead.\\")
               \\"\\"\\"
-              Return super_users where one of the related super_friends match this filter
+              Return super_users where one of the related my_friends match this filter
               \\"\\"\\"
               my_friend_SINGLE: super_friendWhere
               \\"\\"\\"
-              Return super_users where some of the related super_friends match this filter
+              Return super_users where some of the related my_friends match this filter
               \\"\\"\\"
               my_friend_SOME: super_friendWhere
               name: String

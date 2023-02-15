@@ -250,19 +250,31 @@ describe("connect or create with id", () => {
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Actors where all of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_ALL: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_NONE: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Actors where one of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SINGLE: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SOME: ActorMoviesConnectionWhere
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where all of the related movies match this filter\\"\\"\\"
               movies_ALL: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where none of the related movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where one of the related movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where some of the related movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
               name: String
               name_CONTAINS: String
@@ -784,11 +796,11 @@ describe("connect or create with id", () => {
               createdAt_LTE: DateTime
               createdAt_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               createdAt_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              creator: UserWhere @deprecated(reason: \\"Use \`creator_SOME\` instead.\\")
+              creator: UserWhere
               creatorAggregate: PostCreatorAggregateInput
               creatorConnection: PostCreatorConnectionWhere
-              creatorConnection_NOT: PostCreatorConnectionWhere @deprecated(reason: \\"Use \`creatorConnection_NONE\` instead.\\")
-              creator_NOT: UserWhere @deprecated(reason: \\"Use \`creator_NONE\` instead.\\")
+              creatorConnection_NOT: PostCreatorConnectionWhere
+              creator_NOT: UserWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -1110,19 +1122,31 @@ describe("connect or create with id", () => {
               posts: PostWhere @deprecated(reason: \\"Use \`posts_SOME\` instead.\\")
               postsAggregate: UserPostsAggregateInput
               postsConnection: UserPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Users where all of the related postsConnections match this filter
+              \\"\\"\\"
               postsConnection_ALL: UserPostsConnectionWhere
+              \\"\\"\\"
+              Return Users where none of the related postsConnections match this filter
+              \\"\\"\\"
               postsConnection_NONE: UserPostsConnectionWhere
               postsConnection_NOT: UserPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Users where one of the related postsConnections match this filter
+              \\"\\"\\"
               postsConnection_SINGLE: UserPostsConnectionWhere
+              \\"\\"\\"
+              Return Users where some of the related postsConnections match this filter
+              \\"\\"\\"
               postsConnection_SOME: UserPostsConnectionWhere
-              \\"\\"\\"Return Users where all of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Return Users where all of the related posts match this filter\\"\\"\\"
               posts_ALL: PostWhere
-              \\"\\"\\"Return Users where none of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Return Users where none of the related posts match this filter\\"\\"\\"
               posts_NONE: PostWhere
               posts_NOT: PostWhere @deprecated(reason: \\"Use \`posts_NONE\` instead.\\")
-              \\"\\"\\"Return Users where one of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Return Users where one of the related posts match this filter\\"\\"\\"
               posts_SINGLE: PostWhere
-              \\"\\"\\"Return Users where some of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Return Users where some of the related posts match this filter\\"\\"\\"
               posts_SOME: PostWhere
             }
 

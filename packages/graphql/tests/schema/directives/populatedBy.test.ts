@@ -983,19 +983,31 @@ describe("@populatedBy tests", () => {
                   genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
                   genresAggregate: MovieGenresAggregateInput
                   genresConnection: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_SOME\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where all of the related genresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_ALL: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related genresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_NONE: MovieGenresConnectionWhere
                   genresConnection_NOT: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_NONE\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where one of the related genresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_SINGLE: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related genresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_SOME: MovieGenresConnectionWhere
-                  \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Return Movies where all of the related genres match this filter\\"\\"\\"
                   genres_ALL: GenreWhere
-                  \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Return Movies where none of the related genres match this filter\\"\\"\\"
                   genres_NONE: GenreWhere
                   genres_NOT: GenreWhere @deprecated(reason: \\"Use \`genres_NONE\` instead.\\")
-                  \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Return Movies where one of the related genres match this filter\\"\\"\\"
                   genres_SINGLE: GenreWhere
-                  \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Return Movies where some of the related genres match this filter\\"\\"\\"
                   genres_SOME: GenreWhere
                   id: ID
                   id_CONTAINS: ID
@@ -1542,19 +1554,31 @@ describe("@populatedBy tests", () => {
                   genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
                   genresAggregate: MovieGenresAggregateInput
                   genresConnection: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_SOME\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where all of the related genresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_ALL: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related genresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_NONE: MovieGenresConnectionWhere
                   genresConnection_NOT: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_NONE\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where one of the related genresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_SINGLE: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related genresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_SOME: MovieGenresConnectionWhere
-                  \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Return Movies where all of the related genres match this filter\\"\\"\\"
                   genres_ALL: GenreWhere
-                  \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Return Movies where none of the related genres match this filter\\"\\"\\"
                   genres_NONE: GenreWhere
                   genres_NOT: GenreWhere @deprecated(reason: \\"Use \`genres_NONE\` instead.\\")
-                  \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Return Movies where one of the related genres match this filter\\"\\"\\"
                   genres_SINGLE: GenreWhere
-                  \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Return Movies where some of the related genres match this filter\\"\\"\\"
                   genres_SOME: GenreWhere
                   id: ID
                   id_CONTAINS: ID

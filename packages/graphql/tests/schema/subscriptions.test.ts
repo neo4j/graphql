@@ -530,19 +530,31 @@ describe("Subscriptions", () => {
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_ALL: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SINGLE: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SOME: MovieActorsConnectionWhere
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where all of the related actors match this filter\\"\\"\\"
               actors_ALL: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where none of the related actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where one of the related actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where some of the related actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
               averageRating: Float
               averageRating_GT: Float
@@ -922,19 +934,31 @@ describe("Subscriptions", () => {
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Actors where all of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_ALL: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_NONE: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Actors where one of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SINGLE: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SOME: ActorMoviesConnectionWhere
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where all of the related movies match this filter\\"\\"\\"
               movies_ALL: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where none of the related movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where one of the related movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where some of the related movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
             }
 
@@ -1248,19 +1272,31 @@ describe("Subscriptions", () => {
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_ALL: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SINGLE: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SOME: MovieActorsConnectionWhere
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where all of the related actors match this filter\\"\\"\\"
               actors_ALL: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where none of the related actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where one of the related actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where some of the related actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
               averageRating: Float
               averageRating_GT: Float
@@ -1766,10 +1802,22 @@ describe("Subscriptions", () => {
               actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_ALL: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SINGLE: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SOME: MovieActorsConnectionWhere
               averageRating: Float
               averageRating_GT: Float
@@ -2075,19 +2123,31 @@ describe("Subscriptions", () => {
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: PersonMoviesAggregateInput
               moviesConnection: PersonMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return People where all of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_ALL: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where none of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_NONE: PersonMoviesConnectionWhere
               moviesConnection_NOT: PersonMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return People where one of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SINGLE: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where some of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SOME: PersonMoviesConnectionWhere
-              \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return People where all of the related movies match this filter\\"\\"\\"
               movies_ALL: MovieWhere
-              \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return People where none of the related movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
-              \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return People where one of the related movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
-              \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return People where some of the related movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
             }
 
@@ -2365,19 +2425,31 @@ describe("Subscriptions", () => {
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: StarMoviesAggregateInput
               moviesConnection: StarMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Stars where all of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_ALL: StarMoviesConnectionWhere
+              \\"\\"\\"
+              Return Stars where none of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_NONE: StarMoviesConnectionWhere
               moviesConnection_NOT: StarMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Stars where one of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SINGLE: StarMoviesConnectionWhere
+              \\"\\"\\"
+              Return Stars where some of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SOME: StarMoviesConnectionWhere
-              \\"\\"\\"Return Stars where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Stars where all of the related movies match this filter\\"\\"\\"
               movies_ALL: MovieWhere
-              \\"\\"\\"Return Stars where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Stars where none of the related movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
-              \\"\\"\\"Return Stars where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Stars where one of the related movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
-              \\"\\"\\"Return Stars where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Stars where some of the related movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
             }
 
@@ -2761,19 +2833,31 @@ describe("Subscriptions", () => {
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Actors where all of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_ALL: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_NONE: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Actors where one of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SINGLE: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SOME: ActorMoviesConnectionWhere
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where all of the related movies match this filter\\"\\"\\"
               movies_ALL: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where none of the related movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where one of the related movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Actors where some of the related movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
             }
 
@@ -3161,19 +3245,31 @@ describe("Subscriptions", () => {
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_ALL: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SINGLE: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SOME: MovieActorsConnectionWhere
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where all of the related actors match this filter\\"\\"\\"
               actors_ALL: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where none of the related actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where one of the related actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where some of the related actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
               averageRating: Float
               averageRating_GT: Float
@@ -3667,19 +3763,31 @@ describe("Subscriptions", () => {
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_ALL: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SINGLE: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SOME: MovieActorsConnectionWhere
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where all of the related actors match this filter\\"\\"\\"
               actors_ALL: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where none of the related actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where one of the related actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where some of the related actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
               averageRating: Float
               averageRating_GT: Float
@@ -4117,11 +4225,11 @@ describe("Subscriptions", () => {
               name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
-              owner: UserWhere @deprecated(reason: \\"Use \`owner_SOME\` instead.\\")
+              owner: UserWhere
               ownerAggregate: AgreementOwnerAggregateInput
               ownerConnection: AgreementOwnerConnectionWhere
-              ownerConnection_NOT: AgreementOwnerConnectionWhere @deprecated(reason: \\"Use \`ownerConnection_NONE\` instead.\\")
-              owner_NOT: UserWhere @deprecated(reason: \\"Use \`owner_NONE\` instead.\\")
+              ownerConnection_NOT: AgreementOwnerConnectionWhere
+              owner_NOT: UserWhere
             }
 
             type AgreementsConnection {
@@ -4714,10 +4822,22 @@ describe("Subscriptions", () => {
               actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_ALL: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SINGLE: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SOME: MovieActorsConnectionWhere
               averageRating: Float
               averageRating_GT: Float
@@ -5023,19 +5143,31 @@ describe("Subscriptions", () => {
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: PersonMoviesAggregateInput
               moviesConnection: PersonMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return People where all of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_ALL: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where none of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_NONE: PersonMoviesConnectionWhere
               moviesConnection_NOT: PersonMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return People where one of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SINGLE: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where some of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SOME: PersonMoviesConnectionWhere
-              \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return People where all of the related movies match this filter\\"\\"\\"
               movies_ALL: MovieWhere
-              \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return People where none of the related movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
-              \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return People where one of the related movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
-              \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return People where some of the related movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
             }
 
@@ -5262,19 +5394,31 @@ describe("Subscriptions", () => {
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: StarMoviesAggregateInput
               moviesConnection: StarMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Stars where all of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_ALL: StarMoviesConnectionWhere
+              \\"\\"\\"
+              Return Stars where none of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_NONE: StarMoviesConnectionWhere
               moviesConnection_NOT: StarMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Stars where one of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SINGLE: StarMoviesConnectionWhere
+              \\"\\"\\"
+              Return Stars where some of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SOME: StarMoviesConnectionWhere
-              \\"\\"\\"Return Stars where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Stars where all of the related movies match this filter\\"\\"\\"
               movies_ALL: MovieWhere
-              \\"\\"\\"Return Stars where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Stars where none of the related movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
-              \\"\\"\\"Return Stars where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Stars where one of the related movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
-              \\"\\"\\"Return Stars where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Stars where some of the related movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
             }
 
@@ -5519,7 +5663,7 @@ describe("Subscriptions", () => {
             input CreatureWhere {
               _on: CreatureImplementationsWhere
               moviesConnection: CreatureMoviesConnectionWhere
-              moviesConnection_NOT: CreatureMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              moviesConnection_NOT: CreatureMoviesConnectionWhere
             }
 
             type DeleteInfo {
@@ -5648,7 +5792,7 @@ describe("Subscriptions", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               directorConnection: ProductionDirectorConnectionWhere
-              directorConnection_NOT: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_NONE\` instead.\\")
+              directorConnection_NOT: ProductionDirectorConnectionWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -5847,7 +5991,7 @@ describe("Subscriptions", () => {
               NOT: PersonWhere
               OR: [PersonWhere!]
               moviesConnection: CreatureMoviesConnectionWhere
-              moviesConnection_NOT: CreatureMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              moviesConnection_NOT: CreatureMoviesConnectionWhere
             }
 
             interface Production {
@@ -6010,7 +6154,7 @@ describe("Subscriptions", () => {
             input ProductionWhere {
               _on: ProductionImplementationsWhere
               directorConnection: ProductionDirectorConnectionWhere
-              directorConnection_NOT: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_NONE\` instead.\\")
+              directorConnection_NOT: ProductionDirectorConnectionWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -6241,7 +6385,7 @@ describe("Subscriptions", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               directorConnection: ProductionDirectorConnectionWhere
-              directorConnection_NOT: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_NONE\` instead.\\")
+              directorConnection_NOT: ProductionDirectorConnectionWhere
               episode: Int
               episode_GT: Int
               episode_GTE: Int

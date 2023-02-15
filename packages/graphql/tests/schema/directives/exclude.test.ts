@@ -899,19 +899,31 @@ describe("@exclude directive", () => {
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_ALL: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SINGLE: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related actorsConnections match this filter
+              \\"\\"\\"
               actorsConnection_SOME: MovieActorsConnectionWhere
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where all of the related actors match this filter\\"\\"\\"
               actors_ALL: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where none of the related actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where one of the related actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where some of the related actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
               title: String
               title_CONTAINS: String

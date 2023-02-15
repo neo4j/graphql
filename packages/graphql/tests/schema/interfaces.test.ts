@@ -262,19 +262,31 @@ describe("Interfaces", () => {
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: MovieMoviesAggregateInput
               moviesConnection: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_ALL: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_NONE: MovieNodeMoviesConnectionWhere
               moviesConnection_NOT: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related moviesConnections match this filter
+              \\"\\"\\"
               moviesConnection_SOME: MovieNodeMoviesConnectionWhere
-              \\"\\"\\"Return Movies where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where all of the related movies match this filter\\"\\"\\"
               movies_ALL: MovieWhere
-              \\"\\"\\"Return Movies where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where none of the related movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
               movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
-              \\"\\"\\"Return Movies where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where one of the related movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
-              \\"\\"\\"Return Movies where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where some of the related movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
             }
 
