@@ -114,7 +114,9 @@ export default function getCustomResolverMeta({
         deprecatedDirective?.arguments?.find((arg) => arg.name.value === "from");
 
     if (!directiveFromArgument) {
-        return undefined;
+        return {
+            requiredFields: {},
+        };
     }
 
     if (directiveFromArgument?.value.kind === Kind.STRING) {
