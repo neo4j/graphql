@@ -52,6 +52,10 @@ type CustomResolverMeta = {
     requiredFields: Record<string, ResolveTree>;
 };
 
+const INVALID_DIRECTIVES_TO_REQUIRE = ["customResolver", "computed"];
+const INVALID_REQUIRED_FIELD_ERROR = `It is not possible to require fields that use the following directives: ${INVALID_DIRECTIVES_TO_REQUIRE.map(
+    (name) => `\`@${name}\``
+).join(", ")}`;
 const DEPRECATION_WARNING =
     "The @computed directive has been deprecated and will be removed in version 4.0.0. Please use " +
     "the @customResolver directive instead. More information can be found at " +
@@ -257,17 +261,23 @@ function nestedSelectionSetToResolveTrees(
             if (!selection.selectionSet) {
                 return acc;
             }
+            const fieldType = selection.typeCondition?.name.value;
+            if (!fieldType) {
+                throw new Error(INVALID_SELECTION_SET_ERROR);
+            }
+            const innerObjectFields = objects.find((obj) => obj.name.value === fieldType)?.fields;
+            if (!innerObjectFields) {
+                throw new Error(INVALID_SELECTION_SET_ERROR);
+            }
+
             const nestedResolveTree = nestedSelectionSetToResolveTrees(
-                objectFields,
+                innerObjectFields,
                 objects,
                 interfaces,
                 unions,
                 selection.selectionSet
             );
-            const fieldType = selection.typeCondition?.name.value;
-            if (!fieldType) {
-                throw new Error("Cannot find fragment type");
-            }
+
             return {
                 ...acc,
                 [fieldType]: nestedResolveTree,
@@ -285,7 +295,7 @@ function nestedSelectionSetToResolveTrees(
                             ?.fields || []
                 );
             if (!innerObjectFields) {
-                throw new Error(); // TODO - message
+                throw new Error(INVALID_SELECTION_SET_ERROR);
             }
             nestedResolveTree = nestedSelectionSetToResolveTrees(
                 innerObjectFields,
@@ -296,6 +306,26 @@ function nestedSelectionSetToResolveTrees(
                 fieldType
             );
         }
+
+        const fieldImplementations = [objectFields.find((field) => field.name.value === selection.name.value)];
+        const objectsImplementingInterface = objects.filter((obj) =>
+            obj.interfaces?.find((inter) => inter.name.value === outerFieldType)
+        );
+        objectsImplementingInterface.forEach((obj) =>
+            obj.fields?.forEach((objField) => {
+                if (objField.name.value === selection.name.value) {
+                    fieldImplementations.push(objField);
+                }
+            })
+        );
+        if (
+            fieldImplementations.find((field) =>
+                field?.directives?.find((directive) => INVALID_DIRECTIVES_TO_REQUIRE.includes(directive.name.value))
+            )
+        ) {
+            throw new Error(INVALID_REQUIRED_FIELD_ERROR);
+        }
+
         if (outerFieldType) {
             return {
                 ...acc,
@@ -321,8 +351,7 @@ function nestedSelectionSetToResolveTrees(
 
 function getNestedType(type: TypeNode | undefined): string {
     if (!type) {
-        // TODO - better error message
-        throw new Error("Cannot find the type of a related field that is required by a custom resolver");
+        throw new Error(INVALID_SELECTION_SET_ERROR);
     }
     if (type.kind !== Kind.NAMED_TYPE) {
         return getNestedType(type.type);
