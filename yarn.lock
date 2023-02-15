@@ -315,7 +315,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/gateway@npm:^2.2.2":
+"@apollo/gateway@npm:2.3.2":
   version: 2.3.2
   resolution: "@apollo/gateway@npm:2.3.2"
   dependencies:
@@ -434,7 +434,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/server@npm:^4.3.0":
+"@apollo/server@npm:4.3.3":
   version: 4.3.3
   resolution: "@apollo/server@npm:4.3.3"
   dependencies:
@@ -3099,8 +3099,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
-    "@apollo/gateway": ^2.2.2
-    "@apollo/server": ^4.3.0
+    "@apollo/gateway": 2.3.2
+    "@apollo/server": 4.3.3
     "@apollo/subgraph": ^2.2.3
     "@faker-js/faker": 7.6.0
     "@graphql-tools/merge": ^8.3.3
