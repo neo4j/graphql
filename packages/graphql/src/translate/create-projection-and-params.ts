@@ -36,6 +36,7 @@ import { collectUnionSubqueriesResults } from "./projection/subquery/collect-uni
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import { createConnectionClause } from "./connection-clause/create-connection-clause";
 import { translateCypherDirectiveProjection } from "./projection/subquery/translate-cypher-directive-projection";
+import { NamedNode } from "@neo4j/cypher-builder";
 
 interface Res {
     projection: Cypher.Expr[];
@@ -164,7 +165,8 @@ export default function createProjectionAndParams({
                 const unionSubqueries: Cypher.Clause[] = [];
                 // TODO evaluate this?
                 const unionVariableName = new Cypher.Variable();
-                const varNameFake = new Cypher.NamedNode('AAA');
+
+                const unionSubqueryReturnAlias = new Cypher.NamedNode('AAA');
                 for (const refNode of referenceNodes) {
                     const refNodeInterfaceNames = node.interfaces.map(
                         (implementedInterface) => implementedInterface.name.value
@@ -176,7 +178,7 @@ export default function createProjectionAndParams({
                         resolveTree: field,
                         node: refNode,
                         context,
-                        varName: varNameFake,
+                        varName: varName,
                     });
                     res.params = { ...res.params, ...recurse.params };
 
@@ -198,13 +200,12 @@ export default function createProjectionAndParams({
                             return `{ __resolveType: "${refNode.name}" }`;
                         });
                     }
-                    const alias = new Cypher.Node({ labels: refNode.getLabels(context) });
                     const subquery = createProjectionSubquery({
                         parentNode,
                         whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
                         node: refNode,
                         context,
-                        alias,
+                        unionVariableName, 
                         nestedProjection,
                         nestedSubqueries: [...recurse.subqueriesBeforeSort, ...recurse.subqueries],
                         relationField,
@@ -251,7 +252,6 @@ export default function createProjectionAndParams({
                 whereInput,
                 node: referenceNode as Node, // TODO: improve typings
                 context,
-                alias: targetNode,
                 nestedProjection: recurse.projection,
                 nestedSubqueries: [...recurse.subqueriesBeforeSort, ...recurse.subqueries],
                 relationField,

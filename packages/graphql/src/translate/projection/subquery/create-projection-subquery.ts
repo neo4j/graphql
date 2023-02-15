@@ -31,7 +31,7 @@ export function createProjectionSubquery({
     whereInput,
     node,
     context,
-    alias,
+    unionVariableName,
     nestedProjection,
     nestedSubqueries,
     relationField,
@@ -45,9 +45,9 @@ export function createProjectionSubquery({
     whereInput?: GraphQLWhereArg;
     node: Node;
     context: Context;
-    alias: Cypher.Node; // TODO: this should be output variable instead
     nestedProjection: Cypher.Expr;
     nestedSubqueries: Cypher.Clause[];
+    unionVariableName?: Cypher.Variable;
     relationField: RelationField;
     relationshipDirection: CypherRelationshipDirection;
     optionsInput: GraphQLOptionsArg;
@@ -56,6 +56,7 @@ export function createProjectionSubquery({
     collect?: boolean;
 }): Cypher.Clause {
     const isArray = relationField.typeMeta.array;
+    const targetNode = new Cypher.Node({ labels: node.getLabels(context) });
     // console.log(relationshipDirection);
     const relationship = new Cypher.Relationship({
         type: relationField.type,
@@ -64,14 +65,14 @@ export function createProjectionSubquery({
         .withoutLabels()
         .related(relationship)
         .withDirection(relationshipDirection)
-        .to(alias);
+        .to(targetNode);
 
     const subqueryMatch = new Cypher.Match(pattern);
     const predicates: Cypher.Predicate[] = [];
 
     const projection = new Cypher.RawCypher((env) => {
         // TODO: use MapProjection
-        return `${alias.getCypher(env)} ${nestedProjection.getCypher(env)}`;
+        return `${targetNode.getCypher(env)} ${nestedProjection.getCypher(env)}`;
     });
 
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
@@ -81,7 +82,7 @@ export function createProjectionSubquery({
             element: node,
             context,
             whereInput,
-            targetElement: alias,
+            targetElement: targetNode,
         });
         if (wherePredicate) predicates.push(wherePredicate);
         preComputedWhereFieldSubqueries = preComputedSubqueries;
@@ -92,7 +93,7 @@ export function createProjectionSubquery({
         operations: "READ",
         context,
         where: {
-            varName: alias,
+            varName: targetNode,
             node,
         },
     });
@@ -107,7 +108,7 @@ export function createProjectionSubquery({
         context,
         allow: {
             parentNode: node,
-            varName: alias,
+            varName: targetNode,
         },
     });
 
@@ -128,24 +129,24 @@ export function createProjectionSubquery({
         predicates.push(authStatement);
     }
 
-    const withStatement: Cypher.With = new Cypher.With([projection, alias]); // This only works if nestedProjection is a map
+    const withStatement: Cypher.With = new Cypher.With([projection, targetNode]); // This only works if nestedProjection is a map
     if (addSkipAndLimit) {
         addSortAndLimitOptionsToClause({
             optionsInput,
-            target: alias,
+            target: targetNode,
             projectionClause: withStatement,
         });
     }
 
-    let returnProjection: Cypher.Expr = alias;
+    let returnProjection: Cypher.Expr = targetNode;
     if (collect) {
-        returnProjection = Cypher.collect(alias);
+        returnProjection = Cypher.collect(targetNode);
         if (!isArray) {
             returnProjection = Cypher.head(returnProjection);
         }
     }
 
-    const returnStatement = new Cypher.Return([returnProjection, alias]);
+    const returnStatement = new Cypher.Return([returnProjection, unionVariableName || targetNode]);
 
     if (preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty) {
         const preComputedSubqueryWith = new Cypher.With("*");
