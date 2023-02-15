@@ -17,16 +17,11 @@
  * limitations under the License.
  */
 
-import type { IAST, Visitor } from "./types";
-import { v4 as uuidv4 } from "uuid";
+import type { ApolloServer } from "@apollo/server";
 
-export abstract class AST implements IAST {
-    id = uuidv4();
-    children: IAST[] = [];
-
-    addChildren(node: IAST): void {
-        this.children.push(node);
-    }
-
-    abstract accept(visitor: Visitor): void;
+export interface Server {
+    port: number;
+    server: ApolloServer;
+    start(): Promise<string>;
+    stop(): Promise<void>;
 }

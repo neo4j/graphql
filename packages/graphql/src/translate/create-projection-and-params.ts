@@ -163,7 +163,7 @@ export default function createProjectionAndParams({
                 const unionSubqueries: Cypher.Clause[] = [];
                 const unionVariableName = `${param}`;
                 for (const refNode of referenceNodes) {
-                    const refNodeInterfaceNames = node.interfaces.map(
+                    const refNodeInterfaceNames = refNode.interfaces.map(
                         (implementedInterface) => implementedInterface.name.value
                     );
                     const hasFields = Object.keys(field.fieldsByTypeName).some((fieldByTypeName) =>
