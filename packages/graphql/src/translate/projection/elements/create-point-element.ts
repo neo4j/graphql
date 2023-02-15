@@ -30,14 +30,14 @@ export default function createPointElement({
     resolveTree: ResolveTree;
     field: PointField;
     variable: Cypher.Node | Cypher.Variable;
-}): string {
+}): Cypher.Expr {
     const expression = createPointExpression({ resolveTree, field, variable });
 
     const cypherClause = new Cypher.RawCypher((env) => {
         return expression.getCypher(env);
     });
     const { cypher } = cypherClause.build("p_");
-    return `${resolveTree.alias}: (${cypher})`;
+    return new Cypher.RawCypher(`${resolveTree.alias}: (${cypher})`);
 }
 
 export function createPointExpression({

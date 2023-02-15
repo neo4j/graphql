@@ -32,11 +32,15 @@ export function createDatetimeElement({
     field: TemporalField;
     variable: Cypher.Variable | Cypher.Node;
     valueOverride?: string;
-}): string {
+}): Cypher.Expr {
     const dbFieldName = field.dbPropertyName || resolveTree.name;
-    return field.typeMeta.array
-        ? `${resolveTree.alias}: [ dt in ${variable}.${dbFieldName} | ${wrapApocConvertDate("dt")} ]`
-        : `${resolveTree.alias}: ${wrapApocConvertDate(valueOverride || `${variable}.${dbFieldName}`)}`;
+    return new Cypher.RawCypher((env) =>
+        field.typeMeta.array
+            ? `${resolveTree.alias}: [ dt in ${variable.getCypher(env)}.${dbFieldName} | ${wrapApocConvertDate("dt")} ]`
+            : `${resolveTree.alias}: ${wrapApocConvertDate(
+                  valueOverride || `${variable.getCypher(env)}.${dbFieldName}`
+              )}`
+    );
 }
 
 export function wrapApocConvertDate(value: string): string {

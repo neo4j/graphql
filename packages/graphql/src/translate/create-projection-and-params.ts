@@ -98,11 +98,15 @@ export default function createProjectionAndParams({
         if (authableField) {
             // TODO: move this to translate-top-level
             if (authableField.auth) {
+                console.trace("AUTH", varName);
                 const allowAndParams = createAuthAndParams({
                     entity: authableField,
                     operations: "READ",
                     context,
-                    allow: { parentNode: node, varName: varName as Cypher.Node },
+                    allow: {
+                        parentNode: node,
+                        varName: varName as Cypher.Node,
+                    },
                 });
                 if (allowAndParams[0]) {
                     if (!res.meta.authValidateStrs) {
@@ -153,6 +157,10 @@ export default function createProjectionAndParams({
                 return res;
             }
  */
+
+            // TODO evaluate this?
+            const subqueryReturnAlias = new Cypher.Variable();
+
             if (relationField.union) {
                 const referenceNodes = context.nodes.filter(
                     (x) =>
@@ -163,10 +171,8 @@ export default function createProjectionAndParams({
                 const parentNode = varName as Cypher.Node;
 
                 const unionSubqueries: Cypher.Clause[] = [];
-                // TODO evaluate this?
-                const unionVariableName = new Cypher.Variable();
 
-                const unionSubqueryReturnAlias = new Cypher.NamedNode('AAA');
+                // const unionSubqueryReturnAlias = new Cypher.NamedNode('AAA');
                 for (const refNode of referenceNodes) {
                     const refNodeInterfaceNames = node.interfaces.map(
                         (implementedInterface) => implementedInterface.name.value
@@ -178,7 +184,7 @@ export default function createProjectionAndParams({
                         resolveTree: field,
                         node: refNode,
                         context,
-                        varName: varName,
+                        varName,
                     });
                     res.params = { ...res.params, ...recurse.params };
 
@@ -200,14 +206,16 @@ export default function createProjectionAndParams({
                             return `{ __resolveType: "${refNode.name}" }`;
                         });
                     }
+                    const targetNode = new Cypher.Node({ labels: refNode.getLabels(context) });
                     const subquery = createProjectionSubquery({
                         parentNode,
                         whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
                         node: refNode,
                         context,
-                        unionVariableName, 
+                        subqueryReturnAlias,
                         nestedProjection,
                         nestedSubqueries: [...recurse.subqueriesBeforeSort, ...recurse.subqueries],
+                        targetNode,
                         relationField,
                         relationshipDirection: direction,
                         optionsInput,
@@ -223,44 +231,52 @@ export default function createProjectionAndParams({
                 const unionClause = new Cypher.Union(...unionSubqueries);
 
                 const collectAndLimitStatements = collectUnionSubqueriesResults({
-                    resultVariable: unionVariableName,
+                    resultVariable: subqueryReturnAlias,
                     optionsInput,
                     isArray: Boolean(relationField.typeMeta.array),
                 });
 
                 const unionAndSort = Cypher.concat(new Cypher.Call(unionClause), collectAndLimitStatements);
                 res.subqueries.push(new Cypher.Call(unionAndSort).innerWith(parentNode));
-                res.projection.push(new Cypher.RawCypher((env) => `${alias}: ${unionVariableName.getCypher(env)}`));
+                res.projection.push(new Cypher.RawCypher((env) => `${alias}: ${subqueryReturnAlias.getCypher(env)}`));
 
                 return res;
             }
-           
-            const varRelNode = new Cypher.Node({labels: (referenceNode || node).getLabels(context)});
+
+            // const targetNode = new Cypher.Node({ labels: (referenceNode || node).getLabels(context) });
+            const targetNode = referenceNode
+                ? new Cypher.Node({
+                      labels: referenceNode.getLabels(context),
+                  })
+                : varName;
+
+            console.log("tralala");
             const recurse = createProjectionAndParams({
                 resolveTree: field,
                 node: referenceNode || node,
                 context,
-                varName: varRelNode,
+                varName: targetNode,
             });
             res.params = { ...res.params, ...recurse.params };
 
             const direction = getCypherRelationshipDirection(relationField, field.args);
-            // TODO Change alias to a proper variable name
-            const targetNode = new Cypher.Node({labels: (referenceNode as Node).getLabels(context)});
+
             const subquery = createProjectionSubquery({
                 parentNode: varName as Cypher.Node,
                 whereInput,
                 node: referenceNode as Node, // TODO: improve typings
                 context,
+                subqueryReturnAlias,
                 nestedProjection: recurse.projection,
                 nestedSubqueries: [...recurse.subqueriesBeforeSort, ...recurse.subqueries],
+                targetNode: targetNode as Cypher.Node,
                 relationField,
                 relationshipDirection: direction,
                 optionsInput,
                 authValidateStrs: recurse.meta?.authValidateStrs,
             });
             res.subqueries.push(new Cypher.Call(subquery).innerWith(varName));
-            res.projection.push(new Cypher.RawCypher((env) => `${alias}: ${targetNode.getCypher(env)}`));
+            res.projection.push(new Cypher.RawCypher((env) => `${alias}: ${subqueryReturnAlias.getCypher(env)}`));
             return res;
         }
 
@@ -275,7 +291,9 @@ export default function createProjectionAndParams({
             if (aggregationFieldProjection.projectionSubqueryCypher) {
                 res.subqueries.push(aggregationFieldProjection.projectionSubqueryCypher);
             }
-            res.projection.push(new Cypher.RawCypher((env) => `${alias}: ${aggregationFieldProjection.projectionCypher.getCypher(env)}`));
+            res.projection.push(
+                new Cypher.RawCypher((env) => `${alias}: ${aggregationFieldProjection.projectionCypher.getCypher(env)}`)
+            );
             return res;
         }
 
@@ -290,8 +308,8 @@ export default function createProjectionAndParams({
                 })
             ).innerWith(varName);
             // TODO varName it was a String now is a Variable
-           // const connection = connectionClause.build(`connection___${matrdn}`); // TODO: remove build from here
-          //  const stupidParams = connection.params;
+            // const connection = connectionClause.build(`connection___${matrdn}`); // TODO: remove build from here
+            //  const stupidParams = connection.params;
 
             const connectionSubClause = new Cypher.RawCypher((env) => {
                 // TODO: avoid REPLACE_ME in params and return them here
@@ -301,20 +319,14 @@ export default function createProjectionAndParams({
             res.subqueries.push(connectionSubClause);
             res.projection.push(new Cypher.RawCypher((env) => `${field.alias}: ${param.getCypher(env)}`));
 
-           // res.params = { ...res.params, ...stupidParams };
+            // res.params = { ...res.params, ...stupidParams };
             return res;
         }
 
         if (pointField) {
-            res.projection.push(
-                new Cypher.RawCypher(createPointElement({ resolveTree: field, field: pointField, variable: varName }))
-            );
+            res.projection.push(createPointElement({ resolveTree: field, field: pointField, variable: varName }));
         } else if (temporalField?.typeMeta.name === "DateTime") {
-            res.projection.push(
-                new Cypher.RawCypher(
-                    createDatetimeElement({ resolveTree: field, field: temporalField, variable: varName })
-                )
-            );
+            res.projection.push(createDatetimeElement({ resolveTree: field, field: temporalField, variable: varName }));
         } else {
             // In the case of using the @alias directive (map a GraphQL field to a db prop)
             // the output will be RETURN varName {GraphQLfield: varName.dbAlias}
@@ -322,7 +334,7 @@ export default function createProjectionAndParams({
 
             // If field is aliased, rename projected field to alias and set to varName.fieldName
             // e.g. RETURN varname { .fieldName } -> RETURN varName { alias: varName.fieldName }
-        
+
             const fieldProjection = new Cypher.RawCypher((env) => {
                 let aliasedProj: string;
                 if (alias !== field.name || dbFieldName !== field.name || literalElements) {

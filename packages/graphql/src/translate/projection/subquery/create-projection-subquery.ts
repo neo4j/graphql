@@ -31,9 +31,10 @@ export function createProjectionSubquery({
     whereInput,
     node,
     context,
-    unionVariableName,
+    subqueryReturnAlias,
     nestedProjection,
     nestedSubqueries,
+    targetNode,
     relationField,
     relationshipDirection,
     optionsInput,
@@ -47,7 +48,8 @@ export function createProjectionSubquery({
     context: Context;
     nestedProjection: Cypher.Expr;
     nestedSubqueries: Cypher.Clause[];
-    unionVariableName?: Cypher.Variable;
+    targetNode: Cypher.Node;
+    subqueryReturnAlias: Cypher.Variable;
     relationField: RelationField;
     relationshipDirection: CypherRelationshipDirection;
     optionsInput: GraphQLOptionsArg;
@@ -56,7 +58,7 @@ export function createProjectionSubquery({
     collect?: boolean;
 }): Cypher.Clause {
     const isArray = relationField.typeMeta.array;
-    const targetNode = new Cypher.Node({ labels: node.getLabels(context) });
+    // const targetNode = new Cypher.Node({ labels: node.getLabels(context) });
     // console.log(relationshipDirection);
     const relationship = new Cypher.Relationship({
         type: relationField.type,
@@ -146,7 +148,7 @@ export function createProjectionSubquery({
         }
     }
 
-    const returnStatement = new Cypher.Return([returnProjection, unionVariableName || targetNode]);
+    const returnStatement = new Cypher.Return([returnProjection, subqueryReturnAlias]);
 
     if (preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty) {
         const preComputedSubqueryWith = new Cypher.With("*");

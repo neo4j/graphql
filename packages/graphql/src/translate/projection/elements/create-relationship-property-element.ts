@@ -32,20 +32,28 @@ export function createRelationshipPropertyElement({
     resolveTree: ResolveTree;
     relationship: Relationship;
     relationshipVariable: string;
-}): string {
+}): Cypher.Expr {
     const temporalField = relationship.temporalFields.find((f) => f.fieldName === resolveTree.name);
     const pointField = relationship.pointFields.find((f) => f.fieldName === resolveTree.name);
 
     if (temporalField?.typeMeta.name === "DateTime") {
-        return createDatetimeElement({ resolveTree, field: temporalField, variable: new Cypher.NamedVariable(relationshipVariable) });
+        return createDatetimeElement({
+            resolveTree,
+            field: temporalField,
+            variable: new Cypher.NamedVariable(relationshipVariable),
+        });
     }
 
     if (pointField) {
-        return createPointElement({ resolveTree, field: pointField, variable: new Cypher.NamedVariable(relationshipVariable) });
+        return createPointElement({
+            resolveTree,
+            field: pointField,
+            variable: new Cypher.NamedVariable(relationshipVariable),
+        });
     }
 
     const dbFieldName = mapToDbProperty(relationship, resolveTree.name);
-    return `${resolveTree.alias}: ${relationshipVariable}.${dbFieldName}`;
+    return new Cypher.RawCypher(`${resolveTree.alias}: ${relationshipVariable}.${dbFieldName}`);
 }
 
 // TODO: this should generate the value that is used in createRelationshipPropertyElement

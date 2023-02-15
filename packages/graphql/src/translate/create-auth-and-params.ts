@@ -86,7 +86,8 @@ export function createAuthAndParams({
     const chainStr = generateUniqueChainStr([where?.varName, allow?.varName, bind?.varName]);
 
     // Params must be globally unique, variables can be just slightly different, as each auth statement is scoped
-    const authCypher = authPredicateExpr.build({ params: `${chainStr}auth_`, variables: `auth_` });
+    // const authCypher = authPredicateExpr.build({ params: `${chainStr}auth_`, variables: `auth_` });
+    const authCypher = authPredicateExpr.build({ params: `${chainStr}auth_`, variables: `` });
 
     return [authCypher.cypher, authCypher.params];
 }
