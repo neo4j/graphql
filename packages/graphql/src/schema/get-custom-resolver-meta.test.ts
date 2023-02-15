@@ -548,7 +548,70 @@ describe("getCustomResolverMeta", () => {
             requiredFields: {},
         });
     });
-    test("should return the correct meta with requires argument", () => {
+    test("should return the correct meta when a list of required fields is provided", () => {
+        const requiredFields = ["name"];
+        const field: FieldDefinitionNode = {
+            directives: [
+                {
+                    // @ts-ignore
+                    name: {
+                        value: "customResolver",
+                        // @ts-ignore
+                    },
+                    arguments: [
+                        {
+                            // @ts-ignore
+                            name: { value: "requires" },
+                            // @ts-ignore
+                            value: {
+                                kind: Kind.LIST,
+                                values: requiredFields.map((requiredField) => ({
+                                    kind: Kind.STRING,
+                                    value: requiredField,
+                                })),
+                            },
+                        },
+                    ],
+                },
+                {
+                    // @ts-ignore
+                    name: { value: "RANDOM 2" },
+                },
+                {
+                    // @ts-ignore
+                    name: { value: "RANDOM 3" },
+                },
+                {
+                    // @ts-ignore
+                    name: { value: "RANDOM 4" },
+                },
+            ],
+            name: {
+                kind: Kind.NAME,
+                value: customResolverField,
+            },
+        };
+
+        const result = getCustomResolverMeta({
+            document,
+            field,
+            object,
+            objects,
+            validateResolvers: true,
+            interfaces,
+            unions,
+            customResolvers: resolvers,
+        });
+
+        expect(result).toEqual({
+            requiredFields: requiredFields.reduce((res, field) => {
+                res = { ...res, ...generateResolveTree({ name: field }) };
+                return res;
+            }, {}),
+        });
+    });
+
+    test("should not throw an error if a list of required fields is provided that contains invalid fields", () => {
         const requiredFields = ["field1", "field2", "field3"];
         const field: FieldDefinitionNode = {
             directives: [
@@ -603,13 +666,164 @@ describe("getCustomResolverMeta", () => {
             customResolvers: resolvers,
         });
 
-        expect(result).toMatchObject({
+        expect(result).toEqual({
             requiredFields: requiredFields.reduce((res, field) => {
                 res = { ...res, ...generateResolveTree({ name: field }) };
                 return res;
             }, {}),
         });
     });
+
+    test("should return the correct meta when a selection set of required fields provided", () => {
+        const requiredFields = `name publications { publicationYear ...on ${bookType} { title } ... on ${journalType} { subject } }`;
+        const field: FieldDefinitionNode = {
+            directives: [
+                {
+                    // @ts-ignore
+                    name: {
+                        value: "customResolver",
+                        // @ts-ignore
+                    },
+                    arguments: [
+                        {
+                            // @ts-ignore
+                            name: { value: "requires" },
+                            // @ts-ignore
+                            value: {
+                                kind: Kind.STRING,
+                                value: requiredFields,
+                            },
+                        },
+                    ],
+                },
+                {
+                    // @ts-ignore
+                    name: { value: "RANDOM 2" },
+                },
+                {
+                    // @ts-ignore
+                    name: { value: "RANDOM 3" },
+                },
+                {
+                    // @ts-ignore
+                    name: { value: "RANDOM 4" },
+                },
+            ],
+            name: {
+                kind: Kind.NAME,
+                value: customResolverField,
+            },
+        };
+
+        const result = getCustomResolverMeta({
+            document,
+            field,
+            object,
+            objects,
+            validateResolvers: true,
+            interfaces,
+            unions,
+            customResolvers: resolvers,
+        });
+
+        expect(result).toEqual({
+            requiredFields: {
+                name: {
+                    name: "name",
+                    alias: "name",
+                    args: {},
+                    fieldsByTypeName: {},
+                },
+                publications: {
+                    name: "publications",
+                    alias: "publications",
+                    args: {},
+                    fieldsByTypeName: {
+                        Publication: {
+                            publicationYear: {
+                                name: "publicationYear",
+                                alias: "publicationYear",
+                                args: {},
+                                fieldsByTypeName: {},
+                            },
+                        },
+                        Book: {
+                            title: {
+                                name: "title",
+                                alias: "title",
+                                args: {},
+                                fieldsByTypeName: {},
+                            },
+                        },
+                        Journal: {
+                            subject: {
+                                name: "subject",
+                                alias: "subject",
+                                args: {},
+                                fieldsByTypeName: {},
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    });
+
+    test("should throw an error if a non-existant field is passed to the required selection set", () => {
+        const requiredFields = `name publications doesNotExist { publicationYear ...on ${bookType} { title } ... on ${journalType} { subject } }`;
+        const field: FieldDefinitionNode = {
+            directives: [
+                {
+                    // @ts-ignore
+                    name: {
+                        value: "customResolver",
+                        // @ts-ignore
+                    },
+                    arguments: [
+                        {
+                            // @ts-ignore
+                            name: { value: "requires" },
+                            // @ts-ignore
+                            value: {
+                                kind: Kind.STRING,
+                                value: requiredFields,
+                            },
+                        },
+                    ],
+                },
+                {
+                    // @ts-ignore
+                    name: { value: "RANDOM 2" },
+                },
+                {
+                    // @ts-ignore
+                    name: { value: "RANDOM 3" },
+                },
+                {
+                    // @ts-ignore
+                    name: { value: "RANDOM 4" },
+                },
+            ],
+            name: {
+                kind: Kind.NAME,
+                value: customResolverField,
+            },
+        };
+
+        expect(() =>
+            getCustomResolverMeta({
+                document,
+                field,
+                object,
+                objects,
+                validateResolvers: true,
+                interfaces,
+                unions,
+                customResolvers: resolvers,
+            })
+        ).toThrow(`Invalid selection set provided to @customResolver on ${authorType}`);
+    });
+
     test("Check throws error if customResolver is not provided", () => {
         const requiredFields = ["field1", "field2", "field3"];
         const field: FieldDefinitionNode = {
