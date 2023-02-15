@@ -19,7 +19,6 @@
 
 import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
-import pluralize from "pluralize";
 import { Node } from "../../classes";
 import {
     WHERE_AGGREGATION_AVERAGE_TYPES,
@@ -34,7 +33,12 @@ import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import { overwrite } from "./fields/overwrite";
-import { DEPRECATE_NOT, DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS, DEPRECATE_INVALID_AGGREGATION_FILTERS } from "../constants";
+import {
+    DEPRECATE_NOT,
+    DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS,
+    DEPRECATE_INVALID_AGGREGATION_FILTERS,
+} from "../constants";
+import { addRelationshipArrayFilters } from "../augment/add-relationship-array-filters";
 
 function createRelationshipFields({
     relationshipFields,
@@ -712,25 +716,9 @@ function createRelationshipFields({
             ...{
                 [rel.fieldName]: {
                     type: `${n.name}Where`,
-                    directives: [
-                        {
-                            name: "deprecated",
-                            args: {
-                                reason: `Use \`${rel.fieldName}_SOME\` instead.`,
-                            },
-                        },
-                    ],
                 },
                 [`${rel.fieldName}_NOT`]: {
                     type: `${n.name}Where`,
-                    directives: [
-                        {
-                            name: "deprecated",
-                            args: {
-                                reason: `Use \`${rel.fieldName}_NONE\` instead.`,
-                            },
-                        },
-                    ],
                 },
                 [`${rel.fieldName}Aggregate`]: {
                     type: whereAggregateInput,
@@ -741,23 +729,13 @@ function createRelationshipFields({
 
         // n..m Relationships
         if (rel.typeMeta.array) {
-            // Add filters for each list predicate
-            whereInput.addFields(
-                (["ALL", "NONE", "SINGLE", "SOME"] as const).reduce(
-                    (acc, filter) => ({
-                        ...acc,
-                        [`${rel.fieldName}_${filter}`]: {
-                            type: `${n.name}Where`,
-                            // e.g. "Return Movies where all of the related Actors match this filter"
-                            description: `Return ${pluralize(sourceName)} where ${
-                                filter !== "SINGLE" ? filter.toLowerCase() : "one"
-                            } of the related ${pluralize(rel.typeMeta.name)} match this filter`,
-                            directives: deprecatedDirectives,
-                        },
-                    }),
-                    {}
-                )
-            );
+            addRelationshipArrayFilters({
+                whereInput,
+                fieldName: rel.fieldName,
+                sourceName,
+                whereType: `${n.name}Where`,
+                directives: deprecatedDirectives,
+            });
         }
 
         const createName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}CreateFieldInput`;
