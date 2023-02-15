@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server-core";
-import type { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
+import { DirectiveNode, Kind, ObjectTypeDefinitionNode } from "graphql";
 import getObjFieldMeta from "../get-obj-field-meta";
 import parseFulltextDirective from "./parse-fulltext-directive";
 
@@ -38,6 +38,7 @@ describe("parseFulltextDirective", () => {
         const directive = (definition.directives || [])[0] as DirectiveNode;
 
         const nodeFields = getObjFieldMeta({
+            document: { kind: Kind.DOCUMENT, definitions: [] },
             obj: definition,
             enums: [],
             interfaces: [],
@@ -68,6 +69,7 @@ describe("parseFulltextDirective", () => {
         const directive = (definition.directives || [])[0] as DirectiveNode;
 
         const nodeFields = getObjFieldMeta({
+            document: { kind: Kind.DOCUMENT, definitions: [] },
             obj: definition,
             enums: [],
             interfaces: [],
@@ -106,6 +108,7 @@ describe("parseFulltextDirective", () => {
         const directive = (definition.directives || [])[0] as DirectiveNode;
 
         const nodeFields = getObjFieldMeta({
+            document: { kind: Kind.DOCUMENT, definitions: [] },
             obj: definition,
             enums: [],
             interfaces: [],
