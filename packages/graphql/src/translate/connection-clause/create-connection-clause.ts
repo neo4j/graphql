@@ -38,7 +38,7 @@ export function createConnectionClause({
     resolveTree: ResolveTree;
     field: ConnectionField;
     context: Context;
-    nodeVariable: string;
+    nodeVariable: Cypher.Node;
     returnVariable: Cypher.Variable;
 }): Cypher.Clause {
     if (field.relationship.union || field.relationship.interface) {
@@ -114,7 +114,7 @@ function createConnectionClauseForUnions({
     resolveTree: ResolveTree;
     field: ConnectionField;
     context: Context;
-    nodeVariable: string;
+    nodeVariable: Cypher.Node;
     returnVariable: Cypher.Variable;
 }) {
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
@@ -196,7 +196,7 @@ function createConnectionSubquery({
     resolveTree: ResolveTree;
     field: ConnectionField;
     context: Context;
-    parentNode: string;
+    parentNode: Cypher.Node;
     relatedNode: Node;
     returnVariable: Cypher.Variable;
 }): Cypher.Clause | undefined {

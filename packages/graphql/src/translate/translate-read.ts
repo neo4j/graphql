@@ -60,7 +60,8 @@ export function translateRead(
         node,
         context,
         resolveTree,
-        varName,
+        // varName,
+        varName: matchNode,
     });
 
     if (projection.meta?.authValidateStrs?.length) {

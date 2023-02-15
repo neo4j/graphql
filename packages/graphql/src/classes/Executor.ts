@@ -34,6 +34,7 @@ import {
 } from "../constants";
 import type { AuthContext, CypherQueryOptions } from "../types";
 import createAuthParam from "../translate/create-auth-param";
+import type Cypher from "@neo4j/cypher-builder";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -103,20 +104,34 @@ export class Executor {
         this.bookmarks = bookmarks;
     }
 
-    public async execute(query: string, parameters: unknown, defaultAccessMode: SessionMode): Promise<QueryResult> {
+    public async execute(
+        query: string | Cypher.Clause,
+        parameters: unknown,
+        defaultAccessMode: SessionMode
+    ): Promise<QueryResult> {
         try {
+            let finalQuery, finalParams;
+            if (typeof query === "string") {
+                finalQuery = query;
+                finalParams = parameters;
+            } else {
+                const res = query.build();
+                finalQuery = res.cypher;
+                finalParams = res.params;
+            }
+
             if (isDriverLike(this.executionContext)) {
                 const session = this.executionContext.session(this.getSessionParam(defaultAccessMode));
-                const result = await this.sessionRun(query, parameters, defaultAccessMode, session);
+                const result = await this.sessionRun(finalQuery, finalParams, defaultAccessMode, session);
                 await session.close();
                 return result;
             }
 
             if (isSessionLike(this.executionContext)) {
-                return await this.sessionRun(query, parameters, defaultAccessMode, this.executionContext);
+                return await this.sessionRun(finalQuery, finalParams, defaultAccessMode, this.executionContext);
             }
 
-            return await this.transactionRun(query, parameters, this.executionContext);
+            return await this.transactionRun(finalQuery, finalParams, this.executionContext);
         } catch (error) {
             throw this.formatError(error);
         }

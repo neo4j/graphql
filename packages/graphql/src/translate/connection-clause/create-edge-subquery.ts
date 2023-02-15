@@ -47,7 +47,7 @@ export function createEdgeSubquery({
     resolveTree: ResolveTree;
     field: ConnectionField;
     context: Context;
-    parentNode: string;
+    parentNode: Cypher.Node;
     relatedNode: Node;
     returnVariable: Cypher.Variable;
     whereInput: ConnectionWhereArg;
@@ -56,7 +56,8 @@ export function createEdgeSubquery({
 }): Cypher.Clause | undefined {
     const parentNodeRef = getOrCreateCypherNode(parentNode);
 
-    const relatedNodeRef = new Cypher.NamedNode(`${parentNode}_${relatedNode.name}`, {
+    const rc = new Cypher.RawCypher((env) => `${parentNode.getCypher(env)}_${relatedNode.name}`);
+    const relatedNodeRef = new Cypher.NamedNode(rc.build().cypher, {
         labels: relatedNode.getLabels(context),
     });
 

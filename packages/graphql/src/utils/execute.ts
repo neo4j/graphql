@@ -21,6 +21,7 @@ import type { SessionMode, QueryResult } from "neo4j-driver";
 import Debug from "debug";
 import { DEBUG_EXECUTE } from "../constants";
 import type { Context } from "../types";
+import type Cypher from "@neo4j/cypher-builder";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -37,7 +38,7 @@ async function execute({
     defaultAccessMode,
     context,
 }: {
-    cypher: string;
+    cypher: string | Cypher.Clause;
     params: any;
     defaultAccessMode: SessionMode;
     context: Context;

@@ -142,7 +142,8 @@ function createConnectionNodeProjection({
         resolveTree: mergedResolveTree,
         node,
         context,
-        varName: nodeRefVarName,
+        // varName: nodeRefVarName,
+        varName: new Cypher.NamedNode(nodeRefVarName),
         literalElements: true,
         resolveType,
     });

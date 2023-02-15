@@ -118,7 +118,8 @@ export default async function translateCreate({
             node,
             context,
             resolveTree: nodeProjection,
-            varName: "REPLACE_ME",
+            // varName:"REPLACE_ME",
+            varName: new Cypher.NamedNode("REPLACE_ME"),
         });
 
         projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);

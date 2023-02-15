@@ -71,7 +71,8 @@ export function translateTopLevelCypher({
             resolveTree,
             node: referenceNode,
             context,
-            varName: `this`,
+            // varName: `this`,
+            varName: new Cypher.NamedNode(`this`),
         });
         projectionStr = str;
         projectionSubqueries.push(...subqueriesBeforeSort, ...subqueries);
@@ -111,17 +112,20 @@ export function translateTopLevelCypher({
                         resolveTree,
                         node,
                         context,
-                        varName: "this",
+                        // varName: "this",
+                        varName: new Cypher.NamedNode("this"),
                     });
 
                     projectionSubqueries.push(...subqueries);
                     const innerNodePartialProjection = new Cypher.RawCypher((env) => {
-                        return innerHeadStr.concat(
-                            [
-                                `| this { __resolveType: "${node.name}", `,
-                                ...str.getCypher(env).replace("{", "").split(""),
-                            ].join("")
-                        ).concat("]");
+                        return innerHeadStr
+                            .concat(
+                                [
+                                    `| this { __resolveType: "${node.name}", `,
+                                    ...str.getCypher(env).replace("{", "").split(""),
+                                ].join("")
+                            )
+                            .concat("]");
                     });
 
                     params = { ...params, ...p };
@@ -138,7 +142,10 @@ export function translateTopLevelCypher({
         });
 
         projectionStr = new Cypher.RawCypher(
-            (env) => `${headStrs.map((headStr) => typeof headStr === "string" ? headStr : headStr.getCypher(env)).join(" + ")}`
+            (env) =>
+                `${headStrs
+                    .map((headStr) => (typeof headStr === "string" ? headStr : headStr.getCypher(env)))
+                    .join(" + ")}`
         );
     }
 

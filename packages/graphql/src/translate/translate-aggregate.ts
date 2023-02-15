@@ -25,14 +25,16 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 
-function translateAggregate({ node, context }: { node: Node; context: Context }): [string, any] {
+function translateAggregate({ node, context }: { node: Node; context: Context }): [Cypher.Clause, any] {
     const { fieldsByTypeName } = context.resolveTree;
     const varName = "this";
     let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
-    const cypherStrs: string[] = [];
+    // const cypherStrs: string[] = [];
+    const cypherStrs: Cypher.Clause[] = [];
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
     const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "READ" });
-    cypherStrs.push(topLevelMatch.cypher);
+    // cypherStrs.push(topLevelMatch.cypher);
+    cypherStrs.push(new Cypher.RawCypher(topLevelMatch.cypher));
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
     const allowAuth = createAuthAndParams({
@@ -45,12 +47,16 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         },
     });
     if (allowAuth[0]) {
-        cypherStrs.push(`CALL apoc.util.validate(NOT (${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        // cypherStrs.push(`CALL apoc.util.validate(NOT (${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        cypherStrs.push(
+            new Cypher.RawCypher(`CALL apoc.util.validate(NOT (${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`)
+        );
         cypherParams = { ...cypherParams, ...allowAuth[1] };
     }
 
     const selections = fieldsByTypeName[node.aggregateTypeNames.selection];
-    const projections: string[] = [];
+    // const projections: string[] = [];
+    const projections: Cypher.Clause[] = [];
     const authStrs: string[] = [];
 
     // Do auth first so we can throw out before aggregating
@@ -73,12 +79,17 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     });
 
     if (authStrs.length) {
-        cypherStrs.push(`CALL apoc.util.validate(NOT (${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        // cypherStrs.push(`CALL apoc.util.validate(NOT (${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        cypherStrs.push(
+            new Cypher.RawCypher(
+                `CALL apoc.util.validate(NOT (${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+            )
+        );
     }
 
     Object.entries(selections).forEach((selection) => {
         if (selection[1].name === "count") {
-            projections.push(`${selection[1].alias || selection[1].name}: count(${varName})`);
+            projections.push(new Cypher.RawCypher(`${selection[1].alias || selection[1].name}: count(${varName})`));
         }
 
         const primitiveField = node.primitiveFields.find((x) => x.fieldName === selection[1].name);
@@ -92,7 +103,8 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         }
 
         if (field) {
-            const thisProjections: string[] = [];
+            // const thisProjections: string[] = [];
+            const thisProjections: Cypher.Expr[] = [];
             const aggregateFields =
                 selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNullable`] ||
                 selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNonNullable`];
@@ -120,7 +132,8 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                         createDatetimeElement({
                             resolveTree: entry[1],
                             field: field as TemporalField,
-                            variable: varName,
+                            // variable: varName,
+                            variable: new Cypher.NamedVariable(varName),
                             valueOverride: `${operator}(this.${fieldName})`,
                         })
                     );
@@ -140,21 +153,38 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                             )
                         `;
 
-                    thisProjections.push(`${entry[1].alias || entry[1].name}: ${reduce}`);
+                    thisProjections.push(new Cypher.RawCypher(`${entry[1].alias || entry[1].name}: ${reduce}`));
 
                     return;
                 }
 
-                thisProjections.push(`${entry[1].alias || entry[1].name}: ${operator}(this.${fieldName})`);
+                thisProjections.push(
+                    new Cypher.RawCypher(`${entry[1].alias || entry[1].name}: ${operator}(this.${fieldName})`)
+                );
             });
 
-            projections.push(`${selection[1].alias || selection[1].name}: { ${thisProjections.join(", ")} }`);
+            projections.push(
+                new Cypher.RawCypher(
+                    (env) =>
+                        `${selection[1].alias || selection[1].name}: { ${thisProjections
+                            .map((p) => p.getCypher(env))
+                            .join(", ")} }`
+                )
+            );
         }
     });
 
-    cypherStrs.push(`RETURN { ${projections.join(", ")} }`);
+    const projExpr = new Cypher.RawCypher((env) => {
+        const prs = projections.map((p) => p.getCypher(env)).join(", ");
+        return `RETURN { ${prs} }`;
+    });
 
-    return [cypherStrs.filter(Boolean).join("\n"), cypherParams];
+    // cypherStrs.push(`RETURN { ${projections.join(", ")} }`);
+    cypherStrs.push(projExpr);
+
+    // return [cypherStrs.filter(Boolean).join("\n"), cypherParams];
+
+    return [Cypher.concat(...cypherStrs), cypherParams];
 }
 
 export default translateAggregate;

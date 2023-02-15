@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type Relationship from "../../../classes/Relationship";
 import mapToDbProperty from "../../../utils/map-to-db-property";
@@ -32,20 +32,26 @@ export function createRelationshipPropertyElement({
     resolveTree: ResolveTree;
     relationship: Relationship;
     relationshipVariable: string;
-}): string {
+}): Cypher.Expr {
     const temporalField = relationship.temporalFields.find((f) => f.fieldName === resolveTree.name);
     const pointField = relationship.pointFields.find((f) => f.fieldName === resolveTree.name);
 
+    const relVar = new Cypher.NamedVariable(relationshipVariable);
+
     if (temporalField?.typeMeta.name === "DateTime") {
-        return createDatetimeElement({ resolveTree, field: temporalField, variable: relationshipVariable });
+        return createDatetimeElement({
+            resolveTree,
+            field: temporalField,
+            variable: relVar,
+        });
     }
 
     if (pointField) {
-        return createPointElement({ resolveTree, field: pointField, variable: relationshipVariable });
+        return createPointElement({ resolveTree, field: pointField, variable: relVar });
     }
 
     const dbFieldName = mapToDbProperty(relationship, resolveTree.name);
-    return `${resolveTree.alias}: ${relationshipVariable}.${dbFieldName}`;
+    return new Cypher.RawCypher((env) => `${resolveTree.alias}: ${relVar.getCypher(env)}.${dbFieldName}`);
 }
 
 // TODO: this should generate the value that is used in createRelationshipPropertyElement
