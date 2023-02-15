@@ -53,7 +53,7 @@ type CustomResolverMeta = {
 };
 
 const INVALID_DIRECTIVES_TO_REQUIRE = ["customResolver", "computed"];
-const INVALID_REQUIRED_FIELD_ERROR = `It is not possible to require fields that use the following directives: ${INVALID_DIRECTIVES_TO_REQUIRE.map(
+export const INVALID_REQUIRED_FIELD_ERROR = `It is not possible to require fields that use the following directives: ${INVALID_DIRECTIVES_TO_REQUIRE.map(
     (name) => `\`@${name}\``
 ).join(", ")}`;
 const DEPRECATION_WARNING =

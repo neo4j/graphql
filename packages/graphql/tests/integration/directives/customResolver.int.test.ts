@@ -27,6 +27,7 @@ import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
 import { Neo4jGraphQLAuthJWTPlugin } from "../../../../plugins/graphql-plugin-auth/src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
+import { INVALID_REQUIRED_FIELD_ERROR } from "../../../src/schema/get-custom-resolver-meta";
 
 describe("@customResolver directive", () => {
     let driver: Driver;
@@ -1965,5 +1966,379 @@ describe("Related Fields", () => {
         await expect(neoSchema.getSchema()).rejects.toThrow(
             `Invalid selection set provided to @customResolver on ${User}`
         );
+    });
+
+    test("should throw an error when requiring another @customResolver field", async () => {
+        const typeDefs = gql`
+            interface ${Publication} {
+                publicationYear: Int!
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String! @customResolver
+                lastName: String!
+                followedAuthors: [${Author}!]! @relationship(type: "FOLLOWS", direction: OUT)
+                customResolverField: Int @customResolver(requires: "followedAuthors { name publications { publicationYear ...on ${Book} { title } ... on ${Journal} { subject } } } firstName")
+            }
+
+            type ${Author} {
+                name: String!
+                publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
+            }
+
+            type ${Book} implements ${Publication} {
+                title: String!
+                publicationYear: Int!
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+
+            type ${Journal} implements ${Publication} {
+                subject: String!
+                publicationYear: Int!
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+        `;
+
+        const customResolver = ({ firstName, followedAuthors }) => {
+            let count = 0;
+            count += firstName.length;
+            followedAuthors.forEach((author) => {
+                count += author.name.length;
+                author.publications.forEach((publication) => {
+                    if (publication.name) count += publication.name.length;
+                    if (publication.subject) count += publication.subject.length;
+                    count += publication.publicationYear;
+                });
+            });
+            return count;
+        };
+
+        const resolvers = {
+            [User.name]: {
+                customResolverField: customResolver,
+                firstName: customResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(INVALID_REQUIRED_FIELD_ERROR);
+    });
+
+    test("should throw an error when requiring another @customResolver field on a nested type", async () => {
+        const typeDefs = gql`
+            interface ${Publication} {
+                publicationYear: Int! @customResolver
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                followedAuthors: [${Author}!]! @relationship(type: "FOLLOWS", direction: OUT)
+                customResolverField: Int @customResolver(requires: "followedAuthors { name publications { publicationYear ...on ${Book} { title } ... on ${Journal} { subject } } } firstName")
+            }
+
+            type ${Author} {
+                name: String!
+                publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
+            }
+
+            type ${Book} implements ${Publication} {
+                title: String!
+                publicationYear: Int!
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+
+            type ${Journal} implements ${Publication} {
+                subject: String!
+                publicationYear: Int!
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+        `;
+
+        const customResolver = ({ firstName, followedAuthors }) => {
+            let count = 0;
+            count += firstName.length;
+            followedAuthors.forEach((author) => {
+                count += author.name.length;
+                author.publications.forEach((publication) => {
+                    if (publication.name) count += publication.name.length;
+                    if (publication.subject) count += publication.subject.length;
+                    count += publication.publicationYear;
+                });
+            });
+            return count;
+        };
+
+        const resolvers = {
+            [User.name]: {
+                customResolverField: customResolver,
+            },
+            [Publication.name]: {
+                publicationYear: customResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(INVALID_REQUIRED_FIELD_ERROR);
+    });
+
+    test("should throw an error when requiring another @customResolver field on an implementation of a nested interface", async () => {
+        const typeDefs = gql`
+            interface ${Publication} {
+                publicationYear: Int!
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                followedAuthors: [${Author}!]! @relationship(type: "FOLLOWS", direction: OUT)
+                customResolverField: Int @customResolver(requires: "followedAuthors { name publications { publicationYear ...on ${Book} { title } ... on ${Journal} { subject } } } firstName")
+            }
+
+            type ${Author} {
+                name: String!
+                publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
+            }
+
+            type ${Book} implements ${Publication} {
+                title: String!
+                publicationYear: Int! @customResolver
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+
+            type ${Journal} implements ${Publication} {
+                subject: String!
+                publicationYear: Int!
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+        `;
+
+        const customResolver = ({ firstName, followedAuthors }) => {
+            let count = 0;
+            count += firstName.length;
+            followedAuthors.forEach((author) => {
+                count += author.name.length;
+                author.publications.forEach((publication) => {
+                    if (publication.name) count += publication.name.length;
+                    if (publication.subject) count += publication.subject.length;
+                    count += publication.publicationYear;
+                });
+            });
+            return count;
+        };
+
+        const resolvers = {
+            [User.name]: {
+                customResolverField: customResolver,
+            },
+            [Book.name]: {
+                publicationYear: customResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(INVALID_REQUIRED_FIELD_ERROR);
+    });
+
+    test("should throw an error when requiring another @customResolver field using ...on on an implementation of a nested interface", async () => {
+        const typeDefs = gql`
+            interface ${Publication} {
+                publicationYear: Int!
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                followedAuthors: [${Author}!]! @relationship(type: "FOLLOWS", direction: OUT)
+                customResolverField: Int @customResolver(requires: "followedAuthors { name publications { ...on ${Book} { title publicationYear } ... on ${Journal} { subject } } } firstName")
+            }
+
+            type ${Author} {
+                name: String!
+                publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
+            }
+
+            type ${Book} implements ${Publication} {
+                title: String!
+                publicationYear: Int! @customResolver
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+
+            type ${Journal} implements ${Publication} {
+                subject: String!
+                publicationYear: Int!
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+        `;
+
+        const customResolver = ({ firstName, followedAuthors }) => {
+            let count = 0;
+            count += firstName.length;
+            followedAuthors.forEach((author) => {
+                count += author.name.length;
+                author.publications.forEach((publication) => {
+                    if (publication.name) count += publication.name.length;
+                    if (publication.subject) count += publication.subject.length;
+                    count += publication.publicationYear;
+                });
+            });
+            return count;
+        };
+
+        const resolvers = {
+            [User.name]: {
+                customResolverField: customResolver,
+            },
+            [Book.name]: {
+                publicationYear: customResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(INVALID_REQUIRED_FIELD_ERROR);
+    });
+
+    test("should not throw an error if there is another @customResolver field on the same type that is not required", async () => {
+        const typeDefs = gql`
+            interface ${Publication} {
+                publicationYear: Int!
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String! @customResolver
+                followedAuthors: [${Author}!]! @relationship(type: "FOLLOWS", direction: OUT)
+                customResolverField: Int @customResolver(requires: "followedAuthors { name publications { publicationYear ...on ${Book} { title } ... on ${Journal} { subject } } } firstName")
+            }
+
+            type ${Author} {
+                name: String!
+                publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
+            }
+
+            type ${Book} implements ${Publication} {
+                title: String!
+                publicationYear: Int!
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+
+            type ${Journal} implements ${Publication} {
+                subject: String!
+                publicationYear: Int!
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+        `;
+
+        const customResolver = ({ firstName, followedAuthors }) => {
+            let count = 0;
+            count += firstName.length;
+            followedAuthors.forEach((author) => {
+                count += author.name.length;
+                author.publications.forEach((publication) => {
+                    if (publication.name) count += publication.name.length;
+                    if (publication.subject) count += publication.subject.length;
+                    count += publication.publicationYear;
+                });
+            });
+            return count;
+        };
+
+        const resolvers = {
+            [User.name]: {
+                customResolverField: customResolver,
+                lastName: customResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
+    });
+
+    test("should not throw an error if there is another @customResolver field on a different implementation of the same interface when using ...on", async () => {
+        const typeDefs = gql`
+            interface ${Publication} {
+                publicationYear: Int!
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                followedAuthors: [${Author}!]! @relationship(type: "FOLLOWS", direction: OUT)
+                customResolverField: Int @customResolver(requires: "followedAuthors { name publications { ...on ${Book} { title publicationYear } ... on ${Journal} { subject } } } firstName")
+            }
+
+            type ${Author} {
+                name: String!
+                publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
+            }
+
+            type ${Book} implements ${Publication} {
+                title: String!
+                publicationYear: Int!
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+
+            type ${Journal} implements ${Publication} {
+                subject: String!
+                publicationYear: Int! @customResolver
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
+            }
+        `;
+
+        const customResolver = ({ firstName, followedAuthors }) => {
+            let count = 0;
+            count += firstName.length;
+            followedAuthors.forEach((author) => {
+                count += author.name.length;
+                author.publications.forEach((publication) => {
+                    if (publication.name) count += publication.name.length;
+                    if (publication.subject) count += publication.subject.length;
+                    count += publication.publicationYear;
+                });
+            });
+            return count;
+        };
+
+        const resolvers = {
+            [User.name]: {
+                customResolverField: customResolver,
+            },
+            [Journal.name]: {
+                publicationYear: customResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
 });
