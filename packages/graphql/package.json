@@ -47,6 +47,8 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
+        "@apollo/gateway": "^2.2.2",
+        "@apollo/server": "^4.3.0",
         "@faker-js/faker": "7.6.0",
         "@neo4j/graphql-plugin-auth": "^2.1.0",
         "@types/deep-equal": "1.0.1",
@@ -84,6 +86,7 @@
         "ws": "8.12.1"
     },
     "dependencies": {
+        "@apollo/subgraph": "^2.2.3",
         "@graphql-tools/merge": "^8.3.3",
         "@graphql-tools/resolvers-composition": "^6.5.3",
         "@graphql-tools/schema": "9.0.16",

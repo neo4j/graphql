@@ -142,26 +142,20 @@ export function objectFieldsToSubscriptionsWhereInputFields(
             [f.fieldName]: fieldType,
             [`${f.fieldName}_NOT`]: {
                 type: fieldType,
-                directives: [
-                    DEPRECATE_NOT
-                ],
+                directives: [DEPRECATE_NOT],
             },
             ...(ifArrayOfAnyTypeExceptBoolean && {
                 [`${f.fieldName}_INCLUDES`]: inputTypeName,
                 [`${f.fieldName}_NOT_INCLUDES`]: {
                     type: inputTypeName,
-                    directives: [
-                        DEPRECATE_NOT
-                    ],
+                    directives: [DEPRECATE_NOT],
                 },
             }),
             ...(ifAnyTypeExceptArrayAndBoolean && {
                 [`${f.fieldName}_IN`]: `[${inputTypeName}]`,
                 [`${f.fieldName}_NOT_IN`]: {
                     type: `[${inputTypeName}]`,
-                    directives: [
-                        DEPRECATE_NOT
-                    ],
+                    directives: [DEPRECATE_NOT],
                 },
             }),
             ...(isOneOfNumberTypes && {
@@ -174,23 +168,17 @@ export function objectFieldsToSubscriptionsWhereInputFields(
                 [`${f.fieldName}_STARTS_WITH`]: fieldType,
                 [`${f.fieldName}_NOT_STARTS_WITH`]: {
                     type: fieldType,
-                    directives: [
-                        DEPRECATE_NOT
-                    ],
+                    directives: [DEPRECATE_NOT],
                 },
                 [`${f.fieldName}_ENDS_WITH`]: fieldType,
                 [`${f.fieldName}_NOT_ENDS_WITH`]: {
                     type: fieldType,
-                    directives: [
-                        DEPRECATE_NOT
-                    ],
+                    directives: [DEPRECATE_NOT],
                 },
                 [`${f.fieldName}_CONTAINS`]: fieldType,
                 [`${f.fieldName}_NOT_CONTAINS`]: {
                     type: fieldType,
-                    directives: [
-                        DEPRECATE_NOT
-                    ],
+                    directives: [DEPRECATE_NOT],
                 },
             }),
         };
