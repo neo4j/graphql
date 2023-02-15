@@ -504,7 +504,7 @@ describe("getCustomResolverMeta", () => {
 
         expect(result).toBeUndefined();
     });
-    test("should return undefined if no requires argument", () => {
+    test("should return no required fields if no requires argument", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -544,7 +544,9 @@ describe("getCustomResolverMeta", () => {
             customResolvers: resolvers,
         });
 
-        expect(result).toBeUndefined();
+        expect(result).toEqual({
+            requiredFields: {},
+        });
     });
     test("should return the correct meta with requires argument", () => {
         const requiredFields = ["field1", "field2", "field3"];
