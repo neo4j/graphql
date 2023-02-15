@@ -47,7 +47,7 @@ export function createFieldAggregation({
     nodeVar: Cypher.Node;
     node: Node;
     field: ResolveTree;
-}): { projectionCypher: string; projectionSubqueryCypher: string; projectionParams: Record<string, any> } | undefined {
+}): { projectionCypher: Cypher.Expr; projectionSubqueryCypher: Cypher.Clause; } | undefined {
     const relationAggregationField = node.relationFields.find((x) => {
         return `${x.fieldName}Aggregate` === field.name;
     });
@@ -132,19 +132,18 @@ export function createFieldAggregation({
         projectionSubqueries = Cypher.concat(projectionSubqueries, innerProjectionSubqueries);
         projectionMap.set({ edge: edgeProjectionMap });
     }
-
+/* 
     let projectionSubqueryCypher = "";
     const rawProjection = new Cypher.RawCypher((env) => {
         projectionSubqueryCypher = projectionSubqueries?.getCypher(env) || "";
         return projectionMap.getCypher(env);
     });
-    // TODO remove math.randome PLEASE
+    // TODO remove math.randome PLEASE 
     const result = rawProjection.build(`${Math.random() * 1000}_${field.alias}_`);
-
+*/
     return {
-        projectionCypher: result.cypher,
-        projectionSubqueryCypher,
-        projectionParams: result.params,
+        projectionCypher: projectionMap,
+        projectionSubqueryCypher: new Cypher.RawCypher(env => projectionSubqueries?.getCypher(env) || "")
     };
 }
 

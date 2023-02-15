@@ -42,7 +42,7 @@ export function createEdgeProjection({
     resolveTree: ResolveTree;
     field: ConnectionField;
     relationshipRef: Cypher.Relationship;
-    relatedNodeVariableName: string;
+    relatedNodeVariableName: Cypher.Node;
     context: Context;
     relatedNode: Node;
     resolveType?: boolean;
@@ -113,7 +113,7 @@ function createConnectionNodeProjection({
 }: {
     nodeResolveTree: ResolveTree;
     context;
-    nodeRefVarName: string;
+    nodeRefVarName: Cypher.Node;
     node: Node;
     resolveType?: boolean;
     resolveTree: ResolveTree; // Global resolve tree
@@ -142,7 +142,7 @@ function createConnectionNodeProjection({
         resolveTree: mergedResolveTree,
         node,
         context,
-        varName: new Cypher.NamedNode(nodeRefVarName),
+        varName: nodeRefVarName,
         literalElements: true,
         resolveType,
     });

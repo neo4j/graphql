@@ -56,7 +56,7 @@ export function createEdgeSubquery({
 }): Cypher.Clause | undefined {
     const parentNodeRef = getOrCreateCypherNode(parentNode);
 
-    const relatedNodeRef = new Cypher.NamedNode(`${parentNode}_${relatedNode.name}`, {
+    const relatedNodeRef = new Cypher.Node({
         labels: relatedNode.getLabels(context),
     });
 
@@ -112,7 +112,7 @@ export function createEdgeSubquery({
         field,
         relationshipRef,
         relatedNode,
-        relatedNodeVariableName: relatedNodeRef.name,
+        relatedNodeVariableName: relatedNodeRef,
         context,
         resolveType,
         extraFields: getEdgeSortFieldKeys(resolveTree),

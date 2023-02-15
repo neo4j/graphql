@@ -56,7 +56,6 @@ export function createProjectionSubquery({
     collect?: boolean;
 }): Cypher.Clause {
     const isArray = relationField.typeMeta.array;
-    const targetNode = alias;
     // console.log(relationshipDirection);
     const relationship = new Cypher.Relationship({
         type: relationField.type,
@@ -65,14 +64,14 @@ export function createProjectionSubquery({
         .withoutLabels()
         .related(relationship)
         .withDirection(relationshipDirection)
-        .to(targetNode);
+        .to(alias);
 
     const subqueryMatch = new Cypher.Match(pattern);
     const predicates: Cypher.Predicate[] = [];
 
     const projection = new Cypher.RawCypher((env) => {
         // TODO: use MapProjection
-        return `${targetNode.getCypher(env)} ${nestedProjection.getCypher(env)}`;
+        return `${alias.getCypher(env)} ${nestedProjection.getCypher(env)}`;
     });
 
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
@@ -82,7 +81,7 @@ export function createProjectionSubquery({
             element: node,
             context,
             whereInput,
-            targetElement: targetNode,
+            targetElement: alias,
         });
         if (wherePredicate) predicates.push(wherePredicate);
         preComputedWhereFieldSubqueries = preComputedSubqueries;
@@ -129,25 +128,24 @@ export function createProjectionSubquery({
         predicates.push(authStatement);
     }
 
-    const returnVariable = alias;
-    const withStatement: Cypher.With = new Cypher.With([projection, returnVariable]); // This only works if nestedProjection is a map
+    const withStatement: Cypher.With = new Cypher.With([projection, alias]); // This only works if nestedProjection is a map
     if (addSkipAndLimit) {
         addSortAndLimitOptionsToClause({
             optionsInput,
-            target: returnVariable,
+            target: alias,
             projectionClause: withStatement,
         });
     }
 
-    let returnProjection: Cypher.Expr = targetNode;
+    let returnProjection: Cypher.Expr = alias;
     if (collect) {
-        returnProjection = Cypher.collect(targetNode);
+        returnProjection = Cypher.collect(alias);
         if (!isArray) {
             returnProjection = Cypher.head(returnProjection);
         }
     }
 
-    const returnStatement = new Cypher.Return([returnProjection, returnVariable]);
+    const returnStatement = new Cypher.Return([returnProjection, alias]);
 
     if (preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty) {
         const preComputedSubqueryWith = new Cypher.With("*");

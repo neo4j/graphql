@@ -52,6 +52,7 @@ export function translateCypherDirectiveProjection({
     param: Cypher.Relationship | Cypher.Node;
     res: Res;
 }): Res {
+    const resultVariable = new Cypher.Node();
     const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
     const entity = context.schemaModel.entities.get(cypherField.typeMeta.name);
 
@@ -60,7 +61,6 @@ export function translateCypherDirectiveProjection({
 
     const fieldFields = field.fieldsByTypeName;
 
-    const returnVariable = param;
     const subqueries: Cypher.Clause[] = [];
     let projectionExpr: Cypher.Expr | undefined;
     let hasUnionLabelsPredicate: Cypher.Predicate | undefined;
@@ -75,10 +75,12 @@ export function translateCypherDirectiveProjection({
             resolveTree: field,
             node: referenceNode || node,
             context,
-            varName: returnVariable,
+            varName: resultVariable,
         });
 
-        projectionExpr = new Cypher.RawCypher((env) => `${param.getCypher(env)} ${str.getCypher(env)}`);
+        projectionExpr = new Cypher.RawCypher((env) => {
+          return  `${resultVariable.getCypher(env)} ${str.getCypher(env)}`
+        });
         res.params = { ...res.params, ...p };
         subqueries.push(...nestedSubqueriesBeforeSort, ...nestedSubqueries);
     } else if (entity instanceof CompositeEntity) {
@@ -97,7 +99,7 @@ export function translateCypherDirectiveProjection({
         }
         referencedNodes.forEach((refNode, index) => {
             if (refNode) {
-                const cypherNodeRef = param as Cypher.Node;
+                const cypherNodeRef = resultVariable as Cypher.Node;
                 const hasLabelsPredicates = refNode.getLabels(context).map((label) => cypherNodeRef.hasLabel(label));
                 const labelsSubPredicate = Cypher.and(...hasLabelsPredicates);
 
@@ -146,7 +148,7 @@ export function translateCypherDirectiveProjection({
         hasUnionLabelsPredicate = Cypher.or(...labelsSubPredicates);
         projectionExpr = new Cypher.Case();
         for (const { projection, predicate } of unionProjections) {
-            projectionExpr.when(predicate).then(new Cypher.RawCypher((env) => `${param} ${projection.getCypher(env)}`));
+            projectionExpr.when(predicate).then(new Cypher.RawCypher((env) => `${resultVariable.getCypher(env)} ${projection.getCypher(env)}`));
         }
     }
 
@@ -162,22 +164,21 @@ export function translateCypherDirectiveProjection({
         {}
     );
     const extraArgs = { ...nullArgumentValues, ...field.args };
-    const a = new Cypher.NamedNode("a-023-023-20-");
-    const b = new Cypher.NamedNode("ASDDSDSADSA");
+
     if (!cypherField.columnName) {
         const runCypherInApocClause = createCypherDirectiveApocProcedure({
-            nodeRef: b,
+            nodeRef,
             expectMultipleValues,
             context,
             cypherField,
             extraArgs,
         });
-        customCypherClause = new Cypher.Unwind([runCypherInApocClause, a]);
+        customCypherClause = new Cypher.Unwind([runCypherInApocClause, resultVariable]);
     } else {
         customCypherClause = createCypherDirectiveSubquery({
             cypherField,
-            nodeRef: b,
-            resultVariable: a,
+            nodeRef,
+            resultVariable,
             extraArgs,
         });
     }
@@ -186,7 +187,7 @@ export function translateCypherDirectiveProjection({
 
     const returnClause = createReturnClause({
         isArray,
-        returnVariable: a,
+        returnVariable: resultVariable,
         projectionExpr,
     });
 
@@ -197,7 +198,6 @@ export function translateCypherDirectiveProjection({
     const sortInput = (context.resolveTree.args.sort ??
         (context.resolveTree.args.options as any)?.sort ??
         []) as GraphQLSortArg[];
-
     const isSortArg = sortInput.find((obj) => Object.keys(obj).includes(alias));
     if (isSortArg) {
         if (!res.meta.cypherSortFields) {
@@ -209,8 +209,8 @@ export function translateCypherDirectiveProjection({
         res.subqueries.push(callSt);
     }
     const aliasVar = new Cypher.NamedVariable(alias);
-    const paramVar = param;
-    res.projection.push(new Cypher.RawCypher((env) => `${aliasVar.getCypher(env)}: ${paramVar.getCypher(env)}`));
+    //const paramVar = param;
+    res.projection.push(new Cypher.RawCypher((env) => `${aliasVar.getCypher(env)}: ${resultVariable.getCypher(env)}`));
     return res;
 }
 
