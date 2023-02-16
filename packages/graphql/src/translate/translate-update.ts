@@ -18,7 +18,7 @@
  */
 
 import type { Node, Relationship } from "../classes";
-import type { Context, RelationField } from "../types";
+import type { Context, GraphQLWhereArg, RelationField } from "../types";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createUpdateAndParams from "./create-update-and-params";
@@ -69,7 +69,8 @@ export default async function translateUpdate({
     let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
     const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
-    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "UPDATE" });
+    const where = resolveTree.args.where as GraphQLWhereArg | undefined;
+    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "UPDATE", where });
     matchAndWhereStr = topLevelMatch.cypher;
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 

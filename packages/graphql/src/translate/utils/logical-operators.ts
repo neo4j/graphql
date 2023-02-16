@@ -20,11 +20,21 @@
 import Cypher from "@neo4j/cypher-builder";
 import { LOGICAL_OPERATORS } from "../../constants";
 
-export type LogicalOperator = typeof LOGICAL_OPERATORS[number];
+export type LogicalOperator = (typeof LOGICAL_OPERATORS)[number];
 
-export function getCypherLogicalOperator(graphQLOperator: LogicalOperator | string): ((...predicates: Cypher.Predicate[]) => Cypher.BooleanOp);
-export function getCypherLogicalOperator(graphQLOperator: LogicalOperator | string): ((child: Cypher.Predicate) => Cypher.BooleanOp);
-export function getCypherLogicalOperator(graphQLOperator: LogicalOperator | string): ((left: Cypher.Predicate, right: Cypher.Predicate, ...extra: Array<Cypher.Predicate | undefined>) => Cypher.BooleanOp) {
+export function getCypherLogicalOperator(
+    graphQLOperator: LogicalOperator | string
+): (...predicates: Cypher.Predicate[]) => Cypher.BooleanOp;
+export function getCypherLogicalOperator(
+    graphQLOperator: LogicalOperator | string
+): (child: Cypher.Predicate) => Cypher.BooleanOp;
+export function getCypherLogicalOperator(
+    graphQLOperator: LogicalOperator | string
+): (
+    left: Cypher.Predicate,
+    right: Cypher.Predicate,
+    ...extra: Array<Cypher.Predicate | undefined>
+) => Cypher.BooleanOp {
     if (graphQLOperator === "NOT") {
         return Cypher.not;
     } else if (graphQLOperator === "OR") {

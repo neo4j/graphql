@@ -29,21 +29,26 @@ export function translateTopLevelMatch({
     node,
     context,
     operation,
+    where,
 }: {
     matchNode: Cypher.Node;
     context: Context;
     node: Node;
     operation: AuthOperations;
+    where: GraphQLWhereArg | undefined;
 }): Cypher.CypherResult {
     const { matchClause, preComputedWhereFieldSubqueries, whereClause } = createMatchClause({
         matchNode,
         node,
         context,
         operation,
+        where,
     });
+
     if (preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty) {
         return Cypher.concat(matchClause, preComputedWhereFieldSubqueries, whereClause).build();
     }
+
     return matchClause.build();
 }
 
@@ -58,16 +63,17 @@ export function createMatchClause({
     node,
     context,
     operation,
+    where,
 }: {
     matchNode: Cypher.Node;
     context: Context;
     node: Node;
     operation: AuthOperations;
+    where: GraphQLWhereArg | undefined;
 }): CreateMatchClauseReturn {
     const { resolveTree } = context;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
     let matchClause: Cypher.Match | Cypher.db.FullTextQueryNodes = new Cypher.Match(matchNode);
-    let whereInput = resolveTree.args.where as GraphQLWhereArg | undefined;
     let whereOperators: Cypher.Predicate[] = [];
 
     // TODO: removed deprecated fulltext translation
@@ -84,16 +90,16 @@ export function createMatchClause({
             return Cypher.in(new Cypher.Literal(label), Cypher.labels(matchNode));
         });
     } else if (context.fulltextIndex) {
-        ({ matchClause, whereOperators } = createFulltextMatchClause(matchNode, whereInput, node, context));
-        whereInput = whereInput?.[node.singular];
+        ({ matchClause, whereOperators } = createFulltextMatchClause(matchNode, where, node, context));
+        where = where?.[node.singular];
     }
 
     let whereClause: Cypher.Match | Cypher.db.FullTextQueryNodes | Cypher.With = matchClause;
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
-    if (whereInput) {
+    if (where) {
         const { predicate: whereOp, preComputedSubqueries } = createWherePredicate({
             targetElement: matchNode,
-            whereInput,
+            whereInput: where,
             context,
             element: node,
         });

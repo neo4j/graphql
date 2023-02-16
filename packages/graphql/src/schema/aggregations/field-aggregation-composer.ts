@@ -22,6 +22,7 @@ import type { ObjectFields } from "../get-obj-field-meta";
 import type { Node } from "../../classes";
 import { numericalResolver } from "../resolvers/field/numerical";
 import { AggregationTypesMapper } from "./aggregation-types-mapper";
+import type { Subgraph } from "../../classes/Subgraph";
 
 export enum FieldAggregationSchemaTypes {
     field = "AggregationSelection",
@@ -33,9 +34,9 @@ export class FieldAggregationComposer {
     private aggregationTypesMapper: AggregationTypesMapper;
     private composer: SchemaComposer;
 
-    constructor(composer: SchemaComposer) {
+    constructor(composer: SchemaComposer, subgraph?: Subgraph) {
         this.composer = composer;
-        this.aggregationTypesMapper = new AggregationTypesMapper(composer);
+        this.aggregationTypesMapper = new AggregationTypesMapper(composer, subgraph);
     }
 
     public createAggregationTypeObject(
