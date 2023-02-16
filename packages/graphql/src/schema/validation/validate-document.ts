@@ -158,11 +158,12 @@ function filterDocument(document: DocumentNode): DocumentNode {
     };
 }
 
-function validateDocument(
+function getBaseSchema(
     document: DocumentNode,
+    validateTypeDefs: boolean,
     additionalDirectives: Array<GraphQLDirective> = [],
     additionalTypes: Array<GraphQLNamedType> = []
-): void {
+): GraphQLSchema {
     const doc = filterDocument(document);
 
     const schemaToExtend = new GraphQLSchema({
@@ -180,15 +181,28 @@ function validateDocument(
         ],
     });
 
-    const schema = extendSchema(schemaToExtend, doc);
+    return extendSchema(schemaToExtend, doc, { assumeValid: !validateTypeDefs });
+}
 
-    const errors = validateSchema(schema);
+function validateDocument(
+    document: DocumentNode,
+    validateTypeDefs: boolean,
+    additionalDirectives: Array<GraphQLDirective> = [],
+    additionalTypes: Array<GraphQLNamedType> = []
+): GraphQLSchema {
+    const schema = getBaseSchema(document, validateTypeDefs, additionalDirectives, additionalTypes);
 
-    const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
+    if (validateTypeDefs) {
+        const errors = validateSchema(schema);
 
-    if (filteredErrors.length) {
-        throw new Error(filteredErrors.join("\n"));
+        const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
+
+        if (filteredErrors.length) {
+            throw new Error(filteredErrors.join("\n"));
+        }
     }
+
+    return schema;
 }
 
 export default validateDocument;

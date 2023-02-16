@@ -17,14 +17,18 @@
  * limitations under the License.
  */
 
-import type {
+import {
     DocumentNode,
+    extendSchema,
     FieldDefinitionNode,
+    GraphQLSchema,
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
+    specifiedDirectives,
     UnionTypeDefinitionNode,
+    Kind,
 } from "graphql";
-import { Kind } from "graphql";
+import { directives } from "..";
 import { generateResolveTree } from "../translate/utils/resolveTree";
 import getCustomResolverMeta from "./get-custom-resolver-meta";
 
@@ -458,6 +462,13 @@ describe("getCustomResolverMeta", () => {
         definitions: [...objects, ...interfaces, ...unions],
     };
 
+    const baseSchema = extendSchema(
+        new GraphQLSchema({
+            directives: [...Object.values(directives), ...specifiedDirectives],
+        }),
+        document
+    );
+
     const object = objects.find((obj) => obj.name.value === authorType) as ObjectTypeDefinitionNode;
 
     const resolvers = {
@@ -492,7 +503,7 @@ describe("getCustomResolverMeta", () => {
         };
 
         const result = getCustomResolverMeta({
-            document,
+            baseSchema,
             field,
             object,
             objects,
@@ -534,7 +545,7 @@ describe("getCustomResolverMeta", () => {
         };
 
         const result = getCustomResolverMeta({
-            document,
+            baseSchema,
             field,
             object,
             objects,
@@ -593,7 +604,7 @@ describe("getCustomResolverMeta", () => {
         };
 
         const result = getCustomResolverMeta({
-            document,
+            baseSchema,
             field,
             object,
             objects,
@@ -656,7 +667,7 @@ describe("getCustomResolverMeta", () => {
         };
 
         const result = getCustomResolverMeta({
-            document,
+            baseSchema,
             field,
             object,
             objects,
@@ -716,7 +727,7 @@ describe("getCustomResolverMeta", () => {
         };
 
         const result = getCustomResolverMeta({
-            document,
+            baseSchema,
             field,
             object,
             objects,
@@ -812,7 +823,7 @@ describe("getCustomResolverMeta", () => {
 
         expect(() =>
             getCustomResolverMeta({
-                document,
+                baseSchema,
                 field,
                 object,
                 objects,
@@ -872,7 +883,7 @@ describe("getCustomResolverMeta", () => {
 
         expect(() =>
             getCustomResolverMeta({
-                document,
+                baseSchema,
                 field,
                 object,
                 objects,
@@ -935,7 +946,7 @@ describe("getCustomResolverMeta", () => {
 
         expect(() =>
             getCustomResolverMeta({
-                document,
+                baseSchema,
                 field,
                 object,
                 objects,
@@ -999,7 +1010,7 @@ describe("getCustomResolverMeta", () => {
 
         expect(() =>
             getCustomResolverMeta({
-                document,
+                baseSchema,
                 field,
                 object,
                 objects,

@@ -32,7 +32,7 @@ import type {
     EnumValueNode,
     UnionTypeDefinitionNode,
     ValueNode,
-    DocumentNode,
+    GraphQLSchema,
 } from "graphql";
 import { Kind } from "graphql";
 import getAuth from "./get-auth";
@@ -88,7 +88,7 @@ export interface ObjectFields {
 let callbackDeprecatedWarningShown = false;
 
 function getObjFieldMeta({
-    document,
+    baseSchema,
     obj,
     objects,
     interfaces,
@@ -99,7 +99,7 @@ function getObjFieldMeta({
     customResolvers,
     validateResolvers,
 }: {
-    document: DocumentNode;
+    baseSchema: GraphQLSchema;
     obj: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
     interfaces: InterfaceTypeDefinitionNode[];
@@ -136,7 +136,7 @@ function getObjFieldMeta({
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
             const customResolverMeta = getCustomResolverMeta({
-                document,
+                baseSchema,
                 field,
                 object: obj,
                 objects,
