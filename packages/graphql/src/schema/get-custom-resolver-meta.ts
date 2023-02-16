@@ -162,7 +162,9 @@ export default function getCustomResolverMeta({
         }
     }
 
-    return undefined;
+    return {
+        requiredFields: {},
+    };
 }
 
 function validateSelectionSet(
