@@ -20,7 +20,7 @@
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
-import type { GraphQLOptionsArg, Context } from "../types";
+import type { GraphQLOptionsArg, Context, GraphQLWhereArg } from "../types";
 import { createAuthPredicates } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createMatchClause } from "./translate-top-level-match";
@@ -42,6 +42,7 @@ export function translateRead(
 ): Cypher.CypherResult {
     const { resolveTree } = context;
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
+    const where = resolveTree.args.where as GraphQLWhereArg | undefined;
 
     let projAuth: Cypher.Clause | undefined;
 
@@ -54,6 +55,7 @@ export function translateRead(
         node,
         context,
         operation: "READ",
+        where,
     });
 
     const projection = createProjectionAndParams({

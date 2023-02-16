@@ -2420,7 +2420,7 @@ describe("Advanced Filtering", () => {
                 });
             });
         });
-        
+
         test("should test for not null", async () => {
             const session = await neo4j.getSession();
 

@@ -180,7 +180,6 @@ export function createRelationPredicate({
             matchPattern: targetPattern,
             listPredicateStr,
             innerOperation: innerOperation.predicate,
-            edgePredicate: refEdge ? true : false,
         }),
     };
 }
@@ -190,13 +189,11 @@ function createSimpleRelationshipPredicate({
     listPredicateStr,
     childNode,
     innerOperation,
-    edgePredicate,
 }: {
     matchPattern: Cypher.Pattern;
     listPredicateStr: ListPredicate;
     childNode: Cypher.Node;
     innerOperation: Cypher.Predicate | undefined;
-    edgePredicate?: boolean;
 }): Cypher.Predicate | undefined {
     if (!innerOperation) return undefined;
     const matchClause = new Cypher.Match(matchPattern).where(innerOperation);
@@ -208,17 +205,10 @@ function createSimpleRelationshipPredicate({
             return Cypher.and(new Cypher.Exists(matchClause), Cypher.not(new Cypher.Exists(notExistsMatchClause)));
         }
         case "single": {
-            // If there are edge properties used in the innerOperation predicate, it is not possible to use the
-            // more performant single() function. Therefore, we fall back to size()
-            if (edgePredicate) {
-                const sizeFunction = Cypher.size(
-                    new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(innerOperation)
-                );
-                return Cypher.eq(sizeFunction, new Cypher.Literal(1));
-            }
-
-            const patternComprehension = new Cypher.PatternComprehension(matchPattern, childNode);
-            return Cypher.single(childNode, patternComprehension, innerOperation);
+            const patternComprehension = new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(
+                innerOperation
+            );
+            return Cypher.single(childNode, patternComprehension, new Cypher.Literal(true));
         }
         case "not":
         case "none":
