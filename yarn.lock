@@ -255,9 +255,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/client@npm:3.7.7":
-  version: 3.7.7
-  resolution: "@apollo/client@npm:3.7.7"
+"@apollo/client@npm:3.7.8":
+  version: 3.7.8
+  resolution: "@apollo/client@npm:3.7.8"
   dependencies:
     "@graphql-typed-document-node/core": ^3.1.1
     "@wry/context": ^0.7.0
@@ -287,7 +287,7 @@ __metadata:
       optional: true
     subscriptions-transport-ws:
       optional: true
-  checksum: 4f061c663505dbbabe0e5c00f914dbb3ac1cb2a79beb1de49a6bb1cc299c66536ea076d3c30f579c7f9558efe710105f385cc7f69b247f2d198427d5a8f38eb6
+  checksum: 3b12251768f7e1973b7d193d1420b01e6a0cb4b8a57bb4f65a82df48df2b8420aa9fdfeb0a4dcec4d787c1dcddaa7307611153736dff79d567be39b0dcd7f3d2
   languageName: node
   linkType: hard
 
@@ -434,9 +434,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/server@npm:4.3.3":
-  version: 4.3.3
-  resolution: "@apollo/server@npm:4.3.3"
+"@apollo/server@npm:4.4.0":
+  version: 4.4.0
+  resolution: "@apollo/server@npm:4.4.0"
   dependencies:
     "@apollo/cache-control-types": ^1.0.2
     "@apollo/server-gateway-interface": ^1.1.0
@@ -466,7 +466,7 @@ __metadata:
     whatwg-mimetype: ^3.0.0
   peerDependencies:
     graphql: ^16.6.0
-  checksum: 49a162a5418587ecd91dd748b407a9e043bcb9b5eaf32237d3d29de350069f05714360d22e41829ee3c1c602d0410292b1162ce0d94c8cd84e2735c2652ddd6b
+  checksum: fbe1d2f7f62c217033ec0e06f01da3fe83a7ec4f8b97c61c2b5ae161d203ed43ef49fecb51a63a7febf74b2b773323b1c4327b4df212237cba84c2cd8cdc334f
   languageName: node
   linkType: hard
 
@@ -3132,7 +3132,7 @@ __metadata:
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
     "@apollo/gateway": 2.3.2
-    "@apollo/server": 4.3.3
+    "@apollo/server": 4.4.0
     "@apollo/subgraph": ^2.2.3
     "@faker-js/faker": 7.6.0
     "@graphql-tools/merge": ^8.3.3
@@ -16027,7 +16027,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "neo-push-client@workspace:examples/neo-push/client"
   dependencies:
-    "@apollo/client": 3.7.7
+    "@apollo/client": 3.7.8
     "@fortawesome/fontawesome-svg-core": 6.3.0
     "@fortawesome/free-solid-svg-icons": 6.3.0
     "@fortawesome/react-fontawesome": 0.2.0
