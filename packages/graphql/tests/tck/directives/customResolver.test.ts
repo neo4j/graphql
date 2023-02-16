@@ -50,7 +50,29 @@ describe("@customResolver directive", () => {
             });
         });
 
-        test("should not over fetch when fields in selection set", async () => {
+        test("should not fetch required fields if @customResolver field is not selected", async () => {
+            const query = gql`
+                {
+                    users {
+                        firstName
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`User\`)
+                RETURN this { .firstName } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
+
+        test("should not over fetch when all required fields are manually selected", async () => {
             const query = gql`
                 {
                     users {
@@ -74,7 +96,7 @@ describe("@customResolver directive", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
         });
 
-        test("should not over fetch when some fields in selection set", async () => {
+        test("should not over fetch when some required fields are manually selected", async () => {
             const query = gql`
                 {
                     users {
@@ -97,7 +119,7 @@ describe("@customResolver directive", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
         });
 
-        test("should not over fetch when fields not in selection set", async () => {
+        test("should not over fetch when no required fields are manually selected", async () => {
             const query = gql`
                 {
                     users {
@@ -143,7 +165,7 @@ describe("@customResolver directive", () => {
             });
         });
 
-        test("should not over fetch when other fields in selection set", async () => {
+        test("should not over fetch when other fields are manually selected", async () => {
             const query = gql`
                 {
                     users {
@@ -166,7 +188,7 @@ describe("@customResolver directive", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
         });
 
-        test("should not over fetch when no other fields in selection set", async () => {
+        test("should not over fetch when no other fields are manually selected", async () => {
             const query = gql`
                 {
                     users {
@@ -225,7 +247,7 @@ describe("@customResolver directive", () => {
             });
         });
 
-        test("should not over fetch when fields in selection set", async () => {
+        test("should not over fetch when all required fields are manually selected", async () => {
             const query = gql`
                 {
                     users {
@@ -267,7 +289,29 @@ describe("@customResolver directive", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
         });
 
-        test("should not over fetch when some fields in selection set", async () => {
+        test("should not fetch required fields if @customResolver field is not selected", async () => {
+            const query = gql`
+                {
+                    users {
+                        firstName
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`User\`)
+                RETURN this { .firstName } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
+
+        test("should not over fetch when some required fields are manually selected", async () => {
             const query = gql`
                 {
                     users {
@@ -307,7 +351,7 @@ describe("@customResolver directive", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
         });
 
-        test("should not over fetch when fields not in selection set", async () => {
+        test("should not over fetch when no required fields are manually selected", async () => {
             const query = gql`
                 {
                     users {
@@ -336,6 +380,195 @@ describe("@customResolver directive", () => {
                     RETURN head(collect(this_address)) AS this_address
                 }
                 RETURN this { .fullName, .firstName, .lastName, address: this_address } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
+    });
+
+    describe("Require fields on nested unions", () => {
+        beforeAll(() => {
+            typeDefs = gql`
+                union Publication = Book | Journal
+
+                type Author {
+                    name: String!
+                    publications: [Publication!]! @relationship(type: "WROTE", direction: OUT)
+                    publicationsWithAuthor: [String!]!
+                        @customResolver(
+                            requires: "name publications { ...on Book { title } ... on Journal { subject } }"
+                        )
+                }
+
+                type Book {
+                    title: String!
+                    author: Author! @relationship(type: "WROTE", direction: IN)
+                }
+
+                type Journal {
+                    subject: String!
+                    author: Author! @relationship(type: "WROTE", direction: IN)
+                }
+            `;
+
+            const resolvers = {
+                Author: {
+                    publicationsWithAuthor: () => "Some custom resolver",
+                },
+            };
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                resolvers,
+                config: { enableRegex: true },
+            });
+        });
+
+        test("should not over fetch when all required fields are manually selected", async () => {
+            const query = gql`
+                {
+                    authors {
+                        name
+                        publicationsWithAuthor
+                        publications {
+                            ... on Book {
+                                title
+                            }
+                            ... on Journal {
+                                subject
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Author\`)
+                CALL {
+                    WITH this
+                    CALL {
+                        WITH *
+                        MATCH (this)-[this0:WROTE]->(this_publications:\`Book\`)
+                        WITH this_publications  { __resolveType: \\"Book\\",  .title } AS this_publications
+                        RETURN this_publications AS this_publications
+                        UNION
+                        WITH *
+                        MATCH (this)-[this1:WROTE]->(this_publications:\`Journal\`)
+                        WITH this_publications  { __resolveType: \\"Journal\\",  .subject } AS this_publications
+                        RETURN this_publications AS this_publications
+                    }
+                    WITH this_publications
+                    RETURN collect(this_publications) AS this_publications
+                }
+                RETURN this { .name, .publicationsWithAuthor, publications: this_publications } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
+
+        test("should not fetch required fields if @customResolver field is not selected", async () => {
+            const query = gql`
+                {
+                    authors {
+                        name
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Author\`)
+                RETURN this { .name } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
+
+        test("should not over fetch when some required fields are manually selected", async () => {
+            const query = gql`
+                {
+                    authors {
+                        publicationsWithAuthor
+                        publications {
+                            ... on Book {
+                                title
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Author\`)
+                CALL {
+                    WITH this
+                    CALL {
+                        WITH *
+                        MATCH (this)-[this0:WROTE]->(this_publications:\`Book\`)
+                        WITH this_publications  { __resolveType: \\"Book\\",  .title } AS this_publications
+                        RETURN this_publications AS this_publications
+                        UNION
+                        WITH *
+                        MATCH (this)-[this1:WROTE]->(this_publications:\`Journal\`)
+                        WITH this_publications  { __resolveType: \\"Journal\\",  .subject } AS this_publications
+                        RETURN this_publications AS this_publications
+                    }
+                    WITH this_publications
+                    RETURN collect(this_publications) AS this_publications
+                }
+                RETURN this { .publicationsWithAuthor, publications: this_publications, .name } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
+
+        test("should not over fetch when no required fields are manually selected", async () => {
+            const query = gql`
+                {
+                    authors {
+                        publicationsWithAuthor
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Author\`)
+                CALL {
+                    WITH this
+                    CALL {
+                        WITH *
+                        MATCH (this)-[this0:WROTE]->(this_publications:\`Book\`)
+                        WITH this_publications  { __resolveType: \\"Book\\",  .title } AS this_publications
+                        RETURN this_publications AS this_publications
+                        UNION
+                        WITH *
+                        MATCH (this)-[this1:WROTE]->(this_publications:\`Journal\`)
+                        WITH this_publications  { __resolveType: \\"Journal\\",  .subject } AS this_publications
+                        RETURN this_publications AS this_publications
+                    }
+                    WITH this_publications
+                    RETURN collect(this_publications) AS this_publications
+                }
+                RETURN this { .publicationsWithAuthor, .name, publications: this_publications } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
