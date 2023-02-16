@@ -81,21 +81,23 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Tenant\`)
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)<-[this0:HOSTED_BY]-(this_Screening:\`Screening\`)
-                RETURN { __resolveType: \\"Screening\\", id: this_Screening.id } AS this_events
-                UNION
-                WITH this
-                MATCH (this)<-[this1:HOSTED_BY]-(this_Booking:\`Booking\`)
-                RETURN { __resolveType: \\"Booking\\", id: this_Booking.id } AS this_events
+                CALL {
+                    WITH *
+                    MATCH (this)<-[this0:HOSTED_BY]-(this_events232:\`Screening\`)
+                    WITH this_events232 { __resolveType: \\"Screening\\", .id } AS this_events232
+                    RETURN this_events232 AS this_events232
+                    UNION
+                    WITH *
+                    MATCH (this)<-[this1:HOSTED_BY]-(this_events232:\`Booking\`)
+                    WITH this_events232 { __resolveType: \\"Booking\\", .id } AS this_events232
+                    RETURN this_events232 AS this_events232
+                }
+                WITH this_events232
+                RETURN collect(this_events232) AS this_events232
             }
-            RETURN collect(this_events) AS this_events
-            }
-            RETURN this { .id, .name, events232: this_events } AS this"
+            RETURN this { .id, .name, events232: this_events232 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

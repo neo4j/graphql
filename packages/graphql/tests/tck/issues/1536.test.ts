@@ -72,11 +72,16 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_OTHER_NODES]->(this_other:\`OtherNode\`)
-                WITH *
                 CALL {
                     WITH this_other
-                    MATCH (this_other)-[this1:HAS_INTERFACE_NODES]->(this_other_MyImplementation:\`MyImplementation\`)
-                    RETURN { __resolveType: \\"MyImplementation\\", id: this_other_MyImplementation.id } AS this_other_interfaceField
+                    CALL {
+                        WITH *
+                        MATCH (this_other)-[this1:HAS_INTERFACE_NODES]->(this_other_interfaceField:\`MyImplementation\`)
+                        WITH this_other_interfaceField { __resolveType: \\"MyImplementation\\", .id } AS this_other_interfaceField
+                        RETURN this_other_interfaceField AS this_other_interfaceField
+                    }
+                    WITH this_other_interfaceField
+                    RETURN head(collect(this_other_interfaceField)) AS this_other_interfaceField
                 }
                 WITH this_other { interfaceField: this_other_interfaceField } AS this_other
                 RETURN head(collect(this_other)) AS this_other
