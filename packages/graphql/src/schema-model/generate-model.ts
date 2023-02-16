@@ -131,7 +131,7 @@ function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotatio
 
 function parseCypherAnnotation(directive: DirectiveNode): CypherAnnotation {
     const { statement } = parseArguments(directive);
-    if (!statement || typeof statement !== "string") {
+    if (statement === null || statement === undefined || typeof statement !== "string") {
         throw new Error("@cypher statement required");
     }
     return new CypherAnnotation({
