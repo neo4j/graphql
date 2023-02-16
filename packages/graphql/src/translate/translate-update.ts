@@ -406,10 +406,14 @@ export default async function translateUpdate({
         projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
         projStr = projection.projection;
         cypherParams = { ...cypherParams, ...projection.params };
-        if (projection.meta?.authValidateStrs?.length) {
-            projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
-                " AND "
-            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        if (projection.meta?.authValidatePredicates?.length) {
+            projAuth = new Cypher.CallProcedure(
+                new Cypher.apoc.Validate(
+                    Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
+                    AUTH_FORBIDDEN_ERROR,
+                    new Cypher.Literal([0])
+                )
+            );
         }
     }
 

@@ -22,7 +22,7 @@ import { mergeDeep } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
 import type { GraphQLOptionsArg, GraphQLWhereArg, Context, GraphQLSortArg } from "../types";
-import { createAuthAndParams } from "./create-auth-and-params";
+import { createAuthPredicates } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
 import mapToDbProperty from "../utils/map-to-db-property";
@@ -35,7 +35,6 @@ import { createProjectionSubquery } from "./projection/subquery/create-projectio
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
 import { createConnectionClause } from "./connection-clause/create-connection-clause";
 import { translateCypherDirectiveProjection } from "./projection/subquery/translate-cypher-directive-projection";
-import { NamedNode } from "@neo4j/cypher-builder";
 
 interface Res {
     projection: Cypher.Expr[];
@@ -46,7 +45,7 @@ interface Res {
 }
 
 export interface ProjectionMeta {
-    authValidateStrs?: string[];
+    authValidatePredicates?: Cypher.Predicate[];
     cypherSortFields?: string[];
 }
 
@@ -75,15 +74,7 @@ export default function createProjectionAndParams({
 }): ProjectionResult {
     function reducer(res: Res, field: ResolveTree): Res {
         const alias = field.alias;
-        // TODO please remove me, really please!
         const param = new Cypher.Node();
-        /*
-       
-            if (chainStr) {
-            param = `${chainStr}_${alias}`;
-        } else {
-            param = `${varName}_${alias}`;
-        } */
 
         const whereInput = field.args.where as GraphQLWhereArg;
         const optionsInput = (field.args.options || {}) as GraphQLOptionsArg;
@@ -97,8 +88,7 @@ export default function createProjectionAndParams({
         if (authableField) {
             // TODO: move this to translate-top-level
             if (authableField.auth) {
-                console.trace("AUTH", varName);
-                const allowAndParams = createAuthAndParams({
+                const allowAndParams = createAuthPredicates({
                     entity: authableField,
                     operations: "READ",
                     context,
@@ -107,12 +97,11 @@ export default function createProjectionAndParams({
                         varName: varName as Cypher.Node,
                     },
                 });
-                if (allowAndParams[0]) {
-                    if (!res.meta.authValidateStrs) {
-                        res.meta.authValidateStrs = [];
+                if (allowAndParams) {
+                    if (!res.meta.authValidatePredicates) {
+                        res.meta.authValidatePredicates = [];
                     }
-                    res.meta.authValidateStrs?.push(allowAndParams[0]);
-                    res.params = { ...res.params, ...allowAndParams[1] };
+                    res.meta.authValidatePredicates?.push(allowAndParams);
                 }
             }
         }
@@ -181,7 +170,6 @@ export default function createProjectionAndParams({
 
                 const unionSubqueries: Cypher.Clause[] = [];
 
-                // const unionSubqueryReturnAlias = new Cypher.NamedNode('AAA');
                 for (const refNode of referenceNodes) {
                     const recurse = createProjectionAndParams({
                         resolveTree: field,
@@ -193,27 +181,11 @@ export default function createProjectionAndParams({
 
                     const direction = getCypherRelationshipDirection(relationField, field.args);
 
-                    /*    let nestedProjection = [
-                        ` { __resolveType: "${refNode.name}", `,
-                        recurse.projection.replace("{", ""),
-                    ].join(""); */
-/* 
-                    let nestedProjection = new Cypher.RawCypher((env) => {
-                        return [
-                            ` { __resolveType: "${refNode.name}", `,
-                            recurse.projection.getCypher(env).replace("{", ""),
-                        ].join("");
-                    }); */
-    
                     const nestedProjection = new Cypher.RawCypher((env) => {
-                            const nestedProj = recurse.projection.getCypher(env).replace(/{|}/gm, "").trim();
-                            const nestedProjString = nestedProj.length ? `, ${nestedProj}` : "";
-                            return `{ __resolveType: "${refNode.name}"${nestedProjString} }`;
-                        });
-                    
-                  
-
-                    
+                        const nestedProj = recurse.projection.getCypher(env).replace(/{|}/gm, "").trim();
+                        const nestedProjString = nestedProj.length ? `, ${nestedProj}` : "";
+                        return `{ __resolveType: "${refNode.name}"${nestedProjString} }`;
+                    });
 
                     const targetNode = new Cypher.Node({ labels: refNode.getLabels(context) });
                     const subquery = createProjectionSubquery({
@@ -228,7 +200,7 @@ export default function createProjectionAndParams({
                         relationField,
                         relationshipDirection: direction,
                         optionsInput,
-                        authValidateStrs: recurse.meta?.authValidateStrs,
+                        authValidatePredicates: recurse.meta?.authValidatePredicates,
                         addSkipAndLimit: false,
                         collect: false,
                     });
@@ -259,7 +231,6 @@ export default function createProjectionAndParams({
                   })
                 : varName;
 
-            console.log("tralala");
             const recurse = createProjectionAndParams({
                 resolveTree: field,
                 node: referenceNode || node,
@@ -282,7 +253,7 @@ export default function createProjectionAndParams({
                 relationField,
                 relationshipDirection: direction,
                 optionsInput,
-                authValidateStrs: recurse.meta?.authValidateStrs,
+                authValidatePredicates: recurse.meta?.authValidatePredicates,
             });
             res.subqueries.push(new Cypher.Call(subquery).innerWith(varName));
             res.projection.push(new Cypher.RawCypher((env) => `${alias}: ${subqueryReturnAlias.getCypher(env)}`));
@@ -320,12 +291,12 @@ export default function createProjectionAndParams({
             // const connection = connectionClause.build(`connection___${matrdn}`); // TODO: remove build from here
             //  const stupidParams = connection.params;
 
-            const connectionSubClause = new Cypher.RawCypher((env) => {
+       /*      const connectionSubClause = new Cypher.RawCypher((env) => {
                 // TODO: avoid REPLACE_ME in params and return them here
 
                 return [connectionClause.getCypher(env), {}];
-            });
-            res.subqueries.push(connectionSubClause);
+            }); */
+            res.subqueries.push(connectionClause);
             res.projection.push(new Cypher.RawCypher((env) => `${field.alias}: ${param.getCypher(env)}`));
 
             // res.params = { ...res.params, ...stupidParams };
@@ -474,7 +445,6 @@ function createFulltextProjection({
     resolveTree,
     node,
     context,
-    chainStr,
     varName,
     literalElements,
     resolveType,

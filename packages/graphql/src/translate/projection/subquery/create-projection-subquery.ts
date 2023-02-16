@@ -38,7 +38,7 @@ export function createProjectionSubquery({
     relationField,
     relationshipDirection,
     optionsInput,
-    authValidateStrs,
+    authValidatePredicates,
     addSkipAndLimit = true,
     collect = true,
 }: {
@@ -53,7 +53,7 @@ export function createProjectionSubquery({
     relationField: RelationField;
     relationshipDirection: CypherRelationshipDirection;
     optionsInput: GraphQLOptionsArg;
-    authValidateStrs: string[] | undefined;
+    authValidatePredicates: Cypher.Predicate[] | undefined;
     addSkipAndLimit?: boolean;
     collect?: boolean;
 }): Cypher.Clause {
@@ -119,9 +119,8 @@ export function createProjectionSubquery({
         predicates.push(allowAuth);
     }
 
-    if (authValidateStrs?.length) {
-        const authValidateStatements = authValidateStrs.map((str) => new Cypher.RawCypher(str));
-        const authValidatePredicate = Cypher.and(...authValidateStatements);
+    if (authValidatePredicates?.length) {
+        const authValidatePredicate = Cypher.and(...authValidatePredicates);
 
         const authStatement = new Cypher.apoc.ValidatePredicate(
             Cypher.not(authValidatePredicate),

@@ -153,11 +153,16 @@ function createConnectionNodeProjection({
         ...nodeProjectionAndParams.subqueries,
     ];
 
-    if (projectionMeta?.authValidateStrs?.length) {
-        const authStrs = projectionMeta.authValidateStrs;
-        const projectionAuth = new Cypher.RawCypher(() => {
-            return `CALL apoc.util.validate(NOT (${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-        });
+    if (projectionMeta?.authValidatePredicates?.length) {
+        // TODO reuse this as an utility
+        const projectionAuth = new Cypher.CallProcedure(
+            new Cypher.apoc.Validate(
+                Cypher.not(Cypher.and(...projectionMeta.authValidatePredicates)),
+                AUTH_FORBIDDEN_ERROR,
+                new Cypher.Literal([0])
+            )
+        );
+
         projectionSubqueries.push(projectionAuth);
     }
     return {

@@ -164,7 +164,7 @@ describe("auth/allow", () => {
             }
         });
 
-        test.only("should throw forbidden when reading a nested property with invalid allow", async () => {
+        test("should throw forbidden when reading a nested property with invalid allow", async () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `

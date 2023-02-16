@@ -104,7 +104,7 @@ export default async function translateCreate({
 
     let replacedProjectionParams: Record<string, unknown> = {};
     let projectionExpr: Cypher.Expr | undefined;
-    let authCalls: string | undefined;
+    let authCalls: Cypher.Expr;
 
     if (metaNames.length > 0) {
         projectionWith.push(`${metaNames.join(" + ")} AS meta`);
@@ -112,7 +112,7 @@ export default async function translateCreate({
 
     let projectionSubquery: Cypher.Clause | undefined;
     if (nodeProjection) {
-        let projAuth = "";
+        let projAuth;
         const projection = createProjectionAndParams({
             node,
             context,
@@ -121,10 +121,14 @@ export default async function translateCreate({
         });
 
         projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
-        if (projection.meta?.authValidateStrs?.length) {
-            projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
-                " AND "
-            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        if (projection.meta?.authValidatePredicates?.length) {
+            projAuth = new Cypher.CallProcedure(
+                new Cypher.apoc.Validate(
+                    Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
+                    AUTH_FORBIDDEN_ERROR,
+                    new Cypher.Literal([0])
+                )
+            );
         }
 
         replacedProjectionParams = Object.entries(projection.params).reduce((res, [key, value]) => {
@@ -146,9 +150,16 @@ export default async function translateCreate({
                 .join(", ");
         });
 
-        authCalls = createStrs
-            .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
-            .join("\n");
+        authCalls = new Cypher.RawCypher((env) =>
+            createStrs
+                .map((_, i) =>
+                    projAuth
+                        .getCypher(env)
+                        .replace(/\$REPLACE_ME/g, "$projection")
+                        .replace(/REPLACE_ME/g, `this${i}`)
+                )
+                .join("\n")
+        );
     }
 
     const replacedConnectionStrs = connectionStrs.length
@@ -210,7 +221,7 @@ export default async function translateCreate({
         const cypher = filterTruthy([
             `${createStrs.join("\n")}`,
             projectionWithStr,
-            authCalls,
+            authCalls.getCypher(env),
             ...replacedConnectionStrs,
             ...replacedInterfaceStrs,
             ...replacedProjectionSubqueryStrs,
