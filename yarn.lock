@@ -16041,7 +16041,7 @@ __metadata:
     graphql: 16.6.0
     html-webpack-plugin: 5.5.0
     react: 18.2.0
-    react-bootstrap: 2.7.1
+    react-bootstrap: 2.7.2
     react-dom: 18.2.0
     react-markdown: 8.0.5
     react-mde: 11.5.0
@@ -18686,9 +18686,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-bootstrap@npm:2.7.1":
-  version: 2.7.1
-  resolution: "react-bootstrap@npm:2.7.1"
+"react-bootstrap@npm:2.7.2":
+  version: 2.7.2
+  resolution: "react-bootstrap@npm:2.7.2"
   dependencies:
     "@babel/runtime": ^7.17.2
     "@restart/hooks": ^0.4.6
@@ -18709,7 +18709,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 1acc5eba7ff54dffd9950bb1ae52e4eb32fd52b5306b4932a2cefd8dab946f23478f67a1edff61acad5ab12c3b0dbf3204bf881c55f9207247b10f9b48e159d4
+  checksum: 656c0c5e44cadf8037a387b489e3928342d71ecd6b3b1aae80e7dc367d88cbe64af0cbba656f07391b9d4a22779a93bb2ff87682de6e5b3ff3e660293e17d27a
   languageName: node
   linkType: hard
 
