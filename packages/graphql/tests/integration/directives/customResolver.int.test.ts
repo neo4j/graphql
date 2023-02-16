@@ -2341,4 +2341,142 @@ describe("Related Fields", () => {
 
         await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
+
+    test("should receive undefined for related fields that are not selected", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
+                { userInput1, addressInput1 }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const typeDefs = gql`
+            type ${Address} {
+                houseNumber: Int! @cypher(statement: "RETURN 12 AS number", columnName: "number")
+                street: String!
+                city: String!
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                fullName: String @customResolver(requires: "firstName lastName address { houseNumber street }")
+            }
+        `;
+
+        const fullNameResolver = ({ firstName, lastName, address }) =>
+            `${firstName} ${lastName} from ${address.houseNumber} ${address.street} ${address.city}`;
+
+        const resolvers = {
+            [User.name]: {
+                fullName: fullNameResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        const query = `
+            query ${User} {
+                ${User.plural} {
+                    fullName
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [User.plural]: [
+                {
+                    fullName: fullNameResolver({
+                        firstName: userInput1.firstName,
+                        lastName: userInput1.lastName,
+                        address: { street: addressInput1.street, houseNumber: 12 },
+                    }),
+                },
+            ],
+        });
+    });
+
+    test("should be able to require a @cypher field on a related type", async () => {
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
+                { userInput1, addressInput1 }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const typeDefs = gql`
+            type ${Address} {
+                houseNumber: Int! @cypher(statement: "RETURN 12 AS number", columnName: "number")
+                street: String!
+                city: String!
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                fullName: String @customResolver(requires: "firstName lastName address { houseNumber street }")
+            }
+        `;
+
+        const fullNameResolver = ({ firstName, lastName, address }) =>
+            `${firstName} ${lastName} from ${address.houseNumber} ${address.street}`;
+
+        const resolvers = {
+            [User.name]: {
+                fullName: fullNameResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+        });
+
+        const query = `
+            query ${User} {
+                ${User.plural} {
+                    fullName
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+        expect(result.data as any).toEqual({
+            [User.plural]: [
+                {
+                    fullName: fullNameResolver({
+                        firstName: userInput1.firstName,
+                        lastName: userInput1.lastName,
+                        address: { street: addressInput1.street, houseNumber: 12 },
+                    }),
+                },
+            ],
+        });
+    });
 });
