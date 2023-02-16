@@ -574,4 +574,192 @@ describe("@customResolver directive", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
         });
     });
+
+    describe("Require fields on nested interfaces", () => {
+        beforeAll(() => {
+            typeDefs = gql`
+                interface Publication {
+                    publicationYear: Int!
+                }
+
+                type Author {
+                    name: String!
+                    publications: [Publication!]! @relationship(type: "WROTE", direction: OUT)
+                    publicationsWithAuthor: [String!]!
+                        @customResolver(
+                            requires: "name publications { publicationYear ...on Book { title } ... on Journal { subject } }"
+                        )
+                }
+
+                type Book implements Publication {
+                    title: String!
+                    publicationYear: Int!
+                    author: [Author!]! @relationship(type: "WROTE", direction: IN)
+                }
+
+                type Journal implements Publication {
+                    subject: String!
+                    publicationYear: Int!
+                    author: [Author!]! @relationship(type: "WROTE", direction: IN)
+                }
+            `;
+
+            const resolvers = {
+                Author: {
+                    publicationsWithAuthor: () => "Some custom resolver",
+                },
+            };
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                resolvers,
+                config: { enableRegex: true },
+            });
+        });
+
+        test("should not over fetch when all required fields are manually selected", async () => {
+            const query = gql`
+                {
+                    authors {
+                        name
+                        publicationsWithAuthor
+                        publications {
+                            publicationYear
+                            ... on Book {
+                                title
+                            }
+                            ... on Journal {
+                                subject
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Author\`)
+                WITH *
+                CALL {
+                WITH *
+                CALL {
+                    WITH this
+                    MATCH (this)-[this0:WROTE]->(this_Book:\`Book\`)
+                    RETURN { __resolveType: \\"Book\\", title: this_Book.title, publicationYear: this_Book.publicationYear } AS this_publications
+                    UNION
+                    WITH this
+                    MATCH (this)-[this1:WROTE]->(this_Journal:\`Journal\`)
+                    RETURN { __resolveType: \\"Journal\\", subject: this_Journal.subject, publicationYear: this_Journal.publicationYear } AS this_publications
+                }
+                RETURN collect(this_publications) AS this_publications
+                }
+                RETURN this { .name, .publicationsWithAuthor, publications: this_publications } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
+
+        test("should not fetch required fields if @customResolver field is not selected", async () => {
+            const query = gql`
+                {
+                    authors {
+                        name
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Author\`)
+                RETURN this { .name } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
+
+        test("should not over fetch when some required fields are manually selected", async () => {
+            const query = gql`
+                {
+                    authors {
+                        publicationsWithAuthor
+                        publications {
+                            ... on Book {
+                                title
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Author\`)
+                WITH *
+                CALL {
+                WITH *
+                CALL {
+                    WITH this
+                    MATCH (this)-[this0:WROTE]->(this_Book:\`Book\`)
+                    RETURN { __resolveType: \\"Book\\", title: this_Book.title, publicationYear: this_Book.publicationYear } AS this_publications
+                    UNION
+                    WITH this
+                    MATCH (this)-[this1:WROTE]->(this_Journal:\`Journal\`)
+                    RETURN { __resolveType: \\"Journal\\", subject: this_Journal.subject, publicationYear: this_Journal.publicationYear } AS this_publications
+                }
+                RETURN collect(this_publications) AS this_publications
+                }
+                RETURN this { .publicationsWithAuthor, publications: this_publications, .name } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
+
+        test("should not over fetch when no required fields are manually selected", async () => {
+            const query = gql`
+                {
+                    authors {
+                        publicationsWithAuthor
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Author\`)
+                WITH *
+                CALL {
+                WITH *
+                CALL {
+                    WITH this
+                    MATCH (this)-[this0:WROTE]->(this_Book:\`Book\`)
+                    RETURN { __resolveType: \\"Book\\", title: this_Book.title, publicationYear: this_Book.publicationYear } AS this_publications
+                    UNION
+                    WITH this
+                    MATCH (this)-[this1:WROTE]->(this_Journal:\`Journal\`)
+                    RETURN { __resolveType: \\"Journal\\", subject: this_Journal.subject, publicationYear: this_Journal.publicationYear } AS this_publications
+                }
+                RETURN collect(this_publications) AS this_publications
+                }
+                RETURN this { .publicationsWithAuthor, .name, publications: this_publications } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
+    });
 });
