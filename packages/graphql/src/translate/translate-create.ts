@@ -104,7 +104,7 @@ export default async function translateCreate({
 
     let replacedProjectionParams: Record<string, unknown> = {};
     let projectionExpr: Cypher.Expr | undefined;
-    let authCalls: Cypher.Expr;
+    let authCalls: Cypher.Expr | undefined;
 
     if (metaNames.length > 0) {
         projectionWith.push(`${metaNames.join(" + ")} AS meta`);
@@ -112,7 +112,7 @@ export default async function translateCreate({
 
     let projectionSubquery: Cypher.Clause | undefined;
     if (nodeProjection) {
-        let projAuth;
+        let projAuth: Cypher.Clause | undefined = undefined;
         const projection = createProjectionAndParams({
             node,
             context,
@@ -150,16 +150,18 @@ export default async function translateCreate({
                 .join(", ");
         });
 
-        authCalls = new Cypher.RawCypher((env) =>
-            createStrs
-                .map((_, i) =>
-                    projAuth
-                        .getCypher(env)
-                        .replace(/\$REPLACE_ME/g, "$projection")
-                        .replace(/REPLACE_ME/g, `this${i}`)
-                )
-                .join("\n")
-        );
+        if (projAuth) {
+            authCalls = new Cypher.RawCypher((env) =>
+                createStrs
+                    .map((_, i) =>
+                        (projAuth as Cypher.Clause)
+                            .getCypher(env)
+                            .replace(/\$REPLACE_ME/g, "$projection")
+                            .replace(/REPLACE_ME/g, `this${i}`)
+                    )
+                    .join("\n")
+            );
+        }
     }
 
     const replacedConnectionStrs = connectionStrs.length
@@ -221,7 +223,7 @@ export default async function translateCreate({
         const cypher = filterTruthy([
             `${createStrs.join("\n")}`,
             projectionWithStr,
-            authCalls.getCypher(env),
+            authCalls?.getCypher(env),
             ...replacedConnectionStrs,
             ...replacedInterfaceStrs,
             ...replacedProjectionSubqueryStrs,

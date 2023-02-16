@@ -64,7 +64,7 @@ export default async function translateUpdate({
     const disconnectStrs: string[] = [];
     const createStrs: string[] = [];
     let deleteStr = "";
-    let projAuth = "";
+    let projAuth: Cypher.Clause | undefined = undefined;
     let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
     const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
@@ -442,7 +442,7 @@ export default async function translateUpdate({
 
             projectionSubqueryStr,
             ...(connectionStrs.length || projAuth ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
-            ...(projAuth ? [projAuth] : []),
+            ...(projAuth ? [projAuth.getCypher(env)] : []),
             ...(relationshipValidationStr ? [`WITH *`, relationshipValidationStr] : []),
             ...connectionStrs,
             ...interfaceStrs,

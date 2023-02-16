@@ -54,9 +54,9 @@ export function translateTopLevelCypher({
     }
 
     let projectionStr;
-    const projectionAuthStrs: string[] = [];
+    const projectionAuthStrs: Cypher.Predicate[] = [];
     const projectionSubqueries: Cypher.Clause[] = [];
-    const connectionProjectionStrs: string[] = [];
+    // const connectionProjectionStrs: string[] = [];
 
     const referenceNode = context.nodes.find((x) => x.name === field.typeMeta.name);
 
@@ -77,8 +77,8 @@ export function translateTopLevelCypher({
         projectionSubqueries.push(...subqueriesBeforeSort, ...subqueries);
         params = { ...params, ...p };
 
-        if (meta.authValidateStrs?.length) {
-            projectionAuthStrs.push(...projectionAuthStrs, meta.authValidateStrs.join(" AND "));
+        if (meta.authValidatePredicates?.length) {
+            projectionAuthStrs.push(...projectionAuthStrs, Cypher.and(...meta.authValidatePredicates));
         }
     }
 
@@ -116,18 +116,20 @@ export function translateTopLevelCypher({
 
                     projectionSubqueries.push(...subqueries);
                     const innerNodePartialProjection = new Cypher.RawCypher((env) => {
-                        return innerHeadStr.concat(
-                            [
-                                `| this { __resolveType: "${node.name}", `,
-                                ...str.getCypher(env).replace("{", "").split(""),
-                            ].join("")
-                        ).concat("]");
+                        return innerHeadStr
+                            .concat(
+                                [
+                                    `| this { __resolveType: "${node.name}", `,
+                                    ...str.getCypher(env).replace("{", "").split(""),
+                                ].join("")
+                            )
+                            .concat("]");
                     });
 
                     params = { ...params, ...p };
 
-                    if (meta.authValidateStrs?.length) {
-                        projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
+                    if (meta.authValidatePredicates?.length) {
+                        projectionAuthStrs.push(Cypher.and(...meta.authValidatePredicates));
                     }
                     headStrs.push(innerNodePartialProjection);
                 } else {
@@ -138,7 +140,10 @@ export function translateTopLevelCypher({
         });
 
         projectionStr = new Cypher.RawCypher(
-            (env) => `${headStrs.map((headStr) => typeof headStr === "string" ? headStr : headStr.getCypher(env)).join(" + ")}`
+            (env) =>
+                `${headStrs
+                    .map((headStr) => (typeof headStr === "string" ? headStr : headStr.getCypher(env)))
+                    .join(" + ")}`
         );
     }
 
@@ -190,18 +195,18 @@ export function translateTopLevelCypher({
         cypherStrs.push(`WHERE ${unionWhere.join(" OR ")}`);
     }
 
-    if (projectionAuthStrs.length) {
-        cypherStrs.push(
-            `WHERE apoc.util.validatePredicate(NOT (${projectionAuthStrs.join(
-                " AND "
-            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-        );
-    }
-
-    cypherStrs.push(connectionProjectionStrs.join("\n"));
+    // cypherStrs.push(connectionProjectionStrs.join("\n"));
     const projectionSubquery = Cypher.concat(...projectionSubqueries);
 
     return new Cypher.RawCypher((env) => {
+        if (projectionAuthStrs.length) {
+            const validatePred = new Cypher.apoc.ValidatePredicate(
+                Cypher.not(Cypher.and(...projectionAuthStrs)),
+                AUTH_FORBIDDEN_ERROR
+            );
+            cypherStrs.push(`WHERE ${validatePred.getCypher(env)}`);
+        }
+
         const subqueriesStr = projectionSubquery ? `\n${projectionSubquery.getCypher(env)}` : "";
         if (subqueriesStr) cypherStrs.push(subqueriesStr);
 
