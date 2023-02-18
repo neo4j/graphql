@@ -3166,7 +3166,7 @@ __metadata:
     graphql-ws: 5.11.3
     is-uuid: 1.0.2
     jest: 29.4.3
-    jest-extended: 3.2.3
+    jest-extended: 3.2.4
     koa: 2.14.1
     koa-jwt: 4.0.4
     koa-router: 12.0.0
@@ -13319,9 +13319,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-extended@npm:3.2.3":
-  version: 3.2.3
-  resolution: "jest-extended@npm:3.2.3"
+"jest-extended@npm:3.2.4":
+  version: 3.2.4
+  resolution: "jest-extended@npm:3.2.4"
   dependencies:
     jest-diff: ^29.0.0
     jest-get-type: ^29.0.0
@@ -13330,7 +13330,7 @@ __metadata:
   peerDependenciesMeta:
     jest:
       optional: true
-  checksum: af837ca22ed80e9542bb234d137b0d235ef04efb4a071717ec9f41f97533e44e1f1b8de2d47504804bb78e568fafca662a6ccf12b74f66f3b8e8bcb7d460d7aa
+  checksum: 16e4f300d9c5bf110f7f3422e49e06c968a99a44cede2b2821ddd480c33b3d9cd4dc58035b2f022e6018247da8f887295d6c2499647675dedb6e305142604e7d
   languageName: node
   linkType: hard
 
