@@ -216,7 +216,6 @@ export function translateCypherDirectiveProjection({
         res.subqueries.push(callSt);
     }
     const aliasVar = new Cypher.NamedVariable(alias);
-    //const paramVar = param;
     res.projection.push(new Cypher.RawCypher((env) => `${aliasVar.getCypher(env)}: ${resultVariable.getCypher(env)}`));
     return res;
 }

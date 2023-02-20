@@ -76,7 +76,6 @@ export default function createProjectionAndParams({
 }): ProjectionResult {
     function reducer(res: Res, field: ResolveTree): Res {
         const alias = field.alias;
-        const param = new Cypher.Node();
 
         const whereInput = field.args.where as GraphQLWhereArg;
         const optionsInput = (field.args.options || {}) as GraphQLOptionsArg;
@@ -227,7 +226,6 @@ export default function createProjectionAndParams({
                 return res;
             }
 
-            // const targetNode = new Cypher.Node({ labels: (referenceNode || node).getLabels(context) });
             const targetNode = referenceNode
                 ? new Cypher.Node({
                       labels: referenceNode.getLabels(context),
@@ -282,19 +280,20 @@ export default function createProjectionAndParams({
         }
 
         if (connectionField) {
+            const returnVariable = new Cypher.Node();
             const connectionClause = new Cypher.Call(
                 createConnectionClause({
                     resolveTree: field,
                     field: connectionField,
                     context,
                     nodeVariable: varName as Cypher.Node,
-                    returnVariable: param, // TODO: maybe move this to createConnectionClause
+                    returnVariable,
                     cypherFieldAliasMap,
                 })
             ).innerWith(varName);
 
             res.subqueries.push(connectionClause);
-            res.projection.push(new Cypher.RawCypher((env) => `${field.alias}: ${param.getCypher(env)}`));
+            res.projection.push(new Cypher.RawCypher((env) => `${field.alias}: ${returnVariable.getCypher(env)}`));
 
             return res;
         }
