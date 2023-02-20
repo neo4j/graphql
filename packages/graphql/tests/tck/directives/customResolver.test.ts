@@ -454,12 +454,12 @@ describe("@customResolver directive", () => {
                     CALL {
                         WITH *
                         MATCH (this)-[this0:WROTE]->(this_publications:\`Book\`)
-                        WITH this_publications  { __resolveType: \\"Book\\",  .title } AS this_publications
+                        WITH this_publications { __resolveType: \\"Book\\", .title } AS this_publications
                         RETURN this_publications AS this_publications
                         UNION
                         WITH *
                         MATCH (this)-[this1:WROTE]->(this_publications:\`Journal\`)
-                        WITH this_publications  { __resolveType: \\"Journal\\",  .subject } AS this_publications
+                        WITH this_publications { __resolveType: \\"Journal\\", .subject } AS this_publications
                         RETURN this_publications AS this_publications
                     }
                     WITH this_publications
@@ -519,12 +519,12 @@ describe("@customResolver directive", () => {
                     CALL {
                         WITH *
                         MATCH (this)-[this0:WROTE]->(this_publications:\`Book\`)
-                        WITH this_publications  { __resolveType: \\"Book\\",  .title } AS this_publications
+                        WITH this_publications { __resolveType: \\"Book\\", .title } AS this_publications
                         RETURN this_publications AS this_publications
                         UNION
                         WITH *
                         MATCH (this)-[this1:WROTE]->(this_publications:\`Journal\`)
-                        WITH this_publications  { __resolveType: \\"Journal\\",  .subject } AS this_publications
+                        WITH this_publications { __resolveType: \\"Journal\\", .subject } AS this_publications
                         RETURN this_publications AS this_publications
                     }
                     WITH this_publications
@@ -557,12 +557,12 @@ describe("@customResolver directive", () => {
                     CALL {
                         WITH *
                         MATCH (this)-[this0:WROTE]->(this_publications:\`Book\`)
-                        WITH this_publications  { __resolveType: \\"Book\\",  .title } AS this_publications
+                        WITH this_publications { __resolveType: \\"Book\\", .title } AS this_publications
                         RETURN this_publications AS this_publications
                         UNION
                         WITH *
                         MATCH (this)-[this1:WROTE]->(this_publications:\`Journal\`)
-                        WITH this_publications  { __resolveType: \\"Journal\\",  .subject } AS this_publications
+                        WITH this_publications { __resolveType: \\"Journal\\", .subject } AS this_publications
                         RETURN this_publications AS this_publications
                     }
                     WITH this_publications
@@ -643,19 +643,21 @@ describe("@customResolver directive", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Author\`)
-                WITH *
-                CALL {
-                WITH *
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:WROTE]->(this_Book:\`Book\`)
-                    RETURN { __resolveType: \\"Book\\", title: this_Book.title, publicationYear: this_Book.publicationYear } AS this_publications
-                    UNION
-                    WITH this
-                    MATCH (this)-[this1:WROTE]->(this_Journal:\`Journal\`)
-                    RETURN { __resolveType: \\"Journal\\", subject: this_Journal.subject, publicationYear: this_Journal.publicationYear } AS this_publications
-                }
-                RETURN collect(this_publications) AS this_publications
+                    CALL {
+                        WITH *
+                        MATCH (this)-[this0:WROTE]->(this_publications:\`Book\`)
+                        WITH this_publications { __resolveType: \\"Book\\", .title, .publicationYear } AS this_publications
+                        RETURN this_publications AS this_publications
+                        UNION
+                        WITH *
+                        MATCH (this)-[this1:WROTE]->(this_publications:\`Journal\`)
+                        WITH this_publications { __resolveType: \\"Journal\\", .subject, .publicationYear } AS this_publications
+                        RETURN this_publications AS this_publications
+                    }
+                    WITH this_publications
+                    RETURN collect(this_publications) AS this_publications
                 }
                 RETURN this { .name, .publicationsWithAuthor, publications: this_publications } AS this"
             `);
@@ -706,19 +708,21 @@ describe("@customResolver directive", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Author\`)
-                WITH *
-                CALL {
-                WITH *
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:WROTE]->(this_Book:\`Book\`)
-                    RETURN { __resolveType: \\"Book\\", title: this_Book.title, publicationYear: this_Book.publicationYear } AS this_publications
-                    UNION
-                    WITH this
-                    MATCH (this)-[this1:WROTE]->(this_Journal:\`Journal\`)
-                    RETURN { __resolveType: \\"Journal\\", subject: this_Journal.subject, publicationYear: this_Journal.publicationYear } AS this_publications
-                }
-                RETURN collect(this_publications) AS this_publications
+                    CALL {
+                        WITH *
+                        MATCH (this)-[this0:WROTE]->(this_publications:\`Book\`)
+                        WITH this_publications { __resolveType: \\"Book\\", .title, .publicationYear } AS this_publications
+                        RETURN this_publications AS this_publications
+                        UNION
+                        WITH *
+                        MATCH (this)-[this1:WROTE]->(this_publications:\`Journal\`)
+                        WITH this_publications { __resolveType: \\"Journal\\", .subject, .publicationYear } AS this_publications
+                        RETURN this_publications AS this_publications
+                    }
+                    WITH this_publications
+                    RETURN collect(this_publications) AS this_publications
                 }
                 RETURN this { .publicationsWithAuthor, publications: this_publications, .name } AS this"
             `);
@@ -742,19 +746,21 @@ describe("@customResolver directive", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Author\`)
-                WITH *
-                CALL {
-                WITH *
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:WROTE]->(this_Book:\`Book\`)
-                    RETURN { __resolveType: \\"Book\\", title: this_Book.title, publicationYear: this_Book.publicationYear } AS this_publications
-                    UNION
-                    WITH this
-                    MATCH (this)-[this1:WROTE]->(this_Journal:\`Journal\`)
-                    RETURN { __resolveType: \\"Journal\\", subject: this_Journal.subject, publicationYear: this_Journal.publicationYear } AS this_publications
-                }
-                RETURN collect(this_publications) AS this_publications
+                    CALL {
+                        WITH *
+                        MATCH (this)-[this0:WROTE]->(this_publications:\`Book\`)
+                        WITH this_publications { __resolveType: \\"Book\\", .title, .publicationYear } AS this_publications
+                        RETURN this_publications AS this_publications
+                        UNION
+                        WITH *
+                        MATCH (this)-[this1:WROTE]->(this_publications:\`Journal\`)
+                        WITH this_publications { __resolveType: \\"Journal\\", .subject, .publicationYear } AS this_publications
+                        RETURN this_publications AS this_publications
+                    }
+                    WITH this_publications
+                    RETURN collect(this_publications) AS this_publications
                 }
                 RETURN this { .publicationsWithAuthor, .name, publications: this_publications } AS this"
             `);
