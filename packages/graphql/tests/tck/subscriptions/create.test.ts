@@ -445,12 +445,12 @@ describe("Subscriptions metadata on create", () => {
                 CALL {
                     WITH *
                     MATCH (this0)<-[create_this0:DIRECTED]-(this0_directors:\`Actor\`)
-                    WITH this0_directors  { __resolveType: \\"Actor\\",  .name } AS this0_directors
+                    WITH this0_directors { __resolveType: \\"Actor\\", .name } AS this0_directors
                     RETURN this0_directors AS this0_directors
                     UNION
                     WITH *
                     MATCH (this0)<-[create_this1:DIRECTED]-(this0_directors:\`Person\`)
-                    WITH this0_directors  { __resolveType: \\"Person\\",  .name } AS this0_directors
+                    WITH this0_directors { __resolveType: \\"Person\\", .name } AS this0_directors
                     RETURN this0_directors AS this0_directors
                 }
                 WITH this0_directors
@@ -603,12 +603,12 @@ describe("Subscriptions metadata on create", () => {
                         WITH this0_directors_movies { .title } AS this0_directors_movies
                         RETURN collect(this0_directors_movies) AS this0_directors_movies
                     }
-                    WITH this0_directors  { __resolveType: \\"Actor\\",  .name, movies: this0_directors_movies } AS this0_directors
+                    WITH this0_directors { __resolveType: \\"Actor\\", .name, movies: this0_directors_movies } AS this0_directors
                     RETURN this0_directors AS this0_directors
                     UNION
                     WITH *
                     MATCH (this0)<-[create_this2:DIRECTED]-(this0_directors:\`Person\`)
-                    WITH this0_directors  { __resolveType: \\"Person\\",  .name } AS this0_directors
+                    WITH this0_directors { __resolveType: \\"Person\\", .name } AS this0_directors
                     RETURN this0_directors AS this0_directors
                 }
                 WITH this0_directors
