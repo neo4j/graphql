@@ -33,6 +33,7 @@ import {
     Kind,
     parse,
     GraphQLSchema,
+    FieldNode,
 } from "graphql";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { generateResolveTree } from "../translate/utils/resolveTree";
@@ -225,11 +226,9 @@ function nestedSelectionSetToResolveTrees(
     selectionSet: SelectionSetNode,
     outerFieldType?: string
 ): Record<string, ResolveTree> | FieldsByTypeName {
-    // TODO - handle aliases
     const result = selectionSet.selections.reduce((acc, selection) => {
         let nestedResolveTree = {};
         if (selection.kind === Kind.FRAGMENT_SPREAD) {
-            // Support for these can be added later if there is time
             throw new Error("Fragment spreads are not supported in @customResolver requires");
         }
         if (selection.kind === Kind.INLINE_FRAGMENT) {
@@ -261,17 +260,7 @@ function nestedSelectionSetToResolveTrees(
         if (selection.selectionSet) {
             const field = objectFields.find((field) => field.name.value === selection.name.value);
             const fieldType = getNestedType(field?.type);
-            const unionImplementations = unions.find((union) => union.name.value === fieldType)?.types;
-            const innerObjectFields =
-                [...objects, ...interfaces].find((obj) => obj.name.value === fieldType)?.fields ||
-                unionImplementations?.flatMap(
-                    (implementation) =>
-                        [...objects, ...interfaces].find((obj) => obj.name.value === implementation.name.value)
-                            ?.fields || []
-                );
-            if (!innerObjectFields) {
-                throw new Error(INVALID_SELECTION_SET_ERROR);
-            }
+            const innerObjectFields = getInnerObjectFields({ fieldType, objects, interfaces, unions });
             nestedResolveTree = nestedSelectionSetToResolveTrees(
                 innerObjectFields,
                 objects,
@@ -282,24 +271,7 @@ function nestedSelectionSetToResolveTrees(
             );
         }
 
-        const fieldImplementations = [objectFields.find((field) => field.name.value === selection.name.value)];
-        const objectsImplementingInterface = objects.filter((obj) =>
-            obj.interfaces?.find((inter) => inter.name.value === outerFieldType)
-        );
-        objectsImplementingInterface.forEach((obj) =>
-            obj.fields?.forEach((objField) => {
-                if (objField.name.value === selection.name.value) {
-                    fieldImplementations.push(objField);
-                }
-            })
-        );
-        if (
-            fieldImplementations.find((field) =>
-                field?.directives?.find((directive) => INVALID_DIRECTIVES_TO_REQUIRE.includes(directive.name.value))
-            )
-        ) {
-            throw new Error(INVALID_REQUIRED_FIELD_ERROR);
-        }
+        validateRequiredField({ selection, outerFieldType, objectFields, objects });
 
         if (outerFieldType) {
             return {
@@ -332,4 +304,59 @@ function getNestedType(type: TypeNode | undefined): string {
         return getNestedType(type.type);
     }
     return type.name.value;
+}
+
+function getInnerObjectFields({
+    fieldType,
+    objects,
+    interfaces,
+    unions,
+}: {
+    fieldType: string;
+    objects: ObjectTypeDefinitionNode[];
+    interfaces: InterfaceTypeDefinitionNode[];
+    unions: UnionTypeDefinitionNode[];
+}) {
+    const unionImplementations = unions.find((union) => union.name.value === fieldType)?.types;
+    const innerObjectFields =
+        [...objects, ...interfaces].find((obj) => obj.name.value === fieldType)?.fields ||
+        unionImplementations?.flatMap(
+            (implementation) =>
+                [...objects, ...interfaces].find((obj) => obj.name.value === implementation.name.value)?.fields || []
+        );
+    if (!innerObjectFields) {
+        throw new Error(INVALID_SELECTION_SET_ERROR);
+    }
+    return innerObjectFields;
+}
+
+function validateRequiredField({
+    selection,
+    outerFieldType,
+    objectFields,
+    objects,
+}: {
+    selection: FieldNode;
+    outerFieldType: string | undefined;
+    objectFields: ReadonlyArray<FieldDefinitionNode>;
+    objects: ObjectTypeDefinitionNode[];
+}): void {
+    const fieldImplementations = [objectFields.find((field) => field.name.value === selection.name.value)];
+    const objectsImplementingInterface = objects.filter((obj) =>
+        obj.interfaces?.find((inter) => inter.name.value === outerFieldType)
+    );
+    objectsImplementingInterface.forEach((obj) =>
+        obj.fields?.forEach((objField) => {
+            if (objField.name.value === selection.name.value) {
+                fieldImplementations.push(objField);
+            }
+        })
+    );
+    if (
+        fieldImplementations.find((field) =>
+            field?.directives?.find((directive) => INVALID_DIRECTIVES_TO_REQUIRE.includes(directive.name.value))
+        )
+    ) {
+        throw new Error(INVALID_REQUIRED_FIELD_ERROR);
+    }
 }
