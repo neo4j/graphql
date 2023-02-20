@@ -58,8 +58,7 @@ export function createProjectionSubquery({
     collect?: boolean;
 }): Cypher.Clause {
     const isArray = relationField.typeMeta.array;
-    // const targetNode = new Cypher.Node({ labels: node.getLabels(context) });
-    // console.log(relationshipDirection);
+
     const relationship = new Cypher.Relationship({
         type: relationField.type,
     });

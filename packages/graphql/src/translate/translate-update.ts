@@ -18,7 +18,7 @@
  */
 
 import type { Node, Relationship } from "../classes";
-import type { Context, GraphQLWhereArg, RelationField } from "../types";
+import type { Context, CypherFieldReferenceMap, GraphQLWhereArg, RelationField } from "../types";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createUpdateAndParams from "./create-update-and-params";
@@ -51,7 +51,7 @@ export default async function translateUpdate({
     const connectOrCreateInput = resolveTree.args.connectOrCreate;
     const varName = "this";
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
-    const cypherFieldAliasMap = {} as Record<string, Cypher.Variable | Cypher.Node>;
+    const cypherFieldAliasMap: CypherFieldReferenceMap = {};
     const withVars = [varName];
 
     if (context.subscriptionsEnabled) {
@@ -402,7 +402,7 @@ export default async function translateUpdate({
             context,
             resolveTree: nodeProjection,
             varName: new Cypher.NamedNode(varName),
-            cypherFieldAliasMap
+            cypherFieldAliasMap,
         });
         projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
         projStr = projection.projection;

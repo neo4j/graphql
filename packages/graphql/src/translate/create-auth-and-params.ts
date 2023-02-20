@@ -86,8 +86,7 @@ export function createAuthAndParams({
     const chainStr = generateUniqueChainStr([where?.varName, allow?.varName, bind?.varName]);
 
     // Params must be globally unique, variables can be just slightly different, as each auth statement is scoped
-    // const authCypher = authPredicateExpr.build({ params: `${chainStr}auth_`, variables: `auth_` });
-    const authCypher = authPredicateExpr.build({ params: `${chainStr}auth_`, variables: `` });
+    const authCypher = authPredicateExpr.build({ params: `${chainStr}auth_`, variables: `auth_` });
 
     return [authCypher.cypher, authCypher.params];
 }
@@ -263,6 +262,8 @@ function createSubPredicate({
     }
 
     if (bind && authRule.bind) {
+        // console.trace("hocus pocus", bind.varName);
+
         const nodeRef = getOrCreateCypherNode(bind.varName);
 
         const allowPredicate = createAuthPredicate({
@@ -362,6 +363,9 @@ function createAuthPredicate({
             const relationshipNodeRef = new Cypher.Node({
                 labels: refNode.getLabels(context),
             });
+            // const relationshipNodeRef = new Cypher.NamedNode("hocus", {
+            //     labels: refNode.getLabels(context),
+            // });
             Object.entries(value as Record<string, any>).forEach(([k, v]: [string, any]) => {
                 const authPredicate = createAuthPredicate({
                     node: refNode,

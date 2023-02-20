@@ -19,7 +19,7 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Node } from "../../../classes";
-import type { GraphQLSortArg, Context, CypherField } from "../../../types";
+import type { GraphQLSortArg, Context, CypherField, CypherFieldReferenceMap } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 
 import createProjectionAndParams, { ProjectionMeta } from "../../create-projection-and-params";
@@ -39,7 +39,6 @@ export function translateCypherDirectiveProjection({
     field,
     node,
     alias,
-    param,
     nodeRef,
     res,
     cypherFieldAliasMap,
@@ -50,13 +49,12 @@ export function translateCypherDirectiveProjection({
     node: Node;
     nodeRef: Cypher.Node;
     alias: string;
-    param: Cypher.Relationship | Cypher.Node;
     res: Res;
-    cypherFieldAliasMap: any;
+    cypherFieldAliasMap: CypherFieldReferenceMap;
 }): Res {
     const resultVariable = new Cypher.Node();
     cypherFieldAliasMap[`${nodeRef.prefix}_${alias}`] = resultVariable;
-    //const resultVariable = new Cypher.NamedNode(`${nodeRef.prefix}_${alias}`);
+
     const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
     const entity = context.schemaModel.entities.get(cypherField.typeMeta.name);
 
@@ -80,7 +78,7 @@ export function translateCypherDirectiveProjection({
             node: referenceNode || node,
             context,
             varName: resultVariable,
-            cypherFieldAliasMap
+            cypherFieldAliasMap,
         });
 
         projectionExpr = new Cypher.RawCypher((env) => {
@@ -122,7 +120,7 @@ export function translateCypherDirectiveProjection({
                         node: refNode,
                         context,
                         varName: subqueryParam,
-                        cypherFieldAliasMap
+                        cypherFieldAliasMap,
                     });
 
                     if (nestedSubqueries.length > 0) {

@@ -19,7 +19,7 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { mergeDeep } from "@graphql-tools/utils";
-import type { ConnectionField, ConnectionSortArg, Context } from "../../types";
+import type { ConnectionField, ConnectionSortArg, Context, CypherFieldReferenceMap } from "../../types";
 import type { Node } from "../../classes";
 
 import createProjectionAndParams from "../create-projection-and-params";
@@ -38,7 +38,7 @@ export function createEdgeProjection({
     relatedNode,
     resolveType,
     extraFields = [],
-    cypherFieldAliasMap
+    cypherFieldAliasMap,
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
@@ -48,7 +48,7 @@ export function createEdgeProjection({
     relatedNode: Node;
     resolveType?: boolean;
     extraFields?: Array<string>;
-    cypherFieldAliasMap: any;
+    cypherFieldAliasMap: CypherFieldReferenceMap;
 }): { projection: Cypher.Map; subqueries: Cypher.Clause[] } {
     const connection = resolveTree.fieldsByTypeName[field.typeMeta.name];
 
@@ -86,7 +86,7 @@ export function createEdgeProjection({
                 resolveTree,
                 nodeRefVarName: relatedNodeVariableName,
                 resolveType,
-                cypherFieldAliasMap
+                cypherFieldAliasMap,
             });
             const alias = nodeField.alias;
             edgeProjectionProperties.set(alias, nodeProjection.projection);
@@ -113,7 +113,7 @@ function createConnectionNodeProjection({
     node,
     resolveType = false,
     resolveTree,
-    cypherFieldAliasMap
+    cypherFieldAliasMap,
 }: {
     nodeResolveTree: ResolveTree;
     context;
@@ -121,7 +121,7 @@ function createConnectionNodeProjection({
     node: Node;
     resolveType?: boolean;
     resolveTree: ResolveTree; // Global resolve tree
-    cypherFieldAliasMap: any
+    cypherFieldAliasMap: CypherFieldReferenceMap;
 }): { projection: Cypher.Expr; subqueries: Cypher.Clause[] } {
     const selectedFields: Record<string, ResolveTree> = mergeDeep([
         nodeResolveTree.fieldsByTypeName[node.name],
@@ -150,7 +150,7 @@ function createConnectionNodeProjection({
         varName: nodeRefVarName,
         literalElements: true,
         resolveType,
-        cypherFieldAliasMap
+        cypherFieldAliasMap,
     });
 
     const projectionMeta = nodeProjectionAndParams.meta;

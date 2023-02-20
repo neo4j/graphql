@@ -18,7 +18,7 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { ConnectionField, ConnectionWhereArg, Context } from "../../types";
+import type { ConnectionField, ConnectionWhereArg, Context, CypherFieldReferenceMap } from "../../types";
 import type { Node } from "../../classes";
 import type Relationship from "../../classes/Relationship";
 import { createAuthPredicates } from "../create-auth-and-params";
@@ -43,7 +43,7 @@ export function createEdgeSubquery({
     whereInput,
     resolveType = false,
     ignoreSort = false,
-    cypherFieldAliasMap
+    cypherFieldAliasMap,
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
@@ -54,7 +54,7 @@ export function createEdgeSubquery({
     whereInput: ConnectionWhereArg;
     resolveType?: boolean;
     ignoreSort?: boolean;
-    cypherFieldAliasMap: any;
+    cypherFieldAliasMap: CypherFieldReferenceMap;
 }): Cypher.Clause | undefined {
     const parentNodeRef = getOrCreateCypherNode(parentNode);
 
@@ -118,7 +118,7 @@ export function createEdgeSubquery({
         context,
         resolveType,
         extraFields: getEdgeSortFieldKeys(resolveTree),
-        cypherFieldAliasMap
+        cypherFieldAliasMap,
     });
 
     const withReturn = new Cypher.With([projection.projection, returnVariable]);

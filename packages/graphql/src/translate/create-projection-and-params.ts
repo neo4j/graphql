@@ -21,7 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { mergeDeep } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
-import type { GraphQLOptionsArg, GraphQLWhereArg, Context, GraphQLSortArg } from "../types";
+import type { GraphQLOptionsArg, GraphQLWhereArg, Context, GraphQLSortArg, CypherFieldReferenceMap } from "../types";
 import { createAuthPredicates } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
@@ -64,7 +64,7 @@ export default function createProjectionAndParams({
     varName,
     literalElements,
     resolveType,
-    cypherFieldAliasMap
+    cypherFieldAliasMap,
 }: {
     resolveTree: ResolveTree;
     node: Node;
@@ -72,7 +72,7 @@ export default function createProjectionAndParams({
     varName: Cypher.Node | Cypher.Relationship | Cypher.Variable;
     literalElements?: boolean;
     resolveType?: boolean;
-    cypherFieldAliasMap: Record<string, Cypher.Node | Cypher.Variable>
+    cypherFieldAliasMap: CypherFieldReferenceMap;
 }): ProjectionResult {
     function reducer(res: Res, field: ResolveTree): Res {
         const alias = field.alias;
@@ -115,10 +115,9 @@ export default function createProjectionAndParams({
                 field,
                 node,
                 alias,
-                param,
                 nodeRef: varName as Cypher.Node,
                 res,
-                cypherFieldAliasMap
+                cypherFieldAliasMap,
             });
         }
 
@@ -180,7 +179,7 @@ export default function createProjectionAndParams({
                         node: refNode,
                         context,
                         varName: targetNode,
-                        cypherFieldAliasMap
+                        cypherFieldAliasMap,
                     });
                     res.params = { ...res.params, ...recurse.params };
 
@@ -240,7 +239,7 @@ export default function createProjectionAndParams({
                 node: referenceNode || node,
                 context,
                 varName: targetNode,
-                cypherFieldAliasMap
+                cypherFieldAliasMap,
             });
             res.params = { ...res.params, ...recurse.params };
 
@@ -289,23 +288,14 @@ export default function createProjectionAndParams({
                     field: connectionField,
                     context,
                     nodeVariable: varName as Cypher.Node,
-                    returnVariable: param,
-                    cypherFieldAliasMap
+                    returnVariable: param, // TODO: maybe move this to createConnectionClause
+                    cypherFieldAliasMap,
                 })
             ).innerWith(varName);
-            // TODO varName it was a String now is a Variable
-            // const connection = connectionClause.build(`connection___${matrdn}`); // TODO: remove build from here
-            //  const stupidParams = connection.params;
 
-            /*      const connectionSubClause = new Cypher.RawCypher((env) => {
-                // TODO: avoid REPLACE_ME in params and return them here
-
-                return [connectionClause.getCypher(env), {}];
-            }); */
             res.subqueries.push(connectionClause);
             res.projection.push(new Cypher.RawCypher((env) => `${field.alias}: ${param.getCypher(env)}`));
 
-            // res.params = { ...res.params, ...stupidParams };
             return res;
         }
 
@@ -346,7 +336,7 @@ export default function createProjectionAndParams({
             varName: varName as Cypher.Node,
             literalElements,
             resolveType,
-            cypherFieldAliasMap
+            cypherFieldAliasMap,
         });
     }
 
@@ -455,7 +445,7 @@ function createFulltextProjection({
     varName,
     literalElements,
     resolveType,
-    cypherFieldAliasMap
+    cypherFieldAliasMap,
 }: {
     resolveTree: ResolveTree;
     node: Node;
@@ -464,7 +454,7 @@ function createFulltextProjection({
     varName: Cypher.Node;
     literalElements?: boolean;
     resolveType?: boolean;
-    cypherFieldAliasMap: Record<string, Cypher.Node | Cypher.Variable>
+    cypherFieldAliasMap: CypherFieldReferenceMap;
 }): ProjectionResult {
     if (!resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.singular]) {
         return {
@@ -487,7 +477,7 @@ function createFulltextProjection({
         varName,
         literalElements,
         resolveType,
-        cypherFieldAliasMap
+        cypherFieldAliasMap,
     });
 }
 /**

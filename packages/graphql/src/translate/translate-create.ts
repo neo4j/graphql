@@ -46,13 +46,8 @@ export default async function translateCreate({
     const { resolveTree } = context;
     const mutationInputs = resolveTree.args.input as any[];
 
-    const connectionStrs: string[] = [];
-    const interfaceStrs: string[] = [];
     const projectionWith: string[] = [];
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
-
-    let connectionParams: any;
-    let interfaceParams: any;
 
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
 
@@ -118,7 +113,7 @@ export default async function translateCreate({
             context,
             resolveTree: nodeProjection,
             varName: new Cypher.NamedNode("REPLACE_ME"),
-            cypherFieldAliasMap: {}
+            cypherFieldAliasMap: {},
         });
 
         projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
@@ -165,48 +160,6 @@ export default async function translateCreate({
         }
     }
 
-    const replacedConnectionStrs = connectionStrs.length
-        ? createStrs.map((_, i) => {
-              return connectionStrs
-                  .map((connectionStr) => {
-                      return connectionStr.replace(/REPLACE_ME/g, `this${i}`);
-                  })
-                  .join("\n");
-          })
-        : [];
-
-    // const replacedInterfaceStrs = interfaceStrs.length
-    //     ? createStrs.map((_, i) => {
-    //           return interfaceStrs
-    //               .map((interfaceStr) => {
-    //                   return interfaceStr.replace(/REPLACE_ME/g, `this${i}`);
-    //               })
-    //               .join("\n");
-    //       })
-    //     : [];
-
-    const replacedConnectionParams = connectionParams
-        ? createStrs.reduce((res1, _, i) => {
-              return {
-                  ...res1,
-                  ...Object.entries(connectionParams).reduce((res2, [key, value]) => {
-                      return { ...res2, [key.replace("REPLACE_ME", `this${i}`)]: value };
-                  }, {}),
-              };
-          }, {})
-        : {};
-
-    const replacedInterfaceParams = interfaceParams
-        ? createStrs.reduce((res1, _, i) => {
-              return {
-                  ...res1,
-                  ...Object.entries(interfaceParams).reduce((res2, [key, value]) => {
-                      return { ...res2, [key.replace("REPLACE_ME", `this${i}`)]: value };
-                  }, {}),
-              };
-          }, {})
-        : {};
-
     const returnStatement = generateCreateReturnStatement(projectionExpr, context.subscriptionsEnabled);
     const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
@@ -225,8 +178,6 @@ export default async function translateCreate({
             `${createStrs.join("\n")}`,
             projectionWithStr,
             authCalls?.getCypher(env),
-            ...replacedConnectionStrs,
-            // ...replacedInterfaceStrs,
             ...replacedProjectionSubqueryStrs,
             returnStatement.getCypher(env),
         ])
@@ -237,8 +188,6 @@ export default async function translateCreate({
             {
                 ...params,
                 ...replacedProjectionParams,
-                ...replacedConnectionParams,
-                ...replacedInterfaceParams,
             },
         ];
     });

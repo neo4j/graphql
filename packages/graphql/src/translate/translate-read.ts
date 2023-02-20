@@ -20,7 +20,7 @@
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
-import type { GraphQLOptionsArg, Context, GraphQLWhereArg } from "../types";
+import type { GraphQLOptionsArg, Context, GraphQLWhereArg, CypherFieldReferenceMap } from "../types";
 import { createAuthPredicates } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createMatchClause } from "./translate-top-level-match";
@@ -43,8 +43,8 @@ export function translateRead(
     const { resolveTree } = context;
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
 
-    const cypherFieldAliasMap = {} as Record<string, Cypher.Variable | Cypher.Node>;
-  
+    const cypherFieldAliasMap: CypherFieldReferenceMap = {};
+
     const where = resolveTree.args.where as GraphQLWhereArg | undefined;
 
     let projAuth: Cypher.Clause | undefined;
@@ -66,7 +66,7 @@ export function translateRead(
         context,
         resolveTree,
         varName: new Cypher.NamedNode(varName),
-        cypherFieldAliasMap
+        cypherFieldAliasMap,
     });
 
     if (projection.meta?.authValidatePredicates?.length) {
@@ -122,7 +122,7 @@ export function translateRead(
             fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
             cypherFields: node.cypherFields,
             varName,
-            cypherFieldAliasMap
+            cypherFieldAliasMap,
         });
     }
 
@@ -160,7 +160,7 @@ export function translateRead(
                 fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
                 cypherFields: node.cypherFields,
                 varName,
-                cypherFieldAliasMap                
+                cypherFieldAliasMap,
             });
         }
 
