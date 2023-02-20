@@ -28,6 +28,7 @@ import { NodeAuth } from "../classes/NodeAuth";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import { getOrCreateCypherNode } from "./utils/get-or-create-cypher-variable";
+import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
 
 interface Allow {
     varName: string | Cypher.Node;
@@ -405,38 +406,24 @@ function createRelationshipPredicate({
     context: Context;
 }): Cypher.Predicate {
     const relationship = new Cypher.Relationship({
-        source: nodeRef,
-        target: targetNodeRef,
         type: relationField.type,
     });
 
-    const innerPattern = relationship.pattern({
-        relationship: {
-            variable: false,
-        },
-        source: {
-            variable: true,
-            labels: false,
-        },
-    });
+    const direction = getCypherRelationshipDirection(relationField);
+    const innerPattern = new Cypher.Pattern(nodeRef)
+        .withoutLabels()
+        .related(relationship)
+        .withDirection(direction)
+        .withoutVariable()
+        .to(targetNodeRef);
 
-    const existsPattern = relationship.pattern({
-        target: {
-            variable: false,
-        },
-        source: {
-            variable: true,
-            labels: false,
-        },
-        relationship: {
-            variable: false,
-        },
-    });
-
-    if (relationField.direction === "IN") {
-        innerPattern.reverse();
-        existsPattern.reverse();
-    }
+    const existsPattern = new Cypher.Pattern(nodeRef)
+        .withoutLabels()
+        .related(relationship)
+        .withDirection(direction)
+        .withoutVariable()
+        .to(targetNodeRef)
+        .withoutVariable();
 
     let predicateFunction: Cypher.PredicateFunction;
     if (kind === "allow") {

@@ -144,7 +144,7 @@ describe("Date", () => {
 
                 const movie: {
                     id: string;
-                    dates: typeof neo4jDriver.types.Date[];
+                    dates: (typeof neo4jDriver.types.Date)[];
                 } = (result.records[0].toObject() as any).m;
 
                 expect(movie.id).toEqual(id);

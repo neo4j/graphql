@@ -25,7 +25,7 @@ describe("Pattern comprehension", () => {
         const node = new Cypher.Node({ labels: ["Movie"] });
         const andExpr = Cypher.eq(node.property("released"), new Cypher.Param(1999));
 
-        const comprehension = new Cypher.PatternComprehension(node.pattern(), andExpr);
+        const comprehension = new Cypher.PatternComprehension(new Cypher.Pattern(node), andExpr);
 
         const queryResult = new TestClause(comprehension).build();
 
@@ -41,7 +41,7 @@ describe("Pattern comprehension", () => {
     test("comprehension without filter", () => {
         const node = new Cypher.Node({ labels: ["Movie"] });
 
-        const comprehension = new Cypher.PatternComprehension(node.pattern());
+        const comprehension = new Cypher.PatternComprehension(new Cypher.Pattern(node));
 
         const queryResult = new TestClause(comprehension).build();
 

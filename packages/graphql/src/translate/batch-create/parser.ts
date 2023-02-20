@@ -37,8 +37,7 @@ function getRelationshipFields(
     if (relationField) {
         if (relationField.interface || relationField.union) {
             throw new UnsupportedUnwindOptimization(`Not supported operation: Interface or Union`);
-        }
-        else {
+        } else {
             refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
         }
     }
@@ -145,7 +144,7 @@ export function getTreeDescriptor(
             if (typeof value === "object" && value !== null && !scalar) {
                 // TODO: supports union/interfaces
                 const innerNode = relationField && relatedNodes[0] ? relatedNodes[0] : node;
-              
+
                 if (Array.isArray(value)) {
                     previous.children[key] = mergeTreeDescriptors(
                         value.map((el) =>

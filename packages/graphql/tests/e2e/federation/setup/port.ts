@@ -17,10 +17,8 @@
  * limitations under the License.
  */
 
-import { mergeTypeDefs } from "@graphql-tools/merge";
-import type { TypeSource } from "@graphql-tools/utils";
-import type { DocumentNode } from "graphql";
+let port = 4000;
 
-export function getDocument(typeDefs: TypeSource): DocumentNode {
-    return mergeTypeDefs(typeDefs);
-}
+export const getPort = () => {
+    return port++;
+};

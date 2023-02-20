@@ -29,6 +29,7 @@ import { NODE_OR_EDGE_KEYS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../con
 import { getCypherLogicalOperator, isLogicalOperator, LogicalOperator } from "./utils/logical-operators";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { asArray } from "../utils/utils";
+import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
 
 type WhereFilter = Record<string | LogicalOperator, any>;
 
@@ -61,18 +62,19 @@ export function aggregatePreComputedWhereFields({
     matchNode: Cypher.Variable;
 }): PredicateReturn {
     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-    const direction = relationField.direction;
+    const direction = getCypherRelationshipDirection(relationField);
     const aggregationTarget = new Cypher.Node({ labels: refNode.getLabels(context) });
+
     const cypherRelation = new Cypher.Relationship({
-        source: matchNode as Cypher.Node,
-        target: aggregationTarget,
         type: relationField.type,
     });
-    let matchPattern = cypherRelation.pattern({ source: { labels: false } });
-    if (direction === "IN") {
-        cypherRelation.reverse();
-        matchPattern = cypherRelation.pattern({ target: { labels: false } });
-    }
+
+    const matchPattern = new Cypher.Pattern(matchNode as Cypher.Node)
+        .withoutLabels()
+        .related(cypherRelation)
+        .withDirection(direction)
+        .to(aggregationTarget);
+
     const matchQuery = new Cypher.Match(matchPattern);
     const { returnProjections, predicates } = aggregateWhere(
         value as AggregateWhereInput,
