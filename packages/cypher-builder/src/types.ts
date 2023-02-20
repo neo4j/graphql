@@ -18,7 +18,7 @@
  */
 
 import type { PropertyRef } from "./references/PropertyRef";
-import type { CypherFunction } from "./expressions/functions/CypherFunction";
+import type { CypherFunction } from "./expressions/functions/CypherFunctions";
 import type { Literal } from "./references/Literal";
 import type { Exists } from "./expressions/Exists";
 import type { CypherEnvironment } from "./Environment";
