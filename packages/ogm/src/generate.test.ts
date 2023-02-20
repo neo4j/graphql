@@ -1458,25 +1458,25 @@ describe("generate", () => {
               /** @deprecated Use \`actors_NONE\` instead. */
               actors_NOT?: InputMaybe<PersonWhere>;
               actorsAggregate?: InputMaybe<MovieActorsAggregateInput>;
-              /** Return Movies where all of the related actors match this filter */
+              /** Return Movies where all of the related People match this filter */
               actors_ALL?: InputMaybe<PersonWhere>;
-              /** Return Movies where none of the related actors match this filter */
+              /** Return Movies where none of the related People match this filter */
               actors_NONE?: InputMaybe<PersonWhere>;
-              /** Return Movies where one of the related actors match this filter */
+              /** Return Movies where one of the related People match this filter */
               actors_SINGLE?: InputMaybe<PersonWhere>;
-              /** Return Movies where some of the related actors match this filter */
+              /** Return Movies where some of the related People match this filter */
               actors_SOME?: InputMaybe<PersonWhere>;
               /** @deprecated Use \`actorsConnection_SOME\` instead. */
               actorsConnection?: InputMaybe<MovieActorsConnectionWhere>;
               /** @deprecated Use \`actorsConnection_NONE\` instead. */
               actorsConnection_NOT?: InputMaybe<MovieActorsConnectionWhere>;
-              /** Return Movies where all of the related actorsConnections match this filter */
+              /** Return Movies where all of the related MovieActorsConnections match this filter */
               actorsConnection_ALL?: InputMaybe<MovieActorsConnectionWhere>;
-              /** Return Movies where none of the related actorsConnections match this filter */
+              /** Return Movies where none of the related MovieActorsConnections match this filter */
               actorsConnection_NONE?: InputMaybe<MovieActorsConnectionWhere>;
-              /** Return Movies where one of the related actorsConnections match this filter */
+              /** Return Movies where one of the related MovieActorsConnections match this filter */
               actorsConnection_SINGLE?: InputMaybe<MovieActorsConnectionWhere>;
-              /** Return Movies where some of the related actorsConnections match this filter */
+              /** Return Movies where some of the related MovieActorsConnections match this filter */
               actorsConnection_SOME?: InputMaybe<MovieActorsConnectionWhere>;
             };
 
