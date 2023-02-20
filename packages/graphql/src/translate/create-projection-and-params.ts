@@ -73,6 +73,7 @@ export default function createProjectionAndParams({
     resolveType?: boolean;
 }): ProjectionResult {
     function reducer(res: Res, field: ResolveTree): Res {
+        console.trace("create reducer", node.name, field.name);
         const alias = field.alias;
         const param = new Cypher.Node();
 
@@ -125,7 +126,7 @@ export default function createProjectionAndParams({
             if (referenceNode?.queryOptions) {
                 optionsInput.limit = referenceNode.queryOptions.getLimit(optionsInput.limit);
             }
-            const subqueryReturnAlias = new Cypher.Variable();
+            const subqueryReturnAlias = new Cypher.NamedVariable(`var_${alias}_REPLACE_ME`);
             if (relationField.interface || relationField.union) {
                 let referenceNodes;
                 if (relationField.interface) {
@@ -171,11 +172,12 @@ export default function createProjectionAndParams({
                 const unionSubqueries: Cypher.Clause[] = [];
 
                 for (const refNode of referenceNodes) {
+                    const targetNode = new Cypher.Node({ labels: refNode.getLabels(context) });
                     const recurse = createProjectionAndParams({
                         resolveTree: field,
                         node: refNode,
                         context,
-                        varName,
+                        varName: targetNode,
                     });
                     res.params = { ...res.params, ...recurse.params };
 
@@ -187,7 +189,6 @@ export default function createProjectionAndParams({
                         return `{ __resolveType: "${refNode.name}"${nestedProjString} }`;
                     });
 
-                    const targetNode = new Cypher.Node({ labels: refNode.getLabels(context) });
                     const subquery = createProjectionSubquery({
                         parentNode,
                         whereInput: field.args.where ? field.args.where[refNode.name] : {},
@@ -291,7 +292,7 @@ export default function createProjectionAndParams({
             // const connection = connectionClause.build(`connection___${matrdn}`); // TODO: remove build from here
             //  const stupidParams = connection.params;
 
-       /*      const connectionSubClause = new Cypher.RawCypher((env) => {
+            /*      const connectionSubClause = new Cypher.RawCypher((env) => {
                 // TODO: avoid REPLACE_ME in params and return them here
 
                 return [connectionClause.getCypher(env), {}];

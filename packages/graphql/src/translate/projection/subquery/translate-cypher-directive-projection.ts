@@ -52,7 +52,8 @@ export function translateCypherDirectiveProjection({
     param: Cypher.Relationship | Cypher.Node;
     res: Res;
 }): Res {
-    const resultVariable = new Cypher.Node();
+    // const resultVariable = new Cypher.Node();
+    const resultVariable = new Cypher.NamedNode(`${nodeRef.prefix}_${alias}`);
     const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
     const entity = context.schemaModel.entities.get(cypherField.typeMeta.name);
 
@@ -79,7 +80,7 @@ export function translateCypherDirectiveProjection({
         });
 
         projectionExpr = new Cypher.RawCypher((env) => {
-          return  `${resultVariable.getCypher(env)} ${str.getCypher(env)}`
+            return `${resultVariable.getCypher(env)} ${str.getCypher(env)}`;
         });
         res.params = { ...res.params, ...p };
         subqueries.push(...nestedSubqueriesBeforeSort, ...nestedSubqueries);
@@ -99,13 +100,14 @@ export function translateCypherDirectiveProjection({
         }
         referencedNodes.forEach((refNode, index) => {
             if (refNode) {
+                const subqueryParam = new Cypher.Node();
+
                 const cypherNodeRef = resultVariable as Cypher.Node;
                 const hasLabelsPredicates = refNode.getLabels(context).map((label) => cypherNodeRef.hasLabel(label));
                 const labelsSubPredicate = Cypher.and(...hasLabelsPredicates);
 
                 labelsSubPredicates.push(labelsSubPredicate);
 
-                const subqueryParam = new Cypher.Node();
                 if (fieldFields[refNode.name]) {
                     const {
                         projection: str,
@@ -148,7 +150,9 @@ export function translateCypherDirectiveProjection({
         hasUnionLabelsPredicate = Cypher.or(...labelsSubPredicates);
         projectionExpr = new Cypher.Case();
         for (const { projection, predicate } of unionProjections) {
-            projectionExpr.when(predicate).then(new Cypher.RawCypher((env) => `${resultVariable.getCypher(env)} ${projection.getCypher(env)}`));
+            projectionExpr
+                .when(predicate)
+                .then(new Cypher.RawCypher((env) => `${resultVariable.getCypher(env)} ${projection.getCypher(env)}`));
         }
     }
 

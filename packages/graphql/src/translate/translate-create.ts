@@ -174,15 +174,15 @@ export default async function translateCreate({
           })
         : [];
 
-    const replacedInterfaceStrs = interfaceStrs.length
-        ? createStrs.map((_, i) => {
-              return interfaceStrs
-                  .map((interfaceStr) => {
-                      return interfaceStr.replace(/REPLACE_ME/g, `this${i}`);
-                  })
-                  .join("\n");
-          })
-        : [];
+    // const replacedInterfaceStrs = interfaceStrs.length
+    //     ? createStrs.map((_, i) => {
+    //           return interfaceStrs
+    //               .map((interfaceStr) => {
+    //                   return interfaceStr.replace(/REPLACE_ME/g, `this${i}`);
+    //               })
+    //               .join("\n");
+    //       })
+    //     : [];
 
     const replacedConnectionParams = connectionParams
         ? createStrs.reduce((res1, _, i) => {
@@ -225,7 +225,7 @@ export default async function translateCreate({
             projectionWithStr,
             authCalls?.getCypher(env),
             ...replacedConnectionStrs,
-            ...replacedInterfaceStrs,
+            // ...replacedInterfaceStrs,
             ...replacedProjectionSubqueryStrs,
             returnStatement.getCypher(env),
         ])
