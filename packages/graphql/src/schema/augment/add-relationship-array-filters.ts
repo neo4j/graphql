@@ -24,12 +24,14 @@ export function addRelationshipArrayFilters({
     whereInput,
     fieldName,
     sourceName,
+    relatedType,
     whereType,
     directives,
 }: {
     whereInput: InputTypeComposer<any>;
     fieldName: string;
     sourceName: string;
+    relatedType: string;
     whereType: InputTypeComposer<any> | string;
     directives: Directive[];
 }) {
@@ -43,7 +45,7 @@ export function addRelationshipArrayFilters({
                     // e.g. "Return Movies where all of the related Actors match this filter"
                     description: `Return ${pluralize(sourceName)} where ${
                         filter !== "SINGLE" ? filter.toLowerCase() : "one"
-                    } of the related ${pluralize(fieldName)} match this filter`,
+                    } of the related ${pluralize(relatedType)} match this filter`,
                 },
             }),
             {}

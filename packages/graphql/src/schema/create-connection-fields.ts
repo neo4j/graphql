@@ -107,6 +107,7 @@ function createConnectionFields({
                 whereInput,
                 fieldName: connectionField.fieldName,
                 sourceName: sourceName,
+                relatedType: connectionField.typeMeta.name,
                 whereType: connectionWhere,
                 directives: deprecatedDirectives,
             });

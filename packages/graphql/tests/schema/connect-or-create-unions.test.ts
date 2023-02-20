@@ -329,20 +329,20 @@ describe("Connect Or Create", () => {
               OR: [ActorWhere!]
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Actors where all of the related actedInConnections match this filter
+              Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_ALL: ActorActedInConnectionWhere
               \\"\\"\\"
-              Return Actors where none of the related actedInConnections match this filter
+              Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_NONE: ActorActedInConnectionWhere
               actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Actors where one of the related actedInConnections match this filter
+              Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SINGLE: ActorActedInConnectionWhere
               \\"\\"\\"
-              Return Actors where some of the related actedInConnections match this filter
+              Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
               name: String

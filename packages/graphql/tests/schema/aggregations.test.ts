@@ -1271,30 +1271,30 @@ describe("Aggregations", () => {
               likesAggregate: PostLikesAggregateInput
               likesConnection: PostLikesConnectionWhere @deprecated(reason: \\"Use \`likesConnection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Posts where all of the related likesConnections match this filter
+              Return Posts where all of the related PostLikesConnections match this filter
               \\"\\"\\"
               likesConnection_ALL: PostLikesConnectionWhere
               \\"\\"\\"
-              Return Posts where none of the related likesConnections match this filter
+              Return Posts where none of the related PostLikesConnections match this filter
               \\"\\"\\"
               likesConnection_NONE: PostLikesConnectionWhere
               likesConnection_NOT: PostLikesConnectionWhere @deprecated(reason: \\"Use \`likesConnection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Posts where one of the related likesConnections match this filter
+              Return Posts where one of the related PostLikesConnections match this filter
               \\"\\"\\"
               likesConnection_SINGLE: PostLikesConnectionWhere
               \\"\\"\\"
-              Return Posts where some of the related likesConnections match this filter
+              Return Posts where some of the related PostLikesConnections match this filter
               \\"\\"\\"
               likesConnection_SOME: PostLikesConnectionWhere
-              \\"\\"\\"Return Posts where all of the related likes match this filter\\"\\"\\"
+              \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
               likes_ALL: UserWhere
-              \\"\\"\\"Return Posts where none of the related likes match this filter\\"\\"\\"
+              \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
               likes_NONE: UserWhere
               likes_NOT: UserWhere @deprecated(reason: \\"Use \`likes_NONE\` instead.\\")
-              \\"\\"\\"Return Posts where one of the related likes match this filter\\"\\"\\"
+              \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
               likes_SINGLE: UserWhere
-              \\"\\"\\"Return Posts where some of the related likes match this filter\\"\\"\\"
+              \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
               likes_SOME: UserWhere
               title: String
               title_CONTAINS: String

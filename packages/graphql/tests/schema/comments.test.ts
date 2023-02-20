@@ -579,30 +579,30 @@ describe("Comments", () => {
                   actorsAggregate: MovieActorsAggregateInput
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                   \\"\\"\\"
-                  Return Movies where all of the related actorsConnections match this filter
+                  Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_ALL: MovieActorsConnectionWhere
                   \\"\\"\\"
-                  Return Movies where none of the related actorsConnections match this filter
+                  Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
                   actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
-                  Return Movies where one of the related actorsConnections match this filter
+                  Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SINGLE: MovieActorsConnectionWhere
                   \\"\\"\\"
-                  Return Movies where some of the related actorsConnections match this filter
+                  Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
-                  \\"\\"\\"Return Movies where all of the related actors match this filter\\"\\"\\"
+                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
                   actors_ALL: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related actors match this filter\\"\\"\\"
+                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
                   actors_NONE: ActorWhere
                   actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-                  \\"\\"\\"Return Movies where one of the related actors match this filter\\"\\"\\"
+                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
                   actors_SINGLE: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related actors match this filter\\"\\"\\"
+                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
                   id: ID
                   id_CONTAINS: ID
@@ -876,20 +876,20 @@ describe("Comments", () => {
                   OR: [ActorWhere!]
                   actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
                   \\"\\"\\"
-                  Return Actors where all of the related actedInConnections match this filter
+                  Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   actedInConnection_ALL: ActorActedInConnectionWhere
                   \\"\\"\\"
-                  Return Actors where none of the related actedInConnections match this filter
+                  Return Actors where none of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   actedInConnection_NONE: ActorActedInConnectionWhere
                   actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
                   \\"\\"\\"
-                  Return Actors where one of the related actedInConnections match this filter
+                  Return Actors where one of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   actedInConnection_SINGLE: ActorActedInConnectionWhere
                   \\"\\"\\"
-                  Return Actors where some of the related actedInConnections match this filter
+                  Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   actedInConnection_SOME: ActorActedInConnectionWhere
                   name: String
@@ -1547,20 +1547,20 @@ describe("Comments", () => {
                   id_STARTS_WITH: ID
                   searchConnection: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_SOME\` instead.\\")
                   \\"\\"\\"
-                  Return Movies where all of the related searchConnections match this filter
+                  Return Movies where all of the related MovieSearchConnections match this filter
                   \\"\\"\\"
                   searchConnection_ALL: MovieSearchConnectionWhere
                   \\"\\"\\"
-                  Return Movies where none of the related searchConnections match this filter
+                  Return Movies where none of the related MovieSearchConnections match this filter
                   \\"\\"\\"
                   searchConnection_NONE: MovieSearchConnectionWhere
                   searchConnection_NOT: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
                   \\"\\"\\"
-                  Return Movies where one of the related searchConnections match this filter
+                  Return Movies where one of the related MovieSearchConnections match this filter
                   \\"\\"\\"
                   searchConnection_SINGLE: MovieSearchConnectionWhere
                   \\"\\"\\"
-                  Return Movies where some of the related searchConnections match this filter
+                  Return Movies where some of the related MovieSearchConnections match this filter
                   \\"\\"\\"
                   searchConnection_SOME: MovieSearchConnectionWhere
                 }

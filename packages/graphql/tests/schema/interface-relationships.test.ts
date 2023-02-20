@@ -217,20 +217,20 @@ describe("Interface Relationships", () => {
               OR: [ActorWhere!]
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Actors where all of the related actedInConnections match this filter
+              Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_ALL: ActorActedInConnectionWhere
               \\"\\"\\"
-              Return Actors where none of the related actedInConnections match this filter
+              Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_NONE: ActorActedInConnectionWhere
               actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Actors where one of the related actedInConnections match this filter
+              Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SINGLE: ActorActedInConnectionWhere
               \\"\\"\\"
-              Return Actors where some of the related actedInConnections match this filter
+              Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
               name: String
@@ -772,20 +772,20 @@ describe("Interface Relationships", () => {
               OR: [ActorWhere!]
               actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Actors where all of the related actedInConnections match this filter
+              Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_ALL: ActorActedInConnectionWhere
               \\"\\"\\"
-              Return Actors where none of the related actedInConnections match this filter
+              Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_NONE: ActorActedInConnectionWhere
               actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Actors where one of the related actedInConnections match this filter
+              Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SINGLE: ActorActedInConnectionWhere
               \\"\\"\\"
-              Return Actors where some of the related actedInConnections match this filter
+              Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_SOME: ActorActedInConnectionWhere
               name: String
@@ -1260,30 +1260,30 @@ describe("Interface Relationships", () => {
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Movies where all of the related actorsConnections match this filter
+              Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_ALL: ProductionActorsConnectionWhere
               \\"\\"\\"
-              Return Movies where none of the related actorsConnections match this filter
+              Return Movies where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Movies where one of the related actorsConnections match this filter
+              Return Movies where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_SINGLE: ProductionActorsConnectionWhere
               \\"\\"\\"
-              Return Movies where some of the related actorsConnections match this filter
+              Return Movies where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_SOME: ProductionActorsConnectionWhere
-              \\"\\"\\"Return Movies where all of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
               actors_ALL: ActorWhere
-              \\"\\"\\"Return Movies where none of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-              \\"\\"\\"Return Movies where one of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
-              \\"\\"\\"Return Movies where some of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
               runtime: Int
               runtime_GT: Int
@@ -1573,30 +1573,30 @@ describe("Interface Relationships", () => {
               actorsAggregate: ProductionActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Productions where all of the related actorsConnections match this filter
+              Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_ALL: ProductionActorsConnectionWhere
               \\"\\"\\"
-              Return Productions where none of the related actorsConnections match this filter
+              Return Productions where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Productions where one of the related actorsConnections match this filter
+              Return Productions where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_SINGLE: ProductionActorsConnectionWhere
               \\"\\"\\"
-              Return Productions where some of the related actorsConnections match this filter
+              Return Productions where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_SOME: ProductionActorsConnectionWhere
-              \\"\\"\\"Return Productions where all of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
               actors_ALL: ActorWhere
-              \\"\\"\\"Return Productions where none of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-              \\"\\"\\"Return Productions where one of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
-              \\"\\"\\"Return Productions where some of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
               title: String
               title_CONTAINS: String
@@ -1933,30 +1933,30 @@ describe("Interface Relationships", () => {
               actorsAggregate: SeriesActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Series where all of the related actorsConnections match this filter
+              Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_ALL: ProductionActorsConnectionWhere
               \\"\\"\\"
-              Return Series where none of the related actorsConnections match this filter
+              Return Series where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Series where one of the related actorsConnections match this filter
+              Return Series where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_SINGLE: ProductionActorsConnectionWhere
               \\"\\"\\"
-              Return Series where some of the related actorsConnections match this filter
+              Return Series where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_SOME: ProductionActorsConnectionWhere
-              \\"\\"\\"Return Series where all of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
               actors_ALL: ActorWhere
-              \\"\\"\\"Return Series where none of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
               actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-              \\"\\"\\"Return Series where one of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
-              \\"\\"\\"Return Series where some of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
               episodeCount: Int
               episodeCount_GT: Int
@@ -1970,30 +1970,30 @@ describe("Interface Relationships", () => {
               episodesAggregate: SeriesEpisodesAggregateInput
               episodesConnection: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Use \`episodesConnection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Series where all of the related episodesConnections match this filter
+              Return Series where all of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
               episodesConnection_ALL: SeriesEpisodesConnectionWhere
               \\"\\"\\"
-              Return Series where none of the related episodesConnections match this filter
+              Return Series where none of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
               episodesConnection_NONE: SeriesEpisodesConnectionWhere
               episodesConnection_NOT: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Use \`episodesConnection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Series where one of the related episodesConnections match this filter
+              Return Series where one of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
               episodesConnection_SINGLE: SeriesEpisodesConnectionWhere
               \\"\\"\\"
-              Return Series where some of the related episodesConnections match this filter
+              Return Series where some of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
               episodesConnection_SOME: SeriesEpisodesConnectionWhere
-              \\"\\"\\"Return Series where all of the related episodes match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where all of the related Episodes match this filter\\"\\"\\"
               episodes_ALL: EpisodeWhere
-              \\"\\"\\"Return Series where none of the related episodes match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where none of the related Episodes match this filter\\"\\"\\"
               episodes_NONE: EpisodeWhere
               episodes_NOT: EpisodeWhere @deprecated(reason: \\"Use \`episodes_NONE\` instead.\\")
-              \\"\\"\\"Return Series where one of the related episodes match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where one of the related Episodes match this filter\\"\\"\\"
               episodes_SINGLE: EpisodeWhere
-              \\"\\"\\"Return Series where some of the related episodes match this filter\\"\\"\\"
+              \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
               episodes_SOME: EpisodeWhere
               title: String
               title_CONTAINS: String
@@ -2278,20 +2278,20 @@ describe("Interface Relationships", () => {
               field1_STARTS_WITH: String
               interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Interface1s where all of the related interface2Connections match this filter
+              Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_ALL: Interface1Interface2ConnectionWhere
               \\"\\"\\"
-              Return Interface1s where none of the related interface2Connections match this filter
+              Return Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_NONE: Interface1Interface2ConnectionWhere
               interface2Connection_NOT: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Interface1s where one of the related interface2Connections match this filter
+              Return Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
               \\"\\"\\"
-              Return Interface1s where some of the related interface2Connections match this filter
+              Return Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
             }
@@ -2606,20 +2606,20 @@ describe("Interface Relationships", () => {
               field1_STARTS_WITH: String
               interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Type1Interface1s where all of the related interface2Connections match this filter
+              Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_ALL: Interface1Interface2ConnectionWhere
               \\"\\"\\"
-              Return Type1Interface1s where none of the related interface2Connections match this filter
+              Return Type1Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_NONE: Interface1Interface2ConnectionWhere
               interface2Connection_NOT: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Type1Interface1s where one of the related interface2Connections match this filter
+              Return Type1Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
               \\"\\"\\"
-              Return Type1Interface1s where some of the related interface2Connections match this filter
+              Return Type1Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
             }
@@ -2731,20 +2731,20 @@ describe("Interface Relationships", () => {
               field1_STARTS_WITH: String
               interface1Connection: Type1Interface1ConnectionWhere @deprecated(reason: \\"Use \`interface1Connection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Type1s where all of the related interface1Connections match this filter
+              Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
               interface1Connection_ALL: Type1Interface1ConnectionWhere
               \\"\\"\\"
-              Return Type1s where none of the related interface1Connections match this filter
+              Return Type1s where none of the related Type1Interface1Connections match this filter
               \\"\\"\\"
               interface1Connection_NONE: Type1Interface1ConnectionWhere
               interface1Connection_NOT: Type1Interface1ConnectionWhere @deprecated(reason: \\"Use \`interface1Connection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Type1s where one of the related interface1Connections match this filter
+              Return Type1s where one of the related Type1Interface1Connections match this filter
               \\"\\"\\"
               interface1Connection_SINGLE: Type1Interface1ConnectionWhere
               \\"\\"\\"
-              Return Type1s where some of the related interface1Connections match this filter
+              Return Type1s where some of the related Type1Interface1Connections match this filter
               \\"\\"\\"
               interface1Connection_SOME: Type1Interface1ConnectionWhere
             }
@@ -2858,20 +2858,20 @@ describe("Interface Relationships", () => {
               field1_STARTS_WITH: String
               interface2Connection: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Type2Interface1s where all of the related interface2Connections match this filter
+              Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_ALL: Interface1Interface2ConnectionWhere
               \\"\\"\\"
-              Return Type2Interface1s where none of the related interface2Connections match this filter
+              Return Type2Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_NONE: Interface1Interface2ConnectionWhere
               interface2Connection_NOT: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Use \`interface2Connection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Type2Interface1s where one of the related interface2Connections match this filter
+              Return Type2Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
               \\"\\"\\"
-              Return Type2Interface1s where some of the related interface2Connections match this filter
+              Return Type2Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
             }
@@ -3887,30 +3887,30 @@ describe("Interface Relationships", () => {
               commentsAggregate: PostCommentsAggregateInput
               commentsConnection: PostCommentsConnectionWhere @deprecated(reason: \\"Use \`commentsConnection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Posts where all of the related commentsConnections match this filter
+              Return Posts where all of the related PostCommentsConnections match this filter
               \\"\\"\\"
               commentsConnection_ALL: PostCommentsConnectionWhere
               \\"\\"\\"
-              Return Posts where none of the related commentsConnections match this filter
+              Return Posts where none of the related PostCommentsConnections match this filter
               \\"\\"\\"
               commentsConnection_NONE: PostCommentsConnectionWhere
               commentsConnection_NOT: PostCommentsConnectionWhere @deprecated(reason: \\"Use \`commentsConnection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Posts where one of the related commentsConnections match this filter
+              Return Posts where one of the related PostCommentsConnections match this filter
               \\"\\"\\"
               commentsConnection_SINGLE: PostCommentsConnectionWhere
               \\"\\"\\"
-              Return Posts where some of the related commentsConnections match this filter
+              Return Posts where some of the related PostCommentsConnections match this filter
               \\"\\"\\"
               commentsConnection_SOME: PostCommentsConnectionWhere
-              \\"\\"\\"Return Posts where all of the related comments match this filter\\"\\"\\"
+              \\"\\"\\"Return Posts where all of the related Comments match this filter\\"\\"\\"
               comments_ALL: CommentWhere
-              \\"\\"\\"Return Posts where none of the related comments match this filter\\"\\"\\"
+              \\"\\"\\"Return Posts where none of the related Comments match this filter\\"\\"\\"
               comments_NONE: CommentWhere
               comments_NOT: CommentWhere @deprecated(reason: \\"Use \`comments_NONE\` instead.\\")
-              \\"\\"\\"Return Posts where one of the related comments match this filter\\"\\"\\"
+              \\"\\"\\"Return Posts where one of the related Comments match this filter\\"\\"\\"
               comments_SINGLE: CommentWhere
-              \\"\\"\\"Return Posts where some of the related comments match this filter\\"\\"\\"
+              \\"\\"\\"Return Posts where some of the related Comments match this filter\\"\\"\\"
               comments_SOME: CommentWhere
               content: String
               content_CONTAINS: String
@@ -4125,20 +4125,20 @@ describe("Interface Relationships", () => {
               OR: [UserWhere!]
               contentConnection: UserContentConnectionWhere @deprecated(reason: \\"Use \`contentConnection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Users where all of the related contentConnections match this filter
+              Return Users where all of the related UserContentConnections match this filter
               \\"\\"\\"
               contentConnection_ALL: UserContentConnectionWhere
               \\"\\"\\"
-              Return Users where none of the related contentConnections match this filter
+              Return Users where none of the related UserContentConnections match this filter
               \\"\\"\\"
               contentConnection_NONE: UserContentConnectionWhere
               contentConnection_NOT: UserContentConnectionWhere @deprecated(reason: \\"Use \`contentConnection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Users where one of the related contentConnections match this filter
+              Return Users where one of the related UserContentConnections match this filter
               \\"\\"\\"
               contentConnection_SINGLE: UserContentConnectionWhere
               \\"\\"\\"
-              Return Users where some of the related contentConnections match this filter
+              Return Users where some of the related UserContentConnections match this filter
               \\"\\"\\"
               contentConnection_SOME: UserContentConnectionWhere
               id: ID

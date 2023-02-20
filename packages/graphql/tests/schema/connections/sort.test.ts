@@ -230,30 +230,30 @@ describe("Sort", () => {
               relatedToAggregate: Node1RelatedToAggregateInput
               relatedToConnection: Node1RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Node1s where all of the related relatedToConnections match this filter
+              Return Node1s where all of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
               relatedToConnection_ALL: Node1RelatedToConnectionWhere
               \\"\\"\\"
-              Return Node1s where none of the related relatedToConnections match this filter
+              Return Node1s where none of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
               relatedToConnection_NONE: Node1RelatedToConnectionWhere
               relatedToConnection_NOT: Node1RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Node1s where one of the related relatedToConnections match this filter
+              Return Node1s where one of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
               relatedToConnection_SINGLE: Node1RelatedToConnectionWhere
               \\"\\"\\"
-              Return Node1s where some of the related relatedToConnections match this filter
+              Return Node1s where some of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
               relatedToConnection_SOME: Node1RelatedToConnectionWhere
-              \\"\\"\\"Return Node1s where all of the related relatedTos match this filter\\"\\"\\"
+              \\"\\"\\"Return Node1s where all of the related Node2s match this filter\\"\\"\\"
               relatedTo_ALL: Node2Where
-              \\"\\"\\"Return Node1s where none of the related relatedTos match this filter\\"\\"\\"
+              \\"\\"\\"Return Node1s where none of the related Node2s match this filter\\"\\"\\"
               relatedTo_NONE: Node2Where
               relatedTo_NOT: Node2Where @deprecated(reason: \\"Use \`relatedTo_NONE\` instead.\\")
-              \\"\\"\\"Return Node1s where one of the related relatedTos match this filter\\"\\"\\"
+              \\"\\"\\"Return Node1s where one of the related Node2s match this filter\\"\\"\\"
               relatedTo_SINGLE: Node2Where
-              \\"\\"\\"Return Node1s where some of the related relatedTos match this filter\\"\\"\\"
+              \\"\\"\\"Return Node1s where some of the related Node2s match this filter\\"\\"\\"
               relatedTo_SOME: Node2Where
             }
 
@@ -445,30 +445,30 @@ describe("Sort", () => {
               relatedToAggregate: Node2RelatedToAggregateInput
               relatedToConnection: Node2RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Node2s where all of the related relatedToConnections match this filter
+              Return Node2s where all of the related Node2RelatedToConnections match this filter
               \\"\\"\\"
               relatedToConnection_ALL: Node2RelatedToConnectionWhere
               \\"\\"\\"
-              Return Node2s where none of the related relatedToConnections match this filter
+              Return Node2s where none of the related Node2RelatedToConnections match this filter
               \\"\\"\\"
               relatedToConnection_NONE: Node2RelatedToConnectionWhere
               relatedToConnection_NOT: Node2RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Node2s where one of the related relatedToConnections match this filter
+              Return Node2s where one of the related Node2RelatedToConnections match this filter
               \\"\\"\\"
               relatedToConnection_SINGLE: Node2RelatedToConnectionWhere
               \\"\\"\\"
-              Return Node2s where some of the related relatedToConnections match this filter
+              Return Node2s where some of the related Node2RelatedToConnections match this filter
               \\"\\"\\"
               relatedToConnection_SOME: Node2RelatedToConnectionWhere
-              \\"\\"\\"Return Node2s where all of the related relatedTos match this filter\\"\\"\\"
+              \\"\\"\\"Return Node2s where all of the related Node1s match this filter\\"\\"\\"
               relatedTo_ALL: Node1Where
-              \\"\\"\\"Return Node2s where none of the related relatedTos match this filter\\"\\"\\"
+              \\"\\"\\"Return Node2s where none of the related Node1s match this filter\\"\\"\\"
               relatedTo_NONE: Node1Where
               relatedTo_NOT: Node1Where @deprecated(reason: \\"Use \`relatedTo_NONE\` instead.\\")
-              \\"\\"\\"Return Node2s where one of the related relatedTos match this filter\\"\\"\\"
+              \\"\\"\\"Return Node2s where one of the related Node1s match this filter\\"\\"\\"
               relatedTo_SINGLE: Node1Where
-              \\"\\"\\"Return Node2s where some of the related relatedTos match this filter\\"\\"\\"
+              \\"\\"\\"Return Node2s where some of the related Node1s match this filter\\"\\"\\"
               relatedTo_SOME: Node1Where
             }
 

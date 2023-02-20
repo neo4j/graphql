@@ -349,20 +349,20 @@ describe("Unions", () => {
               id_STARTS_WITH: ID
               searchConnection: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_SOME\` instead.\\")
               \\"\\"\\"
-              Return Movies where all of the related searchConnections match this filter
+              Return Movies where all of the related MovieSearchConnections match this filter
               \\"\\"\\"
               searchConnection_ALL: MovieSearchConnectionWhere
               \\"\\"\\"
-              Return Movies where none of the related searchConnections match this filter
+              Return Movies where none of the related MovieSearchConnections match this filter
               \\"\\"\\"
               searchConnection_NONE: MovieSearchConnectionWhere
               searchConnection_NOT: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
               \\"\\"\\"
-              Return Movies where one of the related searchConnections match this filter
+              Return Movies where one of the related MovieSearchConnections match this filter
               \\"\\"\\"
               searchConnection_SINGLE: MovieSearchConnectionWhere
               \\"\\"\\"
-              Return Movies where some of the related searchConnections match this filter
+              Return Movies where some of the related MovieSearchConnections match this filter
               \\"\\"\\"
               searchConnection_SOME: MovieSearchConnectionWhere
             }
