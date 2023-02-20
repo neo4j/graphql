@@ -66,3 +66,5 @@ GraphQL Team at Neo4j.
 
 Search for "GraphQL Team" at <https://neo4j.com/careers/> or
 [drop us an email](mailto:team-graphql@neo4j.com) if you're interested.
+
+Testing a new CLA signing.
