@@ -30,13 +30,13 @@ export function aggregateResolver({ node }: { node: Node }) {
         const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info);
 
-        const [unbuiltCypher, intermediaryParams] = translateAggregate({
+        const [aggregateCypher, aggregateParams] = translateAggregate({
             context,
             node,
         });
 
-        const { cypher, params: builtParams } = unbuiltCypher.build();
-        const params = { ...intermediaryParams, ...builtParams };
+        const { cypher, params: builtParams } = aggregateCypher.build();
+        const params = { ...aggregateParams, ...builtParams };
 
         const executeResult = await execute({
             cypher,
