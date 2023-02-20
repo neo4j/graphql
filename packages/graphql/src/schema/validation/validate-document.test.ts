@@ -153,8 +153,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        const res = validateDocument(doc, true);
-        expect(res).toBeUndefined();
+        expect(() => validateDocument(doc, true)).not.toThrow();
     });
 
     test("should not throw error on use of internal node input types", () => {
@@ -181,8 +180,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        const res = validateDocument(doc, true);
-        expect(res).toBeUndefined();
+        expect(() => validateDocument(doc, true)).not.toThrow();
     });
 
     describe("relationshipProperties directive", () => {
@@ -203,8 +201,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc, true);
-            expect(res).toBeUndefined();
+            expect(() => validateDocument(doc, true)).not.toThrow();
         });
 
         test("should throw if used on an object type", () => {
@@ -307,8 +304,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        const res = validateDocument(doc, true);
-        expect(res).toBeUndefined();
+        expect(() => validateDocument(doc, true)).not.toThrow();
     });
 
     describe("Github Issue 158", () => {
@@ -323,8 +319,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc, true);
-            expect(res).toBeUndefined();
+            expect(() => validateDocument(doc, true)).not.toThrow();
         });
     });
 
@@ -341,8 +336,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc, true);
-            expect(res).toBeUndefined();
+            expect(() => validateDocument(doc, true)).not.toThrow();
         });
 
         test("should not throw error on validation of schema if SortDirection used", () => {
@@ -357,8 +351,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc, true);
-            expect(res).toBeUndefined();
+            expect(() => validateDocument(doc, true)).not.toThrow();
         });
     });
 
@@ -481,8 +474,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc, true);
-            expect(res).toBeUndefined();
+            expect(() => validateDocument(doc, true)).not.toThrow();
         });
     });
 
@@ -504,8 +496,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc, true);
-            expect(res).toBeUndefined();
+            expect(() => validateDocument(doc, true)).not.toThrow();
         });
     });
 
@@ -534,8 +525,7 @@ describe("validateDocument", () => {
                     name: String @alias(property: "dbName")
                 }
             `;
-            const res = validateDocument(doc, true);
-            expect(res).toBeUndefined();
+            expect(() => validateDocument(doc, true)).not.toThrow();
         });
     });
 
@@ -652,8 +642,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc, true);
-            expect(res).toBeUndefined();
+            expect(() => validateDocument(doc, true)).not.toThrow();
         });
     });
 
@@ -673,8 +662,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc, true);
-            expect(res).toBeUndefined();
+            expect(() => validateDocument(doc, true)).not.toThrow();
         });
     });
 });
