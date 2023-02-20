@@ -42,6 +42,7 @@ export function translateCypherDirectiveProjection({
     param,
     nodeRef,
     res,
+    cypherFieldAliasMap,
 }: {
     context: Context;
     cypherField: CypherField;
@@ -51,9 +52,11 @@ export function translateCypherDirectiveProjection({
     alias: string;
     param: Cypher.Relationship | Cypher.Node;
     res: Res;
+    cypherFieldAliasMap: any;
 }): Res {
-    // const resultVariable = new Cypher.Node();
-    const resultVariable = new Cypher.NamedNode(`${nodeRef.prefix}_${alias}`);
+    const resultVariable = new Cypher.Node();
+    cypherFieldAliasMap[`${nodeRef.prefix}_${alias}`] = resultVariable;
+    //const resultVariable = new Cypher.NamedNode(`${nodeRef.prefix}_${alias}`);
     const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
     const entity = context.schemaModel.entities.get(cypherField.typeMeta.name);
 
@@ -77,6 +80,7 @@ export function translateCypherDirectiveProjection({
             node: referenceNode || node,
             context,
             varName: resultVariable,
+            cypherFieldAliasMap
         });
 
         projectionExpr = new Cypher.RawCypher((env) => {
@@ -118,6 +122,7 @@ export function translateCypherDirectiveProjection({
                         node: refNode,
                         context,
                         varName: subqueryParam,
+                        cypherFieldAliasMap
                     });
 
                     if (nestedSubqueries.length > 0) {

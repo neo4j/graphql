@@ -72,6 +72,7 @@ export function translateTopLevelCypher({
             node: referenceNode,
             context,
             varName: new Cypher.NamedNode(`this`),
+            cypherFieldAliasMap: {}
         });
         projectionStr = str;
         projectionSubqueries.push(...subqueriesBeforeSort, ...subqueries);
@@ -112,6 +113,7 @@ export function translateTopLevelCypher({
                         node,
                         context,
                         varName: new Cypher.NamedNode("this"),
+                        cypherFieldAliasMap: {}
                     });
 
                     projectionSubqueries.push(...subqueries);

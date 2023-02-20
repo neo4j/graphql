@@ -27,10 +27,12 @@ export function translateResolveReference({
     node,
     context,
     reference,
+    cypherFieldAliasMap
 }: {
     context: Context;
     node: Node;
     reference: any;
+    cypherFieldAliasMap?: any;
 }): Cypher.CypherResult {
     const varName = "this";
     const { resolveTree } = context;
@@ -56,7 +58,8 @@ export function translateResolveReference({
         node,
         context,
         resolveTree,
-        varName,
+        varName: matchNode,
+        cypherFieldAliasMap: {}
     });
 
     const projectionSubqueries = Cypher.concat(...projection.subqueries, ...projection.subqueriesBeforeSort);

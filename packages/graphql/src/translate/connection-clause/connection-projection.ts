@@ -38,6 +38,7 @@ export function createEdgeProjection({
     relatedNode,
     resolveType,
     extraFields = [],
+    cypherFieldAliasMap
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
@@ -47,6 +48,7 @@ export function createEdgeProjection({
     relatedNode: Node;
     resolveType?: boolean;
     extraFields?: Array<string>;
+    cypherFieldAliasMap: any;
 }): { projection: Cypher.Map; subqueries: Cypher.Clause[] } {
     const connection = resolveTree.fieldsByTypeName[field.typeMeta.name];
 
@@ -84,6 +86,7 @@ export function createEdgeProjection({
                 resolveTree,
                 nodeRefVarName: relatedNodeVariableName,
                 resolveType,
+                cypherFieldAliasMap
             });
             const alias = nodeField.alias;
             edgeProjectionProperties.set(alias, nodeProjection.projection);
@@ -110,6 +113,7 @@ function createConnectionNodeProjection({
     node,
     resolveType = false,
     resolveTree,
+    cypherFieldAliasMap
 }: {
     nodeResolveTree: ResolveTree;
     context;
@@ -117,6 +121,7 @@ function createConnectionNodeProjection({
     node: Node;
     resolveType?: boolean;
     resolveTree: ResolveTree; // Global resolve tree
+    cypherFieldAliasMap: any
 }): { projection: Cypher.Expr; subqueries: Cypher.Clause[] } {
     const selectedFields: Record<string, ResolveTree> = mergeDeep([
         nodeResolveTree.fieldsByTypeName[node.name],
@@ -145,6 +150,7 @@ function createConnectionNodeProjection({
         varName: nodeRefVarName,
         literalElements: true,
         resolveType,
+        cypherFieldAliasMap
     });
 
     const projectionMeta = nodeProjectionAndParams.meta;

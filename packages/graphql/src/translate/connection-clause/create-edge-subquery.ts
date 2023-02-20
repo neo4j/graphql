@@ -43,6 +43,7 @@ export function createEdgeSubquery({
     whereInput,
     resolveType = false,
     ignoreSort = false,
+    cypherFieldAliasMap
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
@@ -53,6 +54,7 @@ export function createEdgeSubquery({
     whereInput: ConnectionWhereArg;
     resolveType?: boolean;
     ignoreSort?: boolean;
+    cypherFieldAliasMap: any;
 }): Cypher.Clause | undefined {
     const parentNodeRef = getOrCreateCypherNode(parentNode);
 
@@ -116,6 +118,7 @@ export function createEdgeSubquery({
         context,
         resolveType,
         extraFields: getEdgeSortFieldKeys(resolveTree),
+        cypherFieldAliasMap
     });
 
     const withReturn = new Cypher.With([projection.projection, returnVariable]);

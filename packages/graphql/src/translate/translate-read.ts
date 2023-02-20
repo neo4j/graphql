@@ -42,6 +42,9 @@ export function translateRead(
 ): Cypher.CypherResult {
     const { resolveTree } = context;
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
+
+    const cypherFieldAliasMap = {} as Record<string, Cypher.Variable | Cypher.Node>;
+  
     const where = resolveTree.args.where as GraphQLWhereArg | undefined;
 
     let projAuth: Cypher.Clause | undefined;
@@ -63,6 +66,7 @@ export function translateRead(
         context,
         resolveTree,
         varName: new Cypher.NamedNode(varName),
+        cypherFieldAliasMap
     });
 
     if (projection.meta?.authValidatePredicates?.length) {
@@ -118,6 +122,7 @@ export function translateRead(
             fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
             cypherFields: node.cypherFields,
             varName,
+            cypherFieldAliasMap
         });
     }
 
@@ -155,6 +160,7 @@ export function translateRead(
                 fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
                 cypherFields: node.cypherFields,
                 varName,
+                cypherFieldAliasMap                
             });
         }
 

@@ -34,12 +34,14 @@ export function createConnectionClause({
     context,
     nodeVariable,
     returnVariable,
+    cypherFieldAliasMap
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
     context: Context;
     nodeVariable: Cypher.Node;
     returnVariable: Cypher.Variable;
+    cypherFieldAliasMap: any;
 }): Cypher.Clause {
     if (field.relationship.union || field.relationship.interface) {
         return createConnectionClauseForUnions({
@@ -48,6 +50,7 @@ export function createConnectionClause({
             context,
             nodeVariable,
             returnVariable,
+            cypherFieldAliasMap
         });
     }
 
@@ -64,6 +67,7 @@ export function createConnectionClause({
         relatedNode,
         returnVariable: edgeItem,
         whereInput,
+        cypherFieldAliasMap
     });
     const edgesList = new Cypher.NamedVariable("edges");
     const totalCount = new Cypher.NamedVariable("totalCount");
@@ -110,12 +114,14 @@ function createConnectionClauseForUnions({
     context,
     nodeVariable,
     returnVariable,
+    cypherFieldAliasMap
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
     context: Context;
     nodeVariable: Cypher.Node;
     returnVariable: Cypher.Variable;
+    cypherFieldAliasMap: any;
 }) {
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
     const relatedNode = context.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
@@ -144,6 +150,7 @@ function createConnectionClauseForUnions({
             parentNode: nodeVariable,
             returnVariable: collectUnionVariable,
             relatedNode: subqueryRelatedNode,
+            cypherFieldAliasMap
         });
     });
 
@@ -192,6 +199,7 @@ function createConnectionSubquery({
     parentNode,
     relatedNode,
     returnVariable,
+    cypherFieldAliasMap
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
@@ -199,6 +207,7 @@ function createConnectionSubquery({
     parentNode: Cypher.Node;
     relatedNode: Node;
     returnVariable: Cypher.Variable;
+    cypherFieldAliasMap: any;
 }): Cypher.Clause | undefined {
     const parentNodeRef = getOrCreateCypherNode(parentNode);
     const withClause = new Cypher.With(parentNodeRef);
@@ -226,6 +235,7 @@ function createConnectionSubquery({
         whereInput: unionInterfaceWhere,
         resolveType: true,
         ignoreSort: true,
+        cypherFieldAliasMap
     });
     if (!edgeSubquery) return undefined;
     const returnClause = new Cypher.Return(returnVariable);

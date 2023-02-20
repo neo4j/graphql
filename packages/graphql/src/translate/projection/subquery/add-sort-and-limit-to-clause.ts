@@ -45,6 +45,7 @@ export function addSortAndLimitOptionsToClause({
     fulltextScoreVariable,
     cypherFields,
     varName,
+    cypherFieldAliasMap
 }: {
     optionsInput: GraphQLOptionsArg;
     target: Cypher.Variable | Cypher.PropertyRef;
@@ -53,6 +54,7 @@ export function addSortAndLimitOptionsToClause({
     fulltextScoreVariable?: Cypher.Variable;
     cypherFields?: CypherField[];
     varName?: string;
+    cypherFieldAliasMap?: any;
 }): void {
     if (optionsInput.sort) {
         const orderByParams = createOrderByParams({
@@ -62,6 +64,7 @@ export function addSortAndLimitOptionsToClause({
             fulltextScoreVariable,
             cypherFields,
             varName,
+            cypherFieldAliasMap
         });
         if (orderByParams.length > 0) {
             projectionClause.orderBy(...orderByParams);
@@ -80,6 +83,7 @@ function createOrderByParams({
     fulltextScoreVariable,
     cypherFields,
     varName,
+    cypherFieldAliasMap
 }: {
     optionsInput: GraphQLOptionsArg;
     target: Cypher.Variable | Cypher.PropertyRef;
@@ -87,6 +91,7 @@ function createOrderByParams({
     fulltextScoreVariable?: Cypher.Variable;
     cypherFields?: CypherField[];
     varName?: string;
+    cypherFieldAliasMap?: any;
 }): Array<[Cypher.Expr, Cypher.Order]> {
     const orderList = (optionsInput.sort || []).flatMap(
         (arg: GraphQLSortArg | NestedGraphQLSortArg): Array<[string, "ASC" | "DESC"]> => {
@@ -99,7 +104,8 @@ function createOrderByParams({
     return orderList.map(([field, order]) => {
         // TODO: remove this once translation of cypher fields moved to cypher builder.
         if (varName && cypherFields && cypherFields.some((f) => f.fieldName === field)) {
-            return [new Cypher.NamedVariable(`${varName}_${field}`), order];
+          //  return [new Cypher.NamedVariable(`${varName}_${field}`), order];
+          return [cypherFieldAliasMap[`${varName}_${field}`], order];
         }
         if (fulltextScoreVariable && field === SCORE_FIELD) {
             return [fulltextScoreVariable, order];
