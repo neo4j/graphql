@@ -122,34 +122,6 @@ type Journal implements Publication {
 }
 ----
 
-It is also possible to pass a list of required fields as below (this will no longer be possible in version 4.0.0):
-
-[source, javascript, indent=0]
-----
-const typeDefs = `
-    type User {
-        firstName: String!
-        lastName: String!
-        fullName: String! @customResolver(requires: ["firstName", "lastName"])
-    }
-`;
-
-const resolvers = {
-    User: {
-        fullName({ firstName, lastName }) {
-            return `${firstName} ${lastName}`;
-        },
-    },
-};
-
-const neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    resolvers,
-});
-----
-
-In this example, the firstName and lastName fields will always be selected from the database if the fullName field is selected and will be available to the custom resolver.
-
 ==== Providing custom resolvers
 
 Note that any field marked with the `@customResolver` directive, requires a custom resolver to be defined.
@@ -206,28 +178,3 @@ const neoSchema = new Neo4jGraphQL({
     },
 })
 ----
-
-[[custom-resolvers-computed]]
-=== `@computed`
-
-NOTE: The `@computed` directive has been deprecated and will be removed in version 4.0. Please use the xref::custom-resolvers.adoc#custom-resolver-directive[`@customResolver` directive] instead.
-
-This field will essentially be completely ignored during the generation of Query and Mutation fields, and will require another way to resolve the field, such as through the use of a custom resolver.
-
-Any fields that the custom resolver depends on should be passed to the `from` argument to ensure that during the Cypher generation process those properties are selected from the database.
-Allowable fields are any returning a Scalar or Enum type including those defined using the xref::type-definitions/cypher.adoc#type-definitions-cypher[`@cypher`] directive.
-
-==== Definition
-
-[source, graphql, indent=0]
-----
-"""Informs @neo4j/graphql that a field will be resolved by a custom resolver, and allows specification of any field dependencies."""
-directive @computed(
-    """Fields that the custom resolver will depend on."""
-    from: [String!]
-) on FIELD_DEFINITION
-----
-
-== Custom Query/Mutation type field resolver
-
-You can define additional custom Query and Mutation fields in your type definitions and provide custom resolvers for them. A prime use case for this is using the xref::ogm/index.adoc[OGM] to manipulate types and fields which are not available through the API. You can find an example of it being used in this capacity in the xref::ogm/examples/custom-resolvers.adoc[Custom Resolvers] example.
