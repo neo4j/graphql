@@ -18,7 +18,7 @@
  */
 
 import type { Node } from "../classes";
-import createProjectionAndParams from "./create-projection-and-params";
+import createProjectionAndParams, { ProjectionResult } from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import type { Context } from "../types";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
@@ -97,66 +97,52 @@ export default async function translateCreate({
         params: any;
     };
 
-    let replacedProjectionParams: Record<string, unknown> = {};
     let projectionExpr: Cypher.Expr | undefined;
-    let authCalls: Cypher.Expr | undefined;
+    let authCalls;
 
     if (metaNames.length > 0) {
         projectionWith.push(`${metaNames.join(" + ")} AS meta`);
     }
 
-    let projectionSubquery: Cypher.Clause | undefined;
+    let projectionArr; 
     if (nodeProjection) {
-        let projAuth: Cypher.Clause | undefined = undefined;
-        const projection = createProjectionAndParams({
-            node,
-            context,
-            resolveTree: nodeProjection,
-            varName: new Cypher.NamedNode("REPLACE_ME"),
-            cypherFieldAliasMap: {},
-        });
+    
+        const varNames = createStrs.map((_, i) => new Cypher.NamedNode(`this${i}`));
+        projectionArr = createStrs.map((_, i) => {
+            const projection = createProjectionAndParams({
+                node,
+                context,
+                resolveTree: nodeProjection,
+                varName: varNames[i],
+                cypherFieldAliasMap: {},
+            });
+            const projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
+            if (projection.meta?.authValidatePredicates?.length) {
+                const projAuth = new Cypher.CallProcedure(
+                    new Cypher.apoc.Validate(
+                        Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
+                        AUTH_FORBIDDEN_ERROR,
+                        new Cypher.Literal([0])
+                    )
+                );
+                return [projection.projection, projectionSubquery, projAuth];
+            }
+            return [projection.projection, projectionSubquery];
+        }) as [Cypher.Expr, Cypher.Clause, Cypher.Clause | undefined][];
 
-        projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
-        if (projection.meta?.authValidatePredicates?.length) {
-            projAuth = new Cypher.CallProcedure(
-                new Cypher.apoc.Validate(
-                    Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                    AUTH_FORBIDDEN_ERROR,
-                    new Cypher.Literal([0])
-                )
-            );
-        }
-
-        replacedProjectionParams = Object.entries(projection.params).reduce((res, [key, value]) => {
-            return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
-        }, {});
-
+   
         projectionExpr = new Cypher.RawCypher((env) => {
-            return createStrs
-                .map(
-                    (_, i) =>
-                        `\nthis${i} ${projection.projection
-                            .getCypher(env)
-                            // First look to see if projection param is being reassigned
-                            // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
-                            .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-                            .replace(/\$REPLACE_ME/g, "$projection")
-                            .replace(/REPLACE_ME/g, `this${i}`)}`
-                )
+            return varNames
+                .map((varName, i) => {
+                    const [projections, projectionsSubqueries, projAuths] = projectionArr[i];
+                    return `${varName.getCypher(env)} ${projections.getCypher(env)}`;
+                })
                 .join(", ");
         });
-
-        if (projAuth) {
-            authCalls = new Cypher.RawCypher((env) =>
-                createStrs
-                    .map((_, i) =>
-                        (projAuth as Cypher.Clause)
-                            .getCypher(env)
-                            .replace(/\$REPLACE_ME/g, "$projection")
-                            .replace(/REPLACE_ME/g, `this${i}`)
-                    )
-                    .join("\n")
-            );
+ 
+        const projAuths = projectionArr.map((el) => el[2]).filter(Boolean);
+        if (projAuths.length) {
+            authCalls = Cypher.concat(...projAuths);
         }
     }
 
@@ -164,21 +150,18 @@ export default async function translateCreate({
     const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
     const createQuery = new Cypher.RawCypher((env) => {
-        const projectionSubqueryStr = projectionSubquery ? `\n${projectionSubquery.getCypher(env)}` : "";
-        // TODO: avoid REPLACE_ME
-        const replacedProjectionSubqueryStrs = createStrs.length
-            ? createStrs.map((_, i) => {
-                  return projectionSubqueryStr
-                      .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-                      .replace(/\$REPLACE_ME/g, "$projection")
-                      .replace(/REPLACE_ME/g, `this${i}`);
-              })
-            : [];
+        let projectionSubqueryStr;
+        if (projectionArr) {
+            const projectionSubqueries = projectionArr.map((el) => el[1]).filter(Boolean);
+            const projectionSubqueriesClause = Cypher.concat(...projectionSubqueries);
+            projectionSubqueryStr = projectionSubqueries.length ? `\n${projectionSubqueriesClause.getCypher(env)}` : "";
+        }
+
         const cypher = filterTruthy([
             `${createStrs.join("\n")}`,
             projectionWithStr,
             authCalls?.getCypher(env),
-            ...replacedProjectionSubqueryStrs,
+            projectionSubqueryStr || "",
             returnStatement.getCypher(env),
         ])
             .filter(Boolean)
@@ -187,7 +170,6 @@ export default async function translateCreate({
             cypher,
             {
                 ...params,
-                ...replacedProjectionParams,
             },
         ];
     });

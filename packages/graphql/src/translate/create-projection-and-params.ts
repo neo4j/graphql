@@ -126,7 +126,8 @@ export default function createProjectionAndParams({
             if (referenceNode?.queryOptions) {
                 optionsInput.limit = referenceNode.queryOptions.getLimit(optionsInput.limit);
             }
-            const subqueryReturnAlias = new Cypher.NamedVariable(`var_${alias}_REPLACE_ME`);
+        
+            const subqueryReturnAlias = new Cypher.Variable();
             if (relationField.interface || relationField.union) {
                 let referenceNodes;
                 if (relationField.interface) {
@@ -170,7 +171,7 @@ export default function createProjectionAndParams({
                 const parentNode = varName as Cypher.Node;
 
                 const unionSubqueries: Cypher.Clause[] = [];
-
+               
                 for (const refNode of referenceNodes) {
                     const targetNode = new Cypher.Node({ labels: refNode.getLabels(context) });
                     const recurse = createProjectionAndParams({

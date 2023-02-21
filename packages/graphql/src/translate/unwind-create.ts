@@ -58,7 +58,6 @@ export default async function unwindCreate({
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
-    let replacedProjectionParams: Record<string, unknown> = {};
     let projectionCypher: Cypher.Expr | undefined;
     let authCalls: string | undefined;
 
@@ -76,10 +75,6 @@ export default async function unwindCreate({
             cypherFieldAliasMap: {},
         });
         projectionSubquery = Cypher.concat(...projection.subqueries);
-
-        replacedProjectionParams = Object.entries(projection.params).reduce((res, [key, value]) => {
-            return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
-        }, {});
 
         projectionCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
             return `${rootNodeVariable.getCypher(env)} ${projection.projection
@@ -108,20 +103,13 @@ export default async function unwindCreate({
             unwindCreate.getCypher(env),
             projectionWithStr,
             authCalls,
-            // projectionConnectionStrs,
-            // projectionInterfaceStrs,
             replacedProjectionSubqueryStrs,
             returnStatement.getCypher(env),
         ])
             .filter(Boolean)
             .join("\n");
 
-        return [
-            cypher,
-            {
-                ...replacedProjectionParams,
-            },
-        ];
+        return cypher;
     });
     const createQueryCypher = createQuery.build("create_");
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
