@@ -13,6 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: srvaroa/labeler@b8374c741967922339a0da6913cb81b47f7f1dd9 # v1.2
+      - uses: srvaroa/labeler@953347905ec8e4884e85c9957d24508e24119fc3 # v1.3
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
