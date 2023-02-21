@@ -69,7 +69,7 @@ export default function createProjectionAndParams({
     resolveTree: ResolveTree;
     node: Node;
     context: Context;
-    varName: Cypher.Node | Cypher.Relationship | Cypher.Variable;
+    varName: Cypher.Node;
     literalElements?: boolean;
     resolveType?: boolean;
     cypherFieldAliasMap: CypherFieldReferenceMap;
@@ -95,7 +95,7 @@ export default function createProjectionAndParams({
                     context,
                     allow: {
                         parentNode: node,
-                        varName: varName as Cypher.Node,
+                        varName,
                     },
                 });
                 if (allowAndParams) {
@@ -114,7 +114,7 @@ export default function createProjectionAndParams({
                 field,
                 node,
                 alias,
-                nodeRef: varName as Cypher.Node,
+                nodeRef: varName,
                 res,
                 cypherFieldAliasMap,
             });
@@ -168,7 +168,7 @@ export default function createProjectionAndParams({
                     );
                 }
 
-                const parentNode = varName as Cypher.Node;
+                const parentNode = varName;
 
                 const unionSubqueries: Cypher.Clause[] = [];
                 for (const refNode of referenceNodes) {
@@ -244,7 +244,7 @@ export default function createProjectionAndParams({
             const direction = getCypherRelationshipDirection(relationField, field.args);
 
             const subquery = createProjectionSubquery({
-                parentNode: varName as Cypher.Node,
+                parentNode: varName,
                 whereInput,
                 node: referenceNode as Node, // TODO: improve typings
                 context,
@@ -264,7 +264,7 @@ export default function createProjectionAndParams({
 
         const aggregationFieldProjection = createFieldAggregation({
             context,
-            nodeVar: varName as Cypher.Node,
+            nodeVar: varName,
             node,
             field,
         });
@@ -286,7 +286,7 @@ export default function createProjectionAndParams({
                     resolveTree: field,
                     field: connectionField,
                     context,
-                    nodeVariable: varName as Cypher.Node,
+                    nodeVariable: varName,
                     returnVariable,
                     cypherFieldAliasMap,
                 })
@@ -333,7 +333,7 @@ export default function createProjectionAndParams({
             resolveTree,
             node,
             context,
-            varName: varName as Cypher.Node,
+            varName,
             literalElements,
             resolveType,
             cypherFieldAliasMap,
