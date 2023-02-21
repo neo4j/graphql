@@ -3083,7 +3083,7 @@ __metadata:
     "@types/react-dom": 18.0.11
     "@types/webpack": 5.28.0
     autoprefixer: 10.4.13
-    codemirror: 5.65.11
+    codemirror: 5.65.12
     codemirror-graphql: 2.0.3
     compression-webpack-plugin: 10.0.0
     copy-webpack-plugin: 11.0.0
@@ -7669,10 +7669,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror@npm:5.65.11":
-  version: 5.65.11
-  resolution: "codemirror@npm:5.65.11"
-  checksum: b3ace051cdf0809b377d50cc6ddfe5a40e6425aa980a55c2f965b6ba15f0315a77ea60dfd20f40624b3f944fb1d7bf0d68be4bc157f9b24899423df94ea9c878
+"codemirror@npm:5.65.12":
+  version: 5.65.12
+  resolution: "codemirror@npm:5.65.12"
+  checksum: 6fca4434ef781b0c393c0c24766c53a9a21e7bc5b48b22414032aa458574be5e6ec5d4d95e8d179769937c6c39a54564af8aebbf7f9dc289165bbcd0ae765be7
   languageName: node
   linkType: hard
 
