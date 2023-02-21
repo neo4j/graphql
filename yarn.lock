@@ -255,9 +255,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/client@npm:3.7.8":
-  version: 3.7.8
-  resolution: "@apollo/client@npm:3.7.8"
+"@apollo/client@npm:3.7.9":
+  version: 3.7.9
+  resolution: "@apollo/client@npm:3.7.9"
   dependencies:
     "@graphql-typed-document-node/core": ^3.1.1
     "@wry/context": ^0.7.0
@@ -287,7 +287,7 @@ __metadata:
       optional: true
     subscriptions-transport-ws:
       optional: true
-  checksum: 3b12251768f7e1973b7d193d1420b01e6a0cb4b8a57bb4f65a82df48df2b8420aa9fdfeb0a4dcec4d787c1dcddaa7307611153736dff79d567be39b0dcd7f3d2
+  checksum: 7b75634747bb14079e63bae36f5ff9fd469ec1a8904f20fb896baf3962c2aaefe1219558c10c15bdf93df780777c5526e331296f01b686d9c0f3bd744afd1c86
   languageName: node
   linkType: hard
 
@@ -15964,7 +15964,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "neo-push-client@workspace:examples/neo-push/client"
   dependencies:
-    "@apollo/client": 3.7.8
+    "@apollo/client": 3.7.9
     "@fortawesome/fontawesome-svg-core": 6.3.0
     "@fortawesome/free-solid-svg-icons": 6.3.0
     "@fortawesome/react-fontawesome": 0.2.0
