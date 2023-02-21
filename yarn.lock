@@ -6040,6 +6040,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": ^1.1.1
     "@apollo/server": ^4.4.0
     "@neo4j/graphql": ^3.16.1
+    fork-ts-checker-webpack-plugin: ^7.3.0
     graphql: 16.6.0
     graphql-tag: ^2.12.6
     neo4j-driver: ^5.5.0
@@ -10948,7 +10949,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fork-ts-checker-webpack-plugin@npm:7.3.0":
+"fork-ts-checker-webpack-plugin@npm:7.3.0, fork-ts-checker-webpack-plugin@npm:^7.3.0":
   version: 7.3.0
   resolution: "fork-ts-checker-webpack-plugin@npm:7.3.0"
   dependencies:

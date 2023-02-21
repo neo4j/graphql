@@ -18,6 +18,7 @@
  */
 
 const path = require("path");
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 
 module.exports = {
@@ -38,6 +39,13 @@ module.exports = {
         plugins: [new TsconfigPathsPlugin()],
         extensions: [".ts", ".mjs", ".js"]
     },
+    plugins: [
+        new ForkTsCheckerWebpackPlugin({
+            typescript: {
+                build: true
+            }
+        })
+    ],
     output: {
         filename: "bundle.js",
         path: path.resolve(__dirname, "dist")
