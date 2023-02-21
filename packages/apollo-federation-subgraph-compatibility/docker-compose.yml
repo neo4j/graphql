@@ -15,8 +15,7 @@ services:
       timeout: 1s
       retries: 40
   server:
-    build:
-      context: .
+    build: .
     ports:
       - "4001:4001"
     depends_on:
