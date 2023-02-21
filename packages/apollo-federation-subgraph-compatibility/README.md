@@ -1,0 +1,1 @@
+# apollo-federation-subgraph-compatibility

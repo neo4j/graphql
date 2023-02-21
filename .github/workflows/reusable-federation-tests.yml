@@ -1,0 +1,99 @@
+name: "Integration tests (on-prem)"
+
+on:
+  workflow_call:
+    inputs:
+      disable-code-cov-upload:
+        description: "Whether or not to upload the test coverage to CodeCov"
+        required: false
+        default: false
+        type: boolean
+    secrets:
+      CODECOV_TOKEN:
+        required: false
+        description: "API token for Codecov, if it is available in the current context"
+
+env:
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+jobs:
+  integration-tests:
+    strategy:
+      matrix:
+        packages:
+          [
+            { package: "ogm", shard: 1/1 },
+            { package: "introspector", shard: 1/1 },
+            { package: "graphql", shard: 1/4 },
+            { package: "graphql", shard: 2/4 },
+            { package: "graphql", shard: 3/4 },
+            { package: "graphql", shard: 4/4 }
+          ]
+        neo4j-version:
+          - 4.3-enterprise
+          #   - 4.4-community
+          - 4.4-enterprise
+          #   - 5-community
+          - 5-enterprise
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
+
+    runs-on: ubuntu-latest
+
+    services:
+      neo4j:
+        image: neo4j:${{ matrix.neo4j-version }}
+        env:
+          NEO4J_AUTH: neo4j/password
+          NEO4JLABS_PLUGINS: '["apoc"]'
+          NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
+        ports:
+          - 7687:7687
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
+      - name: Run @neo4j/graphql integration tests and move coverage
+        run: |
+          yarn test:int --shard=${{ matrix.packages.shard }} --coverage
+          mv coverage coverage-${{ matrix.neo4j-version }}
+        working-directory: packages/${{ matrix.packages.package }}
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+      - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload && matrix.packages.package == 'graphql' }}
+        name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./packages/${{ matrix.packages.package }}/coverage-${{ matrix.neo4j-version }}/
+          flags: ${{ matrix.packages.package }},${{ matrix.neo4j-version }},integration
+          fail_ci_if_error: true
+      - uses: apollographql/federation-subgraph-compatibility@v1
+        with:
+          # [Required] Docker Compose file to start up the subgraph
+          compose: "path/to/docker-compose.yaml"
+          # [Required] Path to the GraphQL schema file
+          schema: "path/to/schema.graphql"
+          # GraphQL endpoint path, defaults to '' (empty)
+          path: ""
+          # GraphQL endpoint HTTP port, defaults to 4001
+          port: 4001
+          # Turn on debug mode with extra log info
+          debug: false
+          # Github Token / PAT for submitting PR comments
+          token: ""
+          # Boolean flag to indicate whether any failing test should fail the script
+          failOnWarning: false
+          # Boolean flag to indicate whether any failing required functionality test should fail the script
+          failOnRequired: false
