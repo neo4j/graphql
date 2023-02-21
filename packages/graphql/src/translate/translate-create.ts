@@ -53,7 +53,6 @@ export default async function translateCreate({
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
-
     const { createStrs, params } = mutationInputs.reduce(
         (res, input, index) => {
             const varName = `this${index}`;
@@ -106,7 +105,6 @@ export default async function translateCreate({
 
     let projectionArr; 
     if (nodeProjection) {
-    
         const varNames = createStrs.map((_, i) => new Cypher.NamedNode(`this${i}`));
         projectionArr = createStrs.map((_, i) => {
             const projection = createProjectionAndParams({

@@ -262,8 +262,6 @@ function createSubPredicate({
     }
 
     if (bind && authRule.bind) {
-        // console.trace("hocus pocus", bind.varName);
-
         const nodeRef = getOrCreateCypherNode(bind.varName);
 
         const allowPredicate = createAuthPredicate({
@@ -363,9 +361,7 @@ function createAuthPredicate({
             const relationshipNodeRef = new Cypher.Node({
                 labels: refNode.getLabels(context),
             });
-            // const relationshipNodeRef = new Cypher.NamedNode("hocus", {
-            //     labels: refNode.getLabels(context),
-            // });
+
             Object.entries(value as Record<string, any>).forEach(([k, v]: [string, any]) => {
                 const authPredicate = createAuthPredicate({
                     node: refNode,

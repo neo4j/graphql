@@ -132,15 +132,7 @@ export function createFieldAggregation({
         projectionSubqueries = Cypher.concat(projectionSubqueries, innerProjectionSubqueries);
         projectionMap.set({ edge: edgeProjectionMap });
     }
-    /* 
-    let projectionSubqueryCypher = "";
-    const rawProjection = new Cypher.RawCypher((env) => {
-        projectionSubqueryCypher = projectionSubqueries?.getCypher(env) || "";
-        return projectionMap.getCypher(env);
-    });
-    // TODO remove math.randome PLEASE 
-    const result = rawProjection.build(`${Math.random() * 1000}_${field.alias}_`);
-*/
+
     return {
         projectionCypher: projectionMap,
         projectionSubqueryCypher: new Cypher.RawCypher((env) => projectionSubqueries?.getCypher(env) || ""),
@@ -160,7 +152,7 @@ function getAggregationProjectionAndSubqueries({
     sourceRef: Cypher.Node;
     fields: Record<string, ResolveTree>;
 }) {
-    let innerProjectionSubqueries: Cypher.Clause = new Cypher.RawCypher("");
+    let innerProjectionSubqueries;
     const innerProjectionMap = new Cypher.Map();
 
     Object.values(fields).forEach((field) => {
@@ -181,7 +173,9 @@ function getAggregationProjectionAndSubqueries({
             new Cypher.Call(subquery).innerWith(sourceRef)
         );
     });
-
+    if (!innerProjectionSubqueries) {
+        innerProjectionSubqueries = new Cypher.RawCypher("");
+    }
     return { innerProjectionMap, innerProjectionSubqueries };
 }
 

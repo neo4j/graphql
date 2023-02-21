@@ -100,7 +100,7 @@ export function translateCypherDirectiveProjection({
         if (hasMultipleFieldFields) {
             referencedNodes = referencedNodes?.filter((n) => fieldFieldsKeys.includes(n?.name ?? "")) || [];
         }
-        referencedNodes.forEach((refNode, index) => {
+        referencedNodes.forEach((refNode) => {
             if (refNode) {
                 const subqueryParam = new Cypher.Node();
 

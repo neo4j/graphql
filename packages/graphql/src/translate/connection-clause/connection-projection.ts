@@ -171,10 +171,9 @@ function createConnectionNodeProjection({
 
         projectionSubqueries.push(projectionAuth);
     }
+  
     return {
         subqueries: projectionSubqueries,
-        projection: new Cypher.RawCypher((env) => {
-            return [`${nodeProjectionAndParams.projection.getCypher(env)}`, nodeProjectionAndParams.params];
-        }),
+        projection: nodeProjectionAndParams.projection
     };
 }
