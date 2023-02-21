@@ -107,15 +107,15 @@ export function inputTreeToCypherMap(
 }
 
 function isScalarOrEnum(fieldName: string, graphElement: GraphElement) {
-    const scalarPredicate = (x) => x.fieldName === fieldName;
-    const scalarFields = [
+    const scalarOrEnumPredicate = (x) => x.fieldName === fieldName;
+    const scalarOrEnumFields = [
         graphElement.primitiveFields,
         graphElement.temporalFields,
         graphElement.pointFields,
         graphElement.scalarFields,
         graphElement.enumFields
     ];
-    return scalarFields.flat().some(scalarPredicate);
+    return scalarOrEnumFields.flat().some(scalarOrEnumPredicate);
 }
 
 export function getTreeDescriptor(
