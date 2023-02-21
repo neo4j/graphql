@@ -255,9 +255,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/client@npm:3.7.8":
-  version: 3.7.8
-  resolution: "@apollo/client@npm:3.7.8"
+"@apollo/client@npm:3.7.9":
+  version: 3.7.9
+  resolution: "@apollo/client@npm:3.7.9"
   dependencies:
     "@graphql-typed-document-node/core": ^3.1.1
     "@wry/context": ^0.7.0
@@ -287,7 +287,7 @@ __metadata:
       optional: true
     subscriptions-transport-ws:
       optional: true
-  checksum: 3b12251768f7e1973b7d193d1420b01e6a0cb4b8a57bb4f65a82df48df2b8420aa9fdfeb0a4dcec4d787c1dcddaa7307611153736dff79d567be39b0dcd7f3d2
+  checksum: 7b75634747bb14079e63bae36f5ff9fd469ec1a8904f20fb896baf3962c2aaefe1219558c10c15bdf93df780777c5526e331296f01b686d9c0f3bd744afd1c86
   languageName: node
   linkType: hard
 
@@ -3083,7 +3083,7 @@ __metadata:
     "@types/react-dom": 18.0.11
     "@types/webpack": 5.28.0
     autoprefixer: 10.4.13
-    codemirror: 5.65.11
+    codemirror: 5.65.12
     codemirror-graphql: 2.0.3
     compression-webpack-plugin: 10.0.0
     copy-webpack-plugin: 11.0.0
@@ -7669,10 +7669,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror@npm:5.65.11":
-  version: 5.65.11
-  resolution: "codemirror@npm:5.65.11"
-  checksum: b3ace051cdf0809b377d50cc6ddfe5a40e6425aa980a55c2f965b6ba15f0315a77ea60dfd20f40624b3f944fb1d7bf0d68be4bc157f9b24899423df94ea9c878
+"codemirror@npm:5.65.12":
+  version: 5.65.12
+  resolution: "codemirror@npm:5.65.12"
+  checksum: 6fca4434ef781b0c393c0c24766c53a9a21e7bc5b48b22414032aa458574be5e6ec5d4d95e8d179769937c6c39a54564af8aebbf7f9dc289165bbcd0ae765be7
   languageName: node
   linkType: hard
 
@@ -15964,7 +15964,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "neo-push-client@workspace:examples/neo-push/client"
   dependencies:
-    "@apollo/client": 3.7.8
+    "@apollo/client": 3.7.9
     "@fortawesome/fontawesome-svg-core": 6.3.0
     "@fortawesome/free-solid-svg-icons": 6.3.0
     "@fortawesome/react-fontawesome": 0.2.0
