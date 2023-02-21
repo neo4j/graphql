@@ -2479,4 +2479,62 @@ describe("Related Fields", () => {
             ],
         });
     });
+
+    test("should not throw an error for invalid type defs when startupValidation.typeDefs false", async () => {
+        const typeDefs = gql`
+            type ${Address} {
+                houseNumber: Int! @cypher(statement: "RETURN 12 AS number", columnName: "number")
+                street: String!
+                city: String!
+            }
+
+            type ${User} {
+                id: ID!
+                firstName: String!
+                lastName: String!
+                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                fullName: String @customResolver(requires: "firstName lastName address { houseNumber street }")
+            }
+
+            type Point {
+                latitude: Float!
+                longitude: Float!
+            }
+        `;
+
+        const fullNameResolver = ({ firstName, lastName, address }) =>
+            `${firstName} ${lastName} from ${address.houseNumber} ${address.street}`;
+
+        const resolvers = {
+            [User.name]: {
+                fullName: fullNameResolver,
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers,
+            config: {
+                startupValidation: {
+                    typeDefs: false,
+                },
+            },
+        });
+
+        const query = `
+            query ${User} {
+                ${User.plural} {
+                    fullName
+                }
+            }
+        `;
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(result.errors).toBeFalsy();
+    });
 });

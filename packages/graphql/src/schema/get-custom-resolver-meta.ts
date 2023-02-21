@@ -115,7 +115,6 @@ export default function getCustomResolverMeta({
     }
 
     if (directiveFromArgument?.value.kind === Kind.STRING) {
-        // TODO - does this make this a breaking change?
         const selectionSetDocument = parse(`{ ${directiveFromArgument.value.value} }`);
         validateSelectionSet(baseSchema, object, selectionSetDocument);
         const requiredFieldsResolveTree = selectionSetToResolveTree(
@@ -174,7 +173,9 @@ function validateSelectionSet(
     });
     const errors = validate(validationSchema, selectionSetDocument);
     if (errors.length) {
-        throw new Error(`Invalid selection set provided to @customResolver on ${object.name.value}`);
+        throw new Error(
+            `Invalid selection set provided to @customResolver on ${object.name.value}: ${errors.join(", ")}`
+        );
     }
 }
 
