@@ -22,11 +22,10 @@ jobs:
       - uses: apollographql/federation-subgraph-compatibility@v1
         with:
           # [Required] Docker Compose file to start up the subgraph
-          compose: "docker-compose.yml"
+          compose: "packages/apollo-federation-subgraph-compatibility/docker-compose.yml"
           # [Required] Path to the GraphQL schema file
-          schema: "schema.graphql"
+          schema: "packages/apollo-federation-subgraph-compatibility/schema.graphql"
           # Boolean flag to indicate whether any failing test should fail the script
           failOnWarning: false
           # Boolean flag to indicate whether any failing required functionality test should fail the script
           failOnRequired: true
-        working-directory: packages/apollo-federation-subgraph-compatibility
