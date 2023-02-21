@@ -22,7 +22,6 @@ import type { IResolvers } from "@graphql-tools/utils";
 import { gql } from "apollo-server-express";
 import {
     FieldDefinitionNode,
-    StringValueNode,
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
     DocumentNode,
@@ -37,7 +36,6 @@ import {
 } from "graphql";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { generateResolveTree } from "../translate/utils/resolveTree";
-import { removeDuplicates } from "../utils/utils";
 
 type CustomResolverMeta = {
     requiredFields: Record<string, ResolveTree>;
@@ -47,14 +45,7 @@ const INVALID_DIRECTIVES_TO_REQUIRE = ["customResolver", "computed"];
 export const INVALID_REQUIRED_FIELD_ERROR = `It is not possible to require fields that use the following directives: ${INVALID_DIRECTIVES_TO_REQUIRE.map(
     (name) => `\`@${name}\``
 ).join(", ")}`;
-const DEPRECATION_WARNING =
-    "The @computed directive has been deprecated and will be removed in version 4.0.0. Please use " +
-    "the @customResolver directive instead. More information can be found at " +
-    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_computed_renamed_to_customresolver.";
 const INVALID_SELECTION_SET_ERROR = "Invalid selection set passed to @customResolver required";
-export const DEPRECATED_ERROR_MESSAGE = "Required fields of @customResolver must be a list of strings";
-
-let deprecationWarningShown = false;
 
 export default function getCustomResolverMeta({
     baseSchema,
@@ -77,84 +68,44 @@ export default function getCustomResolverMeta({
     customResolvers?: IResolvers | IResolvers[];
     interfaceField?: FieldDefinitionNode;
 }): CustomResolverMeta | undefined {
-    const deprecatedDirective =
-        field.directives?.find((x) => x.name.value === "computed") ||
-        interfaceField?.directives?.find((x) => x.name.value === "computed");
-
-    if (deprecatedDirective && !deprecationWarningShown) {
-        console.warn(DEPRECATION_WARNING);
-        deprecationWarningShown = true;
-    }
-
     const directive =
         field.directives?.find((x) => x.name.value === "customResolver") ||
         interfaceField?.directives?.find((x) => x.name.value === "customResolver");
 
-    if (!directive && !deprecatedDirective) {
+    if (!directive) {
         return undefined;
     }
 
-    // TODO: remove check for directive when removing @computed
-    if (
-        validateResolvers &&
-        object.kind !== Kind.INTERFACE_TYPE_DEFINITION &&
-        directive &&
-        !customResolvers?.[field.name.value]
-    ) {
+    if (validateResolvers && object.kind !== Kind.INTERFACE_TYPE_DEFINITION && !customResolvers?.[field.name.value]) {
         throw new Error(`Custom resolver for ${field.name.value} has not been provided`);
     }
 
-    const directiveFromArgument =
-        directive?.arguments?.find((arg) => arg.name.value === "requires") ||
-        deprecatedDirective?.arguments?.find((arg) => arg.name.value === "from");
+    const directiveRequiresArgument = directive?.arguments?.find((arg) => arg.name.value === "requires");
 
-    if (!directiveFromArgument) {
+    if (!directiveRequiresArgument) {
         return {
             requiredFields: {},
         };
     }
 
-    if (directiveFromArgument?.value.kind === Kind.STRING) {
-        const selectionSetDocument = parse(`{ ${directiveFromArgument.value.value} }`);
-        validateSelectionSet(baseSchema, object, selectionSetDocument);
-        const requiredFieldsResolveTree = selectionSetToResolveTree(
-            object.fields || [],
-            objects,
-            interfaces,
-            unions,
-            selectionSetDocument
-        );
-        if (requiredFieldsResolveTree) {
-            return {
-                requiredFields: requiredFieldsResolveTree,
-            };
-        }
+    if (directiveRequiresArgument?.value.kind !== Kind.STRING) {
+        throw new Error("@customResolver requires expects a string");
     }
 
-    // TODO - remove this when requires no longer requires a list
-    if (directiveFromArgument?.value.kind === Kind.LIST) {
-        const requiredFields = removeDuplicates(
-            directiveFromArgument.value.values.map((v) => (v as StringValueNode).value) ?? []
-        );
-        const selectionSetDocument = parse(`{ ${requiredFields.join(" ")} }`);
-        // We don't validate for a list to avoid making this a breaking change
-        const requiredFieldsResolveTree = selectionSetToResolveTree(
-            object.fields || [],
-            objects,
-            interfaces,
-            unions,
-            selectionSetDocument
-        );
-        if (requiredFieldsResolveTree) {
-            return {
-                requiredFields: requiredFieldsResolveTree,
-            };
-        }
+    const selectionSetDocument = parse(`{ ${directiveRequiresArgument.value.value} }`);
+    validateSelectionSet(baseSchema, object, selectionSetDocument);
+    const requiredFieldsResolveTree = selectionSetToResolveTree(
+        object.fields || [],
+        objects,
+        interfaces,
+        unions,
+        selectionSetDocument
+    );
+    if (requiredFieldsResolveTree) {
+        return {
+            requiredFields: requiredFieldsResolveTree,
+        };
     }
-
-    return {
-        requiredFields: {},
-    };
 }
 
 function validateSelectionSet(
