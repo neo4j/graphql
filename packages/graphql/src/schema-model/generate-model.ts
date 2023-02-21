@@ -24,7 +24,7 @@ import {
     Kind,
     ObjectTypeDefinitionNode,
     UnionTypeDefinitionNode,
-    ValueNode,
+    ValueNode
 } from "graphql";
 import { SCALAR_TYPES } from "../constants";
 import { getDefinitionNodes } from "../schema/get-definition-nodes";
@@ -32,6 +32,7 @@ import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
 import type { Annotation } from "./annotation/Annotation";
 import { CypherAnnotation } from "./annotation/CypherAnnotation";
+import { GenericAnnotation } from "./annotation/GenericAnnotation";
 import { Attribute } from "./attribute/Attribute";
 import { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
@@ -73,22 +74,31 @@ function generateCompositeEntity(
     }
     return new CompositeEntity({
         name: definition.name.value,
-        concreteEntities: compositeFields,
+        concreteEntities: compositeFields
     });
 }
 
 function generateConcreteEntity(definition: ObjectTypeDefinitionNode): ConcreteEntity {
     const fields = (definition.fields || []).map(generateField);
-    const directives = (definition.directives || []).reduce((acc, directive) => {
+
+    const directiveNodes = definition.directives || [];
+    const annotations = createAnnotations(directiveNodes);
+
+    const directives = directiveNodes.reduce((acc, directive) => {
         acc.set(directive.name.value, parseArguments(directive));
         return acc;
     }, new Map<string, Record<string, unknown>>());
     const labels = getLabels(definition, directives.get("node") || {});
 
+    for (const key of directives.keys()) {
+        console.log(key);
+    }
+
     return new ConcreteEntity({
         name: definition.name.value,
         labels,
-        attributes: filterTruthy(fields),
+        annotations,
+        attributes: filterTruthy(fields)
     });
 }
 
@@ -108,20 +118,23 @@ function getLabels(definition: ObjectTypeDefinitionNode, nodeDirectiveArguments:
 function generateField(field: FieldDefinitionNode): Attribute | undefined {
     const typeMeta = getFieldTypeMeta(field.type); // TODO: without originalType
     if (SCALAR_TYPES.includes(typeMeta.name)) {
-        const annotations = createFieldAnnotations(field.directives || []);
+        const annotations = createAnnotations(field.directives || []);
         return new Attribute({
             name: field.name.value,
-            annotations,
+            annotations
         });
     }
 }
 
-function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
+function createAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
     return filterTruthy(
         directives.map((directive) => {
             switch (directive.name.value) {
                 case "cypher":
                     return parseCypherAnnotation(directive);
+                case "deprecated":
+                case "shareable":
+                    return new GenericAnnotation(directive.name.value);
                 default:
                     return undefined;
             }
@@ -135,7 +148,7 @@ function parseCypherAnnotation(directive: DirectiveNode): CypherAnnotation {
         throw new Error("@cypher statement required");
     }
     return new CypherAnnotation({
-        statement: statement,
+        statement: statement
     });
 }
 

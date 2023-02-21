@@ -17,7 +17,10 @@
  * limitations under the License.
  */
 
-import type { CypherAnnotation } from "./CypherAnnotation";
-import type { GenericAnnotation } from "./GenericAnnotation";
+export class GenericAnnotation {
+    public name: string;
 
-export type Annotation = CypherAnnotation | GenericAnnotation;
+    constructor(name: string) {
+        this.name = name;
+    }
+}

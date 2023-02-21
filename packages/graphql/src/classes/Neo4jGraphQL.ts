@@ -269,7 +269,11 @@ class Neo4jGraphQL {
                 validateDocument(document);
             }
 
-            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
+            if (!this.schemaModel) {
+                this.schemaModel = generateModel(document);
+            }
+
+            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, this.schemaModel, {
                 features: this.features,
                 enableRegex: this.config?.enableRegex,
                 validateResolvers,
@@ -277,8 +281,6 @@ class Neo4jGraphQL {
                 callbacks: this.config.callbacks,
                 userCustomResolvers: this.schemaDefinition.resolvers
             });
-
-            this.schemaModel = generateModel(document);
 
             this._nodes = nodes;
             this._relationships = relationships;
@@ -309,7 +311,12 @@ class Neo4jGraphQL {
         if (validateTypeDefs) {
             validateDocument(document, directives, types);
         }
-        const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
+
+        if (!this.schemaModel) {
+            this.schemaModel = generateModel(document);
+        }
+
+        const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, this.schemaModel, {
             features: this.features,
             enableRegex: this.config?.enableRegex,
             validateResolvers,
@@ -318,8 +325,6 @@ class Neo4jGraphQL {
             userCustomResolvers: this.schemaDefinition.resolvers,
             subgraph
         });
-
-        this.schemaModel = generateModel(document);
 
         this._nodes = nodes;
         this._relationships = relationships;
