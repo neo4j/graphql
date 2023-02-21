@@ -53,8 +53,8 @@ export function translateCypherDirectiveProjection({
     cypherFieldAliasMap: CypherFieldReferenceMap;
 }): Res {
     const resultVariable = new Cypher.Node();
-    cypherFieldAliasMap[`${nodeRef.prefix}_${alias}`] = resultVariable;
-
+    cypherFieldAliasMap[alias] = resultVariable;
+    
     const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
     const entity = context.schemaModel.entities.get(cypherField.typeMeta.name);
 

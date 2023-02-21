@@ -160,7 +160,6 @@ function createConnectionNodeProjection({
     ];
 
     if (projectionMeta?.authValidatePredicates?.length) {
-        // TODO reuse this as an utility
         const projectionAuth = new Cypher.CallProcedure(
             new Cypher.apoc.Validate(
                 Cypher.not(Cypher.and(...projectionMeta.authValidatePredicates)),

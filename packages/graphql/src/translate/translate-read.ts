@@ -121,7 +121,6 @@ export function translateRead(
             nodeField: node.singular,
             fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
             cypherFields: node.cypherFields,
-            varName,
             cypherFieldAliasMap,
         });
     }
@@ -159,7 +158,6 @@ export function translateRead(
                 nodeField: node.singular,
                 fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
                 cypherFields: node.cypherFields,
-                varName,
                 cypherFieldAliasMap,
             });
         }

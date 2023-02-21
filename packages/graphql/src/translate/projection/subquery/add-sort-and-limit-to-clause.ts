@@ -50,7 +50,6 @@ export function addSortAndLimitOptionsToClause({
     nodeField,
     fulltextScoreVariable,
     cypherFields,
-    varName,
     cypherFieldAliasMap,
 }: {
     optionsInput: GraphQLOptionsArg;
@@ -59,7 +58,6 @@ export function addSortAndLimitOptionsToClause({
     nodeField?: string;
     fulltextScoreVariable?: Cypher.Variable;
     cypherFields?: CypherField[];
-    varName?: string;
     cypherFieldAliasMap?: CypherFieldReferenceMap;
 }): void {
     if (optionsInput.sort) {
@@ -69,7 +67,6 @@ export function addSortAndLimitOptionsToClause({
             nodeField,
             fulltextScoreVariable,
             cypherFields,
-            varName,
             cypherFieldAliasMap,
         });
         if (orderByParams.length > 0) {
@@ -88,7 +85,6 @@ function createOrderByParams({
     nodeField,
     fulltextScoreVariable,
     cypherFields,
-    varName,
     cypherFieldAliasMap,
 }: {
     optionsInput: GraphQLOptionsArg;
@@ -96,7 +92,6 @@ function createOrderByParams({
     nodeField?: string;
     fulltextScoreVariable?: Cypher.Variable;
     cypherFields?: CypherField[];
-    varName?: string;
     cypherFieldAliasMap?: CypherFieldReferenceMap;
 }): Array<[Cypher.Expr, Cypher.Order]> {
     const orderList = (optionsInput.sort || []).flatMap(
@@ -109,8 +104,8 @@ function createOrderByParams({
     );
     return orderList.map(([field, order]) => {
         // TODO: remove this once translation of cypher fields moved to cypher builder.
-        if (varName && cypherFieldAliasMap && cypherFields && cypherFields.some((f) => f.fieldName === field)) {
-            return [cypherFieldAliasMap[`${varName}_${field}`], order];
+        if (cypherFieldAliasMap && cypherFields && cypherFields.some((f) => f.fieldName === field)) {
+            return [cypherFieldAliasMap[field], order];
         }
         if (fulltextScoreVariable && field === SCORE_FIELD) {
             return [fulltextScoreVariable, order];

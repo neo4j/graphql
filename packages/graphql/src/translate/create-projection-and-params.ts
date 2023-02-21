@@ -270,9 +270,7 @@ export default function createProjectionAndParams({
         });
 
         if (aggregationFieldProjection) {
-            if (aggregationFieldProjection.projectionSubqueryCypher) {
-                res.subqueries.push(aggregationFieldProjection.projectionSubqueryCypher);
-            }
+            res.subqueries.push(aggregationFieldProjection.projectionSubqueryCypher);
             res.projection.push(
                 new Cypher.RawCypher((env) => `${alias}: ${aggregationFieldProjection.projectionCypher.getCypher(env)}`)
             );
@@ -311,17 +309,23 @@ export default function createProjectionAndParams({
             // If field is aliased, rename projected field to alias and set to varName.fieldName
             // e.g. RETURN varname { .fieldName } -> RETURN varName { alias: varName.fieldName }
 
-            const fieldProjection = new Cypher.RawCypher((env) => {
+            /*     const fieldProjection = new Cypher.RawCypher((env) => {
                 let aliasedProj: string;
                 if (alias !== field.name || dbFieldName !== field.name || literalElements) {
-                    aliasedProj = `${alias}: ${varName.getCypher(env)}`;
+                    aliasedProj = `${alias}: ${varName.getCypher(env)}`; // alias: varName 
                 } else {
                     aliasedProj = "";
                 }
-                return `${aliasedProj}.${dbFieldName}`;
-            });
+                return `${aliasedProj}.${dbFieldName}`; // alias: varName.fieldName  // .fieldName 
+            }); */
 
-            res.projection.push(fieldProjection);
+            if (alias !== field.name || dbFieldName !== field.name || literalElements) {
+                res.projection.push(
+                    new Cypher.RawCypher((env) => `${alias}: ${varName.property(dbFieldName).getCypher(env)}`)
+                );
+            } else {
+                res.projection.push(new Cypher.RawCypher(`.${dbFieldName}`));
+            }
         }
 
         return res;

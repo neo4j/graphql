@@ -361,7 +361,6 @@ function createAuthPredicate({
             const relationshipNodeRef = new Cypher.Node({
                 labels: refNode.getLabels(context),
             });
-
             Object.entries(value as Record<string, any>).forEach(([k, v]: [string, any]) => {
                 const authPredicate = createAuthPredicate({
                     node: refNode,
