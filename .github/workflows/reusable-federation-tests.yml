@@ -17,10 +17,10 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
       - name: Build compatibility test subgraph
-        run: yarn build
+        run: |
+          yarn build
+          ls -la dist/
         working-directory: packages/apollo-federation-subgraph-compatibility
-      - name: Copy built subgraph to root
-        run: cp -r packages/apollo-federation-subgraph-compatibility/dist .
       - uses: apollographql/federation-subgraph-compatibility@v1
         with:
           # [Required] Docker Compose file to start up the subgraph
