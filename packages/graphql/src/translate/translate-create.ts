@@ -18,7 +18,7 @@
  */
 
 import type { Node } from "../classes";
-import createProjectionAndParams, { ProjectionResult } from "./create-projection-and-params";
+import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import type { Context } from "../types";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
@@ -27,6 +27,18 @@ import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
 import unwindCreate from "./unwind-create";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
+
+type ProjectionAndParamsResult = {
+    projection: Cypher.Expr;
+    projectionSubqueries: Cypher.Clause;
+    projectionAuth?: Cypher.Clause;
+};
+
+type CompositeProjectionAndParamsResult = {
+    projectionSubqueriesClause: Cypher.Clause | undefined;
+    projectionList: Cypher.Expr[];
+    authCalls: Cypher.Clause | undefined;
+};
 
 export default async function translateCreate({
     context,
@@ -53,9 +65,14 @@ export default async function translateCreate({
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
+
+    // TODO: remove strs and only use variables
+    const varNameStrs = mutationInputs.map((_, i) => `this${i}`);
+    const varNameVariables = varNameStrs.map((varName) => new Cypher.NamedNode(varName));
+
     const { createStrs, params } = mutationInputs.reduce(
         (res, input, index) => {
-            const varName = `this${index}`;
+            const varName = varNameStrs[index];
             const create = [`CALL {`];
             const withVars = [varName];
             projectionWith.push(varName);
@@ -96,25 +113,26 @@ export default async function translateCreate({
         params: any;
     };
 
-    let projectionExpr: Cypher.Expr | undefined;
-    let authCalls;
-
     if (metaNames.length > 0) {
         projectionWith.push(`${metaNames.join(" + ")} AS meta`);
     }
 
-    let projectionArr; 
+    let parsedProjection: CompositeProjectionAndParamsResult | undefined;
     if (nodeProjection) {
-        const varNames = createStrs.map((_, i) => new Cypher.NamedNode(`this${i}`));
-        projectionArr = createStrs.map((_, i) => {
+        const projectionFromInput: ProjectionAndParamsResult[] = varNameVariables.map((varName) => {
             const projection = createProjectionAndParams({
                 node,
                 context,
                 resolveTree: nodeProjection,
-                varName: varNames[i],
+                varName,
                 cypherFieldAliasMap: {},
             });
+
+            const projectionExpr = new Cypher.RawCypher(
+                (env) => `${varName.getCypher(env)} ${projection.projection.getCypher(env)}`
+            );
             const projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
+
             if (projection.meta?.authValidatePredicates?.length) {
                 const projAuth = new Cypher.CallProcedure(
                     new Cypher.apoc.Validate(
@@ -123,43 +141,44 @@ export default async function translateCreate({
                         new Cypher.Literal([0])
                     )
                 );
-                return [projection.projection, projectionSubquery, projAuth];
+                return {
+                    projection: projectionExpr,
+                    projectionSubqueries: projectionSubquery,
+                    projectionAuth: projAuth,
+                };
             }
-            return [projection.projection, projectionSubquery];
-        }) as [Cypher.Expr, Cypher.Clause, Cypher.Clause | undefined][];
-
-   
-        projectionExpr = new Cypher.RawCypher((env) => {
-            return varNames
-                .map((varName, i) => {
-                    const [projections, projectionsSubqueries, projAuths] = projectionArr[i];
-                    return `${varName.getCypher(env)} ${projections.getCypher(env)}`;
-                })
-                .join(", ");
+            return { projection: projectionExpr, projectionSubqueries: projectionSubquery };
         });
- 
-        const projAuths = projectionArr.map((el) => el[2]).filter(Boolean);
-        if (projAuths.length) {
-            authCalls = Cypher.concat(...projAuths);
-        }
+
+        parsedProjection = projectionFromInput.reduce(
+            (acc: CompositeProjectionAndParamsResult, { projection, projectionSubqueries, projectionAuth }) => {
+                return {
+                    authCalls: Cypher.concat(acc.authCalls, projectionAuth),
+                    projectionSubqueriesClause: Cypher.concat(acc.projectionSubqueriesClause, projectionSubqueries),
+                    projectionList: acc.projectionList.concat(projection),
+                };
+            },
+            {
+                projectionSubqueriesClause: undefined,
+                projectionList: [],
+                authCalls: undefined,
+            }
+        );
     }
 
-    const returnStatement = generateCreateReturnStatement(projectionExpr, context.subscriptionsEnabled);
-    const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
+    const projectionList = parsedProjection?.projectionList.length
+        ? new Cypher.List(parsedProjection.projectionList)
+        : undefined;
+    const returnStatement = generateCreateReturnStatement(projectionList, context.subscriptionsEnabled);
 
     const createQuery = new Cypher.RawCypher((env) => {
-        let projectionSubqueryStr;
-        if (projectionArr) {
-            const projectionSubqueries = projectionArr.map((el) => el[1]).filter(Boolean);
-            const projectionSubqueriesClause = Cypher.concat(...projectionSubqueries);
-            projectionSubqueryStr = projectionSubqueries.length ? `\n${projectionSubqueriesClause.getCypher(env)}` : "";
-        }
+        const projectionSubqueriesStr = parsedProjection?.projectionSubqueriesClause?.getCypher(env);
 
         const cypher = filterTruthy([
             `${createStrs.join("\n")}`,
-            projectionWithStr,
-            authCalls?.getCypher(env),
-            projectionSubqueryStr || "",
+            context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "",
+            parsedProjection?.authCalls?.getCypher(env),
+            projectionSubqueriesStr ? `\n${projectionSubqueriesStr}` : "",
             returnStatement.getCypher(env),
         ])
             .filter(Boolean)
@@ -192,7 +211,7 @@ function generateCreateReturnStatement(
     const statements = new Cypher.RawCypher((env) => {
         let statStr;
         if (projectionExpr) {
-            statStr = `[${projectionExpr.getCypher(env)}] AS data`;
+            statStr = `${projectionExpr.getCypher(env)} AS data`;
         }
 
         if (subscriptionsEnabled) {

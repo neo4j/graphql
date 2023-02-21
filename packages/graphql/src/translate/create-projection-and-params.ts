@@ -24,7 +24,7 @@ import type { Node } from "../classes";
 import type { GraphQLOptionsArg, GraphQLWhereArg, Context, GraphQLSortArg, CypherFieldReferenceMap } from "../types";
 import { createAuthPredicates } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
-import createPointElement from "./projection/elements/create-point-element";
+import { createPointExpression } from "./projection/elements/create-point-element";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
@@ -126,7 +126,7 @@ export default function createProjectionAndParams({
             if (referenceNode?.queryOptions) {
                 optionsInput.limit = referenceNode.queryOptions.getLimit(optionsInput.limit);
             }
-        
+
             const subqueryReturnAlias = new Cypher.Variable();
             if (relationField.interface || relationField.union) {
                 let referenceNodes;
@@ -171,7 +171,6 @@ export default function createProjectionAndParams({
                 const parentNode = varName as Cypher.Node;
 
                 const unionSubqueries: Cypher.Clause[] = [];
-               
                 for (const refNode of referenceNodes) {
                     const targetNode = new Cypher.Node({ labels: refNode.getLabels(context) });
                     const recurse = createProjectionAndParams({
@@ -300,7 +299,8 @@ export default function createProjectionAndParams({
         }
 
         if (pointField) {
-            res.projection.push(createPointElement({ resolveTree: field, field: pointField, variable: varName }));
+            const pointExpr = createPointExpression({ resolveTree: field, field: pointField, variable: varName });
+            res.projection.push(new Cypher.RawCypher((env) => `${field.alias}: ${pointExpr.getCypher(env)}`));
         } else if (temporalField?.typeMeta.name === "DateTime") {
             res.projection.push(createDatetimeElement({ resolveTree: field, field: temporalField, variable: varName }));
         } else {
@@ -450,7 +450,6 @@ function createFulltextProjection({
     resolveTree: ResolveTree;
     node: Node;
     context: Context;
-    chainStr?: string;
     varName: Cypher.Node;
     literalElements?: boolean;
     resolveType?: boolean;

@@ -59,7 +59,6 @@ export default async function unwindCreate({
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
     let projectionCypher: Cypher.Expr | undefined;
-    let authCalls: string | undefined;
 
     if (metaNames.length > 0) {
         projectionWith.push(`${metaNames.join(" + ")} AS meta`);
@@ -71,19 +70,12 @@ export default async function unwindCreate({
             node,
             context,
             resolveTree: nodeProjection,
-            varName: new Cypher.NamedNode("REPLACE_ME"),
+            varName: rootNodeVariable,
             cypherFieldAliasMap: {},
         });
         projectionSubquery = Cypher.concat(...projection.subqueries);
-
         projectionCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
-            return `${rootNodeVariable.getCypher(env)} ${projection.projection
-                .getCypher(env)
-                // First look to see if projection param is being reassigned
-                // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
-                .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-                .replace(/\$REPLACE_ME/g, "$projection")
-                .replace(/REPLACE_ME/g, `${rootNodeVariable.getCypher(env)}`)}`;
+            return `${rootNodeVariable.getCypher(env)} ${projection.projection.getCypher(env)}`;
         });
     }
 
@@ -94,16 +86,10 @@ export default async function unwindCreate({
     const createQuery = new Cypher.RawCypher((env) => {
         const projectionSubqueryStr = compileCypherIfExists(projectionSubquery, env);
 
-        const replacedProjectionSubqueryStrs = projectionSubqueryStr
-            .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-            .replace(/\$REPLACE_ME/g, "$projection")
-            .replace(/REPLACE_ME/g, `${rootNodeVariable.getCypher(env)}`);
-
         const cypher = filterTruthy([
             unwindCreate.getCypher(env),
             projectionWithStr,
-            authCalls,
-            replacedProjectionSubqueryStrs,
+            projectionSubqueryStr,
             returnStatement.getCypher(env),
         ])
             .filter(Boolean)
