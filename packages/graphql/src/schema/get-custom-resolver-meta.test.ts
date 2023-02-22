@@ -560,7 +560,7 @@ describe("getCustomResolverMeta", () => {
         });
     });
     test("should return the correct meta when a list of required fields is provided", () => {
-        const requiredFields = ["name"];
+        const requiredFields = "name";
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -575,11 +575,8 @@ describe("getCustomResolverMeta", () => {
                             name: { value: "requires" },
                             // @ts-ignore
                             value: {
-                                kind: Kind.LIST,
-                                values: requiredFields.map((requiredField) => ({
-                                    kind: Kind.STRING,
-                                    value: requiredField,
-                                })),
+                                kind: Kind.STRING,
+                                value: requiredFields,
                             },
                         },
                     ],
@@ -615,73 +612,7 @@ describe("getCustomResolverMeta", () => {
         });
 
         expect(result).toEqual({
-            requiredFields: requiredFields.reduce((res, field) => {
-                res = { ...res, ...generateResolveTree({ name: field }) };
-                return res;
-            }, {}),
-        });
-    });
-
-    test("should not throw an error if a list of required fields is provided that contains invalid fields", () => {
-        const requiredFields = ["field1", "field2", "field3"];
-        const field: FieldDefinitionNode = {
-            directives: [
-                {
-                    // @ts-ignore
-                    name: {
-                        value: "customResolver",
-                        // @ts-ignore
-                    },
-                    arguments: [
-                        {
-                            // @ts-ignore
-                            name: { value: "requires" },
-                            // @ts-ignore
-                            value: {
-                                kind: Kind.LIST,
-                                values: requiredFields.map((requiredField) => ({
-                                    kind: Kind.STRING,
-                                    value: requiredField,
-                                })),
-                            },
-                        },
-                    ],
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 2" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 3" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 4" },
-                },
-            ],
-            name: {
-                kind: Kind.NAME,
-                value: customResolverField,
-            },
-        };
-
-        const result = getCustomResolverMeta({
-            baseSchema,
-            field,
-            object,
-            objects,
-            validateResolvers: true,
-            interfaces,
-            unions,
-            customResolvers: resolvers,
-        });
-
-        expect(result).toEqual({
-            requiredFields: requiredFields.reduce((res, field) => {
-                res = { ...res, ...generateResolveTree({ name: field }) };
-                return res;
-            }, {}),
+            requiredFields: generateResolveTree({ name: requiredFields }),
         });
     });
 
@@ -836,7 +767,7 @@ describe("getCustomResolverMeta", () => {
     });
 
     test("Check throws error if customResolver is not provided", () => {
-        const requiredFields = ["field1", "field2", "field3"];
+        const requiredFields = "name";
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -851,11 +782,8 @@ describe("getCustomResolverMeta", () => {
                             name: { value: "requires" },
                             // @ts-ignore
                             value: {
-                                kind: Kind.LIST,
-                                values: requiredFields.map((requiredField) => ({
-                                    kind: Kind.STRING,
-                                    value: requiredField,
-                                })),
+                                kind: Kind.STRING,
+                                value: requiredFields,
                             },
                         },
                     ],
@@ -895,7 +823,7 @@ describe("getCustomResolverMeta", () => {
         ).toThrow(`Custom resolver for ${customResolverField} has not been provided`);
     });
     test("Check throws error if customResolver defined on interface", () => {
-        const requiredFields = ["field1", "field2", "field3"];
+        const requiredFields = "name";
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -910,11 +838,8 @@ describe("getCustomResolverMeta", () => {
                             name: { value: "requires" },
                             // @ts-ignore
                             value: {
-                                kind: Kind.LIST,
-                                values: requiredFields.map((requiredField) => ({
-                                    kind: Kind.STRING,
-                                    value: requiredField,
-                                })),
+                                kind: Kind.STRING,
+                                value: requiredFields,
                             },
                         },
                     ],
@@ -959,7 +884,7 @@ describe("getCustomResolverMeta", () => {
     });
 
     test("Check does not throw error if validateResolvers false", () => {
-        const requiredFields = ["field1", "field2", "field3"];
+        const requiredFields = "name";
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -974,11 +899,8 @@ describe("getCustomResolverMeta", () => {
                             name: { value: "requires" },
                             // @ts-ignore
                             value: {
-                                kind: Kind.LIST,
-                                values: requiredFields.map((requiredField) => ({
-                                    kind: Kind.STRING,
-                                    value: requiredField,
-                                })),
+                                kind: Kind.STRING,
+                                value: requiredFields,
                             },
                         },
                     ],

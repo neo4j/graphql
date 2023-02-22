@@ -125,7 +125,7 @@ function validateSelectionSet(
     const errors = validate(validationSchema, selectionSetDocument);
     if (errors.length) {
         throw new Error(
-            `Invalid selection set provided to @customResolver on ${object.name.value}: ${errors.join(", ")}`
+            `Invalid selection set provided to @customResolver on ${object.name.value}:\n${errors.join("\n")}`
         );
     }
 }
