@@ -9,7 +9,7 @@ module.exports = async function globalTeardown() {
 
     try {
         const hasMultiDbSupport = await driver.supportsMultiDb();
-        if (!hasMultiDbSupport) {
+        if (process.env.DEFAULT_DB || !hasMultiDbSupport) {
             // INFO: We do nothing in case the dbms has no multi-db support.
             return;
         }
