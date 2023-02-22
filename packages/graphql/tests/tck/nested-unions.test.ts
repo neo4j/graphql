@@ -160,13 +160,13 @@ describe("Nested Unions", () => {
                             UNION
                             WITH *
                             MATCH (this_actors)-[update_this2:ACTED_IN]->(this_actors_actedIn:\`Series\`)
-                            WITH this_actors_actedIn { __resolveType: \\"Series\\", .name, __id: id(this_actors) } AS this_actors_actedIn
+                            WITH this_actors_actedIn { __resolveType: \\"Series\\", __id: id(this_actors), .name } AS this_actors_actedIn
                             RETURN this_actors_actedIn AS this_actors_actedIn
                         }
                         WITH this_actors_actedIn
                         RETURN collect(this_actors_actedIn) AS this_actors_actedIn
                     }
-                    WITH this_actors { __resolveType: \\"LeadActor\\", .name, actedIn: this_actors_actedIn, __id: id(this) } AS this_actors
+                    WITH this_actors { __resolveType: \\"LeadActor\\", __id: id(this), .name, actedIn: this_actors_actedIn } AS this_actors
                     RETURN this_actors AS this_actors
                     UNION
                     WITH *
@@ -272,13 +272,13 @@ describe("Nested Unions", () => {
                             UNION
                             WITH *
                             MATCH (this_actors)-[update_this2:ACTED_IN]->(this_actors_actedIn:\`Series\`)
-                            WITH this_actors_actedIn { __resolveType: \\"Series\\", .name, __id: id(this_actors) } AS this_actors_actedIn
+                            WITH this_actors_actedIn { __resolveType: \\"Series\\", __id: id(this_actors), .name } AS this_actors_actedIn
                             RETURN this_actors_actedIn AS this_actors_actedIn
                         }
                         WITH this_actors_actedIn
                         RETURN collect(this_actors_actedIn) AS this_actors_actedIn
                     }
-                    WITH this_actors { __resolveType: \\"LeadActor\\", .name, actedIn: this_actors_actedIn, __id: id(this) } AS this_actors
+                    WITH this_actors { __resolveType: \\"LeadActor\\", __id: id(this), .name, actedIn: this_actors_actedIn } AS this_actors
                     RETURN this_actors AS this_actors
                     UNION
                     WITH *

@@ -92,12 +92,12 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[update_this0:HAS_INTERFACE]->(this_interface:\`ChildOne\`)
-                    WITH this_interface { __resolveType: \\"ChildOne\\", .id, .name, __id: id(this) } AS this_interface
+                    WITH this_interface { __resolveType: \\"ChildOne\\", __id: id(this), .id, .name } AS this_interface
                     RETURN this_interface AS this_interface
                     UNION
                     WITH *
                     MATCH (this)-[update_this1:HAS_INTERFACE]->(this_interface:\`ChildTwo\`)
-                    WITH this_interface { __resolveType: \\"ChildTwo\\", .id, .name, __id: id(this) } AS this_interface
+                    WITH this_interface { __resolveType: \\"ChildTwo\\", __id: id(this), .id, .name } AS this_interface
                     RETURN this_interface AS this_interface
                 }
                 WITH this_interface
@@ -186,12 +186,12 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[update_this0:HAS_INTERFACE]->(this_interface:\`ChildOne\`)
-                    WITH this_interface { __resolveType: \\"ChildOne\\", .id, .name, __id: id(this) } AS this_interface
+                    WITH this_interface { __resolveType: \\"ChildOne\\", __id: id(this), .id, .name } AS this_interface
                     RETURN this_interface AS this_interface
                     UNION
                     WITH *
                     MATCH (this)-[update_this1:HAS_INTERFACE]->(this_interface:\`ChildTwo\`)
-                    WITH this_interface { __resolveType: \\"ChildTwo\\", .id, .name, __id: id(this) } AS this_interface
+                    WITH this_interface { __resolveType: \\"ChildTwo\\", __id: id(this), .id, .name } AS this_interface
                     RETURN this_interface AS this_interface
                 }
                 WITH this_interface

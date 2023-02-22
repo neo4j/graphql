@@ -123,12 +123,12 @@ describe("Cypher Fragment", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:OWNS]->(this_owns:\`Tile\`)
-                    WITH this_owns { __resolveType: \\"Tile\\", .id, __id: id(this) } AS this_owns
+                    WITH this_owns { __resolveType: \\"Tile\\", __id: id(this), .id } AS this_owns
                     RETURN this_owns AS this_owns
                     UNION
                     WITH *
                     MATCH (this)-[this1:OWNS]->(this_owns:\`Character\`)
-                    WITH this_owns { __resolveType: \\"Character\\", .id, __id: id(this) } AS this_owns
+                    WITH this_owns { __resolveType: \\"Character\\", __id: id(this), .id } AS this_owns
                     RETURN this_owns AS this_owns
                 }
                 WITH this_owns

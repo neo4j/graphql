@@ -86,12 +86,12 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
                 CALL {
                     WITH *
                     MATCH (this)<-[this0:HOSTED_BY]-(this_events232:\`Screening\`)
-                    WITH this_events232 { __resolveType: \\"Screening\\", .id, __id: id(this) } AS this_events232
+                    WITH this_events232 { __resolveType: \\"Screening\\", __id: id(this), .id } AS this_events232
                     RETURN this_events232 AS this_events232
                     UNION
                     WITH *
                     MATCH (this)<-[this1:HOSTED_BY]-(this_events232:\`Booking\`)
-                    WITH this_events232 { __resolveType: \\"Booking\\", .id, __id: id(this) } AS this_events232
+                    WITH this_events232 { __resolveType: \\"Booking\\", __id: id(this), .id } AS this_events232
                     RETURN this_events232 AS this_events232
                 }
                 WITH this_events232

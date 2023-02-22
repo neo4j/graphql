@@ -411,7 +411,7 @@ describe("Cypher Auth Where with Roles", () => {
                     WITH *
                     MATCH (this)-[this4:HAS_POST]->(this_content:\`Post\`)
                     WHERE (((any(var6 IN [\\"user\\"] WHERE any(var5 IN $auth.roles WHERE var5 = var6)) AND (exists((this_content)<-[:HAS_POST]-(:\`User\`)) AND all(this7 IN [(this_content)<-[:HAS_POST]-(this7:\`User\`) | this7] WHERE (this7.id IS NOT NULL AND this7.id = $param4)))) OR any(var9 IN [\\"admin\\"] WHERE any(var8 IN $auth.roles WHERE var8 = var9))) AND apoc.util.validatePredicate(NOT ((any(var11 IN [\\"user\\"] WHERE any(var10 IN $auth.roles WHERE var10 = var11)) OR any(var13 IN [\\"admin\\"] WHERE any(var12 IN $auth.roles WHERE var12 = var13)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    WITH this_content { __resolveType: \\"Post\\", .id, __id: id(this) } AS this_content
+                    WITH this_content { __resolveType: \\"Post\\", __id: id(this), .id } AS this_content
                     RETURN this_content AS this_content
                 }
                 WITH this_content
