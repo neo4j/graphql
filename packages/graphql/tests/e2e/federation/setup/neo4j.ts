@@ -22,9 +22,10 @@ import * as neo4j from "neo4j-driver";
 export class Neo4j {
     driver: neo4j.Driver;
 
-    constructor(url = "neo4j://localhost:7687/neo4j", username = "neo4j", password = "password") {
-        const auth = neo4j.auth.basic(username, password);
-        this.driver = neo4j.driver(url, auth);
+    constructor() {
+        const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
+        const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
+        this.driver = neo4j.driver(NEO_URL, auth);
     }
 
     public async init() {
