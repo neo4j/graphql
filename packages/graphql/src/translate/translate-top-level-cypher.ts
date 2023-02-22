@@ -87,7 +87,7 @@ export function translateTopLevelCypher({
     const entity = context.schemaModel.entities.get(field.typeMeta.name);
 
     if (entity instanceof CompositeEntity) {
-        const headStrs: (Cypher.Clause | string)[] = [];
+        const headStrs: Cypher.Clause[] = [];
         const referencedNodes =
             entity.concreteEntities
                 ?.map((u) => context.nodes.find((n) => n.name === u.name))
@@ -116,6 +116,7 @@ export function translateTopLevelCypher({
                     });
 
                     projectionSubqueries.push(...subqueries);
+                    
                     const innerNodePartialProjection = new Cypher.RawCypher((env) => {
                         return innerHeadStr
                             .concat(
@@ -135,7 +136,7 @@ export function translateTopLevelCypher({
                     headStrs.push(innerNodePartialProjection);
                 } else {
                     innerHeadStr = `${innerHeadStr}| this { __resolveType: "${node.name}" }]`;
-                    headStrs.push(innerHeadStr);
+                    headStrs.push(new Cypher.RawCypher(innerHeadStr));
                 }
             }
         });
@@ -143,7 +144,7 @@ export function translateTopLevelCypher({
         projectionStr = new Cypher.RawCypher(
             (env) =>
                 `${headStrs
-                    .map((headStr) => (typeof headStr === "string" ? headStr : headStr.getCypher(env)))
+                    .map((headStr) => headStr.getCypher(env))
                     .join(" + ")}`
         );
     }

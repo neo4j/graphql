@@ -96,20 +96,20 @@ describe("Auth projections for interface relationship fields", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this0:ACTED_IN]->(this_actedIn:\`Movie\`)
-                    WITH this_actedIn { __resolveType: \\"Movie\\", .runtime, .title } AS this_actedIn
-                    RETURN this_actedIn AS this_actedIn
+                    MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                    WITH this1 { __resolveType: \\"Movie\\", .runtime, .title } AS this1
+                    RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)-[this1:ACTED_IN]->(this_actedIn:\`Series\`)
-                    WHERE apoc.util.validatePredicate(NOT ((this_actedIn.episodes IS NOT NULL AND this_actedIn.episodes = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this_actedIn { __resolveType: \\"Series\\", .episodes, .title } AS this_actedIn
-                    RETURN this_actedIn AS this_actedIn
+                    MATCH (this)-[this3:ACTED_IN]->(this4:\`Series\`)
+                    WHERE apoc.util.validatePredicate(NOT ((this4.episodes IS NOT NULL AND this4.episodes = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WITH this4 { __resolveType: \\"Series\\", .episodes, .title } AS this4
+                    RETURN this4 AS var2
                 }
-                WITH this_actedIn
-                RETURN collect(this_actedIn) AS this_actedIn
+                WITH var2
+                RETURN collect(var2) AS var2
             }
-            RETURN this { actedIn: this_actedIn } AS this"
+            RETURN this { actedIn: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

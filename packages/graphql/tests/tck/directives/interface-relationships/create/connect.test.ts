@@ -144,20 +144,19 @@ describe("Interface Relationships - Create connect", () => {
                 WITH this0
                 CALL {
                     WITH *
-                    MATCH (this0)-[create_this0:ACTED_IN]->(this0_actedIn:\`Movie\`)
-                    WITH this0_actedIn { __resolveType: \\"Movie\\", .runtime, .title } AS this0_actedIn
-                    RETURN this0_actedIn AS this0_actedIn
+                    MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:\`Movie\`)
+                    WITH create_this1 { __resolveType: \\"Movie\\", .runtime, .title } AS create_this1
+                    RETURN create_this1 AS create_var2
                     UNION
                     WITH *
-                    MATCH (this0)-[create_this1:ACTED_IN]->(this0_actedIn:\`Series\`)
-                    WITH this0_actedIn { __resolveType: \\"Series\\", .episodes, .title } AS this0_actedIn
-                    RETURN this0_actedIn AS this0_actedIn
+                    MATCH (this0)-[create_this3:ACTED_IN]->(create_this4:\`Series\`)
+                    WITH create_this4 { __resolveType: \\"Series\\", .episodes, .title } AS create_this4
+                    RETURN create_this4 AS create_var2
                 }
-                WITH this0_actedIn
-                RETURN collect(this0_actedIn) AS this0_actedIn
+                WITH create_var2
+                RETURN collect(create_var2) AS create_var2
             }
-            RETURN [
-            this0 { .name, actedIn: this0_actedIn }] AS data"
+            RETURN [ this0 { .name, actedIn: create_var2 } ] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

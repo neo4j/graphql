@@ -278,7 +278,7 @@ export default function createProjectionAndParams({
         }
 
         if (connectionField) {
-            const returnVariable = new Cypher.Node();
+            const returnVariable = new Cypher.Variable();
             const connectionClause = new Cypher.Call(
                 createConnectionClause({
                     resolveTree: field,
@@ -308,16 +308,6 @@ export default function createProjectionAndParams({
 
             // If field is aliased, rename projected field to alias and set to varName.fieldName
             // e.g. RETURN varname { .fieldName } -> RETURN varName { alias: varName.fieldName }
-
-            /*     const fieldProjection = new Cypher.RawCypher((env) => {
-                let aliasedProj: string;
-                if (alias !== field.name || dbFieldName !== field.name || literalElements) {
-                    aliasedProj = `${alias}: ${varName.getCypher(env)}`; // alias: varName 
-                } else {
-                    aliasedProj = "";
-                }
-                return `${aliasedProj}.${dbFieldName}`; // alias: varName.fieldName  // .fieldName 
-            }); */
 
             if (alias !== field.name || dbFieldName !== field.name || literalElements) {
                 res.projection.push(

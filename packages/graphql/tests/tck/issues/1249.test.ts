@@ -86,19 +86,19 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
             "MATCH (this:\`Bulk\`:\`BULK\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:MATERIAL_BULK]->(this_material:\`Material\`)
+                MATCH (this)-[this0:MATERIAL_BULK]->(this1:\`Material\`)
                 CALL {
-                    WITH this_material
-                    MATCH (this_material)-[this_material_connection_suppliersConnectionthis0:MATERIAL_SUPPLIER]->(this_material_Supplier:\`Supplier\`)
-                    WITH { supplierMaterialNumber: this_material_connection_suppliersConnectionthis0.supplierMaterialNumber, node: { supplierId: this_material_Supplier.supplierId } } AS edge
+                    WITH this1
+                    MATCH (this1:\`Material\`)-[this2:MATERIAL_SUPPLIER]->(this3:\`Supplier\`)
+                    WITH { supplierMaterialNumber: this2.supplierMaterialNumber, node: { supplierId: this3.supplierId } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS this_material_suppliersConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS var4
                 }
-                WITH this_material { .id, suppliersConnection: this_material_suppliersConnection } AS this_material
-                RETURN head(collect(this_material)) AS this_material
+                WITH this1 { .id, suppliersConnection: var4 } AS this1
+                RETURN head(collect(this1)) AS var5
             }
-            RETURN this { .supplierMaterialNumber, material: this_material } AS this"
+            RETURN this { .supplierMaterialNumber, material: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

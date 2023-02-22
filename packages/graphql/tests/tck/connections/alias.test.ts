@@ -70,13 +70,13 @@ describe("Connections Alias", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
                 WITH { node: { __resolveType: \\"Actor\\" } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actors
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { actors: this_actors } AS this"
+            RETURN this { actors: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -117,30 +117,30 @@ describe("Connections Alias", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_hanksthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE this_Actor.name = $this_connection_hanksparam0
-                WITH { screenTime: this_connection_hanksthis0.screenTime, node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE this1.name = $param1
+                WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_hanks
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_jennythis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE this_Actor.name = $this_connection_jennyparam0
-                WITH { screenTime: this_connection_jennythis0.screenTime, node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[this3:ACTED_IN]-(this4:\`Actor\`)
+                WHERE this4.name = $param2
+                WITH { screenTime: this3.screenTime, node: { name: this4.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_jenny
+                RETURN { edges: edges, totalCount: totalCount } AS var5
             }
-            RETURN this { .title, hanks: this_hanks, jenny: this_jenny } AS this"
+            RETURN this { .title, hanks: var2, jenny: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"this_connection_hanksparam0\\": \\"Tom Hanks\\",
-                \\"this_connection_jennyparam0\\": \\"Robin Wright\\"
+                \\"param1\\": \\"Tom Hanks\\",
+                \\"param2\\": \\"Robin Wright\\"
             }"
         `);
     });

@@ -53,7 +53,6 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     }
 
     const selections = fieldsByTypeName[node.aggregateTypeNames.selection];
-    // const projections: Cypher.Expr[] = [];
     const projections: Cypher.Map = new Cypher.Map();
     const authStrs: string[] = [];
 
@@ -86,7 +85,6 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
     Object.entries(selections).forEach((selection) => {
         if (selection[1].name === "count") {
-            // projections.push(new Cypher.RawCypher(`${selection[1].alias || selection[1].name}: count(${varName})`));
             projections.set(`${selection[1].alias || selection[1].name}`, new Cypher.RawCypher(`count(${varName})`));
         }
 
@@ -125,7 +123,6 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                 const fieldName = field.dbPropertyName || field.fieldName;
 
                 if (isDateTime) {
-                    // thisProjections.set()
                     thisProjections.push(
                         createDatetimeElement({
                             resolveTree: entry[1],

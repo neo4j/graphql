@@ -89,15 +89,15 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             WHERE var2 = true
             CALL {
                 WITH this
-                MATCH (this)-[this_projectsAggregate_this0:PARTICIPATES]->(this_projectsAggregate_this1:\`Project\`)
-                RETURN count(this_projectsAggregate_this1) AS this_projectsAggregate_var2
+                MATCH (this)-[this3:PARTICIPATES]->(this4:\`Project\`)
+                RETURN count(this4) AS var5
             }
             CALL {
                 WITH this
-                MATCH (this)-[this_projectsAggregate_this0:PARTICIPATES]->(this_projectsAggregate_this1:\`Project\`)
-                RETURN { min: min(this_projectsAggregate_this0.allocation), max: max(this_projectsAggregate_this0.allocation), average: avg(this_projectsAggregate_this0.allocation), sum: sum(this_projectsAggregate_this0.allocation) }  AS this_projectsAggregate_var3
+                MATCH (this)-[this3:PARTICIPATES]->(this4:\`Project\`)
+                RETURN { min: min(this3.allocation), max: max(this3.allocation), average: avg(this3.allocation), sum: sum(this3.allocation) }  AS var6
             }
-            RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: this_projectsAggregate_var2, edge: { allocation: this_projectsAggregate_var3 } } } AS this"
+            RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var5, edge: { allocation: var6 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -142,15 +142,15 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             WHERE var3 = true
             CALL {
                 WITH this
-                MATCH (this)-[this_projectsAggregate_this0:PARTICIPATES]->(this_projectsAggregate_this1:\`Project\`)
-                RETURN count(this_projectsAggregate_this1) AS this_projectsAggregate_var2
+                MATCH (this)-[this4:PARTICIPATES]->(this5:\`Project\`)
+                RETURN count(this5) AS var6
             }
             CALL {
                 WITH this
-                MATCH (this)-[this_projectsAggregate_this0:PARTICIPATES]->(this_projectsAggregate_this1:\`Project\`)
-                RETURN { min: min(this_projectsAggregate_this0.allocation), max: max(this_projectsAggregate_this0.allocation), average: avg(this_projectsAggregate_this0.allocation), sum: sum(this_projectsAggregate_this0.allocation) }  AS this_projectsAggregate_var3
+                MATCH (this)-[this4:PARTICIPATES]->(this5:\`Project\`)
+                RETURN { min: min(this4.allocation), max: max(this4.allocation), average: avg(this4.allocation), sum: sum(this4.allocation) }  AS var7
             }
-            RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: this_projectsAggregate_var2, edge: { allocation: this_projectsAggregate_var3 } } } AS this"
+            RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var6, edge: { allocation: var7 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -93,20 +93,20 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                    WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                    WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            RETURN this { .name, actedInConnection: this_actedInConnection } AS this"
+            RETURN this { .name, actedInConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -146,28 +146,28 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                    WHERE this_Movie.title STARTS WITH $this_connection_actedInConnectionparam0
-                    WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                    WHERE this1.title STARTS WITH $param0
+                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                    WHERE this_Series.title STARTS WITH $this_connection_actedInConnectionparam1
-                    WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                    WHERE this3.title STARTS WITH $param1
+                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            RETURN this { .name, actedInConnection: this_actedInConnection } AS this"
+            RETURN this { .name, actedInConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actedInConnectionparam0\\": \\"The \\",
-                \\"this_connection_actedInConnectionparam1\\": \\"The \\"
+                \\"param0\\": \\"The \\",
+                \\"param1\\": \\"The \\"
             }"
         `);
     });
@@ -208,31 +208,31 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                    WHERE this_Movie.runtime > $this_connection_actedInConnectionparam0
-                    WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                    WHERE this1.runtime > $param0
+                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                    WHERE this_Series.episodes > $this_connection_actedInConnectionparam1
-                    WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                    WHERE this3.episodes > $param1
+                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            RETURN this { .name, actedInConnection: this_actedInConnection } AS this"
+            RETURN this { .name, actedInConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actedInConnectionparam0\\": {
+                \\"param0\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"this_connection_actedInConnectionparam1\\": {
+                \\"param1\\": {
                     \\"low\\": 50,
                     \\"high\\": 0
                 }
@@ -274,31 +274,31 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                    WHERE this_connection_actedInConnectionthis0.screenTime > $this_connection_actedInConnectionparam0
-                    WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                    WHERE this0.screenTime > $param0
+                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                    WHERE this_connection_actedInConnectionthis1.screenTime > $this_connection_actedInConnectionparam1
-                    WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                    WHERE this2.screenTime > $param1
+                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            RETURN this { .name, actedInConnection: this_actedInConnection } AS this"
+            RETURN this { .name, actedInConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actedInConnectionparam0\\": {
+                \\"param0\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 },
-                \\"this_connection_actedInConnectionparam1\\": {
+                \\"param1\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 }
@@ -342,13 +342,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         WITH this
                         CALL {
                             WITH this
-                            MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                            WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                            WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
-                            MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                            WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                            MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                            WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }
                         WITH collect(edge) AS edges
@@ -357,9 +357,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         WITH edge, totalCount
                         ORDER BY edge.screenTime ASC
                         WITH collect(edge) AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
+                        RETURN { edges: edges, totalCount: totalCount } AS var4
                     }
-                    RETURN this { .name, actedInConnection: this_actedInConnection } AS this"
+                    RETURN this { .name, actedInConnection: var4 } AS this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -399,13 +399,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         WITH this
                         CALL {
                             WITH this
-                            MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                            WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                            WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
-                            MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                            WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                            MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                            WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }
                         WITH collect(edge) AS edges
@@ -414,9 +414,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         WITH edge, totalCount
                         ORDER BY edge.node.title ASC
                         WITH collect(edge) AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
+                        RETURN { edges: edges, totalCount: totalCount } AS var4
                     }
-                    RETURN this { .name, actedInConnection: this_actedInConnection } AS this"
+                    RETURN this { .name, actedInConnection: var4 } AS this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -457,13 +457,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         WITH this
                         CALL {
                             WITH this
-                            MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                            WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                            WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
-                            MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                            WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                            MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                            WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }
                         WITH collect(edge) AS edges
@@ -472,9 +472,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         WITH edge, totalCount
                         ORDER BY edge.screenTime ASC
                         WITH collect(edge) AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
+                        RETURN { edges: edges, totalCount: totalCount } AS var4
                     }
-                    RETURN this { .name, actedInConnection: this_actedInConnection } AS this"
+                    RETURN this { .name, actedInConnection: var4 } AS this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -513,13 +513,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         WITH this
                         CALL {
                             WITH this
-                            MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                            WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                            WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
-                            MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                            WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                            MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                            WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }
                         WITH collect(edge) AS edges
@@ -528,9 +528,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         WITH edge, totalCount
                         ORDER BY edge.node.title ASC
                         WITH collect(edge) AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
+                        RETURN { edges: edges, totalCount: totalCount } AS var4
                     }
-                    RETURN this { .name, actedInConnection: this_actedInConnection } AS this"
+                    RETURN this { .name, actedInConnection: var4 } AS this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

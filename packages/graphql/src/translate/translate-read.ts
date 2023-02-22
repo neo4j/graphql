@@ -65,7 +65,7 @@ export function translateRead(
         node,
         context,
         resolveTree,
-        varName: matchNode,
+        varName: new Cypher.NamedNode(varName),
         cypherFieldAliasMap,
     });
 
