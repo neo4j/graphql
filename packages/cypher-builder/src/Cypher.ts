@@ -75,23 +75,18 @@ export {
     contains,
     startsWith,
     endsWith,
-    matches,
+    matches
 } from "./expressions/operations/comparison";
 export { plus, minus } from "./expressions/operations/math";
 
 // --Functions
-export { CypherFunction as Function } from "./expressions/functions/CypherFunction";
+export { CypherFunction as Function } from "./expressions/functions/CypherFunctions";
 
 export {
     coalesce,
     point,
     distance,
     pointDistance,
-    cypherDatetime as datetime,
-    cypherDate as date,
-    cypherLocalTime as localtime,
-    cypherLocalDatetime as localdatetime,
-    cypherTime as time,
     labels,
     count,
     min,
@@ -99,7 +94,17 @@ export {
     avg,
     sum,
     randomUUID,
-} from "./expressions/functions/CypherFunction";
+    id,
+    elementId
+} from "./expressions/functions/CypherFunctions";
+
+export {
+    cypherDatetime as datetime,
+    cypherDate as date,
+    cypherLocalTime as localtime,
+    cypherLocalDatetime as localdatetime,
+    cypherTime as time
+} from "./expressions/functions/TemporalFunctions";
 
 export * from "./expressions/functions/StringFunctions";
 

@@ -82,7 +82,7 @@ export default async function translateCreate({
                 callbackBucket,
             });
             create.push(`${createAndParams[0]}`);
-    
+
             if (context.subscriptionsEnabled) {
                 const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;
                 create.push(`RETURN ${varName}, ${META_CYPHER_VARIABLE} AS ${metaVariable}`);
@@ -90,7 +90,7 @@ export default async function translateCreate({
             } else {
                 create.push(`RETURN ${varName}`);
             }
-    
+
             create.push(`}`);
             res.createStrs.push(create.join("\n"));
             res.params = { ...res.params, ...createAndParams[1] };
@@ -126,11 +126,11 @@ export default async function translateCreate({
                 " AND "
             )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
         }
-    
+
         replacedProjectionParams = Object.entries(projection.params).reduce((res, [key, value]) => {
             return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
         }, {});
-    
+
         projectionStr = createStrs
             .map(
                 (_, i) =>
@@ -142,7 +142,7 @@ export default async function translateCreate({
                         .replace(/REPLACE_ME/g, `this${i}`)}`
             )
             .join(", ");
-        
+
         authCalls = createStrs
             .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
             .join("\n");

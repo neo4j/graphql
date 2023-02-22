@@ -71,7 +71,7 @@ describe("Connections Alias", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this_connection_actorsthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                WITH { node: { __resolveType: \\"Actor\\", __id: id(this_Actor) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_actors
