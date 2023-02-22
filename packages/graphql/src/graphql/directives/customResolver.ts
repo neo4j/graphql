@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveLocation, GraphQLDirective, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
+import { DirectiveLocation, GraphQLDirective, GraphQLString } from "graphql";
 
 export const customResolverDirective = new GraphQLDirective({
     name: "customResolver",
@@ -27,8 +27,8 @@ export const customResolverDirective = new GraphQLDirective({
     args: {
         requires: {
             description:
-                "Fields that the custom resolver will depend on. These are passed as an object to the first argument of the custom resolver.",
-            type: new GraphQLList(new GraphQLNonNull(GraphQLString)),
+                "Selection set that the custom resolver will depend on. These are passed as an object to the first argument of the custom resolver.",
+            type: GraphQLString,
         },
     },
 });

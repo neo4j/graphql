@@ -24,6 +24,8 @@ import type {
     InputValueDefinitionNode,
     FieldDefinitionNode,
     TypeNode,
+    GraphQLDirective,
+    GraphQLNamedType,
 } from "graphql";
 import { GraphQLSchema, extendSchema, validateSchema, specifiedDirectives, Kind } from "graphql";
 import pluralize from "pluralize";
@@ -156,11 +158,16 @@ function filterDocument(document: DocumentNode): DocumentNode {
     };
 }
 
-function validateDocument(document: DocumentNode): void {
+function getBaseSchema(
+    document: DocumentNode,
+    validateTypeDefs: boolean,
+    additionalDirectives: Array<GraphQLDirective> = [],
+    additionalTypes: Array<GraphQLNamedType> = []
+): GraphQLSchema {
     const doc = filterDocument(document);
 
     const schemaToExtend = new GraphQLSchema({
-        directives: [...Object.values(directives), ...specifiedDirectives],
+        directives: [...Object.values(directives), ...specifiedDirectives, ...additionalDirectives],
         types: [
             ...Object.values(scalars),
             Point,
@@ -170,18 +177,32 @@ function validateDocument(document: DocumentNode): void {
             CartesianPointInput,
             CartesianPointDistance,
             SortDirection,
+            ...additionalTypes,
         ],
     });
 
-    const schema = extendSchema(schemaToExtend, doc);
+    return extendSchema(schemaToExtend, doc, { assumeValid: !validateTypeDefs });
+}
 
-    const errors = validateSchema(schema);
+function validateDocument(
+    document: DocumentNode,
+    validateTypeDefs: boolean,
+    additionalDirectives: Array<GraphQLDirective> = [],
+    additionalTypes: Array<GraphQLNamedType> = []
+): GraphQLSchema {
+    const schema = getBaseSchema(document, validateTypeDefs, additionalDirectives, additionalTypes);
 
-    const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
+    if (validateTypeDefs) {
+        const errors = validateSchema(schema);
 
-    if (filteredErrors.length) {
-        throw new Error(filteredErrors.join("\n"));
+        const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
+
+        if (filteredErrors.length) {
+            throw new Error(filteredErrors.join("\n"));
+        }
     }
+
+    return schema;
 }
 
 export default validateDocument;

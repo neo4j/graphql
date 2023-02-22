@@ -32,6 +32,7 @@ import type {
     EnumValueNode,
     UnionTypeDefinitionNode,
     ValueNode,
+    GraphQLSchema,
 } from "graphql";
 import { Kind } from "graphql";
 import getAuth from "./get-auth";
@@ -87,6 +88,7 @@ export interface ObjectFields {
 let callbackDeprecatedWarningShown = false;
 
 function getObjFieldMeta({
+    baseSchema,
     obj,
     objects,
     interfaces,
@@ -97,6 +99,7 @@ function getObjFieldMeta({
     customResolvers,
     validateResolvers,
 }: {
+    baseSchema: GraphQLSchema;
     obj: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
     interfaces: InterfaceTypeDefinitionNode[];
@@ -132,13 +135,17 @@ function getObjFieldMeta({
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
-            const customResolverMeta = getCustomResolverMeta(
+            const customResolverMeta = getCustomResolverMeta({
+                baseSchema,
                 field,
-                obj,
+                object: obj,
+                objects,
+                interfaces,
+                unions,
                 validateResolvers,
                 customResolvers,
-                interfaceField
-            );
+                interfaceField,
+            });
             const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
