@@ -64,7 +64,7 @@ export default function createProjectionAndParams({
     chainStr,
     varName,
     literalElements,
-    resolveType,
+    resolveType
 }: {
     resolveTree: ResolveTree;
     node: Node;
@@ -99,7 +99,7 @@ export default function createProjectionAndParams({
                     entity: authableField,
                     operations: "READ",
                     context,
-                    allow: { parentNode: node, varName },
+                    allow: { parentNode: node, varName }
                 });
                 if (allowAndParams[0]) {
                     if (!res.meta.authValidateStrs) {
@@ -120,7 +120,7 @@ export default function createProjectionAndParams({
                 alias,
                 param,
                 chainStr: chainStr || varName,
-                res,
+                res
             });
         }
 
@@ -180,7 +180,7 @@ export default function createProjectionAndParams({
                         node: refNode,
                         context,
                         varName: `${varName}_${alias}`,
-                        chainStr: unionVariableName,
+                        chainStr: unionVariableName
                     });
                     res.params = { ...res.params, ...recurse.params };
 
@@ -189,7 +189,7 @@ export default function createProjectionAndParams({
                     const nestedProj = recurse.projection.replace(/{|}/gm, "").trim();
 
                     const nestedProjString = nestedProj.length ? `, ${nestedProj}` : "";
-                    const nestedProjection = `{ __resolveType: "${refNode.name}"${nestedProjString} }`;
+                    const nestedProjection = `{ __resolveType: "${refNode.name}", __id: id(${varName})${nestedProjString} }`;
 
                     const subquery = createProjectionSubquery({
                         parentNode,
@@ -204,7 +204,7 @@ export default function createProjectionAndParams({
                         optionsInput,
                         authValidateStrs: recurse.meta?.authValidateStrs,
                         addSkipAndLimit: false,
-                        collect: false,
+                        collect: false
                     });
 
                     const unionWith = new Cypher.With("*");
@@ -216,7 +216,7 @@ export default function createProjectionAndParams({
                 const collectAndLimitStatements = collectUnionSubqueriesResults({
                     resultVariable: new Cypher.NamedNode(unionVariableName),
                     optionsInput,
-                    isArray: Boolean(relationField.typeMeta.array),
+                    isArray: Boolean(relationField.typeMeta.array)
                 });
 
                 const unionAndSort = Cypher.concat(new Cypher.Call(unionClause), collectAndLimitStatements);
@@ -230,7 +230,7 @@ export default function createProjectionAndParams({
                 node: referenceNode || node,
                 context,
                 varName: `${varName}_${alias}`,
-                chainStr: param,
+                chainStr: param
             });
             res.params = { ...res.params, ...recurse.params };
 
@@ -248,7 +248,7 @@ export default function createProjectionAndParams({
                 relationField,
                 relationshipDirection: direction,
                 optionsInput,
-                authValidateStrs: recurse.meta?.authValidateStrs,
+                authValidateStrs: recurse.meta?.authValidateStrs
             });
             res.subqueries.push(new Cypher.Call(subquery).innerWith(parentNode));
             res.projection.push(`${alias}: ${param}`);
@@ -259,7 +259,7 @@ export default function createProjectionAndParams({
             context,
             nodeLabel: chainStr || varName,
             node,
-            field,
+            field
         });
 
         if (aggregationFieldProjection) {
@@ -278,7 +278,7 @@ export default function createProjectionAndParams({
                     field: connectionField,
                     context,
                     nodeVariable: varName,
-                    returnVariable: new Cypher.NamedVariable(param),
+                    returnVariable: new Cypher.NamedVariable(param)
                 })
             ).innerWith(new Cypher.NamedNode(varName));
 
@@ -331,7 +331,7 @@ export default function createProjectionAndParams({
             chainStr,
             varName,
             literalElements,
-            resolveType,
+            resolveType
         });
     }
 
@@ -355,7 +355,7 @@ export default function createProjectionAndParams({
             ...(!Object.values(existingProjection).find((field) => field.name === sortFieldName)
                 ? // generate a basic resolve tree
                   generateProjectionField({ name: sortFieldName })
-                : {}),
+                : {})
         }),
         // and add it to existing fields for projection
         existingProjection
@@ -365,7 +365,7 @@ export default function createProjectionAndParams({
     // cf. https://github.com/neo4j/graphql/issues/476
     const mergedSelectedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
         nodeFields,
-        ...node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value]),
+        ...node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value])
     ]);
 
     // Merge fields for final projection to account for multiple fragments
@@ -373,15 +373,15 @@ export default function createProjectionAndParams({
     const mergedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
         mergedSelectedFields,
         generateMissingOrAliasedSortFields({ selection: mergedSelectedFields, resolveTree }),
-        generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
+        generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node })
     ]);
 
     const { projection, params, meta, subqueries, subqueriesBeforeSort } = Object.values(mergedFields).reduce(reducer, {
-        projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
+        projection: resolveType ? [`__resolveType: "${node.name}"`, `__id: id(${varName})`] : [],
         params: {},
         meta: {},
         subqueries: [],
-        subqueriesBeforeSort: [],
+        subqueriesBeforeSort: []
     });
 
     return {
@@ -389,7 +389,7 @@ export default function createProjectionAndParams({
         params,
         meta,
         subqueries,
-        subqueriesBeforeSort,
+        subqueriesBeforeSort
     };
 }
 
@@ -403,7 +403,7 @@ function getSortArgs(resolveTree: ResolveTree): GraphQLSortArg[] {
 // Generates any missing fields required for sorting
 const generateMissingOrAliasedSortFields = ({
     selection,
-    resolveTree,
+    resolveTree
 }: {
     selection: Record<string, ResolveTree>;
     resolveTree: ResolveTree;
@@ -417,7 +417,7 @@ const generateMissingOrAliasedSortFields = ({
 // Generated any missing fields required for custom resolvers
 const generateMissingOrAliasedRequiredFields = ({
     node,
-    selection,
+    selection
 }: {
     node: Node;
     selection: Record<string, ResolveTree>;
@@ -438,7 +438,7 @@ function createFulltextProjection({
     chainStr,
     varName,
     literalElements,
-    resolveType,
+    resolveType
 }: {
     resolveTree: ResolveTree;
     node: Node;
@@ -454,7 +454,7 @@ function createFulltextProjection({
             params: {},
             meta: {},
             subqueries: [],
-            subqueriesBeforeSort: [],
+            subqueriesBeforeSort: []
         };
     }
 
@@ -469,7 +469,7 @@ function createFulltextProjection({
         chainStr,
         varName,
         literalElements,
-        resolveType,
+        resolveType
     });
 }
 /**
@@ -490,8 +490,8 @@ function getAugmentedImplementationFilters(
                 node.name,
                 {
                     ...interfaceSharedFilters,
-                    ...where["_on"][node.name],
-                },
+                    ...where["_on"][node.name]
+                }
             ];
         })
     );
