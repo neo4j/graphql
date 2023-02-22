@@ -38,15 +38,6 @@ describe("Functions", () => {
         `);
     });
 
-    test("cypherDatetime", () => {
-        const datetimeFn = Cypher.datetime();
-        const queryResult = new TestClause(datetimeFn).build();
-
-        expect(queryResult.cypher).toMatchInlineSnapshot(`"datetime()"`);
-
-        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
-    });
-
     test("custom function", () => {
         const myFunction = new Cypher.Function("myFunction", [new Cypher.Literal("test"), new Cypher.Param("test2")]);
         const queryResult = new TestClause(myFunction).build();

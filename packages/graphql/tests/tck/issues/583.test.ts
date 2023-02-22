@@ -87,23 +87,26 @@ describe("#583", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this_Movie:\`Movie\`)
-                RETURN { __resolveType: \\"Movie\\", __id: id(this_Movie), title: this_Movie.title, awardsGiven: this_Movie.awardsGiven } AS this_actedIn
-                UNION
-                WITH this
-                MATCH (this)-[this1:ACTED_IN]->(this_Series:\`Series\`)
-                RETURN { __resolveType: \\"Series\\", __id: id(this_Series), title: this_Series.title, awardsGiven: this_Series.awardsGiven } AS this_actedIn
-                UNION
-                WITH this
-                MATCH (this)-[this2:ACTED_IN]->(this_ShortFilm:\`ShortFilm\`)
-                RETURN { __resolveType: \\"ShortFilm\\", __id: id(this_ShortFilm), title: this_ShortFilm.title } AS this_actedIn
-            }
-            RETURN collect(this_actedIn) AS this_actedIn
+                CALL {
+                    WITH *
+                    MATCH (this)-[this0:ACTED_IN]->(this_actedIn:\`Movie\`)
+                    WITH this_actedIn { __resolveType: \\"Movie\\", .title, .awardsGiven, __id: id(this) } AS this_actedIn
+                    RETURN this_actedIn AS this_actedIn
+                    UNION
+                    WITH *
+                    MATCH (this)-[this1:ACTED_IN]->(this_actedIn:\`Series\`)
+                    WITH this_actedIn { __resolveType: \\"Series\\", .title, .awardsGiven, __id: id(this) } AS this_actedIn
+                    RETURN this_actedIn AS this_actedIn
+                    UNION
+                    WITH *
+                    MATCH (this)-[this2:ACTED_IN]->(this_actedIn:\`ShortFilm\`)
+                    WITH this_actedIn { __resolveType: \\"ShortFilm\\", .title, __id: id(this) } AS this_actedIn
+                    RETURN this_actedIn AS this_actedIn
+                }
+                WITH this_actedIn
+                RETURN collect(this_actedIn) AS this_actedIn
             }
             RETURN this { .name, actedIn: this_actedIn } AS this"
         `);

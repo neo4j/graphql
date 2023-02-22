@@ -102,53 +102,6 @@ export function labels(nodeRef: Variable): CypherFunction {
 }
 
 /**
- * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-datetime)
- * @group Expressions
- * @category Cypher Functions
- */
-export function cypherDatetime(): CypherFunction {
-    return new CypherFunction("datetime");
-}
-
-// TODO: Add optional input to date functions - https://neo4j.com/docs/cypher-manual/current/functions/#header-query-functions-temporal-instant-types
-
-/**
- * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-date)
- * @group Expressions
- * @category Cypher Functions
- */
-export function cypherDate(): CypherFunction {
-    return new CypherFunction("date");
-}
-
-/**
- * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-coalesce)
- * @group Expressions
- * @category Cypher Functions
- */
-export function cypherLocalDatetime(): CypherFunction {
-    return new CypherFunction("localdatetime");
-}
-
-/**
- * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-localdatetime)
- * @group Expressions
- * @category Cypher Functions
- */
-export function cypherLocalTime(): CypherFunction {
-    return new CypherFunction("localtime");
-}
-
-/**
- * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-time)
- * @group Expressions
- * @category Cypher Functions
- */
-export function cypherTime(): CypherFunction {
-    return new CypherFunction("time");
-}
-
-/**
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-count)
  * @group Expressions
  * @category Cypher Functions

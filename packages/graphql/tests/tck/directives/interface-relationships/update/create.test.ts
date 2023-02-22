@@ -96,19 +96,21 @@ describe("Interface Relationships - Update create", () => {
             MERGE (this)-[this_create_actedIn_Movie0_relationship:ACTED_IN]->(this_create_actedIn_Movie0_node_Movie)
             SET this_create_actedIn_Movie0_relationship.screenTime = $this_create_actedIn_Movie0_relationship_screenTime
             WITH *
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:ACTED_IN]->(this_Movie:\`Movie\`)
-                RETURN { __resolveType: \\"Movie\\", __id: id(this_Movie), runtime: this_Movie.runtime, title: this_Movie.title } AS this_actedIn
-                UNION
-                WITH this
-                MATCH (this)-[update_this1:ACTED_IN]->(this_Series:\`Series\`)
-                RETURN { __resolveType: \\"Series\\", __id: id(this_Series), episodes: this_Series.episodes, title: this_Series.title } AS this_actedIn
-            }
-            RETURN collect(this_actedIn) AS this_actedIn
+                CALL {
+                    WITH *
+                    MATCH (this)-[update_this0:ACTED_IN]->(this_actedIn:\`Movie\`)
+                    WITH this_actedIn { __resolveType: \\"Movie\\", .runtime, .title, __id: id(this) } AS this_actedIn
+                    RETURN this_actedIn AS this_actedIn
+                    UNION
+                    WITH *
+                    MATCH (this)-[update_this1:ACTED_IN]->(this_actedIn:\`Series\`)
+                    WITH this_actedIn { __resolveType: \\"Series\\", .episodes, .title, __id: id(this) } AS this_actedIn
+                    RETURN this_actedIn AS this_actedIn
+                }
+                WITH this_actedIn
+                RETURN collect(this_actedIn) AS this_actedIn
             }
             RETURN collect(DISTINCT this { .name, actedIn: this_actedIn }) AS data"
         `);

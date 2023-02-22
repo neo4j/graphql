@@ -82,23 +82,26 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`ProgrammeItem\`)
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)-[this0:RELATES_TO]-(this_Series:\`Series\`)
-                RETURN { __resolveType: \\"Series\\", __id: id(this_Series), productTitle: this_Series.productTitle } AS this_releatsTo
-                UNION
-                WITH this
-                MATCH (this)-[this1:RELATES_TO]-(this_Season:\`Season\`)
-                RETURN { __resolveType: \\"Season\\", __id: id(this_Season), productTitle: this_Season.productTitle } AS this_releatsTo
-                UNION
-                WITH this
-                MATCH (this)-[this2:RELATES_TO]-(this_ProgrammeItem:\`ProgrammeItem\`)
-                RETURN { __resolveType: \\"ProgrammeItem\\", __id: id(this_ProgrammeItem), productTitle: this_ProgrammeItem.productTitle } AS this_releatsTo
-            }
-            RETURN collect(this_releatsTo) AS this_releatsTo
+                CALL {
+                    WITH *
+                    MATCH (this)-[this0:RELATES_TO]-(this_releatsTo:\`Series\`)
+                    WITH this_releatsTo { __resolveType: \\"Series\\", .productTitle, __id: id(this) } AS this_releatsTo
+                    RETURN this_releatsTo AS this_releatsTo
+                    UNION
+                    WITH *
+                    MATCH (this)-[this1:RELATES_TO]-(this_releatsTo:\`Season\`)
+                    WITH this_releatsTo { __resolveType: \\"Season\\", .productTitle, __id: id(this) } AS this_releatsTo
+                    RETURN this_releatsTo AS this_releatsTo
+                    UNION
+                    WITH *
+                    MATCH (this)-[this2:RELATES_TO]-(this_releatsTo:\`ProgrammeItem\`)
+                    WITH this_releatsTo { __resolveType: \\"ProgrammeItem\\", .productTitle, __id: id(this) } AS this_releatsTo
+                    RETURN this_releatsTo AS this_releatsTo
+                }
+                WITH this_releatsTo
+                RETURN collect(this_releatsTo) AS this_releatsTo
             }
             RETURN this { .productTitle, .episodeNumber, releatsTo: this_releatsTo } AS this"
         `);

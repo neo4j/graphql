@@ -163,21 +163,23 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)-[this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
-                WHERE (exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this1 IN [(this_Comment)<-[:HAS_CONTENT]-(this1:\`User\`) | this1] WHERE (this1.id IS NOT NULL AND this1.id = $param1)))
-                RETURN { __resolveType: \\"Comment\\", __id: id(this_Comment) } AS this_content
-                UNION
-                WITH this
-                MATCH (this)-[this2:HAS_CONTENT]->(this_Post:\`Post\`)
-                WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this3 IN [(this_Post)<-[:HAS_CONTENT]-(this3:\`User\`) | this3] WHERE (this3.id IS NOT NULL AND this3.id = $param2)))
-                RETURN { __resolveType: \\"Post\\", __id: id(this_Post), id: this_Post.id } AS this_content
-            }
-            RETURN collect(this_content) AS this_content
+                CALL {
+                    WITH *
+                    MATCH (this)-[this0:HAS_CONTENT]->(this_content:\`Comment\`)
+                    WHERE (exists((this_content)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this1 IN [(this_content)<-[:HAS_CONTENT]-(this1:\`User\`) | this1] WHERE (this1.id IS NOT NULL AND this1.id = $param1)))
+                    WITH this_content { __resolveType: \\"Comment\\", __id: id(this) } AS this_content
+                    RETURN this_content AS this_content
+                    UNION
+                    WITH *
+                    MATCH (this)-[this2:HAS_CONTENT]->(this_content:\`Post\`)
+                    WHERE (exists((this_content)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this3 IN [(this_content)<-[:HAS_CONTENT]-(this3:\`User\`) | this3] WHERE (this3.id IS NOT NULL AND this3.id = $param2)))
+                    WITH this_content { __resolveType: \\"Post\\", .id, __id: id(this) } AS this_content
+                    RETURN this_content AS this_content
+                }
+                WITH this_content
+                RETURN collect(this_content) AS this_content
             }
             RETURN this { .id, content: this_content } AS this"
         `);

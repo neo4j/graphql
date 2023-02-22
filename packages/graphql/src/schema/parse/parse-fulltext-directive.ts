@@ -22,7 +22,8 @@ import type { FullText, FulltextIndex } from "../../types";
 import type { ObjectFields } from "../get-obj-field-meta";
 import parseValueNode from "../parse-value-node";
 
-const deprecationWarning = "The @fulltext name argument has been deprecated and will be removed in 4.0.0. " +
+const deprecationWarning =
+    "The @fulltext name argument has been deprecated and will be removed in 4.0.0. " +
     "Please use indexName instead. More information about the changes to @fulltext can be found here: " +
     "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.";
 let deprecationWarningShown = false;

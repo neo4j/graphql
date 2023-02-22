@@ -138,12 +138,12 @@ describe("Undirected relationships", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:HAS_CONTENT]-(this_content:\`Blog\`)
-                    WITH this_content  { __resolveType: \\"Blog\\",  .title } AS this_content
+                    WITH this_content { __resolveType: \\"Blog\\", .title, __id: id(this) } AS this_content
                     RETURN this_content AS this_content
                     UNION
                     WITH *
                     MATCH (this)-[this1:HAS_CONTENT]-(this_content:\`Post\`)
-                    WITH this_content  { __resolveType: \\"Post\\",  .content } AS this_content
+                    WITH this_content { __resolveType: \\"Post\\", .content, __id: id(this) } AS this_content
                     RETURN this_content AS this_content
                 }
                 WITH this_content
@@ -209,19 +209,21 @@ describe("Undirected relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]-(this_Movie:\`Movie\`)
-                RETURN { __resolveType: \\"Movie\\", __id: id(this_Movie), title: this_Movie.title } AS this_actedIn
-                UNION
-                WITH this
-                MATCH (this)-[this1:ACTED_IN]-(this_Series:\`Series\`)
-                RETURN { __resolveType: \\"Series\\", __id: id(this_Series), title: this_Series.title } AS this_actedIn
-            }
-            RETURN collect(this_actedIn) AS this_actedIn
+                CALL {
+                    WITH *
+                    MATCH (this)-[this0:ACTED_IN]-(this_actedIn:\`Movie\`)
+                    WITH this_actedIn { __resolveType: \\"Movie\\", .title, __id: id(this) } AS this_actedIn
+                    RETURN this_actedIn AS this_actedIn
+                    UNION
+                    WITH *
+                    MATCH (this)-[this1:ACTED_IN]-(this_actedIn:\`Series\`)
+                    WITH this_actedIn { __resolveType: \\"Series\\", .title, __id: id(this) } AS this_actedIn
+                    RETURN this_actedIn AS this_actedIn
+                }
+                WITH this_actedIn
+                RETURN collect(this_actedIn) AS this_actedIn
             }
             RETURN this { actedIn: this_actedIn } AS this"
         `);
