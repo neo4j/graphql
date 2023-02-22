@@ -66,7 +66,7 @@ export default async function translateCreate({
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
 
-    // TODO: remove strs and only use variables
+    // TODO: after the createCreateAndParams refactor, remove varNameStrs and only use Cypher Variables
     const varNameStrs = mutationInputs.map((_, i) => `this${i}`);
     const varNameVariables = varNameStrs.map((varName) => new Cypher.NamedNode(varName));
 

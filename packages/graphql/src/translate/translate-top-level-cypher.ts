@@ -56,7 +56,6 @@ export function translateTopLevelCypher({
     let projectionStr;
     const projectionAuthStrs: Cypher.Predicate[] = [];
     const projectionSubqueries: Cypher.Clause[] = [];
-    // const connectionProjectionStrs: string[] = [];
 
     const referenceNode = context.nodes.find((x) => x.name === field.typeMeta.name);
 
@@ -197,7 +196,6 @@ export function translateTopLevelCypher({
         cypherStrs.push(`WHERE ${unionWhere.join(" OR ")}`);
     }
 
-    // cypherStrs.push(connectionProjectionStrs.join("\n"));
     const projectionSubquery = Cypher.concat(...projectionSubqueries);
 
     return new Cypher.RawCypher((env) => {

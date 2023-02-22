@@ -54,7 +54,7 @@ export function translateCypherDirectiveProjection({
 }): Res {
     const resultVariable = new Cypher.Node();
     cypherFieldAliasMap[alias] = resultVariable;
-    
+
     const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
     const entity = context.schemaModel.entities.get(cypherField.typeMeta.name);
 
@@ -103,7 +103,6 @@ export function translateCypherDirectiveProjection({
         referencedNodes.forEach((refNode) => {
             if (refNode) {
                 const subqueryParam = new Cypher.Node();
-
                 const cypherNodeRef = resultVariable as Cypher.Node;
                 const hasLabelsPredicates = refNode.getLabels(context).map((label) => cypherNodeRef.hasLabel(label));
                 const labelsSubPredicate = Cypher.and(...hasLabelsPredicates);
