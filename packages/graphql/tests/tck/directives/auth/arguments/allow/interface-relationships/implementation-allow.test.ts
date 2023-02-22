@@ -102,13 +102,13 @@ describe("@auth allow on specific interface implementation", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:HAS_CONTENT]->(this_content:\`Comment\`)
-                    WITH this_content { __resolveType: \\"Comment\\", .id, .content } AS this_content
+                    WITH this_content { __resolveType: \\"Comment\\", __id: id(this), .id, .content } AS this_content
                     RETURN this_content AS this_content
                     UNION
                     WITH *
                     MATCH (this)-[this1:HAS_CONTENT]->(this_content:\`Post\`)
                     WHERE apoc.util.validatePredicate(NOT ((exists((this_content)<-[:HAS_CONTENT]-(:\`User\`)) AND any(this2 IN [(this_content)<-[:HAS_CONTENT]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this_content { __resolveType: \\"Post\\", .id, .content } AS this_content
+                    WITH this_content { __resolveType: \\"Post\\", __id: id(this), .id, .content } AS this_content
                     RETURN this_content AS this_content
                 }
                 WITH this_content
@@ -154,7 +154,7 @@ describe("@auth allow on specific interface implementation", () => {
                     WITH *
                     MATCH (this)-[this0:HAS_CONTENT]->(this_content:\`Comment\`)
                     WHERE this_content.id = $param1
-                    WITH this_content { __resolveType: \\"Comment\\" } AS this_content
+                    WITH this_content { __resolveType: \\"Comment\\", __id: id(this) } AS this_content
                     RETURN this_content AS this_content
                     UNION
                     WITH *
@@ -167,7 +167,7 @@ describe("@auth allow on specific interface implementation", () => {
                         WITH this_content_comments { .content } AS this_content_comments
                         RETURN collect(this_content_comments) AS this_content_comments
                     }
-                    WITH this_content { __resolveType: \\"Post\\", comments: this_content_comments } AS this_content
+                    WITH this_content { __resolveType: \\"Post\\", __id: id(this), comments: this_content_comments } AS this_content
                     RETURN this_content AS this_content
                 }
                 WITH this_content
@@ -263,13 +263,13 @@ describe("@auth allow on specific interface implementation", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[update_this0:HAS_CONTENT]->(this_content:\`Comment\`)
-                    WITH this_content { __resolveType: \\"Comment\\", .id } AS this_content
+                    WITH this_content { __resolveType: \\"Comment\\", __id: id(this), .id } AS this_content
                     RETURN this_content AS this_content
                     UNION
                     WITH *
                     MATCH (this)-[update_this1:HAS_CONTENT]->(this_content:\`Post\`)
                     WHERE apoc.util.validatePredicate(NOT ((exists((this_content)<-[:HAS_CONTENT]-(:\`User\`)) AND any(update_this2 IN [(this_content)<-[:HAS_CONTENT]-(update_this2:\`User\`) | update_this2] WHERE (update_this2.id IS NOT NULL AND update_this2.id = $update_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this_content { __resolveType: \\"Post\\", .id } AS this_content
+                    WITH this_content { __resolveType: \\"Post\\", __id: id(this), .id } AS this_content
                     RETURN this_content AS this_content
                 }
                 WITH this_content

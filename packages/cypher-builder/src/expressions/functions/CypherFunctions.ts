@@ -154,3 +154,21 @@ export function sum(expr: Expr): CypherFunction {
 export function randomUUID(): CypherFunction {
     return new CypherFunction("randomUUID");
 }
+
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id)
+ * @group Expressions
+ * @category Cypher Functions
+ */
+export function id(variable: Expr): CypherFunction {
+    return new CypherFunction("id", [variable]);
+}
+
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-elementid)
+ * @group Expressions
+ * @category Cypher Functions
+ */
+export function elementId(variable: Expr): CypherFunction {
+    return new CypherFunction("elementId", [variable]);
+}
