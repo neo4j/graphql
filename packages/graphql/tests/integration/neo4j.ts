@@ -58,7 +58,7 @@ class Neo4j {
         const driver = neo4j.driver(NEO_URL, auth);
 
         try {
-            if (process.env.DEFAULT_DB) {
+            if (process.env.USE_DEFAULT_DB) {
                 await this.checkConnectivityToDefaultDatabase(driver, NEO_URL);
             } else {
                 await driver.verifyConnectivity({ database: INT_TEST_DB_NAME });
