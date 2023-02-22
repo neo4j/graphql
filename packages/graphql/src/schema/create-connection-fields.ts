@@ -36,7 +36,7 @@ function createConnectionFields({
     composeNode,
     sourceName,
     nodes,
-    relationshipPropertyFields,
+    relationshipPropertyFields
 }: {
     connectionFields: ConnectionField[];
     schemaComposer: SchemaComposer;
@@ -53,7 +53,7 @@ function createConnectionFields({
         const relationship = schemaComposer.getOrCreateOTC(connectionField.relationshipTypeName, (tc) => {
             tc.addFields({
                 cursor: "String!",
-                node: `${connectionField.relationship.typeMeta.name}!`,
+                node: `${connectionField.relationship.typeMeta.name}!`
             });
         });
         const deprecatedDirectives = graphqlDirectivesToCompose(
@@ -68,7 +68,7 @@ function createConnectionFields({
             connectionWhere.addFields({
                 AND: `[${connectionWhereName}!]`,
                 OR: `[${connectionWhereName}!]`,
-                NOT: connectionWhereName,
+                NOT: connectionWhereName
             });
         }
 
@@ -76,7 +76,7 @@ function createConnectionFields({
             tc.addFields({
                 edges: relationship.NonNull.List.NonNull,
                 totalCount: "Int!",
-                pageInfo: "PageInfo!",
+                pageInfo: "PageInfo!"
             });
         });
 
@@ -89,16 +89,16 @@ function createConnectionFields({
                 edge: `${connectionField.relationship.properties}Where`,
                 edge_NOT: {
                     type: `${connectionField.relationship.properties}Where`,
-                    directives: [DEPRECATE_NOT],
-                },
+                    directives: [DEPRECATE_NOT]
+                }
             });
         }
 
         whereInput.addFields({
             [connectionField.fieldName]: connectionWhere,
             [`${connectionField.fieldName}_NOT`]: {
-                type: connectionWhere,
-            },
+                type: connectionWhere
+            }
         });
 
         // n..m Relationships
@@ -109,7 +109,7 @@ function createConnectionFields({
                 sourceName: sourceName,
                 relatedType: connectionField.typeMeta.name,
                 whereType: connectionWhere,
-                directives: deprecatedDirectives,
+                directives: deprecatedDirectives
             });
         }
 
@@ -121,11 +121,11 @@ function createConnectionFields({
         } = {
             where: connectionWhere,
             first: {
-                type: "Int",
+                type: "Int"
             },
             after: {
-                type: "String",
-            },
+                type: "String"
+            }
         };
 
         const composeNodeArgs = addDirectedArgument(composeNodeBaseArgs, connectionField.relationship);
@@ -133,7 +133,7 @@ function createConnectionFields({
         if (connectionField.relationship.properties) {
             const connectionSort = schemaComposer.getOrCreateITC(`${connectionField.typeMeta.name}Sort`);
             connectionSort.addFields({
-                edge: `${connectionField.relationship.properties}Sort`,
+                edge: `${connectionField.relationship.properties}Sort`
             });
             composeNodeArgs.sort = connectionSort.NonNull.List;
         }
@@ -146,14 +146,14 @@ function createConnectionFields({
                 node: `${connectionField.relationship.typeMeta.name}Where`,
                 node_NOT: {
                     type: `${connectionField.relationship.typeMeta.name}Where`,
-                    directives: [DEPRECATE_NOT],
-                },
+                    directives: [DEPRECATE_NOT]
+                }
             });
 
             if (schemaComposer.has(`${connectionField.relationship.typeMeta.name}Sort`)) {
                 const connectionSort = schemaComposer.getOrCreateITC(`${connectionField.typeMeta.name}Sort`);
                 connectionSort.addFields({
-                    node: `${connectionField.relationship.typeMeta.name}Sort`,
+                    node: `${connectionField.relationship.typeMeta.name}Sort`
                 });
                 if (!composeNodeArgs.sort) {
                     composeNodeArgs.sort = connectionSort.NonNull.List;
@@ -169,8 +169,8 @@ function createConnectionFields({
                     edge: `${connectionField.relationship.properties}Where`,
                     edge_NOT: {
                         type: `${connectionField.relationship.properties}Where`,
-                        directives: [DEPRECATE_NOT],
-                    },
+                        directives: [DEPRECATE_NOT]
+                    }
                 });
             }
         } else if (connectionField.relationship.union) {
@@ -189,16 +189,16 @@ function createConnectionFields({
                     fields: {
                         OR: `[${unionWhereName}!]`,
                         AND: `[${unionWhereName}!]`,
-                        NOT: unionWhereName,
-                    },
+                        NOT: unionWhereName
+                    }
                 });
 
                 unionWhere.addFields({
                     node: `${n.name}Where`,
                     node_NOT: {
                         type: `${n.name}Where`,
-                        directives: [DEPRECATE_NOT],
-                    },
+                        directives: [DEPRECATE_NOT]
+                    }
                 });
 
                 if (connectionField.relationship.properties) {
@@ -210,13 +210,13 @@ function createConnectionFields({
                         edge: `${connectionField.relationship.properties}Where`,
                         edge_NOT: {
                             type: `${connectionField.relationship.properties}Where`,
-                            directives: [DEPRECATE_NOT],
-                        },
+                            directives: [DEPRECATE_NOT]
+                        }
                     });
                 }
 
                 connectionWhere.addFields({
-                    [n.name]: unionWhere,
+                    [n.name]: unionWhere
                 });
             });
         } else {
@@ -226,14 +226,14 @@ function createConnectionFields({
                 node: `${connectionField.relationship.typeMeta.name}Where`,
                 node_NOT: {
                     type: `${connectionField.relationship.typeMeta.name}Where`,
-                    directives: [DEPRECATE_NOT],
-                },
+                    directives: [DEPRECATE_NOT]
+                }
             });
 
             if (getSortableFields(relatedNode).length) {
                 const connectionSort = schemaComposer.getOrCreateITC(`${connectionField.typeMeta.name}Sort`);
                 connectionSort.addFields({
-                    node: `${connectionField.relationship.typeMeta.name}Sort`,
+                    node: `${connectionField.relationship.typeMeta.name}Sort`
                 });
                 if (!composeNodeArgs.sort) {
                     composeNodeArgs.sort = connectionSort.NonNull.List;
@@ -255,10 +255,10 @@ function createConnectionFields({
                             connectionField,
                             args,
                             info,
-                            source,
+                            source
                         });
-                    },
-                },
+                    }
+                }
             });
         }
 
@@ -277,9 +277,9 @@ function createConnectionFields({
                       primitiveFields: relFields.primitiveFields,
                       enumFields: relFields.enumFields,
                       pointFields: relFields.pointFields,
-                      customResolverFields: relFields.customResolverFields,
+                      customResolverFields: relFields.customResolverFields
                   }
-                : {}),
+                : {})
         });
         relationships.push(r);
     });

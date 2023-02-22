@@ -19,10 +19,9 @@
 
 import { buildSubgraphSchema } from "@apollo/subgraph";
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { IResolvers, makeDirectiveNode, TypeSource } from "@graphql-tools/utils";
+import type { IResolvers, TypeSource } from "@graphql-tools/utils";
 import {
     ConstDirectiveNode,
-    DefinitionNode,
     DocumentNode,
     GraphQLDirective,
     GraphQLNamedType,
@@ -30,7 +29,7 @@ import {
     Kind,
     parse,
     print,
-    SchemaExtensionNode,
+    SchemaExtensionNode
 } from "graphql";
 import type * as neo4j from "neo4j-driver";
 import { translateResolveReference } from "../translate/translate-resolve-reference";
@@ -48,7 +47,7 @@ const federationDirectiveNames = [
     "external",
     "provides",
     "requires",
-    "tag",
+    "tag"
 ] as const;
 
 type FederationDirectiveName = (typeof federationDirectiveNames)[number];
@@ -77,7 +76,7 @@ export class Subgraph {
             ["external", "federation__external"],
             ["provides", "federation__provides"],
             ["requires", "federation__requires"],
-            ["tag", "federation__tag"],
+            ["tag", "federation__tag"]
         ]);
 
         const linkMeta = this.findFederationLinkMeta(typeDefs);
@@ -96,50 +95,10 @@ export class Subgraph {
         return this.importArgument.get(name)!;
     }
 
-    // TODO: Remove this function, parse `@shareable` directives and add them only on related generated types and fields
-    public augmentGeneratedSchemaDefinition(typeDefs: DocumentNode): DocumentNode {
-        const definitions: DefinitionNode[] = [];
-
-        const shareable = makeDirectiveNode(this.importArgument.get("shareable") as string, {}) as ConstDirectiveNode;
-
-        // This is a really filthy hack to apply @shareable
-        for (const definition of typeDefs.definitions) {
-            if (definition.kind === Kind.OBJECT_TYPE_DEFINITION) {
-                if (
-                    ["Query", "Mutation"].includes(definition.name.value) ||
-                    definition.name.value.endsWith("Connection") ||
-                    definition.name.value.endsWith("AggregateSelection") ||
-                    definition.name.value.endsWith("Edge")
-                ) {
-                    if (definition.directives) {
-                        definitions.push({
-                            ...definition,
-                            directives: [...definition.directives, shareable],
-                        });
-                    } else {
-                        definitions.push({
-                            ...definition,
-                            directives: [shareable],
-                        });
-                    }
-                } else {
-                    definitions.push(definition);
-                }
-            } else {
-                definitions.push(definition);
-            }
-        }
-
-        return {
-            ...typeDefs,
-            definitions,
-        };
-    }
-
     public buildSchema({ typeDefs, resolvers }: { typeDefs: DocumentNode; resolvers: Record<string, any> }) {
         return buildSubgraphSchema({
             typeDefs,
-            resolvers,
+            resolvers
         });
     }
 
@@ -151,7 +110,7 @@ export class Subgraph {
         document.definitions.forEach((def) => {
             if (def.kind === Kind.OBJECT_TYPE_DEFINITION) {
                 resolverMap[def.name.value] = {
-                    __resolveReference: this.getReferenceResolver(nodes, driver),
+                    __resolveReference: this.getReferenceResolver(nodes, driver)
                 };
             }
         });
@@ -182,7 +141,7 @@ export class Subgraph {
                 cypher,
                 params,
                 defaultAccessMode: "READ",
-                context,
+                context
             });
 
             return executeResult.records[0].this;
@@ -197,7 +156,7 @@ export class Subgraph {
         // Remove any operations from the extension - we only care for the `@link` directive
         const emptyExtension: SchemaExtensionNode = {
             ...this.linkExtension,
-            operationTypes: [],
+            operationTypes: []
         };
 
         const document = parse(print(emptyExtension));
@@ -214,7 +173,7 @@ export class Subgraph {
 
         return {
             directives: [...directives],
-            types: [...enums, ...scalars],
+            types: [...enums, ...scalars]
         };
     }
 

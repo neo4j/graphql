@@ -60,7 +60,13 @@ function getNodes(
 
     const nodes = definitionNodes.objectTypes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude", "node", "fulltext", "queryOptions", "plural"].includes(x.name.value)
+            (x) =>
+                !["auth", "exclude", "node", "fulltext", "queryOptions", "plural", "shareable", "deprecated"].includes(
+                    x.name.value
+                )
+        );
+        const propagatedDirectives = (definition.directives || []).filter((x) =>
+            ["deprecated", "shareable"].includes(x.name.value)
         );
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
@@ -138,7 +144,7 @@ function getNodes(
             unions: definitionNodes.unionTypes,
             callbacks: options.callbacks,
             customResolvers,
-            validateResolvers: options.validateResolvers,
+            validateResolvers: options.validateResolvers
         });
 
         // Ensure that all required fields are returning either a scalar type or an enum
@@ -154,7 +160,7 @@ function getNodes(
                         ...nodeFields.scalarFields,
                         ...nodeFields.enumFields,
                         ...nodeFields.temporalFields,
-                        ...nodeFields.cypherFields.filter((field) => field.isScalar || field.isEnum),
+                        ...nodeFields.cypherFields.filter((field) => field.isScalar || field.isEnum)
                     ]
                         .map((x) => x.fieldName)
                         .includes(requiredField)
@@ -171,7 +177,7 @@ function getNodes(
             fulltextDirective = parseFulltextDirective({
                 directive: fulltextDirectiveDefinition,
                 nodeFields,
-                definition,
+                definition
             });
             floatWhereInTypeDefs = true;
         }
@@ -180,7 +186,7 @@ function getNodes(
         if (queryOptionsDirectiveDefinition) {
             queryOptionsDirective = parseQueryOptionsDirective({
                 directive: queryOptionsDirectiveDefinition,
-                definition,
+                definition
             });
         }
 
@@ -238,6 +244,7 @@ function getNodes(
             name: definition.name.value,
             interfaces: nodeInterfaces,
             otherDirectives,
+            propagatedDirectives,
             ...nodeFields,
             // @ts-ignore we can be sure it's defined
             auth,
@@ -252,7 +259,7 @@ function getNodes(
             isGlobalNode: Boolean(globalIdField),
             globalIdField: globalIdField?.fieldName,
             globalIdFieldIsInt: globalIdField?.typeMeta?.name === "Int",
-            plural: parsePluralDirective(pluralDirectiveDefinition),
+            plural: parsePluralDirective(pluralDirectiveDefinition)
         });
 
         return node;
@@ -264,7 +271,7 @@ function getNodes(
         cartesianPointInTypeDefs,
         floatWhereInTypeDefs,
         relationshipPropertyInterfaceNames,
-        interfaceRelationshipNames,
+        interfaceRelationshipNames
     };
 }
 

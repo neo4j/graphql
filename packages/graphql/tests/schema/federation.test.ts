@@ -293,7 +293,7 @@ describe("Apollo Federation", () => {
               node: PostUserAuthorNodeAggregateSelection
             }
 
-            type PostUserAuthorNodeAggregateSelection @shareable {
+            type PostUserAuthorNodeAggregateSelection {
               name: StringAggregateSelectionNonNullable!
             }
 
@@ -334,7 +334,7 @@ describe("Apollo Federation", () => {
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection! @shareable
             }
 
-            enum SortDirection  {
+            enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
@@ -365,7 +365,7 @@ describe("Apollo Federation", () => {
             }
 
             type User @shareable {
-              name: String! 
+              name: String!
               posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(directed: Boolean = true, where: PostWhere): UserPostPostsAggregationSelection
               postsConnection(after: String, directed: Boolean = true, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
@@ -416,7 +416,7 @@ describe("Apollo Federation", () => {
               node: UserPostPostsNodeAggregateSelection
             }
 
-            type UserPostPostsNodeAggregateSelection @shareable {
+            type UserPostPostsNodeAggregateSelection {
               content: StringAggregateSelectionNonNullable!
             }
 
@@ -441,7 +441,7 @@ describe("Apollo Federation", () => {
               where: PostConnectWhere
             }
 
-            type UserPostsConnection @shareable {
+            type UserPostsConnection {
               edges: [UserPostsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -32,7 +32,6 @@ import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
 import type { Annotation } from "./annotation/Annotation";
 import { CypherAnnotation } from "./annotation/CypherAnnotation";
-import { GenericAnnotation } from "./annotation/GenericAnnotation";
 import { Attribute } from "./attribute/Attribute";
 import { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
@@ -90,10 +89,6 @@ function generateConcreteEntity(definition: ObjectTypeDefinitionNode): ConcreteE
     }, new Map<string, Record<string, unknown>>());
     const labels = getLabels(definition, directives.get("node") || {});
 
-    for (const key of directives.keys()) {
-        console.log(key);
-    }
-
     return new ConcreteEntity({
         name: definition.name.value,
         labels,
@@ -132,11 +127,7 @@ function createAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
             switch (directive.name.value) {
                 case "cypher":
                     return parseCypherAnnotation(directive);
-                case "deprecated":
-                case "shareable":
-                    return new GenericAnnotation(directive.name.value);
                 default:
-                    return undefined;
             }
         })
     );

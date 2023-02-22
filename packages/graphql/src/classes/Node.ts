@@ -34,7 +34,7 @@ import type {
     PrimitiveField,
     RelationField,
     TemporalField,
-    UnionField,
+    UnionField
 } from "../types";
 import type Exclude from "./Exclude";
 import type { GraphElementConstructor } from "./GraphElement";
@@ -55,6 +55,7 @@ export interface NodeConstructor extends GraphElementConstructor {
     scalarFields: CustomScalarField[];
     enumFields: CustomEnumField[];
     otherDirectives: DirectiveNode[];
+    propagatedDirectives: DirectiveNode[];
     unionFields: UnionField[];
     interfaceFields: InterfaceField[];
     interfaces: NamedTypeNode[];
@@ -139,6 +140,7 @@ class Node extends GraphElement {
     public connectionFields: ConnectionField[];
     public cypherFields: CypherField[];
     public otherDirectives: DirectiveNode[];
+    public propagatedDirectives: DirectiveNode[];
     public unionFields: UnionField[];
     public interfaceFields: InterfaceField[];
     public interfaces: NamedTypeNode[];
@@ -161,6 +163,7 @@ class Node extends GraphElement {
         this.connectionFields = input.connectionFields;
         this.cypherFields = input.cypherFields;
         this.otherDirectives = input.otherDirectives;
+        this.propagatedDirectives = input.propagatedDirectives;
         this.unionFields = input.unionFields;
         this.interfaceFields = input.interfaceFields;
         this.interfaces = input.interfaces;
@@ -188,7 +191,7 @@ class Node extends GraphElement {
             ...this.interfaceFields,
             ...this.objectFields,
             ...this.unionFields,
-            ...this.pointFields,
+            ...this.pointFields
         ];
     }
 
@@ -202,7 +205,7 @@ class Node extends GraphElement {
             ...this.objectFields,
             ...this.temporalFields,
             ...this.pointFields,
-            ...this.cypherFields,
+            ...this.cypherFields
         ];
     }
 
@@ -212,7 +215,7 @@ class Node extends GraphElement {
             ...this.scalarFields,
             ...this.enumFields,
             ...this.temporalFields,
-            ...this.pointFields,
+            ...this.pointFields
         ];
     }
 
@@ -242,8 +245,8 @@ class Node extends GraphElement {
                 updated: `${this.singular}Updated`,
                 deleted: `${this.singular}Deleted`,
                 relationship_created: `${this.singular}RelationshipCreated`,
-                relationship_deleted: `${this.singular}RelationshipDeleted`,
-            },
+                relationship_deleted: `${this.singular}RelationshipDeleted`
+            }
         };
     }
 
@@ -251,14 +254,14 @@ class Node extends GraphElement {
         return {
             result: `${this.pascalCaseSingular}FulltextResult`,
             where: `${this.pascalCaseSingular}FulltextWhere`,
-            sort: `${this.pascalCaseSingular}FulltextSort`,
+            sort: `${this.pascalCaseSingular}FulltextSort`
         };
     }
 
     public get aggregateTypeNames(): AggregateTypeNames {
         return {
             selection: `${this.name}AggregateSelection`,
-            input: `${this.name}AggregateSelectionInput`,
+            input: `${this.name}AggregateSelectionInput`
         };
     }
 
@@ -267,7 +270,7 @@ class Node extends GraphElement {
 
         return {
             create: `Create${pascalCasePlural}MutationResponse`,
-            update: `Update${pascalCasePlural}MutationResponse`,
+            update: `Update${pascalCasePlural}MutationResponse`
         };
     }
 
@@ -279,7 +282,7 @@ class Node extends GraphElement {
             update: `${pascalCaseSingular}UpdatedEvent`,
             delete: `${pascalCaseSingular}DeletedEvent`,
             create_relationship: `${pascalCaseSingular}RelationshipCreatedEvent`,
-            delete_relationship: `${pascalCaseSingular}RelationshipDeletedEvent`,
+            delete_relationship: `${pascalCaseSingular}RelationshipDeletedEvent`
         };
     }
 
@@ -291,7 +294,7 @@ class Node extends GraphElement {
             update: `updated${pascalCaseSingular}`,
             delete: `deleted${pascalCaseSingular}`,
             create_relationship: `${this.singular}`,
-            delete_relationship: `${this.singular}`,
+            delete_relationship: `${this.singular}`
         };
     }
 

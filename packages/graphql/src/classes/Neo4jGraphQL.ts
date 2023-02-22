@@ -273,7 +273,7 @@ class Neo4jGraphQL {
                 this.schemaModel = generateModel(document);
             }
 
-            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, this.schemaModel, {
+            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
                 enableRegex: this.config?.enableRegex,
                 validateResolvers,
@@ -316,7 +316,7 @@ class Neo4jGraphQL {
             this.schemaModel = generateModel(document);
         }
 
-        const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, this.schemaModel, {
+        const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
             enableRegex: this.config?.enableRegex,
             validateResolvers,
@@ -330,11 +330,11 @@ class Neo4jGraphQL {
         this._relationships = relationships;
 
         const referenceResolvers = subgraph.getReferenceResolvers(this._nodes, this.driver as Driver);
-        const subgraphTypeDefs = subgraph.augmentGeneratedSchemaDefinition(typeDefs);
+        // const subgraphTypeDefs = subgraph.augmentGeneratedSchemaDefinition(typeDefs);
         const wrappedResolvers = this.wrapResolvers([resolvers, referenceResolvers]);
 
         const schema = subgraph.buildSchema({
-            typeDefs: subgraphTypeDefs,
+            typeDefs,
             resolvers: wrappedResolvers as Record<string, any>
         });
 

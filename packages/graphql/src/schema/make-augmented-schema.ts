@@ -27,7 +27,7 @@ import type {
     ObjectTypeDefinitionNode
 } from "graphql";
 import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
-import type { ObjectTypeComposer } from "graphql-compose";
+import type { Directive, ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import type { BaseField, Neo4jGraphQLCallbacks, Neo4jFeaturesSettings } from "../types";
@@ -85,13 +85,9 @@ import { addMathOperatorsToITC } from "./math";
 import { addArrayMethodsToITC } from "./array-methods";
 import { FloatWhere } from "../graphql/input-objects/FloatWhere";
 import type { Subgraph } from "../classes/Subgraph";
-import type { Neo4jGraphQLSchemaModel } from "src/schema-model/Neo4jGraphQLSchemaModel";
-import { ConcreteEntity } from "src/schema-model/entity/ConcreteEntity";
-import { GenericAnnotation } from "src/schema-model/annotation/GenericAnnotation";
 
 function makeAugmentedSchema(
     document: DocumentNode,
-    schemaModel: Neo4jGraphQLSchemaModel,
     {
         features,
         enableRegex,
@@ -547,12 +543,6 @@ function makeAugmentedSchema(
     }
 
     nodes.forEach((node) => {
-        const entity = schemaModel.entities.get(node.name);
-
-        if (!(entity instanceof ConcreteEntity)) {
-            throw new Error(`Cannot find ConcreteEntity for object type ${node.name}`);
-        }
-
         const nodeFields = objectFieldsToComposeFields([
             ...node.primitiveFields,
             ...node.cypherFields,
@@ -570,15 +560,9 @@ function makeAugmentedSchema(
             name: node.name,
             fields: nodeFields,
             description: node.description,
-            directives: graphqlDirectivesToCompose(node.otherDirectives),
+            directives: graphqlDirectivesToCompose([...node.otherDirectives, ...node.propagatedDirectives]),
             interfaces: node.interfaces.map((x) => x.name.value)
         });
-
-        for (const annotation of entity.annotations) {
-            if (annotation instanceof GenericAnnotation && annotation.name === "shareable") {
-                console.log(annotation.name);
-            }
-        }
 
         if (node.isGlobalNode) {
             composeNode.setField("id", {
@@ -674,7 +658,8 @@ function makeAugmentedSchema(
 
                     return res;
                 }, {})
-            }
+            },
+            directives: graphqlDirectivesToCompose(node.propagatedDirectives)
         });
 
         const nodeWhereTypeName = `${node.name}Where`;
@@ -720,28 +705,23 @@ function makeAugmentedSchema(
 
         const mutationResponseTypeNames = node.mutationResponseTypeNames;
 
-        const createResponse = composer.createObjectTC({
+        composer.createObjectTC({
             name: mutationResponseTypeNames.create,
             fields: {
                 info: `CreateInfo!`,
                 [node.plural]: `[${node.name}!]!`
-            }
+            },
+            directives: graphqlDirectivesToCompose(node.propagatedDirectives)
         });
 
-        const updateResponse = composer.createObjectTC({
+        composer.createObjectTC({
             name: mutationResponseTypeNames.update,
             fields: {
                 info: `UpdateInfo!`,
                 [node.plural]: `[${node.name}!]!`
-            }
+            },
+            directives: graphqlDirectivesToCompose(node.propagatedDirectives)
         });
-
-        if (subgraph) {
-            const shareable = subgraph.getFullyQualifiedDirectiveName("shareable");
-
-            createResponse.setDirectiveByName(shareable);
-            updateResponse.setDirectiveByName(shareable);
-        }
 
         createRelationshipFields({
             relationshipFields: node.relationFields,
@@ -774,26 +754,46 @@ function makeAugmentedSchema(
             composer.Query.addFields({
                 [rootTypeFieldNames.read]: findResolver({ node })
             });
+            composer.Query.setFieldDirectives(
+                rootTypeFieldNames.read,
+                graphqlDirectivesToCompose(node.propagatedDirectives)
+            );
 
             composer.Query.addFields({
                 [rootTypeFieldNames.aggregate]: aggregateResolver({ node })
             });
+            composer.Query.setFieldDirectives(
+                rootTypeFieldNames.aggregate,
+                graphqlDirectivesToCompose(node.propagatedDirectives)
+            );
 
             composer.Query.addFields({
                 [`${node.plural}Connection`]: rootConnectionResolver({ node, composer })
             });
+            composer.Query.setFieldDirectives(
+                `${node.plural}Connection`,
+                graphqlDirectivesToCompose(node.propagatedDirectives)
+            );
         }
 
         if (!node.exclude?.operations.includes("create")) {
             composer.Mutation.addFields({
                 [rootTypeFieldNames.create]: createResolver({ node })
             });
+            composer.Mutation.setFieldDirectives(
+                rootTypeFieldNames.create,
+                graphqlDirectivesToCompose(node.propagatedDirectives)
+            );
         }
 
         if (!node.exclude?.operations.includes("delete")) {
             composer.Mutation.addFields({
                 [rootTypeFieldNames.delete]: deleteResolver({ node })
             });
+            composer.Mutation.setFieldDirectives(
+                rootTypeFieldNames.delete,
+                graphqlDirectivesToCompose(node.propagatedDirectives)
+            );
         }
 
         if (!node.exclude?.operations.includes("update")) {
@@ -803,6 +803,10 @@ function makeAugmentedSchema(
                     schemaComposer: composer
                 })
             });
+            composer.Mutation.setFieldDirectives(
+                rootTypeFieldNames.update,
+                graphqlDirectivesToCompose(node.propagatedDirectives)
+            );
         }
     });
 

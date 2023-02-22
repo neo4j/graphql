@@ -18,6 +18,5 @@
  */
 
 import type { CypherAnnotation } from "./CypherAnnotation";
-import type { GenericAnnotation } from "./GenericAnnotation";
 
-export type Annotation = CypherAnnotation | GenericAnnotation;
+export type Annotation = CypherAnnotation;
