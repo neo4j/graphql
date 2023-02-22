@@ -21,6 +21,7 @@ import type { EventEmitter } from "events";
 import type { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Driver, Integer, Session, Transaction } from "neo4j-driver";
+import type Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "./classes";
 import type { Neo4jDatabaseInfo } from "./classes/Neo4jDatabaseInfo";
 import type { RelationshipQueryDirectionOption } from "./constants";
@@ -263,6 +264,7 @@ export interface GraphQLWhereArg {
     [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
     AND?: GraphQLWhereArg[];
     OR?: GraphQLWhereArg[];
+    NOT?: GraphQLWhereArg;
 }
 
 export interface ConnectionWhereArg {
@@ -272,6 +274,7 @@ export interface ConnectionWhereArg {
     edge_NOT?: GraphQLWhereArg;
     AND?: ConnectionWhereArg[];
     OR?: ConnectionWhereArg[];
+    NOT?: ConnectionWhereArg;
 }
 
 export interface InterfaceWhereArg {
@@ -356,6 +359,18 @@ export interface CypherQueryOptions {
     replan?: CypherReplanning;
 }
 
+/** The startup validation checks to run */
+export interface StartupValidationOptions {
+    typeDefs?: boolean;
+    resolvers?: boolean;
+}
+
+/**
+ * Configure which startup validation checks should be run.
+ * Optionally, a boolean can be passed to toggle all these options.
+ */
+export type StartupValidationConfig = StartupValidationOptions | boolean;
+
 /** Input field for graphql-compose */
 export type InputField = { type: string; defaultValue?: string; directives?: Directive[] } | string;
 
@@ -365,6 +380,12 @@ export interface Neo4jGraphQLAuthPlugin {
     bindPredicate: "all" | "any";
 
     decode<T>(token: string): Promise<T | undefined>;
+    /**
+     * This function tries to resolve public or secret keys.
+     * The implementation on how to resolve the keys by the `JWKSEndpoint` or by the `Secret` is set on when the plugin is being initiated.
+     * @param req
+     */
+    tryToResolveKeys(req: unknown): void;
 }
 
 /** Raw event metadata returned from queries */
@@ -518,3 +539,8 @@ export interface Neo4jFiltersSettings {
 export interface Neo4jFeaturesSettings {
     filters?: Neo4jFiltersSettings;
 }
+
+export type PredicateReturn = {
+    predicate: Cypher.Predicate | undefined;
+    preComputedSubqueries?: Cypher.CompositeClause | undefined;
+};

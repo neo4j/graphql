@@ -24,7 +24,7 @@ import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { generate } from "randomstring";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
-import { generateUniqueType, UniqueType } from "../utils/graphql-types";
+import { UniqueType } from "../utils/graphql-types";
 import { createJwtRequest } from "../utils/create-jwt-request";
 
 describe("unions", () => {
@@ -40,8 +40,8 @@ describe("unions", () => {
     });
 
     beforeEach(() => {
-        GenreType = generateUniqueType("Genre");
-        MovieType = generateUniqueType("Movie");
+        GenreType = new UniqueType("Genre");
+        MovieType = new UniqueType("Movie");
     });
 
     afterAll(async () => {

@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
-import { generateUniqueType } from "../../../../utils/graphql-types";
+import { UniqueType } from "../../../../utils/graphql-types";
 
 describe("aggregations-where-edge-string", () => {
     let driver: Driver;
@@ -387,10 +387,12 @@ describe("aggregations-where-edge-string", () => {
     });
 
     describe("SHORTEST", () => {
-        test("should return posts where the shortest edge like String is EQUAL to", async () => {
-            const session = await neo4j.getSession();
+        test.each(["SHORTEST", "SHORTEST_LENGTH"])(
+            "should return posts where the %s edge like String is EQUAL to",
+            async (shortestFilter) => {
+                const session = await neo4j.getSession();
 
-            const typeDefs = `
+                const typeDefs = `
                 type User {
                     testString: String!
                 }
@@ -405,43 +407,43 @@ describe("aggregations-where-edge-string", () => {
                 }
             `;
 
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-            });
+                const testString = generate({
+                    charset: "alphabetic",
+                    readable: true,
+                });
 
-            const shortestTestString = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 10,
-            });
+                const shortestTestString = generate({
+                    charset: "alphabetic",
+                    readable: true,
+                    length: 10,
+                });
 
-            const testString2 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 11,
-            });
+                const testString2 = generate({
+                    charset: "alphabetic",
+                    readable: true,
+                    length: 11,
+                });
 
-            const longestTestString = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 12,
-            });
+                const longestTestString = generate({
+                    charset: "alphabetic",
+                    readable: true,
+                    length: 12,
+                });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            try {
-                await session.run(
-                    `
+                try {
+                    await session.run(
+                        `
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES { testString: "${shortestTestString}" }]-(:User {testString: "${shortestTestString}"})
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES { testString: "${testString2}" }]-(:User {testString: "${testString2}"})
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES { testString: "${longestTestString}" }]-(:User {testString: "${longestTestString}"})
                     `
-                );
+                    );
 
-                const query = `
+                    const query = `
                     {
-                        posts(where: { testString: "${testString}", likesAggregate: { edge: { testString_SHORTEST_EQUAL: ${shortestTestString.length} } } }) {
+                        posts(where: { testString: "${testString}", likesAggregate: { edge: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
                             testString
                             likes {
                                 testString
@@ -450,35 +452,38 @@ describe("aggregations-where-edge-string", () => {
                     }
                 `;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                });
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                    if (gqlResult.errors) {
+                        console.log(JSON.stringify(gqlResult.errors, null, 2));
+                    }
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    expect((gqlResult.data as any).posts).toEqual([
+                        {
+                            testString,
+                            likes: [{ testString: shortestTestString }],
+                        },
+                    ]);
+                } finally {
+                    await session.close();
                 }
-
-                expect(gqlResult.errors).toBeUndefined();
-
-                expect((gqlResult.data as any).posts).toEqual([
-                    {
-                        testString,
-                        likes: [{ testString: shortestTestString }],
-                    },
-                ]);
-            } finally {
-                await session.close();
             }
-        });
+        );
     });
 
     describe("LONGEST", () => {
-        test("should return posts where the longest edge like String is EQUAL to", async () => {
-            const session = await neo4j.getSession();
+        test.each(["LONGEST", "LONGEST_LENGTH"])(
+            "should return posts where the %s edge like String is EQUAL to",
+            async (longestFilter) => {
+                const session = await neo4j.getSession();
 
-            const typeDefs = `
+                const typeDefs = `
                 type User {
                     testString: String!
                 }
@@ -493,43 +498,43 @@ describe("aggregations-where-edge-string", () => {
                 }
             `;
 
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-            });
+                const testString = generate({
+                    charset: "alphabetic",
+                    readable: true,
+                });
 
-            const shortestTestString = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 10,
-            });
+                const shortestTestString = generate({
+                    charset: "alphabetic",
+                    readable: true,
+                    length: 10,
+                });
 
-            const testString2 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 11,
-            });
+                const testString2 = generate({
+                    charset: "alphabetic",
+                    readable: true,
+                    length: 11,
+                });
 
-            const longestTestString = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 12,
-            });
+                const longestTestString = generate({
+                    charset: "alphabetic",
+                    readable: true,
+                    length: 12,
+                });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            try {
-                await session.run(
-                    `
+                try {
+                    await session.run(
+                        `
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES { testString: "${shortestTestString}" }]-(:User {testString: "${shortestTestString}"})
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES { testString: "${testString2}" }]-(:User {testString: "${testString2}"})
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES { testString: "${longestTestString}" }]-(:User {testString: "${longestTestString}"})
                     `
-                );
+                    );
 
-                const query = `
+                    const query = `
                     {
-                        posts(where: { testString: "${testString}", likesAggregate: { edge: { testString_LONGEST_EQUAL: ${longestTestString.length} } } }) {
+                        posts(where: { testString: "${testString}", likesAggregate: { edge: { testString_${longestFilter}_EQUAL: ${longestTestString.length} } } }) {
                             testString
                             likes {
                                 testString
@@ -538,35 +543,38 @@ describe("aggregations-where-edge-string", () => {
                     }
                 `;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                });
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                    if (gqlResult.errors) {
+                        console.log(JSON.stringify(gqlResult.errors, null, 2));
+                    }
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    expect((gqlResult.data as any).posts).toEqual([
+                        {
+                            testString,
+                            likes: [{ testString: longestTestString }],
+                        },
+                    ]);
+                } finally {
+                    await session.close();
                 }
-
-                expect(gqlResult.errors).toBeUndefined();
-
-                expect((gqlResult.data as any).posts).toEqual([
-                    {
-                        testString,
-                        likes: [{ testString: longestTestString }],
-                    },
-                ]);
-            } finally {
-                await session.close();
             }
-        });
+        );
     });
 
     describe("AVERAGE", () => {
-        test("should return posts where the average of edge like Strings is EQUAL to", async () => {
-            const session = await neo4j.getSession();
+        test.each(["AVERAGE", "AVERAGE_LENGTH"])(
+            "should return posts where the %s of edge like Strings is EQUAL to",
+            async (averageFilter) => {
+                const session = await neo4j.getSession();
 
-            const typeDefs = `
+                const typeDefs = `
                 type User {
                     testString: String!
                 }
@@ -581,47 +589,47 @@ describe("aggregations-where-edge-string", () => {
                 }
             `;
 
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-            });
+                const testString = generate({
+                    charset: "alphabetic",
+                    readable: true,
+                });
 
-            const testString1 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 10,
-            });
+                const testString1 = generate({
+                    charset: "alphabetic",
+                    readable: true,
+                    length: 10,
+                });
 
-            const testString2 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 11,
-            });
+                const testString2 = generate({
+                    charset: "alphabetic",
+                    readable: true,
+                    length: 11,
+                });
 
-            const testString3 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 12,
-            });
+                const testString3 = generate({
+                    charset: "alphabetic",
+                    readable: true,
+                    length: 12,
+                });
 
-            const avg = (10 + 11 + 12) / 3;
+                const avg = (10 + 11 + 12) / 3;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            try {
-                await session.run(
-                    `
+                try {
+                    await session.run(
+                        `
                         CREATE (p:Post {testString: "${testString}"})
                         CREATE(p)<-[:LIKES { testString: "${testString1}" }]-(:User {testString: "${testString}"})
                         CREATE(p)<-[:LIKES { testString: "${testString2}" }]-(:User {testString: "${testString}"})
                         CREATE(p)<-[:LIKES { testString: "${testString3}" }]-(:User {testString: "${testString}"})
                         CREATE (:Post {testString: "${testString}"})
                     `
-                );
+                    );
 
-                const query = `
+                    const query = `
                     {
-                        posts(where: { testString: "${testString}", likesAggregate: { edge: { testString_AVERAGE_EQUAL: ${avg} } } }) {
+                        posts(where: { testString: "${testString}", likesAggregate: { edge: { testString_${averageFilter}_EQUAL: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -630,25 +638,26 @@ describe("aggregations-where-edge-string", () => {
                     }
                 `;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                });
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                    if (gqlResult.errors) {
+                        console.log(JSON.stringify(gqlResult.errors, null, 2));
+                    }
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    const [post] = (gqlResult.data as any).posts as any[];
+                    expect(post.testString).toEqual(testString);
+                    expect(post.likes).toHaveLength(3);
+                } finally {
+                    await session.close();
                 }
-
-                expect(gqlResult.errors).toBeUndefined();
-
-                const [post] = (gqlResult.data as any).posts as any[];
-                expect(post.testString).toEqual(testString);
-                expect(post.likes).toHaveLength(3);
-            } finally {
-                await session.close();
             }
-        });
+        );
 
         test("should return posts where the average of edge like Strings is GT than", async () => {
             const session = await neo4j.getSession();
@@ -1002,8 +1011,8 @@ describe("aggregations-where-edge-string", () => {
     });
 
     test("EQUAL with alias", async () => {
-        const Post = generateUniqueType("Post");
-        const User = generateUniqueType("Post");
+        const Post = new UniqueType("Post");
+        const User = new UniqueType("Post");
 
         const session = await neo4j.getSession();
 

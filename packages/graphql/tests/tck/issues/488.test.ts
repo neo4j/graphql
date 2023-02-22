@@ -80,13 +80,16 @@ describe("#488", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Journalist\`)
-            WHERE size([(this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`) WHERE this1.type = $param0 | 1]) > 0
+            WHERE EXISTS {
+                MATCH (this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`)
+                WHERE this1.type = $param0
+            }
             CALL {
                 WITH this
                 CALL {
                     WITH *
                     MATCH (this)-[this2:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
-                    WITH this_keywords  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords
+                    WITH this_keywords { __resolveType: \\"Emoji\\", .id, .type } AS this_keywords
                     RETURN this_keywords AS this_keywords
                     UNION
                     WITH *
@@ -134,13 +137,16 @@ describe("#488", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Journalist\`)
-            WHERE size([(this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`) WHERE this1.type = $param0 | 1]) = 0
+            WHERE NOT (EXISTS {
+                MATCH (this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`)
+                WHERE this1.type = $param0
+            })
             CALL {
                 WITH this
                 CALL {
                     WITH *
                     MATCH (this)-[this2:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
-                    WITH this_keywords  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords
+                    WITH this_keywords { __resolveType: \\"Emoji\\", .id, .type } AS this_keywords
                     RETURN this_keywords AS this_keywords
                     UNION
                     WITH *

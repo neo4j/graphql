@@ -21,7 +21,7 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { cleanNodes } from "../../../utils/clean-nodes";
 import { Neo4jGraphQL } from "../../../../src";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import Neo4j from "../../neo4j";
 
@@ -44,10 +44,10 @@ describe("Subscriptions connect with create", () => {
     });
 
     beforeEach(() => {
-        typeActor = generateUniqueType("Actor");
-        typeMovie = generateUniqueType("Movie");
-        typePerson = generateUniqueType("Person");
-        typeInfluencer = generateUniqueType("Influencer");
+        typeActor = new UniqueType("Actor");
+        typeMovie = new UniqueType("Movie");
+        typePerson = new UniqueType("Person");
+        typeInfluencer = new UniqueType("Influencer");
 
         typeDefs = `
             type ${typeMovie} {

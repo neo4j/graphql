@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("unwind-create", () => {
     let driver: Driver;
@@ -41,7 +41,7 @@ describe("unwind-create", () => {
     test("should create a batch of movies", async () => {
         const session = await neo4j.getSession();
 
-        const Movie = generateUniqueType("Movie");
+        const Movie = new UniqueType("Movie");
 
         const typeDefs = `
             type ${Movie} {
@@ -105,8 +105,8 @@ describe("unwind-create", () => {
     test("should create a batch of movies with nested actors", async () => {
         const session = await neo4j.getSession();
 
-        const Movie = generateUniqueType("Movie");
-        const Actor = generateUniqueType("Actor");
+        const Movie = new UniqueType("Movie");
+        const Actor = new UniqueType("Actor");
 
         const typeDefs = `
             type ${Actor} {
@@ -198,8 +198,8 @@ describe("unwind-create", () => {
     test("should create a batch of movies with nested actors with nested movies", async () => {
         const session = await neo4j.getSession();
 
-        const Movie = generateUniqueType("Movie");
-        const Actor = generateUniqueType("Actor");
+        const Movie = new UniqueType("Movie");
+        const Actor = new UniqueType("Actor");
 
         const typeDefs = `
             type ${Actor} {
@@ -332,8 +332,8 @@ describe("unwind-create", () => {
     test("should create a batch of movies with nested actors with edge properties", async () => {
         const session = await neo4j.getSession();
 
-        const Movie = generateUniqueType("Movie");
-        const Actor = generateUniqueType("Actor");
+        const Movie = new UniqueType("Movie");
+        const Actor = new UniqueType("Actor");
 
         const typeDefs = `
             type ${Actor} {
@@ -431,10 +431,10 @@ describe("unwind-create", () => {
     test("should create a batch of movies with nested persons using interface", async () => {
         const session = await neo4j.getSession();
 
-        const Movie = generateUniqueType("Movie");
-        const Actor = generateUniqueType("Actor");
-        const Modeler = generateUniqueType("Modeler");
-        const Person = generateUniqueType("Person");
+        const Movie = new UniqueType("Movie");
+        const Actor = new UniqueType("Actor");
+        const Modeler = new UniqueType("Modeler");
+        const Person = new UniqueType("Person");
 
         const workedIn = generate({
             charset: "alphabetic",
@@ -545,8 +545,8 @@ describe("unwind-create", () => {
     test("should set properties defined with the directive @alias", async () => {
         const session = await neo4j.getSession();
 
-        const Movie = generateUniqueType("Movie");
-        const Actor = generateUniqueType("Actor");
+        const Movie = new UniqueType("Movie");
+        const Actor = new UniqueType("Actor");
 
         const actedIn = generate({
             charset: "alphabetic",
@@ -707,8 +707,8 @@ describe("unwind-create", () => {
     test("should a batch of actors with nested movies and resolve actorsConnection", async () => {
         const session = await neo4j.getSession();
 
-        const Movie = generateUniqueType("Movie");
-        const Actor = generateUniqueType("Actor");
+        const Movie = new UniqueType("Movie");
+        const Actor = new UniqueType("Actor");
 
         const typeDefs = `
             type ${Actor} {

@@ -149,7 +149,7 @@ describe("Nested Unions", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this_actors:\`LeadActor\`)-[update_this0:ACTED_IN]->(this)
+                    MATCH (this)<-[update_this0:ACTED_IN]-(this_actors:\`LeadActor\`)
                     CALL {
                         WITH this_actors
                         CALL {
@@ -160,17 +160,17 @@ describe("Nested Unions", () => {
                             UNION
                             WITH *
                             MATCH (this_actors)-[update_this2:ACTED_IN]->(this_actors_actedIn:\`Series\`)
-                            WITH this_actors_actedIn  { __resolveType: \\"Series\\",  .name } AS this_actors_actedIn
+                            WITH this_actors_actedIn { __resolveType: \\"Series\\", .name } AS this_actors_actedIn
                             RETURN this_actors_actedIn AS this_actors_actedIn
                         }
                         WITH this_actors_actedIn
                         RETURN collect(this_actors_actedIn) AS this_actors_actedIn
                     }
-                    WITH this_actors  { __resolveType: \\"LeadActor\\",  .name, actedIn: this_actors_actedIn } AS this_actors
+                    WITH this_actors { __resolveType: \\"LeadActor\\", .name, actedIn: this_actors_actedIn } AS this_actors
                     RETURN this_actors AS this_actors
                     UNION
                     WITH *
-                    MATCH (this_actors:\`Extra\`)-[update_this3:ACTED_IN]->(this)
+                    MATCH (this)<-[update_this3:ACTED_IN]-(this_actors:\`Extra\`)
                     WITH this_actors { __resolveType: \\"Extra\\" } AS this_actors
                     RETURN this_actors AS this_actors
                 }
@@ -233,7 +233,7 @@ describe("Nested Unions", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors_LeadActor0_rel:ACTED_IN]-(this_disconnect_actors_LeadActor0:LeadActor)
-            WHERE this_disconnect_actors_LeadActor0.name = $updateMovies_args_disconnect_actors_LeadActor0_where_LeadActorparam0
+            WHERE this_disconnect_actors_LeadActor0.name = $updateMovies_args_disconnect_actors_LeadActor0_where_LeadActor_this_disconnect_actors_LeadActor0param0
             CALL {
             	WITH this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel, this
             	WITH collect(this_disconnect_actors_LeadActor0) as this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel, this
@@ -244,7 +244,7 @@ describe("Nested Unions", () => {
             CALL {
             WITH this, this_disconnect_actors_LeadActor0
             OPTIONAL MATCH (this_disconnect_actors_LeadActor0)-[this_disconnect_actors_LeadActor0_actedIn_Series0_rel:ACTED_IN]->(this_disconnect_actors_LeadActor0_actedIn_Series0:Series)
-            WHERE this_disconnect_actors_LeadActor0_actedIn_Series0.name = $updateMovies_args_disconnect_actors_LeadActor0_disconnect_actedIn_Series0_where_Seriesparam0
+            WHERE this_disconnect_actors_LeadActor0_actedIn_Series0.name = $updateMovies_args_disconnect_actors_LeadActor0_disconnect_actedIn_Series0_where_Series_this_disconnect_actors_LeadActor0_actedIn_Series0param0
             CALL {
             	WITH this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel, this_disconnect_actors_LeadActor0
             	WITH collect(this_disconnect_actors_LeadActor0_actedIn_Series0) as this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel, this_disconnect_actors_LeadActor0
@@ -261,7 +261,7 @@ describe("Nested Unions", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this_actors:\`LeadActor\`)-[update_this0:ACTED_IN]->(this)
+                    MATCH (this)<-[update_this0:ACTED_IN]-(this_actors:\`LeadActor\`)
                     CALL {
                         WITH this_actors
                         CALL {
@@ -272,17 +272,17 @@ describe("Nested Unions", () => {
                             UNION
                             WITH *
                             MATCH (this_actors)-[update_this2:ACTED_IN]->(this_actors_actedIn:\`Series\`)
-                            WITH this_actors_actedIn  { __resolveType: \\"Series\\",  .name } AS this_actors_actedIn
+                            WITH this_actors_actedIn { __resolveType: \\"Series\\", .name } AS this_actors_actedIn
                             RETURN this_actors_actedIn AS this_actors_actedIn
                         }
                         WITH this_actors_actedIn
                         RETURN collect(this_actors_actedIn) AS this_actors_actedIn
                     }
-                    WITH this_actors  { __resolveType: \\"LeadActor\\",  .name, actedIn: this_actors_actedIn } AS this_actors
+                    WITH this_actors { __resolveType: \\"LeadActor\\", .name, actedIn: this_actors_actedIn } AS this_actors
                     RETURN this_actors AS this_actors
                     UNION
                     WITH *
-                    MATCH (this_actors:\`Extra\`)-[update_this3:ACTED_IN]->(this)
+                    MATCH (this)<-[update_this3:ACTED_IN]-(this_actors:\`Extra\`)
                     WITH this_actors { __resolveType: \\"Extra\\" } AS this_actors
                     RETURN this_actors AS this_actors
                 }
@@ -295,8 +295,8 @@ describe("Nested Unions", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Movie\\",
-                \\"updateMovies_args_disconnect_actors_LeadActor0_where_LeadActorparam0\\": \\"Actor\\",
-                \\"updateMovies_args_disconnect_actors_LeadActor0_disconnect_actedIn_Series0_where_Seriesparam0\\": \\"Series\\",
+                \\"updateMovies_args_disconnect_actors_LeadActor0_where_LeadActor_this_disconnect_actors_LeadActor0param0\\": \\"Actor\\",
+                \\"updateMovies_args_disconnect_actors_LeadActor0_disconnect_actedIn_Series0_where_Series_this_disconnect_actors_LeadActor0_actedIn_Series0param0\\": \\"Series\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {

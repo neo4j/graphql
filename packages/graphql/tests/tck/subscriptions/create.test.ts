@@ -444,13 +444,13 @@ describe("Subscriptions metadata on create", () => {
                 WITH this0
                 CALL {
                     WITH *
-                    MATCH (this0_directors:\`Actor\`)-[create_this0:DIRECTED]->(this0)
-                    WITH this0_directors  { __resolveType: \\"Actor\\",  .name } AS this0_directors
+                    MATCH (this0)<-[create_this0:DIRECTED]-(this0_directors:\`Actor\`)
+                    WITH this0_directors { __resolveType: \\"Actor\\", .name } AS this0_directors
                     RETURN this0_directors AS this0_directors
                     UNION
                     WITH *
-                    MATCH (this0_directors:\`Person\`)-[create_this1:DIRECTED]->(this0)
-                    WITH this0_directors  { __resolveType: \\"Person\\",  .name } AS this0_directors
+                    MATCH (this0)<-[create_this1:DIRECTED]-(this0_directors:\`Person\`)
+                    WITH this0_directors { __resolveType: \\"Person\\", .name } AS this0_directors
                     RETURN this0_directors AS this0_directors
                 }
                 WITH this0_directors
@@ -596,19 +596,19 @@ describe("Subscriptions metadata on create", () => {
                 WITH this0
                 CALL {
                     WITH *
-                    MATCH (this0_directors:\`Actor\`)-[create_this0:DIRECTED]->(this0)
+                    MATCH (this0)<-[create_this0:DIRECTED]-(this0_directors:\`Actor\`)
                     CALL {
                         WITH this0_directors
                         MATCH (this0_directors)-[create_this1:ACTED_IN]->(this0_directors_movies:\`Movie\`)
                         WITH this0_directors_movies { .title } AS this0_directors_movies
                         RETURN collect(this0_directors_movies) AS this0_directors_movies
                     }
-                    WITH this0_directors  { __resolveType: \\"Actor\\",  .name, movies: this0_directors_movies } AS this0_directors
+                    WITH this0_directors { __resolveType: \\"Actor\\", .name, movies: this0_directors_movies } AS this0_directors
                     RETURN this0_directors AS this0_directors
                     UNION
                     WITH *
-                    MATCH (this0_directors:\`Person\`)-[create_this2:DIRECTED]->(this0)
-                    WITH this0_directors  { __resolveType: \\"Person\\",  .name } AS this0_directors
+                    MATCH (this0)<-[create_this2:DIRECTED]-(this0_directors:\`Person\`)
+                    WITH this0_directors { __resolveType: \\"Person\\", .name } AS this0_directors
                     RETURN this0_directors AS this0_directors
                 }
                 WITH this0_directors
@@ -758,7 +758,7 @@ describe("Subscriptions metadata on create", () => {
             WITH this0, this0_meta AS meta
             CALL {
                 WITH this0
-                MATCH (this0_actors:\`Actor\`)-[create_this0:ACTED_IN]->(this0)
+                MATCH (this0)<-[create_this0:ACTED_IN]-(this0_actors:\`Actor\`)
                 WITH this0_actors { .name } AS this0_actors
                 RETURN collect(this0_actors) AS this0_actors
             }
@@ -822,7 +822,7 @@ describe("Subscriptions metadata on create", () => {
             WITH this0, this0_meta AS meta
             CALL {
                 WITH this0
-                MATCH (this0_actors:\`Actor\`)-[create_this0:ACTED_IN]->(this0)
+                MATCH (this0)<-[create_this0:ACTED_IN]-(this0_actors:\`Actor\`)
                 WITH this0_actors { .name } AS this0_actors
                 RETURN collect(this0_actors) AS this0_actors
             }
@@ -909,13 +909,13 @@ describe("Subscriptions metadata on create", () => {
             WITH this0, this0_meta AS meta
             CALL {
                 WITH this0
-                MATCH (this0_actors:\`Actor\`)-[create_this0:ACTED_IN]->(this0)
+                MATCH (this0)<-[create_this0:ACTED_IN]-(this0_actors:\`Actor\`)
                 CALL {
                     WITH this0_actors
                     MATCH (this0_actors)-[create_this1:ACTED_IN]->(this0_actors_movies:\`Movie\`)
                     CALL {
                         WITH this0_actors_movies
-                        MATCH (this0_actors_movies_actors:\`Actor\`)-[create_this2:ACTED_IN]->(this0_actors_movies)
+                        MATCH (this0_actors_movies)<-[create_this2:ACTED_IN]-(this0_actors_movies_actors:\`Actor\`)
                         WITH this0_actors_movies_actors { .name } AS this0_actors_movies_actors
                         RETURN collect(this0_actors_movies_actors) AS this0_actors_movies_actors
                     }

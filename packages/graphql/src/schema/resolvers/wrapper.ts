@@ -32,6 +32,7 @@ import { getToken, parseBearerToken } from "../../utils/get-token";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
+import { IncomingMessage } from "http";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -87,6 +88,11 @@ export const wrapResolver =
         context.callbacks = config.callbacks;
 
         if (!context.jwt) {
+            if (context.plugins.auth) {
+                // Here we will try to compute the generic Secret or the generic jwksEndpoint
+                const contextRequest = context.req || context.request;
+                context.plugins.auth.tryToResolveKeys(context instanceof IncomingMessage ? context : contextRequest);
+            }
             const token = getToken(context);
             context.jwt = await decodeToken(token, context.plugins.auth);
         }

@@ -22,7 +22,7 @@ import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import Neo4j from "../../neo4j";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
@@ -47,7 +47,7 @@ describe("Subscriptions delete", () => {
 
     test("should throw Forbidden when deleting a node with invalid allow", async () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-        const typeUser = generateUniqueType("User");
+        const typeUser = new UniqueType("User");
         const typeDefs = `
         type ${typeUser.name} {
             id: ID

@@ -94,6 +94,7 @@ describe("Point", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               filmedAt: PointInput
               filmedAt_DISTANCE: PointDistance
@@ -102,8 +103,8 @@ describe("Point", () => {
               filmedAt_IN: [PointInput!]
               filmedAt_LT: PointDistance
               filmedAt_LTE: PointDistance
-              filmedAt_NOT: PointInput
-              filmedAt_NOT_IN: [PointInput!]
+              filmedAt_NOT: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              filmedAt_NOT_IN: [PointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -264,6 +265,7 @@ describe("Point", () => {
 
             input MachineWhere {
               AND: [MachineWhere!]
+              NOT: MachineWhere
               OR: [MachineWhere!]
               partLocation: CartesianPointInput
               partLocation_DISTANCE: CartesianPointDistance
@@ -272,8 +274,8 @@ describe("Point", () => {
               partLocation_IN: [CartesianPointInput!]
               partLocation_LT: CartesianPointDistance
               partLocation_LTE: CartesianPointDistance
-              partLocation_NOT: CartesianPointInput
-              partLocation_NOT_IN: [CartesianPointInput!]
+              partLocation_NOT: CartesianPointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              partLocation_NOT_IN: [CartesianPointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MachinesConnection {
@@ -386,11 +388,12 @@ describe("Point", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               filmedAt: [PointInput!]
               filmedAt_INCLUDES: PointInput
-              filmedAt_NOT: [PointInput!]
-              filmedAt_NOT_INCLUDES: PointInput
+              filmedAt_NOT: [PointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              filmedAt_NOT_INCLUDES: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -524,11 +527,12 @@ describe("Point", () => {
 
             input MachineWhere {
               AND: [MachineWhere!]
+              NOT: MachineWhere
               OR: [MachineWhere!]
               partLocations: [CartesianPointInput!]
               partLocations_INCLUDES: CartesianPointInput
-              partLocations_NOT: [CartesianPointInput!]
-              partLocations_NOT_INCLUDES: CartesianPointInput
+              partLocations_NOT: [CartesianPointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              partLocations_NOT_INCLUDES: CartesianPointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MachinesConnection {

@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
@@ -36,7 +36,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
     let typeMovie: UniqueType;
 
     beforeEach(async () => {
-        typeMovie = generateUniqueType("Movie");
+        typeMovie = new UniqueType("Movie");
         const typeDefs = `
          type ${typeMovie} {
             id: ID
@@ -145,7 +145,6 @@ describe("Create Subscription with optional filters valid for all types", () => 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
-
     test("create subscription with where OR", async () => {
         await wsClient.subscribe(`
             subscription {
@@ -757,7 +756,6 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-
     test("subscription with IN on Boolean should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
@@ -841,6 +839,132 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
+    });
+    // NOT operator tests
+    test("subscription with where filter NOT operator 1 result", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { NOT: { title: "movie1" } }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                },
+            },
+        ]);
+    });
+
+    test("subscription with where filter NOT operator multiple results", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { NOT: { title: "movie0" } }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                },
+            },
+        ]);
+    });
+    test("subscription with where filter NOT operator empty result", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { NOT: { title: "movie1" } }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1" });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("create subscription with where property + NOT with filters match 1", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { releasedIn_GTE: 2000, NOT: { title_STARTS_WITH: "movie" } }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", releasedIn: 2000 });
+        await createMovie({ title: "movie2", releasedIn: 2020 });
+        await createMovie({ title: "movie3", releasedIn: 2000 });
+        await createMovie({ title: "movie4", releasedIn: 1000 });
+        await createMovie({ title: "dummy-movie", releasedIn: 2001 });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "dummy-movie" },
+                },
+            },
+        ]);
+    });
+    test("create subscription with where NOT nested match ALL", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.created}(where: {
+                NOT: { 
+                        AND: [
+                            { title: "movie2" },
+                            { releasedIn_GTE: 2000 }
+                        ]
+                    }
+            }) {
+                ${typeMovie.operations.subscribe.payload.created} {
+                    title
+                }
+            }
+        }
+    `);
+
+        await createMovie({ title: "movie1", releasedIn: 2020 });
+        await createMovie({ title: "movie2", releasedIn: 2000 });
+        await createMovie({ title: "movie2", releasedIn: 2002 });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                },
+            },
+        ]);
     });
 
     const makeTypedFieldValue = (value) => {

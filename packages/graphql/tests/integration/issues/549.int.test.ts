@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/549", () => {
     let driver: Driver;
@@ -40,8 +40,8 @@ describe("https://github.com/neo4j/graphql/issues/549", () => {
     test("should throw when creating a node without a mandatory relationship", async () => {
         const session = await neo4j.getSession();
 
-        const testPerson = generateUniqueType("Person");
-        const testMovie = generateUniqueType("Movie");
+        const testPerson = new UniqueType("Person");
+        const testMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${testPerson.name} {
@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/549", () => {
             });
 
             expect(result.errors).toBeTruthy();
-            expect((result.errors as any[])[0].message).toBe(`${testMovie.name}.director required`);
+            expect((result.errors as any[])[0].message).toBe(`${testMovie.name}.director required exactly once`);
         } finally {
             await session.close();
         }

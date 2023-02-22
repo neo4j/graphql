@@ -27,7 +27,7 @@ import { createMatchWherePattern } from "./aggregation-sub-queries";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
-import { getRelationshipDirection } from "../../utils/get-relationship-direction";
+import { getCypherRelationshipDirection } from "../../utils/get-relationship-direction";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../where/create-where-predicate";
 
@@ -80,23 +80,17 @@ export function createFieldAggregation({
         context,
         element: referenceNode,
     });
-
-    const targetPattern = new Cypher.Relationship({
-        source: sourceRef,
-        type: relationAggregationField.type,
-        target: targetRef,
-    });
-    const relationshipDirection = getRelationshipDirection(relationAggregationField, {
+    const relationshipDirection = getCypherRelationshipDirection(relationAggregationField, {
         directed: field.args.directed as boolean | undefined,
     });
-    if (relationshipDirection === "IN") targetPattern.reverse();
-    const matchWherePattern = createMatchWherePattern(
-        targetPattern,
-        relationshipDirection !== "undirected",
-        preComputedSubqueries,
-        authData,
-        predicate
-    );
+
+    const relationship = new Cypher.Relationship({ type: relationAggregationField.type });
+    const targetPattern = new Cypher.Pattern(sourceRef)
+        .related(relationship)
+        .withDirection(relationshipDirection)
+        .to(targetRef);
+
+    const matchWherePattern = createMatchWherePattern(targetPattern, preComputedSubqueries, authData, predicate);
     const projectionMap = new Cypher.Map();
 
     let projectionSubqueries: Cypher.Clause | undefined;
@@ -131,7 +125,7 @@ export function createFieldAggregation({
             getAggregationProjectionAndSubqueries({
                 referenceNodeOrRelationship: referenceRelation,
                 matchWherePattern,
-                targetRef: targetPattern,
+                targetRef: relationship,
                 sourceRef,
                 fields: edgeFields,
             });

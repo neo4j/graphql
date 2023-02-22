@@ -33,6 +33,9 @@ export class MathOp extends CypherASTNode {
         this.exprs = exprs;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const exprs = this.exprs.map((e) => e.getCypher(env));
 

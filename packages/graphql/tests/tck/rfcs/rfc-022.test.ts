@@ -82,7 +82,7 @@ describe("tck/rfs/022 subquery projection", () => {
                 WHERE this.released = $param0
                 CALL {
                     WITH this
-                    MATCH (this_actors:\`Person\`)-[this0:ACTED_IN]->(this)
+                    MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Person\`)
                     WHERE this_actors.name = $param1
                     WITH this_actors { .name } AS this_actors
                     RETURN collect(this_actors) AS this_actors
@@ -127,7 +127,7 @@ describe("tck/rfs/022 subquery projection", () => {
                 WHERE this.released = $param0
                 CALL {
                     WITH this
-                    MATCH (this_actors:\`Person\`)-[this0:ACTED_IN]->(this)
+                    MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Person\`)
                     WHERE this_actors.name = $param1
                     CALL {
                         WITH this_actors
@@ -217,7 +217,7 @@ describe("tck/rfs/022 subquery projection", () => {
                 WHERE this.released = $param0
                 CALL {
                     WITH this
-                    MATCH (this_actors:\`Person\`)-[this0:ACTED_IN]->(this)
+                    MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Person\`)
                     WHERE (this_actors.name = $param1 AND (any(var2 IN [\\"admin\\"] WHERE any(var1 IN $auth.roles WHERE var1 = var2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND (this_actors.name IS NOT NULL AND this_actors.name = $param3)) AND apoc.util.validatePredicate(NOT ((any(var4 IN [\\"admin\\"] WHERE any(var3 IN $auth.roles WHERE var3 = var4)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND (this_actors.name IS NOT NULL AND this_actors.name = $param5))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     WITH this_actors { .name } AS this_actors
                     RETURN collect(this_actors) AS this_actors
