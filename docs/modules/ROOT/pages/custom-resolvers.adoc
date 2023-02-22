@@ -5,6 +5,9 @@ The library will autogenerate Query and Mutation resolvers, so you don’t need 
 
 == Custom object type field resolver
 
+[[custom-resolver-directive]]
+=== `@customResolver`
+
 If you would like to add a field to an object type which is resolved from existing values in the type, rather than storing new values, you should mark it with the `@customResolver` directive (see below) and define a custom resolver for it. Take for instance a simple schema:
 
 [source, javascript, indent=0]
@@ -13,7 +16,7 @@ const typeDefs = `
     type User {
         firstName: String!
         lastName: String!
-        fullName: String! @customResolver(requires: ["firstName", "lastName"])
+        fullName: String! @customResolver(requires: "firstName lastName")
     }
 `;
 
@@ -35,14 +38,6 @@ Here `fullName` is a value that is resolved from the fields `firstName` and `las
 
 The inclusion of the fields `firstName` and `lastName` in the `requires` argument means that in the definition of the resolver, the properties `firstName` and `lastName` will always be defined on the `source` object. If these fields are not specified, this cannot be guaranteed.
 
-[[custom-resolver-directive]]
-=== `@customResolver`
-
-This field will essentially be completely ignored during the generation of Query and Mutation fields, and will require a custom resolver to resolve the field.
-
-Any fields that the custom resolver depends on should be passed to the `requires` argument to ensure that during the Cypher generation process those properties are selected from the database.
-Allowable fields are any returning a Scalar or Enum type including those defined using the xref::type-definitions/cypher.adoc#type-definitions-cypher[`@cypher`] directive.
-
 ==== Definition
 
 [source, graphql, indent=0]
@@ -53,6 +48,81 @@ directive @customResolver(
     requires: [String!]
 ) on FIELD_DEFINITION
 ----
+
+==== The `requires` argument
+
+Any fields that the custom resolver depends on should be passed to the `requires` argument to ensure that during the Cypher generation process those properties are selected from the database.
+
+Any field can be required, as long as it is not another `@customResolver` field.
+
+The `requires` argument accepts a selection set string. Using a selection set string makes it possible to select fields from related types as below:
+
+[source, javascript, indent=0]
+----
+const typeDefs = `
+    type Address {
+        houseNumber: Int!
+        street: String!
+        city: String!
+    }
+
+    type User {
+        id: ID!
+        firstName: String!
+        lastName: String!
+        address: Address! @relationship(type: "LIVES_AT", direction: OUT)
+        fullName: String
+            @customResolver(requires: "firstName lastName address { city street }")
+    }
+`;
+
+const resolvers = {
+    User: {
+        fullName({ firstName, lastName, address }) {
+            return `${firstName} ${lastName} from ${address.street} in ${address.city}`;
+        },
+    },
+};
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    resolvers,
+});
+----
+
+In this example, the firstName, lastName, address.street and address.city fields will always be selected from the database if the fullName field is selected and will be available to the custom resolver.
+
+It is also possible to use the `... on` syntax to conditionally select fields from interface/union types:
+
+[source, graphql, indent=0]
+----
+interface Publication {
+    publicationYear: Int!
+}
+
+type Author {
+    name: String!
+    publications: [Publication!]! @relationship(type: "WROTE", direction: OUT)
+    publicationsWithAuthor: [String!]!
+        @customResolver(
+            requires: "name publications { publicationYear ...on Book { title } ... on Journal { subject } }"
+        )
+}
+
+type Book implements Publication {
+    title: String!
+    publicationYear: Int!
+    author: [Author!]! @relationship(type: "WROTE", direction: IN)
+}
+
+type Journal implements Publication {
+    subject: String!
+    publicationYear: Int!
+    author: [Author!]! @relationship(type: "WROTE", direction: IN)
+}
+----
+
+==== Providing custom resolvers
 
 Note that any field marked with the `@customResolver` directive, requires a custom resolver to be defined.
 If the directive is marked on an interface, any implementation of that interface requires a custom resolver to be defined.
@@ -108,7 +178,3 @@ const neoSchema = new Neo4jGraphQL({
     },
 })
 ----
-
-== Custom Query/Mutation type field resolver
-
-You can define additional custom Query and Mutation fields in your type definitions and provide custom resolvers for them. A prime use case for this is using the xref::ogm/index.adoc[OGM] to manipulate types and fields which are not available through the API. You can find an example of it being used in this capacity in the xref::ogm/examples/custom-resolvers.adoc[Custom Resolvers] example.
