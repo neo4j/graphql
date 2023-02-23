@@ -15,7 +15,7 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn
       - name: Build compatibility test subgraph
         run: |
           yarn build
