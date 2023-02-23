@@ -24,7 +24,7 @@ import {
     Kind,
     ObjectTypeDefinitionNode,
     UnionTypeDefinitionNode,
-    ValueNode
+    ValueNode,
 } from "graphql";
 import { SCALAR_TYPES } from "../constants";
 import { getDefinitionNodes } from "../schema/get-definition-nodes";
@@ -73,17 +73,13 @@ function generateCompositeEntity(
     }
     return new CompositeEntity({
         name: definition.name.value,
-        concreteEntities: compositeFields
+        concreteEntities: compositeFields,
     });
 }
 
 function generateConcreteEntity(definition: ObjectTypeDefinitionNode): ConcreteEntity {
     const fields = (definition.fields || []).map(generateField);
-
-    const directiveNodes = definition.directives || [];
-    const annotations = createAnnotations(directiveNodes);
-
-    const directives = directiveNodes.reduce((acc, directive) => {
+    const directives = (definition.directives || []).reduce((acc, directive) => {
         acc.set(directive.name.value, parseArguments(directive));
         return acc;
     }, new Map<string, Record<string, unknown>>());
@@ -92,8 +88,7 @@ function generateConcreteEntity(definition: ObjectTypeDefinitionNode): ConcreteE
     return new ConcreteEntity({
         name: definition.name.value,
         labels,
-        annotations,
-        attributes: filterTruthy(fields)
+        attributes: filterTruthy(fields),
     });
 }
 
@@ -113,21 +108,22 @@ function getLabels(definition: ObjectTypeDefinitionNode, nodeDirectiveArguments:
 function generateField(field: FieldDefinitionNode): Attribute | undefined {
     const typeMeta = getFieldTypeMeta(field.type); // TODO: without originalType
     if (SCALAR_TYPES.includes(typeMeta.name)) {
-        const annotations = createAnnotations(field.directives || []);
+        const annotations = createFieldAnnotations(field.directives || []);
         return new Attribute({
             name: field.name.value,
-            annotations
+            annotations,
         });
     }
 }
 
-function createAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
+function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
     return filterTruthy(
         directives.map((directive) => {
             switch (directive.name.value) {
                 case "cypher":
                     return parseCypherAnnotation(directive);
                 default:
+                    return undefined;
             }
         })
     );
@@ -139,7 +135,7 @@ function parseCypherAnnotation(directive: DirectiveNode): CypherAnnotation {
         throw new Error("@cypher statement required");
     }
     return new CypherAnnotation({
-        statement: statement
+        statement: statement,
     });
 }
 

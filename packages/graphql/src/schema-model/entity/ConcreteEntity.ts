@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { Annotation } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Entity } from "./Entity";
 
@@ -25,23 +24,11 @@ export class ConcreteEntity implements Entity {
     public readonly name: string;
     public readonly labels: Set<string>;
 
-    public readonly annotations: Annotation[];
     public readonly attributes: Map<string, Attribute> = new Map();
 
-    constructor({
-        name,
-        labels,
-        annotations = [],
-        attributes = []
-    }: {
-        name: string;
-        labels: string[];
-        annotations?: Annotation[];
-        attributes?: Attribute[];
-    }) {
+    constructor({ name, labels, attributes = [] }: { name: string; labels: string[]; attributes?: Attribute[] }) {
         this.name = name;
         this.labels = new Set(labels);
-        this.annotations = annotations;
         for (const attribute of attributes) {
             this.addAttribute(attribute);
         }
