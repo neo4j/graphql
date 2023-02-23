@@ -15,7 +15,7 @@ services:
       timeout: 1s
       retries: 40
   server:
-    build: .
+    build: packages/apollo-federation-subgraph-compatibility
     ports:
       - "4001:4001"
     depends_on:
