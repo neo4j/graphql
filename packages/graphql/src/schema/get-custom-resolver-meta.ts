@@ -19,7 +19,6 @@
 
 import { mergeSchemas } from "@graphql-tools/schema";
 import type { IResolvers } from "@graphql-tools/utils";
-import { gql } from "apollo-server-express";
 import {
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
@@ -115,7 +114,7 @@ function validateSelectionSet(
 ) {
     const validationSchema = mergeSchemas({
         schemas: [baseSchema],
-        typeDefs: gql`
+        typeDefs: `
                 schema {
                     query: ${object.name.value}
                 }
