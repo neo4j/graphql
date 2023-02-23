@@ -92,7 +92,7 @@ export default function createProjectionAndParams({
         const pointField = node.pointFields.find((x) => x.fieldName === field.name);
         const temporalField = node.temporalFields.find((x) => x.fieldName === field.name);
         const authableField = node.authableFields.find((x) => x.fieldName === field.name);
-
+        
         if (authableField) {
             // TODO: move this to translate-top-level
             if (authableField.auth) {
