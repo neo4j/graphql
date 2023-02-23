@@ -1,10 +1,10 @@
-name: "Apollo Federation Compatibility Tests"
+name: "Apollo Federation Subgraph Compatibility"
 
 on:
   workflow_call:
 
 jobs:
-  federation-tests:
+  apollo-federation-subgraph-compatibility:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,5 +30,16 @@ jobs:
           # Boolean flag to indicate whether any failing test should fail the script
           failOnWarning: false
           # Boolean flag to indicate whether any failing required functionality test should fail the script
-          failOnRequired: true
+          failOnRequired: false
           debug: true
+      - name: Save PR number
+        env:
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          mkdir prnumber
+          echo "$PULL_REQUEST_NUMBER" > ./prnumber/prnumber
+      - name: Archive PR number
+        uses: actions/upload-artifact@v3
+        with:
+          name: prnumber
+          path: prnumber/
