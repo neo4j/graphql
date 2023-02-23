@@ -71,7 +71,7 @@ export function translateTopLevelCypher({
             node: referenceNode,
             context,
             varName: new Cypher.NamedNode(`this`),
-            cypherFieldAliasMap: {}
+            cypherFieldAliasMap: {},
         });
         projectionStr = str;
         projectionSubqueries.push(...subqueriesBeforeSort, ...subqueries);
@@ -98,10 +98,14 @@ export function translateTopLevelCypher({
             if (node) {
                 const labelsStatements = node.getLabels(context).map((label) => `"${label}" IN labels(this)`);
                 unionWhere.push(`(${labelsStatements.join("AND")})`);
-                // TODO Migrate to CypherBuilder
-                let innerHeadStr = `[ this IN [this] WHERE (${labelsStatements.join(" AND ")})`;
 
-                if (resolveTree.fieldsByTypeName[node.name]) {
+                // TODO Migrate to CypherBuilder
+                const innerNodePartialProjection = `[ this IN [this] WHERE (${labelsStatements.join(" AND ")})`;
+                if (!resolveTree.fieldsByTypeName[node.name]) {
+                    headStrs.push(
+                        new Cypher.RawCypher(`${innerNodePartialProjection}| this { __resolveType: "${node.name}" }]`)
+                    );
+                } else {
                     const {
                         projection: str,
                         params: p,
@@ -112,40 +116,27 @@ export function translateTopLevelCypher({
                         node,
                         context,
                         varName: new Cypher.NamedNode("this"),
-                        cypherFieldAliasMap: {}
+                        cypherFieldAliasMap: {},
                     });
-
                     projectionSubqueries.push(...subqueries);
-                    
-                    const innerNodePartialProjection = new Cypher.RawCypher((env) => {
-                        return innerHeadStr
-                            .concat(
-                                [
-                                    `| this { __resolveType: "${node.name}", `,
-                                    ...str.getCypher(env).replace("{", "").split(""),
-                                ].join("")
-                            )
-                            .concat("]");
-                    });
-
                     params = { ...params, ...p };
-
                     if (meta.authValidatePredicates?.length) {
                         projectionAuthStrs.push(Cypher.and(...meta.authValidatePredicates));
                     }
-                    headStrs.push(innerNodePartialProjection);
-                } else {
-                    innerHeadStr = `${innerHeadStr}| this { __resolveType: "${node.name}" }]`;
-                    headStrs.push(new Cypher.RawCypher(innerHeadStr));
+                    headStrs.push(
+                        new Cypher.RawCypher((env) => {
+                            return innerNodePartialProjection
+                                .concat(`| this { __resolveType: "${node.name}", `)
+                                .concat(str.getCypher(env).replace("{", ""))
+                                .concat("]");
+                        })
+                    );
                 }
             }
         });
 
         projectionStr = new Cypher.RawCypher(
-            (env) =>
-                `${headStrs
-                    .map((headStr) => headStr.getCypher(env))
-                    .join(" + ")}`
+            (env) => `${headStrs.map((headStr) => headStr.getCypher(env)).join(" + ")}`
         );
     }
 

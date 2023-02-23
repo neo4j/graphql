@@ -47,7 +47,7 @@ export function createFieldAggregation({
     nodeVar: Cypher.Node;
     node: Node;
     field: ResolveTree;
-}): { projectionCypher: Cypher.Expr; projectionSubqueryCypher: Cypher.Clause } | undefined {
+}): { projectionCypher: Cypher.Expr; projectionSubqueryCypher: Cypher.Clause | undefined } | undefined {
     const relationAggregationField = node.relationFields.find((x) => {
         return `${x.fieldName}Aggregate` === field.name;
     });
@@ -135,7 +135,7 @@ export function createFieldAggregation({
 
     return {
         projectionCypher: projectionMap,
-        projectionSubqueryCypher: new Cypher.RawCypher((env) => projectionSubqueries?.getCypher(env) || ""),
+        projectionSubqueryCypher: projectionSubqueries || new Cypher.RawCypher(""),
     };
 }
 
