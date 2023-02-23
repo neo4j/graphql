@@ -107,7 +107,7 @@ One proposal would be to introduce a directive mirroring `@write`, which could b
 ```gql
 directive @read (
   enabled: Boolean! = true
-)
+) on OBJECT | FIELD_DEFINITION
 
 type Movie @writeonly {
   title: String!
