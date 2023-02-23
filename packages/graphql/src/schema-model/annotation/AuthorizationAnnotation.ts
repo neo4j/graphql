@@ -112,10 +112,10 @@ interface StringPredicate extends LogicalPredicate<StringPredicate> {
     endsWith?: string;
 }
 
-interface StringListPredicate extends LogicalPredicate<StringListPredicate> {
-    all?: string[];
-    some?: string[];
-    single?: string[];
+interface ListPredicate<T> extends LogicalPredicate<ListPredicate<T>> {
+    all?: T;
+    some?: T;
+    single?: T;
 }
 
 type LogicalPredicate<T> = {
