@@ -328,7 +328,7 @@ describe("Cypher Auth Where", () => {
                     WITH *
                     MATCH (this)-[this0:HAS_POST]->(this_content:\`Post\`)
                     WHERE (exists((this_content)<-[:HAS_POST]-(:\`User\`)) AND all(this1 IN [(this_content)<-[:HAS_POST]-(this1:\`User\`) | this1] WHERE (this1.id IS NOT NULL AND this1.id = $param1)))
-                    WITH this_content { __resolveType: \\"Post\\", .id } AS this_content
+                    WITH this_content { __resolveType: \\"Post\\", __id: id(this), .id } AS this_content
                     RETURN this_content AS this_content
                 }
                 WITH this_content
@@ -377,7 +377,7 @@ describe("Cypher Auth Where", () => {
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis0:HAS_POST]->(this_Post:\`Post\`)
                     WHERE (exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND all(this_connection_contentConnectionthis1 IN [(this_Post)<-[:HAS_POST]-(this_connection_contentConnectionthis1:\`User\`) | this_connection_contentConnectionthis1] WHERE (this_connection_contentConnectionthis1.id IS NOT NULL AND this_connection_contentConnectionthis1.id = $this_connection_contentConnectionparam0)))
-                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", __id: id(this_Post), id: this_Post.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -427,7 +427,7 @@ describe("Cypher Auth Where", () => {
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis0:HAS_POST]->(this_Post:\`Post\`)
                     WHERE (this_Post.id = $this_connection_contentConnectionparam0 AND (exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND all(this_connection_contentConnectionthis1 IN [(this_Post)<-[:HAS_POST]-(this_connection_contentConnectionthis1:\`User\`) | this_connection_contentConnectionthis1] WHERE (this_connection_contentConnectionthis1.id IS NOT NULL AND this_connection_contentConnectionthis1.id = $this_connection_contentConnectionparam1))))
-                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", __id: id(this_Post), id: this_Post.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
