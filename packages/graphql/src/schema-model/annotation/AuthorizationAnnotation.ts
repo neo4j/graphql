@@ -21,7 +21,8 @@ import type { Attribute } from "../attribute/Attribute";
 import type { ConcreteEntity } from "../entity/ConcreteEntity";
 import type { Entity } from "../entity/Entity";
 
-/* input UserAuthorizationWhere {
+/* 
+   input UserAuthorizationWhere {
     OR: [UserAuthorizationWhere!]
     AND: [UserAuthorizationWhere!]
     NOT: UserAuthorizationWhere
@@ -48,7 +49,7 @@ import type { Entity } from "../entity/Entity";
     startsWith: String
     endsWith: String
 }
-  */
+*/
 
 const AUTHORIZATION_OPERATION = ["READ", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"] as const;
 
@@ -56,7 +57,7 @@ export class AuthorizationAnnotation<T extends ConcreteEntity> {
     private filter?: Filter<T>;
     private subscriptionFilter?: SubscriptionFilter;
     private validate?: Validate;
-    private parent: Entity;
+    private parent: Entity | Attribute;
 
     constructor({
         parent,
@@ -64,7 +65,7 @@ export class AuthorizationAnnotation<T extends ConcreteEntity> {
         subscriptionFilter,
         validate,
     }: {
-        parent: Entity | Attribute; // add schema as well
+        parent: Entity | Attribute;
         filter?: Filter<T>;
         subscriptionFilter?: SubscriptionFilter;
         validate?: Validate;
@@ -109,6 +110,12 @@ interface StringPredicate extends LogicalPredicate<StringPredicate> {
     contains?: string;
     startsWith?: string;
     endsWith?: string;
+}
+
+interface StringListPredicate extends LogicalPredicate<StringListPredicate> {
+    all?: string[];
+    some?: string[];
+    single?: string[];
 }
 
 type LogicalPredicate<T> = {
