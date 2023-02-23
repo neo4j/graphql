@@ -48,9 +48,9 @@ export function augmentFulltextSchema(
                 [indexName]: composer.createInputTC({
                     name: `${node.name}${upperFirst(indexName)}Fulltext`,
                     fields: {
-                        phrase: new GraphQLNonNull(GraphQLString),
-                    },
-                }),
+                        phrase: new GraphQLNonNull(GraphQLString)
+                    }
+                })
             };
         }, {});
 
@@ -60,7 +60,7 @@ export function augmentFulltextSchema(
 
         composer.createInputTC({
             name: `${node.name}Fulltext`,
-            fields,
+            fields
         });
 
         composer.createInputTC({
@@ -68,8 +68,8 @@ export function augmentFulltextSchema(
             description: fulltextSortDescription,
             fields: {
                 [SCORE_FIELD]: "SortDirection",
-                [node.singular]: nodeSortTypeName,
-            },
+                [node.singular]: nodeSortTypeName
+            }
         });
 
         composer.createInputTC({
@@ -77,32 +77,34 @@ export function augmentFulltextSchema(
             description: fulltextWhereDescription,
             fields: {
                 [SCORE_FIELD]: FloatWhere.name,
-                [node.singular]: nodeWhereTypeName,
-            },
+                [node.singular]: nodeWhereTypeName
+            }
         });
 
-        composer.createObjectTC({
-            name: node.fulltextTypeNames.result,
-            description: fulltextResultDescription,
-            fields: {
-                [SCORE_FIELD]: new GraphQLNonNull(GraphQLFloat),
-                [node.singular]: `${node.name}!`,
-            },
-        });
-
-        node.fulltextDirective.indexes.forEach((index) => {
-            // TODO: remove indexName assignment and undefined check once the name argument has been removed.
-            const indexName = index.indexName || index.name;
-            if (indexName === undefined) {
-                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
-            }
-            let queryName = `${node.plural}Fulltext${upperFirst(indexName)}`;
-            if (index.queryName) {
-                queryName = index.queryName;
-            }
-            composer.Query.addFields({
-                [queryName]: fulltextResolver({ node }, index),
+        if (node.federationResolvable) {
+            composer.createObjectTC({
+                name: node.fulltextTypeNames.result,
+                description: fulltextResultDescription,
+                fields: {
+                    [SCORE_FIELD]: new GraphQLNonNull(GraphQLFloat),
+                    [node.singular]: `${node.name}!`
+                }
             });
-        });
+
+            node.fulltextDirective.indexes.forEach((index) => {
+                // TODO: remove indexName assignment and undefined check once the name argument has been removed.
+                const indexName = index.indexName || index.name;
+                if (indexName === undefined) {
+                    throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+                }
+                let queryName = `${node.plural}Fulltext${upperFirst(indexName)}`;
+                if (index.queryName) {
+                    queryName = index.queryName;
+                }
+                composer.Query.addFields({
+                    [queryName]: fulltextResolver({ node }, index)
+                });
+            });
+        }
     }
 }

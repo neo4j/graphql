@@ -639,28 +639,30 @@ function makeAugmentedSchema(
             args: {}
         };
 
-        composer.createObjectTC({
-            name: node.aggregateTypeNames.selection,
-            fields: {
-                count: countField,
-                ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
-                    if (field.typeMeta.array) {
+        if (node.federationResolvable) {
+            composer.createObjectTC({
+                name: node.aggregateTypeNames.selection,
+                fields: {
+                    count: countField,
+                    ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
+                        if (field.typeMeta.array) {
+                            return res;
+                        }
+                        const objectTypeComposer = aggregationTypesMapper.getAggregationType({
+                            fieldName: field.typeMeta.name,
+                            nullable: !field.typeMeta.required
+                        });
+
+                        if (!objectTypeComposer) return res;
+
+                        res[field.fieldName] = objectTypeComposer.NonNull;
+
                         return res;
-                    }
-                    const objectTypeComposer = aggregationTypesMapper.getAggregationType({
-                        fieldName: field.typeMeta.name,
-                        nullable: !field.typeMeta.required
-                    });
-
-                    if (!objectTypeComposer) return res;
-
-                    res[field.fieldName] = objectTypeComposer.NonNull;
-
-                    return res;
-                }, {})
-            },
-            directives: graphqlDirectivesToCompose(node.propagatedDirectives)
-        });
+                    }, {})
+                },
+                directives: graphqlDirectivesToCompose(node.propagatedDirectives)
+            });
+        }
 
         const nodeWhereTypeName = `${node.name}Where`;
         composer.createInputTC({
@@ -705,23 +707,25 @@ function makeAugmentedSchema(
 
         const mutationResponseTypeNames = node.mutationResponseTypeNames;
 
-        composer.createObjectTC({
-            name: mutationResponseTypeNames.create,
-            fields: {
-                info: `CreateInfo!`,
-                [node.plural]: `[${node.name}!]!`
-            },
-            directives: graphqlDirectivesToCompose(node.propagatedDirectives)
-        });
+        if (node.federationResolvable) {
+            composer.createObjectTC({
+                name: mutationResponseTypeNames.create,
+                fields: {
+                    info: `CreateInfo!`,
+                    [node.plural]: `[${node.name}!]!`
+                },
+                directives: graphqlDirectivesToCompose(node.propagatedDirectives)
+            });
 
-        composer.createObjectTC({
-            name: mutationResponseTypeNames.update,
-            fields: {
-                info: `UpdateInfo!`,
-                [node.plural]: `[${node.name}!]!`
-            },
-            directives: graphqlDirectivesToCompose(node.propagatedDirectives)
-        });
+            composer.createObjectTC({
+                name: mutationResponseTypeNames.update,
+                fields: {
+                    info: `UpdateInfo!`,
+                    [node.plural]: `[${node.name}!]!`
+                },
+                directives: graphqlDirectivesToCompose(node.propagatedDirectives)
+            });
+        }
 
         createRelationshipFields({
             relationshipFields: node.relationFields,
@@ -750,7 +754,7 @@ function makeAugmentedSchema(
 
         const rootTypeFieldNames = node.rootTypeFieldNames;
 
-        if (!node.exclude?.operations.includes("read")) {
+        if (!node.exclude?.operations.includes("read") && node.federationResolvable) {
             composer.Query.addFields({
                 [rootTypeFieldNames.read]: findResolver({ node })
             });
@@ -776,7 +780,7 @@ function makeAugmentedSchema(
             );
         }
 
-        if (!node.exclude?.operations.includes("create")) {
+        if (!node.exclude?.operations.includes("create") && node.federationResolvable) {
             composer.Mutation.addFields({
                 [rootTypeFieldNames.create]: createResolver({ node })
             });
@@ -786,7 +790,7 @@ function makeAugmentedSchema(
             );
         }
 
-        if (!node.exclude?.operations.includes("delete")) {
+        if (!node.exclude?.operations.includes("delete") && node.federationResolvable) {
             composer.Mutation.addFields({
                 [rootTypeFieldNames.delete]: deleteResolver({ node })
             });
@@ -796,7 +800,7 @@ function makeAugmentedSchema(
             );
         }
 
-        if (!node.exclude?.operations.includes("update")) {
+        if (!node.exclude?.operations.includes("update") && node.federationResolvable) {
             composer.Mutation.addFields({
                 [rootTypeFieldNames.update]: updateResolver({
                     node,

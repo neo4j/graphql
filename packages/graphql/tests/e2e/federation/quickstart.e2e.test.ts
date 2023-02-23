@@ -42,9 +42,9 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
         Review = new UniqueType("Review");
 
         const locations = `
-            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
-            type ${Location} @key(fields: "id") {
+            type ${Location} @key(fields: "id") @shareable {
                 id: ID!
                 "The name of the location"
                 name: String
@@ -56,9 +56,9 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
         `;
 
         const reviews = `
-            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
-            type ${Location} @key(fields: "id") {
+            type ${Location} @key(fields: "id") @shareable {
                 id: ID!
                 "The calculated overall rating based on all reviews"
                 overallRating: Float
@@ -85,7 +85,7 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
 
         const [locationsSchema, reviewsSchema] = await Promise.all([
             locationsSubgraph.getSchema(),
-            reviewsSubgraph.getSchema(),
+            reviewsSubgraph.getSchema()
         ]);
 
         locationsServer = new SubgraphServer(locationsSchema, 4006);
@@ -96,7 +96,7 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
         gatewayServer = new GatewayServer(
             [
                 { name: "locations", url: locationsUrl },
-                { name: "reviews", url: reviewsUrl },
+                { name: "reviews", url: reviewsUrl }
             ],
             4008
         );
@@ -137,7 +137,7 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
                   }
                 }
               }
-        `,
+        `
         });
 
         expect(response.status).toBe(200);
@@ -152,11 +152,11 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
                         photo: "photo",
                         reviewsForLocation: expect.toIncludeSameMembers([
                             { id: "1", comment: "Good", rating: 10 },
-                            { id: "2", comment: "Bad", rating: 1 },
-                        ]),
-                    },
-                ],
-            },
+                            { id: "2", comment: "Bad", rating: 1 }
+                        ])
+                    }
+                ]
+            }
         });
     });
 });

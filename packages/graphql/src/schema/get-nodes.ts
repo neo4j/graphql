@@ -19,6 +19,7 @@
 
 import type { IResolvers } from "@graphql-tools/utils";
 import type { DirectiveNode, NamedTypeNode } from "graphql";
+import { Kind } from "graphql";
 import type { Exclude } from "../classes";
 import { Node } from "../classes";
 import type { NodeDirective } from "../classes/NodeDirective";
@@ -68,6 +69,12 @@ function getNodes(
         const propagatedDirectives = (definition.directives || []).filter((x) =>
             ["deprecated", "shareable"].includes(x.name.value)
         );
+        let resolvable = true;
+        const keyDirective = (definition.directives || []).find((x) => x.name.value === "key");
+        const resolvableArgument = (keyDirective?.arguments || []).find((x) => x.name.value === "resolvable");
+        if (resolvableArgument?.value.kind === Kind.BOOLEAN && resolvableArgument.value.value === false) {
+            resolvable = false;
+        }
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
@@ -259,7 +266,8 @@ function getNodes(
             isGlobalNode: Boolean(globalIdField),
             globalIdField: globalIdField?.fieldName,
             globalIdFieldIsInt: globalIdField?.typeMeta?.name === "Int",
-            plural: parsePluralDirective(pluralDirectiveDefinition)
+            plural: parsePluralDirective(pluralDirectiveDefinition),
+            federationResolvable: resolvable
         });
 
         return node;
