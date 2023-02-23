@@ -17,6 +17,6 @@
  * limitations under the License.
  */
 
-import type { CypherAnnotation } from "./CypherAnnotation";
-
-export type Annotation = CypherAnnotation;
+export interface Annotation {
+    name: string;
+}
