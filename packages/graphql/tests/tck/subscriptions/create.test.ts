@@ -442,12 +442,12 @@ describe("Subscriptions metadata on create", () => {
                 CALL {
                     WITH *
                     MATCH (this0)<-[create_this0:DIRECTED]-(create_this1:\`Actor\`)
-                    WITH create_this1 { __resolveType: \\"Actor\\", .name } AS create_this1
+                    WITH create_this1 { __resolveType: \\"Actor\\", __id: id(this0), .name } AS create_this1
                     RETURN create_this1 AS create_var2
                     UNION
                     WITH *
                     MATCH (this0)<-[create_this3:DIRECTED]-(create_this4:\`Person\`)
-                    WITH create_this4 { __resolveType: \\"Person\\", .name } AS create_this4
+                    WITH create_this4 { __resolveType: \\"Person\\", __id: id(this0), .name } AS create_this4
                     RETURN create_this4 AS create_var2
                 }
                 WITH create_var2
@@ -599,12 +599,12 @@ describe("Subscriptions metadata on create", () => {
                         WITH create_this3 { .title } AS create_this3
                         RETURN collect(create_this3) AS create_var4
                     }
-                    WITH create_this1 { __resolveType: \\"Actor\\", .name, movies: create_var4 } AS create_this1
+                    WITH create_this1 { __resolveType: \\"Actor\\", __id: id(this0), .name, movies: create_var4 } AS create_this1
                     RETURN create_this1 AS create_var5
                     UNION
                     WITH *
                     MATCH (this0)<-[create_this6:DIRECTED]-(create_this7:\`Person\`)
-                    WITH create_this7 { __resolveType: \\"Person\\", .name } AS create_this7
+                    WITH create_this7 { __resolveType: \\"Person\\", __id: id(this0), .name } AS create_this7
                     RETURN create_this7 AS create_var5
                 }
                 WITH create_var5

@@ -411,7 +411,7 @@ describe("Cypher Auth Where with Roles", () => {
                     WITH *
                     MATCH (this)-[this4:HAS_POST]->(this5:\`Post\`)
                     WHERE (((any(var7 IN [\\"user\\"] WHERE any(var6 IN $auth.roles WHERE var6 = var7)) AND (exists((this5)<-[:HAS_POST]-(:\`User\`)) AND all(this8 IN [(this5)<-[:HAS_POST]-(this8:\`User\`) | this8] WHERE (this8.id IS NOT NULL AND this8.id = $param4)))) OR any(var10 IN [\\"admin\\"] WHERE any(var9 IN $auth.roles WHERE var9 = var10))) AND apoc.util.validatePredicate(NOT ((any(var12 IN [\\"user\\"] WHERE any(var11 IN $auth.roles WHERE var11 = var12)) OR any(var14 IN [\\"admin\\"] WHERE any(var13 IN $auth.roles WHERE var13 = var14)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    WITH this5 { __resolveType: \\"Post\\", .id } AS this5
+                    WITH this5 { __resolveType: \\"Post\\", __id: id(this), .id } AS this5
                     RETURN this5 AS var15
                 }
                 WITH var15
@@ -472,7 +472,7 @@ describe("Cypher Auth Where with Roles", () => {
                     WITH this
                     MATCH (this)-[this4:HAS_POST]->(this5:\`Post\`)
                     WHERE (((any(var7 IN [\\"user\\"] WHERE any(var6 IN $auth.roles WHERE var6 = var7)) AND (exists((this5)<-[:HAS_POST]-(:\`User\`)) AND all(this8 IN [(this5)<-[:HAS_POST]-(this8:\`User\`) | this8] WHERE (this8.id IS NOT NULL AND this8.id = $param4)))) OR any(var10 IN [\\"admin\\"] WHERE any(var9 IN $auth.roles WHERE var9 = var10))) AND apoc.util.validatePredicate(NOT ((any(var12 IN [\\"user\\"] WHERE any(var11 IN $auth.roles WHERE var11 = var12)) OR any(var14 IN [\\"admin\\"] WHERE any(var13 IN $auth.roles WHERE var13 = var14)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    WITH { node: { __resolveType: \\"Post\\", id: this5.id } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", __id: id(this5), id: this5.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -534,7 +534,7 @@ describe("Cypher Auth Where with Roles", () => {
                     WITH this
                     MATCH (this)-[this4:HAS_POST]->(this5:\`Post\`)
                     WHERE (this5.id = $param3 AND ((any(var7 IN [\\"user\\"] WHERE any(var6 IN $auth.roles WHERE var6 = var7)) AND (exists((this5)<-[:HAS_POST]-(:\`User\`)) AND all(this8 IN [(this5)<-[:HAS_POST]-(this8:\`User\`) | this8] WHERE (this8.id IS NOT NULL AND this8.id = $param5)))) OR any(var10 IN [\\"admin\\"] WHERE any(var9 IN $auth.roles WHERE var9 = var10))) AND apoc.util.validatePredicate(NOT ((any(var12 IN [\\"user\\"] WHERE any(var11 IN $auth.roles WHERE var11 = var12)) OR any(var14 IN [\\"admin\\"] WHERE any(var13 IN $auth.roles WHERE var13 = var14)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    WITH { node: { __resolveType: \\"Post\\", id: this5.id } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", __id: id(this5), id: this5.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges

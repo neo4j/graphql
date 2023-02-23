@@ -83,7 +83,7 @@ describe("Relay Cursor Connection projections", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                WITH { node: { __resolveType: \\"Actor\\", __id: id(this1) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var2
@@ -126,7 +126,7 @@ describe("Relay Cursor Connection projections", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                WITH { node: { __resolveType: \\"Actor\\", __id: id(this1) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var2
@@ -164,7 +164,7 @@ describe("Relay Cursor Connection projections", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                WITH { node: { __resolveType: \\"Actor\\", __id: id(this1) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 CALL {
@@ -216,12 +216,12 @@ describe("Relay Cursor Connection projections", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
-                    WITH { node: { __resolveType: \\"Movie\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
-                    WITH { node: { __resolveType: \\"Series\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Series\\", __id: id(this3) } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -268,12 +268,12 @@ describe("Relay Cursor Connection projections", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
-                    WITH { node: { __resolveType: \\"Movie\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
-                    WITH { node: { __resolveType: \\"Series\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Series\\", __id: id(this3) } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges

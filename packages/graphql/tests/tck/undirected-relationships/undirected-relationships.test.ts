@@ -138,12 +138,12 @@ describe("Undirected relationships", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:HAS_CONTENT]-(this1:\`Blog\`)
-                    WITH this1 { __resolveType: \\"Blog\\", .title } AS this1
+                    WITH this1 { __resolveType: \\"Blog\\", __id: id(this), .title } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:HAS_CONTENT]-(this4:\`Post\`)
-                    WITH this4 { __resolveType: \\"Post\\", .content } AS this4
+                    WITH this4 { __resolveType: \\"Post\\", __id: id(this), .content } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2
@@ -214,12 +214,12 @@ describe("Undirected relationships", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:ACTED_IN]-(this1:\`Movie\`)
-                    WITH this1 { __resolveType: \\"Movie\\", .title } AS this1
+                    WITH this1 { __resolveType: \\"Movie\\", __id: id(this), .title } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:ACTED_IN]-(this4:\`Series\`)
-                    WITH this4 { __resolveType: \\"Series\\", .title } AS this4
+                    WITH this4 { __resolveType: \\"Series\\", __id: id(this), .title } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2

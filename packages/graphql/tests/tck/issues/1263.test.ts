@@ -86,13 +86,13 @@ describe("https://github.com/neo4j/graphql/issues/1263", () => {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
                     WHERE (this1.title = $param0 AND this1.runtime > $param1)
-                    WITH { node: { __resolveType: \\"Movie\\", title: this1.title } } AS edge
+                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this1), title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
                     WHERE (this3.title = $param2 AND this3.episodes > $param3)
-                    WITH { node: { __resolveType: \\"Series\\", title: this3.title } } AS edge
+                    WITH { node: { __resolveType: \\"Series\\", __id: id(this3), title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges

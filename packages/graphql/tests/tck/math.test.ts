@@ -331,7 +331,7 @@ describe("Math operators", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[update_this0:MARRIED_WITH]->(update_this1:\`Star\`)
-                    WITH update_this1 { __resolveType: \\"Star\\", .marriageLength } AS update_this1
+                    WITH update_this1 { __resolveType: \\"Star\\", __id: id(this), .marriageLength } AS update_this1
                     RETURN update_this1 AS update_var2
                 }
                 WITH update_var2
@@ -407,7 +407,7 @@ describe("Math operators", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[update_this0:MARRIED_WITH]->(update_this1:\`Star\`)
-                    WITH update_this1 { __resolveType: \\"Star\\", .marriageLength } AS update_this1
+                    WITH update_this1 { __resolveType: \\"Star\\", __id: id(this), .marriageLength } AS update_this1
                     RETURN update_this1 AS update_var2
                 }
                 WITH update_var2

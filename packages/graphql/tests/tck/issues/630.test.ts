@@ -80,7 +80,7 @@ describe("Cypher directive", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)<-[this1:ACTED_IN]-(this2:\`Actor\`)
-                    WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Actor\\", __id: id(this2) } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var3

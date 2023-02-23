@@ -92,7 +92,7 @@ describe("#583", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
-                    WITH this1 { __resolveType: \\"Movie\\", .title, .awardsGiven } AS this1
+                    WITH this1 { __resolveType: \\"Movie\\", __id: id(this), .title, .awardsGiven } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
@@ -102,7 +102,7 @@ describe("#583", () => {
                     UNION
                     WITH *
                     MATCH (this)-[this5:ACTED_IN]->(this6:\`ShortFilm\`)
-                    WITH this6 { __resolveType: \\"ShortFilm\\", .title } AS this6
+                    WITH this6 { __resolveType: \\"ShortFilm\\", __id: id(this), .title } AS this6
                     RETURN this6 AS var2
                 }
                 WITH var2

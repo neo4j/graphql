@@ -98,12 +98,12 @@ describe("Interfaces tests", () => {
                         WITH *
                         MATCH (this1)-[this2:HAS_INTERFACE_NODES]->(this3:\`SomeNode\`)
                         WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                        WITH this3 { __resolveType: \\"SomeNode\\", .id } AS this3
+                        WITH this3 { __resolveType: \\"SomeNode\\", __id: id(this1), .id } AS this3
                         RETURN this3 AS var4
                         UNION
                         WITH *
                         MATCH (this1)-[this5:HAS_INTERFACE_NODES]->(this6:\`MyImplementation\`)
-                        WITH this6 { __resolveType: \\"MyImplementation\\", .id } AS this6
+                        WITH this6 { __resolveType: \\"MyImplementation\\", __id: id(this1), .id } AS this6
                         RETURN this6 AS var4
                     }
                     WITH var4

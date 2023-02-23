@@ -155,23 +155,23 @@ describe("Nested Unions", () => {
                         CALL {
                             WITH *
                             MATCH (update_this1)-[update_this2:ACTED_IN]->(update_this3:\`Movie\`)
-                            WITH update_this3 { __resolveType: \\"Movie\\" } AS update_this3
+                            WITH update_this3 { __resolveType: \\"Movie\\", __id: id(update_this1) } AS update_this3
                             RETURN update_this3 AS update_var4
                             UNION
                             WITH *
                             MATCH (update_this1)-[update_this5:ACTED_IN]->(update_this6:\`Series\`)
-                            WITH update_this6 { __resolveType: \\"Series\\", .name } AS update_this6
+                            WITH update_this6 { __resolveType: \\"Series\\", __id: id(update_this1), .name } AS update_this6
                             RETURN update_this6 AS update_var4
                         }
                         WITH update_var4
                         RETURN collect(update_var4) AS update_var4
                     }
-                    WITH update_this1 { __resolveType: \\"LeadActor\\", .name, actedIn: update_var4 } AS update_this1
+                    WITH update_this1 { __resolveType: \\"LeadActor\\", __id: id(this), .name, actedIn: update_var4 } AS update_this1
                     RETURN update_this1 AS update_var7
                     UNION
                     WITH *
                     MATCH (this)<-[update_this8:ACTED_IN]-(update_this9:\`Extra\`)
-                    WITH update_this9 { __resolveType: \\"Extra\\" } AS update_this9
+                    WITH update_this9 { __resolveType: \\"Extra\\", __id: id(this) } AS update_this9
                     RETURN update_this9 AS update_var7
                 }
                 WITH update_var7
@@ -267,23 +267,23 @@ describe("Nested Unions", () => {
                         CALL {
                             WITH *
                             MATCH (update_this1)-[update_this2:ACTED_IN]->(update_this3:\`Movie\`)
-                            WITH update_this3 { __resolveType: \\"Movie\\" } AS update_this3
+                            WITH update_this3 { __resolveType: \\"Movie\\", __id: id(update_this1) } AS update_this3
                             RETURN update_this3 AS update_var4
                             UNION
                             WITH *
                             MATCH (update_this1)-[update_this5:ACTED_IN]->(update_this6:\`Series\`)
-                            WITH update_this6 { __resolveType: \\"Series\\", .name } AS update_this6
+                            WITH update_this6 { __resolveType: \\"Series\\", __id: id(update_this1), .name } AS update_this6
                             RETURN update_this6 AS update_var4
                         }
                         WITH update_var4
                         RETURN collect(update_var4) AS update_var4
                     }
-                    WITH update_this1 { __resolveType: \\"LeadActor\\", .name, actedIn: update_var4 } AS update_this1
+                    WITH update_this1 { __resolveType: \\"LeadActor\\", __id: id(this), .name, actedIn: update_var4 } AS update_this1
                     RETURN update_this1 AS update_var7
                     UNION
                     WITH *
                     MATCH (this)<-[update_this8:ACTED_IN]-(update_this9:\`Extra\`)
-                    WITH update_this9 { __resolveType: \\"Extra\\" } AS update_this9
+                    WITH update_this9 { __resolveType: \\"Extra\\", __id: id(this) } AS update_this9
                     RETURN update_this9 AS update_var7
                 }
                 WITH update_var7

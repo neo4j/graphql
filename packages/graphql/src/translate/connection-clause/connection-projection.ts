@@ -99,7 +99,7 @@ export function createEdgeProjection({
             projection: new Cypher.Map({
                 node: new Cypher.Map({
                     __resolveType: new Cypher.Literal(relatedNode.name),
-                    __id: Cypher.id(new Cypher.NamedVariable(relatedNodeVariableName)),
+                    __id: Cypher.id(relatedNodeVariableName),
                 }),
             }),
             subqueries,

@@ -328,7 +328,7 @@ describe("Cypher Auth Where", () => {
                     WITH *
                     MATCH (this)-[this0:HAS_POST]->(this1:\`Post\`)
                     WHERE (exists((this1)<-[:HAS_POST]-(:\`User\`)) AND all(this2 IN [(this1)<-[:HAS_POST]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param1)))
-                    WITH this1 { __resolveType: \\"Post\\", .id } AS this1
+                    WITH this1 { __resolveType: \\"Post\\", __id: id(this), .id } AS this1
                     RETURN this1 AS var3
                 }
                 WITH var3
@@ -377,7 +377,7 @@ describe("Cypher Auth Where", () => {
                     WITH this
                     MATCH (this)-[this0:HAS_POST]->(this1:\`Post\`)
                     WHERE (exists((this1)<-[:HAS_POST]-(:\`User\`)) AND all(this2 IN [(this1)<-[:HAS_POST]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param1)))
-                    WITH { node: { __resolveType: \\"Post\\", id: this1.id } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", __id: id(this1), id: this1.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -427,7 +427,7 @@ describe("Cypher Auth Where", () => {
                     WITH this
                     MATCH (this)-[this0:HAS_POST]->(this1:\`Post\`)
                     WHERE (this1.id = $param1 AND (exists((this1)<-[:HAS_POST]-(:\`User\`)) AND all(this2 IN [(this1)<-[:HAS_POST]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param2))))
-                    WITH { node: { __resolveType: \\"Post\\", id: this1.id } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", __id: id(this1), id: this1.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges

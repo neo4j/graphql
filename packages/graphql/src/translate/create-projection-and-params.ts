@@ -186,7 +186,9 @@ export default function createProjectionAndParams({
 
                     const nestedProjection = new Cypher.RawCypher((env) => {
                         const nestedProj = recurse.projection.getCypher(env).replace(/{|}/gm, "").trim();
-                        return `{ __resolveType: "${refNode.name}"${nestedProj && `, ${nestedProj}`} }`;
+                        return `{ __resolveType: "${refNode.name}", __id: id(${varName.getCypher(env)})${
+                            nestedProj && `, ${nestedProj}`
+                        } }`;
                     });
 
                     const subquery = createProjectionSubquery({
@@ -377,7 +379,12 @@ export default function createProjectionAndParams({
     ]);
 
     const { projection, params, meta, subqueries, subqueriesBeforeSort } = Object.values(mergedFields).reduce(reducer, {
-        projection: resolveType ? [new Cypher.RawCypher(`__resolveType: "${node.name}"`)] : [],
+        projection: resolveType
+            ? [
+                  new Cypher.RawCypher(`__resolveType: "${node.name}"`),
+                  new Cypher.RawCypher((env) => `__id: id(${varName.getCypher(env)})`),
+              ]
+            : [],
         params: {},
         meta: {},
         subqueries: [],

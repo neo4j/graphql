@@ -89,7 +89,7 @@ describe("#488", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this2:HAS_KEYWORD]->(this3:\`Emoji\`)
-                    WITH this3 { __resolveType: \\"Emoji\\", .id, .type } AS this3
+                    WITH this3 { __resolveType: \\"Emoji\\", __id: id(this), .id, .type } AS this3
                     RETURN this3 AS var4
                     UNION
                     WITH *
@@ -99,7 +99,7 @@ describe("#488", () => {
                     UNION
                     WITH *
                     MATCH (this)-[this7:HAS_KEYWORD]->(this8:\`Text\`)
-                    WITH this8 { __resolveType: \\"Text\\" } AS this8
+                    WITH this8 { __resolveType: \\"Text\\", __id: id(this) } AS this8
                     RETURN this8 AS var4
                 }
                 WITH var4
@@ -146,7 +146,7 @@ describe("#488", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this2:HAS_KEYWORD]->(this3:\`Emoji\`)
-                    WITH this3 { __resolveType: \\"Emoji\\", .id, .type } AS this3
+                    WITH this3 { __resolveType: \\"Emoji\\", __id: id(this), .id, .type } AS this3
                     RETURN this3 AS var4
                     UNION
                     WITH *
@@ -156,7 +156,7 @@ describe("#488", () => {
                     UNION
                     WITH *
                     MATCH (this)-[this7:HAS_KEYWORD]->(this8:\`Text\`)
-                    WITH this8 { __resolveType: \\"Text\\" } AS this8
+                    WITH this8 { __resolveType: \\"Text\\", __id: id(this) } AS this8
                     RETURN this8 AS var4
                 }
                 WITH var4

@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
                     CALL {
                         WITH *
                         MATCH (this1)-[this2:HAS_INTERFACE_NODES]->(this3:\`MyImplementation\`)
-                        WITH this3 { __resolveType: \\"MyImplementation\\", .id } AS this3
+                        WITH this3 { __resolveType: \\"MyImplementation\\", __id: id(this1), .id } AS this3
                         RETURN this3 AS var4
                     }
                     WITH var4
