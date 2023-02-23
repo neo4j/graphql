@@ -20,7 +20,7 @@ module.exports = async function globalSetup() {
 
     try {
         const hasMultiDbSupport = await driver.supportsMultiDb();
-        if (!hasMultiDbSupport) {
+        if (process.env.USE_DEFAULT_DB || !hasMultiDbSupport) {
             // INFO: We do nothing in case the dbms has no multi-db support.
             return;
         }
