@@ -97,7 +97,10 @@ export function createEdgeProjection({
 
         return {
             projection: new Cypher.Map({
-                node: new Cypher.Map({ __resolveType: new Cypher.Literal(relatedNode.name) }),
+                node: new Cypher.Map({
+                    __resolveType: new Cypher.Literal(relatedNode.name),
+                    __id: Cypher.id(new Cypher.NamedVariable(relatedNodeVariableName)),
+                }),
             }),
             subqueries,
         };
@@ -170,9 +173,9 @@ function createConnectionNodeProjection({
 
         projectionSubqueries.push(projectionAuth);
     }
-  
+
     return {
         subqueries: projectionSubqueries,
-        projection: nodeProjectionAndParams.projection
+        projection: nodeProjectionAndParams.projection,
     };
 }

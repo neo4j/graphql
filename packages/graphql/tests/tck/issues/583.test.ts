@@ -97,7 +97,7 @@ describe("#583", () => {
                     UNION
                     WITH *
                     MATCH (this)-[this3:ACTED_IN]->(this4:\`Series\`)
-                    WITH this4 { __resolveType: \\"Series\\", .title, .awardsGiven } AS this4
+                    WITH this4 { __resolveType: \\"Series\\", __id: id(this), .title, .awardsGiven } AS this4
                     RETURN this4 AS var2
                     UNION
                     WITH *

@@ -94,7 +94,7 @@ describe("#488", () => {
                     UNION
                     WITH *
                     MATCH (this)-[this5:HAS_KEYWORD]->(this6:\`Hashtag\`)
-                    WITH this6 { __resolveType: \\"Hashtag\\" } AS this6
+                    WITH this6 { __resolveType: \\"Hashtag\\", __id: id(this) } AS this6
                     RETURN this6 AS var4
                     UNION
                     WITH *
@@ -151,7 +151,7 @@ describe("#488", () => {
                     UNION
                     WITH *
                     MATCH (this)-[this5:HAS_KEYWORD]->(this6:\`Hashtag\`)
-                    WITH this6 { __resolveType: \\"Hashtag\\" } AS this6
+                    WITH this6 { __resolveType: \\"Hashtag\\", __id: id(this) } AS this6
                     RETURN this6 AS var4
                     UNION
                     WITH *

@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                     UNION
                     WITH *
                     MATCH (this)-[this3:RELATES_TO]-(this4:\`Season\`)
-                    WITH this4 { __resolveType: \\"Season\\", .productTitle } AS this4
+                    WITH this4 { __resolveType: \\"Season\\", __id: id(this), .productTitle } AS this4
                     RETURN this4 AS var2
                     UNION
                     WITH *
@@ -148,7 +148,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                     UNION
                     WITH this
                     MATCH (this)-[this2:RELATES_TO]-(this3:\`Season\`)
-                    WITH { node: { __resolveType: \\"Season\\", productTitle: this3.productTitle } } AS edge
+                    WITH { node: { __resolveType: \\"Season\\", __id: id(this_Season), productTitle: this3.productTitle } } AS edge
                     RETURN edge
                     UNION
                     WITH this
