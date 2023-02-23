@@ -53,7 +53,7 @@ import type { Entity } from "../entity/Entity";
 
 const AUTHORIZATION_OPERATION = ["READ", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"] as const;
 
-export class AuthorizationAnnotation<T extends ConcreteEntity> {
+abstract class AuthorizationAnnotation<T extends ConcreteEntity> {
     private filter?: Filter<T>;
     private subscriptionFilter?: SubscriptionFilter;
     private validate?: Validate;
@@ -75,17 +75,88 @@ export class AuthorizationAnnotation<T extends ConcreteEntity> {
         this.subscriptionFilter = subscriptionFilter;
         this.validate = validate;
     }
+    // ...
 }
 
-interface Filter<T> {
+export class EntityAuthorizationAnnotation<T extends ConcreteEntity> extends AuthorizationAnnotation<T> {
+    constructor({
+        parent,
+        filter,
+        subscriptionFilter,
+        validate,
+    }: {
+        parent: Entity | Attribute;
+        filter?: Filter<T>;
+        subscriptionFilter?: SubscriptionFilter;
+        validate?: Validate;
+    }) {
+        super({ parent, filter, subscriptionFilter, validate });
+    }
+}
+
+export class AttributeAuthorizationAnnotation<T extends ConcreteEntity> extends AuthorizationAnnotation<T> {
+    constructor({
+        parent,
+        filter,
+        subscriptionFilter,
+        validate,
+    }: {
+        parent: Entity | Attribute;
+        filter?: Filter<T>;
+        subscriptionFilter?: SubscriptionFilter;
+        validate?: Validate;
+    }) {
+        super({ parent, filter, subscriptionFilter, validate });
+    }
+}
+
+interface IAuthorizationFilter<T> {
     operations: AuthorizationFilterOperation[];
     requireAuthentication: boolean;
     where: AuthorizationWhere<T>;
 }
 
+class AuthorizationFilter<T extends ConcreteEntity> implements IAuthorizationFilter<T> {
+    operations: AuthorizationFilterOperation[];
+    requireAuthentication: boolean;
+    where: AuthorizationWhere<T>;
+
+    constructor({
+        operations,
+        requireAuthentication,
+        where,
+    }: {
+        operations: AuthorizationFilterOperation[];
+        requireAuthentication: boolean;
+        where: AuthorizationWhere<T>;
+    }) {
+        this.operations = operations;
+        this.requireAuthentication = requireAuthentication;
+        this.where = where;
+    }
+}
+
 interface AuthorizationWhere<T> extends LogicalPredicate<AuthorizationWhere<T>> {
     jwtPayload: JWTPayloadPredicate; // TODO could be this undefined?
     node: UserWhere; // TODO still need to be defined, could be this undefined?
+}
+
+class AuthorizationFilterWhere<T extends ConcreteEntity> implements AuthorizationWhere<T> {
+    jwtPayload: JWTPayloadPredicate;
+    node: UserWhere;
+
+    constructor({ jwtPayload, node }: { jwtPayload: JWTPayloadPredicate; node: UserWhere }) {
+        this.jwtPayload = jwtPayload;
+        this.node = node;
+    }
+}
+
+class Filter<T> {
+    node: UserWhere;
+
+    constructor({ node }: { node: UserWhere }) {
+        this.node = node;
+    }
 }
 
 type ParsedJWTSchema = Record<string, any>;
