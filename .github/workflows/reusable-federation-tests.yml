@@ -31,7 +31,6 @@ jobs:
           failOnWarning: false
           # Boolean flag to indicate whether any failing required functionality test should fail the script
           failOnRequired: false
-          debug: true
       - name: Save PR number
         env:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
