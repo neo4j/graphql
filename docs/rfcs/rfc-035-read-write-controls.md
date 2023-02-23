@@ -12,7 +12,7 @@ The current `@exclude` directive does not offer the level of granularity that ou
 ## Advanced use case summary
 
 ```gql
-type User @write(operations: [CREATE, UPDATE, CONNECT]) {
+type User @write(operations: [CREATE, UPDATE]) {
   name: String!
   comments: [Comment!]! @relationship(type: "HAS_AUTHOR", direction: IN) @aggregations
   posts: [Post!]! @relationship(type: "HAS_AUTHOR", direction: IN) @aggregations
