@@ -33,7 +33,7 @@ type Comment @write(operations: [UPDATE, DELETE]) {
 extend schema @readonly
 ```
 
-* By default, the entire schema is read-only
+* `extend schema @readonly` makes the entire schema read-only
 * The following Mutation Fields are added:
   * `createUsers`, `updateUsers`
   * `createPosts`, `updatePosts`, `deletePosts`
