@@ -19,7 +19,6 @@ jobs:
       - name: Build compatibility test subgraph
         run: |
           yarn build
-          ls -la dist/
         working-directory: packages/apollo-federation-subgraph-compatibility
       - uses: apollographql/federation-subgraph-compatibility@013019a379a242b69b479a27ba20726598b11040 # tag=v1.2.0
         with:
