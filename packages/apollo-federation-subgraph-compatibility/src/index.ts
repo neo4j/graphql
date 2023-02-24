@@ -23,7 +23,13 @@ import { typeDefs } from "./type-defs";
 import { resolvers } from "./resolvers";
 import { startServer } from "./server";
 
-const driver = neo4j.driver("neo4j://neo4j:7687/neo4j", neo4j.auth.basic("neo4j", "password"));
+const {
+    NEO4J_URI = "neo4j://localhost:7687/neo4j",
+    NEO4J_USERNAME = "neo4j",
+    NEO4J_PASSWORD = "password"
+} = process.env;
+
+const driver = neo4j.driver(NEO4J_URI, neo4j.auth.basic(NEO4J_USERNAME, NEO4J_PASSWORD));
 
 startServer({ typeDefs, resolvers, driver })
     .then((url) => {

@@ -1,5 +1,6 @@
 results.json
 results.md
 supergraph-compose.yaml
+supergraph.config.js
 supergraph-config.yaml
 supergraph.graphql

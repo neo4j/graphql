@@ -3,7 +3,8 @@
     "packageManager": "yarn@3.4.1",
     "scripts": {
         "build": "webpack --config webpack.config.js",
-        "test": "yarn build && fedtest docker --compose docker-compose.yml --schema schema.graphql"
+        "test:docker": "yarn build && fedtest docker --compose docker-compose.yml --schema schema.graphql",
+        "test:pm2": "yarn build && fedtest pm2 --endpoint http://localhost:4001 --config subgraph.config.js"
     },
     "dependencies": {
         "@apollo/server": "^4.4.0",
