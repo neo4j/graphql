@@ -29,7 +29,7 @@ import {
     Kind,
     parse,
     print,
-    SchemaExtensionNode
+    SchemaExtensionNode,
 } from "graphql";
 import type * as neo4j from "neo4j-driver";
 import { translateResolveReference } from "../translate/translate-resolve-reference";
@@ -38,6 +38,7 @@ import { execute } from "../utils";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import { Executor } from "./Executor";
 
+// TODO fetch the directive names from the spec
 const federationDirectiveNames = [
     "key",
     "extends",
@@ -47,7 +48,9 @@ const federationDirectiveNames = [
     "external",
     "provides",
     "requires",
-    "tag"
+    "tag",
+    "composeDirective",
+    "interfaceObject",
 ] as const;
 
 type FederationDirectiveName = (typeof federationDirectiveNames)[number];
@@ -76,7 +79,9 @@ export class Subgraph {
             ["external", "federation__external"],
             ["provides", "federation__provides"],
             ["requires", "federation__requires"],
-            ["tag", "federation__tag"]
+            ["tag", "federation__tag"],
+            ["composeDirective", "federation__composeDirective"],
+            ["interfaceObject", "federation__interfaceObject"],
         ]);
 
         const linkMeta = this.findFederationLinkMeta(typeDefs);
@@ -98,7 +103,7 @@ export class Subgraph {
     public buildSchema({ typeDefs, resolvers }: { typeDefs: DocumentNode; resolvers: Record<string, any> }) {
         return buildSubgraphSchema({
             typeDefs,
-            resolvers
+            resolvers,
         });
     }
 
@@ -110,7 +115,7 @@ export class Subgraph {
         document.definitions.forEach((def) => {
             if (def.kind === Kind.OBJECT_TYPE_DEFINITION) {
                 resolverMap[def.name.value] = {
-                    __resolveReference: this.getReferenceResolver(nodes, driver)
+                    __resolveReference: this.getReferenceResolver(nodes, driver),
                 };
             }
         });
@@ -141,7 +146,7 @@ export class Subgraph {
                 cypher,
                 params,
                 defaultAccessMode: "READ",
-                context
+                context,
             });
 
             return executeResult.records[0].this;
@@ -156,7 +161,7 @@ export class Subgraph {
         // Remove any operations from the extension - we only care for the `@link` directive
         const emptyExtension: SchemaExtensionNode = {
             ...this.linkExtension,
-            operationTypes: []
+            operationTypes: [],
         };
 
         const document = parse(print(emptyExtension));
@@ -173,7 +178,7 @@ export class Subgraph {
 
         return {
             directives: [...directives],
-            types: [...enums, ...scalars]
+            types: [...enums, ...scalars],
         };
     }
 
@@ -188,7 +193,8 @@ export class Subgraph {
                     if (directive.name.value === "link" && directive.arguments) {
                         for (const argument of directive.arguments) {
                             if (argument.name.value === "url" && argument.value.kind === Kind.STRING) {
-                                if (argument.value.value === "https://specs.apollo.dev/federation/v2.0") {
+                                const url = argument.value.value;
+                                if (url.startsWith("https://specs.apollo.dev/federation/v2")) {
                                     return { extension: definition, directive };
                                 }
                             }
