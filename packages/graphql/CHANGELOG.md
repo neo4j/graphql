@@ -1,5 +1,37 @@
 # @neo4j/graphql
 
+## 3.17.0
+
+### Minor Changes
+
+-   [#2442](https://github.com/neo4j/graphql/pull/2442) [`6f0d9c06d`](https://github.com/neo4j/graphql/commit/6f0d9c06d9b34d30211bdf703bb0b26844033179) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Experimental support for Apollo Federation. Call `getSubgraphSchema()` to allow the schema to be used in a supergraph. The API is still being refined and will be subject to breaking changes.
+
+### Patch Changes
+
+-   [#2913](https://github.com/neo4j/graphql/pull/2913) [`a0d4dc4cf`](https://github.com/neo4j/graphql/commit/a0d4dc4cf5d007235be3c7e36202aea9d39b6542) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fixes #2889 where nodes could not be created with enum list as a property
+
+-   [#2620](https://github.com/neo4j/graphql/pull/2620) [`6421735f0`](https://github.com/neo4j/graphql/commit/6421735f014f0e2edacb1be7ba15c8819a1a0adb) Thanks [@mhlz](https://github.com/mhlz)! - Selection of fields on interfaces in unions fail in some cases
+
+-   [#2892](https://github.com/neo4j/graphql/pull/2892) [`cdbf768a0`](https://github.com/neo4j/graphql/commit/cdbf768a05323b15595fe26b5d047866f0f0c036) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Removed deprecation messages from single relationships that did not make sense
+
+-   [#2879](https://github.com/neo4j/graphql/pull/2879) [`1902f903f`](https://github.com/neo4j/graphql/commit/1902f903f89453f2d17be909e2b05f1c12ac39a9) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed a bug that prevents to return of the correct SelectionSet when a nested abstract field is null.
+
+-   [#2884](https://github.com/neo4j/graphql/pull/2884) [`1a2101c33`](https://github.com/neo4j/graphql/commit/1a2101c33d00a738be26c57fa378d4a9e3bede41) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Add unique identifier to Cypher queries when combining with `UNION`, to ensure results aren't incorrectly de-duped. Fixes #2820.
+
+-   Updated dependencies [[`c436ab040`](https://github.com/neo4j/graphql/commit/c436ab0403a45395594728e6fc192034712f45af), [`1a2101c33`](https://github.com/neo4j/graphql/commit/1a2101c33d00a738be26c57fa378d4a9e3bede41)]:
+    -   @neo4j/cypher-builder@0.2.1
+
+## 3.16.1
+
+### Patch Changes
+
+-   [#2810](https://github.com/neo4j/graphql/pull/2810) [`0fe3a6853`](https://github.com/neo4j/graphql/commit/0fe3a68536e0cc5ec2cdd05057d038ca38358ff8) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #2803 - invalid cypher when using aggregation filters within nested relationships/connections
+
+-   [#2877](https://github.com/neo4j/graphql/pull/2877) [`79ef38c5d`](https://github.com/neo4j/graphql/commit/79ef38c5dd43da19a64b0e7c25019209e19415f3) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #2871 - invalid cypher for relationship filters nested within a SINGLE relationship
+
+-   Updated dependencies [[`81df28ed9`](https://github.com/neo4j/graphql/commit/81df28ed9238c1b4692aabe8e1de438ba01ae914), [`4fdb5135f`](https://github.com/neo4j/graphql/commit/4fdb5135fa3bdb84b87893d14afe263ad5ed020f), [`d4455881c`](https://github.com/neo4j/graphql/commit/d4455881c83f9ec597e657d92b9c9c126721541b)]:
+    -   @neo4j/cypher-builder@0.2.0
+
 ## 3.16.0
 
 ### Minor Changes

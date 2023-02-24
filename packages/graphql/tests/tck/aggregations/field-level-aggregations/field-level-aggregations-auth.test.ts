@@ -76,7 +76,7 @@ describe("Field Level Aggregations", () => {
             WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                MATCH (this_actorsAggregate_this1:\`Actor\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
+                MATCH (this)<-[this_actorsAggregate_this0:ACTED_IN]-(this_actorsAggregate_this1:\`Actor\`)
                 RETURN count(this_actorsAggregate_this1) AS this_actorsAggregate_var2
             }
             RETURN this { .title, actorsAggregate: { count: this_actorsAggregate_var2 } } AS this"

@@ -32,6 +32,9 @@ export { Foreach } from "./clauses/Foreach";
 
 export { concat } from "./clauses/utils/concat";
 
+// Patterns
+export { Pattern } from "./pattern/Pattern";
+
 // Variables and references
 export { NodeRef as Node, NamedNode } from "./references/NodeRef";
 export { RelationshipRef as Relationship } from "./references/RelationshipRef";
@@ -59,7 +62,7 @@ export { MapExpr as Map } from "./expressions/map/MapExpr";
 export { MapProjection } from "./expressions/map/MapProjection";
 
 // --Operations
-export { or, and, not } from "./expressions/operations/boolean";
+export { or, and, not, xor } from "./expressions/operations/boolean";
 export {
     eq,
     gt,
@@ -72,23 +75,18 @@ export {
     contains,
     startsWith,
     endsWith,
-    matches,
+    matches
 } from "./expressions/operations/comparison";
 export { plus, minus } from "./expressions/operations/math";
 
 // --Functions
-export { CypherFunction as Function } from "./expressions/functions/CypherFunction";
+export { CypherFunction as Function } from "./expressions/functions/CypherFunctions";
 
 export {
     coalesce,
     point,
     distance,
     pointDistance,
-    cypherDatetime as datetime,
-    cypherDate as date,
-    cypherLocalTime as localtime,
-    cypherLocalDatetime as localdatetime,
-    cypherTime as time,
     labels,
     count,
     min,
@@ -96,7 +94,17 @@ export {
     avg,
     sum,
     randomUUID,
-} from "./expressions/functions/CypherFunction";
+    id,
+    elementId
+} from "./expressions/functions/CypherFunctions";
+
+export {
+    cypherDatetime as datetime,
+    cypherDate as date,
+    cypherLocalTime as localtime,
+    cypherLocalDatetime as localdatetime,
+    cypherTime as time
+} from "./expressions/functions/TemporalFunctions";
 
 export * from "./expressions/functions/StringFunctions";
 
@@ -115,7 +123,6 @@ export type { ProjectionColumn } from "./clauses/sub-clauses/Projection";
 export type { SetParam } from "./clauses/sub-clauses/Set";
 export type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
 export type { Order } from "./clauses/sub-clauses/OrderBy";
-export type { Pattern } from "./Pattern";
 export type { CompositeClause } from "./clauses/utils/concat";
 
 // utils
