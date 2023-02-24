@@ -86,7 +86,7 @@ describe("Cypher directive", () => {
                 CALL {
                     WITH this_movies
                     MATCH (this_movies)<-[this_movies_connection_actorsConnectionthis0:ACTED_IN]-(this_movies_Actor:\`Actor\`)
-                    WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Actor\\", __id: id(this_movies_Actor) } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS this_movies_actorsConnection

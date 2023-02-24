@@ -18,7 +18,7 @@
  */
 
 import type { Node } from "../classes";
-import type { Context } from "../types";
+import type { Context, GraphQLWhereArg } from "../types";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import { createAuthAndParams } from "./create-auth-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
@@ -42,8 +42,10 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
         withVars.push(META_CYPHER_VARIABLE);
     }
 
+    const where = resolveTree.args.where as GraphQLWhereArg | undefined;
+
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
-    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "DELETE" });
+    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "DELETE", where });
     matchAndWhereStr = topLevelMatch.cypher;
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 

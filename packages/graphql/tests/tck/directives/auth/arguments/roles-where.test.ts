@@ -411,7 +411,7 @@ describe("Cypher Auth Where with Roles", () => {
                     WITH *
                     MATCH (this)-[this4:HAS_POST]->(this_content:\`Post\`)
                     WHERE (((any(var6 IN [\\"user\\"] WHERE any(var5 IN $auth.roles WHERE var5 = var6)) AND (exists((this_content)<-[:HAS_POST]-(:\`User\`)) AND all(this7 IN [(this_content)<-[:HAS_POST]-(this7:\`User\`) | this7] WHERE (this7.id IS NOT NULL AND this7.id = $param4)))) OR any(var9 IN [\\"admin\\"] WHERE any(var8 IN $auth.roles WHERE var8 = var9))) AND apoc.util.validatePredicate(NOT ((any(var11 IN [\\"user\\"] WHERE any(var10 IN $auth.roles WHERE var10 = var11)) OR any(var13 IN [\\"admin\\"] WHERE any(var12 IN $auth.roles WHERE var12 = var13)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    WITH this_content  { __resolveType: \\"Post\\",  .id } AS this_content
+                    WITH this_content { __resolveType: \\"Post\\", __id: id(this), .id } AS this_content
                     RETURN this_content AS this_content
                 }
                 WITH this_content
@@ -472,7 +472,7 @@ describe("Cypher Auth Where with Roles", () => {
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis0:HAS_POST]->(this_Post:\`Post\`)
                     WHERE (((any(this_connection_contentConnectionvar2 IN [\\"user\\"] WHERE any(this_connection_contentConnectionvar1 IN $auth.roles WHERE this_connection_contentConnectionvar1 = this_connection_contentConnectionvar2)) AND (exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND all(this_connection_contentConnectionthis3 IN [(this_Post)<-[:HAS_POST]-(this_connection_contentConnectionthis3:\`User\`) | this_connection_contentConnectionthis3] WHERE (this_connection_contentConnectionthis3.id IS NOT NULL AND this_connection_contentConnectionthis3.id = $this_connection_contentConnectionparam1)))) OR any(this_connection_contentConnectionvar5 IN [\\"admin\\"] WHERE any(this_connection_contentConnectionvar4 IN $auth.roles WHERE this_connection_contentConnectionvar4 = this_connection_contentConnectionvar5))) AND apoc.util.validatePredicate(NOT ((any(this_connection_contentConnectionvar7 IN [\\"user\\"] WHERE any(this_connection_contentConnectionvar6 IN $auth.roles WHERE this_connection_contentConnectionvar6 = this_connection_contentConnectionvar7)) OR any(this_connection_contentConnectionvar9 IN [\\"admin\\"] WHERE any(this_connection_contentConnectionvar8 IN $auth.roles WHERE this_connection_contentConnectionvar8 = this_connection_contentConnectionvar9)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", __id: id(this_Post), id: this_Post.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -534,7 +534,7 @@ describe("Cypher Auth Where with Roles", () => {
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis0:HAS_POST]->(this_Post:\`Post\`)
                     WHERE (this_Post.id = $this_connection_contentConnectionparam0 AND ((any(this_connection_contentConnectionvar2 IN [\\"user\\"] WHERE any(this_connection_contentConnectionvar1 IN $auth.roles WHERE this_connection_contentConnectionvar1 = this_connection_contentConnectionvar2)) AND (exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND all(this_connection_contentConnectionthis3 IN [(this_Post)<-[:HAS_POST]-(this_connection_contentConnectionthis3:\`User\`) | this_connection_contentConnectionthis3] WHERE (this_connection_contentConnectionthis3.id IS NOT NULL AND this_connection_contentConnectionthis3.id = $this_connection_contentConnectionparam2)))) OR any(this_connection_contentConnectionvar5 IN [\\"admin\\"] WHERE any(this_connection_contentConnectionvar4 IN $auth.roles WHERE this_connection_contentConnectionvar4 = this_connection_contentConnectionvar5))) AND apoc.util.validatePredicate(NOT ((any(this_connection_contentConnectionvar7 IN [\\"user\\"] WHERE any(this_connection_contentConnectionvar6 IN $auth.roles WHERE this_connection_contentConnectionvar6 = this_connection_contentConnectionvar7)) OR any(this_connection_contentConnectionvar9 IN [\\"admin\\"] WHERE any(this_connection_contentConnectionvar8 IN $auth.roles WHERE this_connection_contentConnectionvar8 = this_connection_contentConnectionvar9)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", __id: id(this_Post), id: this_Post.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -1360,7 +1360,7 @@ describe("Cypher Auth Where with Roles", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post)
-            WHERE this_posts0_disconnect0.id = $updateUsers_args_update_posts0_disconnect0_where_this_posts0_disconnect0param0 AND ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (exists((this_posts0_disconnect0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this2 IN [(this_posts0_disconnect0)<-[:HAS_POST]-(auth_this2:\`User\`) | auth_this2] WHERE (auth_this2.id IS NOT NULL AND auth_this2.id = $this_posts0_disconnect0auth_param1)))) OR any(auth_var4 IN [\\"admin\\"] WHERE any(auth_var3 IN $auth.roles WHERE auth_var3 = auth_var4)))
+            WHERE this_posts0_disconnect0.id = $updateUsers_args_update_posts0_disconnect0_where_Post_this_posts0_disconnect0param0 AND ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (exists((this_posts0_disconnect0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this2 IN [(this_posts0_disconnect0)<-[:HAS_POST]-(auth_this2:\`User\`) | auth_this2] WHERE (auth_this2.id IS NOT NULL AND auth_this2.id = $this_posts0_disconnect0auth_param1)))) OR any(auth_var4 IN [\\"admin\\"] WHERE any(auth_var3 IN $auth.roles WHERE auth_var3 = auth_var4)))
             WITH this, this_posts0_disconnect0, this_posts0_disconnect0_rel
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3))) AND (any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -1379,7 +1379,7 @@ describe("Cypher Auth Where with Roles", () => {
             "{
                 \\"auth_param1\\": \\"id-01\\",
                 \\"thisauth_param1\\": \\"id-01\\",
-                \\"updateUsers_args_update_posts0_disconnect0_where_this_posts0_disconnect0param0\\": \\"new-id\\",
+                \\"updateUsers_args_update_posts0_disconnect0_where_Post_this_posts0_disconnect0param0\\": \\"new-id\\",
                 \\"this_posts0_disconnect0auth_param1\\": \\"id-01\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
@@ -1516,7 +1516,7 @@ describe("Cypher Auth Where with Roles", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
-            WHERE this_disconnect_posts0.id = $updateUsers_args_disconnect_posts0_where_this_disconnect_posts0param0 AND ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (exists((this_disconnect_posts0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this2 IN [(this_disconnect_posts0)<-[:HAS_POST]-(auth_this2:\`User\`) | auth_this2] WHERE (auth_this2.id IS NOT NULL AND auth_this2.id = $this_disconnect_posts0auth_param1)))) OR any(auth_var4 IN [\\"admin\\"] WHERE any(auth_var3 IN $auth.roles WHERE auth_var3 = auth_var4)))
+            WHERE this_disconnect_posts0.id = $updateUsers_args_disconnect_posts0_where_Post_this_disconnect_posts0param0 AND ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (exists((this_disconnect_posts0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this2 IN [(this_disconnect_posts0)<-[:HAS_POST]-(auth_this2:\`User\`) | auth_this2] WHERE (auth_this2.id IS NOT NULL AND auth_this2.id = $this_disconnect_posts0auth_param1)))) OR any(auth_var4 IN [\\"admin\\"] WHERE any(auth_var3 IN $auth.roles WHERE auth_var3 = auth_var4)))
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3))) AND (any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -1536,7 +1536,7 @@ describe("Cypher Auth Where with Roles", () => {
             "{
                 \\"auth_param1\\": \\"id-01\\",
                 \\"thisauth_param1\\": \\"id-01\\",
-                \\"updateUsers_args_disconnect_posts0_where_this_disconnect_posts0param0\\": \\"some-id\\",
+                \\"updateUsers_args_disconnect_posts0_where_Post_this_disconnect_posts0param0\\": \\"some-id\\",
                 \\"this_disconnect_posts0auth_param1\\": \\"id-01\\",
                 \\"updateUsers\\": {
                     \\"args\\": {

@@ -578,10 +578,22 @@ describe("Comments", () => {
                   actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsAggregate: MovieActorsAggregateInput
                   actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
                   actorsConnection_ALL: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
                   actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
                   actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
                   actorsConnection_SOME: MovieActorsConnectionWhere
                   \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
                   actors_ALL: ActorWhere
@@ -863,10 +875,22 @@ describe("Comments", () => {
                   NOT: ActorWhere
                   OR: [ActorWhere!]
                   actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+                  \\"\\"\\"
+                  Return Actors where all of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
                   actedInConnection_ALL: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where none of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
                   actedInConnection_NONE: ActorActedInConnectionWhere
                   actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+                  \\"\\"\\"
+                  Return Actors where one of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
                   actedInConnection_SINGLE: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where some of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
                   actedInConnection_SOME: ActorActedInConnectionWhere
                   name: String
                   name_CONTAINS: String
@@ -1522,10 +1546,22 @@ describe("Comments", () => {
                   id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                   searchConnection: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_SOME\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieSearchConnections match this filter
+                  \\"\\"\\"
                   searchConnection_ALL: MovieSearchConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieSearchConnections match this filter
+                  \\"\\"\\"
                   searchConnection_NONE: MovieSearchConnectionWhere
                   searchConnection_NOT: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieSearchConnections match this filter
+                  \\"\\"\\"
                   searchConnection_SINGLE: MovieSearchConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieSearchConnections match this filter
+                  \\"\\"\\"
                   searchConnection_SOME: MovieSearchConnectionWhere
                 }
 

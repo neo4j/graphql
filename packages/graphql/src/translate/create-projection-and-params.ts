@@ -21,19 +21,18 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { mergeDeep } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
-import type { GraphQLOptionsArg, GraphQLWhereArg, Context, RelationField, GraphQLSortArg } from "../types";
+import type { GraphQLOptionsArg, GraphQLWhereArg, Context, GraphQLSortArg } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
-import { getRelationshipDirection } from "../utils/get-relationship-direction";
+import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
-import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import { createConnectionClause } from "./connection-clause/create-connection-clause";
 import { translateCypherDirectiveProjection } from "./projection/subquery/translate-cypher-directive-projection";
 
@@ -65,7 +64,7 @@ export default function createProjectionAndParams({
     chainStr,
     varName,
     literalElements,
-    resolveType,
+    resolveType
 }: {
     resolveTree: ResolveTree;
     node: Node;
@@ -100,7 +99,7 @@ export default function createProjectionAndParams({
                     entity: authableField,
                     operations: "READ",
                     context,
-                    allow: { parentNode: node, varName },
+                    allow: { parentNode: node, varName }
                 });
                 if (allowAndParams[0]) {
                     if (!res.meta.authValidateStrs) {
@@ -121,7 +120,7 @@ export default function createProjectionAndParams({
                 alias,
                 param,
                 chainStr: chainStr || varName,
-                res,
+                res
             });
         }
 
@@ -132,65 +131,69 @@ export default function createProjectionAndParams({
                 optionsInput.limit = referenceNode.queryOptions.getLimit(optionsInput.limit);
             }
 
-            if (relationField.interface) {
-                const interfaceResolveTree = field;
+            if (relationField.interface || relationField.union) {
+                let referenceNodes;
+                if (relationField.interface) {
+                    const interfaceImplementations = context.nodes.filter((x) =>
+                        relationField.interface?.implementations?.includes(x.name)
+                    );
 
-                const prevRelationshipFields: string[] = [];
-                const relationshipField = node.relationFields.find(
-                    (x) => x.fieldName === interfaceResolveTree.name
-                ) as RelationField;
-                const interfaceProjection = createInterfaceProjectionAndParams({
-                    resolveTree: interfaceResolveTree,
-                    field: relationshipField,
-                    context,
-                    nodeVariable: varName,
-                    withVars: prevRelationshipFields,
-                });
-                res.subqueries.push(interfaceProjection);
-                res.projection.push(`${field.alias}: ${varName}_${field.name}`);
-                return res;
-            }
+                    if (field.args.where) {
+                        // Enrich concrete types with shared filters
+                        const interfaceSharedFilters = Object.fromEntries(
+                            Object.entries(field.args.where).filter(([key]) => key !== "_on")
+                        );
+                        if (Object.keys(interfaceSharedFilters).length > 0) {
+                            field.args.where = getAugmentedImplementationFilters(
+                                field.args.where as GraphQLWhereArg,
+                                interfaceSharedFilters,
+                                interfaceImplementations
+                            );
+                        } else {
+                            field.args.where = { ...(field.args.where["_on"] || {}) };
+                        }
+                    }
 
-            if (relationField.union) {
-                const referenceNodes = context.nodes.filter(
-                    (x) =>
-                        relationField.union?.nodes?.includes(x.name) &&
-                        (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name))
-                );
+                    referenceNodes = interfaceImplementations.filter(
+                        (x) =>
+                            // where is not defined
+                            !field.args.where ||
+                            // where exists but has no filters defined
+                            Object.keys(field.args.where).length === 0 ||
+                            // where exists and has a filter on this implementation
+                            Object.prototype.hasOwnProperty.call(field.args.where, x.name)
+                    );
+                } else {
+                    referenceNodes = context.nodes.filter(
+                        (x) =>
+                            relationField.union?.nodes?.includes(x.name) &&
+                            (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name))
+                    );
+                }
 
                 const parentNode = new Cypher.NamedNode(chainStr || varName);
-
                 const unionSubqueries: Cypher.Clause[] = [];
                 const unionVariableName = `${param}`;
                 for (const refNode of referenceNodes) {
-                    const refNodeInterfaceNames = node.interfaces.map(
-                        (implementedInterface) => implementedInterface.name.value
-                    );
-                    const hasFields = Object.keys(field.fieldsByTypeName).some((fieldByTypeName) =>
-                        [refNode.name, ...refNodeInterfaceNames].includes(fieldByTypeName)
-                    );
                     const recurse = createProjectionAndParams({
                         resolveTree: field,
                         node: refNode,
                         context,
                         varName: `${varName}_${alias}`,
-                        chainStr: unionVariableName,
+                        chainStr: unionVariableName
                     });
                     res.params = { ...res.params, ...recurse.params };
 
-                    const direction = getRelationshipDirection(relationField, field.args);
+                    const direction = getCypherRelationshipDirection(relationField, field.args);
 
-                    let nestedProjection = [
-                        ` { __resolveType: "${refNode.name}", `,
-                        recurse.projection.replace("{", ""),
-                    ].join("");
+                    const nestedProj = recurse.projection.replace(/{|}/gm, "").trim();
 
-                    if (!hasFields) {
-                        nestedProjection = `{ __resolveType: "${refNode.name}" }`;
-                    }
+                    const nestedProjString = nestedProj.length ? `, ${nestedProj}` : "";
+                    const nestedProjection = `{ __resolveType: "${refNode.name}", __id: id(${varName})${nestedProjString} }`;
+
                     const subquery = createProjectionSubquery({
                         parentNode,
-                        whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
+                        whereInput: field.args.where ? field.args.where[refNode.name] : {},
                         node: refNode,
                         context,
                         alias: unionVariableName,
@@ -201,7 +204,7 @@ export default function createProjectionAndParams({
                         optionsInput,
                         authValidateStrs: recurse.meta?.authValidateStrs,
                         addSkipAndLimit: false,
-                        collect: false,
+                        collect: false
                     });
 
                     const unionWith = new Cypher.With("*");
@@ -213,13 +216,12 @@ export default function createProjectionAndParams({
                 const collectAndLimitStatements = collectUnionSubqueriesResults({
                     resultVariable: new Cypher.NamedNode(unionVariableName),
                     optionsInput,
-                    isArray: Boolean(relationField.typeMeta.array),
+                    isArray: Boolean(relationField.typeMeta.array)
                 });
 
                 const unionAndSort = Cypher.concat(new Cypher.Call(unionClause), collectAndLimitStatements);
                 res.subqueries.push(new Cypher.Call(unionAndSort).innerWith(parentNode));
                 res.projection.push(`${alias}: ${unionVariableName}`);
-
                 return res;
             }
 
@@ -228,13 +230,13 @@ export default function createProjectionAndParams({
                 node: referenceNode || node,
                 context,
                 varName: `${varName}_${alias}`,
-                chainStr: param,
+                chainStr: param
             });
             res.params = { ...res.params, ...recurse.params };
 
             const parentNode = new Cypher.NamedNode(chainStr || varName);
 
-            const direction = getRelationshipDirection(relationField, field.args);
+            const direction = getCypherRelationshipDirection(relationField, field.args);
             const subquery = createProjectionSubquery({
                 parentNode,
                 whereInput,
@@ -246,7 +248,7 @@ export default function createProjectionAndParams({
                 relationField,
                 relationshipDirection: direction,
                 optionsInput,
-                authValidateStrs: recurse.meta?.authValidateStrs,
+                authValidateStrs: recurse.meta?.authValidateStrs
             });
             res.subqueries.push(new Cypher.Call(subquery).innerWith(parentNode));
             res.projection.push(`${alias}: ${param}`);
@@ -257,7 +259,7 @@ export default function createProjectionAndParams({
             context,
             nodeLabel: chainStr || varName,
             node,
-            field,
+            field
         });
 
         if (aggregationFieldProjection) {
@@ -276,7 +278,7 @@ export default function createProjectionAndParams({
                     field: connectionField,
                     context,
                     nodeVariable: varName,
-                    returnVariable: new Cypher.NamedVariable(param),
+                    returnVariable: new Cypher.NamedVariable(param)
                 })
             ).innerWith(new Cypher.NamedNode(varName));
 
@@ -329,7 +331,7 @@ export default function createProjectionAndParams({
             chainStr,
             varName,
             literalElements,
-            resolveType,
+            resolveType
         });
     }
 
@@ -353,7 +355,7 @@ export default function createProjectionAndParams({
             ...(!Object.values(existingProjection).find((field) => field.name === sortFieldName)
                 ? // generate a basic resolve tree
                   generateProjectionField({ name: sortFieldName })
-                : {}),
+                : {})
         }),
         // and add it to existing fields for projection
         existingProjection
@@ -363,7 +365,7 @@ export default function createProjectionAndParams({
     // cf. https://github.com/neo4j/graphql/issues/476
     const mergedSelectedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
         nodeFields,
-        ...node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value]),
+        ...node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value])
     ]);
 
     // Merge fields for final projection to account for multiple fragments
@@ -371,15 +373,15 @@ export default function createProjectionAndParams({
     const mergedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
         mergedSelectedFields,
         generateMissingOrAliasedSortFields({ selection: mergedSelectedFields, resolveTree }),
-        generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
+        generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node })
     ]);
 
     const { projection, params, meta, subqueries, subqueriesBeforeSort } = Object.values(mergedFields).reduce(reducer, {
-        projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
+        projection: resolveType ? [`__resolveType: "${node.name}"`, `__id: id(${varName})`] : [],
         params: {},
         meta: {},
         subqueries: [],
-        subqueriesBeforeSort: [],
+        subqueriesBeforeSort: []
     });
 
     return {
@@ -387,7 +389,7 @@ export default function createProjectionAndParams({
         params,
         meta,
         subqueries,
-        subqueriesBeforeSort,
+        subqueriesBeforeSort
     };
 }
 
@@ -401,7 +403,7 @@ function getSortArgs(resolveTree: ResolveTree): GraphQLSortArg[] {
 // Generates any missing fields required for sorting
 const generateMissingOrAliasedSortFields = ({
     selection,
-    resolveTree,
+    resolveTree
 }: {
     selection: Record<string, ResolveTree>;
     resolveTree: ResolveTree;
@@ -415,7 +417,7 @@ const generateMissingOrAliasedSortFields = ({
 // Generated any missing fields required for custom resolvers
 const generateMissingOrAliasedRequiredFields = ({
     node,
-    selection,
+    selection
 }: {
     node: Node;
     selection: Record<string, ResolveTree>;
@@ -436,7 +438,7 @@ function createFulltextProjection({
     chainStr,
     varName,
     literalElements,
-    resolveType,
+    resolveType
 }: {
     resolveTree: ResolveTree;
     node: Node;
@@ -452,7 +454,7 @@ function createFulltextProjection({
             params: {},
             meta: {},
             subqueries: [],
-            subqueriesBeforeSort: [],
+            subqueriesBeforeSort: []
         };
     }
 
@@ -467,6 +469,30 @@ function createFulltextProjection({
         chainStr,
         varName,
         literalElements,
-        resolveType,
+        resolveType
     });
+}
+/**
+ * Transform a filter applied in an interface as if it was applied to all the implementations,
+ * if an implementation already has the same filter then that filter is kept and the interface filter is overridden by the implementation one.
+ * */
+function getAugmentedImplementationFilters(
+    where: GraphQLWhereArg,
+    interfaceSharedFilters: Record<string, any>,
+    implementations: Node[]
+) {
+    return Object.fromEntries(
+        implementations.map((node) => {
+            if (!Object.prototype.hasOwnProperty.call(where, "_on")) {
+                return [node.name, { ...interfaceSharedFilters }];
+            }
+            return [
+                node.name,
+                {
+                    ...interfaceSharedFilters,
+                    ...where["_on"][node.name]
+                }
+            ];
+        })
+    );
 }

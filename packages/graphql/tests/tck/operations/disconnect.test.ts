@@ -118,7 +118,7 @@ describe("Cypher Disconnect", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_colors0_disconnect0_rel:HAS_COLOR]->(this_colors0_disconnect0:Color)
-            WHERE this_colors0_disconnect0.name = $updateProducts_args_update_colors0_disconnect0_where_this_colors0_disconnect0param0
+            WHERE this_colors0_disconnect0.name = $updateProducts_args_update_colors0_disconnect0_where_Color_this_colors0_disconnect0param0
             CALL {
             	WITH this_colors0_disconnect0, this_colors0_disconnect0_rel, this
             	WITH collect(this_colors0_disconnect0) as this_colors0_disconnect0, this_colors0_disconnect0_rel, this
@@ -129,7 +129,7 @@ describe("Cypher Disconnect", () => {
             CALL {
             WITH this, this_colors0_disconnect0
             OPTIONAL MATCH (this_colors0_disconnect0)<-[this_colors0_disconnect0_photos0_rel:OF_COLOR]-(this_colors0_disconnect0_photos0:Photo)
-            WHERE this_colors0_disconnect0_photos0.id = $updateProducts_args_update_colors0_disconnect0_disconnect_photos0_where_this_colors0_disconnect0_photos0param0
+            WHERE this_colors0_disconnect0_photos0.id = $updateProducts_args_update_colors0_disconnect0_disconnect_photos0_where_Photo_this_colors0_disconnect0_photos0param0
             CALL {
             	WITH this_colors0_disconnect0_photos0, this_colors0_disconnect0_photos0_rel, this_colors0_disconnect0
             	WITH collect(this_colors0_disconnect0_photos0) as this_colors0_disconnect0_photos0, this_colors0_disconnect0_photos0_rel, this_colors0_disconnect0
@@ -140,7 +140,7 @@ describe("Cypher Disconnect", () => {
             CALL {
             WITH this, this_colors0_disconnect0, this_colors0_disconnect0_photos0
             OPTIONAL MATCH (this_colors0_disconnect0_photos0)-[this_colors0_disconnect0_photos0_color0_rel:OF_COLOR]->(this_colors0_disconnect0_photos0_color0:Color)
-            WHERE this_colors0_disconnect0_photos0_color0.id = $updateProducts_args_update_colors0_disconnect0_disconnect_photos_disconnect_color_where_this_colors0_disconnect0_photos0_color0param0
+            WHERE this_colors0_disconnect0_photos0_color0.id = $updateProducts_args_update_colors0_disconnect0_disconnect_photos_disconnect_color_where_Color_this_colors0_disconnect0_photos0_color0param0
             CALL {
             	WITH this_colors0_disconnect0_photos0_color0, this_colors0_disconnect0_photos0_color0_rel, this_colors0_disconnect0_photos0
             	WITH collect(this_colors0_disconnect0_photos0_color0) as this_colors0_disconnect0_photos0_color0, this_colors0_disconnect0_photos0_color0_rel, this_colors0_disconnect0_photos0
@@ -158,7 +158,7 @@ describe("Cypher Disconnect", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_photos0_disconnect0_rel:HAS_PHOTO]->(this_photos0_disconnect0:Photo)
-            WHERE this_photos0_disconnect0.id = $updateProducts_args_update_photos0_disconnect0_where_this_photos0_disconnect0param0
+            WHERE this_photos0_disconnect0.id = $updateProducts_args_update_photos0_disconnect0_where_Photo_this_photos0_disconnect0param0
             CALL {
             	WITH this_photos0_disconnect0, this_photos0_disconnect0_rel, this
             	WITH collect(this_photos0_disconnect0) as this_photos0_disconnect0, this_photos0_disconnect0_rel, this
@@ -169,7 +169,7 @@ describe("Cypher Disconnect", () => {
             CALL {
             WITH this, this_photos0_disconnect0
             OPTIONAL MATCH (this_photos0_disconnect0)-[this_photos0_disconnect0_color0_rel:OF_COLOR]->(this_photos0_disconnect0_color0:Color)
-            WHERE this_photos0_disconnect0_color0.name = $updateProducts_args_update_photos0_disconnect_disconnect_color_where_this_photos0_disconnect0_color0param0
+            WHERE this_photos0_disconnect0_color0.name = $updateProducts_args_update_photos0_disconnect_disconnect_color_where_Color_this_photos0_disconnect0_color0param0
             CALL {
             	WITH this_photos0_disconnect0_color0, this_photos0_disconnect0_color0_rel, this_photos0_disconnect0
             	WITH collect(this_photos0_disconnect0_color0) as this_photos0_disconnect0_color0, this_photos0_disconnect0_color0_rel, this_photos0_disconnect0
@@ -185,7 +185,7 @@ describe("Cypher Disconnect", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_photos0_disconnect1_rel:HAS_PHOTO]->(this_photos0_disconnect1:Photo)
-            WHERE this_photos0_disconnect1.id = $updateProducts_args_update_photos0_disconnect1_where_this_photos0_disconnect1param0
+            WHERE this_photos0_disconnect1.id = $updateProducts_args_update_photos0_disconnect1_where_Photo_this_photos0_disconnect1param0
             CALL {
             	WITH this_photos0_disconnect1, this_photos0_disconnect1_rel, this
             	WITH collect(this_photos0_disconnect1) as this_photos0_disconnect1, this_photos0_disconnect1_rel, this
@@ -196,7 +196,7 @@ describe("Cypher Disconnect", () => {
             CALL {
             WITH this, this_photos0_disconnect1
             OPTIONAL MATCH (this_photos0_disconnect1)-[this_photos0_disconnect1_color0_rel:OF_COLOR]->(this_photos0_disconnect1_color0:Color)
-            WHERE this_photos0_disconnect1_color0.name = $updateProducts_args_update_photos0_disconnect_disconnect_color_where_this_photos0_disconnect1_color0param0
+            WHERE this_photos0_disconnect1_color0.name = $updateProducts_args_update_photos0_disconnect_disconnect_color_where_Color_this_photos0_disconnect1_color0param0
             CALL {
             	WITH this_photos0_disconnect1_color0, this_photos0_disconnect1_color0_rel, this_photos0_disconnect1
             	WITH collect(this_photos0_disconnect1_color0) as this_photos0_disconnect1_color0, this_photos0_disconnect1_color0_rel, this_photos0_disconnect1
@@ -215,13 +215,13 @@ describe("Cypher Disconnect", () => {
             "{
                 \\"this_update_id\\": \\"123\\",
                 \\"this_update_name\\": \\"Nested Connect\\",
-                \\"updateProducts_args_update_colors0_disconnect0_where_this_colors0_disconnect0param0\\": \\"Red\\",
-                \\"updateProducts_args_update_colors0_disconnect0_disconnect_photos0_where_this_colors0_disconnect0_photos0param0\\": \\"123\\",
-                \\"updateProducts_args_update_colors0_disconnect0_disconnect_photos_disconnect_color_where_this_colors0_disconnect0_photos0_color0param0\\": \\"134\\",
-                \\"updateProducts_args_update_photos0_disconnect0_where_this_photos0_disconnect0param0\\": \\"321\\",
-                \\"updateProducts_args_update_photos0_disconnect_disconnect_color_where_this_photos0_disconnect0_color0param0\\": \\"Green\\",
-                \\"updateProducts_args_update_photos0_disconnect1_where_this_photos0_disconnect1param0\\": \\"33211\\",
-                \\"updateProducts_args_update_photos0_disconnect_disconnect_color_where_this_photos0_disconnect1_color0param0\\": \\"Red\\",
+                \\"updateProducts_args_update_colors0_disconnect0_where_Color_this_colors0_disconnect0param0\\": \\"Red\\",
+                \\"updateProducts_args_update_colors0_disconnect0_disconnect_photos0_where_Photo_this_colors0_disconnect0_photos0param0\\": \\"123\\",
+                \\"updateProducts_args_update_colors0_disconnect0_disconnect_photos_disconnect_color_where_Color_this_colors0_disconnect0_photos0_color0param0\\": \\"134\\",
+                \\"updateProducts_args_update_photos0_disconnect0_where_Photo_this_photos0_disconnect0param0\\": \\"321\\",
+                \\"updateProducts_args_update_photos0_disconnect_disconnect_color_where_Color_this_photos0_disconnect0_color0param0\\": \\"Green\\",
+                \\"updateProducts_args_update_photos0_disconnect1_where_Photo_this_photos0_disconnect1param0\\": \\"33211\\",
+                \\"updateProducts_args_update_photos0_disconnect_disconnect_color_where_Color_this_photos0_disconnect1_color0param0\\": \\"Red\\",
                 \\"updateProducts\\": {
                     \\"args\\": {
                         \\"update\\": {

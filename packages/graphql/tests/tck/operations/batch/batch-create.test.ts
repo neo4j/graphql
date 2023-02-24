@@ -160,7 +160,7 @@ describe("Batch Create", () => {
                     SET
                         create_this5.name = create_var3.name,
                         create_this5.id = randomUUID()
-                    MERGE (create_this5)-[create_this6:ACTED_IN]->(create_this0)
+                    MERGE (create_this0)<-[create_this6:ACTED_IN]-(create_this5)
                     SET
                         create_this6.year = create_var4.year
                     WITH create_this5, create_var3
@@ -292,7 +292,7 @@ describe("Batch Create", () => {
                     SET
                         create_this6.name = create_var4.name,
                         create_this6.id = randomUUID()
-                    MERGE (create_this6)-[create_this7:ACTED_IN]->(create_this1)
+                    MERGE (create_this1)<-[create_this7:ACTED_IN]-(create_this6)
                     SET
                         create_this7.year = create_var5.year
                     WITH create_this6
@@ -317,7 +317,7 @@ describe("Batch Create", () => {
             }
             CALL {
                 WITH create_this1
-                MATCH (create_this1_actors:\`Actor\`)-[create_this0:ACTED_IN]->(create_this1)
+                MATCH (create_this1)<-[create_this0:ACTED_IN]-(create_this1_actors:\`Actor\`)
                 WITH create_this1_actors { .name } AS create_this1_actors
                 RETURN collect(create_this1_actors) AS create_this1_actors
             }
@@ -462,13 +462,13 @@ describe("Batch Create", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0_actors:\`Actor\`)-[create_this0:ACTED_IN]->(this0)
+                MATCH (this0)<-[create_this0:ACTED_IN]-(this0_actors:\`Actor\`)
                 WITH this0_actors { .name } AS this0_actors
                 RETURN collect(this0_actors) AS this0_actors
             }
             CALL {
                 WITH this1
-                MATCH (this1_actors:\`Actor\`)-[create_this0:ACTED_IN]->(this1)
+                MATCH (this1)<-[create_this0:ACTED_IN]-(this1_actors:\`Actor\`)
                 WITH this1_actors { .name } AS this1_actors
                 RETURN collect(this1_actors) AS this1_actors
             }
@@ -640,7 +640,7 @@ describe("Batch Create", () => {
                 MERGE (this4_actors_connectOrCreate0:\`Actor\` { id: $this4_actors_connectOrCreate_param0 })
                 ON CREATE SET
                     this4_actors_connectOrCreate0.name = $this4_actors_connectOrCreate_param1
-                MERGE (this4_actors_connectOrCreate0)-[this4_actors_connectOrCreate_this0:ACTED_IN]->(this4)
+                MERGE (this4)<-[this4_actors_connectOrCreate_this0:ACTED_IN]-(this4_actors_connectOrCreate0)
                 RETURN COUNT(*) AS _
             }
             WITH this4
@@ -661,7 +661,7 @@ describe("Batch Create", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this0)
+                MATCH (this0)<-[create_this1:ACTED_IN]-(this0_actors:\`Actor\`)
                 WITH this0_actors { .name } AS this0_actors
                 RETURN collect(this0_actors) AS this0_actors
             }
@@ -673,7 +673,7 @@ describe("Batch Create", () => {
             }
             CALL {
                 WITH this1
-                MATCH (this1_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this1)
+                MATCH (this1)<-[create_this1:ACTED_IN]-(this1_actors:\`Actor\`)
                 WITH this1_actors { .name } AS this1_actors
                 RETURN collect(this1_actors) AS this1_actors
             }
@@ -685,7 +685,7 @@ describe("Batch Create", () => {
             }
             CALL {
                 WITH this2
-                MATCH (this2_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this2)
+                MATCH (this2)<-[create_this1:ACTED_IN]-(this2_actors:\`Actor\`)
                 WITH this2_actors { .name } AS this2_actors
                 RETURN collect(this2_actors) AS this2_actors
             }
@@ -697,7 +697,7 @@ describe("Batch Create", () => {
             }
             CALL {
                 WITH this3
-                MATCH (this3_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this3)
+                MATCH (this3)<-[create_this1:ACTED_IN]-(this3_actors:\`Actor\`)
                 WITH this3_actors { .name } AS this3_actors
                 RETURN collect(this3_actors) AS this3_actors
             }
@@ -709,7 +709,7 @@ describe("Batch Create", () => {
             }
             CALL {
                 WITH this4
-                MATCH (this4_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this4)
+                MATCH (this4)<-[create_this1:ACTED_IN]-(this4_actors:\`Actor\`)
                 WITH this4_actors { .name } AS this4_actors
                 RETURN collect(this4_actors) AS this4_actors
             }

@@ -30,9 +30,11 @@ const personNode = new Cypher.Node({
     labels: ["Person"],
 });
 
-const actedInRelationship = movieNode.relatedTo(personNode).withType("ACTED_IN");
+const actedInPattern = new Cypher.Pattern(movieNode)
+    .related(new Cypher.Relationship({ type: "ACTED_IN" }))
+    .to(personNode);
 
-const matchQuery = new Cypher.Match(actedInRelationship)
+const matchQuery = new Cypher.Match(actedInPattern)
     .where(personNode, { name: new Cypher.Param("Keanu Reeves") })
     .and(movieNode, { released: new Cypher.Param(1999) })
     .return(movieNode.property("title"), [movieNode.property("released"), "year"]);
