@@ -270,9 +270,7 @@ class Neo4jGraphQL {
 
             const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
 
-            if (validateTypeDefs) {
-                validateDocument(document);
-            }
+            const baseSchema = validateDocument(document, validateTypeDefs);
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
@@ -281,6 +279,7 @@ class Neo4jGraphQL {
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
                 callbacks: this.config.callbacks,
                 userCustomResolvers: this.resolvers,
+                baseSchema,
             });
 
             this.schemaModel = generateModel(document);
@@ -310,9 +309,8 @@ class Neo4jGraphQL {
 
         const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
 
-        if (validateTypeDefs) {
-            validateDocument(document, directives, types);
-        }
+        const baseSchema = validateDocument(document, validateTypeDefs, directives, types);
+
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
             enableRegex: this.config?.enableRegex,
@@ -320,7 +318,8 @@ class Neo4jGraphQL {
             generateSubscriptions: Boolean(this.plugins?.subscriptions),
             callbacks: this.config.callbacks,
             userCustomResolvers: this.resolvers,
-            subgraph
+            subgraph,
+            baseSchema,
         });
 
         this.schemaModel = generateModel(document);
@@ -334,7 +333,7 @@ class Neo4jGraphQL {
 
         const schema = subgraph.buildSchema({
             typeDefs: subgraphTypeDefs,
-            resolvers: wrappedResolvers as Record<string, any>
+            resolvers: wrappedResolvers as Record<string, any>,
         });
 
         return this.addDefaultFieldResolvers(schema);

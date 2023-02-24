@@ -18,12 +18,13 @@
  */
 
 import camelCase from "camelcase";
-import type {
+import {
     ObjectTypeDefinitionNode,
     NamedTypeNode,
     ListTypeNode,
     NonNullTypeNode,
-    InputObjectTypeDefinitionNode
+    InputObjectTypeDefinitionNode,
+    GraphQLSchema,
 } from "graphql";
 import { pluralize } from "graphql-compose";
 import { gql } from "apollo-server";
@@ -160,7 +161,8 @@ describe("makeAugmentedSchema", () => {
 
             const neoSchema = makeAugmentedSchema(typeDefs, {
                 enableRegex: true,
-                validateResolvers: true
+                validateResolvers: true,
+                baseSchema: new GraphQLSchema({}),
             });
 
             const document = neoSchema.typeDefs;
