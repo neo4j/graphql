@@ -40,7 +40,7 @@ export class ConcreteEntity implements Entity {
 
     private addAttribute(attribute: Attribute): void {
         if (this.attributes.has(attribute.name)) {
-            throw new Error(`Attribute ${attribute.name} already exists in ${this.name}!`);
+            throw new Error(`Attribute ${attribute.name} already exists in ${this.name}`);
         }
         this.attributes.set(attribute.name, attribute);
     }

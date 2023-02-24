@@ -22,32 +22,36 @@ import type { Attribute } from "../attribute/Attribute";
 import type { ConcreteEntity } from "../entity/ConcreteEntity";
 import type { Entity } from "../entity/Entity";
 
-class AuthorizationAnnotation<T extends ConcreteEntity> { // @authorization
+class AuthorizationAnnotation<T extends ConcreteEntity> {
+    // @authorization
     private filter?: AuthorizationFilterRule[]; //UserAuthorizationFilterRule
-    private subscriptionFilter?: SubscriptionFilter; 
-    private validate?: Validate;
+    private validatePre?: AuthorizationFilterRule[]; //UserAuthorizationPreValidateRule
+    private validatePost?: AuthorizationFilterRule[]; //UserAuthorizationPostValidateRule
+    // TODO:
+    // private subscriptionFilter?: SubscriptionFilter;
 
     constructor({
         filter,
-        subscriptionFilter,
-        validate,
+        validatePre,
+        validatePost,
     }: {
         filter?: AuthorizationFilterRule[];
-        subscriptionFilter?: SubscriptionFilter; //
-        validate?: AuthorizationValidateFilters;
+        validatePre?: AuthorizationFilterRule[];
+        validatePost?: AuthorizationFilterRule[];
     }) {
         this.filter = filter;
-        this.subscriptionFilter = subscriptionFilter;
-        this.validate = validate;
+        this.validatePre = validatePre;
+        this.validatePost = validatePost;
     }
 }
 
 const AUTHORIZATION_OPERATION = ["READ", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"] as const;
 type AuthorizationFilterOperation = keyof typeof AUTHORIZATION_OPERATION;
 
-class AuthorizationFilterRule { // UserAuthorizationFilterRule
+class AuthorizationFilterRule {
+    // UserAuthorizationFilterRule
     operations: AuthorizationFilterOperation[]; // AuthorizationFilterOperation
-    requireAuthentication: boolean; 
+    requireAuthentication: boolean;
     where: AuthorizationFilterWhere; // UserAuthorizationWhere
 
     constructor({
@@ -68,16 +72,29 @@ class AuthorizationFilterRule { // UserAuthorizationFilterRule
 class AuthorizationFilterWhere {
     jwtPayload?: Record<string, any>; // TODO could be this undefined? //JWTPayloadWhere
     node?: Record<string, any>; // TODO still need to be defined, could be this undefined? // UserWhere
-    
-    constructor({ jwtPayload, node }: { jwtPayload: Record<string, any>, node: Record<string, any> }) {
+
+    constructor({ jwtPayload, node }: { jwtPayload: Record<string, any>; node: Record<string, any> }) {
         this.jwtPayload = jwtPayload;
         this.node = node;
     }
+
+    // if node --> need Cypher.Node nodeRef
+    // if jwtPayload --> is string, no need for nodeRef
 }
 
+type ParsedJWTSchema = Record<string, any>;
 
+interface JWTPayloadPredicate extends LogicalPredicate<JWTPayloadPredicate>, ParsedJWTSchema {}
 
-// 
+interface EntityWhere {
+    id: StringPredicate;
+    name: StringPredicate;
+}
+
+interface AuthorizationValidateFilters {
+    pre: AuthorizationFilterRule[];
+    post: AuthorizationFilterRule[];
+}
 
 /**
 query {
@@ -101,27 +118,9 @@ query {
 
 // [movie1, movie2]
 
-
-
-type ParsedJWTSchema = Record<string, any>;
-
-interface JWTPayloadPredicate extends LogicalPredicate<JWTPayloadPredicate>, ParsedJWTSchema {}
-
-interface EntityWhere {
-    id: StringPredicate;
-    name: StringPredicate;
-}
-
-interface SubscriptionFilter {}
-
-interface AuthorizationValidateFilters {
-    pre: AuthorizationFilterRule[];
-    post: AuthorizationFilterRule[];
-}
-
-
-
-// OperationTree classes
+// *****************
+// *OperationTree classes
+// ***************
 
 interface StringPredicate extends LogicalPredicate<StringPredicate> {
     equals?: string;
@@ -154,17 +153,99 @@ class EqualsPredicate implements Predicate {
     constructor(left, right) {
         this.predicate = Cypher.eq(left, right); // left = this0.id
     }
+
+    getCypherPredicate(): Cypher.Predicate {
+        return this.predicate;
+    }
+}
+
+class SomePredicate implements Predicate {
+    predicate: Cypher.Predicate;
+
+    constructor(relationshipFilter: RelationshipFilter) {
+        this.predicate = new Cypher.Exists(relationshipFilter.poop());
+    }
+
+    getCypherPredicate(): Cypher.Predicate {
+        return this.predicate;
+    }
+}
+
+class AndPredicate implements Predicate {
+    predicate: Cypher.Predicate;
+
+    constructor(...predicates: [Cypher.Predicate, Cypher.Predicate]) {
+        this.predicate = Cypher.and(...predicates);
+    }
+
+    getCypherPredicate(): Cypher.Predicate {
+        return this.predicate;
+    }
 }
 
 class EntityPredicate implements Predicate {
     nodeRef: Cypher.Node; // maybe is not needed
-    predicates: Predicate[];
+    predicates: Predicate[]; // is this array or single value?
     constructor(nodeRef: Cypher.Node, predicates: Predicate[]) {
         this.nodeRef = nodeRef;
         this.predicates = predicates;
     }
 
     getCypherPredicate(): Cypher.Predicate {
-        return Cypher.and();//Cypher.and(utils.mergePredicate(this.predicates.map(predicate => predicate.getCypherPredicate()));
+        return this.predicates[0].getCypherPredicate();
+        // return Cypher.and(); //Cypher.and(utils.mergePredicate(this.predicates.map(predicate => predicate.getCypherPredicate()));
+    }
+}
+
+class RelationshipPredicate implements Predicate {
+    relationshipRef: Cypher.Relationship; // maybe is not needed
+    predicates: Predicate[];
+    constructor(relationshipRef: Cypher.Relationship, predicates: Predicate[]) {
+        this.relationshipRef = relationshipRef;
+        this.predicates = predicates;
+    }
+
+    getCypherPredicate(): Cypher.Predicate {
+        return Cypher.and(); //Cypher.and(utils.mergePredicate(this.predicates.map(predicate => predicate.getCypherPredicate()));
+    }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface Filter {}
+
+class EntityFilter implements Filter {
+    nodeRef: Cypher.Node;
+    predicate: Predicate;
+
+    constructor(nodeRef: Cypher.Node, constructablePredicate: unknown) {
+        this.nodeRef = nodeRef;
+        this.predicate = new Predicate(constructablePredicate); // build Predicate from constructable
+    }
+
+    poop(): Cypher.Predicate {
+        //to be composed with Cypher.Match() or Cypher.With()
+        return this.predicate.getCypherPredicate();
+    }
+}
+
+class RelationshipFilter implements Filter {
+    relationshipRef: Cypher.Relationship;
+    predicate: Predicate;
+
+    constructor(
+        relationshipRef: Cypher.Relationship,
+        nodePredicate: EntityPredicate,
+        relationshipPredicate: RelationshipPredicate
+    ) {
+        this.relationshipRef = relationshipRef;
+        this.predicate = new AndPredicate( // implicit "and"
+            nodePredicate.getCypherPredicate(),
+            relationshipPredicate.getCypherPredicate()
+        );
+    }
+
+    poop(): Cypher.Clause {
+        //this is a Clause, not a Predicate ??
+        return new Cypher.Match(this.relationshipRef).where(this.predicate.getCypherPredicate());
     }
 }
