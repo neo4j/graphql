@@ -18,6 +18,8 @@ services:
     build: packages/apollo-federation-subgraph-compatibility
     ports:
       - "4001:4001"
+    environment:
+      - NEO4J_URI=neo4j://neo4j:7687/neo4j
     depends_on:
       neo4j:
         condition: service_healthy
