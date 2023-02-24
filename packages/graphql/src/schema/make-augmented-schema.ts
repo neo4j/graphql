@@ -24,7 +24,7 @@ import type {
     GraphQLScalarType,
     InterfaceTypeDefinitionNode,
     NameNode,
-    ObjectTypeDefinitionNode
+    ObjectTypeDefinitionNode,
 } from "graphql";
 import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
 import type { Directive, ObjectTypeComposer } from "graphql-compose";
@@ -55,7 +55,7 @@ import {
     graphqlDirectivesToCompose,
     objectFieldsToComposeFields,
     objectFieldsToCreateInputFields,
-    objectFieldsToUpdateInputFields
+    objectFieldsToUpdateInputFields,
 } from "./to-compose";
 import getUniqueFields from "./get-unique-fields";
 import getWhereFields from "./get-where-fields";
@@ -95,7 +95,7 @@ function makeAugmentedSchema(
         generateSubscriptions,
         callbacks,
         userCustomResolvers,
-        subgraph
+        subgraph,
     }: {
         features?: Neo4jFeaturesSettings;
         enableRegex?: boolean;
@@ -152,8 +152,8 @@ function makeAugmentedSchema(
         ...([
             customResolvers.customQuery,
             customResolvers.customMutation,
-            customResolvers.customSubscription
-        ] as ObjectTypeDefinitionNode[])
+            customResolvers.customSubscription,
+        ] as ObjectTypeDefinitionNode[]),
     ].filter(Boolean) as DefinitionNode[];
 
     Object.values(Scalars).forEach((scalar: GraphQLScalarType) => composer.addTypeDefs(`scalar ${scalar.name}`));
@@ -214,7 +214,7 @@ function makeAugmentedSchema(
             unions: unionTypes,
             obj: relationship,
             callbacks,
-            validateResolvers
+            validateResolvers,
         });
 
         if (!pointInTypeDefs) {
@@ -232,14 +232,14 @@ function makeAugmentedSchema(
 
         const propertiesInterface = composer.createInterfaceTC({
             name: relationship.name.value,
-            fields: objectComposeFields
+            fields: objectComposeFields,
         });
 
         composer.createInputTC({
             name: `${relationship.name.value}Sort`,
             fields: propertiesInterface.getFieldNames().reduce((res, f) => {
                 return { ...res, [f]: "SortDirection" };
-            }, {})
+            }, {}),
         });
 
         const relationshipUpdateITC = composer.createInputTC({
@@ -251,8 +251,8 @@ function makeAugmentedSchema(
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
                 ...relFields.temporalFields.filter((field) => !field.timestamps),
-                ...relFields.pointFields
-            ])
+                ...relFields.pointFields,
+            ]),
         });
 
         addMathOperatorsToITC(relationshipUpdateITC);
@@ -267,15 +267,15 @@ function makeAugmentedSchema(
                 enumFields: relFields.enumFields,
                 temporalFields: relFields.temporalFields,
                 pointFields: relFields.pointFields,
-                primitiveFields: relFields.primitiveFields
+                primitiveFields: relFields.primitiveFields,
             },
             enableRegex,
-            features
+            features,
         });
 
         composer.createInputTC({
             name: `${relationship.name.value}Where`,
-            fields: relationshipWhereFields
+            fields: relationshipWhereFields,
         });
 
         composer.createInputTC({
@@ -285,8 +285,8 @@ function makeAugmentedSchema(
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
                 ...relFields.temporalFields,
-                ...relFields.pointFields
-            ])
+                ...relFields.pointFields,
+            ]),
         });
     });
 
@@ -303,7 +303,7 @@ function makeAugmentedSchema(
             unions: unionTypes,
             obj: interfaceRelationship,
             callbacks,
-            validateResolvers
+            validateResolvers,
         });
 
         if (!pointInTypeDefs) {
@@ -320,7 +320,7 @@ function makeAugmentedSchema(
 
         const composeInterface = composer.createInterfaceTC({
             name: interfaceRelationship.name.value,
-            fields: objectComposeFields
+            fields: objectComposeFields,
         });
 
         interfaceCommonFields.set(interfaceRelationship.name.value, interfaceFields);
@@ -328,7 +328,7 @@ function makeAugmentedSchema(
         const interfaceOptionsInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Options`, (tc) => {
             tc.addFields({
                 limit: "Int",
-                offset: "Int"
+                offset: "Int",
             });
         });
 
@@ -339,8 +339,8 @@ function makeAugmentedSchema(
                     type: sortDirection.getTypeName(),
                     directives: graphqlDirectivesToCompose(
                         f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
-                    )
-                }
+                    ),
+                },
             }),
             {}
         );
@@ -360,8 +360,8 @@ function makeAugmentedSchema(
                     description: `Specify one or more ${`${interfaceRelationship.name.value}Sort`} objects to sort ${pluralize(
                         interfaceRelationship.name.value
                     )} by. The sorts will be applied in the order in which they are arranged in the array.`,
-                    type: interfaceSortInput.List
-                }
+                    type: interfaceSortInput.List,
+                },
             });
         }
 
@@ -372,11 +372,11 @@ function makeAugmentedSchema(
                 enumFields: interfaceFields.enumFields,
                 temporalFields: interfaceFields.temporalFields,
                 pointFields: interfaceFields.pointFields,
-                primitiveFields: interfaceFields.primitiveFields
+                primitiveFields: interfaceFields.primitiveFields,
             },
             enableRegex,
             isInterface: true,
-            features
+            features,
         });
 
         const [
@@ -384,17 +384,17 @@ function makeAugmentedSchema(
             implementationsDeleteInput,
             implementationsDisconnectInput,
             implementationsUpdateInput,
-            implementationsWhereInput
+            implementationsWhereInput,
         ] = ["ConnectInput", "DeleteInput", "DisconnectInput", "UpdateInput", "Where"].map((suffix) =>
             composer.createInputTC({
                 name: `${interfaceRelationship.name.value}Implementations${suffix}`,
-                fields: {}
+                fields: {},
             })
         );
 
         composer.createInputTC({
             name: `${interfaceRelationship.name.value}Where`,
-            fields: { ...interfaceWhereFields, _on: implementationsWhereInput }
+            fields: { ...interfaceWhereFields, _on: implementationsWhereInput },
         });
 
         const interfaceCreateInput = composer.createInputTC(`${interfaceRelationship.name.value}CreateInput`);
@@ -408,9 +408,9 @@ function makeAugmentedSchema(
                         ...interfaceFields.scalarFields,
                         ...interfaceFields.enumFields,
                         ...interfaceFields.temporalFields.filter((field) => !field.timestamps),
-                        ...interfaceFields.pointFields
+                        ...interfaceFields.pointFields,
                     ]),
-                    _on: implementationsUpdateInput
+                    _on: implementationsUpdateInput,
                 });
             }
         );
@@ -424,7 +424,7 @@ function makeAugmentedSchema(
             sourceName: interfaceRelationship.name.value,
             nodes,
             relationshipPropertyFields: relationshipFields,
-            subgraph
+            subgraph,
         });
 
         relationships = [
@@ -435,8 +435,8 @@ function makeAugmentedSchema(
                 composeNode: composeInterface,
                 sourceName: interfaceRelationship.name.value,
                 nodes,
-                relationshipPropertyFields: relationshipFields
-            })
+                relationshipPropertyFields: relationshipFields,
+            }),
         ];
 
         implementations.forEach((implementation) => {
@@ -444,40 +444,40 @@ function makeAugmentedSchema(
 
             implementationsWhereInput.addFields({
                 [implementation.name.value]: {
-                    type: `${implementation.name.value}Where`
-                }
+                    type: `${implementation.name.value}Where`,
+                },
             });
 
             if (node.relationFields.length) {
                 implementationsConnectInput.addFields({
                     [implementation.name.value]: {
-                        type: `[${implementation.name.value}ConnectInput!]`
-                    }
+                        type: `[${implementation.name.value}ConnectInput!]`,
+                    },
                 });
 
                 implementationsDeleteInput.addFields({
                     [implementation.name.value]: {
-                        type: `[${implementation.name.value}DeleteInput!]`
-                    }
+                        type: `[${implementation.name.value}DeleteInput!]`,
+                    },
                 });
 
                 implementationsDisconnectInput.addFields({
                     [implementation.name.value]: {
-                        type: `[${implementation.name.value}DisconnectInput!]`
-                    }
+                        type: `[${implementation.name.value}DisconnectInput!]`,
+                    },
                 });
             }
 
             interfaceCreateInput.addFields({
                 [implementation.name.value]: {
-                    type: `${implementation.name.value}CreateInput`
-                }
+                    type: `${implementation.name.value}CreateInput`,
+                },
             });
 
             implementationsUpdateInput.addFields({
                 [implementation.name.value]: {
-                    type: `${implementation.name.value}UpdateInput`
-                }
+                    type: `${implementation.name.value}UpdateInput`,
+                },
             });
         });
 
@@ -518,7 +518,7 @@ function makeAugmentedSchema(
             implementationsDeleteInput,
             implementationsDisconnectInput,
             implementationsUpdateInput,
-            implementationsWhereInput
+            implementationsWhereInput,
         ].forEach((c) => ensureNonEmptyInput(composer, c));
     });
 
@@ -553,7 +553,7 @@ function makeAugmentedSchema(
             ...node.unionFields,
             ...node.temporalFields,
             ...node.pointFields,
-            ...node.customResolverFields
+            ...node.customResolverFields,
         ]);
 
         const composeNode = composer.createObjectTC({
@@ -561,7 +561,7 @@ function makeAugmentedSchema(
             fields: nodeFields,
             description: node.description,
             directives: graphqlDirectivesToCompose([...node.otherDirectives, ...node.propagatedDirectives]),
-            interfaces: node.interfaces.map((x) => x.name.value)
+            interfaces: node.interfaces.map((x) => x.name.value),
         });
 
         if (node.isGlobalNode) {
@@ -571,7 +571,7 @@ function makeAugmentedSchema(
                     const field = node.getGlobalIdField();
                     const value = src[field] as string | number;
                     return node.toGlobalId(value.toString());
-                }
+                },
             });
 
             composeNode.addInterface("Node");
@@ -584,8 +584,8 @@ function makeAugmentedSchema(
                     type: sortDirection.getTypeName(),
                     directives: graphqlDirectivesToCompose(
                         f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
-                    )
-                }
+                    ),
+                },
             }),
             {}
         );
@@ -597,7 +597,7 @@ function makeAugmentedSchema(
                 fields: sortFields,
                 description: `Fields to sort ${upperFirst(
                     node.plural
-                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${nodeSortTypeName} object.`
+                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${nodeSortTypeName} object.`,
             });
 
             composer.createInputTC({
@@ -607,16 +607,16 @@ function makeAugmentedSchema(
                         description: `Specify one or more ${nodeSortTypeName} objects to sort ${upperFirst(
                             node.plural
                         )} by. The sorts will be applied in the order in which they are arranged in the array.`,
-                        type: sortInput.NonNull.List
+                        type: sortInput.NonNull.List,
                     },
                     limit: "Int",
-                    offset: "Int"
-                }
+                    offset: "Int",
+                },
             });
         } else {
             composer.createInputTC({
                 name: `${node.name}Options`,
-                fields: { limit: "Int", offset: "Int" }
+                fields: { limit: "Int", offset: "Int" },
             });
         }
 
@@ -628,15 +628,15 @@ function makeAugmentedSchema(
                 enumFields: node.enumFields,
                 pointFields: node.pointFields,
                 primitiveFields: node.primitiveFields,
-                scalarFields: node.scalarFields
+                scalarFields: node.scalarFields,
             },
-            features
+            features,
         });
 
         const countField = {
             type: "Int!",
             resolve: numericalResolver,
-            args: {}
+            args: {},
         };
 
         if (node.federationResolvable) {
@@ -650,7 +650,7 @@ function makeAugmentedSchema(
                         }
                         const objectTypeComposer = aggregationTypesMapper.getAggregationType({
                             fieldName: field.typeMeta.name,
-                            nullable: !field.typeMeta.required
+                            nullable: !field.typeMeta.required,
                         });
 
                         if (!objectTypeComposer) return res;
@@ -658,16 +658,16 @@ function makeAugmentedSchema(
                         res[field.fieldName] = objectTypeComposer.NonNull;
 
                         return res;
-                    }, {})
+                    }, {}),
                 },
-                directives: graphqlDirectivesToCompose(node.propagatedDirectives)
+                directives: graphqlDirectivesToCompose(node.propagatedDirectives),
             });
         }
 
         const nodeWhereTypeName = `${node.name}Where`;
         composer.createInputTC({
             name: nodeWhereTypeName,
-            fields: node.isGlobalNode ? { id: "ID", ...queryFields } : queryFields
+            fields: node.isGlobalNode ? { id: "ID", ...queryFields } : queryFields,
         });
 
         augmentFulltextSchema(node, composer, nodeWhereTypeName, nodeSortTypeName);
@@ -676,7 +676,7 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${node.name}UniqueWhere`,
-            fields: uniqueFields
+            fields: uniqueFields,
         });
 
         composer.createInputTC({
@@ -686,8 +686,8 @@ function makeAugmentedSchema(
                 ...node.scalarFields,
                 ...node.enumFields,
                 ...node.temporalFields,
-                ...node.pointFields
-            ])
+                ...node.pointFields,
+            ]),
         });
 
         const nodeUpdateITC = composer.createInputTC({
@@ -697,8 +697,8 @@ function makeAugmentedSchema(
                 ...node.scalarFields,
                 ...node.enumFields,
                 ...node.temporalFields.filter((field) => !field.timestamps),
-                ...node.pointFields
-            ])
+                ...node.pointFields,
+            ]),
         });
 
         addMathOperatorsToITC(nodeUpdateITC);
@@ -712,18 +712,18 @@ function makeAugmentedSchema(
                 name: mutationResponseTypeNames.create,
                 fields: {
                     info: `CreateInfo!`,
-                    [node.plural]: `[${node.name}!]!`
+                    [node.plural]: `[${node.name}!]!`,
                 },
-                directives: graphqlDirectivesToCompose(node.propagatedDirectives)
+                directives: graphqlDirectivesToCompose(node.propagatedDirectives),
             });
 
             composer.createObjectTC({
                 name: mutationResponseTypeNames.update,
                 fields: {
                     info: `UpdateInfo!`,
-                    [node.plural]: `[${node.name}!]!`
+                    [node.plural]: `[${node.name}!]!`,
                 },
-                directives: graphqlDirectivesToCompose(node.propagatedDirectives)
+                directives: graphqlDirectivesToCompose(node.propagatedDirectives),
             });
         }
 
@@ -734,7 +734,7 @@ function makeAugmentedSchema(
             sourceName: node.name,
             nodes,
             relationshipPropertyFields: relationshipFields,
-            subgraph
+            subgraph,
         });
 
         relationships = [
@@ -745,8 +745,8 @@ function makeAugmentedSchema(
                 composeNode,
                 sourceName: node.name,
                 nodes,
-                relationshipPropertyFields: relationshipFields
-            })
+                relationshipPropertyFields: relationshipFields,
+            }),
         ];
 
         ensureNonEmptyInput(composer, `${node.name}UpdateInput`);
@@ -756,7 +756,7 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("read") && node.federationResolvable) {
             composer.Query.addFields({
-                [rootTypeFieldNames.read]: findResolver({ node })
+                [rootTypeFieldNames.read]: findResolver({ node }),
             });
             composer.Query.setFieldDirectives(
                 rootTypeFieldNames.read,
@@ -764,7 +764,7 @@ function makeAugmentedSchema(
             );
 
             composer.Query.addFields({
-                [rootTypeFieldNames.aggregate]: aggregateResolver({ node })
+                [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
             });
             composer.Query.setFieldDirectives(
                 rootTypeFieldNames.aggregate,
@@ -772,7 +772,7 @@ function makeAugmentedSchema(
             );
 
             composer.Query.addFields({
-                [`${node.plural}Connection`]: rootConnectionResolver({ node, composer })
+                [`${node.plural}Connection`]: rootConnectionResolver({ node, composer }),
             });
             composer.Query.setFieldDirectives(
                 `${node.plural}Connection`,
@@ -782,7 +782,7 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("create") && node.federationResolvable) {
             composer.Mutation.addFields({
-                [rootTypeFieldNames.create]: createResolver({ node })
+                [rootTypeFieldNames.create]: createResolver({ node }),
             });
             composer.Mutation.setFieldDirectives(
                 rootTypeFieldNames.create,
@@ -792,7 +792,7 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("delete") && node.federationResolvable) {
             composer.Mutation.addFields({
-                [rootTypeFieldNames.delete]: deleteResolver({ node })
+                [rootTypeFieldNames.delete]: deleteResolver({ node }),
             });
             composer.Mutation.setFieldDirectives(
                 rootTypeFieldNames.delete,
@@ -804,8 +804,8 @@ function makeAugmentedSchema(
             composer.Mutation.addFields({
                 [rootTypeFieldNames.update]: updateResolver({
                     node,
-                    schemaComposer: composer
-                })
+                    schemaComposer: composer,
+                }),
             });
             composer.Mutation.setFieldDirectives(
                 rootTypeFieldNames.update,
@@ -825,7 +825,7 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${union.name.value}Where`,
-            fields
+            fields,
         });
     });
 
@@ -846,7 +846,7 @@ function makeAugmentedSchema(
                 unions: unionTypes,
                 objects: objectTypes,
                 callbacks,
-                validateResolvers
+                validateResolvers,
             });
 
             const objectComposeFields = objectFieldsToComposeFields([
@@ -857,7 +857,7 @@ function makeAugmentedSchema(
                 ...objectFields.scalarFields,
                 ...objectFields.unionFields,
                 ...objectFields.objectFields,
-                ...objectFields.temporalFields
+                ...objectFields.temporalFields,
             ]);
 
             objectComposer.addFields(objectComposeFields);
@@ -866,7 +866,7 @@ function makeAugmentedSchema(
                 const customResolver = cypherResolver({
                     field,
                     statement: field.statement,
-                    type: type as "Query" | "Mutation"
+                    type: type as "Query" | "Mutation",
                 });
 
                 const composedField = objectFieldsToComposeFields([field])[field.fieldName];
@@ -885,7 +885,7 @@ function makeAugmentedSchema(
             unions: unionTypes,
             objects: objectTypes,
             callbacks,
-            validateResolvers
+            validateResolvers,
         });
 
         const baseFields: BaseField[][] = Object.values(objectFields);
@@ -897,7 +897,7 @@ function makeAugmentedSchema(
             fields: objectComposeFields,
             directives: graphqlDirectivesToCompose(
                 (inter.directives || []).filter((x) => !["auth", "exclude"].includes(x.name.value))
-            )
+            ),
         });
     });
 
@@ -946,7 +946,7 @@ function makeAugmentedSchema(
             }
             return res;
         }, {}),
-        ...(hasGlobalNodes ? { Node: { __resolveType: (root) => root.__resolveType } } : {})
+        ...(hasGlobalNodes ? { Node: { __resolveType: (root) => root.__resolveType } } : {}),
     };
 
     unionTypes.forEach((union) => {
@@ -987,15 +987,15 @@ function makeAugmentedSchema(
 
                 return true;
             }),
-            ...schemaExtensions
-        ]
+            ...schemaExtensions,
+        ],
     };
 
     return {
         nodes,
         relationships,
         typeDefs: parsedDoc,
-        resolvers: generatedResolvers
+        resolvers: generatedResolvers,
     };
 }
 

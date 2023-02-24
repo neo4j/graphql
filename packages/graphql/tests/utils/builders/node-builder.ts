@@ -43,7 +43,7 @@ export class NodeBuilder extends Builder<Node, NodeConstructor> {
             pointFields: [],
             customResolverFields: [],
             federationResolvable: true,
-            ...newOptions
+            ...newOptions,
         });
     }
 

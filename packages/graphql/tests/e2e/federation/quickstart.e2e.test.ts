@@ -85,7 +85,7 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
 
         const [locationsSchema, reviewsSchema] = await Promise.all([
             locationsSubgraph.getSchema(),
-            reviewsSubgraph.getSchema()
+            reviewsSubgraph.getSchema(),
         ]);
 
         locationsServer = new SubgraphServer(locationsSchema, 4006);
@@ -96,7 +96,7 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
         gatewayServer = new GatewayServer(
             [
                 { name: "locations", url: locationsUrl },
-                { name: "reviews", url: reviewsUrl }
+                { name: "reviews", url: reviewsUrl },
             ],
             4008
         );
@@ -137,7 +137,7 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
                   }
                 }
               }
-        `
+        `,
         });
 
         expect(response.status).toBe(200);
@@ -152,11 +152,11 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
                         photo: "photo",
                         reviewsForLocation: expect.toIncludeSameMembers([
                             { id: "1", comment: "Good", rating: 10 },
-                            { id: "2", comment: "Bad", rating: 1 }
-                        ])
-                    }
-                ]
-            }
+                            { id: "2", comment: "Bad", rating: 1 },
+                        ]),
+                    },
+                ],
+            },
         });
     });
 });

@@ -151,7 +151,7 @@ function getNodes(
             unions: definitionNodes.unionTypes,
             callbacks: options.callbacks,
             customResolvers,
-            validateResolvers: options.validateResolvers
+            validateResolvers: options.validateResolvers,
         });
 
         // Ensure that all required fields are returning either a scalar type or an enum
@@ -167,7 +167,7 @@ function getNodes(
                         ...nodeFields.scalarFields,
                         ...nodeFields.enumFields,
                         ...nodeFields.temporalFields,
-                        ...nodeFields.cypherFields.filter((field) => field.isScalar || field.isEnum)
+                        ...nodeFields.cypherFields.filter((field) => field.isScalar || field.isEnum),
                     ]
                         .map((x) => x.fieldName)
                         .includes(requiredField)
@@ -184,7 +184,7 @@ function getNodes(
             fulltextDirective = parseFulltextDirective({
                 directive: fulltextDirectiveDefinition,
                 nodeFields,
-                definition
+                definition,
             });
             floatWhereInTypeDefs = true;
         }
@@ -193,7 +193,7 @@ function getNodes(
         if (queryOptionsDirectiveDefinition) {
             queryOptionsDirective = parseQueryOptionsDirective({
                 directive: queryOptionsDirectiveDefinition,
-                definition
+                definition,
             });
         }
 
@@ -267,7 +267,7 @@ function getNodes(
             globalIdField: globalIdField?.fieldName,
             globalIdFieldIsInt: globalIdField?.typeMeta?.name === "Int",
             plural: parsePluralDirective(pluralDirectiveDefinition),
-            federationResolvable: resolvable
+            federationResolvable: resolvable,
         });
 
         return node;
@@ -279,7 +279,7 @@ function getNodes(
         cartesianPointInTypeDefs,
         floatWhereInTypeDefs,
         relationshipPropertyInterfaceNames,
-        interfaceRelationshipNames
+        interfaceRelationshipNames,
     };
 }
 

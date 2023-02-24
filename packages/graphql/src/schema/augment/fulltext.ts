@@ -48,9 +48,9 @@ export function augmentFulltextSchema(
                 [indexName]: composer.createInputTC({
                     name: `${node.name}${upperFirst(indexName)}Fulltext`,
                     fields: {
-                        phrase: new GraphQLNonNull(GraphQLString)
-                    }
-                })
+                        phrase: new GraphQLNonNull(GraphQLString),
+                    },
+                }),
             };
         }, {});
 
@@ -60,7 +60,7 @@ export function augmentFulltextSchema(
 
         composer.createInputTC({
             name: `${node.name}Fulltext`,
-            fields
+            fields,
         });
 
         composer.createInputTC({
@@ -68,8 +68,8 @@ export function augmentFulltextSchema(
             description: fulltextSortDescription,
             fields: {
                 [SCORE_FIELD]: "SortDirection",
-                [node.singular]: nodeSortTypeName
-            }
+                [node.singular]: nodeSortTypeName,
+            },
         });
 
         composer.createInputTC({
@@ -77,8 +77,8 @@ export function augmentFulltextSchema(
             description: fulltextWhereDescription,
             fields: {
                 [SCORE_FIELD]: FloatWhere.name,
-                [node.singular]: nodeWhereTypeName
-            }
+                [node.singular]: nodeWhereTypeName,
+            },
         });
 
         if (node.federationResolvable) {
@@ -87,8 +87,8 @@ export function augmentFulltextSchema(
                 description: fulltextResultDescription,
                 fields: {
                     [SCORE_FIELD]: new GraphQLNonNull(GraphQLFloat),
-                    [node.singular]: `${node.name}!`
-                }
+                    [node.singular]: `${node.name}!`,
+                },
             });
 
             node.fulltextDirective.indexes.forEach((index) => {
@@ -102,7 +102,7 @@ export function augmentFulltextSchema(
                     queryName = index.queryName;
                 }
                 composer.Query.addFields({
-                    [queryName]: fulltextResolver({ node }, index)
+                    [queryName]: fulltextResolver({ node }, index),
                 });
             });
         }

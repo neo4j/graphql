@@ -73,7 +73,7 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
 
         const [productsSchema, reviewsSchema] = await Promise.all([
             productsSubgraph.getSchema(),
-            reviewsSubgraph.getSchema()
+            reviewsSubgraph.getSchema(),
         ]);
 
         productsServer = new SubgraphServer(productsSchema, 4003);
@@ -84,7 +84,7 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
         gatewayServer = new GatewayServer(
             [
                 { name: "products", url: productsUrl },
-                { name: "reviews", url: reviewsUrl }
+                { name: "reviews", url: reviewsUrl },
             ],
             4005
         );
@@ -118,14 +118,14 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
                   }
                 }
               }
-        `
+        `,
         });
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
             data: {
-                [Review.plural]: [{ description: "review", score: 5, product: { id: "1", price: 5, name: "product" } }]
-            }
+                [Review.plural]: [{ description: "review", score: 5, product: { id: "1", price: 5, name: "product" } }],
+            },
         });
     });
 });

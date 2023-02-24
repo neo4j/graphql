@@ -35,8 +35,8 @@ export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
             [arg.name.value]: {
                 type: meta.pretty,
                 description: arg.description,
-                ...(arg.defaultValue ? { defaultValue: parseValueNode(arg.defaultValue) } : {})
-            }
+                ...(arg.defaultValue ? { defaultValue: parseValueNode(arg.defaultValue) } : {}),
+            },
         };
     }, {});
 }
@@ -47,7 +47,7 @@ export function graphqlDirectivesToCompose(directives: DirectiveNode[]): Directi
             (r: DirectiveArgs, d) => ({ ...r, [d.name.value]: parseValueNode(d.value) }),
             {}
         ) as DirectiveArgs,
-        name: directive.name.value
+        name: directive.name.value,
     }));
 }
 
@@ -62,7 +62,7 @@ export function objectFieldsToComposeFields(fields: BaseField[]): {
         const newField = {
             type: field.typeMeta.pretty,
             args: {},
-            description: field.description
+            description: field.description,
         } as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
 
         if (field.otherDirectives.length) {
@@ -104,12 +104,12 @@ export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<str
                 res[f.fieldName] = {
                     type: fieldType,
                     defaultValue,
-                    directives: deprecatedDirectives
+                    directives: deprecatedDirectives,
                 };
             } else {
                 res[f.fieldName] = {
                     type: fieldType,
-                    directives: deprecatedDirectives
+                    directives: deprecatedDirectives,
                 };
             }
 
@@ -142,45 +142,45 @@ export function objectFieldsToSubscriptionsWhereInputFields(
             [f.fieldName]: fieldType,
             [`${f.fieldName}_NOT`]: {
                 type: fieldType,
-                directives: [DEPRECATE_NOT]
+                directives: [DEPRECATE_NOT],
             },
             ...(ifArrayOfAnyTypeExceptBoolean && {
                 [`${f.fieldName}_INCLUDES`]: inputTypeName,
                 [`${f.fieldName}_NOT_INCLUDES`]: {
                     type: inputTypeName,
-                    directives: [DEPRECATE_NOT]
-                }
+                    directives: [DEPRECATE_NOT],
+                },
             }),
             ...(ifAnyTypeExceptArrayAndBoolean && {
                 [`${f.fieldName}_IN`]: `[${inputTypeName}]`,
                 [`${f.fieldName}_NOT_IN`]: {
                     type: `[${inputTypeName}]`,
-                    directives: [DEPRECATE_NOT]
-                }
+                    directives: [DEPRECATE_NOT],
+                },
             }),
             ...(isOneOfNumberTypes && {
                 [`${f.fieldName}_LT`]: fieldType,
                 [`${f.fieldName}_LTE`]: fieldType,
                 [`${f.fieldName}_GT`]: fieldType,
-                [`${f.fieldName}_GTE`]: fieldType
+                [`${f.fieldName}_GTE`]: fieldType,
             }),
             ...(isOneOfStringTypes && {
                 [`${f.fieldName}_STARTS_WITH`]: fieldType,
                 [`${f.fieldName}_NOT_STARTS_WITH`]: {
                     type: fieldType,
-                    directives: [DEPRECATE_NOT]
+                    directives: [DEPRECATE_NOT],
                 },
                 [`${f.fieldName}_ENDS_WITH`]: fieldType,
                 [`${f.fieldName}_NOT_ENDS_WITH`]: {
                     type: fieldType,
-                    directives: [DEPRECATE_NOT]
+                    directives: [DEPRECATE_NOT],
                 },
                 [`${f.fieldName}_CONTAINS`]: fieldType,
                 [`${f.fieldName}_NOT_CONTAINS`]: {
                     type: fieldType,
-                    directives: [DEPRECATE_NOT]
-                }
-            })
+                    directives: [DEPRECATE_NOT],
+                },
+            }),
         };
     }, {});
 }
@@ -199,7 +199,7 @@ export function objectFieldsToUpdateInputFields(fields: BaseField[]): Record<str
 
         res[f.fieldName] = {
             type: fieldType,
-            directives: deprecatedDirectives
+            directives: deprecatedDirectives,
         };
 
         return res;

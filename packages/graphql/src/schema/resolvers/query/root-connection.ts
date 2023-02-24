@@ -48,7 +48,7 @@ export function rootConnectionResolver({ node, composer }: { node: Node; compose
             cypher,
             params,
             defaultAccessMode: "READ",
-            context
+            context,
         });
 
         let totalCount = 0;
@@ -57,7 +57,7 @@ export function rootConnectionResolver({ node, composer }: { node: Node; compose
             hasNextPage: false,
             hasPreviousPage: false,
             startCursor: null,
-            endCursor: null
+            endCursor: null,
         };
 
         if (executeResult.records[0]) {
@@ -69,7 +69,7 @@ export function rootConnectionResolver({ node, composer }: { node: Node; compose
                 selectionSet: resolveTree as unknown as SelectionSetNode,
                 source: { edges: record.edges },
                 args: { first: args.first, after: args.after },
-                totalCount
+                totalCount,
             });
 
             edges = connection.edges as any[];
@@ -79,7 +79,7 @@ export function rootConnectionResolver({ node, composer }: { node: Node; compose
         return {
             totalCount,
             edges,
-            pageInfo
+            pageInfo,
         };
     }
 
@@ -87,9 +87,9 @@ export function rootConnectionResolver({ node, composer }: { node: Node; compose
         name: `${node.name}Edge`,
         fields: {
             cursor: "String!",
-            node: `${node.name}!`
+            node: `${node.name}!`,
         },
-        directives: graphqlDirectivesToCompose(node.propagatedDirectives)
+        directives: graphqlDirectivesToCompose(node.propagatedDirectives),
     });
 
     const rootConnection = composer.createObjectTC({
@@ -97,9 +97,9 @@ export function rootConnectionResolver({ node, composer }: { node: Node; compose
         fields: {
             totalCount: "Int!",
             pageInfo: "PageInfo!",
-            edges: rootEdge.NonNull.List.NonNull
+            edges: rootEdge.NonNull.List.NonNull,
         },
-        directives: graphqlDirectivesToCompose(node.propagatedDirectives)
+        directives: graphqlDirectivesToCompose(node.propagatedDirectives),
     });
 
     // since sort is not created when there is nothing to sort, we check for its existence
@@ -124,13 +124,13 @@ export function rootConnectionResolver({ node, composer }: { node: Node; compose
                               {
                                   name: "deprecated",
                                   args: {
-                                      reason: fulltextArgDeprecationMessage
-                                  }
-                              }
-                          ]
-                      }
+                                      reason: fulltextArgDeprecationMessage,
+                                  },
+                              },
+                          ],
+                      },
                   }
-                : {})
-        }
+                : {}),
+        },
     };
 }
