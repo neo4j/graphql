@@ -17,109 +17,38 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { Attribute } from "../attribute/Attribute";
 import type { ConcreteEntity } from "../entity/ConcreteEntity";
 import type { Entity } from "../entity/Entity";
 
-/* 
-   input UserAuthorizationWhere {
-    OR: [UserAuthorizationWhere!]
-    AND: [UserAuthorizationWhere!]
-    NOT: UserAuthorizationWhere
-    jwtPayload: JWTPayloadWhere
-    node: UserWhere
-  }
-
-  input UserWhere {
-    OR: [UserWhere!]
-    AND: [UserWhere!]
-    NOT: UserWhere
-    id: StringWhere
-    name: StringWhere
-  } 
-  
-  input StringWhere {
-    OR: [StringWhere!]
-    AND: [StringWhere!]
-    NOT: StringWhere
-    equals: String
-    in: [String!]
-    matches: String
-    contains: String
-    startsWith: String
-    endsWith: String
-}
-*/
-
-const AUTHORIZATION_OPERATION = ["READ", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"] as const;
-
-abstract class AuthorizationAnnotation<T extends ConcreteEntity> {
-    private filter?: Filter<T>;
-    private subscriptionFilter?: SubscriptionFilter;
+class AuthorizationAnnotation<T extends ConcreteEntity> { // @authorization
+    private filter?: AuthorizationFilterRule[]; //UserAuthorizationFilterRule
+    private subscriptionFilter?: SubscriptionFilter; 
     private validate?: Validate;
-    private parent: Entity | Attribute;
 
     constructor({
-        parent,
         filter,
         subscriptionFilter,
         validate,
     }: {
-        parent: Entity | Attribute;
-        filter?: Filter<T>;
-        subscriptionFilter?: SubscriptionFilter;
-        validate?: Validate;
+        filter?: AuthorizationFilterRule[];
+        subscriptionFilter?: SubscriptionFilter; //
+        validate?: AuthorizationValidateFilters;
     }) {
-        this.parent = parent;
         this.filter = filter;
         this.subscriptionFilter = subscriptionFilter;
         this.validate = validate;
     }
-    // ...
 }
 
-export class EntityAuthorizationAnnotation<T extends ConcreteEntity> extends AuthorizationAnnotation<T> {
-    constructor({
-        parent,
-        filter,
-        subscriptionFilter,
-        validate,
-    }: {
-        parent: Entity | Attribute;
-        filter?: Filter<T>;
-        subscriptionFilter?: SubscriptionFilter;
-        validate?: Validate;
-    }) {
-        super({ parent, filter, subscriptionFilter, validate });
-    }
-}
+const AUTHORIZATION_OPERATION = ["READ", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"] as const;
+type AuthorizationFilterOperation = keyof typeof AUTHORIZATION_OPERATION;
 
-export class AttributeAuthorizationAnnotation<T extends ConcreteEntity> extends AuthorizationAnnotation<T> {
-    constructor({
-        parent,
-        filter,
-        subscriptionFilter,
-        validate,
-    }: {
-        parent: Entity | Attribute;
-        filter?: Filter<T>;
-        subscriptionFilter?: SubscriptionFilter;
-        validate?: Validate;
-    }) {
-        super({ parent, filter, subscriptionFilter, validate });
-    }
-}
-
-interface IAuthorizationFilter<T> {
-    operations: AuthorizationFilterOperation[];
-    requireAuthentication: boolean;
-    where: AuthorizationWhere<T>;
-}
-
-class AuthorizationFilter<T extends ConcreteEntity> implements IAuthorizationFilter<T> {
-    operations: AuthorizationFilterOperation[];
-    requireAuthentication: boolean;
-    where: AuthorizationWhere<T>;
+class AuthorizationFilterRule { // UserAuthorizationFilterRule
+    operations: AuthorizationFilterOperation[]; // AuthorizationFilterOperation
+    requireAuthentication: boolean; 
+    where: AuthorizationFilterWhere; // UserAuthorizationWhere
 
     constructor({
         operations,
@@ -128,7 +57,7 @@ class AuthorizationFilter<T extends ConcreteEntity> implements IAuthorizationFil
     }: {
         operations: AuthorizationFilterOperation[];
         requireAuthentication: boolean;
-        where: AuthorizationWhere<T>;
+        where: AuthorizationFilterWhere;
     }) {
         this.operations = operations;
         this.requireAuthentication = requireAuthentication;
@@ -136,43 +65,63 @@ class AuthorizationFilter<T extends ConcreteEntity> implements IAuthorizationFil
     }
 }
 
-interface AuthorizationWhere<T> extends LogicalPredicate<AuthorizationWhere<T>> {
-    jwtPayload: JWTPayloadPredicate; // TODO could be this undefined?
-    node: UserWhere; // TODO still need to be defined, could be this undefined?
-}
-
-class AuthorizationFilterWhere<T extends ConcreteEntity> implements AuthorizationWhere<T> {
-    jwtPayload: JWTPayloadPredicate;
-    node: UserWhere;
-
-    constructor({ jwtPayload, node }: { jwtPayload: JWTPayloadPredicate; node: UserWhere }) {
+class AuthorizationFilterWhere {
+    jwtPayload?: Record<string, any>; // TODO could be this undefined? //JWTPayloadWhere
+    node?: Record<string, any>; // TODO still need to be defined, could be this undefined? // UserWhere
+    
+    constructor({ jwtPayload, node }: { jwtPayload: Record<string, any>, node: Record<string, any> }) {
         this.jwtPayload = jwtPayload;
         this.node = node;
     }
 }
 
-class Filter<T> {
-    node: UserWhere;
 
-    constructor({ node }: { node: UserWhere }) {
-        this.node = node;
-    }
+
+// 
+
+/**
+query {
+  userConnection(where: { // with auth an Entity filter is all the time present
+    posts: {
+      some: {
+        edges: {
+          node: {
+            title: {
+              contains: "wonderful"
+            }
+          }
+          fields: {
+            timestamp: { gt: 32918083 }
+          }
+       }}}
+  })
 }
+
+*/
+
+// [movie1, movie2]
+
+
 
 type ParsedJWTSchema = Record<string, any>;
 
 interface JWTPayloadPredicate extends LogicalPredicate<JWTPayloadPredicate>, ParsedJWTSchema {}
 
-interface UserWhere extends LogicalPredicate<UserWhere> {
+interface EntityWhere {
     id: StringPredicate;
     name: StringPredicate;
 }
 
-type AuthorizationFilterOperation = keyof typeof AUTHORIZATION_OPERATION;
-
 interface SubscriptionFilter {}
 
-interface Validate {}
+interface AuthorizationValidateFilters {
+    pre: AuthorizationFilterRule[];
+    post: AuthorizationFilterRule[];
+}
+
+
+
+// OperationTree classes
 
 interface StringPredicate extends LogicalPredicate<StringPredicate> {
     equals?: string;
@@ -194,3 +143,28 @@ type LogicalPredicate<T> = {
     AND?: [T];
     NOT?: T;
 };
+
+interface Predicate {
+    getCypherPredicate(): Cypher.Predicate;
+}
+
+class EqualsPredicate implements Predicate {
+    predicate: Cypher.Predicate;
+
+    constructor(left, right) {
+        this.predicate = Cypher.eq(left, right); // left = this0.id
+    }
+}
+
+class EntityPredicate implements Predicate {
+    nodeRef: Cypher.Node; // maybe is not needed
+    predicates: Predicate[];
+    constructor(nodeRef: Cypher.Node, predicates: Predicate[]) {
+        this.nodeRef = nodeRef;
+        this.predicates = predicates;
+    }
+
+    getCypherPredicate(): Cypher.Predicate {
+        return Cypher.and();//Cypher.and(utils.mergePredicate(this.predicates.map(predicate => predicate.getCypherPredicate()));
+    }
+}
