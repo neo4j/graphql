@@ -94,6 +94,9 @@ jobs:
   integration-tests-on-prem:
     uses: ./.github/workflows/reusable-integration-tests-on-prem.yml
 
+  federation-tests:
+    uses: ./.github/workflows/reusable-federation-tests.yml
+
   quality-gate:
     needs:
       - reviewdog-eslint
