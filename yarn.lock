@@ -331,7 +331,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/federation-subgraph-compatibility@npm:^1.1.1":
+"@apollo/federation-subgraph-compatibility@npm:1.1.1":
   version: 1.1.1
   resolution: "@apollo/federation-subgraph-compatibility@npm:1.1.1"
   dependencies:
@@ -6050,7 +6050,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "apollo-federation-subgraph-compatibility@workspace:packages/apollo-federation-subgraph-compatibility"
   dependencies:
-    "@apollo/federation-subgraph-compatibility": ^1.1.1
+    "@apollo/federation-subgraph-compatibility": 1.1.1
     "@apollo/server": ^4.4.0
     "@graphql-tools/wrap": ^9.3.6
     "@neo4j/graphql": ^3.16.1
