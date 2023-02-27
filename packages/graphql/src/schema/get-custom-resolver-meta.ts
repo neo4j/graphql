@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { mergeSchemas } from "@graphql-tools/schema";
 import type { IResolvers } from "@graphql-tools/utils";
 import {
     FieldDefinitionNode,
@@ -27,10 +26,8 @@ import {
     SelectionSetNode,
     TypeNode,
     UnionTypeDefinitionNode,
-    validate,
     Kind,
     parse,
-    GraphQLSchema,
     FieldNode,
 } from "graphql";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
@@ -101,28 +98,6 @@ export default function getCustomResolverMeta({
         return {
             requiredFields: requiredFieldsResolveTree,
         };
-    }
-}
-
-export function validateCustomResolverRequires(
-    baseSchema: GraphQLSchema,
-    object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
-    selectionSetDocument: DocumentNode
-) {
-    const validationSchema = mergeSchemas({
-        schemas: [baseSchema],
-        typeDefs: `
-                schema {
-                    query: ${object.name.value}
-                }
-            `,
-        assumeValid: true,
-    });
-    const errors = validate(validationSchema, selectionSetDocument);
-    if (errors.length) {
-        throw new Error(
-            `Invalid selection set provided to @customResolver on ${object.name.value}:\n${errors.join("\n")}`
-        );
     }
 }
 
