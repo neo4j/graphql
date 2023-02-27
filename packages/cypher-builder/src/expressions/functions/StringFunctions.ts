@@ -20,7 +20,7 @@
 import type { Expr } from "../../types";
 import { filterTruthy } from "../../utils/filter-truthy";
 
-import { CypherFunction } from "./CypherFunction";
+import { CypherFunction } from "./CypherFunctions";
 
 /**
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/string/)
