@@ -26,7 +26,7 @@ import type {
     NameNode,
     ObjectTypeDefinitionNode,
 } from "graphql";
-import { GraphQLID, GraphQLNonNull, GraphQLSchema, Kind, parse, print } from "graphql";
+import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
 import type { ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
@@ -96,7 +96,6 @@ function makeAugmentedSchema(
         callbacks,
         userCustomResolvers,
         subgraph,
-        baseSchema,
     }: {
         features?: Neo4jFeaturesSettings;
         enableRegex?: boolean;
@@ -105,8 +104,7 @@ function makeAugmentedSchema(
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
         subgraph?: Subgraph;
-        baseSchema: GraphQLSchema;
-    } = { validateResolvers: true, baseSchema: new GraphQLSchema({}) }
+    } = { validateResolvers: true }
 ): {
     nodes: Node[];
     relationships: Relationship[];
@@ -164,7 +162,7 @@ function makeAugmentedSchema(
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
-    const getNodesResult = getNodes(baseSchema, definitionNodes, { callbacks, userCustomResolvers, validateResolvers });
+    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers, validateResolvers });
 
     const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames, floatWhereInTypeDefs } =
         getNodesResult;
@@ -209,7 +207,6 @@ function makeAugmentedSchema(
         });
 
         const relFields = getObjFieldMeta({
-            baseSchema,
             enums: enumTypes,
             interfaces: interfaceTypes,
             objects: objectTypes,
@@ -299,7 +296,6 @@ function makeAugmentedSchema(
         );
 
         const interfaceFields = getObjFieldMeta({
-            baseSchema,
             enums: enumTypes,
             interfaces: [...interfaceTypes, ...interfaceRelationships],
             objects: objectTypes,
@@ -819,7 +815,6 @@ function makeAugmentedSchema(
 
         if (cypherType) {
             const objectFields = getObjFieldMeta({
-                baseSchema,
                 obj: cypherType,
                 scalars: scalarTypes,
                 enums: enumTypes,
@@ -859,7 +854,6 @@ function makeAugmentedSchema(
 
     interfaceTypes.forEach((inter) => {
         const objectFields = getObjFieldMeta({
-            baseSchema,
             obj: inter,
             scalars: scalarTypes,
             enums: enumTypes,
