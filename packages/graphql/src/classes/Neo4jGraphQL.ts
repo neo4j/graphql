@@ -48,7 +48,6 @@ import { Executor, ExecutorConstructorParam } from "./Executor";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { validateDocument } from "../schema/validation";
-import { validateAugmentedSchema } from "../schema/validation/validate-augmented-schema";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
@@ -297,10 +296,6 @@ class Neo4jGraphQL {
                 resolvers: wrappedResolvers,
             });
 
-            if (validateTypeDefs) {
-                validateAugmentedSchema(document, schema);
-            }
-
             resolve(this.addDefaultFieldResolvers(schema));
         });
     }
@@ -342,10 +337,6 @@ class Neo4jGraphQL {
             typeDefs: subgraphTypeDefs,
             resolvers: wrappedResolvers as Record<string, any>,
         });
-
-        if (validateTypeDefs) {
-            validateAugmentedSchema(document, schema);
-        }
 
         return this.addDefaultFieldResolvers(schema);
     }
