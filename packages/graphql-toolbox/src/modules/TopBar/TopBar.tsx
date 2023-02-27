@@ -140,7 +140,6 @@ export const TopBar = () => {
                                 onClick={() => auth?.logout()}
                             >
                                 <ArrowRightOnRectangleIconOutline className="w-full h-full" />
-                                {/* TODO: this should be a logout icon */}
                                 <span>Disconnect</span>
                             </Button>
                         </div>

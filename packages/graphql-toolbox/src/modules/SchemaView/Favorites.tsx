@@ -73,7 +73,7 @@ const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps)
                 <IconButton
                     aria-label="Finish editing favorite name"
                     className={`border-none h-5 w-5`}
-                    clean={true}
+                    clean
                     onClick={() => {
                         setEditMode(false);
                         saveName(nameValue);
@@ -85,7 +85,7 @@ const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps)
                 <IconButton
                     aria-label="Edit favorite name"
                     className={`border-none h-5 w-5`}
-                    clean={true}
+                    clean
                     onClick={() => setEditMode(true)}
                 >
                     <PencilIconOutline />
@@ -131,7 +131,7 @@ export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: Favorit
                                 <IconButton
                                     aria-label="Delete favorite"
                                     className="border-none h-5 w-5 n-text-danger-30 ml-3"
-                                    clean={true}
+                                    clean
                                     onClick={() => deleteFavorite(favorite.id)}
                                 >
                                     <TrashIconOutline />
