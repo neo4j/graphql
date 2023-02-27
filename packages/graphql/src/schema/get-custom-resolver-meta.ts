@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { mergeSchemas } from "@graphql-tools/schema";
 import type { IResolvers } from "@graphql-tools/utils";
 import {
     FieldDefinitionNode,
@@ -27,10 +26,8 @@ import {
     SelectionSetNode,
     TypeNode,
     UnionTypeDefinitionNode,
-    validate,
     Kind,
     parse,
-    GraphQLSchema,
     FieldNode,
 } from "graphql";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
@@ -44,10 +41,9 @@ const INVALID_DIRECTIVES_TO_REQUIRE = ["customResolver", "computed"];
 export const INVALID_REQUIRED_FIELD_ERROR = `It is not possible to require fields that use the following directives: ${INVALID_DIRECTIVES_TO_REQUIRE.map(
     (name) => `\`@${name}\``
 ).join(", ")}`;
-const INVALID_SELECTION_SET_ERROR = "Invalid selection set passed to @customResolver required";
+export const INVALID_SELECTION_SET_ERROR = "Invalid selection set passed to @customResolver required";
 
 export default function getCustomResolverMeta({
-    baseSchema,
     field,
     object,
     objects,
@@ -57,7 +53,6 @@ export default function getCustomResolverMeta({
     customResolvers,
     interfaceField,
 }: {
-    baseSchema: GraphQLSchema;
     field: FieldDefinitionNode;
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
@@ -92,7 +87,6 @@ export default function getCustomResolverMeta({
     }
 
     const selectionSetDocument = parse(`{ ${directiveRequiresArgument.value.value} }`);
-    validateSelectionSet(baseSchema, object, selectionSetDocument);
     const requiredFieldsResolveTree = selectionSetToResolveTree(
         object.fields || [],
         objects,
@@ -104,28 +98,6 @@ export default function getCustomResolverMeta({
         return {
             requiredFields: requiredFieldsResolveTree,
         };
-    }
-}
-
-function validateSelectionSet(
-    baseSchema: GraphQLSchema,
-    object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
-    selectionSetDocument: DocumentNode
-) {
-    const validationSchema = mergeSchemas({
-        schemas: [baseSchema],
-        typeDefs: `
-                schema {
-                    query: ${object.name.value}
-                }
-            `,
-        assumeValid: true,
-    });
-    const errors = validate(validationSchema, selectionSetDocument);
-    if (errors.length) {
-        throw new Error(
-            `Invalid selection set provided to @customResolver on ${object.name.value}:\n${errors.join("\n")}`
-        );
     }
 }
 

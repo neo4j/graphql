@@ -18,7 +18,7 @@
  */
 
 import type { IResolvers } from "@graphql-tools/utils";
-import type { DirectiveNode, GraphQLSchema, NamedTypeNode } from "graphql";
+import type { DirectiveNode, NamedTypeNode } from "graphql";
 import type { Exclude } from "../classes";
 import { Node } from "../classes";
 import type { NodeDirective } from "../classes/NodeDirective";
@@ -44,7 +44,6 @@ type Nodes = {
 };
 
 function getNodes(
-    baseSchema: GraphQLSchema,
     definitionNodes: DefinitionNodes,
     options: {
         callbacks?: Neo4jGraphQLCallbacks;
@@ -131,7 +130,6 @@ function getNodes(
         ] as IResolvers;
 
         const nodeFields = getObjFieldMeta({
-            baseSchema,
             obj: definition,
             enums: definitionNodes.enumTypes,
             interfaces: definitionNodes.interfaceTypes,

@@ -18,19 +18,14 @@
  */
 
 import {
-    DocumentNode,
-    extendSchema,
     FieldDefinitionNode,
-    GraphQLSchema,
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
-    specifiedDirectives,
     UnionTypeDefinitionNode,
     Kind,
 } from "graphql";
-import { directives } from "..";
 import { generateResolveTree } from "../translate/utils/resolveTree";
-import getCustomResolverMeta from "./get-custom-resolver-meta";
+import getCustomResolverMeta, { INVALID_SELECTION_SET_ERROR } from "./get-custom-resolver-meta";
 
 describe("getCustomResolverMeta", () => {
     const authorType = "Author";
@@ -457,18 +452,6 @@ describe("getCustomResolverMeta", () => {
 
     const unions: UnionTypeDefinitionNode[] = [];
 
-    const document: DocumentNode = {
-        kind: Kind.DOCUMENT,
-        definitions: [...objects, ...interfaces, ...unions],
-    };
-
-    const baseSchema = extendSchema(
-        new GraphQLSchema({
-            directives: [...Object.values(directives), ...specifiedDirectives],
-        }),
-        document
-    );
-
     const object = objects.find((obj) => obj.name.value === authorType) as ObjectTypeDefinitionNode;
 
     const resolvers = {
@@ -503,7 +486,6 @@ describe("getCustomResolverMeta", () => {
         };
 
         const result = getCustomResolverMeta({
-            baseSchema,
             field,
             object,
             objects,
@@ -545,7 +527,6 @@ describe("getCustomResolverMeta", () => {
         };
 
         const result = getCustomResolverMeta({
-            baseSchema,
             field,
             object,
             objects,
@@ -601,7 +582,6 @@ describe("getCustomResolverMeta", () => {
         };
 
         const result = getCustomResolverMeta({
-            baseSchema,
             field,
             object,
             objects,
@@ -658,7 +638,6 @@ describe("getCustomResolverMeta", () => {
         };
 
         const result = getCustomResolverMeta({
-            baseSchema,
             field,
             object,
             objects,
@@ -754,7 +733,6 @@ describe("getCustomResolverMeta", () => {
 
         expect(() =>
             getCustomResolverMeta({
-                baseSchema,
                 field,
                 object,
                 objects,
@@ -763,7 +741,7 @@ describe("getCustomResolverMeta", () => {
                 unions,
                 customResolvers: resolvers,
             })
-        ).toThrow(`Invalid selection set provided to @customResolver on ${authorType}`);
+        ).toThrow(INVALID_SELECTION_SET_ERROR);
     });
 
     test("Check throws error if customResolver is not provided", () => {
@@ -811,7 +789,6 @@ describe("getCustomResolverMeta", () => {
 
         expect(() =>
             getCustomResolverMeta({
-                baseSchema,
                 field,
                 object,
                 objects,
@@ -871,7 +848,6 @@ describe("getCustomResolverMeta", () => {
 
         expect(() =>
             getCustomResolverMeta({
-                baseSchema,
                 field,
                 object,
                 objects,
@@ -932,7 +908,6 @@ describe("getCustomResolverMeta", () => {
 
         expect(() =>
             getCustomResolverMeta({
-                baseSchema,
                 field,
                 object,
                 objects,
