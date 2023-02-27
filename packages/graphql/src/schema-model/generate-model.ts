@@ -31,6 +31,7 @@ import { getDefinitionNodes } from "../schema/get-definition-nodes";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
 import type { Annotation } from "./annotation/Annotation";
+//import type { AuthorizationFilterRule } from "./annotation/AuthorizationAnnotation";
 import { CypherAnnotation } from "./annotation/CypherAnnotation";
 import { Attribute } from "./attribute/Attribute";
 import { CompositeEntity } from "./entity/CompositeEntity";
@@ -122,6 +123,35 @@ function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotatio
         })
     );
 }
+
+function createEntityAnnotation(directives: readonly DirectiveNode[]) {
+    return filterTruthy(
+        directives.map((directive) => {
+            switch (directive.name.value) {
+                case "authorization":
+                    return undefined
+                   // return parseAuthorizationAnnotation(directive);
+                default:
+                    return undefined;
+            }
+        })
+    );
+}
+/* 
+function parseAuthorizationAnnotation(directive: DirectiveNode) {
+    const { filter, filterSubscriptions, validate } = parseArguments(directive) as {
+        filter: AuthorizationFilterRule[];
+        filterSubscriptions: AuthorizationFilterRule[];
+        validate: { pre: AuthorizationFilterRule[]; post: AuthorizationFilterRule[] };
+    };
+
+    const filterRules = parseAuthorizationFilter(filter);
+    const filterSubscriptionRules = parseAuthorizationFilter(filterSubscriptions);
+    const validatePreRules = parseAuthorizationFilter(validate?.pre);
+    const validatePostRules = parseAuthorizationFilter(validate?.post);
+}
+
+function parseAuthorizationFilter(rules: any): AuthorizationFilterRule[] {} */
 
 function parseCypherAnnotation(directive: DirectiveNode): CypherAnnotation {
     const { statement } = parseArguments(directive);

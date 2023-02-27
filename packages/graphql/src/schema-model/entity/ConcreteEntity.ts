@@ -23,7 +23,6 @@ import type { Entity } from "./Entity";
 export class ConcreteEntity implements Entity {
     public readonly name: string;
     public readonly labels: Set<string>;
-
     public readonly attributes: Map<string, Attribute> = new Map();
 
     constructor({ name, labels, attributes = [] }: { name: string; labels: string[]; attributes?: Attribute[] }) {

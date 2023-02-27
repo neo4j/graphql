@@ -17,46 +17,47 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
-import type { Attribute } from "../attribute/Attribute";
-import type { ConcreteEntity } from "../entity/ConcreteEntity";
-import type { Entity } from "../entity/Entity";
-
-class AuthorizationAnnotation<T extends ConcreteEntity> {
-    // @authorization
-    private filter?: AuthorizationFilterRule[]; //UserAuthorizationFilterRule
-    private validatePre?: AuthorizationFilterRule[]; //UserAuthorizationPreValidateRule
-    private validatePost?: AuthorizationFilterRule[]; //UserAuthorizationPostValidateRule
-    // TODO:
-    // private subscriptionFilter?: SubscriptionFilter;
+export class AuthorizationAnnotation {
+    filter?: AuthorizationFilterRule[];
+    validatePre?: AuthorizationFilterRule[];
+    validatePost?: AuthorizationFilterRule[];
+    filterSubscriptions?: AuthorizationFilterRule[];
 
     constructor({
         filter,
         validatePre,
         validatePost,
+        filterSubscriptions,
     }: {
         filter?: AuthorizationFilterRule[];
         validatePre?: AuthorizationFilterRule[];
         validatePost?: AuthorizationFilterRule[];
+        filterSubscriptions?: AuthorizationFilterRule[];
     }) {
         this.filter = filter;
         this.validatePre = validatePre;
         this.validatePost = validatePost;
+        this.filterSubscriptions = filterSubscriptions;
     }
 }
 
+type AuthorizationFilterRule = {
+    operations?: AuthorizationFilterOperation[];
+    requireAuthentication: boolean;
+    where: AuthorizationFilterWhere; 
+}
 const AUTHORIZATION_OPERATION = ["READ", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"] as const;
-type AuthorizationFilterOperation = keyof typeof AUTHORIZATION_OPERATION;
+export type AuthorizationFilterOperation = keyof typeof AUTHORIZATION_OPERATION;
 
-class AuthorizationFilterRule {
+export class AuthorizationFilterRuleImp {
     // UserAuthorizationFilterRule
-    operations: AuthorizationFilterOperation[]; // AuthorizationFilterOperation
+    operations?: AuthorizationFilterOperation[]; // AuthorizationFilterOperation, this is not available for subscription
     requireAuthentication: boolean;
     where: AuthorizationFilterWhere; // UserAuthorizationWhere
 
     constructor({
         operations,
-        requireAuthentication,
+        requireAuthentication = true,
         where,
     }: {
         operations: AuthorizationFilterOperation[];
@@ -69,59 +70,26 @@ class AuthorizationFilterRule {
     }
 }
 
-class AuthorizationFilterWhere {
-    jwtPayload?: Record<string, any>; // TODO could be this undefined? //JWTPayloadWhere
-    node?: Record<string, any>; // TODO still need to be defined, could be this undefined? // UserWhere
+export class AuthorizationFilterWhere {
+    jwtPayload?: Record<string, any>;
+    node?: Record<string, any>;
 
     constructor({ jwtPayload, node }: { jwtPayload: Record<string, any>; node: Record<string, any> }) {
+        if (!jwtPayload && !node) {
+            throw new Error(
+                "At least one between jwtPayload or node should be present to construct the AuthorizationFilterWhere"
+            ); // TODO: Add a custom error with a a proper error message
+        }
         this.jwtPayload = jwtPayload;
         this.node = node;
     }
-
-    // if node --> need Cypher.Node nodeRef
-    // if jwtPayload --> is string, no need for nodeRef
 }
-
-type ParsedJWTSchema = Record<string, any>;
-
-interface JWTPayloadPredicate extends LogicalPredicate<JWTPayloadPredicate>, ParsedJWTSchema {}
-
-interface EntityWhere {
-    id: StringPredicate;
-    name: StringPredicate;
-}
-
-interface AuthorizationValidateFilters {
-    pre: AuthorizationFilterRule[];
-    post: AuthorizationFilterRule[];
-}
-
-/**
-query {
-  userConnection(where: { // with auth an Entity filter is all the time present
-    posts: {
-      some: {
-        edges: {
-          node: {
-            title: {
-              contains: "wonderful"
-            }
-          }
-          fields: {
-            timestamp: { gt: 32918083 }
-          }
-       }}}
-  })
-}
-
-*/
-
-// [movie1, movie2]
 
 // *****************
 // *OperationTree classes
-// ***************
+// ***************/*
 
+/*
 interface StringPredicate extends LogicalPredicate<StringPredicate> {
     equals?: string;
     in?: string;
@@ -249,3 +217,4 @@ class RelationshipFilter implements Filter {
         return new Cypher.Match(this.relationshipRef).where(this.predicate.getCypherPredicate());
     }
 }
+ */
