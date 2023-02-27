@@ -17,7 +17,10 @@
  * limitations under the License.
  */
 
-export class AuthorizationAnnotation {
+import type { Annotation } from "./Annotation";
+
+export class AuthorizationAnnotation implements Annotation {
+    name = "AUTHORIZATION";
     filter?: AuthorizationFilterRule[];
     validatePre?: AuthorizationFilterRule[];
     validatePost?: AuthorizationFilterRule[];
@@ -41,47 +44,69 @@ export class AuthorizationAnnotation {
     }
 }
 
-type AuthorizationFilterRule = {
-    operations?: AuthorizationFilterOperation[];
-    requireAuthentication: boolean;
-    where: AuthorizationFilterWhere; 
-}
-const AUTHORIZATION_OPERATION = ["READ", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"] as const;
-export type AuthorizationFilterOperation = keyof typeof AUTHORIZATION_OPERATION;
+export type AuthorizationFilterOperation =
+    | "READ"
+    | "CREATE"
+    | "UPDATE"
+    | "DELETE"
+    | "CREATE_RELATIONSHIP"
+    | "DELETE_RELATIONSHIP";
 
-export class AuthorizationFilterRuleImp {
+export type AuthorizationFilterRuleType =
+    | "AuthorizationFilterValidationRule"
+    | "AuthorizationFilterSubscriptionValidationRule"
+    | "AuthorizationPreValidationRule"
+    | "AuthorizationPostValidationRule";
+
+const getDefaultRuleOperations = (
+    ruleType: AuthorizationFilterRuleType
+): AuthorizationFilterOperation[] | undefined => {
+    switch (ruleType) {
+        case "AuthorizationFilterValidationRule":
+            return ["READ", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"];
+        case "AuthorizationPreValidationRule":
+            return ["READ", "CREATE", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"];
+        case "AuthorizationPostValidationRule":
+            return ["CREATE", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"];
+        default:
+            return undefined;
+    }
+};
+
+export class AuthorizationFilterRule {
     // UserAuthorizationFilterRule
     operations?: AuthorizationFilterOperation[]; // AuthorizationFilterOperation, this is not available for subscription
     requireAuthentication: boolean;
     where: AuthorizationFilterWhere; // UserAuthorizationWhere
 
-    constructor({
-        operations,
-        requireAuthentication = true,
-        where,
-    }: {
-        operations: AuthorizationFilterOperation[];
-        requireAuthentication: boolean;
-        where: AuthorizationFilterWhere;
-    }) {
-        this.operations = operations;
-        this.requireAuthentication = requireAuthentication;
-        this.where = where;
+    constructor(rule: Record<string, any>) {
+        const { operations, requireAuthentication = true, where, ruleType } = rule;
+
+        this.operations = operations || getDefaultRuleOperations(ruleType);
+        this.requireAuthentication = requireAuthentication === undefined ? true : requireAuthentication;
+        this.where = new AuthorizationFilterWhere(where);
+
+        this.validateRule();
+    }
+
+    // TODO: implement me
+    private validateRule() {
+        return true;
     }
 }
 
 export class AuthorizationFilterWhere {
     jwtPayload?: Record<string, any>;
-    node?: Record<string, any>;
+    node?: Record<string, any>; // UserWhere
 
-    constructor({ jwtPayload, node }: { jwtPayload: Record<string, any>; node: Record<string, any> }) {
-        if (!jwtPayload && !node) {
+    constructor(where: { jwtPayload?: Record<string, any>; node?: Record<string, any> }) {
+        if (!where.jwtPayload && !where.node) {
             throw new Error(
                 "At least one between jwtPayload or node should be present to construct the AuthorizationFilterWhere"
             ); // TODO: Add a custom error with a a proper error message
         }
-        this.jwtPayload = jwtPayload;
-        this.node = node;
+        this.jwtPayload = where.jwtPayload;
+        this.node = where.node;
     }
 }
 

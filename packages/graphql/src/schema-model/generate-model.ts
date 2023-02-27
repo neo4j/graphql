@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import {
     DirectiveNode,
     DocumentNode,
@@ -31,7 +30,7 @@ import { getDefinitionNodes } from "../schema/get-definition-nodes";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
 import type { Annotation } from "./annotation/Annotation";
-//import type { AuthorizationFilterRule } from "./annotation/AuthorizationAnnotation";
+import { AuthorizationAnnotation, AuthorizationFilterRule } from "./annotation/AuthorizationAnnotation";
 import { CypherAnnotation } from "./annotation/CypherAnnotation";
 import { Attribute } from "./attribute/Attribute";
 import { CompositeEntity } from "./entity/CompositeEntity";
@@ -90,6 +89,7 @@ function generateConcreteEntity(definition: ObjectTypeDefinitionNode): ConcreteE
         name: definition.name.value,
         labels,
         attributes: filterTruthy(fields),
+        annotations: createEntityAnnotation(definition.directives || []),
     });
 }
 
@@ -117,6 +117,8 @@ function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotatio
             switch (directive.name.value) {
                 case "cypher":
                     return parseCypherAnnotation(directive);
+                case "authorization":
+                    return parseAuthorizationAnnotation(directive);
                 default:
                     return undefined;
             }
@@ -124,34 +126,62 @@ function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotatio
     );
 }
 
-function createEntityAnnotation(directives: readonly DirectiveNode[]) {
+function createEntityAnnotation(directives: readonly DirectiveNode[]): Annotation[] {
     return filterTruthy(
         directives.map((directive) => {
             switch (directive.name.value) {
                 case "authorization":
-                    return undefined
-                   // return parseAuthorizationAnnotation(directive);
+                    return parseAuthorizationAnnotation(directive);
                 default:
                     return undefined;
             }
         })
     );
 }
-/* 
-function parseAuthorizationAnnotation(directive: DirectiveNode) {
+
+function parseAuthorizationAnnotation(directive: DirectiveNode): AuthorizationAnnotation {
     const { filter, filterSubscriptions, validate } = parseArguments(directive) as {
-        filter: AuthorizationFilterRule[];
-        filterSubscriptions: AuthorizationFilterRule[];
-        validate: { pre: AuthorizationFilterRule[]; post: AuthorizationFilterRule[] };
+        filter?: Record<string, any>[];
+        filterSubscriptions?: Record<string, any>[];
+        validate?: { pre: Record<string, any>[]; post: Record<string, any>[] };
     };
+    // TODO: validate further than  Record<string, any>
+    if (!filter && !filterSubscriptions && !validate) {
+        throw new Error("one of filter/ filterSubscriptions/ validate required");
+    }
+    if (filter && !Array.isArray(filter)) {
+        throw new Error("filter should be an Array");
+    }
+    if (filterSubscriptions && !Array.isArray(filterSubscriptions)) {
+        throw new Error("filter should be an Array");
+    }
+    if (validate?.pre && !Array.isArray(validate.pre)) {
+        throw new Error("validate pre should be an Array");
+    }
+    if (validate?.post && !Array.isArray(validate.post)) {
+        throw new Error("validate post should be an Array");
+    }
 
-    const filterRules = parseAuthorizationFilter(filter);
-    const filterSubscriptionRules = parseAuthorizationFilter(filterSubscriptions);
-    const validatePreRules = parseAuthorizationFilter(validate?.pre);
-    const validatePostRules = parseAuthorizationFilter(validate?.post);
+    const filterRules = filter?.map(
+        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: "AuthorizationFilterValidationRule" })
+    );
+    const filterSubscriptionRules = filterSubscriptions?.map(
+        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: "AuthorizationFilterSubscriptionValidationRule" })
+    );
+    const validatePreRules = validate?.pre?.map(
+        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: "AuthorizationPreValidationRule" })
+    );
+    const validatePostRules = validate?.post?.map(
+        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: "AuthorizationPostValidationRule" })
+    );
+
+    return new AuthorizationAnnotation({
+        filter: filterRules,
+        filterSubscriptions: filterSubscriptionRules,
+        validatePre: validatePreRules,
+        validatePost: validatePostRules,
+    });
 }
-
-function parseAuthorizationFilter(rules: any): AuthorizationFilterRule[] {} */
 
 function parseCypherAnnotation(directive: DirectiveNode): CypherAnnotation {
     const { statement } = parseArguments(directive);
@@ -177,5 +207,12 @@ function getArgumentValueByType(argumentValue: ValueNode): unknown {
     }
     if (argumentValue.kind === Kind.LIST) {
         return argumentValue.values.map((v) => getArgumentValueByType(v));
+    }
+
+    if (argumentValue.kind === Kind.OBJECT) {
+        return argumentValue.fields.reduce((acc, field) => {
+            acc[field.name.value] = getArgumentValueByType(field.value);
+            return acc;
+        }, {});
     }
 }

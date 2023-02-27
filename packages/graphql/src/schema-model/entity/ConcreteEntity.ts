@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { Annotation } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Entity } from "./Entity";
 
@@ -24,12 +25,26 @@ export class ConcreteEntity implements Entity {
     public readonly name: string;
     public readonly labels: Set<string>;
     public readonly attributes: Map<string, Attribute> = new Map();
+    public readonly annotations: Map<string, Annotation> = new Map();
 
-    constructor({ name, labels, attributes = [] }: { name: string; labels: string[]; attributes?: Attribute[] }) {
+    constructor({
+        name,
+        labels,
+        attributes = [],
+        annotations = [],
+    }: {
+        name: string;
+        labels: string[];
+        attributes?: Attribute[];
+        annotations?: Annotation[];
+    }) {
         this.name = name;
         this.labels = new Set(labels);
         for (const attribute of attributes) {
             this.addAttribute(attribute);
+        }
+        for (const annotation of annotations) {
+            this.addAnnotation(annotation);
         }
     }
 
@@ -42,6 +57,13 @@ export class ConcreteEntity implements Entity {
             throw new Error(`Attribute ${attribute.name} already exists in ${this.name}`);
         }
         this.attributes.set(attribute.name, attribute);
+    }
+
+    private addAnnotation(annotation: Annotation): void {
+        if (this.annotations.has(annotation.name)) {
+            throw new Error(`Annotation ${annotation.name} already exists in ${this.name}`);
+        }
+        this.annotations.set(annotation.name, annotation);
     }
 
     private setsAreEqual(a: Set<string>, b: Set<string>): boolean {

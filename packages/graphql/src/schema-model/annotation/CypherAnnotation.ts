@@ -17,7 +17,10 @@
  * limitations under the License.
  */
 
-export class CypherAnnotation {
+import type { Annotation } from "./Annotation";
+
+export class CypherAnnotation implements Annotation {
+    name = "CYPHER";
     public statement: string;
 
     constructor({ statement }: { statement: string }) {
