@@ -17,7 +17,16 @@
  * limitations under the License.
  */
 
-import type { CustomEnumField, CustomScalarField, Neo4jFeaturesSettings, PointField, PrimitiveField, TemporalField } from "../types";
+import type {
+    CustomEnumField,
+    CustomScalarField,
+    Neo4jFeaturesSettings,
+    PointField,
+    PrimitiveField,
+    TemporalField,
+} from "../types";
+import { graphqlDirectivesToCompose } from "./to-compose";
+import { DEPRECATE_NOT } from "./constants";
 
 interface Fields {
     scalarFields: CustomScalarField[];
@@ -32,7 +41,7 @@ function getWhereFields({
     fields,
     enableRegex,
     isInterface,
-    features
+    features,
 }: {
     typeName: string;
     fields: Fields;
@@ -41,80 +50,110 @@ function getWhereFields({
     features?: Neo4jFeaturesSettings;
 }): { [k: string]: string } {
     return {
-        ...(isInterface ? {} : { OR: `[${typeName}Where!]`, AND: `[${typeName}Where!]` }),
-        ...[...fields.primitiveFields, ...fields.temporalFields, ...fields.enumFields, ...fields.pointFields, ...fields.scalarFields].reduce(
-            (res, f) => {
-                res[f.fieldName] = f.typeMeta.input.where.pretty;
-                res[`${f.fieldName}_NOT`] = f.typeMeta.input.where.pretty;
+        ...(isInterface ? {} : { OR: `[${typeName}Where!]`, AND: `[${typeName}Where!]`, NOT: `${typeName}Where` }),
+        ...[
+            ...fields.primitiveFields,
+            ...fields.temporalFields,
+            ...fields.enumFields,
+            ...fields.pointFields,
+            ...fields.scalarFields,
+        ].reduce((res, f) => {
+            const deprecatedDirectives = graphqlDirectivesToCompose(
+                f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+            );
 
-                if (f.typeMeta.name === "Boolean") {
-                    return res;
-                }
+            res[f.fieldName] = {
+                type: f.typeMeta.input.where.pretty,
+                directives: deprecatedDirectives,
+            };
+            res[`${f.fieldName}_NOT`] = {
+                type: f.typeMeta.input.where.pretty,
+                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+            };
 
-                if (f.typeMeta.array) {
-                    res[`${f.fieldName}_INCLUDES`] = f.typeMeta.input.where.type;
-                    res[`${f.fieldName}_NOT_INCLUDES`] = f.typeMeta.input.where.type;
-                    return res;
-                }
-
-                res[`${f.fieldName}_IN`] = `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`;
-                res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`;
-
-                if (
-                    [
-                        "Float",
-                        "Int",
-                        "BigInt",
-                        "DateTime",
-                        "Date",
-                        "LocalDateTime",
-                        "Time",
-                        "LocalTime",
-                        "Duration",
-                    ].includes(f.typeMeta.name)
-                ) {
-                    ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                        res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
-                    });
-                    return res;
-                }
-
-                if (["Point", "CartesianPoint"].includes(f.typeMeta.name)) {
-                    ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                        res[`${f.fieldName}${comparator}`] = `${f.typeMeta.name}Distance`;
-                    });
-                    return res;
-                }
-
-                if (["String", "ID"].includes(f.typeMeta.name)) {
-                    if (enableRegex) {
-                        res[`${f.fieldName}_MATCHES`] = "String";
-                    }
-                   
-                    const stringWhereOperators = [
-                        "_CONTAINS",
-                        "_NOT_CONTAINS",
-                        "_STARTS_WITH",
-                        "_NOT_STARTS_WITH",
-                        "_ENDS_WITH",
-                        "_NOT_ENDS_WITH",
-                    ];
-
-                    Object.entries(features?.filters?.String || {}).forEach(([key, value]) => {
-                        if (value) {
-                            stringWhereOperators.push(`_${key}`);
-                        }         
-                    });
-                    stringWhereOperators.forEach((comparator) => {
-                        res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
-                    });
-                    return res;
-                }
-
+            if (f.typeMeta.name === "Boolean") {
                 return res;
-            },
-            {}
-        ),
+            }
+
+            if (f.typeMeta.array) {
+                res[`${f.fieldName}_INCLUDES`] = {
+                    type: f.typeMeta.input.where.type,
+                    directives: deprecatedDirectives,
+                };
+                res[`${f.fieldName}_NOT_INCLUDES`] = {
+                    type: f.typeMeta.input.where.type,
+                    directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+                };
+                return res;
+            }
+
+            res[`${f.fieldName}_IN`] = {
+                type: `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`,
+                directives: deprecatedDirectives,
+            };
+            res[`${f.fieldName}_NOT_IN`] = {
+                type: `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`,
+                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+            };
+
+            if (
+                [
+                    "Float",
+                    "Int",
+                    "BigInt",
+                    "DateTime",
+                    "Date",
+                    "LocalDateTime",
+                    "Time",
+                    "LocalTime",
+                    "Duration",
+                ].includes(f.typeMeta.name)
+            ) {
+                ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
+                    res[`${f.fieldName}${comparator}`] = { type: f.typeMeta.name, directives: deprecatedDirectives };
+                });
+                return res;
+            }
+
+            if (["Point", "CartesianPoint"].includes(f.typeMeta.name)) {
+                ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
+                    res[`${f.fieldName}${comparator}`] = {
+                        type: `${f.typeMeta.name}Distance`,
+                        directives: deprecatedDirectives,
+                    };
+                });
+                return res;
+            }
+
+            if (["String", "ID"].includes(f.typeMeta.name)) {
+                if (enableRegex) {
+                    res[`${f.fieldName}_MATCHES`] = { type: "String", directives: deprecatedDirectives };
+                }
+
+                const stringWhereOperators = ["_CONTAINS", "_STARTS_WITH", "_ENDS_WITH"];
+
+                const stringWhereOperatorsNegate = ["_NOT_CONTAINS", "_NOT_STARTS_WITH", "_NOT_ENDS_WITH"];
+
+                Object.entries(features?.filters?.String || {}).forEach(([key, value]) => {
+                    if (value) {
+                        stringWhereOperators.push(`_${key}`);
+                    }
+                });
+                stringWhereOperators.forEach((comparator) => {
+                    res[`${f.fieldName}${comparator}`] = { type: f.typeMeta.name, directives: deprecatedDirectives };
+                });
+
+                stringWhereOperatorsNegate.forEach((comparator) => {
+                    res[`${f.fieldName}${comparator}`] = {
+                        type: f.typeMeta.name,
+                        directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+                    };
+                });
+                return res;
+            }
+
+            return res;
+        }, {}),
     };
 }
 

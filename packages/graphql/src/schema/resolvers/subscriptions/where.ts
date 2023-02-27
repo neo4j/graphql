@@ -19,18 +19,47 @@
 
 import type { SubscriptionsEvent } from "../../../types";
 import type Node from "../../../classes/Node";
-import { filterByProperties } from "./utils/compare-properties";
+import {
+    filterByProperties,
+    filterByRelationshipProperties,
+    RecordType,
+    RelationshipType,
+} from "./utils/compare-properties";
+import type { ObjectFields } from "../../../schema/get-obj-field-meta";
 
-export function subscriptionWhere(
-    where: Record<string, any> | undefined,
-    event: SubscriptionsEvent,
-    node: Node
-): boolean {
+export function subscriptionWhere({
+    where,
+    event,
+    node,
+    nodes,
+    relationshipFields,
+}: {
+    where: Record<string, RecordType | RelationshipType> | undefined;
+    event: SubscriptionsEvent;
+    node: Node;
+    nodes?: Node[];
+    relationshipFields?: Map<string, ObjectFields>;
+}): boolean {
     if (!where) {
         return true;
     }
     if (event.event === "create") {
         return filterByProperties(node, where, event.properties.new);
     }
-    return filterByProperties(node, where, event.properties.old);
+    if (event.event === "update" || event.event === "delete") {
+        return filterByProperties(node, where, event.properties.old);
+    }
+    if (event.event === "create_relationship" || event.event === "delete_relationship") {
+        if (!nodes || !relationshipFields) {
+            return false;
+        }
+        return filterByRelationshipProperties({
+            node,
+            whereProperties: where,
+            receivedEvent: event,
+            nodes,
+            relationshipFields,
+        });
+    }
+    return false;
 }

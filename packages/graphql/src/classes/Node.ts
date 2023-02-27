@@ -105,6 +105,8 @@ export type RootTypeFieldNames = {
         created: string;
         updated: string;
         deleted: string;
+        relationship_created: string;
+        relationship_deleted: string;
     };
 };
 
@@ -128,6 +130,8 @@ export type SubscriptionEvents = {
     create: string;
     update: string;
     delete: string;
+    create_relationship: string;
+    delete_relationship: string;
 };
 
 class Node extends GraphElement {
@@ -237,6 +241,8 @@ class Node extends GraphElement {
                 created: `${this.singular}Created`,
                 updated: `${this.singular}Updated`,
                 deleted: `${this.singular}Deleted`,
+                relationship_created: `${this.singular}RelationshipCreated`,
+                relationship_deleted: `${this.singular}RelationshipDeleted`,
             },
         };
     }
@@ -272,6 +278,8 @@ class Node extends GraphElement {
             create: `${pascalCaseSingular}CreatedEvent`,
             update: `${pascalCaseSingular}UpdatedEvent`,
             delete: `${pascalCaseSingular}DeletedEvent`,
+            create_relationship: `${pascalCaseSingular}RelationshipCreatedEvent`,
+            delete_relationship: `${pascalCaseSingular}RelationshipDeletedEvent`,
         };
     }
 
@@ -282,6 +290,8 @@ class Node extends GraphElement {
             create: `created${pascalCaseSingular}`,
             update: `updated${pascalCaseSingular}`,
             delete: `deleted${pascalCaseSingular}`,
+            create_relationship: `${this.singular}`,
+            delete_relationship: `${this.singular}`,
         };
     }
 
@@ -294,7 +304,18 @@ class Node extends GraphElement {
     }
 
     public getMainLabel(): string {
-        return this.nodeDirective?.label || this.name;
+        return this.nodeDirective?.labels?.[0] || this.nodeDirective?.label || this.name;
+    }
+    public getAllLabels(): string[] {
+        if (!this.nodeDirective) {
+            return [this.name];
+        }
+        if (this.nodeDirective.labels.length) {
+            return this.nodeDirective.labels;
+        }
+        return [this.nodeDirective.label || this.name, ...(this.nodeDirective.additionalLabels || [])];
+        // TODO: use when removing label & additionalLabels
+        // return this.nodeDirective?.labels || [this.name];
     }
 
     public getGlobalIdField(): string {

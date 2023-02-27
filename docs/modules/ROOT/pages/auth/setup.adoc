@@ -20,6 +20,25 @@ const neoSchema = new Neo4jGraphQL({
 });
 ----
 
+Or you can initiate the secret with a function which will run to retrieve the secret when the request comes in.
+
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWTPlugin({
+            secret: (req) => {
+                return "super-secret";
+            },
+        })
+    }
+});
+----
+
 If you would like to use JWKS decoding then use the `Neo4jGraphQLAuthJWKSPlugin` class:
 
 [source, javascript, indent=0]
@@ -33,6 +52,28 @@ const neoSchema = new Neo4jGraphQL({
         auth: new Neo4jGraphQLAuthJWKSPlugin({
             jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json",
         })
+    }
+});
+----
+
+Or you can pass a function as `jskwsEndpoint` to compute the endpoint when the request comes in.
+
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWKSPlugin({
+            jwksEndpoint: (req) => {
+                let url = "https://YOUR_DOMAIN/well-known/{file}.json";
+                const fileHeader = req.headers["file"];
+                url = url.replace("{file}", fileHeader);
+                return url;
+            },
+        }),
     }
 });
 ----
@@ -80,6 +121,30 @@ const neoSchema = new Neo4jGraphQL({
 ----
 
 Note that `.` characters within a key of the JWT must be escaped with `\\`, whilst a `.` character indicating traversal into a value must not be escaped.
+
+=== Cypher predicate used to evaluate `bind` rules
+
+By default, `bind` rules are evaluated using an `all` predicate in Cypher, which can lead to rules not being satisfied when they perhaps should, for instance only one related user matching the current JWT, rather than all of them.
+
+To avoid a breaking change to a security-critical feature like authorization, a flag, `bindPredicate`, has been exposed to switch this predicate to `any`, which can be used as follows:
+
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWTPlugin({
+            secret: "super-secret",
+            bindPredicate: "any"
+        })
+    }
+});
+----
+
+In the next major release, this will become the default behaviour when evaluating `bind` rules.
 
 [[auth-setup-passing-in]]
 == Passing in JWTs

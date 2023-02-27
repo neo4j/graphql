@@ -23,17 +23,15 @@ import type {
     ObjectTypeDefinitionNode,
     InputValueDefinitionNode,
     FieldDefinitionNode,
-    TypeNode} from "graphql";
-import {
-    GraphQLSchema,
-    extendSchema,
-    validateSchema,
-    specifiedDirectives,
-    Kind,
+    TypeNode,
+    GraphQLDirective,
+    GraphQLNamedType,
 } from "graphql";
+import { GraphQLSchema, extendSchema, validateSchema, specifiedDirectives, Kind } from "graphql";
 import pluralize from "pluralize";
 import * as scalars from "../../graphql/scalars";
 import * as directives from "../../graphql/directives";
+import { SortDirection } from "../../graphql/enums/SortDirection";
 import { Point } from "../../graphql/objects/Point";
 import { CartesianPoint } from "../../graphql/objects/CartesianPoint";
 import { PointInput } from "../../graphql/input-objects/PointInput";
@@ -160,11 +158,15 @@ function filterDocument(document: DocumentNode): DocumentNode {
     };
 }
 
-function validateDocument(document: DocumentNode): void {
+function validateDocument(
+    document: DocumentNode,
+    additionalDirectives: Array<GraphQLDirective> = [],
+    additionalTypes: Array<GraphQLNamedType> = []
+): void {
     const doc = filterDocument(document);
 
     const schemaToExtend = new GraphQLSchema({
-        directives: [...Object.values(directives), ...specifiedDirectives],
+        directives: [...Object.values(directives), ...specifiedDirectives, ...additionalDirectives],
         types: [
             ...Object.values(scalars),
             Point,
@@ -173,6 +175,8 @@ function validateDocument(document: DocumentNode): void {
             PointDistance,
             CartesianPointInput,
             CartesianPointDistance,
+            SortDirection,
+            ...additionalTypes,
         ],
     });
 

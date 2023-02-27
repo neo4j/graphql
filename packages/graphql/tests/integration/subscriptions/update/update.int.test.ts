@@ -20,9 +20,9 @@
 import { gql } from "apollo-server";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
+import { cleanNodes } from "../../../utils/clean-nodes";
 import { Neo4jGraphQL } from "../../../../src";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import Neo4j from "../../neo4j";
 
@@ -44,8 +44,8 @@ describe("Subscriptions update", () => {
     beforeEach(async () => {
         session = await neo4j.getSession();
 
-        typeActor = generateUniqueType("Actor");
-        typeMovie = generateUniqueType("Movie");
+        typeActor = new UniqueType("Actor");
+        typeMovie = new UniqueType("Movie");
 
         plugin = new TestSubscriptionsPlugin();
         const typeDefs = gql`
@@ -73,6 +73,7 @@ describe("Subscriptions update", () => {
     });
 
     afterEach(async () => {
+        await cleanNodes(session, [typeActor, typeMovie]);
         await session.close();
     });
 
@@ -210,7 +211,7 @@ describe("Subscriptions update", () => {
         expect(gqlResult.errors).toBeUndefined();
 
         expect(gqlResult.data[typeMovie.operations.update]).toEqual({
-            [typeMovie.plural]: [{ id: "1" }, { id: "2" }],
+            [typeMovie.plural]: expect.toIncludeSameMembers([{ id: "1" }, { id: "2" }]),
         });
 
         expect(plugin.eventList).toEqual(
@@ -391,7 +392,7 @@ describe("Subscriptions update", () => {
         });
 
         expect(plugin.eventList).toEqual(
-            expect.toIncludeSameMembers([
+            expect.arrayContaining([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -459,7 +460,7 @@ describe("Subscriptions update", () => {
         });
 
         expect(plugin.eventList).toEqual(
-            expect.toIncludeSameMembers([
+            expect.arrayContaining([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -532,7 +533,7 @@ describe("Subscriptions update", () => {
         });
 
         expect(plugin.eventList).toEqual(
-            expect.toIncludeSameMembers([
+            expect.arrayContaining([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -633,7 +634,7 @@ describe("Subscriptions update", () => {
         });
 
         expect(plugin.eventList).toEqual(
-            expect.toIncludeSameMembers([
+            expect.arrayContaining([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),

@@ -83,7 +83,7 @@ describe("Relay Cursor Connection projections", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                WITH { node: { __resolveType: \\"Actor\\", __id: id(this_Actor) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
@@ -126,7 +126,7 @@ describe("Relay Cursor Connection projections", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                WITH { node: { __resolveType: \\"Actor\\", __id: id(this_Actor) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
@@ -164,9 +164,17 @@ describe("Relay Cursor Connection projections", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                WITH { node: { __resolveType: \\"Actor\\", __id: id(this_Actor) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge
+                    LIMIT $this_connection_actorsConnectionparam0
+                    RETURN collect(edge) AS this_connection_actorsConnectionvar1
+                }
+                WITH this_connection_actorsConnectionvar1 AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
             RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
@@ -174,7 +182,11 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"this_connection_actorsConnectionparam0\\": {
+                    \\"low\\": 5,
+                    \\"high\\": 0
+                }
             }"
         `);
     });
@@ -204,12 +216,12 @@ describe("Relay Cursor Connection projections", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this_connection_productionsConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                    WITH { node: { __resolveType: \\"Movie\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this_Movie) } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_productionsConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                    WITH { node: { __resolveType: \\"Series\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Series\\", __id: id(this_Series) } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -256,12 +268,12 @@ describe("Relay Cursor Connection projections", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this_connection_productionsConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                    WITH { node: { __resolveType: \\"Movie\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this_Movie) } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_productionsConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                    WITH { node: { __resolveType: \\"Series\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Series\\", __id: id(this_Series) } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -352,6 +364,14 @@ describe("Relay Cursor Connection projections", () => {
                 WITH { node: { name: this_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge
+                    LIMIT $this_connection_actorsConnectionparam0
+                    RETURN collect(edge) AS this_connection_actorsConnectionvar1
+                }
+                WITH this_connection_actorsConnectionvar1 AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
             RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
@@ -359,7 +379,11 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"this_connection_actorsConnectionparam0\\": {
+                    \\"low\\": 5,
+                    \\"high\\": 0
+                }
             }"
         `);
     });

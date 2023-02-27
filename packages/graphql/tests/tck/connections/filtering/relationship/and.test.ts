@@ -105,4 +105,48 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> AND", () => {
             }"
         `);
     });
+
+    test("NOT", async () => {
+        const query = gql`
+            query {
+                movies {
+                    title
+                    actorsConnection(where: { edge: { NOT: { role_ENDS_WITH: "Gump" } } }) {
+                        edges {
+                            role
+                            screenTime
+                            node {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Movie\`)
+            CALL {
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE NOT (this_connection_actorsConnectionthis0.role ENDS WITH $this_connection_actorsConnectionparam0)
+                WITH { role: this_connection_actorsConnectionthis0.role, screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+            }
+            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_connection_actorsConnectionparam0\\": \\"Gump\\"
+            }"
+        `);
+    });
 });

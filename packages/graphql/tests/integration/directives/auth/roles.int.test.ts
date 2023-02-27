@@ -24,7 +24,7 @@ import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import { runCypher } from "../../../utils/run-cypher";
 import { cleanNodes } from "../../../utils/clean-nodes";
 
@@ -49,11 +49,11 @@ describe("auth/roles", () => {
     });
 
     beforeEach(async () => {
-        typeUser = generateUniqueType("User");
-        typeProduct = generateUniqueType("Product");
-        typePost = generateUniqueType("Post");
-        typeComment = generateUniqueType("Comment");
-        typeHistory = generateUniqueType("History");
+        typeUser = new UniqueType("User");
+        typeProduct = new UniqueType("Product");
+        typePost = new UniqueType("Post");
+        typeComment = new UniqueType("Comment");
+        typeHistory = new UniqueType("History");
 
         const session = await neo4j.getSession();
         await runCypher(
@@ -368,6 +368,53 @@ describe("auth/roles", () => {
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should not throw if missing role on field definition if is not specified in the request", async () => {
+            const session = await neo4j.getSession();
+
+            const typeDefs = `
+                type ${typeUser} {
+                    id: ID
+                    password: String @auth(rules: [{
+                        operations: [CREATE],
+                        roles: ["admin"]
+                    }])
+                }
+            `;
+
+            const query = `
+                mutation {
+                    ${typeUser.operations.create}(input: [{ id: "1" }]) {
+                        ${typeUser.plural} {
+                            password
+                        }
+                    }
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
+
+            try {
+                const req = createJwtRequest(secret);
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                });
+
+                expect(gqlResult.errors).toBeFalsy();
             } finally {
                 await session.close();
             }
@@ -1074,7 +1121,7 @@ describe("auth/roles", () => {
         test("combines where with roles", async () => {
             const session = await neo4j.getSession();
 
-            const type = generateUniqueType("User");
+            const type = new UniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
@@ -1167,7 +1214,7 @@ describe("auth/roles", () => {
         test("can read role from path containing dots", async () => {
             const session = await neo4j.getSession();
 
-            const type = generateUniqueType("User");
+            const type = new UniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {

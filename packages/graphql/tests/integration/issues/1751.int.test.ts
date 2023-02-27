@@ -20,12 +20,12 @@
 import { graphql, GraphQLSchema } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1735", () => {
-    const organizationType = generateUniqueType("Organization");
-    const adminType = generateUniqueType("Admin");
+    const organizationType = new UniqueType("Organization");
+    const adminType = new UniqueType("Admin");
 
     let schema: GraphQLSchema;
     let driver: Driver;

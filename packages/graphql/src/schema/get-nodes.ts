@@ -32,6 +32,7 @@ import parseNodeDirective from "./parse-node-directive";
 import parseExcludeDirective from "./parse-exclude-directive";
 import getAuth from "./get-auth";
 import type { DefinitionNodes } from "./get-definition-nodes";
+import { asArray } from "../utils/utils";
 
 type Nodes = {
     nodes: Node[];
@@ -44,7 +45,11 @@ type Nodes = {
 
 function getNodes(
     definitionNodes: DefinitionNodes,
-    options: { callbacks?: Neo4jGraphQLCallbacks; userCustomResolvers?: IResolvers | Array<IResolvers> }
+    options: {
+        callbacks?: Neo4jGraphQLCallbacks;
+        userCustomResolvers?: IResolvers | Array<IResolvers>;
+        validateResolvers: boolean;
+    }
 ): Nodes {
     let pointInTypeDefs = false;
     let cartesianPointInTypeDefs = false;
@@ -119,6 +124,11 @@ function getNodes(
             nodeDirective = parseNodeDirective(nodeDirectiveDefinition);
         }
 
+        const userCustomResolvers = asArray(options.userCustomResolvers);
+        const customResolvers = userCustomResolvers.find((r) => !!r[definition.name.value])?.[
+            definition.name.value
+        ] as IResolvers;
+
         const nodeFields = getObjFieldMeta({
             obj: definition,
             enums: definitionNodes.enumTypes,
@@ -127,7 +137,8 @@ function getNodes(
             scalars: definitionNodes.scalarTypes,
             unions: definitionNodes.unionTypes,
             callbacks: options.callbacks,
-            customResolvers: options.userCustomResolvers?.[definition.name.value],
+            customResolvers,
+            validateResolvers: options.validateResolvers,
         });
 
         // Ensure that all required fields are returning either a scalar type or an enum

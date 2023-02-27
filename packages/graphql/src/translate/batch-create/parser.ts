@@ -35,14 +35,8 @@ function getRelationshipFields(
     const refNodes: Node[] = [];
 
     if (relationField) {
-        if (relationField.union) {
-            Object.keys(value as Record<string, any>).forEach((unionTypeName) => {
-                refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
-            });
-        } else if (relationField.interface) {
-            relationField.interface?.implementations?.forEach((implementationName) => {
-                refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
-            });
+        if (relationField.interface || relationField.union) {
+            throw new UnsupportedUnwindOptimization(`Not supported operation: Interface or Union`);
         } else {
             refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
         }
@@ -72,15 +66,15 @@ export function inputTreeToCypherMap(
                     (x) => x.properties === relationField.properties
                 ) as unknown as Relationship;
             }
-            let scalar = false;
+            let scalarOrEnum = false;
             if (parentKey === "edge") {
-                scalar = isScalar(key, relationship as Relationship);
+                scalarOrEnum = isScalarOrEnum(key, relationship as Relationship);
             }
             // it assume that if parentKey is not defined then it means that the key belong to a Node
             else if (parentKey === "node" || parentKey === undefined) {
-                scalar = isScalar(key, node);
+                scalarOrEnum = isScalarOrEnum(key, node);
             }
-            if (typeof value === "object" && value !== null && (relationField || !scalar)) {
+            if (typeof value === "object" && value !== null && (relationField || !scalarOrEnum)) {
                 if (Array.isArray(value)) {
                     obj[key] = new Cypher.List(
                         value.map((GraphQLCreateInput: GraphQLCreateInput) =>
@@ -112,15 +106,16 @@ export function inputTreeToCypherMap(
     return new Cypher.Map(properties);
 }
 
-function isScalar(fieldName: string, graphElement: GraphElement) {
-    const scalarPredicate = (x) => x.fieldName === fieldName;
-    const scalarFields = [
+function isScalarOrEnum(fieldName: string, graphElement: GraphElement) {
+    const scalarOrEnumPredicate = (x) => x.fieldName === fieldName;
+    const scalarOrEnumFields = [
         graphElement.primitiveFields,
         graphElement.temporalFields,
         graphElement.pointFields,
         graphElement.scalarFields,
+        graphElement.enumFields
     ];
-    return scalarFields.flat().some(scalarPredicate);
+    return scalarOrEnumFields.flat().some(scalarOrEnumPredicate);
 }
 
 export function getTreeDescriptor(
@@ -139,20 +134,23 @@ export function getTreeDescriptor(
                 ) as unknown as Relationship;
             }
 
-            let scalar = false;
+            let scalarOrEnum = false;
             if (parentKey === "edge") {
-                scalar = isScalar(key, relationship as Relationship);
+                scalarOrEnum = isScalarOrEnum(key, relationship as Relationship);
             }
             // it assume that if parentKey is not defined then it means that the key belong to a Node
             else if (parentKey === "node" || parentKey === undefined) {
-                scalar = isScalar(key, node);
+                scalarOrEnum = isScalarOrEnum(key, node);
             }
-            if (typeof value === "object" && value !== null && !scalar) {
+            if (typeof value === "object" && value !== null && !scalarOrEnum) {
                 // TODO: supports union/interfaces
-                const innerNode = relationField ? relatedNodes[0] : node;
+                const innerNode = relationField && relatedNodes[0] ? relatedNodes[0] : node;
+
                 if (Array.isArray(value)) {
                     previous.children[key] = mergeTreeDescriptors(
-                        value.map((el) => getTreeDescriptor(el as GraphQLCreateInput, innerNode, context, key, relationship))
+                        value.map((el) =>
+                            getTreeDescriptor(el as GraphQLCreateInput, innerNode, context, key, relationship)
+                        )
                     );
                     return previous;
                 }
@@ -193,9 +191,6 @@ export function mergeTreeDescriptors(input: TreeDescriptor[]): TreeDescriptor {
 }
 
 function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNode: AST): AST {
-    if (node.auth) {
-        throw new UnsupportedUnwindOptimization("Not supported operation: Auth");
-    }
     Object.entries(input.children).forEach(([key, value]) => {
         const [relationField, relatedNodes] = getRelationshipFields(node, key, {}, context);
 
@@ -265,9 +260,6 @@ function raiseOnNotSupportedProperty(graphElement: GraphElement) {
     graphElement.primitiveFields.forEach((property) => {
         if (property.callback && property.callback.operations.includes("CREATE")) {
             throw new UnsupportedUnwindOptimization("Not supported operation: Callback");
-        }
-        if (property.auth) {
-            throw new UnsupportedUnwindOptimization("Not supported operation: Auth");
         }
     });
 }

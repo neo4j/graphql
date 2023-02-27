@@ -32,8 +32,9 @@ type CustomResolverMeta = {
 };
 
 const DEPRECATION_WARNING =
-    "The @computed directive has been deprecated and will be removed in version 4.0. Please use " +
-    "the @customResolver directive instead.";
+    "The @computed directive has been deprecated and will be removed in version 4.0.0. Please use " +
+    "the @customResolver directive instead. More information can be found at " +
+    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_computed_renamed_to_customresolver.";
 export const ERROR_MESSAGE = "Required fields of @customResolver must be a list of strings";
 
 let deprecationWarningShown = false;
@@ -41,6 +42,7 @@ let deprecationWarningShown = false;
 function getCustomResolverMeta(
     field: FieldDefinitionNode,
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    validateResolvers: boolean,
     customResolvers?: IResolvers | IResolvers[],
     interfaceField?: FieldDefinitionNode
 ): CustomResolverMeta | undefined {
@@ -62,7 +64,12 @@ function getCustomResolverMeta(
     }
 
     // TODO: remove check for directive when removing @computed
-    if (object.kind !== Kind.INTERFACE_TYPE_DEFINITION && directive && !customResolvers?.[field.name.value]) {
+    if (
+        validateResolvers &&
+        object.kind !== Kind.INTERFACE_TYPE_DEFINITION &&
+        directive &&
+        !customResolvers?.[field.name.value]
+    ) {
         throw new Error(`Custom resolver for ${field.name.value} has not been provided`);
     }
 

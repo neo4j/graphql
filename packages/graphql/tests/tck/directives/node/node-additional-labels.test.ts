@@ -31,12 +31,12 @@ describe("Node directive with additionalLabels", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Actor @node(additionalLabels: ["Person"]) {
+            type Actor @node(labels: ["Actor", "Person"]) {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Movie @node(label: "Film", additionalLabels: ["Multimedia"]) {
+            type Movie @node(labels: ["Film", "Multimedia"]) {
                 id: ID
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -97,7 +97,7 @@ describe("Node directive with additionalLabels", () => {
             "MATCH (this:\`Film\`:\`Multimedia\`)
             CALL {
                 WITH this
-                MATCH (this_actors:\`Actor\`:\`Person\`)-[this0:ACTED_IN]->(this)
+                MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Actor\`:\`Person\`)
                 WITH this_actors { .name } AS this_actors
                 RETURN collect(this_actors) AS this_actors
             }
@@ -143,7 +143,7 @@ describe("Node directive with additionalLabels", () => {
                     CREATE (create_this5:\`Actor\`:\`Person\`)
                     SET
                         create_this5.name = create_var3.name
-                    MERGE (create_this5)-[create_this6:ACTED_IN]->(create_this0)
+                    MERGE (create_this0)<-[create_this6:ACTED_IN]-(create_this5)
                     RETURN collect(NULL) AS create_var7
                 }
                 RETURN create_this0

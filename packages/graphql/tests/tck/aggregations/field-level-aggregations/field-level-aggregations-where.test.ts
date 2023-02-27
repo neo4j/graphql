@@ -68,7 +68,13 @@ describe("Field Level Aggregations Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title, actorsAggregate: { count: size([(this_actorsAggregate_this0:\`Person\`)-[this_actorsAggregate_this1:ACTED_IN]->(this) WHERE this_actorsAggregate_this0.age > $this_actorsAggregate_param0 | this_actorsAggregate_this0]) } } AS this"
+            CALL {
+                WITH this
+                MATCH (this)<-[this_actorsAggregate_this0:ACTED_IN]-(this_actorsAggregate_this1:\`Person\`)
+                WHERE this_actorsAggregate_this1.age > $this_actorsAggregate_param0
+                RETURN count(this_actorsAggregate_this1) AS this_actorsAggregate_var2
+            }
+            RETURN this { .title, actorsAggregate: { count: this_actorsAggregate_var2 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -103,7 +109,19 @@ describe("Field Level Aggregations Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title, actorsAggregate: { count: size([(this_actorsAggregate_this0:\`Person\`)-[this_actorsAggregate_this1:ACTED_IN]->(this) WHERE this_actorsAggregate_this0.name CONTAINS $this_actorsAggregate_param0 | this_actorsAggregate_this0]) }, directorsAggregate: { count: size([(this_directorsAggregate_this0:\`Person\`)-[this_directorsAggregate_this1:DIRECTED]->(this) WHERE this_directorsAggregate_this0.name CONTAINS $this_directorsAggregate_param0 | this_directorsAggregate_this0]) } } AS this"
+            CALL {
+                WITH this
+                MATCH (this)<-[this_actorsAggregate_this0:ACTED_IN]-(this_actorsAggregate_this1:\`Person\`)
+                WHERE this_actorsAggregate_this1.name CONTAINS $this_actorsAggregate_param0
+                RETURN count(this_actorsAggregate_this1) AS this_actorsAggregate_var2
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this_directorsAggregate_this0:DIRECTED]-(this_directorsAggregate_this1:\`Person\`)
+                WHERE this_directorsAggregate_this1.name CONTAINS $this_directorsAggregate_param0
+                RETURN count(this_directorsAggregate_this1) AS this_directorsAggregate_var2
+            }
+            RETURN this { .title, actorsAggregate: { count: this_actorsAggregate_var2 }, directorsAggregate: { count: this_directorsAggregate_var2 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -21,7 +21,7 @@ import * as fs from "fs/promises";
 import type * as Performance from "../types";
 
 export class ResultsWriter {
-    private path: string;
+    public path: string;
 
     constructor(path: string) {
         this.path = path;

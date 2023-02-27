@@ -28,7 +28,7 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type frbr__Work @node(additionalLabels: ["Resource"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
+            type frbr__Work @node(labels: ["frbr__Work", "Resource"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 """
                 IRI
                 """
@@ -36,7 +36,9 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
                 dcterms__title: [dcterms_title!]! @relationship(type: "dcterms__title", direction: OUT)
             }
 
-            type dcterms_title @node(additionalLabels: ["property"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
+            type dcterms_title
+                @node(labels: ["dcterms_title", "property"])
+                @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 value: String
             }
         `;
@@ -75,8 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
                 WITH this_dcterms__title { .value } AS this_dcterms__title
                 RETURN collect(this_dcterms__title) AS this_dcterms__title
             }
-            RETURN this { iri: this.uri, dcterms__title: this_dcterms__title } AS this
-            LIMIT $param3"
+            RETURN this { iri: this.uri, dcterms__title: this_dcterms__title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -86,11 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
                     \\"low\\": 10000,
                     \\"high\\": 0
                 },
-                \\"param2\\": \\"0777\\",
-                \\"param3\\": {
-                    \\"low\\": 10000,
-                    \\"high\\": 0
-                }
+                \\"param2\\": \\"0777\\"
             }"
         `);
     });

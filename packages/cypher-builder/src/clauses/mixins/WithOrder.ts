@@ -20,8 +20,8 @@
 import { Order, OrderBy } from "../sub-clauses/OrderBy";
 import { ClauseMixin } from "./ClauseMixin";
 import type { Expr } from "../../types";
-import type { Param } from "../../variables/Param";
-import type { Literal } from "../../variables/Literal";
+import type { Param } from "../../references/Param";
+import type { Literal } from "../../references/Literal";
 import type { Integer } from "neo4j-driver";
 
 const DEFAULT_ORDER = "ASC";

@@ -51,7 +51,7 @@ jobs:
 
       - name: Create release PR or release
         id: changesets
-        uses: changesets/action@5f3b898718761af42fe162af3258e4145d07be24 # tag=v1.4.0
+        uses: changesets/action@e9cc34b540dd3ad1b030c57fd97269e8f6ad905a # v1.4.1
         with:
           title: changesets for branch `master`
           version: yarn changeset-version-master
@@ -63,7 +63,8 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
 
       - name: Create release branch for merging into dev
-        uses: peterjgrainger/action-create-branch@c2800a3a9edbba2218da6861fa46496cf8f3195a # renovate: tag=v2.2.0
+        if: steps.changesets.outputs.published == 'true'
+        uses: peterjgrainger/action-create-branch@08259812c8ebdbf1973747f9297e332fa078d3c1 # v2.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
         with:
@@ -71,7 +72,7 @@ jobs:
 
       - name: pull-request
         if: steps.changesets.outputs.published == 'true'
-        uses: repo-sync/pull-request@65785d95a5a466e46a9d0708933a3bd51bbf9dde # renovate: tag=v2.6.2
+        uses: repo-sync/pull-request@7e79a9f5dc3ad0ce53138f01df2fad14a04831c5 # v2.12.1
         with:
           source_branch: "release/${{ github.sha }}"
           destination_branch: "dev"

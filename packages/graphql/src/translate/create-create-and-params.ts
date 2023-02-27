@@ -29,6 +29,7 @@ import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { createEventMeta } from "./subscriptions/create-event-meta";
+import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { findConflictingProperties } from "../utils/is-property-clash";
@@ -142,7 +143,9 @@ function createCreateAndParams({
 
                         const inStr = relationField.direction === "IN" ? "<-" : "-";
                         const outStr = relationField.direction === "OUT" ? "->" : "-";
-                        const relTypeStr = `[${relationField.properties ? propertiesName : ""}:${relationField.type}]`;
+                        const relationVarName =
+                            relationField.properties || context.subscriptionsEnabled ? propertiesName : "";
+                        const relTypeStr = `[${relationVarName}:${relationField.type}]`;
                         res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
                         if (relationField.properties) {
@@ -159,6 +162,27 @@ function createCreateAndParams({
                             });
                             res.creates.push(setA[0]);
                             res.params = { ...res.params, ...setA[1] };
+                        }
+
+                        if (context.subscriptionsEnabled) {
+                            const [fromVariable, toVariable] =
+                                relationField.direction === "IN" ? [nodeName, varName] : [varName, nodeName];
+                            const [fromTypename, toTypename] =
+                                relationField.direction === "IN"
+                                    ? [refNode.name, node.name]
+                                    : [node.name, refNode.name];
+                            const eventWithMetaStr = createConnectionEventMeta({
+                                event: "create_relationship",
+                                relVariable: propertiesName,
+                                fromVariable,
+                                toVariable,
+                                typename: relationField.type,
+                                fromTypename,
+                                toTypename,
+                            });
+                            res.creates.push(
+                                `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(", ")}`
+                            );
                         }
 
                         const relationshipValidationStr = createRelationshipValidationStr({
@@ -198,6 +222,7 @@ function createCreateAndParams({
                         parentVar: varName,
                         relationField,
                         refNode,
+                        node,
                         context,
                         withVars,
                         callbackBucket,
@@ -233,7 +258,7 @@ function createCreateAndParams({
                 entity: primitiveField,
                 operations: "CREATE",
                 context,
-                bind: { parentNode: node, varName, chainStr: varNameKey },
+                bind: { parentNode: node, varName },
                 escapeQuotes: Boolean(insideDoWhen),
             });
             if (authAndParams[0]) {

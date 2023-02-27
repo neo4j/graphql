@@ -25,14 +25,14 @@ import createJWKSMock from "mock-jwks";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import type { Neo4jGraphQLAuthenticationError } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("Global authentication - Auth JWKS plugin", () => {
     let jwksMock: JWKSMock;
     let driver: Driver;
     let neo4j: Neo4j;
 
-    const testMovie = generateUniqueType("Movie");
+    const testMovie = new UniqueType("Movie");
 
     const typeDefs = `
         type ${testMovie} {
@@ -62,8 +62,8 @@ describe("Global authentication - Auth JWKS plugin", () => {
         jwksMock = createJWKSMock("https://myAuthTest.auth0.com");
     });
 
-    afterEach(async () => {
-        await jwksMock.stop();
+    afterEach(() => {
+        jwksMock.stop();
     });
 
     test("should fail if no JWT token is present and global authentication is enabled", async () => {

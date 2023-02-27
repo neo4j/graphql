@@ -21,10 +21,13 @@ import type { EventEmitter } from "events";
 import type { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Driver, Integer, Session, Transaction } from "neo4j-driver";
+import type Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "./classes";
 import type { Neo4jDatabaseInfo } from "./classes/Neo4jDatabaseInfo";
 import type { RelationshipQueryDirectionOption } from "./constants";
 import type { Executor } from "./classes/Executor";
+import type { Directive } from "graphql-compose";
+import type { Neo4jGraphQLSchemaModel } from "./schema-model/Neo4jGraphQLSchemaModel";
 
 export { Node } from "./classes";
 
@@ -46,6 +49,7 @@ export interface Context {
     neo4jDatabaseInfo: Neo4jDatabaseInfo;
     nodes: Node[];
     relationships: Relationship[];
+    schemaModel: Neo4jGraphQLSchemaModel;
     schema: GraphQLSchema;
     auth?: AuthContext;
     callbacks?: Neo4jGraphQLCallbacks;
@@ -165,6 +169,7 @@ export interface ConnectionField extends BaseField {
  */
 export interface CypherField extends BaseField {
     statement: string;
+    columnName?: string;
     isEnum: boolean;
     isScalar: boolean;
 }
@@ -259,6 +264,7 @@ export interface GraphQLWhereArg {
     [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
     AND?: GraphQLWhereArg[];
     OR?: GraphQLWhereArg[];
+    NOT?: GraphQLWhereArg;
 }
 
 export interface ConnectionWhereArg {
@@ -268,6 +274,7 @@ export interface ConnectionWhereArg {
     edge_NOT?: GraphQLWhereArg;
     AND?: ConnectionWhereArg[];
     OR?: ConnectionWhereArg[];
+    NOT?: ConnectionWhereArg;
 }
 
 export interface InterfaceWhereArg {
@@ -352,52 +359,136 @@ export interface CypherQueryOptions {
     replan?: CypherReplanning;
 }
 
+/** The startup validation checks to run */
+export interface StartupValidationOptions {
+    typeDefs?: boolean;
+    resolvers?: boolean;
+}
+
+/**
+ * Configure which startup validation checks should be run.
+ * Optionally, a boolean can be passed to toggle all these options.
+ */
+export type StartupValidationConfig = StartupValidationOptions | boolean;
+
 /** Input field for graphql-compose */
-export type InputField = { type: string; defaultValue?: string } | string;
+export type InputField = { type: string; defaultValue?: string; directives?: Directive[] } | string;
 
 export interface Neo4jGraphQLAuthPlugin {
     rolesPath?: string;
     isGlobalAuthenticationEnabled?: boolean;
+    bindPredicate: "all" | "any";
 
     decode<T>(token: string): Promise<T | undefined>;
+    /**
+     * This function tries to resolve public or secret keys.
+     * The implementation on how to resolve the keys by the `JWKSEndpoint` or by the `Secret` is set on when the plugin is being initiated.
+     * @param req
+     */
+    tryToResolveKeys(req: unknown): void;
 }
 
 /** Raw event metadata returned from queries */
-export type EventMeta = {
+export type NodeSubscriptionMeta = {
     event: "create" | "update" | "delete";
+    typename: string;
     properties: {
         old: Record<string, any>;
         new: Record<string, any>;
     };
-    typename: string;
     id: Integer | string | number;
     timestamp: Integer | string | number;
 };
+export type RelationshipSubscriptionMeta =
+    | RelationshipSubscriptionMetaTypenameParameters
+    | RelationshipSubscriptionMetaLabelsParameters;
+type RelationshipSubscriptionMetaCommonParameters = {
+    event: "create_relationship" | "delete_relationship";
+    relationshipName: string;
+    id_from: Integer | string | number;
+    id_to: Integer | string | number;
+    properties: {
+        from: Record<string, any>;
+        to: Record<string, any>;
+        relationship: Record<string, any>;
+    };
+    id: Integer | string | number;
+    timestamp: Integer | string | number;
+};
+export type RelationshipSubscriptionMetaTypenameParameters = RelationshipSubscriptionMetaCommonParameters & {
+    fromTypename: string;
+    toTypename: string;
+};
+export type RelationshipSubscriptionMetaLabelsParameters = RelationshipSubscriptionMetaCommonParameters & {
+    fromLabels: string[];
+    toLabels: string[];
+};
+export type EventMeta = NodeSubscriptionMeta | RelationshipSubscriptionMeta;
 
-/** Serialized subscription event */
-export type SubscriptionsEvent = (
+export type NodeSubscriptionsEvent =
     | {
           event: "create";
+          typename: string;
           properties: {
               old: undefined;
               new: Record<string, any>;
           };
+          id: number;
+          timestamp: number;
       }
     | {
           event: "update";
+          typename: string;
           properties: {
               old: Record<string, any>;
               new: Record<string, any>;
           };
+          id: number;
+          timestamp: number;
       }
     | {
           event: "delete";
+          typename: string;
           properties: {
               old: Record<string, any>;
               new: undefined;
           };
+          id: number;
+          timestamp: number;
+      };
+export type RelationshipSubscriptionsEvent =
+    | {
+          event: "create_relationship";
+          relationshipName: string;
+          properties: {
+              from: Record<string, any>;
+              to: Record<string, any>;
+              relationship: Record<string, any>;
+          };
+          id_from: number;
+          id_to: number;
+          fromTypename: string;
+          toTypename: string;
+          id: number;
+          timestamp: number;
       }
-) & { id: number; timestamp: number; typename: string };
+    | {
+          event: "delete_relationship";
+          relationshipName: string;
+          properties: {
+              from: Record<string, any>;
+              to: Record<string, any>;
+              relationship: Record<string, any>;
+          };
+          id_from: number;
+          id_to: number;
+          fromTypename: string;
+          toTypename: string;
+          id: number;
+          timestamp: number;
+      };
+/** Serialized subscription event */
+export type SubscriptionsEvent = NodeSubscriptionsEvent | RelationshipSubscriptionsEvent;
 
 export interface Neo4jGraphQLSubscriptionsPlugin {
     events: EventEmitter;
@@ -448,3 +539,8 @@ export interface Neo4jFiltersSettings {
 export interface Neo4jFeaturesSettings {
     filters?: Neo4jFiltersSettings;
 }
+
+export type PredicateReturn = {
+    predicate: Cypher.Predicate | undefined;
+    preComputedSubqueries?: Cypher.CompositeClause | undefined;
+};

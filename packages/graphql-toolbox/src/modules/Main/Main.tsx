@@ -26,6 +26,8 @@ import { Editor } from "../EditorView/Editor";
 import { AuthContext } from "../../contexts/auth";
 import { ScreenContext, Screen } from "../../contexts/screen";
 import { invokeSegmentAnalytics } from "../../analytics/segment-snippet";
+import { tracking } from "../../analytics/tracking";
+import { CannySDK } from "../../common/canny";
 
 export const Main = () => {
     const auth = useContext(AuthContext);
@@ -42,6 +44,25 @@ export const Main = () => {
         console.log("Initialized app.");
     }, []);
 
+    useEffect(() => {
+        const cannyAppId = process.env.CANNY_GRAPHQL_TOOLBOX_APP_ID;
+        if (!cannyAppId) {
+            console.log("Did not find Canny App ID, will not initialize Canny");
+            window.CannyIsLoaded = false;
+            return;
+        }
+
+        CannySDK.init()
+            .then(() => {
+                console.log("Canny SDK loaded");
+                window.CannyIsLoaded = true;
+            })
+            .catch((err) => {
+                console.error("Canny SDK failed to load", err);
+                window.CannyIsLoaded = false;
+            });
+    }, []);
+
     if (!auth.driver) {
         return (
             <div className="flex">
@@ -52,8 +73,28 @@ export const Main = () => {
         );
     }
 
+    const Banner = () => {
+        const handleInterestedInGraphQLaaSClick = () => {
+            window.open("https://forms.gle/uQgai8zaemJz6X4B6", "GraphQLaaSInterestForm");
+            tracking.trackExploreGraphQLaaSLink({ screen: screen.view });
+        };
+
+        return (
+            <div
+                className="h-8 w-full n-bg-primary-70 text-white text-center cursor-pointer leading-8"
+                onClick={handleInterestedInGraphQLaaSClick}
+                onKeyDown={handleInterestedInGraphQLaaSClick}
+                role="button"
+                tabIndex={0}
+            >
+                Want us to manage your <strong>Neo4j GraphQL API</strong>? Register your interest here!
+            </div>
+        );
+    };
+
     return (
         <div className="flex w-full h-full flex-col">
+            <Banner />
             <TopBar />
             <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
                 {screen.view === Screen.TYPEDEFS ? (

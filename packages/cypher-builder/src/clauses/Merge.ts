@@ -18,32 +18,35 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import type { RelationshipRef } from "../variables/RelationshipRef";
-import { NodeRef } from "../variables/NodeRef";
-import { MatchParams, Pattern } from "../Pattern";
+import { Pattern } from "../pattern/Pattern";
 import { Clause } from "./Clause";
 import { OnCreate, OnCreateParam } from "./sub-clauses/OnCreate";
 import { WithReturn } from "./mixins/WithReturn";
 import { mixin } from "./utils/mixin";
 import { WithSet } from "./mixins/WithSet";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
+import type { NodeRef } from "../references/NodeRef";
 
 export interface Merge extends WithReturn, WithSet {}
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/merge/)
+ * @group Clauses
+ */
 @mixin(WithReturn, WithSet)
-export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
-    private pattern: Pattern<T>;
+export class Merge extends Clause {
+    private pattern: Pattern;
     private onCreateClause: OnCreate;
 
-    constructor(element: T, params: MatchParams<T> = {}) {
+    constructor(pattern: NodeRef | Pattern) {
         super();
 
-        const addLabels = element instanceof NodeRef;
-        const addLabelsOption = { labels: addLabels };
-        this.pattern = new Pattern(element, {
-            source: addLabelsOption,
-            target: addLabelsOption,
-        }).withParams(params);
+        if (pattern instanceof Pattern) {
+            this.pattern = pattern;
+        } else {
+            this.pattern = new Pattern(pattern);
+        }
+
         this.onCreateClause = new OnCreate(this);
     }
 
@@ -53,6 +56,9 @@ export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
         return this;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const mergeStr = `MERGE ${this.pattern.getCypher(env)}`;
         const setCypher = compileCypherIfExists(this.setSubClause, env, { prefix: "\n" });

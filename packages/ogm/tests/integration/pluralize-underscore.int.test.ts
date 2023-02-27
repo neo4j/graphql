@@ -22,10 +22,10 @@ import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import { OGM } from "../../src";
-import { generateUniqueType } from "../utils";
+import { UniqueType } from "../utils";
 
 describe("pluralize with underscore", () => {
-    const taskType = generateUniqueType("super_task");
+    const taskType = new UniqueType("super_task");
 
     const typeDefs = gql`
         type ${taskType.name} {

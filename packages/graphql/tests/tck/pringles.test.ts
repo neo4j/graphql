@@ -119,107 +119,117 @@ describe("Cypher Create Pringles", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"CALL {
-CREATE (this0:Product)
-SET this0.id = $this0_id
-SET this0.name = $this0_name
-WITH this0
-CREATE (this0_sizes0_node:Size)
-SET this0_sizes0_node.id = $this0_sizes0_node_id
-SET this0_sizes0_node.name = $this0_sizes0_node_name
-MERGE (this0)-[:HAS_SIZE]->(this0_sizes0_node)
-WITH this0
-CREATE (this0_sizes1_node:Size)
-SET this0_sizes1_node.id = $this0_sizes1_node_id
-SET this0_sizes1_node.name = $this0_sizes1_node_name
-MERGE (this0)-[:HAS_SIZE]->(this0_sizes1_node)
-WITH this0
-CREATE (this0_colors0_node:Color)
-SET this0_colors0_node.id = $this0_colors0_node_id
-SET this0_colors0_node.name = $this0_colors0_node_name
-MERGE (this0)-[:HAS_COLOR]->(this0_colors0_node)
-WITH this0
-CREATE (this0_colors1_node:Color)
-SET this0_colors1_node.id = $this0_colors1_node_id
-SET this0_colors1_node.name = $this0_colors1_node_name
-MERGE (this0)-[:HAS_COLOR]->(this0_colors1_node)
-WITH this0
-CREATE (this0_photos0_node:Photo)
-SET this0_photos0_node.id = $this0_photos0_node_id
-SET this0_photos0_node.description = $this0_photos0_node_description
-SET this0_photos0_node.url = $this0_photos0_node_url
-MERGE (this0)-[:HAS_PHOTO]->(this0_photos0_node)
-WITH this0, this0_photos0_node
-CALL {
-	WITH this0_photos0_node
-	MATCH (this0_photos0_node)-[this0_photos0_node_color_Color_unique:OF_COLOR]->(:Color)
-	WITH count(this0_photos0_node_color_Color_unique) as c
-	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
-	RETURN c AS this0_photos0_node_color_Color_unique_ignored
-}
-WITH this0
-CREATE (this0_photos1_node:Photo)
-SET this0_photos1_node.id = $this0_photos1_node_id
-SET this0_photos1_node.description = $this0_photos1_node_description
-SET this0_photos1_node.url = $this0_photos1_node_url
-WITH this0, this0_photos1_node
-CALL {
-	WITH this0, this0_photos1_node
-	OPTIONAL MATCH (this0_photos1_node_color_connect0_node:Color)
-	WHERE this0_photos1_node_color_connect0_node.id = $this0_photos1_node_color_connect0_node_param0
-	CALL {
-		WITH *
-		WITH this0, collect(this0_photos1_node_color_connect0_node) as connectedNodes, collect(this0_photos1_node) as parentNodes
-		UNWIND parentNodes as this0_photos1_node
-		UNWIND connectedNodes as this0_photos1_node_color_connect0_node
-		MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
-		RETURN count(*) AS _
-	}
-	RETURN count(*) AS connect_this0_photos1_node_color_connect_Color
-}
-MERGE (this0)-[:HAS_PHOTO]->(this0_photos1_node)
-WITH this0, this0_photos1_node
-CALL {
-	WITH this0_photos1_node
-	MATCH (this0_photos1_node)-[this0_photos1_node_color_Color_unique:OF_COLOR]->(:Color)
-	WITH count(this0_photos1_node_color_Color_unique) as c
-	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
-	RETURN c AS this0_photos1_node_color_Color_unique_ignored
-}
-WITH this0
-CREATE (this0_photos2_node:Photo)
-SET this0_photos2_node.id = $this0_photos2_node_id
-SET this0_photos2_node.description = $this0_photos2_node_description
-SET this0_photos2_node.url = $this0_photos2_node_url
-WITH this0, this0_photos2_node
-CALL {
-	WITH this0, this0_photos2_node
-	OPTIONAL MATCH (this0_photos2_node_color_connect0_node:Color)
-	WHERE this0_photos2_node_color_connect0_node.id = $this0_photos2_node_color_connect0_node_param0
-	CALL {
-		WITH *
-		WITH this0, collect(this0_photos2_node_color_connect0_node) as connectedNodes, collect(this0_photos2_node) as parentNodes
-		UNWIND parentNodes as this0_photos2_node
-		UNWIND connectedNodes as this0_photos2_node_color_connect0_node
-		MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
-		RETURN count(*) AS _
-	}
-	RETURN count(*) AS connect_this0_photos2_node_color_connect_Color
-}
-MERGE (this0)-[:HAS_PHOTO]->(this0_photos2_node)
-WITH this0, this0_photos2_node
-CALL {
-	WITH this0_photos2_node
-	MATCH (this0_photos2_node)-[this0_photos2_node_color_Color_unique:OF_COLOR]->(:Color)
-	WITH count(this0_photos2_node_color_Color_unique) as c
-	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
-	RETURN c AS this0_photos2_node_color_Color_unique_ignored
-}
-RETURN this0
-}
-RETURN [
-this0 { .id }] AS data"
-`);
+            "CALL {
+            CREATE (this0:Product)
+            SET this0.id = $this0_id
+            SET this0.name = $this0_name
+            WITH this0
+            CREATE (this0_sizes0_node:Size)
+            SET this0_sizes0_node.id = $this0_sizes0_node_id
+            SET this0_sizes0_node.name = $this0_sizes0_node_name
+            MERGE (this0)-[:HAS_SIZE]->(this0_sizes0_node)
+            WITH this0
+            CREATE (this0_sizes1_node:Size)
+            SET this0_sizes1_node.id = $this0_sizes1_node_id
+            SET this0_sizes1_node.name = $this0_sizes1_node_name
+            MERGE (this0)-[:HAS_SIZE]->(this0_sizes1_node)
+            WITH this0
+            CREATE (this0_colors0_node:Color)
+            SET this0_colors0_node.id = $this0_colors0_node_id
+            SET this0_colors0_node.name = $this0_colors0_node_name
+            MERGE (this0)-[:HAS_COLOR]->(this0_colors0_node)
+            WITH this0
+            CREATE (this0_colors1_node:Color)
+            SET this0_colors1_node.id = $this0_colors1_node_id
+            SET this0_colors1_node.name = $this0_colors1_node_name
+            MERGE (this0)-[:HAS_COLOR]->(this0_colors1_node)
+            WITH this0
+            CREATE (this0_photos0_node:Photo)
+            SET this0_photos0_node.id = $this0_photos0_node_id
+            SET this0_photos0_node.description = $this0_photos0_node_description
+            SET this0_photos0_node.url = $this0_photos0_node_url
+            MERGE (this0)-[:HAS_PHOTO]->(this0_photos0_node)
+            WITH this0, this0_photos0_node
+            CALL {
+            	WITH this0_photos0_node
+            	MATCH (this0_photos0_node)-[this0_photos0_node_color_Color_unique:OF_COLOR]->(:Color)
+            	WITH count(this0_photos0_node_color_Color_unique) as c
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
+            	RETURN c AS this0_photos0_node_color_Color_unique_ignored
+            }
+            WITH this0
+            CREATE (this0_photos1_node:Photo)
+            SET this0_photos1_node.id = $this0_photos1_node_id
+            SET this0_photos1_node.description = $this0_photos1_node_description
+            SET this0_photos1_node.url = $this0_photos1_node_url
+            WITH this0, this0_photos1_node
+            CALL {
+            	WITH this0, this0_photos1_node
+            	OPTIONAL MATCH (this0_photos1_node_color_connect0_node:Color)
+            	WHERE this0_photos1_node_color_connect0_node.id = $this0_photos1_node_color_connect0_node_param0
+            	CALL {
+            		WITH *
+            		WITH this0, collect(this0_photos1_node_color_connect0_node) as connectedNodes, collect(this0_photos1_node) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0_photos1_node
+            			UNWIND connectedNodes as this0_photos1_node_color_connect0_node
+            			MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this0, this0_photos1_node, this0_photos1_node_color_connect0_node
+            	RETURN count(*) AS connect_this0_photos1_node_color_connect_Color
+            }
+            MERGE (this0)-[:HAS_PHOTO]->(this0_photos1_node)
+            WITH this0, this0_photos1_node
+            CALL {
+            	WITH this0_photos1_node
+            	MATCH (this0_photos1_node)-[this0_photos1_node_color_Color_unique:OF_COLOR]->(:Color)
+            	WITH count(this0_photos1_node_color_Color_unique) as c
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
+            	RETURN c AS this0_photos1_node_color_Color_unique_ignored
+            }
+            WITH this0
+            CREATE (this0_photos2_node:Photo)
+            SET this0_photos2_node.id = $this0_photos2_node_id
+            SET this0_photos2_node.description = $this0_photos2_node_description
+            SET this0_photos2_node.url = $this0_photos2_node_url
+            WITH this0, this0_photos2_node
+            CALL {
+            	WITH this0, this0_photos2_node
+            	OPTIONAL MATCH (this0_photos2_node_color_connect0_node:Color)
+            	WHERE this0_photos2_node_color_connect0_node.id = $this0_photos2_node_color_connect0_node_param0
+            	CALL {
+            		WITH *
+            		WITH this0, collect(this0_photos2_node_color_connect0_node) as connectedNodes, collect(this0_photos2_node) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0_photos2_node
+            			UNWIND connectedNodes as this0_photos2_node_color_connect0_node
+            			MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
+            			RETURN count(*) AS _
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this0, this0_photos2_node, this0_photos2_node_color_connect0_node
+            	RETURN count(*) AS connect_this0_photos2_node_color_connect_Color
+            }
+            MERGE (this0)-[:HAS_PHOTO]->(this0_photos2_node)
+            WITH this0, this0_photos2_node
+            CALL {
+            	WITH this0_photos2_node
+            	MATCH (this0_photos2_node)-[this0_photos2_node_color_Color_unique:OF_COLOR]->(:Color)
+            	WITH count(this0_photos2_node_color_Color_unique) as c
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
+            	RETURN c AS this0_photos2_node_color_Color_unique_ignored
+            }
+            RETURN this0
+            }
+            RETURN [
+            this0 { .id }] AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -284,70 +294,68 @@ this0 { .id }] AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`Product\`)
-WHERE this.name = $param0
-WITH this
-OPTIONAL MATCH (this)-[this_has_photo0_relationship:HAS_PHOTO]->(this_photos0:Photo)
-WHERE this_photos0.description = $updateProducts_args_update_photos0_where_Photoparam0
-CALL apoc.do.when(this_photos0 IS NOT NULL, \\"
-SET this_photos0.description = $this_update_photos0_description
-WITH this, this_photos0
-CALL {
-WITH this, this_photos0
-OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
-WHERE this_photos0_color0_disconnect0.name = $updateProducts_args_update_photos0_update_node_color_disconnect_where_Colorparam0
-CALL {
-	WITH this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel
-	WITH collect(this_photos0_color0_disconnect0) as this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel
-	UNWIND this_photos0_color0_disconnect0 as x
-	DELETE this_photos0_color0_disconnect0_rel
-	RETURN count(*) AS _
-}
-RETURN count(*) AS disconnect_this_photos0_color0_disconnect_Color
-}
-WITH this, this_photos0
-CALL {
-	WITH this, this_photos0
-	OPTIONAL MATCH (this_photos0_color0_connect0_node:Color)
-	WHERE this_photos0_color0_connect0_node.name = $this_photos0_color0_connect0_node_param0
-	CALL {
-		WITH *
-		WITH this, collect(this_photos0_color0_connect0_node) as connectedNodes, collect(this_photos0) as parentNodes
-		UNWIND parentNodes as this_photos0
-		UNWIND connectedNodes as this_photos0_color0_connect0_node
-		MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
-		RETURN count(*) AS _
-	}
-	RETURN count(*) AS connect_this_photos0_color0_connect_Color
-}
-WITH this, this_photos0
-CALL {
-	WITH this_photos0
-	MATCH (this_photos0)-[this_photos0_color_Color_unique:OF_COLOR]->(:Color)
-	WITH count(this_photos0_color_Color_unique) as c
-	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
-	RETURN c AS this_photos0_color_Color_unique_ignored
-}
-RETURN count(*) AS _
-\\", \\"\\", {this:this, updateProducts: $updateProducts, this_photos0:this_photos0, auth:$auth,this_update_photos0_description:$this_update_photos0_description,updateProducts_args_update_photos0_update_node_color_disconnect_where_Colorparam0:$updateProducts_args_update_photos0_update_node_color_disconnect_where_Colorparam0,this_photos0_color0_connect0_node_param0:$this_photos0_color0_connect0_node_param0})
-YIELD value AS _
-RETURN collect(DISTINCT this { .id }) AS data"
-`);
+            "MATCH (this:\`Product\`)
+            WHERE this.name = $param0
+            WITH this
+            CALL {
+            	WITH this
+            	MATCH (this)-[this_has_photo0_relationship:HAS_PHOTO]->(this_photos0:Photo)
+            	WHERE this_photos0.description = $updateProducts_args_update_photos0_where_this_photos0param0
+            	SET this_photos0.description = $this_update_photos0_description
+            	WITH this, this_photos0
+            	CALL {
+            	WITH this, this_photos0
+            	OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
+            	WHERE this_photos0_color0_disconnect0.name = $updateProducts_args_update_photos0_update_node_color_disconnect_where_Color_this_photos0_color0_disconnect0param0
+            	CALL {
+            		WITH this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
+            		WITH collect(this_photos0_color0_disconnect0) as this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
+            		UNWIND this_photos0_color0_disconnect0 as x
+            		DELETE this_photos0_color0_disconnect0_rel
+            		RETURN count(*) AS _
+            	}
+            	RETURN count(*) AS disconnect_this_photos0_color0_disconnect_Color
+            	}
+            	WITH this, this_photos0
+            	CALL {
+            		WITH this, this_photos0
+            		OPTIONAL MATCH (this_photos0_color0_connect0_node:Color)
+            		WHERE this_photos0_color0_connect0_node.name = $this_photos0_color0_connect0_node_param0
+            		CALL {
+            			WITH *
+            			WITH this, collect(this_photos0_color0_connect0_node) as connectedNodes, collect(this_photos0) as parentNodes
+            			CALL {
+            				WITH connectedNodes, parentNodes
+            				UNWIND parentNodes as this_photos0
+            				UNWIND connectedNodes as this_photos0_color0_connect0_node
+            				MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
+            				RETURN count(*) AS _
+            			}
+            			RETURN count(*) AS _
+            		}
+            	WITH this, this_photos0, this_photos0_color0_connect0_node
+            		RETURN count(*) AS connect_this_photos0_color0_connect_Color
+            	}
+            	WITH this, this_photos0
+            	CALL {
+            		WITH this_photos0
+            		MATCH (this_photos0)-[this_photos0_color_Color_unique:OF_COLOR]->(:Color)
+            		WITH count(this_photos0_color_Color_unique) as c
+            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
+            		RETURN c AS this_photos0_color_Color_unique_ignored
+            	}
+            	RETURN count(*) AS update_this_photos0
+            }
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Pringles\\",
-                \\"updateProducts_args_update_photos0_where_Photoparam0\\": \\"Green Photo\\",
+                \\"updateProducts_args_update_photos0_where_this_photos0param0\\": \\"Green Photo\\",
                 \\"this_update_photos0_description\\": \\"Light Green Photo\\",
-                \\"updateProducts_args_update_photos0_update_node_color_disconnect_where_Colorparam0\\": \\"Green\\",
+                \\"updateProducts_args_update_photos0_update_node_color_disconnect_where_Color_this_photos0_color0_disconnect0param0\\": \\"Green\\",
                 \\"this_photos0_color0_connect0_node_param0\\": \\"Light Green\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
-                },
                 \\"updateProducts\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -367,7 +375,8 @@ RETURN collect(DISTINCT this { .id }) AS data"
                                                         \\"node\\": {
                                                             \\"name\\": \\"Light Green\\"
                                                         }
-                                                    }
+                                                    },
+                                                    \\"overwrite\\": true
                                                 },
                                                 \\"disconnect\\": {
                                                     \\"where\\": {

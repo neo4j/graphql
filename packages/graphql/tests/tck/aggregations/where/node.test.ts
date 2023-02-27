@@ -29,11 +29,11 @@ describe("Cypher Where Aggregations with @node directive", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type User @node(label: "_User", additionalLabels: ["additionalUser"]) {
+            type User @node(labels: ["_User", "additionalUser"]) {
                 someName: String
             }
 
-            type Post @node(label: "_Post", additionalLabels: ["additionalPost"]) {
+            type Post @node(labels: ["_Post", "additionalPost"]) {
                 content: String!
                 likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -61,15 +61,19 @@ describe("Cypher Where Aggregations with @node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`_Post\`:\`additionalPost\`)
-            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:\`_User\`:\`additionalUser\`)
-            RETURN size(aggr_node.someName) > $aggr_node_someName_GT
-            \\", { this: this, aggr_node_someName_GT: $aggr_node_someName_GT })
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:LIKES]-(this1:\`_User\`:\`additionalUser\`)
+                RETURN any(var2 IN collect(size(this1.someName)) WHERE var2 > $param0) AS var3
+            }
+            WITH *
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"aggr_node_someName_GT\\": {
+                \\"param0\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 }

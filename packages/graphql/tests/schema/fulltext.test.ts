@@ -145,26 +145,27 @@ describe("@fulltext schema", () => {
 
             input MovieWhere {
               AND: [MovieWhere!]
+              NOT: MovieWhere
               OR: [MovieWhere!]
               description: String
               description_CONTAINS: String
               description_ENDS_WITH: String
               description_IN: [String]
-              description_NOT: String
-              description_NOT_CONTAINS: String
-              description_NOT_ENDS_WITH: String
-              description_NOT_IN: [String]
-              description_NOT_STARTS_WITH: String
+              description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              description_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_STARTS_WITH: String
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_IN: [String]
-              title_NOT: String
-              title_NOT_CONTAINS: String
-              title_NOT_ENDS_WITH: String
-              title_NOT_IN: [String]
-              title_NOT_STARTS_WITH: String
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -189,9 +190,9 @@ describe("@fulltext schema", () => {
             }
 
             type Query {
-              movies(fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in version 4.0 of the library. Please use the top-level query that corresponds to the index you wish to query instead. More information can be found here: https://neo4j.com/docs/graphql-manual/current/type-definitions/indexes-and-constraints/#type-definitions-indexes-fulltext\\"), options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in version 4.0 of the library. Please use the top-level query that corresponds to the index you wish to query instead. More information can be found here: https://neo4j.com/docs/graphql-manual/current/type-definitions/indexes-and-constraints/#type-definitions-indexes-fulltext\\"), where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in version 4.0 of the library. Please use the top-level query that corresponds to the index you wish to query instead. More information can be found here: https://neo4j.com/docs/graphql-manual/current/type-definitions/indexes-and-constraints/#type-definitions-indexes-fulltext\\"), sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              movies(fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in version 4.0.0 of the library. Please use the top-level query that corresponds to the index you wish to query instead. More information about the changes to @fulltext can be found here: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\"), options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in version 4.0.0 of the library. Please use the top-level query that corresponds to the index you wish to query instead. More information about the changes to @fulltext can be found here: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\"), where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in version 4.0.0 of the library. Please use the top-level query that corresponds to the index you wish to query instead. More information about the changes to @fulltext can be found here: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\"), sort: [MovieSort], where: MovieWhere): MoviesConnection!
               moviesFulltextMovieDescription(limit: Int, offset: Int, phrase: String!, sort: [MovieFulltextSort!], where: MovieFulltextWhere): [MovieFulltextResult!]!
               moviesFulltextMovieTitle(limit: Int, offset: Int, phrase: String!, sort: [MovieFulltextSort!], where: MovieFulltextWhere): [MovieFulltextResult!]!
             }

@@ -63,10 +63,15 @@ export class TestRunner {
     ): Promise<Array<Performance.TestDisplayData>> {
         const results: Array<Performance.TestDisplayData> = [];
         for (const test of tests) {
-            await beforeEach(test);
-            const perfResult = await this.runCypherQuery(test.query);
-            await afterEach(test);
-            results.push({ name: test.name, result: perfResult, file: test.filename, type: "cypher" });
+            try {
+                await beforeEach(test);
+                const perfResult = await this.runCypherQuery(test.query);
+                await afterEach(test);
+                results.push({ name: test.name, result: perfResult, file: test.filename, type: "cypher" });
+            } catch (err) {
+                console.error("Error running test", test.filename, test.name);
+                console.warn(err);
+            }
         }
 
         return results;
@@ -103,7 +108,7 @@ export class TestRunner {
     // Check for the profile plan to have the correct settings
     private assertQueryOptions(profiledPlan: ProfiledPlan): void {
         assert.ok(profiledPlan.arguments);
-        assert.strictEqual(profiledPlan.arguments.runtime, "INTERPRETED");
+        assert.strictEqual(profiledPlan.arguments.runtime, "PIPELINED");
         assert.strictEqual(profiledPlan.arguments.planner, "COST");
         assert.strictEqual(profiledPlan.arguments["planner-impl"], "DP");
     }
@@ -112,7 +117,7 @@ export class TestRunner {
         // planner and runtime options are needed to ensure consistent results on our query plan
         return `CYPHER
         planner=dp
-        runtime=interpreted
+        runtime=pipelined
         PROFILE ${query}`;
     }
 

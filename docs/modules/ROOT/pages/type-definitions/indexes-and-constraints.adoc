@@ -50,7 +50,8 @@ type Colour @node(label: "Color") {
 }
 ----
 
-In the following example, the `additionalLabels` argument of the `@node` directive is ignored when it comes to asserting constraints, so the outcome is the same as the example above:
+In the following example, labels specified in the `additionalLabels` argument of the `@node` directive are also checked when asserting constraints.
+If there is a unique constraint specified for the `hexadecimal` property of nodes with the `Hue` label, but not the `Color` label, no error will be thrown and no new constraints created when running `assertIndexesAndConstraints`.
 
 [source, graphql, indent=0]
 ----
@@ -120,7 +121,7 @@ type ProductFulltextResult {
 
 """The input for filtering a fulltext query on an index of Product"""
 input ProductFulltextWhere {
-  score: FulltextScoreWhere
+  score: FloatWhere
   product: ProductWhere
 }
 

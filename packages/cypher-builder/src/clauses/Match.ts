@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { MatchableElement, MatchParams, Pattern } from "../Pattern";
+import { Pattern } from "../pattern/Pattern";
 import { Clause } from "./Clause";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import { WithReturn } from "./mixins/WithReturn";
@@ -26,34 +26,44 @@ import { WithWhere } from "./mixins/WithWhere";
 import { WithSet } from "./mixins/WithSet";
 import { WithWith } from "./mixins/WithWith";
 import { DeleteClause, DeleteInput } from "./sub-clauses/Delete";
-import type { PropertyRef } from "../variables/PropertyRef";
+import type { PropertyRef } from "../references/PropertyRef";
 import { RemoveClause } from "./sub-clauses/Remove";
 import type { CypherEnvironment } from "../Environment";
+import type { NodeRef } from "../references/NodeRef";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface Match<T extends MatchableElement = any> extends WithReturn, WithWhere, WithSet, WithWith {}
+export interface Match extends WithReturn, WithWhere, WithSet, WithWith {}
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/match/)
+ * @group Clauses
+ */
 @mixin(WithReturn, WithWhere, WithSet, WithWith)
-export class Match<T extends MatchableElement> extends Clause {
-    private pattern: Pattern<T>;
+export class Match extends Clause {
+    private pattern: Pattern;
     private deleteClause: DeleteClause | undefined;
     private removeClause: RemoveClause | undefined;
     private _optional = false;
 
-    constructor(variable: T | Pattern<T>, parameters: MatchParams<T> = {}) {
+    constructor(pattern: NodeRef | Pattern) {
         super();
-        if (variable instanceof Pattern) {
-            this.pattern = variable;
+        if (pattern instanceof Pattern) {
+            this.pattern = pattern;
         } else {
-            this.pattern = new Pattern(variable).withParams(parameters);
+            this.pattern = new Pattern(pattern);
         }
     }
 
+    /** Attach a DELETE subclause
+     * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/delete/)
+     */
     public delete(...deleteInput: DeleteInput): this {
         this.createDeleteClause(deleteInput);
         return this;
     }
 
+    /** Attach a DETACH DELETE subclause
+     * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/delete/)
+     */
     public detachDelete(...deleteInput: DeleteInput): this {
         const deleteClause = this.createDeleteClause(deleteInput);
         deleteClause.detach();
@@ -65,11 +75,25 @@ export class Match<T extends MatchableElement> extends Clause {
         return this;
     }
 
+    /** Makes the clause an OPTIONAL MATCH
+     * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/optional-match/)
+     * @example
+     * ```ts
+     * new Cypher.Match(new Node({labels: ["Movie"]})).optional();
+     * ```
+     * _Cypher:_
+     * ```cypher
+     * OPTIONAL MATCH (this:Movie)
+     * ```
+     */
     public optional(): this {
         this._optional = true;
         return this;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const nodeCypher = this.pattern.getCypher(env);
 
@@ -90,9 +114,13 @@ export class Match<T extends MatchableElement> extends Clause {
     }
 }
 
-export class OptionalMatch<T extends MatchableElement = any> extends Match<T> {
-    constructor(variable: T | Pattern<T>, parameters: MatchParams<T> = {}) {
-        super(variable, parameters);
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/optional-match/)
+ * @group Clauses
+ */
+export class OptionalMatch extends Match {
+    constructor(pattern: NodeRef | Pattern) {
+        super(pattern);
         this.optional();
     }
 }

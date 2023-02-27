@@ -18,7 +18,7 @@
  */
 
 import Debug from "debug";
-import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
+import type { GraphQLResolveInfo } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
 import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
@@ -31,6 +31,8 @@ import type { Context, Neo4jGraphQLPlugins } from "../../types";
 import { getToken, parseBearerToken } from "../../utils/get-token";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
+import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
+import { IncomingMessage } from "http";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -39,7 +41,7 @@ type WrapResolverArguments = {
     config: Neo4jGraphQLConfig;
     nodes: Node[];
     relationships: Relationship[];
-    schema: GraphQLSchema;
+    schemaModel: Neo4jGraphQLSchemaModel;
     plugins?: Neo4jGraphQLPlugins;
     dbInfo?: Neo4jDatabaseInfo;
 };
@@ -47,7 +49,7 @@ type WrapResolverArguments = {
 let neo4jDatabaseInfo: Neo4jDatabaseInfo;
 
 export const wrapResolver =
-    ({ driver, config, nodes, relationships, schema, plugins, dbInfo }: WrapResolverArguments) =>
+    ({ driver, config, nodes, relationships, schemaModel, plugins, dbInfo }: WrapResolverArguments) =>
     (next) =>
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
         const { driverConfig } = config;
@@ -80,12 +82,17 @@ export const wrapResolver =
 
         context.nodes = nodes;
         context.relationships = relationships;
-        context.schema = schema;
+        context.schemaModel = schemaModel;
         context.plugins = plugins || {};
         context.subscriptionsEnabled = Boolean(context.plugins?.subscriptions);
         context.callbacks = config.callbacks;
 
         if (!context.jwt) {
+            if (context.plugins.auth) {
+                // Here we will try to compute the generic Secret or the generic jwksEndpoint
+                const contextRequest = context.req || context.request;
+                context.plugins.auth.tryToResolveKeys(context instanceof IncomingMessage ? context : contextRequest);
+            }
             const token = getToken(context);
             context.jwt = await decodeToken(token, context.plugins.auth);
         }

@@ -68,21 +68,26 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`SomeNode\`)
-CALL {
-    WITH this
-    MATCH (this)-[this0:HAS_OTHER_NODES]->(this_other:\`OtherNode\`)
-    WITH *
-    CALL {
-        WITH this_other
-        MATCH (this_other)-[this1:HAS_INTERFACE_NODES]->(this_other_MyImplementation:\`MyImplementation\`)
-        RETURN { __resolveType: \\"MyImplementation\\", id: this_other_MyImplementation.id } AS this_other_interfaceField
-    }
-    WITH this_other { interfaceField: this_other_interfaceField } AS this_other
-    RETURN head(collect(this_other)) AS this_other
-}
-RETURN this { .id, other: this_other } AS this"
-`);
+            "MATCH (this:\`SomeNode\`)
+            CALL {
+                WITH this
+                MATCH (this)-[this0:HAS_OTHER_NODES]->(this_other:\`OtherNode\`)
+                CALL {
+                    WITH this_other
+                    CALL {
+                        WITH *
+                        MATCH (this_other)-[this1:HAS_INTERFACE_NODES]->(this_other_interfaceField:\`MyImplementation\`)
+                        WITH this_other_interfaceField { __resolveType: \\"MyImplementation\\", __id: id(this_other), .id } AS this_other_interfaceField
+                        RETURN this_other_interfaceField AS this_other_interfaceField
+                    }
+                    WITH this_other_interfaceField
+                    RETURN head(collect(this_other_interfaceField)) AS this_other_interfaceField
+                }
+                WITH this_other { interfaceField: this_other_interfaceField } AS this_other
+                RETURN head(collect(this_other)) AS this_other
+            }
+            RETURN this { .id, other: this_other } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });

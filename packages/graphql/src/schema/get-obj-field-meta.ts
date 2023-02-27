@@ -36,7 +36,7 @@ import type {
 import { Kind } from "graphql";
 import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
-import getCypherMeta from "./get-cypher-meta";
+import { getCypherMeta } from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCustomResolverMeta from "./get-custom-resolver-meta";
 import getRelationshipMeta from "./get-relationship-meta";
@@ -64,6 +64,11 @@ import checkDirectiveCombinations from "./check-directive-combinations";
 import { upperFirst } from "../utils/upper-first";
 import { getCallbackMeta, getPopulatedByMeta } from "./get-populated-by-meta";
 
+const deprecationWarning =
+    "The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead." +
+    "More information can be found at " +
+    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby.";
+
 export interface ObjectFields {
     relationFields: RelationField[];
     connectionFields: ConnectionField[];
@@ -90,6 +95,7 @@ function getObjFieldMeta({
     enums,
     callbacks,
     customResolvers,
+    validateResolvers,
 }: {
     obj: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
@@ -97,6 +103,7 @@ function getObjFieldMeta({
     unions: UnionTypeDefinitionNode[];
     scalars: ScalarTypeDefinitionNode[];
     enums: EnumTypeDefinitionNode[];
+    validateResolvers: boolean;
     callbacks?: Neo4jGraphQLCallbacks;
     customResolvers?: IResolvers | Array<IResolvers>;
 }) {
@@ -125,7 +132,13 @@ function getObjFieldMeta({
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
-            const customResolverMeta = getCustomResolverMeta(field, obj, customResolvers, interfaceField);
+            const customResolverMeta = getCustomResolverMeta(
+                field,
+                obj,
+                validateResolvers,
+                customResolvers,
+                interfaceField
+            );
             const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
@@ -148,7 +161,7 @@ function getObjFieldMeta({
                 fieldName: field.name.value,
                 dbPropertyName: field.name.value,
                 typeMeta,
-                otherDirectives: (field.directives || []).filter(
+                otherDirectives: (directives || []).filter(
                     (x) =>
                         ![
                             "relationship",
@@ -290,7 +303,7 @@ function getObjFieldMeta({
                             },
                         },
                     },
-                    otherDirectives: [],
+                    otherDirectives: baseField.otherDirectives,
                     arguments: [...(field.arguments || [])],
                     description: field.description?.value,
                     relationship: relationField,
@@ -462,9 +475,7 @@ function getObjFieldMeta({
 
                     if (callbackDirective) {
                         if (!callbackDeprecatedWarningShown) {
-                            console.warn(
-                                "The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead."
-                            );
+                            console.warn(deprecationWarning);
                             callbackDeprecatedWarningShown = true;
                         }
                         const callback = getCallbackMeta(callbackDirective, callbacks);

@@ -7,6 +7,9 @@
     "access": "public",
     "baseBranch": "dev",
     "updateInternalDependencies": "patch",
-    "ignore": ["graphql-manual"],
-    "privatePackages": { "version": true, "tag": true }
+    "ignore": ["graphql-manual", "migration"],
+    "privatePackages": { "version": true, "tag": true },
+    "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
+        "onlyUpdatePeerDependentsWhenOutOfRange": true
+    }
 }

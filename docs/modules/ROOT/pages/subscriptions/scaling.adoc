@@ -1,8 +1,6 @@
 [[horizontal-scaling]]
 = Horizontal Scaling
 
-WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
-
 == The Problem
 Horizontal scaling of any real time system can be tricky. Especially when dealing with long lived connections such as WebSockets.
 Consider the following example, in which _Client A_ is subscribed to a certain event, that is triggered by _Client B_:

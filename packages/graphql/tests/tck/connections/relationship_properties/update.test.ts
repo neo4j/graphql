@@ -75,20 +75,20 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
             WITH this
-            OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
-            SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies, resolvedCallbacks: $resolvedCallbacks})
-            YIELD value AS this_acted_in0_relationship_actors0_edge
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
+            	SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
+            	RETURN count(*) AS update_this_actors0
+            }
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"updateMovies_args_update_actors0_where_Actorparam0\\": \\"Tom Hanks\\",
+                \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"Tom Hanks\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -147,30 +147,22 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
             WITH this
-            OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
-            SET this_actors0.name = $this_update_actors0_name
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
-            YIELD value AS _
-            CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
-            SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies, resolvedCallbacks: $resolvedCallbacks})
-            YIELD value AS this_acted_in0_relationship_actors0_edge
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
+            	SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
+            	SET this_actors0.name = $this_update_actors0_name
+            	RETURN count(*) AS update_this_actors0
+            }
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"updateMovies_args_update_actors0_where_Actorparam0\\": \\"Tom Hanks\\",
+                \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"Tom Hanks\\",
                 \\"this_update_actors0_name\\": \\"Tom Hanks\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                },
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {

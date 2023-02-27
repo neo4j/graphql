@@ -136,26 +136,27 @@ describe("Plural option", () => {
 
             input TechWhere {
               AND: [TechWhere!]
+              NOT: TechWhere
               OR: [TechWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               value: String
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_IN: [String]
-              value_NOT: String
-              value_NOT_CONTAINS: String
-              value_NOT_ENDS_WITH: String
-              value_NOT_IN: [String]
-              value_NOT_STARTS_WITH: String
+              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               value_STARTS_WITH: String
             }
 
@@ -293,26 +294,27 @@ describe("Plural option", () => {
 
             input TechWhere {
               AND: [TechWhere!]
+              NOT: TechWhere
               OR: [TechWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               value: String
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_IN: [String]
-              value_NOT: String
-              value_NOT_CONTAINS: String
-              value_NOT_ENDS_WITH: String
-              value_NOT_IN: [String]
-              value_NOT_STARTS_WITH: String
+              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               value_STARTS_WITH: String
             }
 
@@ -450,26 +452,27 @@ describe("Plural option", () => {
 
             input TechWhere {
               AND: [TechWhere!]
+              NOT: TechWhere
               OR: [TechWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_IN: [String]
-              name_NOT: String
-              name_NOT_CONTAINS: String
-              name_NOT_ENDS_WITH: String
-              name_NOT_IN: [String]
-              name_NOT_STARTS_WITH: String
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               value: String
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_IN: [String]
-              value_NOT: String
-              value_NOT_CONTAINS: String
-              value_NOT_ENDS_WITH: String
-              value_NOT_IN: [String]
-              value_NOT_STARTS_WITH: String
+              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               value_STARTS_WITH: String
             }
 
@@ -608,16 +611,17 @@ describe("Plural option", () => {
 
             input TechsWhere {
               AND: [TechsWhere!]
+              NOT: TechsWhere
               OR: [TechsWhere!]
               value: String
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_IN: [String]
-              value_NOT: String
-              value_NOT_CONTAINS: String
-              value_NOT_ENDS_WITH: String
-              value_NOT_IN: [String]
-              value_NOT_STARTS_WITH: String
+              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               value_STARTS_WITH: String
             }
 
@@ -763,16 +767,17 @@ describe("Plural option", () => {
 
             input UserWhere {
               AND: [UserWhere!]
+              NOT: UserWhere
               OR: [UserWhere!]
               value: String
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_IN: [String]
-              value_NOT: String
-              value_NOT_CONTAINS: String
-              value_NOT_ENDS_WITH: String
-              value_NOT_IN: [String]
-              value_NOT_STARTS_WITH: String
+              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               value_STARTS_WITH: String
             }"
         `);
@@ -899,16 +904,17 @@ describe("Plural option", () => {
 
             input UserWhere {
               AND: [UserWhere!]
+              NOT: UserWhere
               OR: [UserWhere!]
               value: String
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_IN: [String]
-              value_NOT: String
-              value_NOT_CONTAINS: String
-              value_NOT_ENDS_WITH: String
-              value_NOT_IN: [String]
-              value_NOT_STARTS_WITH: String
+              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               value_STARTS_WITH: String
             }
 
@@ -1047,16 +1053,17 @@ describe("Plural option", () => {
 
             input UsersWhere {
               AND: [UsersWhere!]
+              NOT: UsersWhere
               OR: [UsersWhere!]
               value: String
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_IN: [String]
-              value_NOT: String
-              value_NOT_CONTAINS: String
-              value_NOT_ENDS_WITH: String
-              value_NOT_IN: [String]
-              value_NOT_STARTS_WITH: String
+              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               value_STARTS_WITH: String
             }"
         `);

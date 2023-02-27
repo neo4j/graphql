@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import Cypher  from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import type { BaseField, Context, PrimitiveField, TemporalField } from "../types";
+import type { BaseField, Context, GraphQLWhereArg, PrimitiveField, TemporalField } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import { translateTopLevelMatch } from "./translate-top-level-match";
@@ -31,7 +31,8 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
     const cypherStrs: string[] = [];
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
-    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "READ" });
+    const where = context.resolveTree.args.where as GraphQLWhereArg | undefined;
+    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "READ", where });
     cypherStrs.push(topLevelMatch.cypher);
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
@@ -62,7 +63,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                     entity: authField,
                     operations: "READ",
                     context,
-                    allow: { parentNode: node, varName, chainStr: authField.fieldName },
+                    allow: { parentNode: node, varName },
                 });
                 if (allowAndParams[0]) {
                     authStrs.push(allowAndParams[0]);

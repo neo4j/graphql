@@ -19,11 +19,14 @@
 
 import type { CypherEnvironment } from "../Environment";
 import { CypherASTNode } from "../CypherASTNode";
-import { padBlock } from "../utils/utils";
+import { padBlock } from "../utils/pad-block";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import type { Expr, Predicate } from "../types";
 
-/** Case statement <https://neo4j.com/docs/cypher-manual/current/syntax/expressions/#query-syntax-case> */
+/** Case statement
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/expressions/#query-syntax-case)
+ * @group Expressions
+ */
 export class Case<C extends Expr | undefined = undefined> extends CypherASTNode {
     private comparator: Expr | undefined;
     private whenClauses: When<C>[] = [];
@@ -45,6 +48,9 @@ export class Case<C extends Expr | undefined = undefined> extends CypherASTNode 
         return this;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const comparatorStr = compileCypherIfExists(this.comparator, env, { prefix: " " });
         const whenStr = this.whenClauses.map((c) => c.getCypher(env)).join("\n");
@@ -72,6 +78,9 @@ class When<T extends Expr | undefined> extends CypherASTNode {
         return this.parent;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const predicateStr = this.predicate.getCypher(env);
         if (!this.result) throw new Error("Cannot generate CASE ... WHEN statement without THEN");

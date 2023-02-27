@@ -121,13 +121,13 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                         WITH this_DriveComposition
                         MATCH (this_DriveComposition)-[this_DriveComposition_connection_driveComponentConnectionthis0:HAS]->(this_DriveComposition_Battery:\`Battery\`)
                         WHERE (this_DriveComposition_connection_driveComponentConnectionthis0.current = $this_DriveComposition_connection_driveComponentConnectionparam0 AND apoc.util.validatePredicate(NOT ((any(this_DriveComposition_connection_driveComponentConnectionvar2 IN [\\"admin\\"] WHERE any(this_DriveComposition_connection_driveComponentConnectionvar1 IN $auth.roles WHERE this_DriveComposition_connection_driveComponentConnectionvar1 = this_DriveComposition_connection_driveComponentConnectionvar2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                        WITH { current: this_DriveComposition_connection_driveComponentConnectionthis0.current, node: { __resolveType: \\"Battery\\", id: this_DriveComposition_Battery.id } } AS edge
+                        WITH { current: this_DriveComposition_connection_driveComponentConnectionthis0.current, node: { __resolveType: \\"Battery\\", __id: id(this_DriveComposition_Battery), id: this_DriveComposition_Battery.id } } AS edge
                         RETURN edge
                         UNION
                         WITH this_DriveComposition
-                        MATCH (this_DriveComposition)-[this_DriveComposition_connection_driveComponentConnectionthis2:HAS]->(this_DriveComposition_CombustionEngine:\`CombustionEngine\`)
-                        WHERE this_DriveComposition_connection_driveComponentConnectionthis2.current = $this_DriveComposition_connection_driveComponentConnectionparam3
-                        WITH { current: this_DriveComposition_connection_driveComponentConnectionthis2.current, node: { __resolveType: \\"CombustionEngine\\", id: this_DriveComposition_CombustionEngine.id } } AS edge
+                        MATCH (this_DriveComposition)-[this_DriveComposition_connection_driveComponentConnectionthis3:HAS]->(this_DriveComposition_CombustionEngine:\`CombustionEngine\`)
+                        WHERE this_DriveComposition_connection_driveComponentConnectionthis3.current = $this_DriveComposition_connection_driveComponentConnectionparam2
+                        WITH { current: this_DriveComposition_connection_driveComponentConnectionthis3.current, node: { __resolveType: \\"CombustionEngine\\", __id: id(this_DriveComposition_CombustionEngine), id: this_DriveComposition_CombustionEngine.id } } AS edge
                         RETURN edge
                     }
                     WITH collect(edge) AS edges
@@ -147,7 +147,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                 \\"param0\\": true,
                 \\"this_connection_driveCompositionsConnectionparam0\\": true,
                 \\"this_DriveComposition_connection_driveComponentConnectionparam0\\": true,
-                \\"this_DriveComposition_connection_driveComponentConnectionparam3\\": true,
+                \\"this_DriveComposition_connection_driveComponentConnectionparam2\\": true,
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [

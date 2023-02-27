@@ -23,10 +23,10 @@ import { gql } from "apollo-server";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 
-import { generateUniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import type { ArrayPopTest } from "./types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("array-pop", () => {
     let driver: Driver;
@@ -111,7 +111,7 @@ describe("array-pop", () => {
     ])(
         "should pop a single $inputType element from an array of a single $inputType element",
         async ({ inputType, initialValue, expectedOutputValue }) => {
-            const typeMovie = generateUniqueType("Movie");
+            const typeMovie = new UniqueType("Movie");
 
             const typeDefs = gql`
             type ${typeMovie} {
@@ -215,7 +215,7 @@ describe("array-pop", () => {
     ])(
         "should pop a single $inputType element from an array of two $inputType elements",
         async ({ inputType, initialValue, expectedOutputValue }) => {
-            const typeMovie = generateUniqueType("Movie");
+            const typeMovie = new UniqueType("Movie");
 
             const typeDefs = gql`
             type ${typeMovie} {
@@ -319,7 +319,7 @@ describe("array-pop", () => {
     ])(
         "should pop two $inputType elements from an array of two $inputType elements",
         async ({ inputType, initialValue, expectedOutputValue }) => {
-            const typeMovie = generateUniqueType("Movie");
+            const typeMovie = new UniqueType("Movie");
 
             const typeDefs = gql`
             type ${typeMovie} {
@@ -403,7 +403,7 @@ describe("array-pop", () => {
             elementsToPop: 2,
         },
     ])("should pop $description", async ({ elementsToPop, tags, expectedOutputValue }) => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeMovie} {
@@ -520,7 +520,7 @@ describe("array-pop", () => {
             elementsToPop: 2,
         },
     ])("should pop $description", async ({ elementsToPop, tags, expectedOutputValue }) => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeMovie} {
@@ -602,7 +602,7 @@ describe("array-pop", () => {
     });
 
     test("should pop from two different arrays in the same update", async () => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeMovie} {
@@ -655,8 +655,8 @@ describe("array-pop", () => {
 
     test("should be able to pop in a nested update", async () => {
         const actorName = "Luigino";
-        const movie = generateUniqueType("Movie");
-        const actor = generateUniqueType("Actor");
+        const movie = new UniqueType("Movie");
+        const actor = new UniqueType("Actor");
         const typeDefs = `
             type ${movie.name} {
                 viewers: [Int]!
@@ -726,8 +726,8 @@ describe("array-pop", () => {
 
     test("should be possible to update relationship properties", async () => {
         const initialPay = 100;
-        const movie = generateUniqueType("Movie");
-        const actor = generateUniqueType("Actor");
+        const movie = new UniqueType("Movie");
+        const actor = new UniqueType("Actor");
         const typeDefs = `
             type ${movie.name} {
                 title: String
@@ -810,8 +810,8 @@ describe("array-pop", () => {
     });
 
     test("should be possible to update Point relationship properties", async () => {
-        const movie = generateUniqueType("Movie");
-        const actor = generateUniqueType("Actor");
+        const movie = new UniqueType("Movie");
+        const actor = new UniqueType("Actor");
         const typeDefs = `
             type ${movie.name} {
                 title: String

@@ -23,8 +23,17 @@ import { NodeDirective } from "../classes/NodeDirective";
 
 const deprecationWarning =
     "The plural argument has been deprecated and will be removed in version 4.0." +
-    "Please use the @plural directive instead.";
+    "Please use the @plural directive instead. More information can be found at " +
+    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/" +
+    "#_plural_argument_removed_from_node_and_replaced_with_plural.";
 let pluralDeprecationWarningShown = false;
+
+const labelDeprecationWarning =
+    "NOTE: The label and additionalLabels arguments have been deprecated and will be removed in version 4.0.0. " +
+    "Please use the labels argument instead. More information can be found at " +
+    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/" +
+    "#_label_and_additionalLabels_arguments_removed_from_node_and_replaced_with_new_argument_labels";
+let labelDeprecationWarningShown = false;
 
 function parseNodeDirective(nodeDirective: DirectiveNode | undefined) {
     if (!nodeDirective || nodeDirective.name.value !== "node") {
@@ -37,10 +46,18 @@ function parseNodeDirective(nodeDirective: DirectiveNode | undefined) {
         pluralDeprecationWarningShown = true;
     }
 
+    const label = getArgumentValue<string>(nodeDirective, "label");
+    const additionalLabels = getArgumentValue<string[]>(nodeDirective, "additionalLabels");
+    if ((label || additionalLabels) && !labelDeprecationWarningShown) {
+        console.warn(labelDeprecationWarning);
+        labelDeprecationWarningShown = true;
+    }
+
     return new NodeDirective({
-        label: getArgumentValue<string>(nodeDirective, "label"),
-        additionalLabels: getArgumentValue<string[]>(nodeDirective, "additionalLabels"),
+        label,
+        additionalLabels,
         plural,
+        labels: getArgumentValue<string[]>(nodeDirective, "labels"),
     });
 }
 

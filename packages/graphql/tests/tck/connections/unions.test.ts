@@ -91,12 +91,12 @@ describe("Cypher -> Connections -> Unions", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this_connection_publicationsConnectionthis0:WROTE]->(this_Book:\`Book\`)
-                    WITH { words: this_connection_publicationsConnectionthis0.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
+                    WITH { words: this_connection_publicationsConnectionthis0.words, node: { __resolveType: \\"Book\\", __id: id(this_Book), title: this_Book.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_publicationsConnectionthis1:WROTE]->(this_Journal:\`Journal\`)
-                    WITH { words: this_connection_publicationsConnectionthis1.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
+                    WITH { words: this_connection_publicationsConnectionthis1.words, node: { __resolveType: \\"Journal\\", __id: id(this_Journal), subject: this_Journal.subject } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -149,13 +149,13 @@ describe("Cypher -> Connections -> Unions", () => {
                     WITH this
                     MATCH (this)-[this_connection_publicationsConnectionthis0:WROTE]->(this_Book:\`Book\`)
                     WHERE this_Book.title = $this_connection_publicationsConnectionparam0
-                    WITH { words: this_connection_publicationsConnectionthis0.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
+                    WITH { words: this_connection_publicationsConnectionthis0.words, node: { __resolveType: \\"Book\\", __id: id(this_Book), title: this_Book.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_publicationsConnectionthis1:WROTE]->(this_Journal:\`Journal\`)
                     WHERE this_Journal.subject = $this_connection_publicationsConnectionparam1
-                    WITH { words: this_connection_publicationsConnectionthis1.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
+                    WITH { words: this_connection_publicationsConnectionthis1.words, node: { __resolveType: \\"Journal\\", __id: id(this_Journal), subject: this_Journal.subject } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -210,13 +210,13 @@ describe("Cypher -> Connections -> Unions", () => {
                     WITH this
                     MATCH (this)-[this_connection_publicationsConnectionthis0:WROTE]->(this_Book:\`Book\`)
                     WHERE this_connection_publicationsConnectionthis0.words = $this_connection_publicationsConnectionparam0
-                    WITH { words: this_connection_publicationsConnectionthis0.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
+                    WITH { words: this_connection_publicationsConnectionthis0.words, node: { __resolveType: \\"Book\\", __id: id(this_Book), title: this_Book.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_publicationsConnectionthis1:WROTE]->(this_Journal:\`Journal\`)
                     WHERE this_connection_publicationsConnectionthis1.words = $this_connection_publicationsConnectionparam1
-                    WITH { words: this_connection_publicationsConnectionthis1.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
+                    WITH { words: this_connection_publicationsConnectionthis1.words, node: { __resolveType: \\"Journal\\", __id: id(this_Journal), subject: this_Journal.subject } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -280,13 +280,13 @@ describe("Cypher -> Connections -> Unions", () => {
                     WITH this
                     MATCH (this)-[this_connection_publicationsConnectionthis0:WROTE]->(this_Book:\`Book\`)
                     WHERE (this_Book.title = $this_connection_publicationsConnectionparam0 AND this_connection_publicationsConnectionthis0.words = $this_connection_publicationsConnectionparam1)
-                    WITH { words: this_connection_publicationsConnectionthis0.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
+                    WITH { words: this_connection_publicationsConnectionthis0.words, node: { __resolveType: \\"Book\\", __id: id(this_Book), title: this_Book.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_publicationsConnectionthis1:WROTE]->(this_Journal:\`Journal\`)
                     WHERE (this_Journal.subject = $this_connection_publicationsConnectionparam2 AND this_connection_publicationsConnectionthis1.words = $this_connection_publicationsConnectionparam3)
-                    WITH { words: this_connection_publicationsConnectionthis1.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
+                    WITH { words: this_connection_publicationsConnectionthis1.words, node: { __resolveType: \\"Journal\\", __id: id(this_Journal), subject: this_Journal.subject } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -346,12 +346,12 @@ describe("Cypher -> Connections -> Unions", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this_connection_publicationsConnectionthis0:WROTE]->(this_Book:\`Book\`)
-                    WITH { words: this_connection_publicationsConnectionthis0.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
+                    WITH { words: this_connection_publicationsConnectionthis0.words, node: { __resolveType: \\"Book\\", __id: id(this_Book), title: this_Book.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_publicationsConnectionthis1:WROTE]->(this_Journal:\`Journal\`)
-                    WITH { words: this_connection_publicationsConnectionthis1.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
+                    WITH { words: this_connection_publicationsConnectionthis1.words, node: { __resolveType: \\"Journal\\", __id: id(this_Journal), subject: this_Journal.subject } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges

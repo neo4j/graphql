@@ -22,7 +22,8 @@ import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "../../../src";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
+import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("https://github.com/neo4j/graphql/issues/2250", () => {
     let driver: Driver;
@@ -40,9 +41,9 @@ describe("https://github.com/neo4j/graphql/issues/2250", () => {
     });
 
     beforeEach(async () => {
-        Movie = generateUniqueType("Movie");
-        Person = generateUniqueType("Person");
-        Actor = generateUniqueType("Actor");
+        Movie = new UniqueType("Movie");
+        Person = new UniqueType("Person");
+        Actor = new UniqueType("Actor");
         session = await neo4j.getSession();
 
         const typeDefs = `
@@ -83,6 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/2250", () => {
     });
 
     afterEach(async () => {
+        await cleanNodes(session, [Actor, Movie, Person]);
         await session.close();
     });
 

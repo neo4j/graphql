@@ -63,15 +63,19 @@ describe("Cypher Aggregations where node with ID", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
-            RETURN aggr_node.id = $aggr_node_id_EQUAL
-            \\", { this: this, aggr_node_id_EQUAL: $aggr_node_id_EQUAL })
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                RETURN any(var2 IN collect(this1.id) WHERE var2 = $param0) AS var3
+            }
+            WITH *
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"aggr_node_id_EQUAL\\": \\"10\\"
+                \\"param0\\": \\"10\\"
             }"
         `);
     });
@@ -92,15 +96,19 @@ describe("Cypher Aggregations where node with ID", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
-            RETURN aggr_node._someIdAlias = $aggr_node_someIdAlias_EQUAL
-            \\", { this: this, aggr_node_someIdAlias_EQUAL: $aggr_node_someIdAlias_EQUAL })
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                RETURN any(var2 IN collect(this1._someIdAlias) WHERE var2 = $param0) AS var3
+            }
+            WITH *
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"aggr_node_someIdAlias_EQUAL\\": \\"10\\"
+                \\"param0\\": \\"10\\"
             }"
         `);
     });

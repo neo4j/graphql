@@ -22,26 +22,38 @@ import type JwksRsa from "jwks-rsa";
 import { JwksClient } from "jwks-rsa";
 import Debug from "debug";
 import { DEBUG_PREFIX } from "./constants";
+import type { RequestLike } from "./types";
 
 const debug = Debug(DEBUG_PREFIX);
 
 export interface JWKSPluginInput {
-    jwksEndpoint: string;
+    jwksEndpoint: string | ((req: RequestLike) => string);
     rolesPath?: string;
     globalAuthentication?: boolean;
+    bindPredicate?: "all" | "any";
 }
 
 class Neo4jGraphQLAuthJWKSPlugin {
     rolesPath?: string;
     isGlobalAuthenticationEnabled?: boolean;
-    client: JwksClient;
-
+    client: JwksClient | null = null;
+    options!: JwksRsa.Options;
+    bindPredicate: "all" | "any";
+    input: JWKSPluginInput;
     constructor(input: JWKSPluginInput) {
+        //We are going to use this input later, so we need to save it here.
+        this.input = input;
+
         this.rolesPath = input.rolesPath;
         this.isGlobalAuthenticationEnabled = input.globalAuthentication || false;
+        this.bindPredicate = input.bindPredicate || "all";
 
-        const options: JwksRsa.Options = {
-            jwksUri: input.jwksEndpoint,
+        //It will be empty string if the endpoint is a function
+        //This means the value will be calculated later
+        const jwksEndpoint = typeof input.jwksEndpoint === "string" ? input.jwksEndpoint : "";
+
+        this.options = {
+            jwksUri: jwksEndpoint,
             rateLimit: true,
             jwksRequestsPerMinute: 10,
             cache: true,
@@ -49,7 +61,19 @@ class Neo4jGraphQLAuthJWKSPlugin {
             cacheMaxAge: 600000,
         };
 
-        this.client = new JwksClient(options);
+        //If the endpoint is set in the constructor directly we can create th client immediately here
+        if (jwksEndpoint !== "") this.client = new JwksClient(this.options);
+    }
+
+    tryToResolveKeys(req: RequestLike): void {
+        if (typeof this.input.jwksEndpoint === "string") return;
+
+        //The url will be computed based on the jwksEndpoint implementation
+        this.options.jwksUri = this.input.jwksEndpoint(req);
+
+        this.client = new JwksClient(this.options);
+
+        return;
     }
 
     async decode<T>(token: string): Promise<T | undefined> {
@@ -70,6 +94,12 @@ class Neo4jGraphQLAuthJWKSPlugin {
 
     private async verifyJWKS<T>({ token }: { token: string }): Promise<T> {
         const getKey: jsonwebtoken.GetPublicKeyOrSecret = (header, callback) => {
+            if (!this.client) {
+                debug(
+                    "JwksClient should NOT be empty! Make sure the 'tryToResolveKeys' method is called before decoding"
+                );
+                return;
+            }
             const kid: string = header.kid || "";
 
             this.client.getSigningKey(kid, (err, key) => {
@@ -79,6 +109,10 @@ class Neo4jGraphQLAuthJWKSPlugin {
         };
 
         return new Promise((resolve, reject) => {
+            if (!this.client)
+                reject(
+                    "JwksClient should not be empty! Make sure the 'tryToResolveKeys' method is called before decoding"
+                );
             jsonwebtoken.verify(
                 token,
                 getKey,

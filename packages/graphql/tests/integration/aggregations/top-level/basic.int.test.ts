@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 
 describe("aggregations-top_level-basic", () => {
     let driver: Driver;
@@ -39,7 +39,7 @@ describe("aggregations-top_level-basic", () => {
     test("should count nodes", async () => {
         const session = await neo4j.getSession();
 
-        const randomType = generateUniqueType("Movie");
+        const randomType = new UniqueType("Movie");
 
         const typeDefs = `
             type ${randomType.name} {

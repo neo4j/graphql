@@ -86,7 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
-            WHERE (this.current = $param0 AND size([(this)-[this0:ARCHITECTURE]->(this1:\`MasterData\`) WHERE size([(this1)-[this2:HAS_NAME]->(this3:\`NameDetails\`) WHERE this3.fullName = $param1 | 1]) = 1 | 1]) = 1)
+            WHERE (this.current = $param0 AND single(this1 IN [(this)-[this3:ARCHITECTURE]->(this1:\`MasterData\`) WHERE single(this0 IN [(this1)-[this2:HAS_NAME]->(this0:\`NameDetails\`) WHERE this0.fullName = $param1 | 1] WHERE true) | 1] WHERE true))
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_architectureConnectionthis0:ARCHITECTURE]->(this_MasterData:\`MasterData\`)
@@ -194,7 +194,10 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Main\`)
-            WHERE (this.current = $param0 AND size([(this)-[this0:MAIN]->(this1:\`Series\`) WHERE size([(this1)-[this2:ARCHITECTURE]->(this3:\`MasterData\`) WHERE size([(this3)-[this4:HAS_NAME]->(this5:\`NameDetails\`) WHERE this5.fullName = $param1 | 1]) = 1 | 1]) > 0 | 1]) = 1)
+            WHERE (this.current = $param0 AND single(this0 IN [(this)-[this5:MAIN]->(this0:\`Series\`) WHERE EXISTS {
+                MATCH (this0)-[this1:ARCHITECTURE]->(this2:\`MasterData\`)
+                WHERE single(this3 IN [(this2)-[this4:HAS_NAME]->(this3:\`NameDetails\`) WHERE this3.fullName = $param1 | 1] WHERE true)
+            } | 1] WHERE true))
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_mainConnectionthis0:MAIN]->(this_Series:\`Series\`)

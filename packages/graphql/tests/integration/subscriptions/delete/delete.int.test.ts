@@ -21,8 +21,7 @@ import { gql } from "apollo-server";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../src";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import Neo4j from "../../neo4j";
 
@@ -44,8 +43,8 @@ describe("Subscriptions delete", () => {
     beforeEach(async () => {
         session = await neo4j.getSession();
 
-        typeActor = generateUniqueType("Actor");
-        typeMovie = generateUniqueType("Movie");
+        typeActor = new UniqueType("Actor");
+        typeMovie = new UniqueType("Movie");
 
         plugin = new TestSubscriptionsPlugin();
         const typeDefs = gql`
@@ -143,7 +142,7 @@ describe("Subscriptions delete", () => {
         expect(gqlResult.data[typeMovie.operations.delete].nodesDeleted).toBe(5);
 
         expect(plugin.eventList).toEqual(
-            expect.toIncludeSameMembers([
+            expect.arrayContaining([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -221,7 +220,7 @@ describe("Subscriptions delete", () => {
         expect(gqlResult.data[typeMovie.operations.delete].nodesDeleted).toBe(4);
 
         expect(plugin.eventList).toEqual(
-            expect.toIncludeSameMembers([
+            expect.arrayContaining([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),

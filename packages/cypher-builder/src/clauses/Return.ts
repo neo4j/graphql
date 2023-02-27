@@ -27,6 +27,10 @@ import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Return extends WithOrder {}
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/return/)
+ * @group Clauses
+ */
 @mixin(WithOrder)
 export class Return extends Clause {
     private projection: Projection;
@@ -47,6 +51,9 @@ export class Return extends Clause {
         return this;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const projectionStr = this.projection.getCypher(env);
         const orderStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });

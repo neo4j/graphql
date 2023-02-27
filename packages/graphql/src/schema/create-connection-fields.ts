@@ -26,17 +26,22 @@ import type { ObjectFields } from "./get-obj-field-meta";
 import getSortableFields from "./get-sortable-fields";
 import { addDirectedArgument } from "./directed-argument";
 import { connectionFieldResolver } from "./pagination";
+import { graphqlDirectivesToCompose } from "./to-compose";
+import { DEPRECATE_NOT } from "./constants";
+import { addRelationshipArrayFilters } from "./augment/add-relationship-array-filters";
 
 function createConnectionFields({
     connectionFields,
     schemaComposer,
     composeNode,
+    sourceName,
     nodes,
     relationshipPropertyFields,
 }: {
     connectionFields: ConnectionField[];
     schemaComposer: SchemaComposer;
     composeNode: ObjectTypeComposer | InterfaceTypeComposer;
+    sourceName: string;
     nodes: Node[];
     relationshipPropertyFields: Map<string, ObjectFields>;
 }): Relationship[] {
@@ -51,6 +56,9 @@ function createConnectionFields({
                 node: `${connectionField.relationship.typeMeta.name}!`,
             });
         });
+        const deprecatedDirectives = graphqlDirectivesToCompose(
+            connectionField.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+        );
 
         const connectionWhereName = `${connectionField.typeMeta.name}Where`;
 
@@ -60,6 +68,7 @@ function createConnectionFields({
             connectionWhere.addFields({
                 AND: `[${connectionWhereName}!]`,
                 OR: `[${connectionWhereName}!]`,
+                NOT: connectionWhereName,
             });
         }
 
@@ -78,34 +87,29 @@ function createConnectionFields({
 
             connectionWhere.addFields({
                 edge: `${connectionField.relationship.properties}Where`,
-                edge_NOT: `${connectionField.relationship.properties}Where`,
+                edge_NOT: {
+                    type: `${connectionField.relationship.properties}Where`,
+                    directives: [DEPRECATE_NOT],
+                },
             });
         }
 
         whereInput.addFields({
             [connectionField.fieldName]: connectionWhere,
-            [`${connectionField.fieldName}_NOT`]: connectionWhere,
+            [`${connectionField.fieldName}_NOT`]: {
+                type: connectionWhere,
+            },
         });
 
         // n..m Relationships
         if (connectionField.relationship.typeMeta.array) {
-            // Add filters for each list predicate
-            whereInput.addFields(
-                (["ALL", "NONE", "SINGLE", "SOME"] as const).reduce(
-                    (acc, filter) => ({
-                        ...acc,
-                        [`${connectionField.fieldName}_${filter}`]: connectionWhere,
-                    }),
-                    {}
-                )
-            );
-
-            // Deprecate existing filters
-            whereInput.setFieldDirectiveByName(connectionField.fieldName, "deprecated", {
-                reason: `Use \`${connectionField.fieldName}_SOME\` instead.`,
-            });
-            whereInput.setFieldDirectiveByName(`${connectionField.fieldName}_NOT`, "deprecated", {
-                reason: `Use \`${connectionField.fieldName}_NONE\` instead.`,
+            addRelationshipArrayFilters({
+                whereInput,
+                fieldName: connectionField.fieldName,
+                sourceName: sourceName,
+                relatedType: connectionField.typeMeta.name,
+                whereType: connectionWhere,
+                directives: deprecatedDirectives,
             });
         }
 
@@ -138,8 +142,12 @@ function createConnectionFields({
             connectionWhere.addFields({
                 OR: connectionWhere.NonNull.List,
                 AND: connectionWhere.NonNull.List,
+                NOT: connectionWhereName,
                 node: `${connectionField.relationship.typeMeta.name}Where`,
-                node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
+                node_NOT: {
+                    type: `${connectionField.relationship.typeMeta.name}Where`,
+                    directives: [DEPRECATE_NOT],
+                },
             });
 
             if (schemaComposer.has(`${connectionField.relationship.typeMeta.name}Sort`)) {
@@ -159,7 +167,10 @@ function createConnectionFields({
 
                 connectionWhere.addFields({
                     edge: `${connectionField.relationship.properties}Where`,
-                    edge_NOT: `${connectionField.relationship.properties}Where`,
+                    edge_NOT: {
+                        type: `${connectionField.relationship.properties}Where`,
+                        directives: [DEPRECATE_NOT],
+                    },
                 });
             }
         } else if (connectionField.relationship.union) {
@@ -178,12 +189,16 @@ function createConnectionFields({
                     fields: {
                         OR: `[${unionWhereName}!]`,
                         AND: `[${unionWhereName}!]`,
+                        NOT: unionWhereName,
                     },
                 });
 
                 unionWhere.addFields({
                     node: `${n.name}Where`,
-                    node_NOT: `${n.name}Where`,
+                    node_NOT: {
+                        type: `${n.name}Where`,
+                        directives: [DEPRECATE_NOT],
+                    },
                 });
 
                 if (connectionField.relationship.properties) {
@@ -193,7 +208,10 @@ function createConnectionFields({
 
                     unionWhere.addFields({
                         edge: `${connectionField.relationship.properties}Where`,
-                        edge_NOT: `${connectionField.relationship.properties}Where`,
+                        edge_NOT: {
+                            type: `${connectionField.relationship.properties}Where`,
+                            directives: [DEPRECATE_NOT],
+                        },
                     });
                 }
 
@@ -206,7 +224,10 @@ function createConnectionFields({
 
             connectionWhere.addFields({
                 node: `${connectionField.relationship.typeMeta.name}Where`,
-                node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
+                node_NOT: {
+                    type: `${connectionField.relationship.typeMeta.name}Where`,
+                    directives: [DEPRECATE_NOT],
+                },
             });
 
             if (getSortableFields(relatedNode).length) {
@@ -221,10 +242,14 @@ function createConnectionFields({
         }
 
         if (!connectionField.relationship.writeonly) {
+            const deprecatedDirectives = graphqlDirectivesToCompose(
+                connectionField.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+            );
             composeNode.addFields({
                 [connectionField.fieldName]: {
                     type: connection.NonNull,
                     args: composeNodeArgs,
+                    directives: deprecatedDirectives,
                     resolve: (source, args: ConnectionQueryArgs, _ctx, info: GraphQLResolveInfo) => {
                         return connectionFieldResolver({
                             connectionField,
