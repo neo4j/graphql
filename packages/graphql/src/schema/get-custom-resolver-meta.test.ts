@@ -25,7 +25,7 @@ import {
     Kind,
 } from "graphql";
 import { generateResolveTree } from "../translate/utils/resolveTree";
-import getCustomResolverMeta, { INVALID_SELECTION_SET_ERROR } from "./get-custom-resolver-meta";
+import { getCustomResolverMeta, INVALID_SELECTION_SET_ERROR } from "./get-custom-resolver-meta";
 
 describe("getCustomResolverMeta", () => {
     const authorType = "Author";
