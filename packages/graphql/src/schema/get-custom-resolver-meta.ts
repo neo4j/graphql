@@ -43,7 +43,7 @@ export const INVALID_REQUIRED_FIELD_ERROR = `It is not possible to require field
 ).join(", ")}`;
 export const INVALID_SELECTION_SET_ERROR = "Invalid selection set passed to @customResolver required";
 
-export default function getCustomResolverMeta({
+export function getCustomResolverMeta({
     field,
     object,
     objects,
