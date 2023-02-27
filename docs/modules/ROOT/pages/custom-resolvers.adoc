@@ -90,9 +90,9 @@ const neoSchema = new Neo4jGraphQL({
 });
 ----
 
-In this example, the firstName, lastName, address.street and address.city fields will always be selected from the database if the fullName field is selected and will be available to the custom resolver.
+In this example; the `firstName`, `lastName`, `address.street` and `address.city` fields will always be selected from the database if the `fullName` field is selected and will be available to the custom resolver.
 
-It is also possible to use the `... on` syntax to conditionally select fields from interface/union types:
+It is also possible to inline fragments to conditionally select fields from interface/union types:
 
 [source, graphql, indent=0]
 ----
