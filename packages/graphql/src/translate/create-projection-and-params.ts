@@ -23,7 +23,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
 import type { GraphQLOptionsArg, GraphQLWhereArg, Context, GraphQLSortArg, CypherFieldReferenceMap } from "../types";
 import { createAuthPredicates } from "./create-auth-and-params";
-import { createDatetimeElement } from "./projection/elements/create-datetime-element";
+import { createDatetimeExpression } from "./projection/elements/create-datetime-element";
 import { createPointExpression } from "./projection/elements/create-point-element";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
@@ -303,7 +303,12 @@ export default function createProjectionAndParams({
             const pointExpr = createPointExpression({ resolveTree: field, field: pointField, variable: varName });
             res.projection.push(new Cypher.RawCypher((env) => `${field.alias}: ${pointExpr.getCypher(env)}`));
         } else if (temporalField?.typeMeta.name === "DateTime") {
-            res.projection.push(createDatetimeElement({ resolveTree: field, field: temporalField, variable: varName }));
+            const datetimeExpr = createDatetimeExpression({
+                resolveTree: field,
+                field: temporalField,
+                variable: varName,
+            });
+            res.projection.push(new Cypher.RawCypher((env) => `${field.alias}: ${datetimeExpr.getCypher(env)}`));
         } else {
             // In the case of using the @alias directive (map a GraphQL field to a db prop)
             // the output will be RETURN varName {GraphQLfield: varName.dbAlias}
