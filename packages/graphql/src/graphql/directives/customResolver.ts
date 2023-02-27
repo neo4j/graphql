@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { DirectiveLocation, GraphQLDirective, GraphQLString } from "graphql";
+import { DirectiveLocation, GraphQLDirective } from "graphql";
+import { GraphQLSelectionSet } from "../scalars/SelectionSet";
 
 export const customResolverDirective = new GraphQLDirective({
     name: "customResolver",
@@ -27,8 +28,8 @@ export const customResolverDirective = new GraphQLDirective({
     args: {
         requires: {
             description:
-                "Selection set that the custom resolver will depend on. These are passed as an object to the first argument of the custom resolver.",
-            type: GraphQLString,
+                "Selection set of the fields that the custom resolver will depend on. These fields are passed as an object to the first argument of the custom resolver.",
+            type: GraphQLSelectionSet,
         },
     },
 });
