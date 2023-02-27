@@ -256,7 +256,16 @@ function createCypherDirectiveSubquery({
     extraArgs: Record<string, any>;
 }): Cypher.Clause {
     const innerWithAlias = new Cypher.With([nodeRef, new Cypher.NamedNode("this")]);
-    const rawCypher = new Cypher.RawCypher(cypherField.statement);
+    const rawCypher = new Cypher.RawCypher((env) => {
+        let statement = cypherField.statement;
+        for (const [key, value] of Object.entries(extraArgs)) {
+            const param = new Cypher.Param(value);
+            const paramName = param.getCypher(env);
+            statement = statement.replaceAll(`$${key}`, `${paramName}`);
+        }
+        return statement;
+    });
+
     const callClause = new Cypher.Call(Cypher.concat(innerWithAlias, rawCypher)).innerWith(nodeRef);
 
     if (cypherField.columnName) {
@@ -268,12 +277,7 @@ function createCypherDirectiveSubquery({
             callClause.with([columnVariable, resultVariable]);
         }
     }
-    return Cypher.concat(
-        callClause,
-        new Cypher.RawCypher(() => {
-            return ["", extraArgs];
-        })
-    );
+    return callClause;
 }
 
 function createReturnClause({

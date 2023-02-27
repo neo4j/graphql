@@ -32,7 +32,7 @@ export function createComparisonOperation({
     neo4jDatabaseInfo,
 }: {
     operator: string | undefined;
-    propertyRefOrCoalesce: Cypher.PropertyRef | Cypher.Function;
+    propertyRefOrCoalesce: Cypher.PropertyRef | Cypher.Function | Cypher.Variable;
     param: Cypher.Param;
     durationField: PrimitiveField | undefined;
     pointField: PointField | undefined;

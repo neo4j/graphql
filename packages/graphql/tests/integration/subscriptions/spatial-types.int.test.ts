@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import { Driver, int, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
 import { cleanNodes } from "../../utils/clean-nodes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import Neo4j from "../neo4j";
 
@@ -34,7 +34,7 @@ describe("Subscriptions to spatial types", () => {
     let neoSchema: Neo4jGraphQL;
     let plugin: TestSubscriptionsPlugin;
 
-    const typeMovie = generateUniqueType("Movie");
+    const typeMovie = new UniqueType("Movie");
 
     beforeEach(async () => {
         neo4j = new Neo4j();

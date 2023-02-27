@@ -23,7 +23,7 @@ import { Kind } from "graphql/language";
 import { generate } from "randomstring";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
-import { generateUniqueType } from "../utils/graphql-types";
+import { UniqueType } from "../utils/graphql-types";
 
 const GraphQLUpperCaseString = new GraphQLScalarType({
     name: "UpperCaseString",
@@ -162,7 +162,7 @@ describe("scalars", () => {
     });
 
     test("should serialize a list of integers correctly", async () => {
-        const type = generateUniqueType("Type");
+        const type = new UniqueType("Type");
 
         const typeDefs = `
             type ${type.name} {
@@ -201,7 +201,7 @@ describe("scalars", () => {
     });
 
     test("should serialize a list of floats correctly", async () => {
-        const type = generateUniqueType("Type");
+        const type = new UniqueType("Type");
 
         const typeDefs = `
             type ${type.name} {

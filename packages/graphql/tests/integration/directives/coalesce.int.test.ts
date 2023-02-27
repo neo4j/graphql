@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("@coalesce directive", () => {
     let driver: Driver;
@@ -88,7 +88,7 @@ describe("@coalesce directive", () => {
     });
 
     test("allows querying with null properties without affecting the returned result", async () => {
-        const type = generateUniqueType("Movie");
+        const type = new UniqueType("Movie");
 
         const typeDefs = `
             type ${type.name} {
@@ -139,7 +139,7 @@ describe("@coalesce directive", () => {
     });
 
     test("with enum values", async () => {
-        const type = generateUniqueType("Movie");
+        const type = new UniqueType("Movie");
 
         const typeDefs = `
             enum Status {

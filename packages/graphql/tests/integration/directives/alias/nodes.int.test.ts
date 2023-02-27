@@ -22,7 +22,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import { cleanNodes } from "../../../utils/clean-nodes";
 
 describe("@alias directive", () => {
@@ -42,8 +42,8 @@ describe("@alias directive", () => {
     beforeEach(async () => {
         session = await neo4j.getSession();
 
-        typeMovie = generateUniqueType("Movie");
-        typeDirector = generateUniqueType("Director");
+        typeMovie = new UniqueType("Movie");
+        typeDirector = new UniqueType("Director");
 
         const typeDefs = `
             type ${typeDirector} {

@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("https://github.com/neo4j/graphql/issues/1782", () => {
@@ -31,10 +31,10 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
     let neo4j: Neo4j;
     let session: Session;
 
-    const testMain = generateUniqueType("Main");
-    const testSeries = generateUniqueType("Series");
-    const testNameDetails = generateUniqueType("NameDetails");
-    const testMasterData = generateUniqueType("MasterData");
+    const testMain = new UniqueType("Main");
+    const testSeries = new UniqueType("Series");
+    const testNameDetails = new UniqueType("NameDetails");
+    const testMasterData = new UniqueType("MasterData");
 
     const typeDefs = `
         type ${testSeries} {

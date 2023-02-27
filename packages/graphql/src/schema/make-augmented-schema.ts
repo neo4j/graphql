@@ -30,7 +30,6 @@ import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
 import type { ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
-import { validateDocument } from "./validation";
 import type { BaseField, Neo4jGraphQLCallbacks, Neo4jFeaturesSettings } from "../types";
 import { cypherResolver } from "./resolvers/field/cypher";
 import { numericalResolver } from "./resolvers/field/numerical";
@@ -85,52 +84,62 @@ import { addGlobalNodeFields } from "./create-global-nodes";
 import { addMathOperatorsToITC } from "./math";
 import { addArrayMethodsToITC } from "./array-methods";
 import { FloatWhere } from "../graphql/input-objects/FloatWhere";
+import type { Subgraph } from "../classes/Subgraph";
 
 function makeAugmentedSchema(
     document: DocumentNode,
     {
         features,
         enableRegex,
-        skipValidateTypeDefs,
+        validateResolvers,
         generateSubscriptions,
         callbacks,
         userCustomResolvers,
+        subgraph,
     }: {
         features?: Neo4jFeaturesSettings;
         enableRegex?: boolean;
-        skipValidateTypeDefs?: boolean;
+        validateResolvers: boolean;
         generateSubscriptions?: boolean;
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
-    } = {}
+        subgraph?: Subgraph;
+    } = { validateResolvers: true }
 ): {
     nodes: Node[];
     relationships: Relationship[];
     typeDefs: DocumentNode;
     resolvers: IResolvers;
 } {
-    if (!skipValidateTypeDefs) {
-        validateDocument(document);
-    }
-
     const composer = new SchemaComposer();
 
     let relationships: Relationship[] = [];
 
-    composer.createObjectTC(CreateInfo);
-    composer.createObjectTC(DeleteInfo);
-    composer.createObjectTC(UpdateInfo);
-    composer.createObjectTC(PageInfo);
+    const createInfo = composer.createObjectTC(CreateInfo);
+    const deleteInfo = composer.createObjectTC(DeleteInfo);
+    const updateInfo = composer.createObjectTC(UpdateInfo);
+    const pageInfo = composer.createObjectTC(PageInfo);
+
+    if (subgraph) {
+        const shareable = subgraph.getFullyQualifiedDirectiveName("shareable");
+
+        createInfo.setDirectiveByName(shareable);
+        deleteInfo.setDirectiveByName(shareable);
+        updateInfo.setDirectiveByName(shareable);
+        pageInfo.setDirectiveByName(shareable);
+    }
+
     composer.createInputTC(QueryOptions);
     const sortDirection = composer.createEnumTC(SortDirection);
 
-    const aggregationTypesMapper = new AggregationTypesMapper(composer);
+    const aggregationTypesMapper = new AggregationTypesMapper(composer, subgraph);
 
     const customResolvers = getCustomResolvers(document);
 
     const definitionNodes = getDefinitionNodes(document);
 
-    const { scalarTypes, objectTypes, enumTypes, inputObjectTypes, directives, unionTypes } = definitionNodes;
+    const { scalarTypes, objectTypes, enumTypes, inputObjectTypes, directives, unionTypes, schemaExtensions } =
+        definitionNodes;
 
     let { interfaceTypes } = definitionNodes;
 
@@ -153,7 +162,7 @@ function makeAugmentedSchema(
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
-    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers });
+    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers, validateResolvers });
 
     const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames, floatWhereInTypeDefs } =
         getNodesResult;
@@ -205,6 +214,7 @@ function makeAugmentedSchema(
             unions: unionTypes,
             obj: relationship,
             callbacks,
+            validateResolvers,
         });
 
         if (!pointInTypeDefs) {
@@ -293,6 +303,7 @@ function makeAugmentedSchema(
             unions: unionTypes,
             obj: interfaceRelationship,
             callbacks,
+            validateResolvers,
         });
 
         if (!pointInTypeDefs) {
@@ -413,6 +424,7 @@ function makeAugmentedSchema(
             sourceName: interfaceRelationship.name.value,
             nodes,
             relationshipPropertyFields: relationshipFields,
+            subgraph,
         });
 
         relationships = [
@@ -421,6 +433,7 @@ function makeAugmentedSchema(
                 connectionFields: interfaceFields.connectionFields,
                 schemaComposer: composer,
                 composeNode: composeInterface,
+                sourceName: interfaceRelationship.name.value,
                 nodes,
                 relationshipPropertyFields: relationshipFields,
             }),
@@ -691,7 +704,7 @@ function makeAugmentedSchema(
 
         const mutationResponseTypeNames = node.mutationResponseTypeNames;
 
-        composer.createObjectTC({
+        const createResponse = composer.createObjectTC({
             name: mutationResponseTypeNames.create,
             fields: {
                 info: `CreateInfo!`,
@@ -699,13 +712,20 @@ function makeAugmentedSchema(
             },
         });
 
-        composer.createObjectTC({
+        const updateResponse = composer.createObjectTC({
             name: mutationResponseTypeNames.update,
             fields: {
                 info: `UpdateInfo!`,
                 [node.plural]: `[${node.name}!]!`,
             },
         });
+
+        if (subgraph) {
+            const shareable = subgraph.getFullyQualifiedDirectiveName("shareable");
+
+            createResponse.setDirectiveByName(shareable);
+            updateResponse.setDirectiveByName(shareable);
+        }
 
         createRelationshipFields({
             relationshipFields: node.relationFields,
@@ -714,6 +734,7 @@ function makeAugmentedSchema(
             sourceName: node.name,
             nodes,
             relationshipPropertyFields: relationshipFields,
+            subgraph,
         });
 
         relationships = [
@@ -722,6 +743,7 @@ function makeAugmentedSchema(
                 connectionFields: node.connectionFields,
                 schemaComposer: composer,
                 composeNode,
+                sourceName: node.name,
                 nodes,
                 relationshipPropertyFields: relationshipFields,
             }),
@@ -800,6 +822,7 @@ function makeAugmentedSchema(
                 unions: unionTypes,
                 objects: objectTypes,
                 callbacks,
+                validateResolvers,
             });
 
             const objectComposeFields = objectFieldsToComposeFields([
@@ -838,6 +861,7 @@ function makeAugmentedSchema(
             unions: unionTypes,
             objects: objectTypes,
             callbacks,
+            validateResolvers,
         });
 
         const baseFields: BaseField[][] = Object.values(objectFields);
@@ -916,21 +940,31 @@ function makeAugmentedSchema(
     const seen = {};
     parsedDoc = {
         ...parsedDoc,
-        definitions: parsedDoc.definitions.filter((definition) => {
-            if (!("name" in definition)) {
+        definitions: [
+            ...parsedDoc.definitions.filter((definition) => {
+                // Filter out default scalars, they are not needed and can cause issues
+                if (definition.kind === Kind.SCALAR_TYPE_DEFINITION) {
+                    if (["Boolean", "Float", "ID", "Int", "String"].includes(definition.name.value)) {
+                        return false;
+                    }
+                }
+
+                if (!("name" in definition)) {
+                    return true;
+                }
+
+                const n = definition.name?.value as string;
+
+                if (seen[n]) {
+                    return false;
+                }
+
+                seen[n] = n;
+
                 return true;
-            }
-
-            const n = definition.name?.value as string;
-
-            if (seen[n]) {
-                return false;
-            }
-
-            seen[n] = n;
-
-            return true;
-        }),
+            }),
+            ...schemaExtensions,
+        ],
     };
 
     return {

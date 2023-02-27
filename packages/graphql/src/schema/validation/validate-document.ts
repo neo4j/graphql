@@ -24,6 +24,8 @@ import type {
     InputValueDefinitionNode,
     FieldDefinitionNode,
     TypeNode,
+    GraphQLDirective,
+    GraphQLNamedType,
 } from "graphql";
 import { GraphQLSchema, extendSchema, validateSchema, specifiedDirectives, Kind } from "graphql";
 import pluralize from "pluralize";
@@ -156,11 +158,15 @@ function filterDocument(document: DocumentNode): DocumentNode {
     };
 }
 
-function validateDocument(document: DocumentNode): void {
+function validateDocument(
+    document: DocumentNode,
+    additionalDirectives: Array<GraphQLDirective> = [],
+    additionalTypes: Array<GraphQLNamedType> = []
+): void {
     const doc = filterDocument(document);
 
     const schemaToExtend = new GraphQLSchema({
-        directives: [...Object.values(directives), ...specifiedDirectives],
+        directives: [...Object.values(directives), ...specifiedDirectives, ...additionalDirectives],
         types: [
             ...Object.values(scalars),
             Point,
@@ -170,6 +176,7 @@ function validateDocument(document: DocumentNode): void {
             CartesianPointInput,
             CartesianPointDistance,
             SortDirection,
+            ...additionalTypes,
         ],
     });
 

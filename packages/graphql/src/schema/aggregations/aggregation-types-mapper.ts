@@ -18,6 +18,7 @@
  */
 
 import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import type { Subgraph } from "../../classes/Subgraph";
 import { idResolver } from "../resolvers/field/id";
 import { numericalResolver } from "../resolvers/field/numerical";
 
@@ -25,7 +26,10 @@ export class AggregationTypesMapper {
     private requiredAggregationSelectionTypes: Record<string, ObjectTypeComposer<unknown, unknown>>;
     private nullableAggregationSelectionTypes: Record<string, ObjectTypeComposer<unknown, unknown>>;
 
-    constructor(composer: SchemaComposer) {
+    private subgraph: Subgraph | undefined;
+
+    constructor(composer: SchemaComposer, subgraph?: Subgraph) {
+        this.subgraph = subgraph;
         this.requiredAggregationSelectionTypes = this.getOrCreateAggregationSelectionTypes({
             composer,
             nullable: false,
@@ -74,59 +78,70 @@ export class AggregationTypesMapper {
             args: {},
         };
 
-        const aggregationSelectionTypeMatrix: Array<[string, Record<string, any | string>] | [string]> = [
-            [
-                "ID",
-                {
+        const directives: string[] = this.subgraph ? [this.subgraph.getFullyQualifiedDirectiveName("shareable")] : [];
+
+        const aggregationSelectionTypeMatrix: Array<{
+            name: string;
+            fields?: Record<string, any | string>;
+            directives?: string[];
+        }> = [
+            {
+                name: "ID",
+                fields: {
                     shortest: composeId,
                     longest: composeId,
                 },
-            ],
-            [
-                "String",
-                {
+                directives,
+            },
+            {
+                name: "String",
+                fields: {
                     shortest: this.makeNullable("String", nullable),
                     longest: this.makeNullable("String", nullable),
                 },
-            ],
-            [
-                "Float",
-                {
+                directives,
+            },
+            {
+                name: "Float",
+                fields: {
                     max: composeFloat,
                     min: composeFloat,
                     average: composeFloat,
                     sum: composeFloat,
                 },
-            ],
-            [
-                "Int",
-                {
+                directives,
+            },
+            {
+                name: "Int",
+                fields: {
                     max: composeInt,
                     min: composeInt,
                     average: composeFloat,
                     sum: composeInt,
                 },
-            ],
-            [
-                "BigInt",
-                {
+                directives,
+            },
+            {
+                name: "BigInt",
+                fields: {
                     max: this.makeNullable("BigInt", nullable),
                     min: this.makeNullable("BigInt", nullable),
                     average: this.makeNullable("BigInt", nullable),
                     sum: this.makeNullable("BigInt", nullable),
                 },
-            ],
-            ["DateTime"],
-            ["LocalDateTime"],
-            ["LocalTime"],
-            ["Time"],
-            ["Duration"],
+                directives,
+            },
+            { name: "DateTime" },
+            { name: "LocalDateTime" },
+            { name: "LocalTime" },
+            { name: "Time" },
+            { name: "Duration" },
         ];
 
         const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce<
             Record<string, ObjectTypeComposer<unknown, unknown>>
-        >((res, [name, fields]) => {
-            const type = this.createType({ composer, nullable, name, fields });
+        >((res, { name, fields, directives }) => {
+            const type = this.createType({ composer, nullable, name, fields, directives });
             res[name] = type;
             return res;
         }, {});
@@ -139,17 +154,22 @@ export class AggregationTypesMapper {
         nullable,
         name,
         fields,
+        directives = [],
     }: {
         composer: SchemaComposer;
         nullable: boolean;
         name: string;
         fields?: Record<string, any>;
+        directives?: string[];
     }): ObjectTypeComposer<any, any> {
         const typeName = this.makeNullable(name, nullable);
         const nullableStr = nullable ? "Nullable" : "NonNullable";
 
         return composer.getOrCreateOTC(`${name}AggregateSelection${nullableStr}`, (tc) => {
             tc.addFields(fields ?? { min: typeName, max: typeName });
+            for (const directive of directives) {
+                tc.setDirectiveByName(directive);
+            }
         });
     }
 

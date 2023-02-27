@@ -1,0 +1,44 @@
+name: "Apollo Federation Subgraph Compatibility"
+
+on:
+  workflow_call:
+
+jobs:
+  apollo-federation-subgraph-compatibility:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn
+      - name: Build compatibility test subgraph
+        run: |
+          yarn build
+        working-directory: packages/apollo-federation-subgraph-compatibility
+      - uses: apollographql/federation-subgraph-compatibility@9da670080322f7855dd3ff7922117da234ff83d6 # v1.3.1
+        with:
+          # [Required] Docker Compose file to start up the subgraph
+          compose: "packages/apollo-federation-subgraph-compatibility/docker-compose-gha.yml"
+          # [Required] Path to the GraphQL schema file
+          schema: "packages/apollo-federation-subgraph-compatibility/schema.graphql"
+          # Boolean flag to indicate whether any failing test should fail the script
+          failOnWarning: false
+          # Boolean flag to indicate whether any failing required functionality test should fail the script
+          failOnRequired: false
+          debug: true
+      - name: Save PR number
+        env:
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          mkdir prnumber
+          echo "$PULL_REQUEST_NUMBER" > ./prnumber/prnumber
+      - name: Archive PR number
+        uses: actions/upload-artifact@v3
+        with:
+          name: prnumber
+          path: prnumber/
