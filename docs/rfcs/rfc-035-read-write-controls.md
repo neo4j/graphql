@@ -45,7 +45,7 @@ extend schema @readonly
 
 This highlights some disadvantages:
 
-* Despite `CREATE`, `UPDATE` and `CONNECT` being specified on `User`, we ended up overwriting them for all relationships pointing to `User`
+* Despite `CREATE` and `UPDATE` being specified on `User`, we ended up overwriting them for all relationships pointing to `User`
 
 ## Solution
 
