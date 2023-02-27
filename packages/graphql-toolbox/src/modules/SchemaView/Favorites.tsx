@@ -68,18 +68,19 @@ const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps)
                 )}
             </div>
             {editMode ? (
-                // TODO: does this still work?
                 <IconButton
+                    aria-label="Finish editing favorite name"
+                    className="h-5 w-5"
                     onClick={() => {
                         setEditMode(false);
                         saveName(nameValue);
                     }}
                 >
-                    <CheckIconOutline className="h-5 w-5" />
+                    <CheckIconOutline />
                 </IconButton>
             ) : (
-                <IconButton onClick={() => setEditMode(true)}>
-                    <PencilIconOutline className="h-5 w-5" />
+                <IconButton aria-label="Edit favorite name" className="h-5 w-5" onClick={() => setEditMode(true)}>
+                    <PencilIconOutline />
                 </IconButton>
             )}
         </Fragment>
@@ -118,8 +119,12 @@ export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: Favorit
                                     onSelectFavorite={() => onSelectFavorite(favorite.typeDefs)}
                                 />
 
-                                <IconButton onClick={() => deleteFavorite(favorite.id)}>
-                                    <TrashIconOutline className="h-5 w-5 n-text-danger-30 ml-3" />
+                                <IconButton
+                                    aria-label="Delete favorite"
+                                    className="h-5 w-5 n-text-danger-30 ml-3"
+                                    onClick={() => deleteFavorite(favorite.id)}
+                                >
+                                    <TrashIconOutline />
                                 </IconButton>
                             </li>
                         );

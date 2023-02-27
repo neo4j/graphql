@@ -21,8 +21,8 @@ import { Button, IconButton, Label } from "@neo4j-ndl/react";
 import {
     QuestionMarkCircleIconOutline,
     SparklesIconOutline,
-    CogIconOutline,
-    XMarkIconOutline,
+    Cog8ToothIconOutline,
+    ArrowRightOnRectangleIconOutline,
 } from "@neo4j-ndl/react/icons";
 import { Fragment, useContext, useEffect } from "react";
 import { DEFAULT_BOLT_URL } from "../../constants";
@@ -139,7 +139,7 @@ export const TopBar = () => {
                                 fill="text"
                                 onClick={() => auth?.logout()}
                             >
-                                <XMarkIconOutline className="w-full h-full" />
+                                <ArrowRightOnRectangleIconOutline className="w-full h-full" />
                                 {/* TODO: this should be a logout icon */}
                                 <span>Disconnect</span>
                             </Button>
@@ -166,7 +166,7 @@ export const TopBar = () => {
                             onClick={handleSettingsClick}
                             size="large"
                         >
-                            <CogIconOutline />
+                            <Cog8ToothIconOutline />
                         </IconButton>
                     </div>
                 </div>
