@@ -38,7 +38,7 @@ import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
 import { getCypherMeta } from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
-import getCustomResolverMeta from "./get-custom-resolver-meta";
+import { getCustomResolverMeta } from "./get-custom-resolver-meta";
 import getRelationshipMeta from "./get-relationship-meta";
 import getUniqueMeta from "./parse/get-unique-meta";
 import { SCALAR_TYPES } from "../constants";
