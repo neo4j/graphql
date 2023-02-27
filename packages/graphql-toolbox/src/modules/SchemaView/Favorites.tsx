@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { HeroIcon } from "@neo4j-ndl/react";
+import { IconButton } from "@neo4j-ndl/react";
+import { CheckIconOutline, PencilIconOutline, TrashIconOutline } from "@neo4j-ndl/react/icons";
 import { Storage } from "../../utils/storage";
 import { Favorite } from "../../types";
 import { LOCAL_STATE_FAVORITES } from "../../constants";
@@ -67,17 +68,19 @@ const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps)
                 )}
             </div>
             {editMode ? (
-                <HeroIcon
-                    className="h-5 w-5"
-                    iconName="CheckIcon"
-                    type="outline"
+                // TODO: does this still work?
+                <IconButton
                     onClick={() => {
                         setEditMode(false);
                         saveName(nameValue);
                     }}
-                />
+                >
+                    <CheckIconOutline className="h-5 w-5" />
+                </IconButton>
             ) : (
-                <HeroIcon className="h-5 w-5" iconName="PencilIcon" type="outline" onClick={() => setEditMode(true)} />
+                <IconButton onClick={() => setEditMode(true)}>
+                    <PencilIconOutline className="h-5 w-5" />
+                </IconButton>
             )}
         </Fragment>
     );
@@ -115,12 +118,9 @@ export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: Favorit
                                     onSelectFavorite={() => onSelectFavorite(favorite.typeDefs)}
                                 />
 
-                                <HeroIcon
-                                    className="h-5 w-5 n-text-danger-30 ml-3"
-                                    iconName="TrashIcon"
-                                    type="outline"
-                                    onClick={() => deleteFavorite(favorite.id)}
-                                />
+                                <IconButton onClick={() => deleteFavorite(favorite.id)}>
+                                    <TrashIconOutline className="h-5 w-5 n-text-danger-30 ml-3" />
+                                </IconButton>
                             </li>
                         );
                     })}

@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { Button, HeroIcon } from "@neo4j-ndl/react";
-import tokens from "@neo4j-ndl/base/lib/tokens/js/tokens";
+import { Button } from "@neo4j-ndl/react";
+import { PlayIconOutline } from "@neo4j-ndl/react/icons";
+import { tokens } from "@neo4j-ndl/base";
 import { ProTooltip } from "../../components/ProTooltip";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
 
@@ -55,7 +56,7 @@ export const ActionElementsBar = ({ hasSchema, loading, onSubmit }: Props) => {
                     onClick={onSubmit}
                     disabled={loading}
                 >
-                    <HeroIcon iconName="PlayIcon" className="h-5 w-5 pr-1" />
+                    <PlayIconOutline className="h-5 w-5 pr-1" />
                     Build schema
                 </Button>
             </div>
