@@ -37,7 +37,7 @@ export const ActionElementsBar = ({ hasSchema, loading, onSubmit }: Props) => {
                     tooltipText="Build the schema to use the editor"
                     arrowPositionOverride="left"
                     blockVisibility={hasSchema}
-                    width={210}
+                    width={220}
                     left={253}
                     top={-3}
                 >

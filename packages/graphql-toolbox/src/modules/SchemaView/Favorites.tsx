@@ -36,6 +36,8 @@ interface FavoritesProps {
     onSelectFavorite: (typeDefs: string) => void;
 }
 
+const ALTERNATE_BG_COLOR = "n-bg-neutral-20";
+
 const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps) => {
     const [editMode, setEditMode] = useState<boolean>(false);
     const [nameValue, setNameValue] = useState<string>(name);
@@ -58,19 +60,20 @@ const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps)
             >
                 {editMode ? (
                     <input
-                        className="w-64"
+                        className="w-60"
                         value={nameValue}
                         onChange={(event) => setNameValue(event.currentTarget.value)}
                         onKeyDown={_handleKeyDown}
                     />
                 ) : (
-                    <div className="truncate w-64">{name}</div>
+                    <div className="truncate w-60">{name}</div>
                 )}
             </div>
             {editMode ? (
                 <IconButton
                     aria-label="Finish editing favorite name"
-                    className="h-5 w-5"
+                    className={`border-none h-5 w-5`}
+                    clean={true}
                     onClick={() => {
                         setEditMode(false);
                         saveName(nameValue);
@@ -79,7 +82,12 @@ const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps)
                     <CheckIconOutline />
                 </IconButton>
             ) : (
-                <IconButton aria-label="Edit favorite name" className="h-5 w-5" onClick={() => setEditMode(true)}>
+                <IconButton
+                    aria-label="Edit favorite name"
+                    className={`border-none h-5 w-5`}
+                    clean={true}
+                    onClick={() => setEditMode(true)}
+                >
                     <PencilIconOutline />
                 </IconButton>
             )}
@@ -106,11 +114,12 @@ export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: Favorit
             {favorites?.length ? (
                 <ul className="pt-3 h-favorite overflow-y-scroll">
                     {favorites.map((favorite, idx) => {
+                        const isAlternateBackground = idx % 2 === 1;
                         return (
                             <li
                                 key={favorite.id}
                                 className={`flex justify-between items-center p-2 mb-1 cursor-pointer hover:n-bg-neutral-40 rounded ${
-                                    idx % 2 === 1 ? "n-bg-neutral-20" : ""
+                                    isAlternateBackground ? ALTERNATE_BG_COLOR : ""
                                 }`}
                             >
                                 <NameComponent
@@ -121,7 +130,8 @@ export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: Favorit
 
                                 <IconButton
                                     aria-label="Delete favorite"
-                                    className="h-5 w-5 n-text-danger-30 ml-3"
+                                    className="border-none h-5 w-5 n-text-danger-30 ml-3"
+                                    clean={true}
                                     onClick={() => deleteFavorite(favorite.id)}
                                 >
                                     <TrashIconOutline />

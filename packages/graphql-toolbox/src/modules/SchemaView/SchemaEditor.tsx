@@ -172,7 +172,7 @@ export const SchemaEditor = ({
                     <Fragment>
                         <ProTooltip
                             tooltipText="This will overwrite your current type definitions!"
-                            width={290}
+                            width={300}
                             left={-99}
                             top={39}
                         >
@@ -208,7 +208,7 @@ export const SchemaEditor = ({
                         <ProTooltip
                             tooltipText="Save as Favorite"
                             arrowPositionOverride="top-right"
-                            width={110}
+                            width={120}
                             left={-71}
                             top={42}
                         >

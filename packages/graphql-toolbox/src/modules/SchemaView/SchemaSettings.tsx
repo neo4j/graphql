@@ -105,7 +105,7 @@ export const SchemaSettings = ({
                                 </a>
                             </span>
                         }
-                        width={150}
+                        width={160}
                     />
                 </div>
                 <div className="mb-1 flex items-baseline">
@@ -131,7 +131,7 @@ export const SchemaSettings = ({
                                 </a>
                             </span>
                         }
-                        width={360}
+                        width={370}
                     />
                 </div>
                 <div className="mt-3 flex flex-col">
@@ -151,7 +151,7 @@ export const SchemaSettings = ({
                                     </a>
                                 </span>
                             }
-                            width={150}
+                            width={160}
                         />
                     </div>
                     <div className="mt-2">
