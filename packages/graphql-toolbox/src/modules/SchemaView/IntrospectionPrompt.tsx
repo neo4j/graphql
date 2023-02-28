@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { Button, HeroIcon, IconButton, Modal } from "@neo4j-ndl/react";
-import tokens from "@neo4j-ndl/base/lib/tokens/js/tokens";
+import { Button, IconButton, Modal } from "@neo4j-ndl/react";
+import { XMarkIconOutline } from "@neo4j-ndl/react/icons";
+import { tokens } from "@neo4j-ndl/base";
 
 interface Props {
     open: boolean;
@@ -38,8 +39,13 @@ export const IntrospectionPrompt = ({ open, onClose, onDisconnect, onIntrospect 
         >
             <div className="flex w-full">
                 <span className="h4">Generate type definitions</span>
-                <IconButton className="mr-0 ml-auto" onClick={() => onClose()} clean>
-                    <HeroIcon iconName="XIcon" />
+                <IconButton
+                    aria-label="Close introspection modal"
+                    className="mr-0 ml-auto"
+                    onClick={() => onClose()}
+                    clean
+                >
+                    <XMarkIconOutline />
                 </IconButton>
             </div>
             <div className="mt-6 mb-20">
