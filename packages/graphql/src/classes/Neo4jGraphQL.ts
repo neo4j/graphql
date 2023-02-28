@@ -48,7 +48,6 @@ import { Executor, ExecutorConstructorParam } from "./Executor";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { validateDocument } from "../schema/validation";
-import { validateCustomResolverRequires } from "../schema/validation/validate-custom-resolver-requires";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
@@ -271,8 +270,7 @@ class Neo4jGraphQL {
 
             const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
 
-            const baseSchema = validateDocument(document, validateTypeDefs);
-            validateCustomResolverRequires(document, baseSchema);
+            validateDocument(document, validateTypeDefs);
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
