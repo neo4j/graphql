@@ -2018,12 +2018,38 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/dom@npm:^1.0.1":
+"@floating-ui/dom@npm:^1.0.1, @floating-ui/dom@npm:^1.2.1":
   version: 1.2.1
   resolution: "@floating-ui/dom@npm:1.2.1"
   dependencies:
     "@floating-ui/core": ^1.2.1
   checksum: ad6928d5dd934ca8b3dcffdfcacde9d147afc0db4db0c0294b23d5f897224d73c7f0ae578b46d813f0d7ae22a86e7a3f8914fdbcdf4a8d42a1b430d0518f45be
+  languageName: node
+  linkType: hard
+
+"@floating-ui/react-dom-interactions@npm:^0.12.0":
+  version: 0.12.0
+  resolution: "@floating-ui/react-dom-interactions@npm:0.12.0"
+  dependencies:
+    "@floating-ui/react-dom": ^1.0.1
+    aria-hidden: ^1.1.3
+    tabbable: ^6.0.1
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 11f42aedf1d89bf870702dffdf97a6da64a28280208d2193245619499fcac04f6a58c3f997ae2da807c4151594384286670b01cfda8503b998e117ea7388946f
+  languageName: node
+  linkType: hard
+
+"@floating-ui/react-dom@npm:^1.0.1":
+  version: 1.3.0
+  resolution: "@floating-ui/react-dom@npm:1.3.0"
+  dependencies:
+    "@floating-ui/dom": ^1.2.1
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: ce0ad3e3bbe43cfd15a6a0d5cccede02175c845862bfab52027995ab99c6b29630180dc7d146f76ebb34730f90a6ab9bf193c8984fe8d7f56062308e4ca98f77
   languageName: node
   linkType: hard
 
@@ -2440,12 +2466,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroicons/react@npm:^1.0.5":
-  version: 1.0.6
-  resolution: "@heroicons/react@npm:1.0.6"
+"@heroicons/react@npm:2.0.13":
+  version: 2.0.13
+  resolution: "@heroicons/react@npm:2.0.13"
   peerDependencies:
     react: ">= 16"
-  checksum: 372b1eda3ce735ef069777bc96304f70de585ebb71a6d1cedc121bb695f9bca235619112e3ee14e8779e95a03096813cbbe3b755927a54b7580d1ce084fa4096
+  checksum: f03c393a129cb468d103e4334815df956d7afa9d0756ee09b33e9396214d39b786523a5e650709de73c68ba085facda3fe01984ff137bcc16c85d4ed2498e663
   languageName: node
   linkType: hard
 
@@ -3010,19 +3036,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:0.16.4, @neo4j-ndl/base@npm:^0.16.4":
-  version: 0.16.4
-  resolution: "@neo4j-ndl/base@npm:0.16.4"
-  checksum: 2c983d3462420bb00013bd1b122c6d537174698fa0f751601013c42d9353b8e1b2a5c82dfb8353c521966e3e7dc697c4e0bb3e6e1322fc1e0fe0c70871f7df79
+"@neo4j-ndl/base@npm:1.0.0, @neo4j-ndl/base@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@neo4j-ndl/base@npm:1.0.0"
+  checksum: 84b6ef868a6f0236a9cf6ffe06b17b948433d66b5ff50cea9fe387427eff8945d0fcafadbf2c5c60f0456542ad4f9f35226e332cb6df7087608521b55d449bd7
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:0.17.7":
-  version: 0.17.7
-  resolution: "@neo4j-ndl/react@npm:0.17.7"
+"@neo4j-ndl/react@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@neo4j-ndl/react@npm:1.0.1"
   dependencies:
-    "@heroicons/react": ^1.0.5
-    "@neo4j-ndl/base": ^0.16.4
+    "@floating-ui/react-dom-interactions": ^0.12.0
+    "@heroicons/react": 2.0.13
+    "@neo4j-ndl/base": ^1.0.0
+    "@tanstack/react-table": ^8.5.22
     classnames: ^2.3.1
     detect-browser: ^5.3.0
     react-dropzone: ^14.0.0
@@ -3032,8 +3060,9 @@ __metadata:
     react-use: ^17.4.0
     tinycolor2: ^1.4.2
   peerDependencies:
+    "@heroicons/react": 2.0.13
     react: 17.x
-  checksum: fcdcb37fc23772ea7e5882b39b54e12ee5d464d82bd6b33d0c86c7984650288432167b660b873068408dfa280a97b72ca91f17a8a68664278ec0c63ae4d347ac
+  checksum: 05328bbb2f4b6e72ec79d0d09b906aef531b9d30f9a84b83e393f2bfd02eb0a0b36cf5bc5f013d33f1df9c350c0e23e022415f9058574efd2256c88b13d35c83
   languageName: node
   linkType: hard
 
@@ -3129,8 +3158,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@neo4j-ndl/base": 0.16.4
-    "@neo4j-ndl/react": 0.17.7
+    "@neo4j-ndl/base": 1.0.0
+    "@neo4j-ndl/react": 1.0.1
     "@neo4j/graphql": 3.17.0
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.31.1
@@ -4400,6 +4429,25 @@ __metadata:
   dependencies:
     defer-to-connect: ^2.0.0
   checksum: c29df3bcec6fc3bdec2b17981d89d9c9fc9bd7d0c9bcfe92821dc533f4440bc890ccde79971838b4ceed1921d456973c4180d7175ee1d0023ad0562240a58d95
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-table@npm:^8.5.22":
+  version: 8.7.9
+  resolution: "@tanstack/react-table@npm:8.7.9"
+  dependencies:
+    "@tanstack/table-core": 8.7.9
+  peerDependencies:
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: 3c704ac903405972641c9857e1466025bcdac04ee4890d64b018386cad5a778aca3a8d3f78542ae7a0ed609841d32ef3a7e563b079e87fa93b9ae8570a310499
+  languageName: node
+  linkType: hard
+
+"@tanstack/table-core@npm:8.7.9":
+  version: 8.7.9
+  resolution: "@tanstack/table-core@npm:8.7.9"
+  checksum: 78d2314928c29559088e4bada0248cc7f94e93756e1a2c1f37a651db30276e9ae960d647bd3a61b67b3f0f9f7e4dec5dd58eb49b8adb80ee5952ef417b6e581f
   languageName: node
   linkType: hard
 
@@ -6272,6 +6320,21 @@ __metadata:
   version: 2.0.1
   resolution: "argparse@npm:2.0.1"
   checksum: 83644b56493e89a254bae05702abf3a1101b4fa4d0ca31df1c9985275a5a5bd47b3c27b7fa0b71098d41114d8ca000e6ed90cad764b306f8a503665e4d517ced
+  languageName: node
+  linkType: hard
+
+"aria-hidden@npm:^1.1.3":
+  version: 1.2.2
+  resolution: "aria-hidden@npm:1.2.2"
+  dependencies:
+    tslib: ^2.0.0
+  peerDependencies:
+    "@types/react": ^16.9.0 || ^17.0.0 || ^18.0.0
+    react: ^16.9.0 || ^17.0.0 || ^18.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: ee1a3688db5491eeb87b73eea624614f24ef62a74cf9e47bc8229dde1ff7457f7e4a26425cadc0d3efd89380305e6fb4a4e505bccdee16beaa4686014861d7b1
   languageName: node
   linkType: hard
 
@@ -21716,6 +21779,13 @@ __metadata:
   bin:
     systeminformation: lib/cli.js
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
+  languageName: node
+  linkType: hard
+
+"tabbable@npm:^6.0.1":
+  version: 6.1.1
+  resolution: "tabbable@npm:6.1.1"
+  checksum: 348639497262241ce8e0ccb0664ea582a386183107299ee8f27cf7b56bc84f36e09eaf667d3cb4201e789634012a91f7129bcbd49760abe874fbace35b4cf429
   languageName: node
   linkType: hard
 
