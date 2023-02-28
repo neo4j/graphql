@@ -39,7 +39,7 @@ export class TestRunner {
 
     public async runTests(
         tests: Array<Performance.TestInfo>,
-        { beforeEach, afterEach }: { beforeEach: ExecutionHook; afterEach: ExecutionHook }
+        { beforeEach, afterEach }: { beforeEach: ExecutionHook; afterEach: ExecutionHook },
     ): Promise<Array<Performance.TestDisplayData>> {
         const results: Array<Performance.TestDisplayData> = [];
         for (const test of tests) {
@@ -59,7 +59,7 @@ export class TestRunner {
 
     public async runCypherTests(
         tests: Array<Performance.TestInfo>,
-        { beforeEach, afterEach }: { beforeEach: ExecutionHook; afterEach: ExecutionHook }
+        { beforeEach, afterEach }: { beforeEach: ExecutionHook; afterEach: ExecutionHook },
     ): Promise<Array<Performance.TestDisplayData>> {
         const results: Array<Performance.TestDisplayData> = [];
         for (const test of tests) {

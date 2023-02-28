@@ -41,7 +41,7 @@ export default function getSortableFields(obj: ObjectFields): SortableField[] {
                 "LocalTime",
                 "Date",
                 "Duration",
-            ].includes(field.typeMeta.name)
+            ].includes(field.typeMeta.name),
         ),
     ].filter((field) => !field.typeMeta.array);
 }

@@ -72,7 +72,7 @@ export class WebSocketTestClient implements WebSocketClient {
                         reject(err);
                     },
                     complete: () => true,
-                }
+                },
             );
 
             this.client.on("connected", () => {

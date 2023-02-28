@@ -69,7 +69,7 @@ describe("360", () => {
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
-                `
+                `,
             );
 
             const gqlResult = await graphql({
@@ -118,7 +118,7 @@ describe("360", () => {
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
-                `
+                `,
             );
 
             const gqlResult = await graphql({
@@ -171,7 +171,7 @@ describe("360", () => {
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime($rangeStart), end: datetime($rangeEnd)})
                     CREATE (:${type.name} {id: randomUUID(), name: randomUUID(), start: datetime(), end: datetime()})
                 `,
-                { rangeStart, rangeEnd }
+                { rangeStart, rangeEnd },
             );
 
             const gqlResult = await graphql({

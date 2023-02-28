@@ -223,7 +223,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             RETURN mandate, valuation, estate, address, postalCode
         `);
         const nodes = Object.fromEntries(
-            Object.entries(dbResult.records[0].toObject()).map(([key, value]) => [key, value.properties])
+            Object.entries(dbResult.records[0].toObject()).map(([key, value]) => [key, value.properties]),
         );
 
         expect(nodes).toEqual({
@@ -351,7 +351,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             RETURN mandate, valuation, estate, address, estate2
         `);
         const nodes = Object.fromEntries(
-            Object.entries(dbResult.records[0].toObject()).map(([key, value]) => [key, value.properties])
+            Object.entries(dbResult.records[0].toObject()).map(([key, value]) => [key, value.properties]),
         );
 
         expect(nodes).toEqual({

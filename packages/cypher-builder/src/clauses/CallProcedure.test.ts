@@ -28,7 +28,7 @@ describe("CypherBuilder CallProcedure", () => {
     test("Call validatePredicate", () => {
         const validatePredicate = new Cypher.apoc.Validate(
             Cypher.eq(new Cypher.Literal(1), new Cypher.Literal(2)),
-            "My Message"
+            "My Message",
         );
         const callClause = new Cypher.CallProcedure(validatePredicate);
 

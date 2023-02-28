@@ -98,7 +98,7 @@ describe("Relationship properties - connect", () => {
                 `
                     CREATE (:Actor {name:$actorName})
                 `,
-                { actorName }
+                { actorName },
             );
 
             const gqlResult = await graphql({
@@ -190,7 +190,7 @@ describe("Relationship properties - connect", () => {
                 `
                     CREATE (:Movie {title:$movieTitle})
                 `,
-                { movieTitle }
+                { movieTitle },
             );
 
             const gqlResult = await graphql({
@@ -278,7 +278,7 @@ describe("Relationship properties - connect", () => {
                     CREATE (:Movie {title:$movieTitle})
                     CREATE (:Actor {name:$actorName})
                 `,
-                { movieTitle, actorName }
+                { movieTitle, actorName },
             );
 
             const gqlResult = await graphql({
@@ -363,7 +363,7 @@ describe("Relationship properties - connect", () => {
                     CREATE (:Movie {title:$movieTitle})
                     CREATE (:Actor {name:$actorName})
                 `,
-                { movieTitle, actorName }
+                { movieTitle, actorName },
             );
 
             const gqlResult = await graphql({

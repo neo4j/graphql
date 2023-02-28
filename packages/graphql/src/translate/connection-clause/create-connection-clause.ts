@@ -131,7 +131,7 @@ function createConnectionClauseForUnions({
             !(
                 field.relationship.interface &&
                 !field.relationship.interface?.implementations?.some((i) =>
-                    Object.prototype.hasOwnProperty.call(whereInput, i)
+                    Object.prototype.hasOwnProperty.call(whereInput, i),
                 )
             )
         ) {

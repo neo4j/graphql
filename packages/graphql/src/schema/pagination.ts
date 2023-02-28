@@ -24,7 +24,7 @@ import { isNeoInt } from "../utils/utils";
 
 function getAliasKey({ selectionSet, key }: { selectionSet: SelectionSetNode | undefined; key: string }): string {
     const selection = (selectionSet?.selections || []).find(
-        (x) => x.kind === "Field" && x.name.value === key
+        (x) => x.kind === "Field" && x.name.value === key,
     ) as FieldNode;
 
     if (selection?.alias) {

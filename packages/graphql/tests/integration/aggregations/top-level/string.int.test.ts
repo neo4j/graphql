@@ -35,7 +35,7 @@ describe("aggregations-top_level-string", () => {
             charset: "alphabetic",
             readable: true,
             length,
-        })
+        }),
     );
 
     beforeAll(async () => {
@@ -80,7 +80,7 @@ describe("aggregations-top_level-string", () => {
                 `,
             {
                 id,
-            }
+            },
         );
 
         const query = `
@@ -136,7 +136,7 @@ describe("aggregations-top_level-string", () => {
             `,
             {
                 id,
-            }
+            },
         );
 
         const query = `
@@ -192,7 +192,7 @@ describe("aggregations-top_level-string", () => {
                 `,
             {
                 id,
-            }
+            },
         );
 
         const query = `

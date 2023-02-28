@@ -104,7 +104,7 @@ describe("[Point]", () => {
                         latitude: waypoint.y,
                     };
                 })
-                .sort()
+                .sort(),
         ).toEqual(waypoints.sort());
     });
 
@@ -160,7 +160,7 @@ describe("[Point]", () => {
                         height: waypoint.z,
                     };
                 })
-                .sort()
+                .sort(),
         ).toEqual(waypoints.sort());
     });
 
@@ -187,7 +187,7 @@ describe("[Point]", () => {
             RETURN
             r { .id, .waypoints } AS r
         `,
-            { id, waypoints }
+            { id, waypoints },
         );
 
         expect(
@@ -199,7 +199,7 @@ describe("[Point]", () => {
                         latitude: waypoint.y,
                     };
                 })
-                .sort()
+                .sort(),
         ).toEqual(waypoints.sort());
 
         const update = `
@@ -245,7 +245,7 @@ describe("[Point]", () => {
                         latitude: waypoint.y,
                     };
                 })
-                .sort()
+                .sort(),
         ).toEqual(newWaypoints.sort());
     });
 
@@ -274,7 +274,7 @@ describe("[Point]", () => {
             RETURN
             r { .id, .waypoints } AS r
         `,
-            { id, waypoints }
+            { id, waypoints },
         );
 
         expect(
@@ -287,7 +287,7 @@ describe("[Point]", () => {
                         height: waypoint.z,
                     };
                 })
-                .sort()
+                .sort(),
         ).toEqual(waypoints.sort());
 
         const update = `
@@ -334,7 +334,7 @@ describe("[Point]", () => {
                         height: waypoint.z,
                     };
                 })
-                .sort()
+                .sort(),
         ).toEqual(newWaypoints.sort());
     });
 
@@ -358,7 +358,7 @@ describe("[Point]", () => {
             RETURN
             r { .id, .waypoints } AS r
         `,
-            { id, waypoints }
+            { id, waypoints },
         );
 
         // Test for equality
@@ -471,7 +471,7 @@ describe("[Point]", () => {
             RETURN
             r { .id, .waypoints } AS r
         `,
-            { id, waypoints }
+            { id, waypoints },
         );
 
         const routesQuery = `

@@ -96,7 +96,7 @@ export default async function translateCreate({
             res.params = { ...res.params, ...createAndParams[1] };
             return res;
         },
-        { createStrs: [], params: {}, withVars: [] }
+        { createStrs: [], params: {}, withVars: [] },
     ) as {
         createStrs: string[];
         params: any;
@@ -123,7 +123,7 @@ export default async function translateCreate({
         projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
         if (projection.meta?.authValidateStrs?.length) {
             projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
-                " AND "
+                " AND ",
             )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
         }
 
@@ -139,7 +139,7 @@ export default async function translateCreate({
                         // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
                         .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
                         .replace(/\$REPLACE_ME/g, "$projection")
-                        .replace(/REPLACE_ME/g, `this${i}`)}`
+                        .replace(/REPLACE_ME/g, `this${i}`)}`,
             )
             .join(", ");
 

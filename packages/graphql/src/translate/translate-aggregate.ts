@@ -123,7 +123,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                             field: field as TemporalField,
                             variable: varName,
                             valueOverride: `${operator}(this.${fieldName})`,
-                        })
+                        }),
                     );
 
                     return;

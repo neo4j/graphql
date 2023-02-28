@@ -159,7 +159,7 @@ describe("Subscriptions update", () => {
                     },
                     typename: typeMovie.name,
                 },
-            ])
+            ]),
         );
     });
 
@@ -243,7 +243,7 @@ describe("Subscriptions update", () => {
                     },
                     typename: typeActor.name,
                 },
-            ])
+            ]),
         );
     });
 
@@ -345,7 +345,7 @@ describe("Subscriptions update", () => {
                     timestamp: expect.any(Number),
                     typename: typeMovie.name,
                 },
-            ])
+            ]),
         );
     });
 
@@ -410,7 +410,7 @@ describe("Subscriptions update", () => {
                     },
                     typename: typeActor.name,
                 },
-            ])
+            ]),
         );
     });
 
@@ -478,7 +478,7 @@ describe("Subscriptions update", () => {
                     },
                     typename: typeActor.name,
                 },
-            ])
+            ]),
         );
     });
 
@@ -561,7 +561,7 @@ describe("Subscriptions update", () => {
                     },
                     typename: typeActor.name,
                 },
-            ])
+            ]),
         );
     });
 
@@ -682,7 +682,7 @@ describe("Subscriptions update", () => {
                     },
                     typename: typeMovie.name,
                 },
-            ])
+            ]),
         );
     });
 

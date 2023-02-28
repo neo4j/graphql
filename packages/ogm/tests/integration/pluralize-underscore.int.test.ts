@@ -70,7 +70,7 @@ describe("pluralize with underscore", () => {
                 MATCH (m:${taskType.name} {string: $str})
                 RETURN m
             `,
-            { str: testString }
+            { str: testString },
         );
 
         expect((reFind.records[0].toObject() as any).m.properties).toMatchObject({ string: testString });

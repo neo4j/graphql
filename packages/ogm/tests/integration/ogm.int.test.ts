@@ -238,7 +238,7 @@ describe("OGM", () => {
                         MATCH (m:Movie {id: $id})
                         RETURN m
                     `,
-                    { id }
+                    { id },
                 );
 
                 expect((reFind.records[0].toObject() as any).m.properties).toMatchObject({ id });
@@ -473,7 +473,7 @@ describe("OGM", () => {
                     {
                         id,
                         initialName,
-                    }
+                    },
                 );
 
                 const Movie = ogm.model("Movie");
@@ -526,7 +526,7 @@ describe("OGM", () => {
                         id1,
                         id2,
                         initialName,
-                    }
+                    },
                 );
 
                 const Movie = ogm.model("Movie");
@@ -579,7 +579,7 @@ describe("OGM", () => {
                     {
                         movieId,
                         actorId,
-                    }
+                    },
                 );
 
                 const Movie = ogm.model("Movie");
@@ -639,7 +639,7 @@ describe("OGM", () => {
                 `,
                     {
                         movieId,
-                    }
+                    },
                 );
 
                 const Movie = ogm.model("Movie");
@@ -702,7 +702,7 @@ describe("OGM", () => {
                     {
                         movieId,
                         actorId,
-                    }
+                    },
                 );
 
                 const Movie = ogm.model("Movie");

@@ -301,7 +301,7 @@ export default async function translateUpdate({
 
                     if (relationField.properties) {
                         const relationship = context.relationships.find(
-                            (x) => x.properties === relationField.properties
+                            (x) => x.properties === relationField.properties,
                         ) as unknown as Relationship;
 
                         const setA = createSetRelationshipPropertiesAndParams({
@@ -330,7 +330,7 @@ export default async function translateUpdate({
                             toTypename,
                         });
                         createStrs.push(
-                            `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(", ")}`
+                            `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(", ")}`,
                         );
                     }
                 });
@@ -408,7 +408,7 @@ export default async function translateUpdate({
         cypherParams = { ...cypherParams, ...projection.params };
         if (projection.meta?.authValidateStrs?.length) {
             projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
-                " AND "
+                " AND ",
             )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
         }
     }
@@ -472,7 +472,7 @@ export default async function translateUpdate({
 function generateUpdateReturnStatement(
     varName: string | undefined,
     projStr: string | undefined,
-    subscriptionsEnabled: boolean
+    subscriptionsEnabled: boolean,
 ): string {
     const statements: string[] = [];
 

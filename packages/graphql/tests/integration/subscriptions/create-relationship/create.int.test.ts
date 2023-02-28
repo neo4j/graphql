@@ -286,7 +286,7 @@ describe("Subscriptions connect with create", () => {
                     fromTypename: typeActor.name,
                     toTypename: typeMovie.name,
                 },
-            ])
+            ]),
         );
     });
 
@@ -402,7 +402,7 @@ describe("Subscriptions connect with create", () => {
                     fromTypename: typePerson.name,
                     toTypename: typeMovie.name,
                 },
-            ])
+            ]),
         );
     });
 
@@ -511,7 +511,7 @@ describe("Subscriptions connect with create", () => {
                     fromTypename: typeInfluencer.name,
                     toTypename: typeMovie.name,
                 },
-            ])
+            ]),
         );
     });
 
@@ -835,7 +835,7 @@ describe("Subscriptions connect with create", () => {
                     fromTypename: typeActor.name,
                     toTypename: typeMovie.name,
                 },
-            ])
+            ]),
         );
     });
 });

@@ -94,7 +94,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                         CREATE (:${typeActor.name} {name:$actorName})
                         CREATE (:${typeActor.name} {name:$directorName})
                     `,
-                { actorName: "Actor 1", directorName: "Director 1" }
+                { actorName: "Actor 1", directorName: "Director 1" },
             );
         });
 
@@ -112,7 +112,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 MERGE (actor)-[:ACTED_IN { screenTime: $screenTime }]->(m)
                 MERGE (director)-[:DIRECTED { year: $year }]->(m)
             `,
-                { movieTitle, actorName, directorName, screenTime, year }
+                { movieTitle, actorName, directorName, screenTime, year },
             );
 
             const update = `
@@ -190,7 +190,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             <-[:DIRECTED {year: $year}]-
                                 (d:${typeActor.name} {name: $directorName})
                     RETURN d `,
-                { movieTitle, year: 2011, directorName }
+                { movieTitle, year: 2011, directorName },
             );
             expect(directorOverwritten.records).toHaveLength(0);
         });
@@ -202,7 +202,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
                 MERGE (actor)-[:ACTED_IN { screenTime: $screenTime }]->(m)
             `,
-                { movieTitle, actorName, screenTime }
+                { movieTitle, actorName, screenTime },
             );
 
             const update = `
@@ -281,7 +281,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                             <-[:DIRECTED {year: $year}]-
                                 (d:${typeActor.name} {name: $directorName})
                     RETURN d `,
-                { movieTitle, year: 2011, directorName }
+                { movieTitle, year: 2011, directorName },
             );
             expect(directorOverwritten.records).toHaveLength(0);
         });
@@ -333,7 +333,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
                 MERGE (actor)-[:ACTED_IN { screenTime: $screenTime }]->(m)
             `,
-                { movieTitle, actorName, screenTime }
+                { movieTitle, actorName, screenTime },
             );
         });
 
@@ -626,7 +626,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
-                `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`
+                `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`,
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
@@ -723,7 +723,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 MATCH (actor:${typeActor.name} {name: $actorName})
                 SET actor.id=$actorId
             `,
-                { actorName, actorId }
+                { actorName, actorId },
             );
             const update = `
                 mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!, $actorId: Int!) {
@@ -895,7 +895,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, movieOtherTitle },
             });
             expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
-                `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`
+                `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`,
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
@@ -1226,7 +1226,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, screenTimeOther },
             });
             expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
-                `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`
+                `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`,
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
@@ -1313,7 +1313,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 },
             });
             expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
-                `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`
+                `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`,
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
@@ -1382,7 +1382,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
                 MERGE (actor)-[:DIRECTED { year: $year }]->(m)
             `,
-                { movieTitle, actorName, year }
+                { movieTitle, actorName, year },
             );
             const update = `
                 mutation($movieTitle: String!, $actorName: String!, $year: Int!) {
@@ -1429,7 +1429,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
             expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
-                `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`
+                `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`,
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
@@ -1450,7 +1450,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
                 MERGE (actor)-[:DIRECTED { year: $year }]->(m)
             `,
-                { movieTitle, actorName, year }
+                { movieTitle, actorName, year },
             );
             const update = `
                 mutation($movieTitle: String!, $actorName: String!, $year: Int!) {
@@ -1515,7 +1515,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
                 MERGE (actor)-[:DIRECTED { year: $year }]->(m)
             `,
-                { movieTitle, actorName, year }
+                { movieTitle, actorName, year },
             );
             const update = `
                 mutation($movieTitle: String!, $actorName: String!, $year: Int!) {
@@ -1577,7 +1577,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
                 MERGE (actor)-[:DIRECTED { year: $year }]->(m)
             `,
-                { movieTitle, actorName, year }
+                { movieTitle, actorName, year },
             );
             const update = `
                 mutation($movieTitle: String!, $actorName: String!, $year: Int!) {
@@ -1622,7 +1622,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
             expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
-                `${typeActor.name}.directed required exactly once for a specific ${typeMovie.name}`
+                `${typeActor.name}.directed required exactly once for a specific ${typeMovie.name}`,
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
@@ -1644,7 +1644,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
                 MERGE (actor)-[:DIRECTED { year: $year }]->(m)
             `,
-                { movieTitle, actorName, year }
+                { movieTitle, actorName, year },
             );
             const update = `
                     mutation($movieTitle: String!, $actorName: String!, $year: Int!, $yearOther: Int!) {
@@ -1697,7 +1697,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 variableValues: { movieTitle, year, yearOther, actorName: actorNameOther },
             });
             expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
-                `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`
+                `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`,
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
@@ -1718,7 +1718,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
                 MERGE (actor)-[:DIRECTED { year: $year }]->(m)
             `,
-                { movieTitle, actorName, year }
+                { movieTitle, actorName, year },
             );
             const update = `
                     mutation($movieTitle: String!, $actorName: String!, $year: Int!, $yearOther: Int!) {
@@ -1789,7 +1789,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
                 MERGE (actor)-[:DIRECTED { year: $year }]->(m)
             `,
-                { movieTitle, actorName, year }
+                { movieTitle, actorName, year },
             );
             const update = `
                 mutation($movieOtherTitle: String!, $movieTitle: String!, $year: Int!, $actorName: String!) {
@@ -1848,7 +1848,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 variableValues: { movieTitle, movieOtherTitle, year: yearOther, actorName },
             });
             expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
-                `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`
+                `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`,
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
@@ -1869,7 +1869,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
                 MERGE (actor)-[:DIRECTED { year: $year }]->(m)
             `,
-                { movieTitle, actorName, year }
+                { movieTitle, actorName, year },
             );
             const update = `
                     mutation($movieOtherTitle: String!, $movieTitle: String!, $year: Int!, $actorName: String!) {
@@ -1946,7 +1946,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
                 MERGE (actor)-[:DIRECTED { year: $year }]->(m)
             `,
-                { movieTitle, actorName, year }
+                { movieTitle, actorName, year },
             );
             const update = `
                 mutation($yearOther: Int!, $movieTitle: String!, $year: Int!, $actorName: String!) {
@@ -1997,7 +1997,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 variableValues: { movieTitle, movieOtherTitle, year, yearOther, actorName },
             });
             expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
-                `${typeActor.name}.directed required exactly once for a specific ${typeMovie.name}`
+                `${typeActor.name}.directed required exactly once for a specific ${typeMovie.name}`,
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
@@ -2018,7 +2018,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
                 MERGE (actor)-[:DIRECTED { year: $year }]->(m)
             `,
-                { movieTitle, actorName, year }
+                { movieTitle, actorName, year },
             );
             const update = `
                 mutation($yearOther: Int!, $movieTitle: String!, $year: Int!, $actorName: String!) {
@@ -2069,7 +2069,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 variableValues: { movieTitle, movieOtherTitle, year, yearOther, actorName },
             });
             expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
-                `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`
+                `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`,
             );
             expect(gqlResultUpdate.data).toBeFalsy();
 
@@ -2090,7 +2090,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 CREATE (m:${typeMovie.name} { title: $movieTitle })
                 MERGE (actor)-[:DIRECTED { year: $year }]->(m)
             `,
-                { movieTitle, actorName, year }
+                { movieTitle, actorName, year },
             );
             const update = `
                 mutation($yearOther: Int!, $movieTitle: String!, $year: Int!, $actorName: String!) {

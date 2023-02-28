@@ -52,7 +52,7 @@ class Neo4jGraphQLAuthJWTPlugin {
 
         if (this.noVerify && this.isGlobalAuthenticationEnabled) {
             throw new Error(
-                "Neo4jGraphQLAuthJWTPlugin, noVerify and globalAuthentication can not both be enabled simultaneously."
+                "Neo4jGraphQLAuthJWTPlugin, noVerify and globalAuthentication can not both be enabled simultaneously.",
             );
         }
     }

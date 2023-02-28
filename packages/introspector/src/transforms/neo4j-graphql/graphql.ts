@@ -90,7 +90,7 @@ function hydrateWithRelationships(nodes: GraphQLNodeMap, rels: RelationshipMap):
         if (rel.properties.length) {
             relInterfaceName = uniqueString(
                 generateGraphQLSafeName(generateRelationshipPropsName(relType)),
-                Object.values(nodes).map((n) => n.typeName)
+                Object.values(nodes).map((n) => n.typeName),
             );
             const relInterfaceNode = new GraphQLNode("interface", relInterfaceName);
             relInterfaceNode.addDirective(new RelationshipPropertiesDirective());
@@ -103,7 +103,7 @@ function hydrateWithRelationships(nodes: GraphQLNodeMap, rels: RelationshipMap):
                 nodes[path.fromTypeId].typeName,
                 nodes[path.toTypeId].typeName,
                 relType,
-                relInterfaceName
+                relInterfaceName,
             );
             nodes[path.fromTypeId].addField(fromField);
             nodes[path.toTypeId].addField(toField);

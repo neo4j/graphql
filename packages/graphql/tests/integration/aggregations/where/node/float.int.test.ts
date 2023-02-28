@@ -65,7 +65,7 @@ describe("aggregations-where-node-float", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat}})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -133,7 +133,7 @@ describe("aggregations-where-node-float", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat}})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -200,7 +200,7 @@ describe("aggregations-where-node-float", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat}})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -268,7 +268,7 @@ describe("aggregations-where-node-float", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat}})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -335,7 +335,7 @@ describe("aggregations-where-node-float", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat}})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `

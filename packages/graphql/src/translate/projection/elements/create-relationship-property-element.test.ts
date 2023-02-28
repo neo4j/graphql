@@ -149,7 +149,7 @@ describe("createRelationshipPropertyElement", () => {
         const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
 
         expect(element).toBe(
-            'datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time")'
+            'datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time")',
         );
     });
 

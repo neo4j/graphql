@@ -48,8 +48,8 @@ export function addRelationshipArrayFilters({
                     } of the related ${pluralize(relatedType)} match this filter`,
                 },
             }),
-            {}
-        )
+            {},
+        ),
     );
 
     whereInput.setFieldDirectiveByName(fieldName, "deprecated", {

@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
                     CREATE (user2)-[:HAS_DEMOGRAPHIC]->(age)
                     CREATE (user1)-[:HAS_DEMOGRAPHIC]->(state)
                     CREATE (user2)-[:HAS_DEMOGRAPHIC]->(state)
-                `
+                `,
             );
             bookmarks = session.lastBookmark();
         } finally {
@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
         try {
             await session.run("MATCH (u:User) WHERE (u.uid = 'user1' OR u.uid = 'user2') DETACH DELETE u");
             await session.run(
-                "MATCH (ud:UserDemographics) WHERE ((ud.type = 'Gender' AND ud.value = 'Female') OR (ud.type = 'Gender' AND ud.value = 'Male') OR (ud.type = 'Age' AND ud.value = '50+') OR (ud.type = 'State' AND ud.value = 'VIC')) DELETE ud"
+                "MATCH (ud:UserDemographics) WHERE ((ud.type = 'Gender' AND ud.value = 'Female') OR (ud.type = 'Gender' AND ud.value = 'Male') OR (ud.type = 'Age' AND ud.value = '50+') OR (ud.type = 'State' AND ud.value = 'VIC')) DELETE ud",
             );
         } finally {
             await session.close();

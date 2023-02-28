@@ -97,7 +97,7 @@ async function createIndexesAndConstraints({
                             const aliasError = stringField?.dbPropertyName ? ` aliased to field '${fieldName}''` : "";
 
                             indexErrors.push(
-                                `@fulltext index '${indexName}' on Node '${node.name}' already exists, but is missing field '${field}'${aliasError}`
+                                `@fulltext index '${indexName}' on Node '${node.name}' already exists, but is missing field '${field}'${aliasError}`,
                             );
                         }
                     });
@@ -146,7 +146,7 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
 
     if (missingConstraints.length) {
         const missingConstraintMessages = missingConstraints.map(
-            (constraint) => `Missing constraint for ${constraint.label}.${constraint.property}`
+            (constraint) => `Missing constraint for ${constraint.label}.${constraint.property}`,
         );
         throw new Error(missingConstraintMessages.join("\n"));
     }
@@ -201,7 +201,7 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
                         const aliasError = stringField?.dbPropertyName ? ` aliased to field '${fieldName}''` : "";
 
                         indexErrors.push(
-                            `@fulltext index '${indexName}' on Node '${node.name}' is missing field '${field}'${aliasError}`
+                            `@fulltext index '${indexName}' on Node '${node.name}' is missing field '${field}'${aliasError}`,
                         );
                     }
                 });

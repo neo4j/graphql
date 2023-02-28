@@ -96,7 +96,7 @@ describe("array-push", () => {
 
         expect(gqlResult.errors).toBeDefined();
         expect(
-            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Property tags cannot be NULL"))
+            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Property tags cannot be NULL")),
         ).toBeTruthy();
 
         expect(gqlResult.data).toBeNull();
@@ -196,8 +196,8 @@ describe("array-push", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("String cannot represent a non string value")
-            )
+                el.message.includes("String cannot represent a non string value"),
+            ),
         ).toBeTruthy();
         expect(gqlResult.data).toBeUndefined();
     });
@@ -248,8 +248,8 @@ describe("array-push", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("Cannot mutate the same field multiple times in one Mutation")
-            )
+                el.message.includes("Cannot mutate the same field multiple times in one Mutation"),
+            ),
         ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
     });
@@ -319,7 +319,7 @@ describe("array-push", () => {
             {
                 id,
                 initialPay: [initialPay],
-            }
+            },
         );
         // Update movie
         const gqlResult = await graphql({
@@ -336,8 +336,8 @@ describe("array-push", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("Cannot mutate the same field multiple times in one Mutation")
-            )
+                el.message.includes("Cannot mutate the same field multiple times in one Mutation"),
+            ),
         ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
     });

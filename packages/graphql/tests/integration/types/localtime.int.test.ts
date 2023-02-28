@@ -88,7 +88,7 @@ describe("LocalTime", () => {
                         MATCH (movie:Movie {id: $id})
                         RETURN movie {.id, .time} as movie
                     `,
-                    { id }
+                    { id },
                 );
 
                 const neo4jMovie: { id: string; time: { toString(): string } } =
@@ -117,7 +117,7 @@ describe("LocalTime", () => {
 
             const id = generate({ readable: false });
             const times = [...new Array(faker.datatype.number({ min: 2, max: 4 }))].map(
-                () => faker.date.past().toISOString().split("T")[1].split("Z")[0]
+                () => faker.date.past().toISOString().split("T")[1].split("Z")[0],
             );
             const parsedTimes = times.map((time) => parseLocalTime(time));
 
@@ -159,7 +159,7 @@ describe("LocalTime", () => {
                         MATCH (movie:Movie {id: $id})
                         RETURN movie {.id, .times} as movie
                     `,
-                    { id }
+                    { id },
                 );
 
                 const neo4jMovie: { id: string; times: { toString(): string }[] } =
@@ -207,7 +207,7 @@ describe("LocalTime", () => {
                         CREATE (movie:Movie)
                         SET movie = $movie
                     `,
-                    { movie: { id } }
+                    { movie: { id } },
                 );
 
                 const mutation = `
@@ -240,7 +240,7 @@ describe("LocalTime", () => {
                         MATCH (movie:Movie {id: $id})
                         RETURN movie {.id, .time} as movie
                     `,
-                    { id }
+                    { id },
                 );
 
                 const neo4jMovie: { id: string; time: { toString(): string } } =
@@ -281,7 +281,7 @@ describe("LocalTime", () => {
                         CREATE (movie:Movie)
                         SET movie = $movie
                     `,
-                    { movie: { id, time: neo4jTime } }
+                    { movie: { id, time: neo4jTime } },
                 );
 
                 const query = `
@@ -332,7 +332,7 @@ describe("LocalTime", () => {
                         parsedFuture.hour,
                         parsedFuture.minute,
                         parsedFuture.second,
-                        parsedFuture.nanosecond
+                        parsedFuture.nanosecond,
                     );
 
                     const presentId = generate({ readable: false });
@@ -342,7 +342,7 @@ describe("LocalTime", () => {
                         parsedPresent.hour,
                         parsedPresent.minute,
                         parsedPresent.second,
-                        parsedPresent.nanosecond
+                        parsedPresent.nanosecond,
                     );
 
                     const pastId = generate({ readable: false });
@@ -352,7 +352,7 @@ describe("LocalTime", () => {
                         parsedPast.hour,
                         parsedPast.minute,
                         parsedPast.second,
-                        parsedPast.nanosecond
+                        parsedPast.nanosecond,
                     );
 
                     try {
@@ -369,7 +369,7 @@ describe("LocalTime", () => {
                                 future: { id: futureId, time: neo4jFuture },
                                 present: { id: presentId, time: neo4jPresent },
                                 past: { id: pastId, time: neo4jPast },
-                            }
+                            },
                         );
 
                         const query = `
@@ -432,7 +432,7 @@ describe("LocalTime", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             ));
     });
 
@@ -459,7 +459,7 @@ describe("LocalTime", () => {
                         parsedFuture.hour,
                         parsedFuture.minute,
                         parsedFuture.second,
-                        parsedFuture.nanosecond
+                        parsedFuture.nanosecond,
                     );
 
                     const presentId = generate({ readable: false });
@@ -469,7 +469,7 @@ describe("LocalTime", () => {
                         parsedPresent.hour,
                         parsedPresent.minute,
                         parsedPresent.second,
-                        parsedPresent.nanosecond
+                        parsedPresent.nanosecond,
                     );
 
                     const pastId = generate({ readable: false });
@@ -479,7 +479,7 @@ describe("LocalTime", () => {
                         parsedPast.hour,
                         parsedPast.minute,
                         parsedPast.second,
-                        parsedPast.nanosecond
+                        parsedPast.nanosecond,
                     );
 
                     try {
@@ -496,7 +496,7 @@ describe("LocalTime", () => {
                                 future: { id: futureId, time: neo4jFuture },
                                 present: { id: presentId, time: neo4jPresent },
                                 past: { id: pastId, time: neo4jPast },
-                            }
+                            },
                         );
 
                         const query = `
@@ -555,7 +555,7 @@ describe("LocalTime", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             ));
     });
 });

@@ -142,7 +142,7 @@ describe("Connect using aggregate where", () => {
             WHERE u.name = "${userName}" 
             RETURN p
             `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(2);
     });
@@ -202,7 +202,7 @@ describe("Connect using aggregate where", () => {
             WHERE u.name = "${userName}" 
             RETURN p
             `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(3);
     });
@@ -268,7 +268,7 @@ describe("Connect using aggregate where", () => {
             WHERE u.name = "${userName}" 
             RETURN p
             `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(2);
     });
@@ -334,7 +334,7 @@ describe("Connect using aggregate where", () => {
             WHERE u.name = "${userName}" 
             RETURN p
             `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(2);
     });
@@ -486,7 +486,7 @@ describe("Connect UNIONs using aggregate where", () => {
             WHERE p.id = "${postId3}" 
             RETURN u
             `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(1);
     });
@@ -564,7 +564,7 @@ describe("Connect UNIONs using aggregate where", () => {
             WHERE p.id = "${postId1}" 
             RETURN u
             `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(3);
     });
@@ -649,7 +649,7 @@ describe("Connect UNIONs using aggregate where", () => {
             WHERE p.id = "${postId1}" 
             RETURN u
             `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(2);
     });

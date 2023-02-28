@@ -134,7 +134,7 @@ describe("Disconnect using aggregate where", () => {
             WHERE u.name = "${userName}" 
             RETURN p
             `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(1);
     });
@@ -192,7 +192,7 @@ describe("Disconnect using aggregate where", () => {
              WHERE u.name = "${userName}" 
              RETURN p
              `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(0);
     });
@@ -253,7 +253,7 @@ describe("Disconnect using aggregate where", () => {
              WHERE u.name = "${userName2}" 
              RETURN p
              `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(1);
     });
@@ -407,7 +407,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
             WHERE p.id = "${postId2}" 
             RETURN u
             `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(2);
     });
@@ -481,7 +481,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
             WHERE p.id = "${postId2}" 
             RETURN u
             `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(2);
     });
@@ -555,7 +555,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
             WHERE p.id = "${postId2}" 
             RETURN u
             `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(2);
     });
@@ -640,7 +640,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
             WHERE p.id = "${postId2}" 
             RETURN u
             `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(1);
     });

@@ -26,7 +26,7 @@ const LOCAL_DATE_TIME_REGEX =
     /^(?<year>\d{4})-(?<month>[0]\d|1[0-2])-(?<day>[0-2]\d|3[01])T(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d+))?$/;
 
 export const parseLocalDateTime = (
-    value: unknown
+    value: unknown,
 ): {
     year: number;
     month: number;

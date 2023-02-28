@@ -86,13 +86,13 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
                 { name: "products", url: productsUrl },
                 { name: "reviews", url: reviewsUrl },
             ],
-            4005
+            4005,
         );
 
         gatewayUrl = await gatewayServer.start();
 
         await neo4j.executeWrite(
-            `CREATE (:${Product} { id: "1", name: "product", price: 5 })-[:HAS_REVIEW]->(:${Review} { score: 5, description: "review" })`
+            `CREATE (:${Product} { id: "1", name: "product", price: 5 })-[:HAS_REVIEW]->(:${Review} { score: 5, description: "review" })`,
         );
     });
 

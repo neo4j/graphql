@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
             CREATE (actor2:${typeActor}:${testLabel}) SET actor2 = $actors[1]
             MERGE (actor1)-[:ACTED_IN]->(movie)<-[:ACTED_IN]-(actor2)
         `,
-                { actors, movie }
+                { actors, movie },
             );
 
             const source = `

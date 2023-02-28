@@ -24,7 +24,7 @@ import type { CypherCompilable } from "../types";
 export function compileCypherIfExists(
     element: CypherCompilable | undefined,
     env: CypherEnvironment,
-    { prefix = "", suffix = "" }: { prefix?: string; suffix?: string } = {}
+    { prefix = "", suffix = "" }: { prefix?: string; suffix?: string } = {},
 ): string {
     if (!element) return "";
     const cypher = element.getCypher(env);

@@ -82,7 +82,7 @@ describe("create", () => {
               MATCH (m:Movie {id: $id})
               RETURN m
             `,
-                { id }
+                { id },
             );
 
             expect((reFind.records[0].toObject() as any).m.properties).toMatchObject({ id });
@@ -144,7 +144,7 @@ describe("create", () => {
                 `,
                 {
                     movieTitle,
-                }
+                },
             );
 
             const result = await graphql({
@@ -232,7 +232,7 @@ describe("create", () => {
               WHERE m.id = $id1 OR m.id = $id2
               RETURN m
             `,
-                { id1, id2 }
+                { id1, id2 },
             );
 
             expect(reFind.records.map((r) => r.toObject().m.properties.id)).toIncludeSameMembers([id1, id2]);

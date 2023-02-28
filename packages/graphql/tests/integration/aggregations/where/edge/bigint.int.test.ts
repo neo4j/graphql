@@ -68,7 +68,7 @@ describe("aggregations-where-edge-bigint", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES {someBigInt: toInteger(${bigInt})}]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -138,7 +138,7 @@ describe("aggregations-where-edge-bigint", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES {someBigInt: ${someBigInt}}]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -205,7 +205,7 @@ describe("aggregations-where-edge-bigint", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES {someBigInt: toInteger(${bigInt})}]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -274,7 +274,7 @@ describe("aggregations-where-edge-bigint", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES {someBigInt: toInteger(${bigInt})}]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -341,7 +341,7 @@ describe("aggregations-where-edge-bigint", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES {someBigInt: toInteger(${bigInt})}]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `

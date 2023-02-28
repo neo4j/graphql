@@ -40,7 +40,7 @@ describe("validateDocument", () => {
         `;
 
         expect(() => validateDocument(doc)).toThrow(
-            'Directive "@coalesce" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
+            'Directive "@coalesce" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.',
         );
     });
 
@@ -67,7 +67,7 @@ describe("validateDocument", () => {
         `;
 
         expect(() => validateDocument(doc)).toThrow(
-            'Type "Point" already exists in the schema. It cannot also be defined in this type definition.'
+            'Type "Point" already exists in the schema. It cannot also be defined in this type definition.',
         );
     });
 
@@ -81,7 +81,7 @@ describe("validateDocument", () => {
         `;
 
         expect(() => validateDocument(doc)).toThrow(
-            'Type "DateTime" already exists in the schema. It cannot also be defined in this type definition.'
+            'Type "DateTime" already exists in the schema. It cannot also be defined in this type definition.',
         );
     });
 
@@ -95,7 +95,7 @@ describe("validateDocument", () => {
         `;
 
         expect(() => validateDocument(doc)).toThrow(
-            'Directive "@fulltext" argument "indexes" of type "[FullTextInput]!" is required, but it was not provided.'
+            'Directive "@fulltext" argument "indexes" of type "[FullTextInput]!" is required, but it was not provided.',
         );
     });
 
@@ -112,7 +112,7 @@ describe("validateDocument", () => {
         `;
 
         expect(() => validateDocument(doc)).toThrow(
-            'Type "PointInput" already exists in the schema. It cannot also be defined in this type definition.'
+            'Type "PointInput" already exists in the schema. It cannot also be defined in this type definition.',
         );
     });
 
@@ -128,7 +128,7 @@ describe("validateDocument", () => {
         `;
 
         expect(() => validateDocument(doc)).toThrow(
-            "Interface field UserInterface.age expected but User does not provide it."
+            "Interface field UserInterface.age expected but User does not provide it.",
         );
     });
 
@@ -142,7 +142,7 @@ describe("validateDocument", () => {
         `;
 
         expect(() => validateDocument(doc)).toThrow(
-            'Directive "@relationship" already exists in the schema. It cannot be redefined.'
+            'Directive "@relationship" already exists in the schema. It cannot be redefined.',
         );
     });
 
@@ -215,7 +215,7 @@ describe("validateDocument", () => {
             `;
 
             expect(() => validateDocument(doc)).toThrow(
-                'Directive "@relationshipProperties" may not be used on OBJECT.'
+                'Directive "@relationshipProperties" may not be used on OBJECT.',
             );
         });
 
@@ -227,7 +227,7 @@ describe("validateDocument", () => {
             `;
 
             expect(() => validateDocument(doc)).toThrow(
-                'Directive "@relationshipProperties" may not be used on FIELD_DEFINITION.'
+                'Directive "@relationshipProperties" may not be used on FIELD_DEFINITION.',
             );
         });
     });
@@ -517,7 +517,7 @@ describe("validateDocument", () => {
                 }
             `;
             expect(() => validateDocument(doc)).toThrow(
-                'Directive "@alias" argument "property" of type "String!" is required, but it was not provided.'
+                'Directive "@alias" argument "property" of type "String!" is required, but it was not provided.',
             );
         });
         test("should throw an error if a directive is in the wrong location", () => {
@@ -549,7 +549,7 @@ describe("validateDocument", () => {
                 `;
 
                 expect(() => validateDocument(doc)).toThrow(
-                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error
+                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error,
                 );
             });
 
@@ -561,7 +561,7 @@ describe("validateDocument", () => {
                 `;
 
                 expect(() => validateDocument(doc)).toThrow(
-                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error
+                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error,
                 );
             });
 
@@ -573,7 +573,7 @@ describe("validateDocument", () => {
                 `;
 
                 expect(() => validateDocument(doc)).toThrow(
-                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error
+                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error,
                 );
             });
         });
@@ -596,7 +596,7 @@ describe("validateDocument", () => {
                 `;
 
                 expect(() => validateDocument(doc)).toThrow(
-                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error
+                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error,
                 );
             });
 
@@ -617,7 +617,7 @@ describe("validateDocument", () => {
                 `;
 
                 expect(() => validateDocument(doc)).toThrow(
-                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error
+                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error,
                 );
             });
 
@@ -638,7 +638,7 @@ describe("validateDocument", () => {
                 `;
 
                 expect(() => validateDocument(doc)).toThrow(
-                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error
+                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error,
                 );
             });
         });

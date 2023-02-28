@@ -78,7 +78,7 @@ describe("query options", () => {
                 `
               CREATE (:Movie {id: $id}), (:Movie {id: $id}), (:Movie {id: $id})
             `,
-                { id }
+                { id },
             );
 
             const result = await graphql({

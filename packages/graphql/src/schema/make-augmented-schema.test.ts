@@ -52,14 +52,14 @@ describe("makeAugmentedSchema", () => {
         const neoSchema = makeAugmentedSchema(typeDefs);
         const document = neoSchema.typeDefs;
         const queryObject = document.definitions.find(
-            (x) => x.kind === "ObjectTypeDefinition" && x.name.value === "Query"
+            (x) => x.kind === "ObjectTypeDefinition" && x.name.value === "Query",
         ) as ObjectTypeDefinitionNode;
 
         ["Actor", "Movie"].forEach((type) => {
             const node = neoSchema.nodes.find((x) => x.name === type);
             expect(node).toBeInstanceOf(Node);
             const nodeObject = document.definitions.find(
-                (x) => x.kind === "ObjectTypeDefinition" && x.name.value === type
+                (x) => x.kind === "ObjectTypeDefinition" && x.name.value === type,
             );
             expect(nodeObject).toBeTruthy();
 
@@ -72,19 +72,19 @@ describe("makeAugmentedSchema", () => {
 
             // Options
             const options = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}Options`
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}Options`,
             );
             expect(options).toBeTruthy();
 
             // Where
             const where = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}Where`
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}Where`,
             );
             expect(where).toBeTruthy();
 
             // SORT
             const sort = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}Sort`
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}Sort`,
             );
             expect(sort).toBeTruthy();
         });
@@ -143,7 +143,7 @@ describe("makeAugmentedSchema", () => {
             const document = neoSchema.typeDefs;
 
             const nodeWhereInput = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "MovieWhere"
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "MovieWhere",
             ) as InputObjectTypeDefinitionNode;
 
             const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("_MATCHES"));
@@ -166,7 +166,7 @@ describe("makeAugmentedSchema", () => {
             const document = neoSchema.typeDefs;
 
             const nodeWhereInput = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "UserWhere"
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "UserWhere",
             ) as InputObjectTypeDefinitionNode;
 
             const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("_MATCHES"));
@@ -214,7 +214,7 @@ describe("makeAugmentedSchema", () => {
         `;
 
         expect(() => makeAugmentedSchema(typeDefs)).toThrow(
-            "Cannot have @auth directive on relationship properties interface"
+            "Cannot have @auth directive on relationship properties interface",
         );
     });
 
@@ -252,7 +252,7 @@ describe("makeAugmentedSchema", () => {
         `;
 
         expect(() => makeAugmentedSchema(typeDefs)).toThrow(
-            "Cannot have @relationship directive on relationship property"
+            "Cannot have @relationship directive on relationship property",
         );
     });
 
@@ -295,7 +295,7 @@ describe("makeAugmentedSchema", () => {
                     `;
 
                     expect(() => makeAugmentedSchema(typeDefs)).toThrow(
-                        (constants.RESERVED_INTERFACE_FIELDS.find((x) => x[0] === "node") as string[])[1]
+                        (constants.RESERVED_INTERFACE_FIELDS.find((x) => x[0] === "node") as string[])[1],
                     );
                 });
 
@@ -316,7 +316,7 @@ describe("makeAugmentedSchema", () => {
                     `;
 
                     expect(() => makeAugmentedSchema(typeDefs)).toThrow(
-                        (constants.RESERVED_INTERFACE_FIELDS.find((x) => x[0] === "cursor") as string[])[1]
+                        (constants.RESERVED_INTERFACE_FIELDS.find((x) => x[0] === "cursor") as string[])[1],
                     );
                 });
             });
@@ -341,7 +341,7 @@ describe("makeAugmentedSchema", () => {
             `;
 
             expect(() => makeAugmentedSchema(typeDefs)).toThrow(
-                "@unique directive cannot be used on interface type fields: ActedIn.id"
+                "@unique directive cannot be used on interface type fields: ActedIn.id",
             );
         });
 
@@ -359,7 +359,7 @@ describe("makeAugmentedSchema", () => {
             `;
 
             expect(() => makeAugmentedSchema(typeDefs)).toThrow(
-                "@unique directive cannot be used on interface type fields: Production.id"
+                "@unique directive cannot be used on interface type fields: Production.id",
             );
         });
     });
@@ -378,7 +378,7 @@ describe("makeAugmentedSchema", () => {
             `;
 
             expect(() => makeAugmentedSchema(typeDefs)).toThrow(
-                "Directive @unique cannot be used in combination with @relationship"
+                "Directive @unique cannot be used in combination with @relationship",
             );
         });
     });
@@ -398,7 +398,7 @@ describe("makeAugmentedSchema", () => {
             `;
 
             expect(() => makeAugmentedSchema(typeDefs)).toThrow(
-                "Objects and Interfaces must have one or more fields: UserInterface"
+                "Objects and Interfaces must have one or more fields: UserInterface",
             );
         });
 
@@ -410,7 +410,7 @@ describe("makeAugmentedSchema", () => {
             `;
 
             expect(() => makeAugmentedSchema(typeDefs)).toThrow(
-                "Objects and Interfaces must have one or more fields: User"
+                "Objects and Interfaces must have one or more fields: User",
             );
         });
     });
@@ -423,7 +423,7 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
             expect(() => makeAugmentedSchema(typeDefs)).toThrow(
-                "Only one field may be decorated with an '@id' directive with the global argument set to `true`"
+                "Only one field may be decorated with an '@id' directive with the global argument set to `true`",
             );
         });
         test("should throw if an @id directive has the global argument set to true, but the unique argument set to false", () => {
@@ -433,7 +433,7 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
             expect(() => makeAugmentedSchema(typeDefs)).toThrow(
-                `Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique`
+                `Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique`,
             );
         });
         test("should throw if a type already contains an id field", () => {
@@ -445,7 +445,7 @@ describe("makeAugmentedSchema", () => {
             `;
 
             expect(() => makeAugmentedSchema(typeDefs)).toThrow(
-                `Type User already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`
+                `Type User already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`,
             );
         });
         test("should not throw if a type already contains an id field but the field is aliased", () => {

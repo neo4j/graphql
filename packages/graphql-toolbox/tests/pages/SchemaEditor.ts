@@ -28,7 +28,7 @@ export class SchemaEditor extends Screen {
                 // @ts-ignore -Find a better solution
                 document[`${id}`].setValue(typeDefs);
             },
-            { typeDefs, id: SCHEMA_EDITOR_INPUT }
+            { typeDefs, id: SCHEMA_EDITOR_INPUT },
         );
     }
 

@@ -152,7 +152,7 @@ describe("Update using aggregate where", () => {
             WHERE u.name = "${userName}" 
             RETURN post
             `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(2);
         const results = storedValue.records.map((record) => record.toObject());
@@ -168,7 +168,7 @@ describe("Update using aggregate where", () => {
                         properties: { id: postId2, content: expectedContent },
                     }),
                 },
-            ])
+            ]),
         );
     });
 
@@ -237,7 +237,7 @@ describe("Update using aggregate where", () => {
              WHERE u.name = "${userName}" 
              RETURN post
              `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(2);
         const results = storedValue.records.map((record) => record.toObject());
@@ -253,7 +253,7 @@ describe("Update using aggregate where", () => {
                         properties: { id: postId2, content: expectedContent },
                     }),
                 },
-            ])
+            ]),
         );
     });
 
@@ -319,7 +319,7 @@ describe("Update using aggregate where", () => {
              WHERE u.name = "${userName}" 
              RETURN post
              `,
-            {}
+            {},
         );
         expect(storedValue.records).toHaveLength(2);
         const results = storedValue.records.map((record) => record.toObject());
@@ -335,7 +335,7 @@ describe("Update using aggregate where", () => {
                         properties: { id: postId2, content: originalContent },
                     }),
                 },
-            ])
+            ]),
         );
     });
 });

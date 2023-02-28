@@ -58,7 +58,7 @@ describe("RawCypher", () => {
 
         const queryResult = rawCypher.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(
-            `"MATCH(n) WHERE n.title=$title_param AND n.released=$param0"`
+            `"MATCH(n) WHERE n.title=$title_param AND n.released=$param0"`,
         );
 
         expect(queryResult.params).toMatchInlineSnapshot(`

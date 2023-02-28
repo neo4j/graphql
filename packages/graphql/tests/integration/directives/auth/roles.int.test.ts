@@ -61,7 +61,7 @@ describe("auth/roles", () => {
             `
                 CREATE (:${typeProduct} { name: 'p1', id:123 })
                 CREATE (:${typeUser} { id: 1234, password:'dontpanic' })
-           `
+           `,
         );
     });
 

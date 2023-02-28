@@ -54,7 +54,7 @@ async function introspectNodes(sessionFactory: () => Session): Promise<NodeMap> 
     const labelPropsRes = await session.readTransaction((tx) =>
         tx.run(`CALL db.schema.nodeTypeProperties()
     YIELD nodeType, nodeLabels, propertyName, propertyTypes, mandatory
-    RETURN *`)
+    RETURN *`),
     );
     await session.close();
     if (!labelPropsRes?.records.length) {
@@ -88,11 +88,11 @@ async function introspectRelationships(sessionFactory: () => Session): Promise<R
     const typePropsRes = await relSession.readTransaction((tx) =>
         tx.run(`CALL db.schema.relTypeProperties()
     YIELD relType, propertyName, propertyTypes, mandatory
-    RETURN *`)
+    RETURN *`),
     );
     await relSession.close();
     const relTypePropertiesRecords = typePropsRes.records.map((r) =>
-        r.toObject()
+        r.toObject(),
     ) as RelationshipTypePropertiesRecord[];
     const uniqueRelTypes = new Set(relTypePropertiesRecords.map((nt) => nt.relType));
     const queries: Promise<typeof typePropsRes>[] = [];
@@ -120,7 +120,7 @@ async function introspectRelationships(sessionFactory: () => Session): Promise<R
             WITH n, r, m LIMIT 100
             WITH DISTINCT labels(n) AS from, labels(m) AS to
             WITH from, to WHERE SIZE(from) > 0 AND SIZE(to) > 0
-            RETURN from, to, "${relType.replace(/"/g, '\\"')}" AS relType`)
+            RETURN from, to, "${relType.replace(/"/g, '\\"')}" AS relType`),
             );
             await conSession.close();
             return relationshipsRes;

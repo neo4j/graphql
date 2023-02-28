@@ -48,7 +48,7 @@ export const ScalarOrEnumType = new GraphQLScalarType({
                 return ast.value;
             default:
                 throw new Error(
-                    "Value must be one of types: Int | Float | String | Boolean | ID | DateTime | Date | Enum"
+                    "Value must be one of types: Int | Float | String | Boolean | ID | DateTime | Date | Enum",
                 );
         }
     },

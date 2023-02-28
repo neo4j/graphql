@@ -49,7 +49,7 @@ function getNodes(
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
         validateResolvers: boolean;
-    }
+    },
 ): Nodes {
     let pointInTypeDefs = false;
     let cartesianPointInTypeDefs = false;
@@ -60,7 +60,7 @@ function getNodes(
 
     const nodes = definitionNodes.objectTypes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude", "node", "fulltext", "queryOptions", "plural"].includes(x.name.value)
+            (x) => !["auth", "exclude", "node", "fulltext", "queryOptions", "plural"].includes(x.name.value),
         );
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
@@ -68,7 +68,7 @@ function getNodes(
         const pluralDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "plural");
         const fulltextDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "fulltext");
         const queryOptionsDirectiveDefinition = (definition.directives || []).find(
-            (x) => x.name.value === "queryOptions"
+            (x) => x.name.value === "queryOptions",
         );
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
@@ -94,18 +94,18 @@ function getNodes(
 
                 return res;
             },
-            { interfaceAuthDirectives: [], interfaceExcludeDirectives: [] }
+            { interfaceAuthDirectives: [], interfaceExcludeDirectives: [] },
         );
 
         if (interfaceAuthDirectives.length > 1) {
             throw new Error(
-                `Multiple interfaces of ${definition.name.value} have @auth directive - cannot determine directive to use`
+                `Multiple interfaces of ${definition.name.value} have @auth directive - cannot determine directive to use`,
             );
         }
 
         if (interfaceExcludeDirectives.length > 1) {
             throw new Error(
-                `Multiple interfaces of ${definition.name.value} have @exclude directive - cannot determine directive to use`
+                `Multiple interfaces of ${definition.name.value} have @exclude directive - cannot determine directive to use`,
             );
         }
 
@@ -157,12 +157,12 @@ function getNodes(
                         ...nodeFields.cypherFields.filter((field) => field.isScalar || field.isEnum),
                     ]
                         .map((x) => x.fieldName)
-                        .includes(requiredField)
+                        .includes(requiredField),
             );
 
         if (violativeRequiredField) {
             throw new Error(
-                `Cannot have ${violativeRequiredField} as a required field on node ${definition.name.value}. Required fields must return a scalar type.`
+                `Cannot have ${violativeRequiredField} as a required field on node ${definition.name.value}. Required fields must return a scalar type.`,
             );
         }
 
@@ -187,11 +187,11 @@ function getNodes(
         nodeFields.relationFields.forEach((relationship) => {
             if (relationship.properties) {
                 const propertiesInterface = definitionNodes.interfaceTypes.find(
-                    (i) => i.name.value === relationship.properties
+                    (i) => i.name.value === relationship.properties,
                 );
                 if (!propertiesInterface) {
                     throw new Error(
-                        `Cannot find interface specified in ${definition.name.value}.${relationship.fieldName}`
+                        `Cannot find interface specified in ${definition.name.value}.${relationship.fieldName}`,
                     );
                 }
                 relationshipPropertyInterfaceNames.add(relationship.properties);
@@ -212,7 +212,7 @@ function getNodes(
 
         if (globalIdFields.length > 1) {
             throw new Error(
-                "Only one field may be decorated with an '@id' directive with the global argument set to `true`"
+                "Only one field may be decorated with an '@id' directive with the global argument set to `true`",
             );
         }
 
@@ -224,14 +224,14 @@ function getNodes(
             const hasAlias = idField.directives?.find((x) => x.name.value === "alias");
             if (!hasAlias) {
                 throw new Error(
-                    `Type ${definition.name.value} already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`
+                    `Type ${definition.name.value} already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`,
                 );
             }
         }
 
         if (globalIdField && !globalIdField.unique) {
             throw new Error(
-                `Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique`
+                `Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique`,
             );
         }
         const node = new Node({

@@ -11,7 +11,7 @@
  */
 export default function debounce<F extends (...args: any[]) => any>(
     duration: number,
-    fn: F
+    fn: F,
 ): (this: any, ...args: Parameters<F>) => void {
     let timeout: number | null;
 

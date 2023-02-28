@@ -89,7 +89,7 @@ describe("interface relationships", () => {
                 DETACH DELETE a
                 DETACH DELETE b
                 DETACH DELETE c
-            `
+            `,
         );
         await session.close();
     });
@@ -141,7 +141,7 @@ describe("interface relationships", () => {
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
                 CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${typeSeries} { title: $seriesTitle, episodes: $seriesEpisodes })
             `,
-            { actorName, movieTitle, movieRuntime, movieScreenTime, seriesTitle, seriesEpisodes, seriesScreenTime }
+            { actorName, movieTitle, movieRuntime, movieScreenTime, seriesTitle, seriesEpisodes, seriesScreenTime },
         );
 
         const gqlResult = await graphql({
@@ -227,7 +227,7 @@ describe("interface relationships", () => {
                 CREATE (:${typeMovie} { title: $movie1.title, runtime:$movie1.runtime })<-[:ACTED_IN { screenTime: $movie1.screenTime }]-(a)-[:ACTED_IN { screenTime: $movie2.screenTime }]->(:${typeMovie} { title: $movie2.title, runtime: $movie2.runtime })
                 CREATE (:${typeSeries} { title: $series1.title, episodes: $series1.episodes })<-[:ACTED_IN { screenTime: $series1.screenTime }]-(a)-[:ACTED_IN { screenTime: $series2.screenTime }]->(:${typeSeries} { title: $series2.title, episodes: $series2.episodes })
             `,
-            { actor, movie1, movie2, series1, series2 }
+            { actor, movie1, movie2, series1, series2 },
         );
 
         const gqlResult = await graphql({
@@ -309,7 +309,7 @@ describe("interface relationships", () => {
                 seriesScreenTime,
                 newMovieTitle,
                 newMovieRuntime,
-            }
+            },
         );
 
         const gqlResult = await graphql({
@@ -374,7 +374,7 @@ describe("interface relationships", () => {
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
                 CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${typeSeries} { title: "Apple", episodes: $seriesEpisodes })
             `,
-            { actorName, movieTitle, movieRuntime, movieScreenTime, seriesEpisodes, seriesScreenTime }
+            { actorName, movieTitle, movieRuntime, movieScreenTime, seriesEpisodes, seriesScreenTime },
         );
 
         const gqlResult = await graphql({
@@ -442,7 +442,7 @@ describe("interface relationships", () => {
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
                 CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${typeSeries} { title: "Apple", episodes: $seriesEpisodes })
             `,
-            { actorName, movieTitle, movieRuntime, movieScreenTime, seriesEpisodes, seriesScreenTime }
+            { actorName, movieTitle, movieRuntime, movieScreenTime, seriesEpisodes, seriesScreenTime },
         );
 
         const gqlResult = await graphql({
@@ -509,7 +509,7 @@ describe("interface relationships", () => {
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:${typeMovie} { title: $movieTitle, runtime:$movieRuntime })
                 CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${typeSeries} { title: "Apple", episodes: $seriesEpisodes })
             `,
-            { actorName, movieTitle, movieRuntime, movieScreenTime, seriesEpisodes, seriesScreenTime }
+            { actorName, movieTitle, movieRuntime, movieScreenTime, seriesEpisodes, seriesScreenTime },
         );
 
         const gqlResult = await graphql({
@@ -566,7 +566,7 @@ describe("interface relationships", () => {
                 CREATE (a)-[:ACTED_IN { screenTime: 62 }]->(:${typeMovie} { title: "The Movie1", runtime: 100 })
                 CREATE (a)-[:ACTED_IN { screenTime: 62 }]->(:${typeMovie} { title: "Movie2", runtime: 150 })
                 CREATE (a)-[:ACTED_IN { screenTime: 62 }]->(:${typeSeries} { title: "Apple", episodes: 10 })
-            `
+            `,
         );
 
         const gqlResult = await graphql({

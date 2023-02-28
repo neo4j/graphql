@@ -50,7 +50,7 @@ function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): Document
                                 directives: f.directives?.filter((x) => !excludedDirectives.includes(x.name.value)),
                             },
                         ],
-                        []
+                        [],
                     ),
                 },
             ];

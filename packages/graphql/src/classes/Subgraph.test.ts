@@ -107,7 +107,7 @@ describe("Subgraph", () => {
             // findFederationLinkMeta called in constructor
             // @ts-ignore
             expect(() => new Subgraph(typeDefs)).toThrow(
-                "typeDefs must contain `@link` schema extension to be used with Apollo Federation"
+                "typeDefs must contain `@link` schema extension to be used with Apollo Federation",
             );
         });
 
@@ -134,7 +134,7 @@ describe("Subgraph", () => {
             // findFederationLinkMeta called in constructor
             // @ts-ignore
             expect(() => new Subgraph(typeDefs)).toThrow(
-                "typeDefs must contain `@link` schema extension to be used with Apollo Federation"
+                "typeDefs must contain `@link` schema extension to be used with Apollo Federation",
             );
         });
     });
@@ -190,7 +190,7 @@ describe("Subgraph", () => {
                     ["requires", "requires"],
                     ["tag", "federation__tag"],
                     ["extends", "federation__extends"],
-                ])
+                ]),
             );
         });
 

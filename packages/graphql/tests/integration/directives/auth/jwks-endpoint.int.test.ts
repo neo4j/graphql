@@ -277,7 +277,7 @@ const createApp = ({ jwksUri }) => {
                 jwksUri,
             }),
             algorithms: ["RS256"],
-        })
+        }),
     );
 
     const router = new Router();

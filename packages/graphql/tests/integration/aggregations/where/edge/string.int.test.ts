@@ -68,7 +68,7 @@ describe("aggregations-where-edge-string", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES { testString: "${testString}" }]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -139,7 +139,7 @@ describe("aggregations-where-edge-string", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES {testString: "${testString}"}]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -209,7 +209,7 @@ describe("aggregations-where-edge-string", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES {testString: "${testString}"}]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -279,7 +279,7 @@ describe("aggregations-where-edge-string", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES {testString: "${testString}"}]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -349,7 +349,7 @@ describe("aggregations-where-edge-string", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES {testString: "${testString}"}]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -438,7 +438,7 @@ describe("aggregations-where-edge-string", () => {
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES { testString: "${shortestTestString}" }]-(:User {testString: "${shortestTestString}"})
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES { testString: "${testString2}" }]-(:User {testString: "${testString2}"})
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES { testString: "${longestTestString}" }]-(:User {testString: "${longestTestString}"})
-                    `
+                    `,
                     );
 
                     const query = `
@@ -473,7 +473,7 @@ describe("aggregations-where-edge-string", () => {
                 } finally {
                     await session.close();
                 }
-            }
+            },
         );
     });
 
@@ -529,7 +529,7 @@ describe("aggregations-where-edge-string", () => {
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES { testString: "${shortestTestString}" }]-(:User {testString: "${shortestTestString}"})
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES { testString: "${testString2}" }]-(:User {testString: "${testString2}"})
                         CREATE (:Post {testString: "${testString}"})<-[:LIKES { testString: "${longestTestString}" }]-(:User {testString: "${longestTestString}"})
-                    `
+                    `,
                     );
 
                     const query = `
@@ -564,7 +564,7 @@ describe("aggregations-where-edge-string", () => {
                 } finally {
                     await session.close();
                 }
-            }
+            },
         );
     });
 
@@ -624,7 +624,7 @@ describe("aggregations-where-edge-string", () => {
                         CREATE(p)<-[:LIKES { testString: "${testString2}" }]-(:User {testString: "${testString}"})
                         CREATE(p)<-[:LIKES { testString: "${testString3}" }]-(:User {testString: "${testString}"})
                         CREATE (:Post {testString: "${testString}"})
-                    `
+                    `,
                     );
 
                     const query = `
@@ -656,7 +656,7 @@ describe("aggregations-where-edge-string", () => {
                 } finally {
                     await session.close();
                 }
-            }
+            },
         );
 
         test("should return posts where the average of edge like Strings is GT than", async () => {
@@ -713,7 +713,7 @@ describe("aggregations-where-edge-string", () => {
                         CREATE(p)<-[:LIKES { testString: "${testString2}" }]-(:User {testString: "${testString}"})
                         CREATE(p)<-[:LIKES { testString: "${testString3}" }]-(:User {testString: "${testString}"})
                         CREATE (:Post {testString: "${testString}"})
-                    `
+                    `,
                 );
 
                 const query = `
@@ -800,7 +800,7 @@ describe("aggregations-where-edge-string", () => {
                         CREATE(p)<-[:LIKES { testString: "${testString2}" }]-(:User {testString: "${testString}"})
                         CREATE(p)<-[:LIKES { testString: "${testString3}" }]-(:User {testString: "${testString}"})
                         CREATE (:Post {testString: "${testString}"})
-                    `
+                    `,
                 );
 
                 const query = `
@@ -888,7 +888,7 @@ describe("aggregations-where-edge-string", () => {
                         CREATE(p)<-[:LIKES { testString: "${testString2}" }]-(:User {testString: "${testString}"})
                         CREATE(p)<-[:LIKES { testString: "${testString3}" }]-(:User {testString: "${testString}"})
                         CREATE (:Post {testString: "${testString}"})
-                    `
+                    `,
                 );
 
                 const query = `
@@ -975,7 +975,7 @@ describe("aggregations-where-edge-string", () => {
                         CREATE(p)<-[:LIKES { testString: "${testString2}" }]-(:User {testString: "${testString}"})
                         CREATE(p)<-[:LIKES { testString: "${testString3}" }]-(:User {testString: "${testString}"})
                         CREATE (:Post {testString: "${testString}"})
-                    `
+                    `,
                 );
 
                 const query = `
@@ -1041,7 +1041,7 @@ describe("aggregations-where-edge-string", () => {
             `
             CREATE(p:${Post} {content: "test"})<-[:LIKES {_someStringAlias:"10"}]-(:${User} {name: "a"})
             CREATE(p2:${Post} {content: "test2"})<-[:LIKES {_someStringAlias:"11"}]-(:${User} {name: "a"})
-            `
+            `,
         );
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });

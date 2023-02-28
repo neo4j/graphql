@@ -63,7 +63,7 @@ describe("Aliasing", () => {
                         boxOffice,
                         budget,
                     },
-                }
+                },
             );
             bookmarks = session.lastBookmark();
         } finally {
@@ -78,7 +78,7 @@ describe("Aliasing", () => {
                 `
                   MATCH(node:${testLabel})
                   DETACH DELETE node
-              `
+              `,
             );
         } finally {
             await session.close();

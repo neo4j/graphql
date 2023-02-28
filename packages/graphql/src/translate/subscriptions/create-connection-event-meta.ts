@@ -64,7 +64,7 @@ export function createConnectionEventMetaObject(eventMeta: EventMetaParameters):
             identifiersStr,
             `relationshipName: "${typename}", fromTypename: "${eventMeta.fromTypename}", toTypename: "${eventMeta.toTypename}"`,
             `properties: { from: ${projectAllProperties(fromVariable)}, to: ${projectAllProperties(
-                toVariable
+                toVariable,
             )}, relationship: ${projectAllProperties(relVariable)} }`,
         ].join(", ")} }`;
     } else {

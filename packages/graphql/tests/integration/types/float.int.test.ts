@@ -267,7 +267,7 @@ describe("Float", () => {
                 `
                 CREATE (m:Movie { id: "${id}" })
             `,
-                {}
+                {},
             );
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),

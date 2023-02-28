@@ -62,7 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
                     CREATE (m1:Movie {title: "M1"}), (m2:Movie {title: "M2"}), (t1:Tag {name: "T1"}), (t2:Tag {name: "T2"})
                     CREATE (m1)-[:HAS]->(t1)<-[:HAS]-(m2)
                     CREATE (m1)-[:HAS]->(t2)
-                `
+                `,
             );
             bookmarks = session.lastBookmark();
         } finally {

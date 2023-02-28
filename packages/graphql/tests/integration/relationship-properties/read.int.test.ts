@@ -63,7 +63,7 @@ describe("Relationship properties - read", () => {
                 CREATE (:${typeActor.name} { name: '${actorA}' })-[:ACTED_IN { screenTime: 105 }]->(m:${typeMovie.name} { title: '${movieTitle}'})
                 CREATE (m)<-[:ACTED_IN { screenTime: 105 }]-(:${typeActor.name} { name: '${actorB}' })
                 CREATE (m)<-[:ACTED_IN { screenTime: 5 }]-(:${typeActor.name} { name: '${actorC}' })
-           `
+           `,
         );
 
         typeDefs = gql`
@@ -379,7 +379,7 @@ describe("Relationship properties - read", () => {
                 `
                     MATCH (m:${typeMovie.name} { title: '${movieTitle}'})
                     CREATE (m)<-[:ACTED_IN { screenTime: 106 }]-(:${typeActor.name} { name: '${actorD}' })
-                `
+                `,
             );
 
             const result = await graphql({

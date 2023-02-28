@@ -73,7 +73,7 @@ describe("@computed directive", () => {
                 `
                 CREATE (user:User:${testLabel}) SET user = $user
             `,
-                { user }
+                { user },
             );
             await session.close();
         });
@@ -195,7 +195,7 @@ describe("@computed directive", () => {
                 `
                 CREATE (user:User:${testLabel}) SET user.id = $userId
             `,
-                { userId: user.id }
+                { userId: user.id },
             );
             await session.close();
         });

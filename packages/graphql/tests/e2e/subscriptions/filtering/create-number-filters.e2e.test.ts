@@ -453,7 +453,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "movie1" });
@@ -474,7 +474,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "movie1" });
@@ -495,7 +495,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "movie1" });
@@ -516,7 +516,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "movie1" });
@@ -538,7 +538,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ id: 42 });
@@ -559,7 +559,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ id: 40 });
@@ -580,7 +580,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ id: 5 });
@@ -601,7 +601,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ id: 4 });
@@ -623,7 +623,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({});
@@ -644,7 +644,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({});
@@ -665,7 +665,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({});
@@ -686,7 +686,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "movie1" });
@@ -708,7 +708,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ similarTitles: ["dummy"] });

@@ -43,7 +43,7 @@ describe("parseQueryOptionsDirective", () => {
         });
 
         expect(result).toEqual(
-            new QueryOptionsDirective({ limit: { max: neo4j.int(maxLimit), default: neo4j.int(defaultLimit) } })
+            new QueryOptionsDirective({ limit: { max: neo4j.int(maxLimit), default: neo4j.int(defaultLimit) } }),
         );
     });
 
@@ -64,7 +64,7 @@ describe("parseQueryOptionsDirective", () => {
         expect(result).toEqual(
             new QueryOptionsDirective({
                 limit: {},
-            })
+            }),
         );
     });
 
@@ -85,9 +85,9 @@ describe("parseQueryOptionsDirective", () => {
             parseQueryOptionsDirective({
                 directive,
                 definition,
-            })
+            }),
         ).toThrow(
-            `Movie @queryOptions(limit: {max: ${maxLimit}, default: ${defaultLimit}}) invalid default value, 'default' must be smaller than 'max'`
+            `Movie @queryOptions(limit: {max: ${maxLimit}, default: ${defaultLimit}}) invalid default value, 'default' must be smaller than 'max'`,
         );
     });
 
@@ -106,9 +106,9 @@ describe("parseQueryOptionsDirective", () => {
                     parseQueryOptionsDirective({
                         directive,
                         definition,
-                    })
+                    }),
                 ).toThrow(
-                    `Movie @queryOptions(limit: {default: ${i}}) invalid value: '${i}', it should be a number greater than 0`
+                    `Movie @queryOptions(limit: {default: ${i}}) invalid value: '${i}', it should be a number greater than 0`,
                 );
             });
         });
@@ -128,7 +128,7 @@ describe("parseQueryOptionsDirective", () => {
                 parseQueryOptionsDirective({
                     directive,
                     definition,
-                })
+                }),
             ).toThrow(`Movie @queryOptions(limit: {max: 0}) invalid value: '0', it should be a number greater than 0`);
         });
 
@@ -145,9 +145,9 @@ describe("parseQueryOptionsDirective", () => {
                 parseQueryOptionsDirective({
                     directive,
                     definition,
-                })
+                }),
             ).toThrow(
-                `Movie @queryOptions(limit: {max: -10}) invalid value: '-10', it should be a number greater than 0`
+                `Movie @queryOptions(limit: {max: -10}) invalid value: '-10', it should be a number greater than 0`,
             );
         });
     });

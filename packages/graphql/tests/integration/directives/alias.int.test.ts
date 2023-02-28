@@ -86,13 +86,13 @@ describe("@alias directive", () => {
         await session.run(
             `CREATE (:AliasDirectiveTestUser {dbName: $dbName, dbId: "stringId", dbCreatedAt: "1970-01-02"})-[:LIKES {dbComment: $dbComment, dbCreatedAt: "1970-01-02"}]->(:AliasDirectiveTestMovie {dbTitle: $dbTitle, year: $year, dbCreatedAt: "1970-01-02"})
             CREATE (:ProtectedUser {dbName: $dbName})`,
-            { dbName, dbComment, dbTitle, year }
+            { dbName, dbComment, dbTitle, year },
         );
     });
 
     afterEach(async () => {
         await session.run(
-            `MATCH (n:AliasDirectiveTestUser), (m:AliasDirectiveTestMovie), (o:ProtectedUser) DETACH DELETE n, m, o`
+            `MATCH (n:AliasDirectiveTestUser), (m:AliasDirectiveTestMovie), (o:ProtectedUser) DETACH DELETE n, m, o`,
         );
         await session.close();
     });
@@ -298,7 +298,7 @@ describe("@alias directive", () => {
         const title = "Interstellar 2";
         const comment = "Yes!";
         await session.run(
-            `CREATE (m:AliasDirectiveTestMovie {dbTitle: "${title}", year: toInteger(2015), dbCreatedAt: "2021-08-25"})`
+            `CREATE (m:AliasDirectiveTestMovie {dbTitle: "${title}", year: toInteger(2015), dbCreatedAt: "2021-08-25"})`,
         );
         const userMutation = `
         mutation CreateUserConnectMovie {

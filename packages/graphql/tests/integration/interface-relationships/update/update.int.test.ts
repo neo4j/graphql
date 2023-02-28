@@ -137,7 +137,7 @@ describe("interface relationships", () => {
                     movieScreenTime,
                     seriesTitle,
                     seriesScreenTime,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -244,7 +244,7 @@ describe("interface relationships", () => {
                     movieScreenTime,
                     seriesTitle,
                     seriesScreenTime,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -375,7 +375,7 @@ describe("interface relationships", () => {
                     movieRuntime,
                     movieScreenTime,
                     seriesScreenTime,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -515,7 +515,7 @@ describe("interface relationships", () => {
                     movieRuntime,
                     movieScreenTime,
                     seriesScreenTime,
-                }
+                },
             );
 
             const gqlResult = await graphql({

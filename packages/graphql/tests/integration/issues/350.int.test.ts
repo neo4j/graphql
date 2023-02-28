@@ -114,7 +114,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
                     comment1Content,
                     comment2Id,
                     comment2Content,
-                }
+                },
             );
 
             const result = await graphql({

@@ -27,13 +27,13 @@ describe("db procedures", () => {
             const fulltextClause = new Cypher.db.FullTextQueryNodes(
                 targetNode,
                 "my-text-index",
-                new Param("This is a lovely phrase")
+                new Param("This is a lovely phrase"),
             );
 
             const { cypher, params } = fulltextClause.build();
 
             expect(cypher).toMatchInlineSnapshot(
-                `"CALL db.index.fulltext.queryNodes(\\"my-text-index\\", $param0) YIELD node AS this0"`
+                `"CALL db.index.fulltext.queryNodes(\\"my-text-index\\", $param0) YIELD node AS this0"`,
             );
             expect(params).toMatchInlineSnapshot(`
                 Object {
@@ -47,7 +47,7 @@ describe("db procedures", () => {
             const fulltextClause = new Cypher.db.FullTextQueryNodes(
                 targetNode,
                 "my-text-index",
-                new Param("This is a lovely phrase")
+                new Param("This is a lovely phrase"),
             )
                 .where(Cypher.eq(targetNode.property("title"), new Cypher.Param("The Matrix")))
                 .return(targetNode);

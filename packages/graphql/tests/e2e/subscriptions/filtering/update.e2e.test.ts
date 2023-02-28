@@ -920,7 +920,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "some_movie_wrong1", isFavorite: true });
@@ -944,7 +944,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "some_movie_wrong3", isFavorite: true });
@@ -968,7 +968,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "some_movie_wrong5", similarTitles: ["fight club"] });
@@ -992,7 +992,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "some_movie_wrong7", similarTitles: ["blue bus"] });
@@ -1134,7 +1134,7 @@ describe("Update Subscriptions", () => {
     async function updateMovie(
         fieldName: string,
         oldValue: number | string,
-        newValue: number | string
+        newValue: number | string,
     ): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
@@ -1142,7 +1142,7 @@ describe("Update Subscriptions", () => {
                 query: `
                         mutation {
                             ${typeMovie.operations.update}(where: { ${fieldName}: ${makeTypedFieldValue(
-                    oldValue
+                    oldValue,
                 )} }, update: { ${fieldName}: ${makeTypedFieldValue(newValue)} }) {
                                 ${typeMovie.plural} {
                                     title

@@ -41,8 +41,8 @@ export class ApplicationSettings extends Screen {
         await this.page.waitForSelector("[data-test-enable-product-usage-tracking]");
         expect(
             await this.page.$eval("[data-test-enable-product-usage-tracking]", (el) =>
-                el.classList.contains("data-test-enable-product-usage-tracking-checked")
-            )
+                el.classList.contains("data-test-enable-product-usage-tracking-checked"),
+            ),
         ).toBeTruthy();
     }
 
@@ -55,8 +55,8 @@ export class ApplicationSettings extends Screen {
         await this.page.waitForSelector("[data-test-enable-product-usage-tracking]");
         expect(
             await this.page.$eval("[data-test-enable-product-usage-tracking]", (el) =>
-                el.classList.contains("data-test-enable-product-usage-tracking-checked")
-            )
+                el.classList.contains("data-test-enable-product-usage-tracking-checked"),
+            ),
         ).toBeFalsy();
     }
 }

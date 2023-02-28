@@ -74,7 +74,7 @@ describe("@customResolver directive", () => {
                 `
                 CREATE (user:${testType.name}) SET user = $user
             `,
-                { user }
+                { user },
             );
             await session.close();
         });
@@ -189,7 +189,7 @@ describe("@customResolver directive", () => {
                 `
                 CREATE (user:${testType.name}) SET user.id = $userId
             `,
-                { userId: user.id }
+                { userId: user.id },
             );
             await session.close();
         });

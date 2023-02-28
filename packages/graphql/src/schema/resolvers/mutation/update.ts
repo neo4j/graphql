@@ -41,7 +41,7 @@ export function updateResolver({ node, schemaComposer }: { node: Node; schemaCom
         publishEventsToPlugin(executeResult, context.plugins?.subscriptions, context.schemaModel);
 
         const nodeProjection = info.fieldNodes[0].selectionSet?.selections.find(
-            (selection) => selection.kind === "Field" && selection.name.value === node.plural
+            (selection) => selection.kind === "Field" && selection.name.value === node.plural,
         ) as FieldNode;
 
         const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;

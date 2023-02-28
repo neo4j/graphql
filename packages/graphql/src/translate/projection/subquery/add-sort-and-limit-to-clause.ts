@@ -94,7 +94,7 @@ function createOrderByParams({
                 return Object.entries(arg[nodeField] as GraphQLSortArg);
             }
             return Object.entries(arg);
-        }
+        },
     );
     return orderList.map(([field, order]) => {
         // TODO: remove this once translation of cypher fields moved to cypher builder.

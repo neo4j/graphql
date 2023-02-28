@@ -32,7 +32,7 @@ type DirectionResult = {
 
 export function getCypherRelationshipDirection(
     relationField: RelationField,
-    fieldArgs: { directed?: boolean } = {}
+    fieldArgs: { directed?: boolean } = {},
 ): CypherRelationshipDirection {
     const direction = getRelationshipDirection(relationField, fieldArgs);
     switch (direction) {
@@ -47,7 +47,7 @@ export function getCypherRelationshipDirection(
 
 export function getRelationshipDirection(
     relationField: RelationField,
-    fieldArgs: { directed?: boolean }
+    fieldArgs: { directed?: boolean },
 ): RelationshipDirection {
     const directedValue = relationField.direction;
     const undirectedValue = "undirected";
@@ -80,7 +80,7 @@ export function getRelationshipDirection(
 
 export function getRelationshipDirectionStr(
     relationField: RelationField,
-    fieldArgs: { directed?: boolean }
+    fieldArgs: { directed?: boolean },
 ): DirectionResult {
     const direction = getRelationshipDirection(relationField, fieldArgs);
 

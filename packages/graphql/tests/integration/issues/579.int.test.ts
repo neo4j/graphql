@@ -101,7 +101,7 @@ describe("579", () => {
                 {
                     productId,
                     colorId,
-                }
+                },
             );
 
             const gqlResult = await graphql({

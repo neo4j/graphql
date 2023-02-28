@@ -30,12 +30,12 @@ export function verifyVersion(dbInfo: Neo4jDatabaseInfo): void {
                 throw new Error(
                     `Expected Neo4j version '${
                         MIN_VERSIONS[0].majorMinor
-                    }' or greater, received: '${dbInfo.toString()}'`
+                    }' or greater, received: '${dbInfo.toString()}'`,
                 );
             }
         } else if (dbInfo.lt(minimumVersions.neo4j)) {
             throw new Error(
-                `Expected minimum Neo4j version: '${minimumVersions.neo4j}' received: '${dbInfo.toString()}'`
+                `Expected minimum Neo4j version: '${minimumVersions.neo4j}' received: '${dbInfo.toString()}'`,
             );
         }
     }

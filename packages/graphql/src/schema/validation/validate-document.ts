@@ -86,7 +86,7 @@ function filterDocument(document: DocumentNode): DocumentNode {
 
             const nodeMatch =
                 /(?<nodeName>.+)(?:ConnectInput|ConnectWhere|CreateInput|DeleteInput|DisconnectInput|Options|RelationInput|Sort|UpdateInput|Where)/gm.exec(
-                    type
+                    type,
                 );
             if (nodeMatch?.groups?.nodeName) {
                 if (nodeNames.includes(nodeMatch.groups.nodeName)) {
@@ -161,7 +161,7 @@ function filterDocument(document: DocumentNode): DocumentNode {
 function validateDocument(
     document: DocumentNode,
     additionalDirectives: Array<GraphQLDirective> = [],
-    additionalTypes: Array<GraphQLNamedType> = []
+    additionalTypes: Array<GraphQLNamedType> = [],
 ): void {
     const doc = filterDocument(document);
 

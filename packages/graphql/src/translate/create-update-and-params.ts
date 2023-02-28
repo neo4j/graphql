@@ -85,7 +85,7 @@ export default function createUpdateAndParams({
         throw new Neo4jGraphQLError(
             `Conflicting modification of ${conflictingProperties.map((n) => `[[${n}]]`).join(", ")} on type ${
                 node.name
-            }`
+            }`,
         );
     }
 
@@ -106,7 +106,7 @@ export default function createUpdateAndParams({
             const refNodes: Node[] = [];
 
             const relationship = context.relationships.find(
-                (x) => x.properties === relationField.properties
+                (x) => x.properties === relationField.properties,
             ) as unknown as Relationship;
 
             if (relationField.union) {
@@ -180,7 +180,7 @@ export default function createUpdateAndParams({
 
                         const labels = refNode.getLabelString(context);
                         innerUpdate.push(
-                            `MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
+                            `MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`,
                         );
                         innerUpdate.push(...delayedSubquery);
 
@@ -300,7 +300,7 @@ export default function createUpdateAndParams({
                             `WITH ${withVars.join(", ")}`,
                             "CALL {",
                             indentBlock(innerUpdate.join("\n")),
-                            "}"
+                            "}",
                         );
                         if (context.subscriptionsEnabled) {
                             const reduceMeta = `REDUCE(m=${META_CYPHER_VARIABLE}, n IN update_meta | m + n) AS ${META_CYPHER_VARIABLE}`;
@@ -420,7 +420,7 @@ export default function createUpdateAndParams({
                             res.params = { ...res.params, ...createAndParams[1] };
                             const relationVarName = create.edge || context.subscriptionsEnabled ? propertiesName : "";
                             subquery.push(
-                                `MERGE (${parentVar})${inStr}[${relationVarName}:${relationField.type}]${outStr}(${nodeName})`
+                                `MERGE (${parentVar})${inStr}[${relationVarName}:${relationField.type}]${outStr}(${nodeName})`,
                             );
 
                             if (create.edge) {
@@ -456,8 +456,8 @@ export default function createUpdateAndParams({
                                 });
                                 subquery.push(
                                     `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(
-                                        ", "
-                                    )}`
+                                        ", ",
+                                    )}`,
                                 );
                                 returnMetaStatement = `meta AS update${idx}_meta`;
                                 intermediateWithMetaStatements.push(`WITH *, update${idx}_meta AS meta`);
@@ -493,7 +493,7 @@ export default function createUpdateAndParams({
                 res.strs.push(`WITH ${withVars.join(", ")}`);
                 res.strs.push(`CALL {\n\t WITH ${withVars.join(", ")}\n\t`);
                 const subqueriesWithMetaPassedOn = subqueries.map(
-                    (each, i) => each + `\n}\n${intermediateWithMetaStatements[i] || ""}`
+                    (each, i) => each + `\n}\n${intermediateWithMetaStatements[i] || ""}`,
                 );
                 res.strs.push(subqueriesWithMetaPassedOn.join(`\nCALL {\n\t WITH ${withVars.join(", ")}\n\t`));
             } else {
@@ -507,7 +507,7 @@ export default function createUpdateAndParams({
             const timestampedFields = node.temporalFields.filter(
                 (temporalField) =>
                     ["DateTime", "Time"].includes(temporalField.typeMeta.name) &&
-                    temporalField.timestamps?.includes("UPDATE")
+                    temporalField.timestamps?.includes("UPDATE"),
             );
             timestampedFields.forEach((field) => {
                 // DateTime -> datetime(); Time -> time()
@@ -518,7 +518,7 @@ export default function createUpdateAndParams({
         }
 
         node.primitiveFields.forEach((field) =>
-            addCallbackAndSetParam(field, varName, updateInput, callbackBucket, res.strs, "UPDATE")
+            addCallbackAndSetParam(field, varName, updateInput, callbackBucket, res.strs, "UPDATE"),
         );
 
         const mathMatch = matchMathField(key);
@@ -526,7 +526,7 @@ export default function createUpdateAndParams({
         const settableFieldComparator = hasMatched ? propertyName : key;
         const settableField = node.mutableFields.find((x) => x.fieldName === settableFieldComparator);
         const authableField = node.authableFields.find(
-            (x) => x.fieldName === key || `${x.fieldName}_PUSH` === key || `${x.fieldName}_POP` === key
+            (x) => x.fieldName === key || `${x.fieldName}_PUSH` === key || `${x.fieldName}_POP` === key,
         );
 
         if (settableField) {
@@ -544,7 +544,7 @@ export default function createUpdateAndParams({
                 const mathDescriptor = mathDescriptorBuilder(value as number, node, mathMatch);
                 if (updateInput[mathDescriptor.dbName]) {
                     throw new Error(
-                        `Cannot mutate the same field multiple times in one Mutation: ${mathDescriptor.dbName}`
+                        `Cannot mutate the same field multiple times in one Mutation: ${mathDescriptor.dbName}`,
                     );
                 }
 
@@ -594,7 +594,7 @@ export default function createUpdateAndParams({
         if (pushField) {
             if (pushField.dbPropertyName && updateInput[pushField.dbPropertyName]) {
                 throw new Error(
-                    `Cannot mutate the same field multiple times in one Mutation: ${pushField.dbPropertyName}`
+                    `Cannot mutate the same field multiple times in one Mutation: ${pushField.dbPropertyName}`,
                 );
             }
 
@@ -603,11 +603,11 @@ export default function createUpdateAndParams({
             const pointArrayField = node.pointFields.find((x) => `${x.fieldName}_PUSH` === key);
             if (pointArrayField) {
                 res.strs.push(
-                    `SET ${varName}.${pushField.dbPropertyName} = ${varName}.${pushField.dbPropertyName} + [p in $${param} | point(p)]`
+                    `SET ${varName}.${pushField.dbPropertyName} = ${varName}.${pushField.dbPropertyName} + [p in $${param} | point(p)]`,
                 );
             } else {
                 res.strs.push(
-                    `SET ${varName}.${pushField.dbPropertyName} = ${varName}.${pushField.dbPropertyName} + $${param}`
+                    `SET ${varName}.${pushField.dbPropertyName} = ${varName}.${pushField.dbPropertyName} + $${param}`,
                 );
             }
 
@@ -619,14 +619,14 @@ export default function createUpdateAndParams({
         if (popField) {
             if (popField.dbPropertyName && updateInput[popField.dbPropertyName]) {
                 throw new Error(
-                    `Cannot mutate the same field multiple times in one Mutation: ${popField.dbPropertyName}`
+                    `Cannot mutate the same field multiple times in one Mutation: ${popField.dbPropertyName}`,
                 );
             }
 
             validateNonNullProperty(res, varName, popField);
 
             res.strs.push(
-                `SET ${varName}.${popField.dbPropertyName} = ${varName}.${popField.dbPropertyName}[0..-$${param}]`
+                `SET ${varName}.${popField.dbPropertyName} = ${varName}.${popField.dbPropertyName}[0..-$${param}]`,
             );
 
             res.params[param] = value;
@@ -690,9 +690,9 @@ export default function createUpdateAndParams({
 
         preArrayMethodValidationStr = `CALL apoc.util.validate(${nullChecks.join(" OR ")}, "${pluralize(
             "Property",
-            propertyNames.length
+            propertyNames.length,
         )} ${propertyNames.map(() => "%s").join(", ")} cannot be NULL", [${wrapStringInApostrophes(propertyNames).join(
-            ", "
+            ", ",
         )}])`;
     }
 

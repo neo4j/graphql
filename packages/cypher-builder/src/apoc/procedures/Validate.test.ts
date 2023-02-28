@@ -37,11 +37,11 @@ describe("Validate", () => {
     test("Simple Validate", () => {
         const validate = new Cypher.apoc.Validate(
             Cypher.eq(new Cypher.Literal(1), new Cypher.Literal(2)),
-            "That's not how math works"
+            "That's not how math works",
         );
         const callableProceedure = new Cypher.CallProcedure(validate);
         expect(callableProceedure.getCypher(env)).toMatchInlineSnapshot(
-            `"CALL apoc.util.validate(1 = 2, \\"That's not how math works\\", [0])"`
+            `"CALL apoc.util.validate(1 = 2, \\"That's not how math works\\", [0])"`,
         );
     });
 });

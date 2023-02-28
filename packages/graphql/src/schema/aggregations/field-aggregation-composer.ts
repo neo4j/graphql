@@ -42,7 +42,7 @@ export class FieldAggregationComposer {
     public createAggregationTypeObject(
         baseTypeName: string,
         refNode: Node,
-        relFields: ObjectFields | undefined
+        relFields: ObjectFields | undefined,
     ): ObjectTypeComposer {
         let aggregateSelectionEdge: ObjectTypeComposer | undefined;
 
@@ -51,7 +51,7 @@ export class FieldAggregationComposer {
 
         const aggregateSelectionNode = this.createAggregationField(
             aggregateSelectionNodeName,
-            aggregateSelectionNodeFields
+            aggregateSelectionNodeFields,
         );
 
         if (relFields) {
@@ -60,7 +60,7 @@ export class FieldAggregationComposer {
 
             aggregateSelectionEdge = this.createAggregationField(
                 aggregateSelectionEdgeName,
-                aggregateSelectionEdgeFields
+                aggregateSelectionEdgeFields,
             );
         }
 
@@ -99,7 +99,7 @@ export class FieldAggregationComposer {
 
     private createAggregationField(
         name: string,
-        fields: Record<string, ObjectTypeComposer>
+        fields: Record<string, ObjectTypeComposer>,
     ): ObjectTypeComposer | undefined {
         if (Object.keys(fields).length > 0) {
             return this.composer.createObjectTC({

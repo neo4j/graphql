@@ -40,7 +40,7 @@ describe("@populatedBy tests", () => {
                 });
 
                 await expect(neoSchema.getSchema()).rejects.toThrow(
-                    "Directive @populatedBy cannot be used in combination with @default"
+                    "Directive @populatedBy cannot be used in combination with @default",
                 );
             });
 
@@ -57,7 +57,7 @@ describe("@populatedBy tests", () => {
                 });
 
                 await expect(neoSchema.getSchema()).rejects.toThrow(
-                    "Directive @populatedBy cannot be used in combination with @id"
+                    "Directive @populatedBy cannot be used in combination with @id",
                 );
             });
         });
@@ -75,7 +75,7 @@ describe("@populatedBy tests", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toThrow(
-                "PopulatedBy callback 'callback1' must be of type function"
+                "PopulatedBy callback 'callback1' must be of type function",
             );
         });
 
@@ -503,7 +503,7 @@ describe("@populatedBy tests", () => {
                 });
 
                 await expect(neoSchema.getSchema()).rejects.toThrow(
-                    "Directive @populatedBy cannot be used in combination with @default"
+                    "Directive @populatedBy cannot be used in combination with @default",
                 );
             });
 
@@ -529,7 +529,7 @@ describe("@populatedBy tests", () => {
                 });
 
                 await expect(neoSchema.getSchema()).rejects.toThrow(
-                    "Directive @populatedBy cannot be used in combination with @id"
+                    "Directive @populatedBy cannot be used in combination with @id",
                 );
             });
         });
@@ -556,7 +556,7 @@ describe("@populatedBy tests", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toThrow(
-                "PopulatedBy callback 'callback4' must be of type function"
+                "PopulatedBy callback 'callback4' must be of type function",
             );
         });
         test("PopulatedBy - String", async () => {

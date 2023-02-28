@@ -41,7 +41,7 @@ describe("resolveTree", () => {
                 args: {},
             },
         }),
-        {}
+        {},
     );
 
     const aliasedSelection: Record<string, ResolveTree> = names.reduce((acc, name) => {
@@ -119,8 +119,8 @@ describe("resolveTree", () => {
                         args: {},
                     },
                 }),
-                {}
-            )
+                {},
+            ),
         );
     });
 
@@ -144,8 +144,8 @@ describe("resolveTree", () => {
                         args: {},
                     },
                 }),
-                {}
-            )
+                {},
+            ),
         );
     });
 });

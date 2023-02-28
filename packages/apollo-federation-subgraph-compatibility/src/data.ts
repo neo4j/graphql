@@ -41,7 +41,7 @@ export async function createData(driver: Driver): Promise<void> {
             CREATE (p2)-[:HAS_DIMENSIONS]->(dimension)
             CREATE (p2)-[:HAS_RESEARCH]->(:ProductResearch)-[:HAS_STUDY]->(:CaseStudy { caseNumber: "1235", description: "Studio Study" })
             CREATE (p2)-[:CREATED_BY]->(user)
-        `)
+        `),
     );
 
     await session.close();

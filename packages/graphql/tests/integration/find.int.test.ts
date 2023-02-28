@@ -121,7 +121,7 @@ describe("find", () => {
                 `
               CREATE (:Movie {id: $id}), (:Movie {id: $id}), (:Movie {id: $id})
             `,
-                { id }
+                { id },
             );
 
             const result = await graphql({
@@ -180,7 +180,7 @@ describe("find", () => {
                 `
               CREATE (:Movie {id: $id1}), (:Movie {id: $id2}), (:Movie {id: $id3})
             `,
-                { id1, id2, id3 }
+                { id1, id2, id3 },
             );
 
             const result = await graphql({
@@ -245,7 +245,7 @@ describe("find", () => {
                 `
                 CREATE (:User {id: $id1, title: $title}), (:User {id: $id2, title: $title}), (:User {id: $id3, title: $title})
                 `,
-                { id1, id2, id3, title }
+                { id1, id2, id3, title },
             );
 
             const result = await graphql({
@@ -334,7 +334,7 @@ describe("find", () => {
                     actorId1,
                     actorId2,
                     actorId3,
-                }
+                },
             );
 
             const result = await graphql({
@@ -475,7 +475,7 @@ describe("find", () => {
                     actorId1,
                     actorId2,
                     actorId3,
-                }
+                },
             );
 
             const result = await graphql({
@@ -540,7 +540,7 @@ describe("find", () => {
                 `
               CREATE (:Movie {id: $id, title: $title})
             `,
-                { id, title }
+                { id, title },
             );
 
             const result = await graphql({

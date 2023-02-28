@@ -85,7 +85,7 @@ describe("326", () => {
                 `
                     CREATE (:User {id: $id, email: randomUUID()})
                 `,
-                { id }
+                { id },
             );
 
             const req = createJwtRequest(secret, { sub: "invalid" });
@@ -149,7 +149,7 @@ describe("326", () => {
                 `
                     CREATE (:User {id: $id, email: randomUUID()})
                 `,
-                { id }
+                { id },
             );
 
             const req = createJwtRequest(secret, { sub: "invalid" });

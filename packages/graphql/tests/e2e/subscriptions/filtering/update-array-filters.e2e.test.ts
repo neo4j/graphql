@@ -416,7 +416,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "movie24", similarTitles: ["dummy", "movie"] });
@@ -440,7 +440,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "movie26", isFavorite: true });
@@ -464,7 +464,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "movie28", similarTitles: ["dummy", "movie"] });
@@ -488,7 +488,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "movie30", isFavorite: true });
@@ -559,7 +559,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
     async function updateMovie(
         fieldName: string,
         oldValue: number | string | number[] | string[],
-        newValue: number | string | number[] | string[]
+        newValue: number | string | number[] | string[],
     ): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
@@ -567,7 +567,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
                 query: `
                         mutation {
                             ${typeMovie.operations.update}(where: { ${fieldName}: ${makeTypedFieldValue(
-                    oldValue
+                    oldValue,
                 )} }, update: { ${fieldName}: ${makeTypedFieldValue(newValue)} }) {
                                 ${typeMovie.plural} {
                                     title

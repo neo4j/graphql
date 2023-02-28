@@ -55,7 +55,7 @@ export default class SearchResults extends React.Component<SearchResultsProps, R
                 matchedTypes.push(
                     <div className="doc-category-item" key={typeName}>
                         <TypeLink type={type} onClick={onClickType} />
-                    </div>
+                    </div>,
                 );
             }
 

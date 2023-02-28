@@ -125,7 +125,7 @@ export function createProjectionSubquery({
 
         const authStatement = new Cypher.apoc.ValidatePredicate(
             Cypher.not(authValidatePredicate),
-            AUTH_FORBIDDEN_ERROR
+            AUTH_FORBIDDEN_ERROR,
         );
 
         predicates.push(authStatement);
@@ -160,7 +160,7 @@ export function createProjectionSubquery({
             preComputedSubqueryWith,
             ...nestedSubqueries,
             withStatement,
-            returnStatement
+            returnStatement,
         );
     }
 

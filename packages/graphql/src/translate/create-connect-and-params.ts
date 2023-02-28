@@ -69,7 +69,7 @@ function createConnectAndParams({
     function createSubqueryContents(
         relatedNode: Node,
         connect: any,
-        index: number
+        index: number,
     ): { subquery: string; params: Record<string, any> } {
         let params = {};
         const baseName = `${varName}${index}`;
@@ -217,7 +217,7 @@ function createConnectAndParams({
 
                 return result;
             },
-            { connects: [], params: {} }
+            { connects: [], params: {} },
         );
 
         if (preAuth.connects.length) {
@@ -225,8 +225,8 @@ function createConnectAndParams({
             subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
             subquery.push(
                 `\tCALL apoc.util.validate(NOT (${preAuth.connects.join(
-                    " AND "
-                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                    " AND ",
+                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`,
             );
             params = { ...params, ...preAuth.params };
         }
@@ -257,7 +257,7 @@ function createConnectAndParams({
 
         if (relationField.properties) {
             const relationship = context.relationships.find(
-                (x) => x.properties === relationField.properties
+                (x) => x.properties === relationField.properties,
             ) as unknown as Relationship;
             const setA = createSetRelationshipPropertiesAndParams({
                 properties: connect.edge ?? {},
@@ -398,7 +398,7 @@ function createConnectAndParams({
 
                             return r;
                         },
-                        { connects: [], params: {} }
+                        { connects: [], params: {} },
                     );
 
                 subquery.push(reduced.connects.join("\n"));
@@ -413,7 +413,7 @@ function createConnectAndParams({
                         const onReduced = Object.entries(onConnect).reduce(
                             (r: Res, [k, v]: [string, any]) => {
                                 const relField = relatedNode.relationFields.find((x) =>
-                                    k.startsWith(x.fieldName)
+                                    k.startsWith(x.fieldName),
                                 ) as RelationField;
                                 const newRefNodes: Node[] = [];
 
@@ -423,7 +423,7 @@ function createConnectAndParams({
                                     });
                                 } else {
                                     newRefNodes.push(
-                                        context.nodes.find((x) => x.name === relField.typeMeta.name) as Node
+                                        context.nodes.find((x) => x.name === relField.typeMeta.name) as Node,
                                     );
                                 }
 
@@ -447,7 +447,7 @@ function createConnectAndParams({
 
                                 return r;
                             },
-                            { connects: [], params: {} }
+                            { connects: [], params: {} },
                         );
                         subquery.push(onReduced.connects.join("\n"));
                         params = { ...params, ...onReduced.params };
@@ -481,7 +481,7 @@ function createConnectAndParams({
 
                 return result;
             },
-            { connects: [], params: {} }
+            { connects: [], params: {} },
         );
 
         if (postAuth.connects.length) {
@@ -489,8 +489,8 @@ function createConnectAndParams({
             subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
             subquery.push(
                 `\tCALL apoc.util.validate(NOT (${postAuth.connects.join(
-                    " AND "
-                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                    " AND ",
+                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`,
             );
             params = { ...params, ...postAuth.params };
         }
@@ -537,7 +537,7 @@ function createConnectAndParams({
             if (subqueries.length > 0) {
                 if (context.subscriptionsEnabled) {
                     const withStatement = `WITH ${filterMetaVariable(withVars).join(
-                        ", "
+                        ", ",
                     )}, connect_meta + meta AS meta`;
                     inner.push(subqueries.join(`\n}\n${withStatement}\nCALL {\n\t`));
                 } else {

@@ -95,7 +95,7 @@ describe("Connections Filtering", () => {
                 movieTitle,
                 actorOneName,
                 actorTwoName,
-            }
+            },
         );
         const result = await graphql({
             schema,
@@ -144,7 +144,7 @@ describe("Connections Filtering", () => {
                 actor1Name,
                 actor2Name,
                 movieTitle,
-            }
+            },
         );
         const result = await graphql({
             schema,
@@ -198,7 +198,7 @@ describe("Connections Filtering", () => {
                 actor1Name,
                 actor2Name,
                 movieTitle,
-            }
+            },
         );
         const result = await graphql({
             schema,
@@ -252,7 +252,7 @@ describe("Connections Filtering", () => {
                 actor1Name,
                 actor2Name,
                 movieTitle,
-            }
+            },
         );
         const result = await graphql({
             schema,

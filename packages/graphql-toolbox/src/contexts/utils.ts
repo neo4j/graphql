@@ -92,7 +92,7 @@ export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[
                 (rec) =>
                     rec.access === "read-write" &&
                     rec.currentStatus === "online" &&
-                    (rec.name || "").toLowerCase() !== "system"
+                    (rec.name || "").toLowerCase() !== "system",
             ) as Neo4jDatabase[];
 
         await session.close();

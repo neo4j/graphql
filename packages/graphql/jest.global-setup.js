@@ -29,17 +29,17 @@ module.exports = async function globalSetup() {
     } catch (error) {
         if (
             error.message.includes(
-                "This is an administration command and it should be executed against the system database"
+                "This is an administration command and it should be executed against the system database",
             ) ||
             error.message.includes("Unsupported administration command") ||
             error.message.includes("Unable to route write operation to leader for database 'system'")
         ) {
             console.log(
-                `\nJest /packages/graphql setup: Will NOT create a separate integration test database as the command is not supported in the current environment.`
+                `\nJest /packages/graphql setup: Will NOT create a separate integration test database as the command is not supported in the current environment.`,
             );
         } else {
             console.log(
-                `\nJest /packages/graphql setup: Setup failure on neo4j @ ${NEO_URL}, cypher: "${cypherCreateDb}", Error: ${error.message}`
+                `\nJest /packages/graphql setup: Setup failure on neo4j @ ${NEO_URL}, cypher: "${cypherCreateDb}", Error: ${error.message}`,
             );
         }
     } finally {

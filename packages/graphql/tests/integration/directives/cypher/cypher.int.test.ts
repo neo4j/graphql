@@ -105,7 +105,7 @@ describe("cypher", () => {
                         {
                             title: movieTitle,
                             name: actorName,
-                        }
+                        },
                     );
 
                     const gqlResult = await graphql({
@@ -176,7 +176,7 @@ describe("cypher", () => {
                         {
                             title: movieTitle,
                             name: actorName,
-                        }
+                        },
                     );
 
                     const gqlResult = await graphql({
@@ -255,7 +255,7 @@ describe("cypher", () => {
                         {
                             title: movieTitle,
                             name: actorName,
-                        }
+                        },
                     );
 
                     const req = createJwtRequest(secret);
@@ -336,7 +336,7 @@ describe("cypher", () => {
                             title2: movieTitle2,
                             title3: movieTitle3,
                             name: actorName,
-                        }
+                        },
                     );
 
                     const gqlResult = await graphql({
@@ -443,7 +443,7 @@ describe("cypher", () => {
                             title,
                             actorName,
                             directorName,
-                        }
+                        },
                     );
 
                     const gqlResult = await graphql({
@@ -532,7 +532,7 @@ describe("cypher", () => {
                         {
                             title: movieTitle,
                             name: actorName,
-                        }
+                        },
                     );
 
                     const gqlResult = await graphql({
@@ -602,7 +602,7 @@ describe("cypher", () => {
                         {
                             title: movieTitle,
                             name: actorName,
-                        }
+                        },
                     );
 
                     const gqlResult = await graphql({
@@ -672,7 +672,7 @@ describe("cypher", () => {
                         {
                             title: movieTitle,
                             name: actorName,
-                        }
+                        },
                     );
 
                     const gqlResult = await graphql({
@@ -742,7 +742,7 @@ describe("cypher", () => {
                     {
                         townId,
                         destinationId,
-                    }
+                    },
                 );
                 await session.close();
             });
@@ -779,7 +779,7 @@ describe("cypher", () => {
                 expect(gqlResultWithDefaultValue.errors).toBeFalsy();
 
                 expect((gqlResultWithDefaultValue?.data as any).townDestinationList).toEqual(
-                    expectedTownDestinationList
+                    expectedTownDestinationList,
                 );
 
                 // Schema with missing value
@@ -788,7 +788,7 @@ describe("cypher", () => {
                 expect(gqlResultWithMissingValue.errors).toBeFalsy();
 
                 expect((gqlResultWithMissingValue?.data as any).townDestinationList).toEqual(
-                    expectedTownDestinationList
+                    expectedTownDestinationList,
                 );
             });
 
@@ -818,7 +818,7 @@ describe("cypher", () => {
                 expect(gqlResultWithDefaultValue.errors).toBeFalsy();
 
                 expect((gqlResultWithDefaultValue?.data as any).townDestinationList).toEqual(
-                    expectedTownDestinationList
+                    expectedTownDestinationList,
                 );
 
                 // Schema with missing value
@@ -827,7 +827,7 @@ describe("cypher", () => {
                 expect(gqlResultWithMissingValue.errors).toBeFalsy();
 
                 expect((gqlResultWithMissingValue?.data as any).townDestinationList).toEqual(
-                    expectedTownDestinationList
+                    expectedTownDestinationList,
                 );
             });
         });
@@ -883,7 +883,7 @@ describe("cypher", () => {
                         CREATE (u:User:${testLabel} {id: "${userId}"})
                         CREATE (u)-[:WROTE]->(p)
                         CREATE (u)-[:WATCHED]->(m)
-                    `
+                    `,
                 );
                 await session.close();
             });

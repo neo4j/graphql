@@ -1652,7 +1652,7 @@ describe("generate", () => {
         await expect(() =>
             generate({
                 ogm,
-            })
+            }),
         ).rejects.toThrow("outFile or noWrite required");
     });
 });

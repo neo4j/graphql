@@ -75,7 +75,7 @@ describe("Advanced Filtering", () => {
                             `
                             CREATE (:${randomType.name} {property: $value})
                         `,
-                            { value }
+                            { value },
                         );
 
                         const query = `
@@ -98,7 +98,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -127,7 +127,7 @@ describe("Advanced Filtering", () => {
                             `
                             CREATE (:${randomType.name} {property: $value})
                         `,
-                            { value: `${value}${value}` }
+                            { value: `${value}${value}` },
                         );
 
                         const query = `
@@ -150,7 +150,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -185,7 +185,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $randomValue1})
                         `,
-                            { value, randomValue1 }
+                            { value, randomValue1 },
                         );
 
                         const query = `
@@ -210,7 +210,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -251,7 +251,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType.name} {property: $randomValue1})
                             CREATE (:${randomType.name} {property: $randomValue2})
                         `,
-                            { value, randomValue1, randomValue2 }
+                            { value, randomValue1, randomValue2 },
                         );
 
                         const query = `
@@ -276,7 +276,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -309,7 +309,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType.name} {property: $superValue})
                             CREATE (:${randomType.name} {property: $superValue})
                         `,
-                            { superValue }
+                            { superValue },
                         );
 
                         const query = `
@@ -334,7 +334,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -370,7 +370,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType.name} {property: $notValue})
                             CREATE (:${randomType.name} {property: $notValue})
                         `,
-                            { value, notValue }
+                            { value, notValue },
                         );
 
                         const query = `
@@ -395,7 +395,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -428,7 +428,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType.name} {property: $superValue})
                             CREATE (:${randomType.name} {property: $superValue})
                         `,
-                            { superValue }
+                            { superValue },
                         );
 
                         const query = `
@@ -455,7 +455,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -491,7 +491,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType.name} {property: $notValue})
                             CREATE (:${randomType.name} {property: $notValue})
                         `,
-                            { value, notValue }
+                            { value, notValue },
                         );
 
                         const query = `
@@ -514,7 +514,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -552,7 +552,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType.name} {property: $notValue})
                             CREATE (:${randomType.name} {property: $superValue})
                         `,
-                            { value, notValue, superValue }
+                            { value, notValue, superValue },
                         );
 
                         const query = `
@@ -575,7 +575,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -613,7 +613,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType.name} {property: $notValue})
                             CREATE (:${randomType.name} {property: $superValue})
                         `,
-                            { value, notValue, superValue }
+                            { value, notValue, superValue },
                         );
 
                         const query = `
@@ -637,7 +637,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -679,7 +679,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${movieType.name} {title: $matrixReloaded})
                             CREATE (:${movieType.name} {title: $matrixRevolutions})
                         `,
-                    { animatrix, matrix, matrixReloaded, matrixRevolutions }
+                    { animatrix, matrix, matrixReloaded, matrixRevolutions },
                 );
 
                 const query = `
@@ -704,7 +704,7 @@ describe("Advanced Filtering", () => {
 
                 expect((gqlResult.data as any)[movieType.plural]).toHaveLength(2);
                 expect((gqlResult.data as any)[movieType.plural]).toEqual(
-                    expect.arrayContaining([{ title: matrixReloaded }, { title: matrixRevolutions }])
+                    expect.arrayContaining([{ title: matrixReloaded }, { title: matrixRevolutions }]),
                 );
             } finally {
                 await session.close();
@@ -749,7 +749,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${movieType.name} {title: $matrixRevolutions})
                             CREATE (:${movieType.name} {title: $matrixResurrections})
                         `,
-                    { matrix, matrixReloaded, matrixRevolutions, matrixResurrections }
+                    { matrix, matrixReloaded, matrixRevolutions, matrixResurrections },
                 );
 
                 const query = `
@@ -778,7 +778,7 @@ describe("Advanced Filtering", () => {
                         { title: matrix },
                         { title: matrixReloaded },
                         { title: matrixResurrections },
-                    ])
+                    ]),
                 );
             } finally {
                 await session.close();
@@ -823,7 +823,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${movieType.name} {title: $matrixReloaded})
                             CREATE (:${movieType.name} {title: $matrixRevolutions})
                         `,
-                    { animatrix, matrix, matrixReloaded, matrixRevolutions }
+                    { animatrix, matrix, matrixReloaded, matrixRevolutions },
                 );
 
                 const query = `
@@ -848,7 +848,7 @@ describe("Advanced Filtering", () => {
 
                 expect((gqlResult.data as any)[movieType.plural]).toHaveLength(3);
                 expect((gqlResult.data as any)[movieType.plural]).toEqual(
-                    expect.arrayContaining([{ title: matrix }, { title: matrixReloaded }, { title: matrixRevolutions }])
+                    expect.arrayContaining([{ title: matrix }, { title: matrixReloaded }, { title: matrixRevolutions }]),
                 );
             } finally {
                 await session.close();
@@ -894,7 +894,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${movieType.name} {title: $matrixResurrections})
 
                         `,
-                    { matrix, matrixReloaded, matrixRevolutions, matrixResurrections }
+                    { matrix, matrixReloaded, matrixRevolutions, matrixResurrections },
                 );
 
                 const query = `
@@ -924,7 +924,7 @@ describe("Advanced Filtering", () => {
                         { title: matrixReloaded },
                         { title: matrixRevolutions },
                         { title: matrixResurrections },
-                    ])
+                    ]),
                 );
             } finally {
                 await session.close();
@@ -970,7 +970,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType.name} {property: $property})
                             CREATE (:${randomType.name} {property: $notProperty})
                         `,
-                            { property, notProperty }
+                            { property, notProperty },
                         );
 
                         const query = `
@@ -994,7 +994,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -1042,7 +1042,7 @@ describe("Advanced Filtering", () => {
                             `
                             CREATE (:${randomType.name} {property: $value})
                         `,
-                            { value }
+                            { value },
                         );
 
                         const query = `
@@ -1066,7 +1066,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -1116,7 +1116,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType.name} {property: $randomValue1})
                             CREATE (:${randomType.name} {property: $randomValue2})
                         `,
-                            { value, randomValue1, randomValue2 }
+                            { value, randomValue1, randomValue2 },
                         );
 
                         const query = `
@@ -1140,7 +1140,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -1175,7 +1175,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $lessThanValue})
                         `,
-                            { value, lessThanValue }
+                            { value, lessThanValue },
                         );
 
                         const query = `
@@ -1199,7 +1199,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -1234,7 +1234,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $lessThanValue})
                         `,
-                            { value, lessThanValue }
+                            { value, lessThanValue },
                         );
 
                         const query = `
@@ -1257,7 +1257,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -1292,7 +1292,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $graterThanValue})
                         `,
-                            { value, graterThanValue }
+                            { value, graterThanValue },
                         );
 
                         const query = `
@@ -1316,7 +1316,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 
@@ -1351,7 +1351,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType.name} {property: $value})
                             CREATE (:${randomType.name} {property: $greaterThan})
                         `,
-                            { value, greaterThan }
+                            { value, greaterThan },
                         );
 
                         const query = `
@@ -1374,7 +1374,7 @@ describe("Advanced Filtering", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
     });
@@ -1400,7 +1400,7 @@ describe("Advanced Filtering", () => {
                     `
                             CREATE (:${randomType.name} {property: $value})
                         `,
-                    { value }
+                    { value },
                 );
 
                 const query = `
@@ -1445,7 +1445,7 @@ describe("Advanced Filtering", () => {
                     `
                             CREATE (:${randomType.name} {property: $value})
                         `,
-                    { value }
+                    { value },
                 );
 
                 const query = `
@@ -1513,7 +1513,7 @@ describe("Advanced Filtering", () => {
                                 CREATE (:${randomType2.name} {id: $randomId})
                                 MERGE (root)-[:IN_GENRE]->(relation)
                             `,
-                        { rootId, relationId, randomId }
+                        { rootId, relationId, randomId },
                     );
 
                     const query = `
@@ -1573,7 +1573,7 @@ describe("Advanced Filtering", () => {
                         `
                             CREATE (movie:Movie {id: $movieId})-[:IN_GENRE]->(:Genre {id:$genreId})
                         `,
-                        { movieId, genreId }
+                        { movieId, genreId },
                     );
 
                     const query = `
@@ -1641,7 +1641,7 @@ describe("Advanced Filtering", () => {
                         `
                             CREATE (movie:Movie {id: $movieId})-[:IN_GENRE {id:$actedInId}]->(:Genre {id:$genreId})
                         `,
-                        { movieId, genreId, actedInId }
+                        { movieId, genreId, actedInId },
                     );
 
                     const query = `
@@ -1708,7 +1708,7 @@ describe("Advanced Filtering", () => {
                         `
                             CREATE (movie:Movie {id: $movieId})-[:IN_GENRE {id:$actedInId}]->(:Genre {id:$genreId})
                         `,
-                        { movieId, genreId, actedInId }
+                        { movieId, genreId, actedInId },
                     );
 
                     const query = `
@@ -1785,7 +1785,7 @@ describe("Advanced Filtering", () => {
                                 MERGE (root1)-[:IN_GENRE]->(relation1)
                                 MERGE (root2)-[:IN_GENRE]->(relation2)
                             `,
-                        { rootId1, rootId2, relationId1, relationId2 }
+                        { rootId1, rootId2, relationId1, relationId2 },
                     );
 
                     const query = `
@@ -1856,7 +1856,7 @@ describe("Advanced Filtering", () => {
                             CREATE (root1:${randomType1.name} {id: $rootId1})-[:IN_GENRE]->(relation1:${randomType2.name} {id: $relationId1})
                             CREATE (root2:${randomType1.name} {id: $rootId2})-[:IN_GENRE]->(relation2:${randomType2.name} {id: $relationId2})
                         `,
-                        { rootId1, rootId2, relationId1, relationId2 }
+                        { rootId1, rootId2, relationId1, relationId2 },
                     );
 
                     const query = `
@@ -1934,7 +1934,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType1.name} {id: $rootId1})-[:IN_GENRE {id: $actedInId}]->(:${randomType2.name} {id: $relationId1})
                             CREATE (:${randomType1.name} {id: $rootId2})-[:IN_GENRE {id: randomUUID()}]->(:${randomType2.name} {id: $relationId2})
                         `,
-                        { rootId1, rootId2, relationId1, relationId2, actedInId }
+                        { rootId1, rootId2, relationId1, relationId2, actedInId },
                     );
 
                     const query = `
@@ -2017,7 +2017,7 @@ describe("Advanced Filtering", () => {
                     MERGE (a1)-[:ACTED_IN]->(m4)<-[:ACTED_IN]-(a2)
                     MERGE (a3)-[:ACTED_IN]->(m4)
                 `,
-                    { movies, actors }
+                    { movies, actors },
                 );
                 schema = await neoSchema.getSchema();
             });
@@ -2461,7 +2461,7 @@ describe("Advanced Filtering", () => {
                             CREATE (:${randomType2.name} {id: $randomId})
                             MERGE (root)-[:IN_GENRE]->(relation)
                         `,
-                    { rootId, relationId, randomId }
+                    { rootId, relationId, randomId },
                 );
 
                 const nullQuery = `
@@ -2552,7 +2552,7 @@ describe("Advanced Filtering", () => {
                         CREATE (:${randomType.name} {id: $id1})
                         CREATE (:${randomType.name} {id: $id2, optional: $optionalValue})
                     `,
-                    { id1, id2, optionalValue }
+                    { id1, id2, optionalValue },
                 );
 
                 // Test NULL checking

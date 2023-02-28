@@ -108,7 +108,7 @@ describe("fragments", () => {
                 seriesRuntime,
                 seriesEpisodes,
                 seriesScreenTime,
-            }
+            },
         );
         await session.close();
     });
@@ -177,7 +177,7 @@ describe("fragments", () => {
         expect(graphqlActors).toHaveLength(1);
         expect(graphqlActors[0].name).toBe(actorName);
         expect(graphqlActors[0].actedIn).toEqual(
-            expect.toIncludeSameMembers([{ title: movieTitle }, { title: seriesTitle }])
+            expect.toIncludeSameMembers([{ title: movieTitle }, { title: seriesTitle }]),
         );
     });
 
@@ -223,7 +223,7 @@ describe("fragments", () => {
             expect.toIncludeSameMembers([
                 { title: movieTitle, runtime: movieRuntime },
                 { title: seriesTitle, runtime: seriesRuntime },
-            ])
+            ]),
         );
     });
 });

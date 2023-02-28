@@ -189,7 +189,7 @@ describe("DateTime", () => {
                    CREATE (m:${randomType.name})
                    SET m.datetime = $nDateTime
                `,
-                    { nDateTime }
+                    { nDateTime },
                 );
 
                 const gqlResult = await graphql({

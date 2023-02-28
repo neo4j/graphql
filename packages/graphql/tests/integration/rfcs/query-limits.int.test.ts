@@ -57,7 +57,7 @@ describe("integration/rfcs/query-limits", () => {
                         UNWIND iterate AS i
                         CREATE (:${randomType.name} {id: randomUUID()})
                     `,
-                    {}
+                    {},
                 );
 
                 const query = `
@@ -116,7 +116,7 @@ describe("integration/rfcs/query-limits", () => {
                         UNWIND iterate AS i
                         MERGE (movie)<-[:ACTED_IN]-(:${randomType2.name} {id: randomUUID()})
                     `,
-                    {}
+                    {},
                 );
 
                 const query = `
@@ -176,7 +176,7 @@ describe("integration/rfcs/query-limits", () => {
                         UNWIND iterate AS i
                         MERGE (movie)<-[:ACTED_IN]-(:${randomType2.name} {id: randomUUID()})
                     `,
-                    {}
+                    {},
                 );
 
                 const query = `

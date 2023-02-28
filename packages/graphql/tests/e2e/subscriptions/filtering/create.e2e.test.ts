@@ -768,7 +768,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "some_movie_wrong1", isFavorite: true });
@@ -789,7 +789,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "some_movie_wrong3", isFavorite: true });
@@ -810,7 +810,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "some_movie_wrong5", similarTitles: ["fight club"] });
@@ -831,7 +831,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "some_movie_wrong7", similarTitles: ["blue bus"] });

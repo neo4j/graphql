@@ -31,7 +31,7 @@ describe("Params", () => {
         });
 
         const query = new Cypher.Create(movieNode).set(
-            [movieNode.property("released"), param1] // Explicitly defines the node property
+            [movieNode.property("released"), param1], // Explicitly defines the node property
         );
 
         const { params } = query.build();

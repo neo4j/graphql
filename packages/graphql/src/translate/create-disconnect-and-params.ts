@@ -62,7 +62,7 @@ function createDisconnectAndParams({
     function createSubqueryContents(
         relatedNode: Node,
         disconnect: any,
-        index: number
+        index: number,
     ): { subquery: string; params: Record<string, any> } {
         const variableName = `${varName}${index}`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
@@ -77,7 +77,7 @@ function createDisconnectAndParams({
         subquery.push(`WITH ${withVars.join(", ")}`);
         subquery.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${label})`);
         const relationship = context.relationships.find(
-            (x) => x.properties === relationField.properties
+            (x) => x.properties === relationField.properties,
         ) as unknown as Relationship;
 
         const whereStrs: string[] = [];
@@ -165,7 +165,7 @@ function createDisconnectAndParams({
 
                 return result;
             },
-            { disconnects: [], params: {} }
+            { disconnects: [], params: {} },
         );
 
         if (preAuth.disconnects.length) {
@@ -173,8 +173,8 @@ function createDisconnectAndParams({
             subquery.push(`WITH ${[...withVars, variableName, relVarName].join(", ")}`);
             subquery.push(
                 `CALL apoc.util.validate(NOT (${preAuth.disconnects.join(
-                    " AND "
-                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                    " AND ",
+                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`,
             );
             params = { ...params, ...preAuth.params };
         }
@@ -212,7 +212,7 @@ function createDisconnectAndParams({
 
         if (context.subscriptionsEnabled) {
             subquery.push(
-                `WITH ${filterMetaVariable(withVars).join(", ")}, ${variableName}, meta + update_meta as meta`
+                `WITH ${filterMetaVariable(withVars).join(", ")}, ${variableName}, meta + update_meta as meta`,
             );
         }
 
@@ -244,7 +244,7 @@ function createDisconnectAndParams({
                     .reduce(
                         (r: Res, [k, v]: [string, any]) => {
                             const relField = relatedNode.relationFields.find((x) =>
-                                k.startsWith(x.fieldName)
+                                k.startsWith(x.fieldName),
                             ) as RelationField;
                             const newRefNodes: Node[] = [];
 
@@ -282,7 +282,7 @@ function createDisconnectAndParams({
 
                             return r;
                         },
-                        { disconnects: [], params: {} }
+                        { disconnects: [], params: {} },
                     );
 
                 subquery.push(reduced.disconnects.join("\n"));
@@ -297,7 +297,7 @@ function createDisconnectAndParams({
                         const onReduced = Object.entries(onDisconnect).reduce(
                             (r: Res, [k, v]: [string, any]) => {
                                 const relField = relatedNode.relationFields.find((x) =>
-                                    k.startsWith(x.fieldName)
+                                    k.startsWith(x.fieldName),
                                 ) as RelationField;
                                 const newRefNodes: Node[] = [];
 
@@ -307,7 +307,7 @@ function createDisconnectAndParams({
                                     });
                                 } else {
                                     newRefNodes.push(
-                                        context.nodes.find((x) => x.name === relField.typeMeta.name) as Node
+                                        context.nodes.find((x) => x.name === relField.typeMeta.name) as Node,
                                     );
                                 }
 
@@ -335,7 +335,7 @@ function createDisconnectAndParams({
 
                                 return r;
                             },
-                            { disconnects: [], params: {} }
+                            { disconnects: [], params: {} },
                         );
 
                         subquery.push(onReduced.disconnects.join("\n"));
@@ -370,7 +370,7 @@ function createDisconnectAndParams({
 
                 return result;
             },
-            { disconnects: [], params: {} }
+            { disconnects: [], params: {} },
         );
 
         if (postAuth.disconnects.length) {
@@ -378,8 +378,8 @@ function createDisconnectAndParams({
             subquery.push(`WITH ${[...withVars, variableName].join(", ")}`);
             subquery.push(
                 `CALL apoc.util.validate(NOT (${postAuth.disconnects.join(
-                    " AND "
-                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                    " AND ",
+                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`,
             );
             params = { ...params, ...postAuth.params };
         }
@@ -426,7 +426,7 @@ function createDisconnectAndParams({
             if (subqueries.length > 0) {
                 if (context.subscriptionsEnabled) {
                     const withStatement = `WITH ${filterMetaVariable(withVars).join(
-                        ", "
+                        ", ",
                     )}, disconnect_meta + meta AS meta`;
                     inner.push(subqueries.join(`\n}\n${withStatement}\nCALL {\n\t`));
                 } else {

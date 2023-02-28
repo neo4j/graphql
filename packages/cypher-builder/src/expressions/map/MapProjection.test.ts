@@ -71,7 +71,7 @@ describe("Map Projection", () => {
         const queryResult = new Cypher.Return([mapProjection, mapVar]).build();
 
         expect(queryResult.cypher).toMatchInlineSnapshot(
-            `"RETURN var0 { .title, .name, namedValue: count(this1) } AS var0"`
+            `"RETURN var0 { .title, .name, namedValue: count(this1) } AS var0"`,
         );
 
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);

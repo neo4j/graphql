@@ -107,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 WITH b
                 MERGE p=(b)-[:HAS_HISTORY]->(:${ServiceLogType} {id: 2})-[:HAS_BUSSING]->(record:${BussingRecordType} {id: 3})-[:BUSSED_ON]->(date:${TimeGraphType} {date:date()})
                 RETURN p;
-                `
+                `,
             );
             bookmarks = session.lastBookmark();
         } finally {
@@ -121,7 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
         const session = await neo4j.getSession();
         try {
             await session.run(
-                `MATCH (b:${BacentaType} {id: 1})-[:HAS_HISTORY]->(s:${ServiceLogType} {id: 2})-[:HAS_BUSSING]->(record:${BussingRecordType} {id: 3})-[:BUSSED_ON]->(date:${TimeGraphType} {date:date()}) DETACH DELETE b,s, record, date`
+                `MATCH (b:${BacentaType} {id: 1})-[:HAS_HISTORY]->(s:${ServiceLogType} {id: 2})-[:HAS_BUSSING]->(record:${BussingRecordType} {id: 3})-[:BUSSED_ON]->(date:${TimeGraphType} {date:date()}) DETACH DELETE b,s, record, date`,
             );
         } finally {
             await session.close();

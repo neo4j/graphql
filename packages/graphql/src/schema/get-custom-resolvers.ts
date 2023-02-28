@@ -39,12 +39,12 @@ function getCustomResolvers(document: DocumentNode): CustomResolvers {
         }
 
         const cypherOnes = (definition.fields || []).filter(
-            (field) => field.directives && field.directives.find((direc) => direc.name.value === "cypher")
+            (field) => field.directives && field.directives.find((direc) => direc.name.value === "cypher"),
         );
         const normalOnes = (definition.fields || []).filter(
             (field) =>
                 (field.directives && !field.directives.find((direc) => direc.name.value === "cypher")) ||
-                !field.directives
+                !field.directives,
         );
 
         if (definition.name.value === "Query") {

@@ -43,7 +43,7 @@ export const GraphQLBigInt = new GraphQLScalarType({
     parseValue(inputValue: unknown) {
         if (typeof inputValue !== "string") {
             throw new GraphQLError(
-                "BigInt values are not JSON serializable. Please pass as a string in variables, or inline in the GraphQL query."
+                "BigInt values are not JSON serializable. Please pass as a string in variables, or inline in the GraphQL query.",
             );
         }
 

@@ -80,7 +80,7 @@ describe("CypherBuilder Merge", () => {
             .onCreate(
                 [node1.property("age"), new Cypher.Param(23)],
                 [node1.property("name"), new Cypher.Param("Keanu")],
-                [relationship.property("screentime"), new Cypher.Param(10)]
+                [relationship.property("screentime"), new Cypher.Param(10)],
             )
             .return([node1.property("title"), "movie"]);
 

@@ -123,7 +123,7 @@ describe("interface relationships", () => {
                 CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
                 CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $seriesTitle })
             `,
-                { actorName, movieTitle, movieRuntime, seriesTitle, seriesScreenTime }
+                { actorName, movieTitle, movieRuntime, seriesTitle, seriesScreenTime },
             );
 
             const gqlResult = await graphql({
@@ -221,7 +221,7 @@ describe("interface relationships", () => {
                 CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
                 CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $seriesTitle })
             `,
-                { actorName1, actorName2, movieTitle, movieRuntime, seriesTitle, seriesScreenTime }
+                { actorName1, actorName2, movieTitle, movieRuntime, seriesTitle, seriesScreenTime },
             );
 
             const gqlResult = await graphql({
@@ -332,7 +332,7 @@ describe("interface relationships", () => {
                 CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
                 CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $seriesTitle })
             `,
-                { actorName1, actorName2, movieTitle, movieRuntime, seriesTitle, seriesScreenTime }
+                { actorName1, actorName2, movieTitle, movieRuntime, seriesTitle, seriesScreenTime },
             );
 
             const gqlResult = await graphql({
@@ -446,7 +446,7 @@ describe("interface relationships", () => {
                 CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
                 CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $seriesTitle })
             `,
-                { actorName1, actorName2, movieTitle, movieRuntime, seriesTitle, seriesScreenTime }
+                { actorName1, actorName2, movieTitle, movieRuntime, seriesTitle, seriesScreenTime },
             );
 
             const gqlResult = await graphql({

@@ -110,7 +110,7 @@ describe("Nested unions", () => {
                     CREATE (:LeadActor {name:$actorName})
                     CREATE (:Series {name:$seriesName})
                 `,
-                { movieTitle, seriesName, actorName }
+                { movieTitle, seriesName, actorName },
             );
 
             const gqlResult = await graphql({
@@ -174,7 +174,7 @@ describe("Nested unions", () => {
                 `
                     CREATE (:Movie {title:$movieTitle})<-[:ACTED_IN]-(:LeadActor {name:$actorName})-[:ACTED_IN]->(:Series {name:$seriesName})
                 `,
-                { movieTitle, seriesName, actorName }
+                { movieTitle, seriesName, actorName },
             );
 
             const gqlResult = await graphql({
@@ -259,7 +259,7 @@ describe("Nested unions", () => {
                 `
                     CREATE (:Movie {title:$movieTitle})<-[:ACTED_IN]-(:LeadActor {name:$actorName})-[:ACTED_IN]->(:Series {name:$seriesName})
                 `,
-                { movieTitle, seriesName, actorName }
+                { movieTitle, seriesName, actorName },
             );
 
             const gqlResult = await graphql({
@@ -360,7 +360,7 @@ describe("Nested unions", () => {
                 `
                     CREATE (:Movie {title:$movieTitle})
                 `,
-                { movieTitle, seriesName, actorName }
+                { movieTitle, seriesName, actorName },
             );
 
             const gqlResult = await graphql({

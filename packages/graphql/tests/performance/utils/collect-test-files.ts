@@ -55,7 +55,7 @@ export async function collectTests(rootPath: string): Promise<Array<Performance.
                 };
             });
             return [...queries, ...mutations];
-        })
+        }),
     );
 
     const tests = testFilesData.flat().filter((t) => !t.name.match(skipRegex));
@@ -89,7 +89,7 @@ export async function collectCypherTests(rootPath: string): Promise<Array<Perfor
                     type: "cypher",
                 };
             });
-        })
+        }),
     );
 
     const tests = testFilesData.flat().filter((t) => !t.name.match(skipRegex));
@@ -114,7 +114,7 @@ async function filesFromDir(startPath: string, filter: string): Promise<string[]
                 return [filename];
             }
             return [];
-        })
+        }),
     );
     return filenames.flat();
 }

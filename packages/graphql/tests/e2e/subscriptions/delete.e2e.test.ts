@@ -153,7 +153,7 @@ describe("Delete Subscription", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
         await createActor("Keanu");
         await deleteActor("Keanu");

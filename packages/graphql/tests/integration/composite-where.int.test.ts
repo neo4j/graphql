@@ -104,7 +104,7 @@ describe("composite-where", () => {
                         CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName1})
                         CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName2})
                     `,
-                    { movieId, screenTime, actorName1, actorName2 }
+                    { movieId, screenTime, actorName1, actorName2 },
                 );
 
                 const gqlResult = await graphql({
@@ -193,7 +193,7 @@ describe("composite-where", () => {
                         CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName1})
                         CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName2})
                     `,
-                    { movieId, screenTime, actorName1, actorName2 }
+                    { movieId, screenTime, actorName1, actorName2 },
                 );
 
                 const gqlResult = await graphql({

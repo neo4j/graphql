@@ -293,7 +293,7 @@ describe("getCustomResolverMeta", () => {
         const resolvers = {};
 
         expect(() => getCustomResolverMeta(field, object, true, resolvers)).toThrow(
-            `Custom resolver for ${fieldName} has not been provided`
+            `Custom resolver for ${fieldName} has not been provided`,
         );
     });
     test("Check throws error if customResolver defined on interface", () => {
@@ -347,7 +347,7 @@ describe("getCustomResolverMeta", () => {
         };
 
         expect(() => getCustomResolverMeta(field, object, true, resolvers)).toThrow(
-            `Custom resolver for ${fieldName} has not been provided`
+            `Custom resolver for ${fieldName} has not been provided`,
         );
     });
 

@@ -98,7 +98,7 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
                 { name: "locations", url: locationsUrl },
                 { name: "reviews", url: reviewsUrl },
             ],
-            4008
+            4008,
         );
 
         gatewayUrl = await gatewayServer.start();
@@ -108,7 +108,7 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
                 CREATE (l:${Location} { id: "1", description: "description", name: "name", overallRating: 5.5, photo: "photo" })
                 CREATE (l)-[:HAS_REVIEW]->(:${Review} { id: "1", comment: "Good", rating: 10 })
                 CREATE (l)-[:HAS_REVIEW]->(:${Review} { id: "2", comment: "Bad", rating: 1 })
-            `
+            `,
         );
     });
 

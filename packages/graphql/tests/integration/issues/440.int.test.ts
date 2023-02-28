@@ -61,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             `CREATE (v:Video {id: $videoID}),
                 (v)-[:IS_CATEGORIZED_AS]->(:Category {id: $c0}),
                 (v)-[:IS_CATEGORIZED_AS]->(:Category {id: $c1})`,
-            { videoID, c0: catIDs[0], c1: catIDs[1] }
+            { videoID, c0: catIDs[0], c1: catIDs[1] },
         );
 
         const variableValues = {
@@ -128,7 +128,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             `CREATE (v:Video {id: $videoID}),
                 (v)-[:IS_CATEGORIZED_AS]->(:Category {id: $c0}),
                 (v)-[:IS_CATEGORIZED_AS]->(:Category {id: $c1})`,
-            { videoID, c0: catIDs[0], c1: catIDs[1] }
+            { videoID, c0: catIDs[0], c1: catIDs[1] },
         );
 
         const variableValues = {
@@ -201,7 +201,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             `CREATE (v:Video {id: $videoID}),
                 (v)-[:IS_CATEGORIZED_AS]->(:Category {id: $c0}),
                 (v)-[:IS_CATEGORIZED_AS]->(:Category {id: $c1})`,
-            { videoID, c0: catIDs[0], c1: catIDs[1] }
+            { videoID, c0: catIDs[0], c1: catIDs[1] },
         );
 
         const variableValues = {

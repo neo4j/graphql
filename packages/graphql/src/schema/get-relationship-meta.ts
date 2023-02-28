@@ -29,7 +29,7 @@ type RelationshipMeta = {
 
 function getRelationshipMeta(
     field: FieldDefinitionNode,
-    interfaceField?: FieldDefinitionNode
+    interfaceField?: FieldDefinitionNode,
 ): RelationshipMeta | undefined {
     const directive =
         field.directives?.find((x) => x.name.value === "relationship") ||

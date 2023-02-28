@@ -67,7 +67,7 @@ export const Editor = ({ schema }: Props) => {
         debounce((key, value) => {
             Storage.store(key, value);
         }, DEBOUNCE_TIMEOUT),
-        []
+        [],
     );
 
     const formatTheCode = (): void => {
@@ -108,7 +108,7 @@ export const Editor = ({ schema }: Props) => {
                 setLoading(false);
             }, 500);
         },
-        [query, setOutput, setLoading, variableValues]
+        [query, setOutput, setLoading, variableValues],
     );
 
     useEffect(() => {

@@ -69,7 +69,7 @@ describe("aggregations-top_level-duration", () => {
                     testString,
                     minDuration,
                     maxDuration,
-                }
+                },
             );
 
             const query = `
@@ -136,7 +136,7 @@ describe("aggregations-top_level-duration", () => {
                     testString,
                     minDuration,
                     maxDuration,
-                }
+                },
             );
 
             const query = `
@@ -203,7 +203,7 @@ describe("aggregations-top_level-duration", () => {
                     testString,
                     minDuration,
                     maxDuration,
-                }
+                },
             );
 
             const query = `

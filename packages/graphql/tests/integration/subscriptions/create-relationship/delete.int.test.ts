@@ -212,7 +212,7 @@ describe("Subscriptions connect with delete", () => {
                     fromTypename: typePerson.name,
                     toTypename: typeMovie.name,
                 },
-            ])
+            ]),
         );
     });
 });

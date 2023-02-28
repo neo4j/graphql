@@ -157,7 +157,7 @@ export function translateCypherDirectiveProjection({
             ...r,
             [argument.name.value]: null,
         }),
-        {}
+        {},
     );
     const extraArgs = { ...nullArgumentValues, ...field.args };
 
@@ -188,7 +188,7 @@ export function translateCypherDirectiveProjection({
     });
 
     const callSt = new Cypher.Call(
-        Cypher.concat(customCypherClause, unionExpression, ...subqueries, returnClause)
+        Cypher.concat(customCypherClause, unionExpression, ...subqueries, returnClause),
     ).innerWith(new Cypher.NamedVariable(chainStr));
 
     const sortInput = (context.resolveTree.args.sort ??
@@ -239,7 +239,7 @@ function createCypherDirectiveApocProcedure({
     const apocClause = new Cypher.apoc.RunFirstColumn(
         cypherField.statement,
         apocParamsMap,
-        Boolean(expectMultipleValues)
+        Boolean(expectMultipleValues),
     );
     return apocClause;
 }

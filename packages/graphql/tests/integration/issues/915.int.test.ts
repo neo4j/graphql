@@ -50,7 +50,7 @@ const PositiveInt = new GraphQLScalarType({
     parseValue(inputValue: unknown) {
         if (typeof inputValue !== "string" && typeof inputValue !== "number") {
             throw new GraphQLError(
-                "PositiveInt values are not JSON serializable. Please pass as a string in variables, or inline in the GraphQL query."
+                "PositiveInt values are not JSON serializable. Please pass as a string in variables, or inline in the GraphQL query.",
             );
         }
 
@@ -153,7 +153,7 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
                 driver,
                 driverConfig: { database: databaseName },
                 options: { create: true },
-            })
+            }),
         ).resolves.not.toThrow();
 
         const session = driver.session({ database: databaseName });
@@ -168,7 +168,7 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
                     .map((record) => {
                         return record.toObject();
                     })
-                    .filter((record) => record.labelsOrTypes.includes("Order"))
+                    .filter((record) => record.labelsOrTypes.includes("Order")),
             ).toHaveLength(1);
         } finally {
             await session.close();

@@ -77,8 +77,8 @@ describe("Global authentication - Auth JWT plugin", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as unknown as Neo4jGraphQLAuthenticationError[]).some((el) =>
-                el.message.includes("Unauthenticated")
-            )
+                el.message.includes("Unauthenticated"),
+            ),
         ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
     });
@@ -106,8 +106,8 @@ describe("Global authentication - Auth JWT plugin", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as unknown as Neo4jGraphQLAuthenticationError[]).some((el) =>
-                el.message.includes("Unauthenticated")
-            )
+                el.message.includes("Unauthenticated"),
+            ),
         ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
     });
@@ -135,8 +135,8 @@ describe("Global authentication - Auth JWT plugin", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as unknown as Neo4jGraphQLAuthenticationError[]).some((el) =>
-                el.message.includes("Unauthenticated")
-            )
+                el.message.includes("Unauthenticated"),
+            ),
         ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
     });
@@ -169,8 +169,8 @@ describe("Global authentication - Auth JWT plugin", () => {
         expect(initError).toBeDefined();
         expect(
             (initError as Error)?.message.includes(
-                "Neo4jGraphQLAuthJWTPlugin, noVerify and globalAuthentication can not both be enabled simultaneously."
-            )
+                "Neo4jGraphQLAuthJWTPlugin, noVerify and globalAuthentication can not both be enabled simultaneously.",
+            ),
         ).toBeTruthy();
     });
 

@@ -51,7 +51,7 @@ export abstract class WithWhere extends ClauseMixin {
 
     private updateOrCreateWhereClause(
         input: Predicate | VariableWithProperties,
-        params?: Record<string, VariableLike>
+        params?: Record<string, VariableLike>,
     ): void {
         const whereInput = this.createWhereInput(input, params);
         if (!whereInput) return;
@@ -66,7 +66,7 @@ export abstract class WithWhere extends ClauseMixin {
 
     private createWhereInput(
         input: Predicate | Reference | PropertyRef,
-        params: Record<string, VariableLike> | undefined
+        params: Record<string, VariableLike> | undefined,
     ): Predicate | undefined {
         if (input instanceof Reference || input instanceof PropertyRef) {
             const generatedOp = this.variableAndObjectToOperation(input, params || {});
@@ -78,7 +78,7 @@ export abstract class WithWhere extends ClauseMixin {
     /** Transforms a simple input into an operation sub tree */
     private variableAndObjectToOperation(
         target: Reference | PropertyRef,
-        params: Record<string, VariableLike>
+        params: Record<string, VariableLike>,
     ): BooleanOp | ComparisonOp | undefined {
         let operation: BooleanOp | ComparisonOp | undefined;
         for (const [key, value] of Object.entries(params)) {

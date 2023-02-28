@@ -99,7 +99,7 @@ describe("369", () => {
                     datoUUID,
                     datoToUUID,
                     relUUID,
-                }
+                },
             );
 
             const result = await graphql({
@@ -185,7 +185,7 @@ describe("369", () => {
                     datoUUID,
                     datoToUUID,
                     relUUID,
-                }
+                },
             );
 
             const result = await graphql({

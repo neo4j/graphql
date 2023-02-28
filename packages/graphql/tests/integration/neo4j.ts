@@ -68,7 +68,7 @@ class Neo4j {
             if (
                 error.message.includes("Could not perform discovery. No routing servers available.") ||
                 error.message.includes(
-                    `Unable to get a routing table for database '${INT_TEST_DB_NAME}' because this database does not exist`
+                    `Unable to get a routing table for database '${INT_TEST_DB_NAME}' because this database does not exist`,
                 ) ||
                 error.message.includes(`Database does not exist. Database name: '${INT_TEST_DB_NAME}'`)
             ) {
@@ -76,7 +76,7 @@ class Neo4j {
             } else {
                 await driver.close();
                 throw new Error(
-                    `Could not connect to neo4j @ ${NEO_URL}, database ${INT_TEST_DB_NAME}, Error: ${error.message}`
+                    `Could not connect to neo4j @ ${NEO_URL}, database ${INT_TEST_DB_NAME}, Error: ${error.message}`,
                 );
             }
         }
@@ -112,7 +112,7 @@ class Neo4j {
         return {
             ...(options || {}),
             driver: this.driver,
-            driverConfig: { database }
+            driverConfig: { database },
         };
     }
 
@@ -121,7 +121,7 @@ class Neo4j {
         return {
             ...(options || {}),
             driver: this.driver,
-            driverConfig: { database, bookmarks }
+            driverConfig: { database, bookmarks },
         };
     }
 }

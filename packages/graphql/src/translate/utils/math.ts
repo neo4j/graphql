@@ -93,7 +93,7 @@ export function buildMathStatements(
     mathDescriptor: MathDescriptor,
     scope: string,
     withVars: string[],
-    param: string
+    param: string,
 ): Array<string> {
     if (mathDescriptor.operationSymbol === "/" && mathDescriptor.value === 0) {
         throw new Error("Division by zero is not supported");
@@ -105,7 +105,7 @@ export function buildMathStatements(
     statements.push(`WITH ${scope}`);
     // Raise for operations with NAN
     statements.push(
-        `CALL apoc.util.validate(${scope}.${mathDescriptor.dbName} IS NULL, 'Cannot %s %s to Nan', ["${mathDescriptor.operationName}", $${param}])`
+        `CALL apoc.util.validate(${scope}.${mathDescriptor.dbName} IS NULL, 'Cannot %s %s to Nan', ["${mathDescriptor.operationName}", $${param}])`,
     );
     const bitSize = mathDescriptor.graphQLType === "Int" ? 32 : 64;
     // Avoid overflows, for 64 bit overflows, a long overflow is raised anyway by Neo4j
@@ -114,16 +114,16 @@ export function buildMathStatements(
             bitSize - 1
         }-1, 'Overflow: Value returned from operator %s is larger than %s bit', ["${
             mathDescriptor.operationName
-        }", "${bitSize}"])`
+        }", "${bitSize}"])`,
     );
     // Avoid type coercion where dividing an integer would result in a float value
     if (mathDescriptor.graphQLType === "Int" || mathDescriptor.graphQLType === "BigInt") {
         statements.push(
-            `CALL apoc.util.validate((${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}) % 1 <> 0, 'Type Mismatch: Value returned from operator %s does not match: %s', ["${mathDescriptor.operationName}", "${mathDescriptor.graphQLType}"])`
+            `CALL apoc.util.validate((${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}) % 1 <> 0, 'Type Mismatch: Value returned from operator %s does not match: %s', ["${mathDescriptor.operationName}", "${mathDescriptor.graphQLType}"])`,
         );
     }
     statements.push(
-        `SET ${scope}.${mathDescriptor.dbName} = ${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}`
+        `SET ${scope}.${mathDescriptor.dbName} = ${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}`,
     );
     statements.push(`RETURN ${scope} as ${scope}_${mathDescriptor.dbName}_${mathDescriptor.operationName}`);
     statements.push(`}`);

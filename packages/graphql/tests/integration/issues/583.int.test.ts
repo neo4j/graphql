@@ -109,7 +109,7 @@ describe("583", () => {
                 series,
                 movie,
                 shortFilm,
-            }
+            },
         );
         bookmarks = session.lastBookmark();
         await session.close();

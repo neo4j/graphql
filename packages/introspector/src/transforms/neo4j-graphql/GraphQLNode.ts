@@ -52,7 +52,7 @@ export class GraphQLNode {
         typeRow.push("{");
 
         innerParts = innerParts.concat(
-            this.fields.sort((a, b) => (a.name > b.name ? 1 : -1)).map((field) => field.toString())
+            this.fields.sort((a, b) => (a.name > b.name ? 1 : -1)).map((field) => field.toString()),
         );
 
         parts.push(typeRow.join(" "));

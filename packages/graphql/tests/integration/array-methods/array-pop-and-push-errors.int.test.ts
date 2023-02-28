@@ -101,7 +101,7 @@ describe("array-pop-and-push", () => {
 
         expect(gqlResult.errors).toBeDefined();
         expect(
-            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("moreTags cannot be NULL"))
+            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("moreTags cannot be NULL")),
         ).toBeTruthy();
 
         expect(gqlResult.data).toBeNull();
@@ -205,8 +205,8 @@ describe("array-pop-and-push", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("String cannot represent a non string value")
-            )
+                el.message.includes("String cannot represent a non string value"),
+            ),
         ).toBeTruthy();
 
         expect(gqlResult.data).toBeUndefined();

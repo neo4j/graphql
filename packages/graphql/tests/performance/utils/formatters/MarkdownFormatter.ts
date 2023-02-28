@@ -22,7 +22,7 @@ import type * as Performance from "../../types";
 export class MarkdownFormatter {
     public format(
         results: Array<Performance.TestDisplayData>,
-        oldResults: Record<string, Performance.TestDisplayData> | undefined
+        oldResults: Record<string, Performance.TestDisplayData> | undefined,
     ): string {
         const { table: diffTable, rows: diffRows } = this.createTable(results, oldResults || {}, true);
         const { table: nonDiffTable } = this.createTable(results, oldResults || {}, false);
@@ -54,7 +54,7 @@ ${nonDiffTable}
     private createTable(
         data: Performance.TestDisplayData[],
         comparisonData: Record<string, Performance.TestDisplayData>,
-        diffOnly: boolean
+        diffOnly: boolean,
     ): { table: string; rows: number } {
         let table = "";
         let rows = 0;

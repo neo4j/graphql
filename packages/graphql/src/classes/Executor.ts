@@ -197,7 +197,7 @@ export class Executor {
         query: string,
         parameters: unknown,
         defaultAccessMode: string,
-        session: Session
+        session: Session,
     ): Promise<QueryResult> {
         const transactionType = `${defaultAccessMode.toLowerCase()}Transaction`;
         const result = await session[transactionType]((transaction: Transaction) => {
@@ -216,7 +216,7 @@ export class Executor {
 
         debug(
             "%s",
-            `About to execute Cypher:\nCypher:\n${queryToRun}\nParams:\n${JSON.stringify(parametersToRun, null, 2)}`
+            `About to execute Cypher:\nCypher:\n${queryToRun}\nParams:\n${JSON.stringify(parametersToRun, null, 2)}`,
         );
 
         return transaction.run(queryToRun, parametersToRun);

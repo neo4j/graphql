@@ -288,7 +288,7 @@ describe("interface relationships", () => {
                     typename: "Actor",
                     timestamp: expect.any(Number),
                 },
-            ])
+            ]),
         );
     });
 });

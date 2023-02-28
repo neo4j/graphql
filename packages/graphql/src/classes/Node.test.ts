@@ -390,7 +390,7 @@ describe("Node", () => {
                 }).instance();
 
                 expect(node.rootTypeFieldNames).toStrictEqual(rootTypeFieldNames);
-            }
+            },
         );
     });
 
@@ -481,7 +481,7 @@ describe("Node", () => {
                 }).instance();
 
                 expect(node.mutationResponseTypeNames).toStrictEqual(mutationResponseTypeNames);
-            }
+            },
         );
 
         test.each<[string, MutationResponseTypeNames]>([
@@ -543,7 +543,7 @@ describe("Node", () => {
                 }).instance();
 
                 expect(node.mutationResponseTypeNames).toStrictEqual(mutationResponseTypeNames);
-            }
+            },
         );
     });
 
@@ -667,7 +667,7 @@ describe("Node", () => {
                 }).instance();
 
                 expect(node.subscriptionEventTypeNames).toStrictEqual(subscriptionEventTypeNames);
-            }
+            },
         );
     });
 
@@ -791,7 +791,7 @@ describe("Node", () => {
                 }).instance();
 
                 expect(node.subscriptionEventPayloadFieldNames).toStrictEqual(subscriptionEventPayloadFieldNames);
-            }
+            },
         );
     });
 

@@ -63,7 +63,7 @@ describe("aggregations-top_level-id", () => {
                 `,
                 {
                     id,
-                }
+                },
             );
 
             const query = `
@@ -125,7 +125,7 @@ describe("aggregations-top_level-id", () => {
                 `,
                 {
                     id,
-                }
+                },
             );
 
             const query = `
@@ -187,7 +187,7 @@ describe("aggregations-top_level-id", () => {
                 `,
                 {
                     id,
-                }
+                },
             );
 
             const query = `

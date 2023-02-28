@@ -30,7 +30,7 @@ import type { Unique } from "../../types";
 function getUniqueMeta(
     directives: DirectiveNode[],
     type: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
-    fieldName: string
+    fieldName: string,
 ): Unique | undefined {
     const uniqueDirective = directives.find((x) => x.name.value === "unique");
 

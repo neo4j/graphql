@@ -157,7 +157,7 @@ export default async function unwindCreate({
 
 function generateCreateReturnStatementCypher(
     projection: Cypher.Expr | undefined,
-    subscriptionsEnabled: boolean
+    subscriptionsEnabled: boolean,
 ): Cypher.Expr {
     return new Cypher.RawCypher((env: Cypher.Environment) => {
         const statements: string[] = [];

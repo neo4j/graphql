@@ -46,7 +46,7 @@ export const SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
 export const NANOSECONDS_PER_SECOND = 1000000000;
 
 export const parseDuration = (
-    value: string
+    value: string,
 ): {
     months: number;
     days: number;
@@ -100,7 +100,7 @@ export const parseDuration = (
     const splitSeconds = splitComponent(seconds);
     // Total seconds by adding splits of hour minute second
     const [wholeSeconds, remainderSeconds] = splitHoursInSeconds.map(
-        (p, i) => p + splitMinutesInSeconds[i] + splitSeconds[i]
+        (p, i) => p + splitMinutesInSeconds[i] + splitSeconds[i],
     );
 
     // Calculate nanoseconds based off of remainder of seconds

@@ -61,7 +61,7 @@ export class CallbackBucket {
                 }
 
                 params[cb.paramName] = param;
-            })
+            }),
         );
 
         return { cypher, params };

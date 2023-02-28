@@ -41,7 +41,7 @@ export function getAliasedResolveTreeByFieldName({
     selection: Record<string, ResolveTree>;
 }): ResolveTree | undefined {
     return Object.values(selection).find(
-        (resolveTree) => resolveTree.name === fieldName && resolveTree.alias !== fieldName
+        (resolveTree) => resolveTree.name === fieldName && resolveTree.alias !== fieldName,
     );
 }
 

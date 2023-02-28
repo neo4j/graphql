@@ -57,8 +57,8 @@ export const fulltextDirective = new GraphQLDirective({
                                 type: GraphQLString,
                             },
                         },
-                    })
-                )
+                    }),
+                ),
             ),
         },
     },

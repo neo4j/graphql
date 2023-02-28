@@ -55,7 +55,7 @@ describe("RunFirstColumn", () => {
         topQuery.return(
             new Cypher.Map({
                 result: apocCall,
-            })
+            }),
         );
 
         const cypherResult = topQuery.build();
@@ -86,7 +86,7 @@ describe("RunFirstColumn", () => {
             new MapExpr({
                 releasedParam,
                 n: node,
-            })
+            }),
         );
 
         const testQuery = new TestClause(apocCall);
@@ -94,7 +94,7 @@ describe("RunFirstColumn", () => {
         const cypherResult = testQuery.build();
 
         expect(cypherResult.cypher).toMatchInlineSnapshot(
-            `"apoc.cypher.runFirstColumnMany(\\"MATCH (n) RETURN n\\", { releasedParam: $param0, n: this0 })"`
+            `"apoc.cypher.runFirstColumnMany(\\"MATCH (n) RETURN n\\", { releasedParam: $param0, n: this0 })"`,
         );
         expect(cypherResult.params).toMatchInlineSnapshot(`
             Object {

@@ -52,7 +52,7 @@ describe("parseFulltextDirective", () => {
                 directive,
                 definition,
                 nodeFields,
-            })
+            }),
         ).toThrow("Node 'Movie' @fulltext index contains duplicate name 'MyIndex'");
     });
 
@@ -82,9 +82,9 @@ describe("parseFulltextDirective", () => {
                 directive,
                 definition,
                 nodeFields,
-            })
+            }),
         ).toThrow(
-            "Node 'Movie' @fulltext index contains invalid index 'MyIndex' cannot use find String or ID field 'title'"
+            "Node 'Movie' @fulltext index contains invalid index 'MyIndex' cannot use find String or ID field 'title'",
         );
     });
 

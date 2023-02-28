@@ -58,7 +58,7 @@ export const Login = () => {
                 setLoading(false);
             }
         },
-        [url, username]
+        [url, username],
     );
 
     const WarningToolTip = ({ text }: { text: React.ReactNode }): JSX.Element => {

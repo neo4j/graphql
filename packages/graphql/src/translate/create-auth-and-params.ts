@@ -188,7 +188,7 @@ function createSubPredicate({
     if (!skipIsAuthenticated && (authRule.isAuthenticated === true || authRule.isAuthenticated === false)) {
         const authenticatedPredicate = createAuthenticatedPredicate(
             authRule.isAuthenticated,
-            authParam.property("isAuthenticated")
+            authParam.property("isAuthenticated"),
         );
         thisPredicates.push(authenticatedPredicate);
     }
@@ -430,7 +430,7 @@ function createRelationshipPredicate({
         predicateFunction = Cypher.any(
             targetNodeRef,
             new Cypher.PatternComprehension(innerPattern, targetNodeRef),
-            authPredicate
+            authPredicate,
         );
     } else {
         if (!context.plugins?.auth) {
@@ -439,7 +439,7 @@ function createRelationshipPredicate({
         predicateFunction = Cypher[context.plugins?.auth?.bindPredicate](
             targetNodeRef,
             new Cypher.PatternComprehension(innerPattern, targetNodeRef),
-            authPredicate
+            authPredicate,
         );
     }
 
@@ -450,7 +450,7 @@ function createRelationshipPredicate({
 
 function createRolesPredicate(
     roles: string[],
-    rolesParam: Cypher.Param | Cypher.PropertyRef
+    rolesParam: Cypher.Param | Cypher.PropertyRef,
 ): Cypher.PredicateFunction {
     const roleVar = new Cypher.Variable();
     const rolesList = new Cypher.Literal(roles);
@@ -464,7 +464,7 @@ function createRolesPredicate(
 
 function createAuthenticatedPredicate(
     authenticated: boolean,
-    authenticatedParam: Cypher.Variable | Cypher.PropertyRef
+    authenticatedParam: Cypher.Variable | Cypher.PropertyRef,
 ): Cypher.Predicate {
     const authenticatedPredicate = Cypher.not(Cypher.eq(authenticatedParam, new Cypher.Literal(authenticated)));
 

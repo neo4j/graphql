@@ -82,7 +82,7 @@ export async function translateQuery(
         variableValues?: Record<string, any>;
         neo4jVersion?: string;
         contextValues?: Record<string, any>;
-    }
+    },
 ): Promise<{ cypher: string; params: Record<string, any> }> {
     const driverBuilder = new DriverBuilder();
     const neo4jDatabaseInfo = new Neo4jDatabaseInfo(options?.neo4jVersion ?? "4.3");
@@ -134,7 +134,7 @@ export async function translateQuery(
         } catch (e) {
             if (e instanceof Neo4jError) {
                 throw new Error(
-                    `${e.message}\n\n${cypher as string}\n\n${formatParams(params as Record<string, any>)}`
+                    `${e.message}\n\n${cypher as string}\n\n${formatParams(params as Record<string, any>)}`,
                 );
             }
 

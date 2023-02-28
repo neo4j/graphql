@@ -65,7 +65,7 @@ describe("aggregations-where-node-bigint", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -133,7 +133,7 @@ describe("aggregations-where-node-bigint", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: ${someBigInt}})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -198,7 +198,7 @@ describe("aggregations-where-node-bigint", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -265,7 +265,7 @@ describe("aggregations-where-node-bigint", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -330,7 +330,7 @@ describe("aggregations-where-node-bigint", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `

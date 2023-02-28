@@ -63,7 +63,7 @@ describe("aggregations-top_level-float", () => {
                 `,
                 {
                     testString,
-                }
+                },
             );
 
             const query = `
@@ -125,7 +125,7 @@ describe("aggregations-top_level-float", () => {
                 `,
                 {
                     testString,
-                }
+                },
             );
 
             const query = `
@@ -187,7 +187,7 @@ describe("aggregations-top_level-float", () => {
                 `,
                 {
                     testString,
-                }
+                },
             );
 
             const query = `
@@ -249,7 +249,7 @@ describe("aggregations-top_level-float", () => {
                 `,
                 {
                     testString,
-                }
+                },
             );
 
             const query = `
@@ -311,7 +311,7 @@ describe("aggregations-top_level-float", () => {
                 `,
                 {
                     testString,
-                }
+                },
             );
 
             const query = `

@@ -102,7 +102,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 driver,
                 driverConfig: { database: databaseName },
                 options: { create: true },
-            })
+            }),
         ).resolves.not.toThrow();
 
         const session = driver.session({ database: databaseName });
@@ -117,7 +117,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                     .map((record) => {
                         return record.toObject();
                     })
-                    .filter((record) => record.labelsOrTypes.includes("Book"))
+                    .filter((record) => record.labelsOrTypes.includes("Book")),
             ).toHaveLength(1);
         } finally {
             await session.close();
@@ -191,7 +191,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await neoSchema.getSchema();
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } }),
             ).rejects.toThrow(`Missing constraint for ${type.name}.isbn`);
         });
 
@@ -215,7 +215,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await neoSchema.getSchema();
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } }),
             ).rejects.toThrow(`Missing constraint for ${type.name}.internationalStandardBookNumber`);
         });
 
@@ -251,7 +251,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             }
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } }),
             ).resolves.not.toThrow();
         });
 
@@ -287,7 +287,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             }
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } }),
             ).resolves.not.toThrow();
         });
 
@@ -315,7 +315,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
-                })
+                }),
             ).resolves.not.toThrow();
 
             const session = driver.session({ database: databaseName });
@@ -330,7 +330,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                         .map((record) => {
                             return record.toObject();
                         })
-                        .filter((record) => record.labelsOrTypes.includes(type.name))
+                        .filter((record) => record.labelsOrTypes.includes(type.name)),
                 ).toHaveLength(1);
             } finally {
                 await session.close();
@@ -361,7 +361,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
-                })
+                }),
             ).resolves.not.toThrow();
 
             const session = driver.session({ database: databaseName });
@@ -379,8 +379,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                         .filter(
                             (record) =>
                                 record.labelsOrTypes.includes(type.name) &&
-                                record.properties.includes("internationalStandardBookNumber")
-                        )
+                                record.properties.includes("internationalStandardBookNumber"),
+                        ),
                 ).toHaveLength(1);
             } finally {
                 await session.close();
@@ -423,7 +423,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                     neoSchema.assertIndexesAndConstraints({
                         driver,
                         driverConfig: { database: databaseName },
-                    })
+                    }),
                 ).resolves.not.toThrow();
             } finally {
                 await session.close();
@@ -468,7 +468,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                         driver,
                         driverConfig: { database: databaseName },
                         options: { create: true },
-                    })
+                    }),
                 ).resolves.not.toThrow();
 
                 const dbConstraintsResult = (await session.run(showConstraintsCypher)).records.map((record) => {
@@ -477,15 +477,15 @@ describe("assertIndexesAndConstraints/unique", () => {
 
                 expect(
                     dbConstraintsResult.filter(
-                        (record) => record.labelsOrTypes.includes(baseType.name) && record.properties.includes("title")
-                    )
+                        (record) => record.labelsOrTypes.includes(baseType.name) && record.properties.includes("title"),
+                    ),
                 ).toHaveLength(0);
 
                 expect(
                     dbConstraintsResult.filter(
                         (record) =>
-                            record.labelsOrTypes.includes(additionalType.name) && record.properties.includes("title")
-                    )
+                            record.labelsOrTypes.includes(additionalType.name) && record.properties.includes("title"),
+                    ),
                 ).toHaveLength(1);
             } finally {
                 await session.close();
@@ -716,7 +716,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await neoSchema.getSchema();
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } }),
             ).rejects.toThrow(`Missing constraint for ${type.name}.id`);
         });
 
@@ -740,7 +740,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await neoSchema.getSchema();
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } }),
             ).rejects.toThrow(`Missing constraint for ${type.name}.identifier`);
         });
 
@@ -764,7 +764,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await neoSchema.getSchema();
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } }),
             ).resolves.not.toThrow();
         });
 
@@ -788,7 +788,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await neoSchema.getSchema();
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } }),
             ).resolves.not.toThrow();
         });
 
@@ -824,7 +824,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             }
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } }),
             ).resolves.not.toThrow();
         });
 
@@ -860,7 +860,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             }
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } }),
             ).resolves.not.toThrow();
         });
 
@@ -888,7 +888,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
-                })
+                }),
             ).resolves.not.toThrow();
 
             const session = driver.session({ database: databaseName });
@@ -903,7 +903,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                         .map((record) => {
                             return record.toObject();
                         })
-                        .filter((record) => record.labelsOrTypes.includes(type.name))
+                        .filter((record) => record.labelsOrTypes.includes(type.name)),
                 ).toHaveLength(1);
             } finally {
                 await session.close();
@@ -934,7 +934,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
-                })
+                }),
             ).resolves.not.toThrow();
 
             const session = driver.session({ database: databaseName });
@@ -951,8 +951,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                         })
                         .filter(
                             (record) =>
-                                record.labelsOrTypes.includes(type.name) && record.properties.includes("identifier")
-                        )
+                                record.labelsOrTypes.includes(type.name) && record.properties.includes("identifier"),
+                        ),
                 ).toHaveLength(1);
             } finally {
                 await session.close();
@@ -983,7 +983,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
-                })
+                }),
             ).resolves.not.toThrow();
 
             const session = driver.session({ database: databaseName });
@@ -998,7 +998,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                         .map((record) => {
                             return record.toObject();
                         })
-                        .filter((record) => record.labelsOrTypes.includes(type.name))
+                        .filter((record) => record.labelsOrTypes.includes(type.name)),
                 ).toHaveLength(0);
             } finally {
                 await session.close();
@@ -1029,7 +1029,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
-                })
+                }),
             ).resolves.not.toThrow();
 
             const session = driver.session({ database: databaseName });
@@ -1046,8 +1046,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                         })
                         .filter(
                             (record) =>
-                                record.labelsOrTypes.includes(type.name) && record.properties.includes("identifier")
-                        )
+                                record.labelsOrTypes.includes(type.name) && record.properties.includes("identifier"),
+                        ),
                 ).toHaveLength(0);
             } finally {
                 await session.close();
@@ -1088,7 +1088,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                     neoSchema.assertIndexesAndConstraints({
                         driver,
                         driverConfig: { database: databaseName },
-                    })
+                    }),
                 ).resolves.not.toThrow();
             } finally {
                 await session.close();
@@ -1133,7 +1133,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                         driver,
                         driverConfig: { database: databaseName },
                         options: { create: true },
-                    })
+                    }),
                 ).resolves.not.toThrow();
 
                 const dbConstraintsResult = (await session.run(showConstraintsCypher)).records.map((record) => {
@@ -1143,16 +1143,16 @@ describe("assertIndexesAndConstraints/unique", () => {
                 expect(
                     dbConstraintsResult.filter(
                         (record) =>
-                            record.labelsOrTypes.includes(baseType.name) && record.properties.includes("someAlias")
-                    )
+                            record.labelsOrTypes.includes(baseType.name) && record.properties.includes("someAlias"),
+                    ),
                 ).toHaveLength(0);
 
                 expect(
                     dbConstraintsResult.filter(
                         (record) =>
                             record.labelsOrTypes.includes(additionalType.name) &&
-                            record.properties.includes("someAlias")
-                    )
+                            record.properties.includes("someAlias"),
+                    ),
                 ).toHaveLength(1);
             } finally {
                 await session.close();

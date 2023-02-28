@@ -110,7 +110,7 @@ export function reduce(
     defaultValue: Expr,
     variable: Variable,
     listExpr: Expr,
-    mapExpr: Expr
+    mapExpr: Expr,
 ): CypherFunction {
     return new ReducerFunction({
         accVariable,

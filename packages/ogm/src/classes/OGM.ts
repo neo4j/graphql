@@ -75,7 +75,7 @@ class OGM<ModelMap = unknown> {
     }
 
     public model<M extends T extends keyof ModelMap ? ModelMap[T] : Model, T extends keyof ModelMap | string = string>(
-        name: T
+        name: T,
     ): M {
         let model = this.models.find((n) => n.name === name);
 
@@ -104,7 +104,7 @@ class OGM<ModelMap = unknown> {
                     {
                         ${[node.primitiveFields, node.scalarFields, node.enumFields, node.temporalFields].reduce(
                             (res: string[], v) => [...res, ...v.map((x) => x.fieldName)],
-                            []
+                            [],
                         )}
                     }
                 `;

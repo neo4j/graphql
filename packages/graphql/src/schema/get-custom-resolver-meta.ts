@@ -44,7 +44,7 @@ function getCustomResolverMeta(
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     validateResolvers: boolean,
     customResolvers?: IResolvers | IResolvers[],
-    interfaceField?: FieldDefinitionNode
+    interfaceField?: FieldDefinitionNode,
 ): CustomResolverMeta | undefined {
     const deprecatedDirective =
         field.directives?.find((x) => x.name.value === "computed") ||
@@ -91,7 +91,7 @@ function getCustomResolverMeta(
     }
 
     const requiredFields = removeDuplicates(
-        directiveFromArgument.value.values.map((v) => (v as StringValueNode).value) ?? []
+        directiveFromArgument.value.values.map((v) => (v as StringValueNode).value) ?? [],
     );
 
     return {

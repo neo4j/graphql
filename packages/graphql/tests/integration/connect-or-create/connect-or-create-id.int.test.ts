@@ -160,7 +160,7 @@ describe("connect-or-create with @id", () => {
 
         expect(gqlResult.errors).toHaveLength(1);
         expect((gqlResult?.errors as any[])[0].message).toBe(
-            `Field "${typeMovie.name}OnCreateInput.title" of required type "String!" was not provided.`
+            `Field "${typeMovie.name}OnCreateInput.title" of required type "String!" was not provided.`,
         );
     });
 
@@ -199,7 +199,7 @@ describe("connect-or-create with @id", () => {
 
         expect(gqlResult.errors).toHaveLength(1);
         expect((gqlResult?.errors as any[])[0].message).toBe(
-            `Field "id" is not defined by type "${typeMovie.name}OnCreateInput".`
+            `Field "id" is not defined by type "${typeMovie.name}OnCreateInput".`,
         );
     });
 

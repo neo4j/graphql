@@ -80,7 +80,7 @@ describe("unwind-create", () => {
             expect(gqlResult.errors).toBeFalsy();
 
             expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
-                expect.arrayContaining([{ id }, { id: id2 }])
+                expect.arrayContaining([{ id }, { id: id2 }]),
             );
 
             const reFind = await session.run(
@@ -88,14 +88,14 @@ describe("unwind-create", () => {
               MATCH (m:${Movie})
               RETURN m
             `,
-                {}
+                {},
             );
             const records = reFind.records.map((record) => record.toObject());
             expect(records).toEqual(
                 expect.arrayContaining([
                     { m: expect.objectContaining({ properties: { id } }) },
                     { m: expect.objectContaining({ properties: { id: id2 } }) },
-                ])
+                ]),
             );
         } finally {
             await session.close();
@@ -166,7 +166,7 @@ describe("unwind-create", () => {
                 expect.arrayContaining([
                     { id, actors: [{ name: actor1Name }] },
                     { id: id2, actors: [{ name: actor2Name }] },
-                ])
+                ]),
             );
 
             const reFind = await session.run(
@@ -174,7 +174,7 @@ describe("unwind-create", () => {
               MATCH (m:${Movie})<-[:ACTED_IN]-(a:${Actor})
               RETURN m,a
             `,
-                {}
+                {},
             );
 
             const records = reFind.records.map((record) => record.toObject());
@@ -188,7 +188,7 @@ describe("unwind-create", () => {
                         m: expect.objectContaining({ properties: { id: id2 } }),
                         a: expect.objectContaining({ properties: { name: actor2Name } }),
                     },
-                ])
+                ]),
             );
         } finally {
             await session.close();
@@ -292,7 +292,7 @@ describe("unwind-create", () => {
                 expect.arrayContaining([
                     { id, actors: [{ name: actor1Name }] },
                     { id: id2, actors: [{ name: actor2Name }] },
-                ])
+                ]),
             );
 
             const reFind = await session.run(
@@ -300,7 +300,7 @@ describe("unwind-create", () => {
               MATCH (m:${Movie})<-[:ACTED_IN]-(a:${Actor})
               RETURN m,a
             `,
-                {}
+                {},
             );
 
             const records = reFind.records.map((record) => record.toObject());
@@ -322,7 +322,7 @@ describe("unwind-create", () => {
                         m: expect.objectContaining({ properties: { id: id4 } }),
                         a: expect.objectContaining({ properties: { name: actor2Name } }),
                     },
-                ])
+                ]),
             );
         } finally {
             await session.close();
@@ -397,7 +397,7 @@ describe("unwind-create", () => {
                 expect.arrayContaining([
                     { id, actors: [{ name: actor1Name }] },
                     { id: id2, actors: [{ name: actor2Name }] },
-                ])
+                ]),
             );
 
             const reFind = await session.run(
@@ -405,7 +405,7 @@ describe("unwind-create", () => {
               MATCH (m:${Movie})<-[r:ACTED_IN]-(a:${Actor})
               RETURN m,r,a
             `,
-                {}
+                {},
             );
 
             const records = reFind.records.map((record) => record.toObject());
@@ -421,7 +421,7 @@ describe("unwind-create", () => {
                         r: expect.objectContaining({ properties: { year: int(2021) } }),
                         a: expect.objectContaining({ properties: { name: actor2Name } }),
                     },
-                ])
+                ]),
             );
         } finally {
             await session.close();
@@ -511,7 +511,7 @@ describe("unwind-create", () => {
                 expect.arrayContaining([
                     { id, workers: [{ name: actorName }] },
                     { id: id2, workers: [{ name: modelerName }] },
-                ])
+                ]),
             );
 
             const reFind = await session.run(
@@ -519,7 +519,7 @@ describe("unwind-create", () => {
               MATCH (m:${Movie})<-[r:${workedIn}]-(a)
               RETURN m,r,a
             `,
-                {}
+                {},
             );
 
             const records = reFind.records.map((record) => record.toObject());
@@ -535,7 +535,7 @@ describe("unwind-create", () => {
                         r: expect.objectContaining({ properties: { year: int(2021) } }),
                         a: expect.objectContaining({ properties: { name: modelerName } }),
                     },
-                ])
+                ]),
             );
         } finally {
             await session.close();
@@ -670,7 +670,7 @@ describe("unwind-create", () => {
                 expect.arrayContaining([
                     { id, name: movieName, actors: [{ name: actorName, nickname: actorNickname }] },
                     { id: id2, name: movie2Name, actors: [{ name: actor2Name, nickname: actor2Nickname }] },
-                ])
+                ]),
             );
 
             const reFind = await session.run(
@@ -678,7 +678,7 @@ describe("unwind-create", () => {
               MATCH (m:${Movie})<-[r:${actedIn}]-(a)
               RETURN m,r,a
             `,
-                {}
+                {},
             );
 
             const records = reFind.records.map((record) => record.toObject());
@@ -697,7 +697,7 @@ describe("unwind-create", () => {
                             properties: { name: actor2Name, alternativeName: actor2Nickname },
                         }),
                     },
-                ])
+                ]),
             );
         } finally {
             await session.close();

@@ -141,10 +141,10 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             expect(queryResult.errors).toBeFalsy();
             expect((queryResult?.data as any)[Test_Item.plural]).toHaveLength(2);
             expect(
-                (queryResult?.data as any)[Test_Item.plural].filter((t) => t.str === "one")[0].feedbackCypher.str
+                (queryResult?.data as any)[Test_Item.plural].filter((t) => t.str === "one")[0].feedbackCypher.str,
             ).toBe("hi there");
             expect(
-                (queryResult?.data as any)[Test_Item.plural].filter((t) => t.str == "two")[0].feedbackCypher
+                (queryResult?.data as any)[Test_Item.plural].filter((t) => t.str == "two")[0].feedbackCypher,
             ).toBeNull();
         } finally {
             await session.close();
@@ -209,7 +209,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             expect(queryResult.errors).toBeFalsy();
             expect((queryResult?.data as any)[Test_Item.plural]).toHaveLength(2);
             expect((queryResult?.data as any)[Test_Item.plural].filter((t) => t.str === "one")[0].feedback.str).toBe(
-                "hi there"
+                "hi there",
             );
             expect((queryResult?.data as any)[Test_Item.plural].filter((t) => t.str == "two")[0].feedback).toBeNull();
         } finally {
@@ -269,11 +269,11 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             expect((result?.data as any)[Test_Item.operations.create][Test_Item.plural]).toHaveLength(2);
             expect(
                 (result?.data as any)[Test_Item.operations.create][Test_Item.plural].filter((t) => t.str === "one")[0]
-                    .feedbackCypher.str
+                    .feedbackCypher.str,
             ).toBe("hi there");
             expect(
                 (result?.data as any)[Test_Item.operations.create][Test_Item.plural].filter((t) => t.str == "two")[0]
-                    .feedbackCypher
+                    .feedbackCypher,
             ).toBeNull();
         } finally {
             await session.close();
@@ -326,11 +326,11 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             expect((result?.data as any)[Test_Item.operations.create][Test_Item.plural]).toHaveLength(2);
             expect(
                 (result?.data as any)[Test_Item.operations.create][Test_Item.plural].filter((t) => t.str === "one")[0]
-                    .feedback.str
+                    .feedback.str,
             ).toBe("hi there");
             expect(
                 (result?.data as any)[Test_Item.operations.create][Test_Item.plural].filter((t) => t.str == "two")[0]
-                    .feedback
+                    .feedback,
             ).toBeNull();
         } finally {
             await session.close();

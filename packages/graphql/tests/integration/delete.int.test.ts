@@ -66,7 +66,7 @@ describe("delete", () => {
                 `
                 CREATE (:Movie {id: $id})
             `,
-                { id }
+                { id },
             );
 
             const gqlResult = await graphql({
@@ -85,7 +85,7 @@ describe("delete", () => {
               MATCH (m:Movie {id: $id})
               RETURN m
             `,
-                { id }
+                { id },
             );
 
             expect(reFind.records).toHaveLength(0);
@@ -123,7 +123,7 @@ describe("delete", () => {
                 `
                 CREATE (:Movie {id: $id})
             `,
-                { id }
+                { id },
             );
 
             const gqlResult = await graphql({
@@ -142,7 +142,7 @@ describe("delete", () => {
               MATCH (m:Movie {id: $id})
               RETURN m
             `,
-                { id }
+                { id },
             );
 
             expect(reFind.records).toHaveLength(1);
@@ -195,7 +195,7 @@ describe("delete", () => {
                 {
                     id,
                     name,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -214,7 +214,7 @@ describe("delete", () => {
               MATCH (m:Movie {id: $id})
               RETURN m
             `,
-                { id }
+                { id },
             );
 
             expect(movie.records).toHaveLength(0);
@@ -224,7 +224,7 @@ describe("delete", () => {
               MATCH (a:Actor {name: $name})
               RETURN a
             `,
-                { name }
+                { name },
             );
 
             expect(actor.records).toHaveLength(0);
@@ -287,7 +287,7 @@ describe("delete", () => {
                     id1,
                     name,
                     id2,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -306,7 +306,7 @@ describe("delete", () => {
               MATCH (m:Movie {id: $id})
               RETURN m
             `,
-                { id: id1 }
+                { id: id1 },
             );
 
             expect(movie1.records).toHaveLength(0);
@@ -316,7 +316,7 @@ describe("delete", () => {
               MATCH (a:Actor {name: $name})
               RETURN a
             `,
-                { name }
+                { name },
             );
 
             expect(actor.records).toHaveLength(0);
@@ -326,7 +326,7 @@ describe("delete", () => {
               MATCH (m:Movie {id: $id})
               RETURN m
             `,
-                { id: id2 }
+                { id: id2 },
             );
 
             expect(movie2.records).toHaveLength(0);
@@ -378,7 +378,7 @@ describe("delete", () => {
                 {
                     title,
                     name,
-                }
+                },
             );
 
             const gqlResult = await graphql({

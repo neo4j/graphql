@@ -74,7 +74,7 @@ describe("aggregations-where-edge-duration", () => {
                     CREATE (p1:${Post} {content: "post1"})<-[:LIKES { someDuration: duration({months: 1}) }]-(:${User} {name: "user1"})
                     CREATE (p2:${Post} {content: "post2"})<-[:LIKES { someDuration: duration({months: 2}) }]-(:${User} {name: "user2"})
                     CREATE (p3:${Post} {content: "post3"})<-[:LIKES { someDuration: duration({months: 2, days: 6}) }]-(:${User} {name: "user2"})
-                `
+                `,
         );
 
         const query = `

@@ -30,7 +30,7 @@ describe("Console.log", () => {
         });
 
         const query = new Cypher.Create(movieNode).set(
-            [movieNode.property("released"), releasedParam] // Explicitly defines the node property
+            [movieNode.property("released"), releasedParam], // Explicitly defines the node property
         );
 
         expect(`${query}`).toMatchInlineSnapshot(`

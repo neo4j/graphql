@@ -113,7 +113,7 @@ export function translateTopLevelCypher({
                     projectionSubqueries.push(...subqueries);
 
                     innerHeadStr.push(
-                        [`| this { __resolveType: "${node.name}", `, ...str.replace("{", "").split("")].join("")
+                        [`| this { __resolveType: "${node.name}", `, ...str.replace("{", "").split("")].join(""),
                     );
                     params = { ...params, ...p };
 
@@ -142,7 +142,7 @@ export function translateTopLevelCypher({
             ...res,
             ...{ [argument.name.value]: null },
         }),
-        {}
+        {},
     );
 
     const apocParams = Object.entries({ ...nullArgumentValues, ...resolveTree.args }).reduce(
@@ -150,7 +150,7 @@ export function translateTopLevelCypher({
             strs: [...result.strs, `${entry[0]}: $${entry[0]}`],
             params: { ...result.params, [entry[0]]: entry[1] },
         }),
-        { strs: initApocParamsStrs, params }
+        { strs: initApocParamsStrs, params },
     );
 
     params = { ...params, ...apocParams.params };
@@ -184,8 +184,8 @@ export function translateTopLevelCypher({
     if (projectionAuthStrs.length) {
         cypherStrs.push(
             `WHERE apoc.util.validatePredicate(NOT (${projectionAuthStrs.join(
-                " AND "
-            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+                " AND ",
+            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`,
         );
     }
 

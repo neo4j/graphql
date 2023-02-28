@@ -269,7 +269,7 @@ describe("Subscription global authentication", () => {
     async function createMovie(
         title: string,
         graphQLServer: TestGraphQLServer,
-        clientJwtToken: string
+        clientJwtToken: string,
     ): Promise<Response> {
         const result = await supertest(graphQLServer.path)
             .post("")

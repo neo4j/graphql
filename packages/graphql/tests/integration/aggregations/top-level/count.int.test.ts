@@ -58,7 +58,7 @@ describe("Aggregate -> count", () => {
                 `
                     CREATE (:${randomType.name} {id: randomUUID()})
                     CREATE (:${randomType.name} {id: randomUUID()})
-                `
+                `,
             );
 
             const query = `
@@ -112,7 +112,7 @@ describe("Aggregate -> count", () => {
                 CREATE (:${randomType.name} {id: $id1})
                 CREATE (:${randomType.name} {id: $id2})
             `,
-                { id1, id2 }
+                { id1, id2 },
             );
 
             const query = `
@@ -194,7 +194,7 @@ describe("Aggregate -> count", () => {
                     CREATE (:${jobPlanType.name} {tenantID: $tenantID})
                     CREATE (:${jobPlanType.name} {tenantID: $tenantID})
                 `,
-                { tenantID }
+                { tenantID },
             );
 
             const req = createJwtRequest(secret, {

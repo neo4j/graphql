@@ -99,7 +99,7 @@ describe("array-pop-errors", () => {
 
         expect(gqlResult.errors).toBeDefined();
         expect(
-            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Property tags cannot be NULL"))
+            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Property tags cannot be NULL")),
         ).toBeTruthy();
 
         expect(gqlResult.data).toBeNull();
@@ -150,8 +150,8 @@ describe("array-pop-errors", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("Properties tags, otherTags cannot be NULL")
-            )
+                el.message.includes("Properties tags, otherTags cannot be NULL"),
+            ),
         ).toBeTruthy();
 
         expect(gqlResult.data).toBeNull();
@@ -259,8 +259,8 @@ describe("array-pop-errors", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("Int cannot represent non-integer value")
-            )
+                el.message.includes("Int cannot represent non-integer value"),
+            ),
         ).toBeTruthy();
 
         expect(gqlResult.data).toBeUndefined();
@@ -312,8 +312,8 @@ describe("array-pop-errors", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("Cannot mutate the same field multiple times in one Mutation")
-            )
+                el.message.includes("Cannot mutate the same field multiple times in one Mutation"),
+            ),
         ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
     });
@@ -382,7 +382,7 @@ describe("array-pop-errors", () => {
             {
                 id,
                 initialPay: [initialPay],
-            }
+            },
         );
         // Update movie
         const gqlResult = await graphql({
@@ -399,8 +399,8 @@ describe("array-pop-errors", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("Cannot mutate the same field multiple times in one Mutation")
-            )
+                el.message.includes("Cannot mutate the same field multiple times in one Mutation"),
+            ),
         ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
     });

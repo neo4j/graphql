@@ -33,7 +33,7 @@ describe("parseExcludeDirective", () => {
         const directive = (parse(typeDefs) as any).definitions[0].directives[0] as DirectiveNode | undefined;
 
         expect(() => parseExcludeDirective(directive)).toThrow(
-            "Undefined or incorrect directive passed into parseExcludeDirective function"
+            "Undefined or incorrect directive passed into parseExcludeDirective function",
         );
     });
 

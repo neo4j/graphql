@@ -79,7 +79,7 @@ describe("createUpdateAndParams", () => {
         expect(trimmer(result[0])).toEqual(
             trimmer(`
                 SET this.id = $this_update_id
-            `)
+            `),
         );
 
         expect(result[1]).toMatchObject({

@@ -86,7 +86,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const nodeProperty = "testString";
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
-            tx.run("CREATE (:TestLabel {nodeProperty: $prop})", { prop: nodeProperty })
+            tx.run("CREATE (:TestLabel {nodeProperty: $prop})", { prop: nodeProperty }),
         );
         const bm = wSession.lastBookmark();
         await wSession.close();
@@ -115,8 +115,8 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         await wSession.writeTransaction((tx) =>
             tx.run(
                 "CREATE (:TestLabel {strProp: $props.str, intProp: $props.int, numberProp: $props.number, strArrProp: $props.strArr})",
-                { props: nodeProperties }
-            )
+                { props: nodeProperties },
+            ),
         );
         const bm = wSession.lastBookmark();
         await wSession.close();
@@ -149,8 +149,8 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             tx.run(
                 `CREATE (:TestLabel {strProp: $props.first})
                 CREATE (:TestLabel2 {singleProp: $props.second})`,
-                { props: nodeProperties }
-            )
+                { props: nodeProperties },
+            ),
         );
         const bm = wSession.lastBookmark();
         await wSession.close();
@@ -184,8 +184,8 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             tx.run(
                 `CREATE (:TestLabel {strProp: $props.first})
                 CREATE (:TestLabel2:TestLabel3 {singleProp: $props.second})`,
-                { props: nodeProperties }
-            )
+                { props: nodeProperties },
+            ),
         );
         const bm = wSession.lastBookmark();
         await wSession.close();
@@ -218,8 +218,8 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         await wSession.writeTransaction((tx) =>
             tx.run(
                 "CREATE (:`Test``Label` {strProp: $props.first}) CREATE (:`Test-Label` {singleProp: $props.second})",
-                { props: nodeProperties }
-            )
+                { props: nodeProperties },
+            ),
         );
         const bm = wSession.lastBookmark();
         await wSession.close();
@@ -281,8 +281,8 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
                 CREATE (:OnlyAmb {amb: $props.str})
                 CREATE (:OnlyAmb {amb: $props.int})
                 `,
-                { props: nodeProperties }
-            )
+                { props: nodeProperties },
+            ),
         );
         const bm = wSession.lastBookmark();
         await wSession.close();
@@ -308,7 +308,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
-            tx.run("CREATE ({prop: 1}) CREATE ({prop: 2}) CREATE (:EmptyNode) CREATE (:FullNode {prop: 1})")
+            tx.run("CREATE ({prop: 1}) CREATE ({prop: 2}) CREATE (:EmptyNode) CREATE (:FullNode {prop: 1})"),
         );
         const bm = wSession.lastBookmark();
         await wSession.close();
@@ -367,8 +367,8 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             tx.run(
                 `CREATE (:TestLabel {strProp: $props.first})
                 CREATE (:TestLabel2:TestLabel3 {singleProp: $props.second})`,
-                { props: nodeProperties }
-            )
+                { props: nodeProperties },
+            ),
         );
         const bm = wSession.lastBookmark();
         await wSession.close();

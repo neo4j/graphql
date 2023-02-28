@@ -89,7 +89,7 @@ describe("LocalDateTime", () => {
                         MATCH (movie:Movie {id: $id})
                         RETURN movie {.id, .localDT} as movie
                     `,
-                    { id }
+                    { id },
                 );
 
                 const neo4jMovie: { id: string; localDT: any } = neo4jResult.records[0].toObject().movie;
@@ -117,7 +117,7 @@ describe("LocalDateTime", () => {
 
             const id = generate({ readable: false });
             const localDTs = [...new Array(faker.datatype.number({ min: 2, max: 4 }))].map(
-                () => faker.date.past().toISOString().split("Z")[0]
+                () => faker.date.past().toISOString().split("Z")[0],
             );
             const parsedLocalDateTimes = localDTs.map((localDT) => parseLocalDateTime(localDT));
 
@@ -159,7 +159,7 @@ describe("LocalDateTime", () => {
                         MATCH (movie:Movie {id: $id})
                         RETURN movie {.id, .localDTs} as movie
                     `,
-                    { id }
+                    { id },
                 );
 
                 const neo4jMovie: { id: string; localDTs: any[] } = neo4jResult.records[0].toObject().movie;
@@ -172,7 +172,7 @@ describe("LocalDateTime", () => {
                 });
 
                 const parsedNeo4jLocalDateTimes = neo4jMovie.localDTs.map((localDT) =>
-                    parseLocalDateTime(localDT.toString())
+                    parseLocalDateTime(localDT.toString()),
                 );
 
                 parsedLocalDateTimes.forEach((parsedLocalDateTime) => {
@@ -208,7 +208,7 @@ describe("LocalDateTime", () => {
                         CREATE (movie:Movie)
                         SET movie = $movie
                     `,
-                    { movie: { id } }
+                    { movie: { id } },
                 );
 
                 const mutation = `
@@ -242,7 +242,7 @@ describe("LocalDateTime", () => {
                         MATCH (movie:Movie {id: $id})
                         RETURN movie {.id, .localDT} as movie
                     `,
-                    { id }
+                    { id },
                 );
 
                 const neo4jMovie: { id: string; localDT: any } = neo4jResult.records[0].toObject().movie;
@@ -282,7 +282,7 @@ describe("LocalDateTime", () => {
                         CREATE (movie:Movie)
                         SET movie = $movie
                     `,
-                    { movie: { id, localDT: neo4jLocalDateTime } }
+                    { movie: { id, localDT: neo4jLocalDateTime } },
                 );
 
                 const query = `
@@ -336,7 +336,7 @@ describe("LocalDateTime", () => {
                         parsedFuture.hour,
                         parsedFuture.minute,
                         parsedFuture.second,
-                        parsedFuture.nanosecond
+                        parsedFuture.nanosecond,
                     );
 
                     const presentId = generate({ readable: false });
@@ -349,7 +349,7 @@ describe("LocalDateTime", () => {
                         parsedPresent.hour,
                         parsedPresent.minute,
                         parsedPresent.second,
-                        parsedPresent.nanosecond
+                        parsedPresent.nanosecond,
                     );
 
                     const pastId = generate({ readable: false });
@@ -362,7 +362,7 @@ describe("LocalDateTime", () => {
                         parsedPast.hour,
                         parsedPast.minute,
                         parsedPast.second,
-                        parsedPast.nanosecond
+                        parsedPast.nanosecond,
                     );
 
                     try {
@@ -379,7 +379,7 @@ describe("LocalDateTime", () => {
                                 future: { id: futureId, localDT: neo4jFuture },
                                 present: { id: presentId, localDT: neo4jPresent },
                                 past: { id: pastId, localDT: neo4jPast },
-                            }
+                            },
                         );
 
                         const query = `
@@ -442,7 +442,7 @@ describe("LocalDateTime", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             ));
     });
 
@@ -472,7 +472,7 @@ describe("LocalDateTime", () => {
                         parsedFuture.hour,
                         parsedFuture.minute,
                         parsedFuture.second,
-                        parsedFuture.nanosecond
+                        parsedFuture.nanosecond,
                     );
 
                     const presentId = generate({ readable: false });
@@ -485,7 +485,7 @@ describe("LocalDateTime", () => {
                         parsedPresent.hour,
                         parsedPresent.minute,
                         parsedPresent.second,
-                        parsedPresent.nanosecond
+                        parsedPresent.nanosecond,
                     );
 
                     const pastId = generate({ readable: false });
@@ -498,7 +498,7 @@ describe("LocalDateTime", () => {
                         parsedPast.hour,
                         parsedPast.minute,
                         parsedPast.second,
-                        parsedPast.nanosecond
+                        parsedPast.nanosecond,
                     );
 
                     try {
@@ -515,7 +515,7 @@ describe("LocalDateTime", () => {
                                 future: { id: futureId, localDT: neo4jFuture },
                                 present: { id: presentId, localDT: neo4jPresent },
                                 past: { id: pastId, localDT: neo4jPast },
-                            }
+                            },
                         );
 
                         const query = `
@@ -574,7 +574,7 @@ describe("LocalDateTime", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             ));
     });
 });

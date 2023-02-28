@@ -916,7 +916,7 @@ describe("Delete Subscription", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "some_movie1", isFavorite: true });
@@ -940,7 +940,7 @@ describe("Delete Subscription", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "some_movie3", isFavorite: true });
@@ -964,7 +964,7 @@ describe("Delete Subscription", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "some_movie1", similarTitles: ["fight club"] });
@@ -988,7 +988,7 @@ describe("Delete Subscription", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "some_movie3", similarTitles: ["blue bus"] });

@@ -158,7 +158,7 @@ describe("array-pop", () => {
             expect((gqlResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
                 { title: movieTitle, tags: expectedOutputValue },
             ]);
-        }
+        },
     );
 
     test.each<ArrayPopTest>([
@@ -262,7 +262,7 @@ describe("array-pop", () => {
             expect((gqlResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
                 { title: movieTitle, tags: expectedOutputValue },
             ]);
-        }
+        },
     );
 
     test.each<ArrayPopTest>([
@@ -366,7 +366,7 @@ describe("array-pop", () => {
             expect((gqlResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
                 { title: movieTitle, tags: expectedOutputValue },
             ]);
-        }
+        },
     );
 
     const point = {
@@ -720,7 +720,7 @@ describe("array-pop", () => {
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any)[actor.operations.update][actor.plural]).toEqual(
-            expect.toIncludeSameMembers([{ name: actorName, worksInMovies: [{ viewers: [1] }] }])
+            expect.toIncludeSameMembers([{ name: actorName, worksInMovies: [{ viewers: [1] }] }]),
         );
     });
 
@@ -787,7 +787,7 @@ describe("array-pop", () => {
             {
                 id,
                 initialPay: [initialPay],
-            }
+            },
         );
         // Update movie
         const gqlResult = await graphql({
@@ -804,7 +804,7 @@ describe("array-pop", () => {
                 `,
             {
                 id,
-            }
+            },
         );
         expect(storedValue.records[0].get("pay")).toEqual([]);
     });
@@ -875,7 +875,7 @@ describe("array-pop", () => {
             {
                 id,
                 initialLocation: point,
-            }
+            },
         );
         // Update movie
         const gqlResult = await graphql({
@@ -893,7 +893,7 @@ describe("array-pop", () => {
                     actedIn: [{ title: "The Matrix" }],
                     actedInConnection: { edges: [{ locations: [] }] },
                 },
-            ])
+            ]),
         );
     });
 });

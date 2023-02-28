@@ -22,7 +22,7 @@ export type FilterFn<T> = (rootValue: T) => boolean | Promise<boolean>;
 // Based on https://github.com/apollographql/graphql-subscriptions/blob/master/src/with-filter.ts
 export function filterAsyncIterator<T>(
     asyncIterator: AsyncIterator<T>,
-    filterFn: FilterFn<T>
+    filterFn: FilterFn<T>,
 ): AsyncIterableIterator<T> {
     return {
         next() {
