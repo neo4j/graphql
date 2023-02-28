@@ -310,8 +310,7 @@ class Neo4jGraphQL {
 
         const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
 
-        const baseSchema = validateDocument(document, validateTypeDefs, directives, types);
-        validateCustomResolverRequires(document, baseSchema);
+        validateDocument(document, validateTypeDefs, directives, types);
 
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,

@@ -189,7 +189,7 @@ function validateDocument(
     validateTypeDefs = true,
     additionalDirectives: Array<GraphQLDirective> = [],
     additionalTypes: Array<GraphQLNamedType> = []
-): GraphQLSchema {
+): void {
     const schema = getBaseSchema(document, validateTypeDefs, additionalDirectives, additionalTypes);
     if (validateTypeDefs) {
         const errors = validateSchema(schema);
@@ -198,7 +198,7 @@ function validateDocument(
             throw new Error(filteredErrors.join("\n"));
         }
     }
-    return schema;
+    validateCustomResolverRequires(document, schema);
 }
 
 export default validateDocument;
