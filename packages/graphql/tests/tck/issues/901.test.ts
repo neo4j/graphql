@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
                 manufacturer: Series @relationship(type: "HAS_MANUFACTURER", direction: OUT, properties: "Properties")
             }
 
-            interface Properties {
+            interface Properties @relationshipProperties {
                 current: Boolean
             }
         `;

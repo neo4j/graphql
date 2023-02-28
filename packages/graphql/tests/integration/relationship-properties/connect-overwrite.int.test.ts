@@ -70,10 +70,10 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     directed: [ ${typeMovie.name}!]! @relationship(type: "DIRECTED", properties: "Directed", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
-                interface Directed {
+                interface Directed @relationshipProperties {
                     year: Int!
                 }
             `;

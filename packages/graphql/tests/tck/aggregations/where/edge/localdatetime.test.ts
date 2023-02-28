@@ -38,7 +38,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someLocalDateTime: LocalDateTime
                 someLocalDateTimeAlias: LocalDateTime @alias(property: "_someLocalDateTimeAlias")
             }

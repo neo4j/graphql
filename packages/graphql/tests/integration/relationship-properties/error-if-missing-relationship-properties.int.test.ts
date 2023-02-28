@@ -22,7 +22,7 @@ import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
-describe("Relationship properties - read", () => {
+describe("Throw error if missing @relationshipProperties", () => {
     let driver: Driver;
     let neo4j: Neo4j;
 

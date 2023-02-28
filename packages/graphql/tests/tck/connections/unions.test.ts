@@ -46,7 +46,7 @@ describe("Cypher -> Connections -> Unions", () => {
                 author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
             }
 
-            interface Wrote {
+            interface Wrote @relationshipProperties {
                 words: Int!
             }
         `;

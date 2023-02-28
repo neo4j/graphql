@@ -38,7 +38,7 @@ describe("Cypher Aggregations where edge with Logical AND + OR + NOT", () => {
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someFloat: Float
             }
         `;

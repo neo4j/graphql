@@ -40,7 +40,7 @@ describe("Cypher Update", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int
             }
         `;

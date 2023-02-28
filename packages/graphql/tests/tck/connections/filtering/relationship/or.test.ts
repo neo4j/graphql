@@ -41,7 +41,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> OR", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 role: String!
                 screenTime: Int!
             }
