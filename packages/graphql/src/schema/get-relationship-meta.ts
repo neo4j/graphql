@@ -23,6 +23,7 @@ import { RelationshipQueryDirectionOption } from "../constants";
 type RelationshipMeta = {
     direction: "IN" | "OUT";
     type: string;
+    typeUnescaped: string;
     properties?: string;
     queryDirection: RelationshipQueryDirectionOption;
 };
@@ -65,12 +66,14 @@ function getRelationshipMeta(
     }
 
     const direction = directionArg.value.value as "IN" | "OUT";
-    const type = typeArg.value.value;
+    const type = `\`${typeArg.value.value}\``;
+    const typeUnescaped = typeArg.value.value;
     const properties = (propertiesArg?.value as StringValueNode)?.value;
 
     return {
         direction,
         type,
+        typeUnescaped,
         properties,
         queryDirection,
     };

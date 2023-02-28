@@ -196,7 +196,7 @@ function createDisconnectAndParams({
                 relVariable: relVarName,
                 fromVariable,
                 toVariable,
-                typename: relationField.type,
+                typename: relationField.typeUnescaped,
                 fromTypename,
                 toTypename,
             });

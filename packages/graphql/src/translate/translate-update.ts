@@ -187,8 +187,8 @@ export default async function translateUpdate({
                     const inStr = relationField.direction === "IN" ? "<-" : "-";
                     const outStr = relationField.direction === "OUT" ? "->" : "-";
                     refNodes.forEach((refNode) => {
-                        const validateRelationshipExistance = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
-                        connectStrs.push(validateRelationshipExistance);
+                        const validateRelationshipExistence = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+                        connectStrs.push(validateRelationshipExistence);
                     });
                 }
 
@@ -281,8 +281,8 @@ export default async function translateUpdate({
                     const relTypeStr = `[${relationVarName}:${relationField.type}]`;
 
                     if (!relationField.typeMeta.array) {
-                        const validateRelationshipExistance = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
-                        createStrs.push(validateRelationshipExistance);
+                        const validateRelationshipExistence = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+                        createStrs.push(validateRelationshipExistence);
                     }
 
                     const createAndParams = createCreateAndParams({
@@ -324,7 +324,7 @@ export default async function translateUpdate({
                             relVariable: propertiesName,
                             fromVariable,
                             toVariable,
-                            typename: relationField.type,
+                            typename: relationField.typeUnescaped,
                             fromTypename,
                             toTypename,
                         });
