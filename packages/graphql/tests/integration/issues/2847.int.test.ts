@@ -106,9 +106,9 @@ describe("https://github.com/neo4j/graphql/issues/2847", () => {
             [Actor.plural]: expect.toIncludeSameMembers([
                 {
                     name: "Keanu",
-                    product: null
+                    product: null,
                 },
-            ])
+            ]),
         });
     });
 });

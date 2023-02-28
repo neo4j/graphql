@@ -94,15 +94,15 @@ describe("Cypher DateTime", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`Movie\`)
+                WITH create_var0
+                CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this0.datetime = create_var1.datetime
-                RETURN create_this0
+                    create_this1.datetime = create_var0.datetime
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { datetime: apoc.date.convertFormat(toString(create_this0.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }) AS data"
+            RETURN collect(create_this1 { datetime: apoc.date.convertFormat(toString(create_this1.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

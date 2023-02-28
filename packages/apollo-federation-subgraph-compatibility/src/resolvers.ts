@@ -24,6 +24,6 @@ export const resolvers = {
                 context.resolveTree.args.representations[0].totalProductsCreated /
                     context.resolveTree.args.representations[0].yearsOfEmployment
             );
-        }
-    }
+        },
+    },
 };

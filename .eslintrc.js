@@ -6,6 +6,16 @@ module.exports = {
         es2021: true,
     },
     rules: {
+        "comma-dangle": [
+            "error",
+            {
+                arrays: "always-multiline",
+                objects: "always-multiline",
+                imports: "always-multiline",
+                exports: "always-multiline",
+                functions: "never",
+            },
+        ],
         "eslint-comments/no-unused-disable": "error",
         // Expensive rules disabled below
         "import/default": "off",
@@ -53,7 +63,7 @@ module.exports = {
                 "@typescript-eslint/ban-ts-comment": "off",
                 "@typescript-eslint/no-unsafe-assignment": "off",
                 "@typescript-eslint/no-explicit-any": "off",
-                "jest/expect-expect": [ "warn", {"assertFunctionNames": [ "expect", "expectTypeOf" ]}],
+                "jest/expect-expect": ["warn", { assertFunctionNames: ["expect", "expectTypeOf"] }],
             },
         },
         {
