@@ -60,7 +60,7 @@ export function createPropertyWhere({
     const isNot = operator?.startsWith("NOT") ?? false;
 
     const coalesceValue = [...element.primitiveFields, ...element.temporalFields, ...element.enumFields].find(
-        (f) => fieldName === f.fieldName
+        (f) => fieldName === f.fieldName,
     )?.coalesceValue as string | undefined;
 
     let dbFieldName = mapToDbProperty(element, fieldName);
@@ -86,7 +86,7 @@ export function createPropertyWhere({
         if (coalesceValue) {
             propertyRef = Cypher.coalesce(
                 propertyRef,
-                new Cypher.RawCypher(`${coalesceValue}`) // TODO: move into Cypher.literal
+                new Cypher.RawCypher(`${coalesceValue}`), // TODO: move into Cypher.literal
             );
         }
 
@@ -95,7 +95,7 @@ export function createPropertyWhere({
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
             const relationTypeName = node.connectionFields.find(
-                (x) => x.relationship.fieldName === fieldName
+                (x) => x.relationship.fieldName === fieldName,
             )?.relationshipTypeName;
             const relationship = context.relationships.find((x) => x.name === relationTypeName);
             return aggregatePreComputedWhereFields({
@@ -142,7 +142,7 @@ export function createPropertyWhere({
     }
     const pointField = element.pointFields.find((x) => x.fieldName === fieldName);
     const durationField = element.primitiveFields.find(
-        (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
+        (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration",
     );
 
     const comparisonOp = createComparisonOperation({

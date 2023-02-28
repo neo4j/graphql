@@ -32,7 +32,7 @@ export function mixin(...mixins: AbstractConstructorType<ClauseMixin>[]): any {
 /** Applies mixins into a class */
 function applyMixins<T>(
     baseClass: ConstructorType<T>,
-    mixins: AbstractConstructorType<ClauseMixin>[]
+    mixins: AbstractConstructorType<ClauseMixin>[],
 ): ConstructorType<T> {
     mixins.forEach((baseCtor) => {
         Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
@@ -41,7 +41,7 @@ function applyMixins<T>(
                 Object.defineProperty(
                     baseClass.prototype,
                     name,
-                    Object.getOwnPropertyDescriptor(baseCtor.prototype, name) || Object.create(null)
+                    Object.getOwnPropertyDescriptor(baseCtor.prototype, name) || Object.create(null),
                 );
             }
         });

@@ -62,7 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
             await session.run(
                 `
                     CREATE (:${type.name} { type: "Cat" })-[:EDGE]->(:${type.name} { type: "Dog" })<-[:EDGE]-(:${type.name} { type: "Bird" })-[:EDGE]->(:${type.name} { type: "Fish" })
-            `
+            `,
             );
             bookmarks = session.lastBookmark();
         } finally {
@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
             await session.run(
                 `
                     MATCH (n: ${type.name}) DETACH DELETE n
-            `
+            `,
             );
         } finally {
             await session.close();

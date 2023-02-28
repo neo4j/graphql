@@ -61,7 +61,7 @@ describe("Relationship properties - update", () => {
                 `
                     CREATE (:Actor { name: '${actor1}' })-[:ACTED_IN { screenTime: 105 }]->(m:Movie { title: '${movieTitle}'})
                     CREATE (m)<-[:ACTED_IN { screenTime: 100 }]-(:Actor { name: '${actor2}' })
-                `
+                `,
             );
             bookmarks = session.lastBookmark();
         } finally {

@@ -104,7 +104,7 @@ describe("[CartesianPoint]", () => {
                         y: location.y,
                     };
                 })
-                .sort()
+                .sort(),
         ).toEqual(locations.sort());
     });
 
@@ -160,7 +160,7 @@ describe("[CartesianPoint]", () => {
                         z: location.z,
                     };
                 })
-                .sort()
+                .sort(),
         ).toEqual(locations.sort());
     });
 
@@ -187,7 +187,7 @@ describe("[CartesianPoint]", () => {
             RETURN
             r { .id, .locations } AS r
         `,
-            { id, locations }
+            { id, locations },
         );
 
         expect(
@@ -199,7 +199,7 @@ describe("[CartesianPoint]", () => {
                         y: location.y,
                     };
                 })
-                .sort()
+                .sort(),
         ).toEqual(locations.sort());
 
         const update = `
@@ -245,7 +245,7 @@ describe("[CartesianPoint]", () => {
                         y: location.y,
                     };
                 })
-                .sort()
+                .sort(),
         ).toEqual(newLocations.sort());
     });
 
@@ -274,7 +274,7 @@ describe("[CartesianPoint]", () => {
             RETURN
             r { .id, .locations } AS r
         `,
-            { id, locations }
+            { id, locations },
         );
 
         expect(
@@ -287,7 +287,7 @@ describe("[CartesianPoint]", () => {
                         z: location.z,
                     };
                 })
-                .sort()
+                .sort(),
         ).toEqual(locations.sort());
 
         const update = `
@@ -334,7 +334,7 @@ describe("[CartesianPoint]", () => {
                         z: location.z,
                     };
                 })
-                .sort()
+                .sort(),
         ).toEqual(newLocations.sort());
     });
 
@@ -357,7 +357,7 @@ describe("[CartesianPoint]", () => {
             RETURN
             r { .id, .locations } AS r
         `,
-            { id, locations }
+            { id, locations },
         );
 
         const partsQuery = `
@@ -408,7 +408,7 @@ describe("[CartesianPoint]", () => {
             RETURN
             r { .id, .locations } AS r
         `,
-            { id, locations }
+            { id, locations },
         );
 
         const partsQuery = `

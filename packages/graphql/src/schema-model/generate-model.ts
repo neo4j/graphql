@@ -58,7 +58,7 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
 
 function generateCompositeEntity(
     definition: UnionTypeDefinitionNode,
-    concreteEntities: Map<string, ConcreteEntity>
+    concreteEntities: Map<string, ConcreteEntity>,
 ): CompositeEntity {
     const compositeFields = (definition.types || []).map((type) => {
         const concreteEntity = concreteEntities.get(type.name.value);
@@ -119,7 +119,7 @@ function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotatio
                 default:
                     return undefined;
             }
-        })
+        }),
     );
 }
 

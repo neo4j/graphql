@@ -59,9 +59,9 @@ describe("https://github.com/neo4j/graphql/issues/2889", () => {
             driver,
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret"
-                })
-            }
+                    secret: "secret",
+                }),
+            },
         });
     });
 
@@ -88,12 +88,12 @@ describe("https://github.com/neo4j/graphql/issues/2889", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues()
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();
         expect((result.data?.[MyEnumHolder.operations.create] as any)[MyEnumHolder.plural]).toEqual([
-            { myEnums: ["FIRST", "SECOND"] }
+            { myEnums: ["FIRST", "SECOND"] },
         ]);
     });
 });

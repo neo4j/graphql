@@ -84,7 +84,7 @@ describe("Middleware Resolvers", () => {
                 {
                     id,
                     custom,
-                }
+                },
             );
 
             const gqlResult = await graphql({

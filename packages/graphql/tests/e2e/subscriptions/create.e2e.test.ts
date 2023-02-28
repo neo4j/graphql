@@ -147,7 +147,7 @@ describe("Create Subscription", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
         await createActor("Keanu");
         expect(onReturnError).toHaveBeenCalled();

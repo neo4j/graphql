@@ -115,7 +115,7 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
                     name: "D",
                     attends: [],
                 },
-            ])
+            ]),
         );
     });
 });

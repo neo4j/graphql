@@ -564,7 +564,7 @@ describe("Delete Subscription", () => {
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ releasedIn: 2020 });
@@ -588,7 +588,7 @@ describe("Delete Subscription", () => {
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ averageRating: 5.6 });
@@ -612,7 +612,7 @@ describe("Delete Subscription", () => {
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ fileSize: "3412" });
@@ -636,7 +636,7 @@ describe("Delete Subscription", () => {
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ isFavorite: false, title: "bad_type_string_movie13" });
@@ -660,7 +660,7 @@ describe("Delete Subscription", () => {
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "bad_type_string_movie17", similarTitles: ["test"] });
@@ -685,7 +685,7 @@ describe("Delete Subscription", () => {
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ releasedIn: 2020 });
@@ -709,7 +709,7 @@ describe("Delete Subscription", () => {
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ averageRating: 6.2 });
@@ -733,7 +733,7 @@ describe("Delete Subscription", () => {
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ fileSize: "2020" });
@@ -757,7 +757,7 @@ describe("Delete Subscription", () => {
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ isFavorite: false, title: "bad_type_string_movie33" });
@@ -781,7 +781,7 @@ describe("Delete Subscription", () => {
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "bad_type_string_movie37", similarTitles: ["test"] });

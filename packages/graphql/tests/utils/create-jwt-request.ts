@@ -38,7 +38,7 @@ export function createJwtHeader(secret: string, extraData: Record<string, any> =
             ...extraData,
         },
         secret,
-        { noTimestamp: true }
+        { noTimestamp: true },
     );
 
     return `Bearer ${token}`;

@@ -22,8 +22,8 @@ export const resolvers = {
         averageProductsCreatedPerYear: (_source, _args, context) => {
             return Math.floor(
                 context.resolveTree.args.representations[0].totalProductsCreated /
-                    context.resolveTree.args.representations[0].yearsOfEmployment
+                    context.resolveTree.args.representations[0].yearsOfEmployment,
             );
-        }
-    }
+        },
+    },
 };

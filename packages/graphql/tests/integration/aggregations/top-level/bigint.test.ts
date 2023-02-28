@@ -67,7 +67,7 @@ describe("aggregations-top_level-bigint", () => {
                 `,
                 {
                     testString,
-                }
+                },
             );
 
             const query = `
@@ -130,7 +130,7 @@ describe("aggregations-top_level-bigint", () => {
                 `,
                 {
                     testString,
-                }
+                },
             );
 
             const query = `
@@ -193,7 +193,7 @@ describe("aggregations-top_level-bigint", () => {
                 `,
                 {
                     testString,
-                }
+                },
             );
 
             const query = `
@@ -256,7 +256,7 @@ describe("aggregations-top_level-bigint", () => {
                 `,
                 {
                     testString,
-                }
+                },
             );
 
             const query = `
@@ -319,7 +319,7 @@ describe("aggregations-top_level-bigint", () => {
                 `,
                 {
                     testString,
-                }
+                },
             );
 
             const query = `

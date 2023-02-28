@@ -86,7 +86,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
         await wSession.writeTransaction((tx) =>
-            tx.run("CREATE (a:Wurst) -[:```MATCH (n) DETACH DELETE n //`] -> (:Salat)")
+            tx.run("CREATE (a:Wurst) -[:```MATCH (n) DETACH DELETE n //`] -> (:Salat)"),
         );
         const bm = wSession.lastBookmark();
         await wSession.close();

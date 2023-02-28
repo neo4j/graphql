@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/227", () => {
                     memberId,
                     gender,
                     townId,
-                }
+                },
             );
 
             const gqlResult = await graphql({

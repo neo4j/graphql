@@ -21,7 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 
 /** Serializes object into a string for Cypher objects */
 export function stringifyObject(
-    fields: Record<string, Cypher.RawCypher | string | undefined | null>
+    fields: Record<string, Cypher.RawCypher | string | undefined | null>,
 ): Cypher.RawCypher {
     return new Cypher.RawCypher(
         (env) =>
@@ -34,6 +34,6 @@ export function stringifyObject(
                         return `${key}: ${value}`;
                     }
                 })
-                .join(", ")} }`
+                .join(", ")} }`,
     );
 }

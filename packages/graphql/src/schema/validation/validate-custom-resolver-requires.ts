@@ -34,7 +34,7 @@ export function validateCustomResolverRequires(document: DocumentNode, schema: G
     definitionNodes.objectTypes.forEach((objType) => {
         objType.fields?.forEach((field) => {
             const customResolverDirective = field.directives?.find(
-                (directive) => directive.name.value === "customResolver"
+                (directive) => directive.name.value === "customResolver",
             );
             const requiresArg = customResolverDirective?.arguments?.find((arg) => arg.name.value === "requires");
             if (requiresArg) {
@@ -51,7 +51,7 @@ export function validateCustomResolverRequires(document: DocumentNode, schema: G
 function validateSelectionSet(
     baseSchema: GraphQLSchema,
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
-    selectionSetDocument: DocumentNode
+    selectionSetDocument: DocumentNode,
 ) {
     const validationSchema = mergeSchemas({
         schemas: [baseSchema],
@@ -65,7 +65,7 @@ function validateSelectionSet(
     const errors = validate(validationSchema, selectionSetDocument);
     if (errors.length) {
         throw new Error(
-            `Invalid selection set provided to @customResolver on ${object.name.value}:\n${errors.join("\n")}`
+            `Invalid selection set provided to @customResolver on ${object.name.value}:\n${errors.join("\n")}`,
         );
     }
 }

@@ -81,7 +81,7 @@ export function translateResolveReference({
         preComputedWhereFields,
         connectionPreClauses,
         projectionSubqueries,
-        projectionClause
+        projectionClause,
     );
 
     return readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});

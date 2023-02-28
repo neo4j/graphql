@@ -170,7 +170,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                 actedInInput6,
                 actedInInput7,
                 actedInInput8,
-            }
+            },
         );
     });
 

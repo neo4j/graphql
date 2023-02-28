@@ -63,7 +63,7 @@ function createDeleteAndParams({
             const refNodes: Node[] = [];
 
             const relationship = context.relationships.find(
-                (x) => x.properties === relationField.properties
+                (x) => x.properties === relationField.properties,
             ) as unknown as Relationship;
 
             if (relationField.union) {
@@ -100,7 +100,7 @@ function createDeleteAndParams({
 
                     const labels = refNode.getLabelString(context);
                     res.strs.push(
-                        `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
+                        `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`,
                     );
 
                     const whereStrs: string[] = [];
@@ -171,7 +171,7 @@ function createDeleteAndParams({
                         const quote = insideDoWhen ? `\\"` : `"`;
                         res.strs.push(`WITH ${[...withVars, variableName].join(", ")}${withRelationshipStr}`);
                         res.strs.push(
-                            `CALL apoc.util.validate(NOT (${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                            `CALL apoc.util.validate(NOT (${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`,
                         );
                         res.params = { ...res.params, ...allowAuth[1] };
                     }
@@ -244,8 +244,8 @@ function createDeleteAndParams({
 
                     res.strs.push(
                         `WITH ${[...withVars, `collect(DISTINCT ${variableName}) AS ${nodeToDelete}`].join(
-                            ", "
-                        )}${withRelationshipStr}`
+                            ", ",
+                        )}${withRelationshipStr}`,
                     );
 
                     /**
@@ -275,7 +275,7 @@ function createDeleteAndParams({
                         });
                         const reduceStr = `REDUCE(m=${META_CYPHER_VARIABLE}, n IN ${nodeToDelete} | m + ${metaObjectStr} + ${eventWithMetaStr}) AS ${META_CYPHER_VARIABLE}`;
                         res.strs.push(
-                            `WITH ${[...filterMetaVariable(withVars), nodeToDelete].join(", ")}, ${reduceStr}`
+                            `WITH ${[...filterMetaVariable(withVars), nodeToDelete].join(", ")}, ${reduceStr}`,
                         );
                     }
 
@@ -290,12 +290,12 @@ function createDeleteAndParams({
                     if (context.subscriptionsEnabled) {
                         // Fixes https://github.com/neo4j/graphql/issues/440
                         res.strs.push(
-                            `WITH ${filterMetaVariable(withVars).join(", ")}, collect(distinct meta) AS update_meta`
+                            `WITH ${filterMetaVariable(withVars).join(", ")}, collect(distinct meta) AS update_meta`,
                         );
                         res.strs.push(
                             `WITH ${filterMetaVariable(withVars).join(
-                                ", "
-                            )}, REDUCE(m=[], n IN update_meta | m + n) AS meta`
+                                ", ",
+                            )}, REDUCE(m=[], n IN update_meta | m + n) AS meta`,
                         );
                     }
                 });

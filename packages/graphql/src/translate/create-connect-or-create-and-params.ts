@@ -70,7 +70,7 @@ export function createConnectOrCreateAndParams({
             throw new Neo4jGraphQLError(
                 `Conflicting modification of ${conflictingProperties.map((n) => `[[${n}]]`).join(", ")} on type ${
                     refNode.name
-                }`
+                }`,
             );
         }
     });
@@ -103,7 +103,7 @@ export function createConnectOrCreateAndParams({
         const returnStatement = new Cypher.Return(countResult);
         const withStatement = new Cypher.With(...withVarsVariables);
         const callStatement = new Cypher.Call(Cypher.concat(statement, returnStatement)).innerWith(
-            ...withVarsVariables
+            ...withVarsVariables,
         );
         const subqueryClause = Cypher.concat(withStatement, callStatement);
         if (context.subscriptionsEnabled) {
@@ -206,7 +206,7 @@ function mergeStatement({
                 parentNode,
                 callbackBucket,
                 "CREATE",
-                node
+                node,
             );
         })
         .filter((tuple) => tuple.length !== 0) as [Cypher.PropertyRef, Cypher.RawCypher][];
@@ -242,7 +242,7 @@ function mergeStatement({
     const onCreateRelationshipParams = Object.entries(rawRelationshipParams).map(
         ([key, param]): [Cypher.PropertyRef, Cypher.Param] => {
             return [relationship.property(key), param];
-        }
+        },
     );
     const relationshipMerge = new Cypher.Merge(relationshipPattern).onCreate(...onCreateRelationshipParams);
 

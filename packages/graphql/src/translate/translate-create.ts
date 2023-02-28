@@ -107,7 +107,7 @@ export default async function translateCreate({
             res.params = { ...res.params, ...createAndParams[1] };
             return res;
         },
-        { createStrs: [], params: {}, withVars: [] }
+        { createStrs: [], params: {}, withVars: [] },
     ) as {
         createStrs: string[];
         params: any;
@@ -129,7 +129,7 @@ export default async function translateCreate({
             });
 
             const projectionExpr = new Cypher.RawCypher(
-                (env) => `${varName.getCypher(env)} ${projection.projection.getCypher(env)}`
+                (env) => `${varName.getCypher(env)} ${projection.projection.getCypher(env)}`,
             );
             const projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
 
@@ -138,8 +138,8 @@ export default async function translateCreate({
                     new Cypher.apoc.Validate(
                         Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
                         AUTH_FORBIDDEN_ERROR,
-                        new Cypher.Literal([0])
-                    )
+                        new Cypher.Literal([0]),
+                    ),
                 );
                 return {
                     projection: projectionExpr,
@@ -162,7 +162,7 @@ export default async function translateCreate({
                 projectionSubqueriesClause: undefined,
                 projectionList: [],
                 authCalls: undefined,
-            }
+            },
         );
     }
 
@@ -206,7 +206,7 @@ export default async function translateCreate({
 }
 function generateCreateReturnStatement(
     projectionExpr: Cypher.Expr | undefined,
-    subscriptionsEnabled: boolean
+    subscriptionsEnabled: boolean,
 ): Cypher.Clause {
     const statements = new Cypher.RawCypher((env) => {
         let statStr;

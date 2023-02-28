@@ -52,7 +52,7 @@ function checkDirectiveCombinations(directives: readonly DirectiveNode[] = []): 
             directives.forEach((d) => {
                 if (invalidCombinations[directive.name.value].includes(d.name.value)) {
                     throw new Error(
-                        `Directive @${directive.name.value} cannot be used in combination with @${d.name.value}`
+                        `Directive @${directive.name.value} cannot be used in combination with @${d.name.value}`,
                     );
                 }
             });

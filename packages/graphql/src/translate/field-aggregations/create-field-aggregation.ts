@@ -103,7 +103,7 @@ export function createFieldAggregation({
             count: countRef,
         });
         projectionSubqueries = new Cypher.Call(
-            Cypher.concat(matchWherePattern, new Cypher.Return([countFunction, countRef]))
+            Cypher.concat(matchWherePattern, new Cypher.Return([countFunction, countRef])),
         ).innerWith(sourceRef);
     }
     const nodeFields = aggregationFields.node;
@@ -170,7 +170,7 @@ function getAggregationProjectionAndSubqueries({
         });
         innerProjectionSubqueries = Cypher.concat(
             innerProjectionSubqueries,
-            new Cypher.Call(subquery).innerWith(sourceRef)
+            new Cypher.Call(subquery).innerWith(sourceRef),
         );
     });
     if (!innerProjectionSubqueries) {

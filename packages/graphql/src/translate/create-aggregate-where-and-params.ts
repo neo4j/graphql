@@ -82,7 +82,7 @@ export function aggregatePreComputedWhereFields({
         relationship,
         aggregationTarget,
         cypherRelation,
-        context
+        context,
     );
     matchQuery.return(...returnProjections);
 
@@ -101,7 +101,7 @@ function aggregateWhere(
     relationship: Relationship | undefined,
     aggregationTarget: Cypher.Node,
     cypherRelation: Cypher.Relationship,
-    context: Context
+    context: Context,
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
     const returnPredicates: Cypher.Predicate[] = [];
@@ -119,7 +119,7 @@ function aggregateWhere(
                 value,
                 refNodeOrRelation,
                 target,
-                context
+                context,
             );
             returnProjections.push(...innerReturnProjections);
             returnPredicates.push(...predicates);
@@ -133,7 +133,7 @@ function aggregateWhere(
                     relationship,
                     aggregationTarget,
                     cypherRelation,
-                    context
+                    context,
                 );
                 returnProjections.push(...innerReturnProjections);
                 logicalPredicates.push(...predicates);
@@ -150,7 +150,7 @@ function aggregateWhere(
 function createCountPredicateAndProjection(
     aggregationTarget: Cypher.Node,
     filterKey: string,
-    filterValue: number
+    filterValue: number,
 ): {
     returnProjection: "*" | Cypher.ProjectionColumn;
     predicate: Cypher.Predicate | undefined;
@@ -175,7 +175,7 @@ function aggregateEntityWhere(
     aggregateEntityWhereInput: WhereFilter,
     refNodeOrRelation: Node | Relationship,
     target: Cypher.Node | Cypher.Relationship,
-    context: Context
+    context: Context,
 ): AggregateWhereReturn {
     const returnProjections: ("*" | Cypher.ProjectionColumn)[] = [];
     const predicates: Cypher.Predicate[] = [];
@@ -188,7 +188,7 @@ function aggregateEntityWhere(
                     whereInput,
                     refNodeOrRelation,
                     target,
-                    context
+                    context,
                 );
                 returnProjections.push(...innerReturnProjections);
                 logicalPredicates.push(...innerPredicates);
@@ -212,7 +212,7 @@ function createEntityOperation(
     target: Cypher.Node | Cypher.Relationship,
     aggregationInputField: string,
     aggregationInputValue: any,
-    context: Context
+    context: Context,
 ): Cypher.Predicate {
     const paramName = new Cypher.Param(aggregationInputValue);
     const regexResult = aggregationFieldRegEx.exec(aggregationInputField)?.groups as AggregationFieldRegexGroups;
@@ -237,7 +237,7 @@ function createEntityOperation(
 
         const pointField = refNodeOrRelation.pointFields.find((x) => x.fieldName === fieldName);
         const durationField = refNodeOrRelation.primitiveFields.find(
-            (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
+            (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration",
         );
 
         const innerOperation = createComparisonOperation({
@@ -259,7 +259,7 @@ function createEntityOperation(
 
 function getAggregateOperation(
     property: Cypher.PropertyRef | Cypher.Function,
-    aggregationOperator: string
+    aggregationOperator: string,
 ): Cypher.Function {
     switch (aggregationOperator) {
         case "AVERAGE":

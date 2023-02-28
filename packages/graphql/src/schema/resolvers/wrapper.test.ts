@@ -109,7 +109,7 @@ describe("wrapper test", () => {
             {},
             {},
             { neo4jDatabaseInfo: contextVersion } as Context,
-            {} as GraphQLResolveInfo
+            {} as GraphQLResolveInfo,
         );
         expect(res).toBe(resolvedResult);
         expect(readTransaction).toHaveBeenCalledTimes(0);

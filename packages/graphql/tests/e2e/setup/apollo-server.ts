@@ -73,7 +73,7 @@ export class ApolloTestServer implements TestGraphQLServer {
                     return ctx;
                 },
             },
-            wsServer
+            wsServer,
         );
         const server = new ApolloServer({
             schema,

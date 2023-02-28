@@ -62,18 +62,18 @@ function validateLimitArguments(arg: QueryOptionsDirective["limit"], typeName: s
 
     if (defaultLimit !== undefined && defaultLimit <= 0) {
         return new Neo4jGraphQLError(
-            `${typeName} @queryOptions(limit: {default: ${defaultLimit}}) invalid value: '${defaultLimit}', it should be a number greater than 0`
+            `${typeName} @queryOptions(limit: {default: ${defaultLimit}}) invalid value: '${defaultLimit}', it should be a number greater than 0`,
         );
     }
     if (maxLimit !== undefined && maxLimit <= 0) {
         return new Neo4jGraphQLError(
-            `${typeName} @queryOptions(limit: {max: ${maxLimit}}) invalid value: '${maxLimit}', it should be a number greater than 0`
+            `${typeName} @queryOptions(limit: {max: ${maxLimit}}) invalid value: '${maxLimit}', it should be a number greater than 0`,
         );
     }
     if (maxLimit && defaultLimit) {
         if (maxLimit < defaultLimit) {
             return new Neo4jGraphQLError(
-                `${typeName} @queryOptions(limit: {max: ${maxLimit}, default: ${defaultLimit}}) invalid default value, 'default' must be smaller than 'max'`
+                `${typeName} @queryOptions(limit: {max: ${maxLimit}, default: ${defaultLimit}}) invalid default value, 'default' must be smaller than 'max'`,
             );
         }
     }

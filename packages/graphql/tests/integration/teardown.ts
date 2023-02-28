@@ -41,5 +41,5 @@ const teardown = async () => {
 
 teardown().then(
     () => console.log("Successfully cleared down database."),
-    (reason) => console.log(`Error encountered whilst clearing down database: ${reason}`)
+    (reason) => console.log(`Error encountered whilst clearing down database: ${reason}`),
 );

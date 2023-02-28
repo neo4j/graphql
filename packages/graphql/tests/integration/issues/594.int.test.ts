@@ -87,7 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
             expect.toIncludeSameMembers([
                 { actorsAggregate: { node: { nickname: { shortest: "SName" } } } },
                 { actorsAggregate: { node: { nickname: { shortest: null } } } },
-            ])
+            ]),
         );
     });
 

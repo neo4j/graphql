@@ -82,7 +82,7 @@ export class Login extends Screen {
     public async loginDismissIntrospection(
         username: string = NEO_USER,
         password: string = NEO_PASSWORD,
-        url: string = NEO_URL
+        url: string = NEO_URL,
     ) {
         await this.setUsername(username);
         await this.setPassword(password);

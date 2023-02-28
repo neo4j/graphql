@@ -33,7 +33,7 @@ export function createJwtRequest(secret: string, extraData: Record<string, any> 
             ...extraData,
         },
         secret,
-        { noTimestamp: true }
+        { noTimestamp: true },
     );
     const socket = new Socket({ readable: true });
     const req = new IncomingMessage(socket);

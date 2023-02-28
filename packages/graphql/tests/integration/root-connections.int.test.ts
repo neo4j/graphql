@@ -145,7 +145,7 @@ describe("root-connections", () => {
                     dummyAircrafts.map((node) => ({
                         cursor: expect.any(String),
                         node,
-                    }))
+                    })),
                 ),
             });
         } finally {

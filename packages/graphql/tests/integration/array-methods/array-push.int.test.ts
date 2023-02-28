@@ -560,7 +560,7 @@ describe("array-push", () => {
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any)[actor.operations.update][actor.plural]).toEqual(
-            expect.toIncludeSameMembers([{ name: actorName, worksInMovies: [{ viewers: [1, 2, 3, 4] }] }])
+            expect.toIncludeSameMembers([{ name: actorName, worksInMovies: [{ viewers: [1, 2, 3, 4] }] }]),
         );
     });
 
@@ -628,7 +628,7 @@ describe("array-push", () => {
             {
                 id,
                 initialPay: [initialPay],
-            }
+            },
         );
         // Update movie
         const gqlResult = await graphql({
@@ -645,7 +645,7 @@ describe("array-push", () => {
                 `,
             {
                 id,
-            }
+            },
         );
         expect(storedValue.records[0].get("pay")).toEqual([initialPay, payIncrement]);
     });
@@ -715,7 +715,7 @@ describe("array-push", () => {
                 `,
             {
                 id,
-            }
+            },
         );
         // Update movie
         const gqlResult = await graphql({
@@ -733,7 +733,7 @@ describe("array-push", () => {
                     actedIn: [{ title: "The Matrix" }],
                     actedInConnection: { edges: [{ locations: [point] }] },
                 },
-            ])
+            ]),
         );
     });
 });

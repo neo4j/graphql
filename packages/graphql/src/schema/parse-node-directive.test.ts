@@ -33,7 +33,7 @@ describe("parseNodeDirective", () => {
         const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
         const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
         expect(() => parseNodeDirective(directive)).toThrow(
-            "Undefined or incorrect directive passed into parseNodeDirective function"
+            "Undefined or incorrect directive passed into parseNodeDirective function",
         );
     });
 

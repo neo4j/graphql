@@ -79,7 +79,7 @@ describe("@customResolver directive", () => {
                 `
                 CREATE (user:${testType.name}) SET user = $user
             `,
-                { user }
+                { user },
             );
             await session.close();
         });
@@ -194,7 +194,7 @@ describe("@customResolver directive", () => {
                 `
                 CREATE (user:${testType.name}) SET user.id = $userId
             `,
-                { userId: user.id }
+                { userId: user.id },
             );
             await session.close();
         });
@@ -417,7 +417,7 @@ describe("Related Fields", () => {
         try {
             await session.run(
                 `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
-                { userInput1, addressInput1 }
+                { userInput1, addressInput1 },
             );
         } finally {
             await session.close();
@@ -484,7 +484,7 @@ describe("Related Fields", () => {
         try {
             await session.run(
                 `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
-                { userInput1, addressInput1 }
+                { userInput1, addressInput1 },
             );
         } finally {
             await session.close();
@@ -519,7 +519,7 @@ describe("Related Fields", () => {
         });
 
         await expect(neoSchema.getSchema()).rejects.toThrow(
-            `Invalid selection set provided to @customResolver on ${User}`
+            `Invalid selection set provided to @customResolver on ${User}`,
         );
     });
 
@@ -528,7 +528,7 @@ describe("Related Fields", () => {
         try {
             await session.run(
                 `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
-                { userInput1, addressInput1 }
+                { userInput1, addressInput1 },
             );
         } finally {
             await session.close();
@@ -563,7 +563,7 @@ describe("Related Fields", () => {
         });
 
         await expect(neoSchema.getSchema()).rejects.toThrow(
-            `Invalid selection set provided to @customResolver on ${User}`
+            `Invalid selection set provided to @customResolver on ${User}`,
         );
     });
 
@@ -572,7 +572,7 @@ describe("Related Fields", () => {
         try {
             await session.run(
                 `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
-                { userInput1, addressInput1 }
+                { userInput1, addressInput1 },
             );
         } finally {
             await session.close();
@@ -649,7 +649,7 @@ describe("Related Fields", () => {
                     CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address}) SET user1 = $userInput1, addr1 = $addressInput1
                     CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address}) SET user2 = $userInput2, addr2 = $addressInput2
                 `,
-                { userInput1, addressInput1, userInput2, addressInput2 }
+                { userInput1, addressInput1, userInput2, addressInput2 },
             );
         } finally {
             await session.close();
@@ -735,7 +735,7 @@ describe("Related Fields", () => {
                     CREATE (user1:${User})-[:LIVES_AT]->(addr1:${Address}) SET user1 = $userInput1, addr1 = $addressInput1
                     CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address}) SET user2 = $userInput2, addr2 = $addressInput2
                 `,
-                { userInput1, addressInput1, userInput2, addressInput2 }
+                { userInput1, addressInput1, userInput2, addressInput2 },
             );
         } finally {
             await session.close();
@@ -823,7 +823,7 @@ describe("Related Fields", () => {
                     CREATE (user2:${User})-[:LIVES_AT]->(addr2:${Address})-[:IN_CITY]->(city2:${City})
                     SET user2 = $userInput2, addr2 = $addressInput2, city2 = $cityInput2
                 `,
-                { userInput1, addressInput1, userInput2, addressInput2, cityInput1, cityInput2 }
+                { userInput1, addressInput1, userInput2, addressInput2, cityInput1, cityInput2 },
             );
         } finally {
             await session.close();
@@ -923,7 +923,7 @@ describe("Related Fields", () => {
                         -[:IN_STATE]->(state)
                     SET user2 = $userInput2, addr2 = $addressInput2, city2 = $cityInput2
                 `,
-                { userInput1, addressInput1, userInput2, addressInput2, cityInput1, cityInput2, stateInput }
+                { userInput1, addressInput1, userInput2, addressInput2, cityInput1, cityInput2, stateInput },
             );
         } finally {
             await session.close();
@@ -1039,7 +1039,7 @@ describe("Related Fields", () => {
                     CREATE (author2)-[:WROTE]->(book2:${Book}) SET book2 = $bookInput2
                     CREATE (author1)-[:WROTE]->(journal1)
                 `,
-                { authorInput1, authorInput2, bookInput1, bookInput2, journalInput1, journalInput2 }
+                { authorInput1, authorInput2, bookInput1, bookInput2, journalInput1, journalInput2 },
             );
         } finally {
             await session.close();
@@ -1102,7 +1102,7 @@ describe("Related Fields", () => {
                         publicationsWithAuthorResolver({
                             name: authorInput1.name,
                             publications: [bookInput1, journalInput1],
-                        })
+                        }),
                     ),
                 },
                 {
@@ -1110,7 +1110,7 @@ describe("Related Fields", () => {
                         publicationsWithAuthorResolver({
                             name: authorInput2.name,
                             publications: [journalInput1, journalInput2, bookInput2],
-                        })
+                        }),
                     ),
                 },
             ]),
@@ -1134,7 +1134,7 @@ describe("Related Fields", () => {
                     addressInput2,
                     cityInput1: { name: cityInput1.name, cityPopulation: cityInput1.population },
                     cityInput2: { name: cityInput2.name, cityPopulation: cityInput2.population },
-                }
+                },
             );
         } finally {
             await session.close();
@@ -1242,7 +1242,7 @@ describe("Related Fields", () => {
                     addressInput2,
                     cityInput1,
                     cityInput2,
-                }
+                },
             );
         } finally {
             await session.close();
@@ -1324,7 +1324,7 @@ describe("Related Fields", () => {
                     addressInput2,
                     cityInput1,
                     cityInput2,
-                }
+                },
             );
         } finally {
             await session.close();
@@ -1413,7 +1413,7 @@ describe("Related Fields", () => {
                     addressInput2,
                     cityInput1,
                     cityInput2,
-                }
+                },
             );
         } finally {
             await session.close();
@@ -1502,7 +1502,7 @@ describe("Related Fields", () => {
                     addressInput2,
                     cityInput1,
                     cityInput2,
-                }
+                },
             );
         } finally {
             await session.close();
@@ -1598,7 +1598,7 @@ describe("Related Fields", () => {
                     CREATE (author2:${Author})-[:WROTE]->(journal1:${Journal}) SET author2 = $authorInput2, journal1 = $journalInput1
                     CREATE (author1)-[:WROTE]->(journal1)
                 `,
-                { authorInput1, authorInput2, bookInput1, journalInput1 }
+                { authorInput1, authorInput2, bookInput1, journalInput1 },
             );
         } finally {
             await session.close();
@@ -1634,7 +1634,7 @@ describe("Related Fields", () => {
         const publicationsWithAuthorResolver = ({ name, publications }) =>
             publications.map(
                 (publication) =>
-                    `${publication.title || publication.subject} by ${name} in ${publication.publicationYear}`
+                    `${publication.title || publication.subject} by ${name} in ${publication.publicationYear}`,
             );
 
         const resolvers = {
@@ -1670,7 +1670,7 @@ describe("Related Fields", () => {
                         publicationsWithAuthorResolver({
                             name: authorInput1.name,
                             publications: [bookInput1, journalInput1],
-                        })
+                        }),
                     ),
                 },
                 {
@@ -1678,7 +1678,7 @@ describe("Related Fields", () => {
                         publicationsWithAuthorResolver({
                             name: authorInput2.name,
                             publications: [journalInput1],
-                        })
+                        }),
                     ),
                 },
             ]),
@@ -1695,7 +1695,7 @@ describe("Related Fields", () => {
                     CREATE (user1)-[:FOLLOWS]->(author2:${Author})-[:WROTE]->(journal1:${Journal}) SET author2 = $authorInput2, journal1 = $journalInput1
                     CREATE (author1)-[:WROTE]->(journal1)
                 `,
-                { userInput1, authorInput1, authorInput2, bookInput1, journalInput1 }
+                { userInput1, authorInput1, authorInput2, bookInput1, journalInput1 },
             );
         } finally {
             await session.close();
@@ -1803,7 +1803,7 @@ describe("Related Fields", () => {
                     CREATE (user1)-[:FOLLOWS]->(author2:${Author})-[:WROTE]->(journal1:${Journal}) SET author2 = $authorInput2, journal1 = $journalInput1
                     CREATE (author1)-[:WROTE]->(journal1)
                 `,
-                { userInput1, authorInput1, authorInput2, bookInput1, journalInput1 }
+                { userInput1, authorInput1, authorInput2, bookInput1, journalInput1 },
             );
         } finally {
             await session.close();
@@ -1906,7 +1906,7 @@ describe("Related Fields", () => {
                     CREATE (user1)-[:FOLLOWS]->(author2:${Author})-[:WROTE]->(journal1:${Journal}) SET author2 = $authorInput2, journal1 = $journalInput1
                     CREATE (author1)-[:WROTE]->(journal1)
                 `,
-                { userInput1, authorInput1, authorInput2, bookInput1, journalInput1 }
+                { userInput1, authorInput1, authorInput2, bookInput1, journalInput1 },
             );
         } finally {
             await session.close();
@@ -1964,7 +1964,7 @@ describe("Related Fields", () => {
         });
 
         await expect(neoSchema.getSchema()).rejects.toThrow(
-            `Invalid selection set provided to @customResolver on ${User}`
+            `Invalid selection set provided to @customResolver on ${User}`,
         );
     });
 
@@ -2347,7 +2347,7 @@ describe("Related Fields", () => {
         try {
             await session.run(
                 `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
-                { userInput1, addressInput1 }
+                { userInput1, addressInput1 },
             );
         } finally {
             await session.close();
@@ -2416,7 +2416,7 @@ describe("Related Fields", () => {
         try {
             await session.run(
                 `CREATE (user:${User})-[:LIVES_AT]->(addr:${Address}) SET user = $userInput1, addr = $addressInput1`,
-                { userInput1, addressInput1 }
+                { userInput1, addressInput1 },
             );
         } finally {
             await session.close();

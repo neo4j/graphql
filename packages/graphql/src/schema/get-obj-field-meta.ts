@@ -120,7 +120,7 @@ function getObjFieldMeta({
             const directives = [
                 ...(field?.directives || []),
                 ...(interfaceField?.directives || []).filter(
-                    (d) => !field.directives?.find((fd) => fd.name.value === d.name.value)
+                    (d) => !field.directives?.find((fd) => fd.name.value === d.name.value),
                 ),
             ];
 
@@ -181,7 +181,7 @@ function getObjFieldMeta({
                             "unique",
                             "callback",
                             "populatedBy",
-                        ].includes(x.name.value)
+                        ].includes(x.name.value),
                 ),
                 arguments: [...(field.arguments || [])],
                 ...(authDirective ? { auth: getAuth(authDirective) } : {}),
@@ -269,7 +269,7 @@ function getObjFieldMeta({
 
                 if (obj.interfaces && obj.interfaces.length) {
                     const inter = interfaces.find(
-                        (i) => i.name.value === (obj.interfaces as NamedTypeNode[])[0].name.value
+                        (i) => i.name.value === (obj.interfaces as NamedTypeNode[])[0].name.value,
                     ) as InterfaceTypeDefinitionNode;
 
                     if (inter.fields?.some((f) => f.name.value === baseField.fieldName)) {
@@ -440,7 +440,7 @@ function getObjFieldMeta({
 
                         if (Number.isNaN(Date.parse((value as StringValueNode).value))) {
                             throw new Error(
-                                `Default value for ${obj.name.value}.${temporalField.fieldName} is not a valid DateTime`
+                                `Default value for ${obj.name.value}.${temporalField.fieldName} is not a valid DateTime`,
                             );
                         }
 
@@ -509,7 +509,7 @@ function getObjFieldMeta({
                         const checkKind = (kind: string) => {
                             if (value?.kind !== kind) {
                                 throw new Error(
-                                    `Default value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`
+                                    `Default value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`,
                                 );
                             }
                         };
@@ -534,7 +534,7 @@ function getObjFieldMeta({
                                 break;
                             default:
                                 throw new Error(
-                                    "@default directive can only be used on types: Int | Float | String | Boolean | ID | DateTime | Enum"
+                                    "@default directive can only be used on types: Int | Float | String | Boolean | ID | DateTime | Enum",
                                 );
                         }
                     }
@@ -545,7 +545,7 @@ function getObjFieldMeta({
                         const checkKind = (kind: string) => {
                             if (value?.kind !== kind) {
                                 throw new Error(
-                                    `coalesce() value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`
+                                    `coalesce() value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`,
                                 );
                             }
                         };
@@ -570,7 +570,7 @@ function getObjFieldMeta({
                                 break;
                             default:
                                 throw new Error(
-                                    "@coalesce directive can only be used on types: Int | Float | String | Boolean | ID | DateTime"
+                                    "@coalesce directive can only be used on types: Int | Float | String | Boolean | ID | DateTime",
                                 );
                         }
                     }
@@ -594,7 +594,7 @@ function getObjFieldMeta({
             temporalFields: [],
             pointFields: [],
             customResolverFields: [],
-        }
+        },
     ) as ObjectFields;
 }
 

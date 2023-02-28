@@ -219,7 +219,7 @@ export class Subgraph {
     }
 
     private findFederationLinkMeta(
-        typeDefs: TypeSource
+        typeDefs: TypeSource,
     ): { extension: SchemaExtensionNode; directive: ConstDirectiveNode } | undefined {
         const document = mergeTypeDefs(typeDefs);
 

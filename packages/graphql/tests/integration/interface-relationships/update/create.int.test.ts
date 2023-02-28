@@ -139,7 +139,7 @@ describe("interface relationships", () => {
                 `
                 CREATE (a:Actor { name: $actorName })
             `,
-                { actorName }
+                { actorName },
             );
 
             const gqlResult = await graphql({
@@ -257,7 +257,7 @@ describe("interface relationships", () => {
                 `
                 CREATE (a:Actor { name: $actorName1 })
             `,
-                { actorName1 }
+                { actorName1 },
             );
 
             const gqlResult = await graphql({

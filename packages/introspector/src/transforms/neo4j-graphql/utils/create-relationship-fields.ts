@@ -25,18 +25,18 @@ export default function createRelationshipFields(
     fromTypeName: string,
     toTypeName: string,
     relType: string,
-    propertiesTypeName?: string
+    propertiesTypeName?: string,
 ): { fromField: NodeField; toField: NodeField } {
     const fromField = new NodeField(
         generateRelationshipFieldName(relType, fromTypeName, toTypeName, "OUT"),
-        `[${toTypeName}!]!`
+        `[${toTypeName}!]!`,
     );
     const fromDirective = new RelationshipDirective(relType, "OUT", propertiesTypeName);
     fromField.addDirective(fromDirective);
 
     const toField = new NodeField(
         generateRelationshipFieldName(relType, fromTypeName, toTypeName, "IN"),
-        `[${fromTypeName}!]!`
+        `[${fromTypeName}!]!`,
     );
     const toDirective = new RelationshipDirective(relType, "IN", propertiesTypeName);
     toField.addDirective(toDirective);

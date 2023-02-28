@@ -25,7 +25,7 @@ export default function inferRelationshipFieldName(
     relType: string,
     fromType: string,
     toType: string,
-    direction: Direction
+    direction: Direction,
 ): string {
     const sanitizedRelType = relType.replaceAll(/[\s/()\\`]/g, "");
     if (direction === "OUT") {

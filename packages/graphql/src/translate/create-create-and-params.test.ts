@@ -90,7 +90,7 @@ describe("createCreateAndParams", () => {
             trimmer(`
                 CREATE (this0:Movie)
                 SET this0.title = $this0_title
-            `)
+            `),
         );
 
         expect(result[1]).toMatchObject({

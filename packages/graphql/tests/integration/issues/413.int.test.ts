@@ -85,7 +85,7 @@ describe("413", () => {
                     CREATE (:JobPlan {tenantID: $tenantID})
                     CREATE (:JobPlan {tenantID: $tenantID})
                 `,
-                { tenantID }
+                { tenantID },
             );
 
             const req = createJwtRequest(secret, {

@@ -92,8 +92,8 @@ describe("GraphQL - Infer Schema on graphs", () => {
                 CREATE (a:Actor {name: $props.name})
                 MERGE (a)-[:ACTED_IN]->(m)
                 `,
-                { props: nodeProperties }
-            )
+                { props: nodeProperties },
+            ),
         );
         const bm = wSession.lastBookmark();
         await wSession.close();
@@ -136,8 +136,8 @@ describe("GraphQL - Infer Schema on graphs", () => {
                 MERGE (a)-[:DIRECTED]->(m)
                 MERGE (d)-[:ACTED_IN]->(m)
                 `,
-                { props: nodeProperties }
-            )
+                { props: nodeProperties },
+            ),
         );
         const bm = wSession.lastBookmark();
         await wSession.close();
@@ -202,8 +202,8 @@ describe("GraphQL - Infer Schema on graphs", () => {
                 MERGE (a)-[:DIRECTED {skill: $props.skill}]->(m)
                 MERGE (a)<-[:WON_PRIZE_FOR]-(m)
                 `,
-                { props: nodeProperties }
-            )
+                { props: nodeProperties },
+            ),
         );
         const bm = wSession.lastBookmark();
         await wSession.close();
@@ -258,8 +258,8 @@ describe("GraphQL - Infer Schema on graphs", () => {
                 MERGE (a)-[:\`ACTED-IN\` {roles: $props.roles}]->(m)
                 MERGE (a)<-[:WON_PRIZE_FOR]-(m)
                 `,
-                { props: nodeProperties }
-            )
+                { props: nodeProperties },
+            ),
         );
         const bm = wSession.lastBookmark();
         await wSession.close();

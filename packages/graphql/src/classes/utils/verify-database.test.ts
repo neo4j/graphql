@@ -37,18 +37,18 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: minVersion,
                             functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES
-                        })
-                    }
-                ]
+                            procedures: REQUIRED_APOC_PROCEDURES,
+                        }),
+                    },
+                ],
             }),
             // @ts-ignore
-            close: () => undefined
+            close: () => undefined,
         };
 
         const driverConfig: DriverConfig = {
             database: "darrellanddan",
-            bookmarks: ["darrell", "dan"]
+            bookmarks: ["darrell", "dan"],
         };
 
         // @ts-ignore
@@ -59,11 +59,11 @@ describe("checkNeo4jCompat", () => {
                 return fakeSession;
             },
             // @ts-ignore
-            verifyConnectivity: () => undefined
+            verifyConnectivity: () => undefined,
         };
 
         await expect(
-            checkNeo4jCompat({ driver: fakeDriver, driverConfig, dbInfo: new Neo4jDatabaseInfo(minVersion) })
+            checkNeo4jCompat({ driver: fakeDriver, driverConfig, dbInfo: new Neo4jDatabaseInfo(minVersion) }),
         ).resolves.not.toThrow();
     });
 
@@ -79,13 +79,13 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: invalidVersion,
                             functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES
-                        })
-                    }
-                ]
+                            procedures: REQUIRED_APOC_PROCEDURES,
+                        }),
+                    },
+                ],
             }),
             // @ts-ignore
-            close: () => undefined
+            close: () => undefined,
         };
 
         // @ts-ignore
@@ -93,13 +93,13 @@ describe("checkNeo4jCompat", () => {
             // @ts-ignore
             session: () => fakeSession,
             // @ts-ignore
-            verifyConnectivity: () => undefined
+            verifyConnectivity: () => undefined,
         };
 
         await expect(
-            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo(invalidVersion) })
+            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo(invalidVersion) }),
         ).rejects.toThrow(
-            `Encountered the following DBMS compatiblility issues:\nExpected minimum Neo4j version: '${MIN_NEO4J_VERSION}', received: '${invalidVersion}'`
+            `Encountered the following DBMS compatiblility issues:\nExpected minimum Neo4j version: '${MIN_NEO4J_VERSION}', received: '${invalidVersion}'`,
         );
     });
 
@@ -115,13 +115,13 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: invalidVersion,
                             functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES
-                        })
-                    }
-                ]
+                            procedures: REQUIRED_APOC_PROCEDURES,
+                        }),
+                    },
+                ],
             }),
             // @ts-ignore
-            close: () => undefined
+            close: () => undefined,
         };
 
         // @ts-ignore
@@ -129,13 +129,13 @@ describe("checkNeo4jCompat", () => {
             // @ts-ignore
             session: () => fakeSession,
             // @ts-ignore
-            verifyConnectivity: () => undefined
+            verifyConnectivity: () => undefined,
         };
 
         await expect(
-            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo(invalidVersion) })
+            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo(invalidVersion) }),
         ).rejects.toThrow(
-            `Encountered the following DBMS compatiblility issues:\nExpected minimum Neo4j version: '${MIN_NEO4J_VERSION}', received: '${invalidVersion}'`
+            `Encountered the following DBMS compatiblility issues:\nExpected minimum Neo4j version: '${MIN_NEO4J_VERSION}', received: '${invalidVersion}'`,
         );
     });
 
@@ -149,13 +149,13 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: "4.0-aura",
                             functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES
-                        })
-                    }
-                ]
+                            procedures: REQUIRED_APOC_PROCEDURES,
+                        }),
+                    },
+                ],
             }),
             // @ts-ignore
-            close: () => undefined
+            close: () => undefined,
         };
 
         // @ts-ignore
@@ -163,11 +163,11 @@ describe("checkNeo4jCompat", () => {
             // @ts-ignore
             session: () => fakeSession,
             // @ts-ignore
-            verifyConnectivity: () => undefined
+            verifyConnectivity: () => undefined,
         };
 
         await expect(
-            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo("4.0-aura") })
+            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo("4.0-aura") }),
         ).resolves.not.toThrow();
     });
 
@@ -182,13 +182,13 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: minVersion,
                             functions: [],
-                            procedures: REQUIRED_APOC_PROCEDURES
-                        })
-                    }
-                ]
+                            procedures: REQUIRED_APOC_PROCEDURES,
+                        }),
+                    },
+                ],
             }),
             // @ts-ignore
-            close: () => undefined
+            close: () => undefined,
         };
 
         // @ts-ignore
@@ -196,15 +196,15 @@ describe("checkNeo4jCompat", () => {
             // @ts-ignore
             session: () => fakeSession,
             // @ts-ignore
-            verifyConnectivity: () => undefined
+            verifyConnectivity: () => undefined,
         };
 
         await expect(
-            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo(minVersion) })
+            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo(minVersion) }),
         ).rejects.toThrow(
             `Encountered the following DBMS compatiblility issues:\nMissing APOC functions: [ ${REQUIRED_APOC_FUNCTIONS.join(
-                ", "
-            )} ]`
+                ", ",
+            )} ]`,
         );
     });
 
@@ -220,13 +220,13 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: minVersion,
                             functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: []
-                        })
-                    }
-                ]
+                            procedures: [],
+                        }),
+                    },
+                ],
             }),
             // @ts-ignore
-            close: () => undefined
+            close: () => undefined,
         };
 
         // @ts-ignore
@@ -234,15 +234,15 @@ describe("checkNeo4jCompat", () => {
             // @ts-ignore
             session: () => fakeSession,
             // @ts-ignore
-            verifyConnectivity: () => undefined
+            verifyConnectivity: () => undefined,
         };
 
         await expect(
-            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo(minVersion) })
+            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo(minVersion) }),
         ).rejects.toThrow(
             `Encountered the following DBMS compatiblility issues:\nMissing APOC procedures: [ ${REQUIRED_APOC_PROCEDURES.join(
-                ", "
-            )} ]`
+                ", ",
+            )} ]`,
         );
     });
 
@@ -258,13 +258,13 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: minVersion,
                             functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES
-                        })
-                    }
-                ]
+                            procedures: REQUIRED_APOC_PROCEDURES,
+                        }),
+                    },
+                ],
             }),
             // @ts-ignore
-            close: () => undefined
+            close: () => undefined,
         };
 
         // @ts-ignore
@@ -272,11 +272,11 @@ describe("checkNeo4jCompat", () => {
             // @ts-ignore
             session: () => fakeSession,
             // @ts-ignore
-            verifyConnectivity: () => undefined
+            verifyConnectivity: () => undefined,
         };
 
         await expect(
-            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo(minVersion) })
+            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo(minVersion) }),
         ).resolves.not.toThrow();
     });
 
@@ -290,13 +290,13 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: "20.1.1",
                             functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES
-                        })
-                    }
-                ]
+                            procedures: REQUIRED_APOC_PROCEDURES,
+                        }),
+                    },
+                ],
             }),
             // @ts-ignore
-            close: () => undefined
+            close: () => undefined,
         };
 
         // @ts-ignore
@@ -304,11 +304,11 @@ describe("checkNeo4jCompat", () => {
             // @ts-ignore
             session: () => fakeSession,
             // @ts-ignore
-            verifyConnectivity: () => undefined
+            verifyConnectivity: () => undefined,
         };
 
         await expect(
-            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo("20.1.1") })
+            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo("20.1.1") }),
         ).resolves.not.toThrow();
     });
 
@@ -322,13 +322,13 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: "4.1.10",
                             functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES
-                        })
-                    }
-                ]
+                            procedures: REQUIRED_APOC_PROCEDURES,
+                        }),
+                    },
+                ],
             }),
             // @ts-ignore
-            close: () => undefined
+            close: () => undefined,
         };
 
         // @ts-ignore
@@ -336,11 +336,11 @@ describe("checkNeo4jCompat", () => {
             // @ts-ignore
             session: () => fakeSession,
             // @ts-ignore
-            verifyConnectivity: () => undefined
+            verifyConnectivity: () => undefined,
         };
 
         await expect(checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo("4.1.10") })).rejects.toThrow(
-            `Encountered the following DBMS compatiblility issues:\nExpected minimum Neo4j version: '${MIN_NEO4J_VERSION}', received: '4.1.10'`
+            `Encountered the following DBMS compatiblility issues:\nExpected minimum Neo4j version: '${MIN_NEO4J_VERSION}', received: '4.1.10'`,
         );
     });
 });

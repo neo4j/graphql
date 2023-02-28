@@ -90,7 +90,7 @@ describe("Filtering Operations", () => {
             expect.toIncludeSameMembers([
                 { title: "The Italian Job", released: 2003 },
                 { title: "The Lion King", released: 1994 },
-            ])
+            ]),
         );
     });
 });

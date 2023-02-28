@@ -25,7 +25,7 @@ export const LOCAL_TIME_REGEX =
     /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?$/;
 
 export const parseLocalTime = (
-    value: unknown
+    value: unknown,
 ): {
     hour: number;
     minute: number;

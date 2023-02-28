@@ -26,7 +26,7 @@ export function addArrayMethodsToITC(itc: InputTypeComposer, fields: BaseField[]
     // Add array methods for array fields
     const allowedArrayFieldTypes = [...SCALAR_TYPES, "Point", "CartesianPoint"];
     const arrayFields = fields.filter(
-        (field) => field.typeMeta.array && allowedArrayFieldTypes.includes(field.typeMeta.name)
+        (field) => field.typeMeta.array && allowedArrayFieldTypes.includes(field.typeMeta.name),
     );
     arrayFields.forEach((arrayField) => {
         itc.addFields({

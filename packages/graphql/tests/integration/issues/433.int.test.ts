@@ -82,7 +82,7 @@ describe("433", () => {
                 `
                     CREATE (:Movie {title: $movieTitle})<-[:ACTED_IN]-(:Person {name: $personName})
                 `,
-                { movieTitle, personName }
+                { movieTitle, personName },
             );
 
             const result = await graphql({

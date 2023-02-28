@@ -93,6 +93,6 @@ export function getDefinitionNodes(document: DocumentNode): DefinitionNodes {
             directives: [],
             unionTypes: [],
             schemaExtensions: [],
-        }
+        },
     );
 }

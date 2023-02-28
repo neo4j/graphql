@@ -111,7 +111,7 @@ export function createRelationPredicate({
     const hasOnlyNodeObjectFilter = whereInput?.node && !nodeOnObj;
     if (hasOnlyNodeObjectFilter) {
         const nodesImplementingInterface = context.nodes.filter((x) =>
-            x.interfaces.some((i) => i.name.value === relationField.typeMeta.name)
+            x.interfaces.some((i) => i.name.value === relationField.typeMeta.name),
         );
         labelsOfNodesImplementingInterface = nodesImplementingInterface.map((n) => n.getLabels(context)).flat();
         if (labelsOfNodesImplementingInterface?.length) {
@@ -123,7 +123,7 @@ export function createRelationPredicate({
     let orOperatorMultipleNodeLabels: Cypher.Predicate | undefined;
     if (labelsOfNodesImplementingInterface?.length) {
         orOperatorMultipleNodeLabels = Cypher.or(
-            ...labelsOfNodesImplementingInterface.map((label: string) => targetNode.hasLabel(label))
+            ...labelsOfNodesImplementingInterface.map((label: string) => targetNode.hasLabel(label)),
         );
     }
 
@@ -206,7 +206,7 @@ function createSimpleRelationshipPredicate({
         }
         case "single": {
             const patternComprehension = new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(
-                innerOperation
+                innerOperation,
             );
             return Cypher.single(childNode, patternComprehension, new Cypher.Literal(true));
         }
@@ -256,15 +256,15 @@ function createRelationPredicateWithSubqueries({
         new Cypher.With(parentNode),
         matchPattern,
         preComputedSubqueries,
-        subqueryWith
+        subqueryWith,
     );
     switch (listPredicateStr) {
         case "all": {
             const subquery = new Cypher.Call(
                 Cypher.concat(
                     subqueryContents,
-                    new Cypher.Return([Cypher.gt(Cypher.count(targetNode), new Cypher.Literal(0)), returnVar])
-                )
+                    new Cypher.Return([Cypher.gt(Cypher.count(targetNode), new Cypher.Literal(0)), returnVar]),
+                ),
             );
 
             const notNoneInnerPredicates = refEdge
@@ -309,8 +309,8 @@ function createRelationPredicateWithSubqueries({
             const subquery = new Cypher.Call(
                 Cypher.concat(
                     subqueryContents,
-                    new Cypher.Return([Cypher.eq(Cypher.count(targetNode), new Cypher.Literal(1)), returnVar])
-                )
+                    new Cypher.Return([Cypher.eq(Cypher.count(targetNode), new Cypher.Literal(1)), returnVar]),
+                ),
             );
             return {
                 predicate: Cypher.eq(returnVar, new Cypher.Literal(true)),
@@ -324,8 +324,8 @@ function createRelationPredicateWithSubqueries({
             const subquery = new Cypher.Call(
                 Cypher.concat(
                     subqueryContents,
-                    new Cypher.Return([Cypher.gt(Cypher.count(targetNode), new Cypher.Literal(0)), returnVar])
-                )
+                    new Cypher.Return([Cypher.gt(Cypher.count(targetNode), new Cypher.Literal(0)), returnVar]),
+                ),
             );
             if (["not", "none"].includes(listPredicateStr)) {
                 return {

@@ -138,7 +138,7 @@ describe("Subscriptions create", () => {
                     properties: { old: undefined, new: { id: "3" } },
                     typename: typeMovie.name,
                 },
-            ])
+            ]),
         );
     });
 });

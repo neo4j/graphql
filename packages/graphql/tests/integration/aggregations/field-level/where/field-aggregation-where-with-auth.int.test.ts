@@ -81,7 +81,7 @@ describe(`Field Level Auth Where Requests`, () => {
                 roles: [],
                 sub: 1234,
             },
-            secret
+            secret,
         );
     });
 

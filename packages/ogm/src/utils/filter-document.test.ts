@@ -44,8 +44,8 @@ describe("filterDocument", () => {
                         email: String
                         password: String
                     }
-                `)
-            )
+                `),
+            ),
         );
     });
 });

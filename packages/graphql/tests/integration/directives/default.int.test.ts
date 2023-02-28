@@ -48,7 +48,7 @@ describe("@default directive", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toThrow(
-                "@default directive can only be used on primitive type fields"
+                "@default directive can only be used on primitive type fields",
             );
         });
 
@@ -64,7 +64,7 @@ describe("@default directive", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toThrow(
-                "Default value for User.name does not have matching type String"
+                "Default value for User.name does not have matching type String",
             );
         });
 
@@ -80,7 +80,7 @@ describe("@default directive", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toThrow(
-                "Default value for User.verifiedAt is not a valid DateTime"
+                "Default value for User.verifiedAt is not a valid DateTime",
             );
         });
 

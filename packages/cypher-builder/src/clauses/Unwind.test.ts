@@ -27,7 +27,7 @@ describe("CypherBuilder UNWIND", () => {
         const unwindQuery = new Cypher.Unwind([moviesList, "batch"]);
         const queryResult = unwindQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(
-            `"UNWIND [ { title: \\"Matrix\\" }, { title: \\"Matrix 2\\" } ] AS batch"`
+            `"UNWIND [ { title: \\"Matrix\\" }, { title: \\"Matrix 2\\" } ] AS batch"`,
         );
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
     });

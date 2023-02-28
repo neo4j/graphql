@@ -88,7 +88,7 @@ describe("Time", () => {
                         MATCH (movie:Movie {id: $id})
                         RETURN movie {.id, .time} as movie
                     `,
-                    { id }
+                    { id },
                 );
 
                 const neo4jMovie: { id: string; time: { toString(): string } } =
@@ -117,7 +117,7 @@ describe("Time", () => {
 
             const id = generate({ readable: false });
             const times = [...new Array(faker.datatype.number({ min: 2, max: 4 }))].map(
-                () => faker.date.past().toISOString().split("T")[1]
+                () => faker.date.past().toISOString().split("T")[1],
             );
             const parsedTimes = times.map((time) => parseTime(time));
 
@@ -159,7 +159,7 @@ describe("Time", () => {
                         MATCH (movie:Movie {id: $id})
                         RETURN movie {.id, .times} as movie
                     `,
-                    { id }
+                    { id },
                 );
 
                 const neo4jMovie: { id: string; times: { toString(): string }[] } =
@@ -207,7 +207,7 @@ describe("Time", () => {
                         CREATE (movie:Movie)
                         SET movie = $movie
                     `,
-                    { movie: { id } }
+                    { movie: { id } },
                 );
 
                 const mutation = `
@@ -240,7 +240,7 @@ describe("Time", () => {
                         MATCH (movie:Movie {id: $id})
                         RETURN movie {.id, .time} as movie
                     `,
-                    { id }
+                    { id },
                 );
 
                 const neo4jMovie: { id: string; time: { toString(): string } } =
@@ -281,7 +281,7 @@ describe("Time", () => {
                         CREATE (movie:Movie)
                         SET movie = $movie
                     `,
-                    { movie: { id, time: neo4jTime } }
+                    { movie: { id, time: neo4jTime } },
                 );
 
                 const query = `
@@ -333,7 +333,7 @@ describe("Time", () => {
                         parsedFuture.minute,
                         parsedFuture.second,
                         parsedFuture.nanosecond,
-                        parsedFuture.timeZoneOffsetSeconds
+                        parsedFuture.timeZoneOffsetSeconds,
                     );
 
                     const presentId = generate({ readable: false });
@@ -344,7 +344,7 @@ describe("Time", () => {
                         parsedPresent.minute,
                         parsedPresent.second,
                         parsedPresent.nanosecond,
-                        parsedPresent.timeZoneOffsetSeconds
+                        parsedPresent.timeZoneOffsetSeconds,
                     );
 
                     const pastId = generate({ readable: false });
@@ -355,7 +355,7 @@ describe("Time", () => {
                         parsedPast.minute,
                         parsedPast.second,
                         parsedPast.nanosecond,
-                        parsedPast.timeZoneOffsetSeconds
+                        parsedPast.timeZoneOffsetSeconds,
                     );
 
                     try {
@@ -372,7 +372,7 @@ describe("Time", () => {
                                 future: { id: futureId, time: neo4jFuture },
                                 present: { id: presentId, time: neo4jPresent },
                                 past: { id: pastId, time: neo4jPast },
-                            }
+                            },
                         );
 
                         const query = `
@@ -435,7 +435,7 @@ describe("Time", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             ));
     });
 
@@ -463,7 +463,7 @@ describe("Time", () => {
                         parsedFuture.minute,
                         parsedFuture.second,
                         parsedFuture.nanosecond,
-                        parsedFuture.timeZoneOffsetSeconds
+                        parsedFuture.timeZoneOffsetSeconds,
                     );
 
                     const presentId = generate({ readable: false });
@@ -474,7 +474,7 @@ describe("Time", () => {
                         parsedPresent.minute,
                         parsedPresent.second,
                         parsedPresent.nanosecond,
-                        parsedPresent.timeZoneOffsetSeconds
+                        parsedPresent.timeZoneOffsetSeconds,
                     );
 
                     const pastId = generate({ readable: false });
@@ -485,7 +485,7 @@ describe("Time", () => {
                         parsedPast.minute,
                         parsedPast.second,
                         parsedPast.nanosecond,
-                        parsedPast.timeZoneOffsetSeconds
+                        parsedPast.timeZoneOffsetSeconds,
                     );
 
                     try {
@@ -502,7 +502,7 @@ describe("Time", () => {
                                 future: { id: futureId, time: neo4jFuture },
                                 present: { id: presentId, time: neo4jPresent },
                                 past: { id: pastId, time: neo4jPast },
-                            }
+                            },
                         );
 
                         const query = `
@@ -561,7 +561,7 @@ describe("Time", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             ));
     });
 });

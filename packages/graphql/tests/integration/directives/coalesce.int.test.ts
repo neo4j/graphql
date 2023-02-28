@@ -50,7 +50,7 @@ describe("@coalesce directive", () => {
         });
 
         await expect(neoSchema.getSchema()).rejects.toThrow(
-            "@coalesce directive can only be used on primitive type fields"
+            "@coalesce directive can only be used on primitive type fields",
         );
     });
 
@@ -67,7 +67,7 @@ describe("@coalesce directive", () => {
         });
 
         await expect(neoSchema.getSchema()).rejects.toThrow(
-            "@coalesce is not supported by DateTime fields at this time"
+            "@coalesce is not supported by DateTime fields at this time",
         );
     });
 
@@ -83,7 +83,7 @@ describe("@coalesce directive", () => {
         });
 
         await expect(neoSchema.getSchema()).rejects.toThrow(
-            "coalesce() value for User.name does not have matching type String"
+            "coalesce() value for User.name does not have matching type String",
         );
     });
 

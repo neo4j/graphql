@@ -178,7 +178,7 @@ const multipleConditionsAggregationMap = {
 export function filterByProperties<T>(
     node: Node,
     whereProperties: Record<string, T | Array<Record<string, T>>>,
-    receivedProperties: Record<string, T>
+    receivedProperties: Record<string, T>,
 ): boolean {
     for (const [k, v] of Object.entries(whereProperties)) {
         if (Object.keys(multipleConditionsAggregationMap).includes(k)) {
@@ -337,13 +337,13 @@ export function filterByRelationshipProperties({
 
 function isInterfaceType(
     node: StandardType | InterfaceType,
-    receivedEventRelationship: RelationField
+    receivedEventRelationship: RelationField,
 ): node is InterfaceType {
     return !!receivedEventRelationship.interface?.implementations;
 }
 function isStandardType(
     node: StandardType | InterfaceType,
-    receivedEventRelationship: RelationField
+    receivedEventRelationship: RelationField,
 ): node is StandardType {
     return !receivedEventRelationship.interface?.implementations;
 }

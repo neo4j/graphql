@@ -83,7 +83,7 @@ describe("Connections Alias", () => {
                 `,
                 {
                     movieTitle,
-                }
+                },
             );
 
             const result = await graphql({
@@ -143,7 +143,7 @@ describe("Connections Alias", () => {
                 `,
                 {
                     movieTitle,
-                }
+                },
             );
 
             const result = await graphql({
@@ -206,7 +206,7 @@ describe("Connections Alias", () => {
                 `,
                 {
                     movieTitle,
-                }
+                },
             );
 
             const result = await graphql({
@@ -268,7 +268,7 @@ describe("Connections Alias", () => {
                 `,
                 {
                     movieTitle,
-                }
+                },
             );
 
             const result = await graphql({
@@ -328,7 +328,7 @@ describe("Connections Alias", () => {
                 `,
                 {
                     movieTitle,
-                }
+                },
             );
 
             const result = await graphql({
@@ -388,7 +388,7 @@ describe("Connections Alias", () => {
                 `,
                 {
                     movieTitle,
-                }
+                },
             );
 
             const result = await graphql({
@@ -448,7 +448,7 @@ describe("Connections Alias", () => {
                 `,
                 {
                     movieTitle,
-                }
+                },
             );
 
             const result = await graphql({
@@ -508,7 +508,7 @@ describe("Connections Alias", () => {
                 `,
                 {
                     movieTitle,
-                }
+                },
             );
 
             const result = await graphql({
@@ -568,7 +568,7 @@ describe("Connections Alias", () => {
                 `,
                 {
                     movieTitle,
-                }
+                },
             );
 
             const result = await graphql({
@@ -630,7 +630,7 @@ describe("Connections Alias", () => {
                 `,
                 {
                     movieTitle,
-                }
+                },
             );
 
             const result = await graphql({
@@ -692,7 +692,7 @@ describe("Connections Alias", () => {
                 `,
                 {
                     movieTitle,
-                }
+                },
             );
 
             const result = await graphql({
@@ -756,7 +756,7 @@ describe("Connections Alias", () => {
                 `,
                 {
                     movieTitle,
-                }
+                },
             );
 
             const result = await graphql({
@@ -835,7 +835,7 @@ describe("Connections Alias", () => {
                     movieTitle,
                     actorName,
                     roles,
-                }
+                },
             );
 
             const result = await graphql({
@@ -921,7 +921,7 @@ describe("Connections Alias", () => {
                 {
                     postTitle,
                     flags,
-                }
+                },
             );
 
             const result = await graphql({
@@ -1003,7 +1003,7 @@ describe("Connections Alias", () => {
                     movieTitle,
                     actorName,
                     screenTime,
-                }
+                },
             );
 
             const result = await graphql({

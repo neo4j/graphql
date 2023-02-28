@@ -300,7 +300,7 @@ export default async function translateUpdate({
 
                     if (relationField.properties) {
                         const relationship = context.relationships.find(
-                            (x) => x.properties === relationField.properties
+                            (x) => x.properties === relationField.properties,
                         ) as unknown as Relationship;
 
                         const setA = createSetRelationshipPropertiesAndParams({
@@ -329,7 +329,7 @@ export default async function translateUpdate({
                             toTypename,
                         });
                         createStrs.push(
-                            `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(", ")}`
+                            `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(", ")}`,
                         );
                     }
                 });
@@ -412,8 +412,8 @@ export default async function translateUpdate({
                 new Cypher.apoc.Validate(
                     Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
                     AUTH_FORBIDDEN_ERROR,
-                    new Cypher.Literal([0])
-                )
+                    new Cypher.Literal([0]),
+                ),
             );
         }
     }
@@ -477,7 +477,7 @@ export default async function translateUpdate({
 function generateUpdateReturnStatement(
     varName: string | undefined,
     projStr: Cypher.Expr | undefined,
-    subscriptionsEnabled: boolean
+    subscriptionsEnabled: boolean,
 ): Cypher.Clause {
     let statements;
     if (varName && projStr) {
@@ -487,7 +487,7 @@ function generateUpdateReturnStatement(
     if (subscriptionsEnabled) {
         statements = Cypher.concat(
             statements,
-            new Cypher.RawCypher(`, collect(DISTINCT m) as ${META_CYPHER_VARIABLE}`)
+            new Cypher.RawCypher(`, collect(DISTINCT m) as ${META_CYPHER_VARIABLE}`),
         );
     }
 

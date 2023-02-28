@@ -23,7 +23,7 @@ import type { Context, JwtPayload, Neo4jGraphQLAuthPlugin } from "../../types";
 
 export async function decodeToken(
     token: string | undefined,
-    plugin: Neo4jGraphQLAuthPlugin | undefined
+    plugin: Neo4jGraphQLAuthPlugin | undefined,
 ): Promise<JwtPayload | undefined> {
     if (token && plugin) {
         const jwt = await plugin.decode<JwtPayload>(token);
@@ -37,7 +37,7 @@ export async function decodeToken(
 
 export function verifyGlobalAuthentication(
     context: SubscriptionContext | Context,
-    plugin: Neo4jGraphQLAuthPlugin | undefined
+    plugin: Neo4jGraphQLAuthPlugin | undefined,
 ): void {
     if (plugin?.isGlobalAuthenticationEnabled) {
         if (!context.jwt) {

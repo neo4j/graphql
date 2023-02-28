@@ -35,14 +35,14 @@ type TTYTableItem = Performance.ProfileResult & { "time (ms)": number };
 export class TTYFormatter {
     public format(
         results: Array<Performance.TestDisplayData>,
-        oldResults: Record<string, Performance.TestDisplayData> | undefined
+        oldResults: Record<string, Performance.TestDisplayData> | undefined,
     ): Record<string, TTYTableItem> {
         return this.parseForTTYTable(results, oldResults);
     }
 
     private parseForTTYTable(
         results: Array<Performance.TestDisplayData>,
-        oldResults: Record<string, Performance.TestDisplayData> | undefined
+        oldResults: Record<string, Performance.TestDisplayData> | undefined,
     ) {
         const hasOldResults = Boolean(oldResults);
 

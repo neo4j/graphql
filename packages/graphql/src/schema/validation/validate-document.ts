@@ -87,7 +87,7 @@ function filterDocument(document: DocumentNode): DocumentNode {
 
             const nodeMatch =
                 /(?<nodeName>.+)(?:ConnectInput|ConnectWhere|CreateInput|DeleteInput|DisconnectInput|Options|RelationInput|Sort|UpdateInput|Where)/gm.exec(
-                    type
+                    type,
                 );
             if (nodeMatch?.groups?.nodeName) {
                 if (nodeNames.includes(nodeMatch.groups.nodeName)) {
@@ -163,7 +163,7 @@ function getBaseSchema(
     document: DocumentNode,
     validateTypeDefs = true,
     additionalDirectives: Array<GraphQLDirective> = [],
-    additionalTypes: Array<GraphQLNamedType> = []
+    additionalTypes: Array<GraphQLNamedType> = [],
 ): GraphQLSchema {
     const doc = filterDocument(document);
 
@@ -189,7 +189,7 @@ function validateDocument(
     document: DocumentNode,
     validateTypeDefs = true,
     additionalDirectives: Array<GraphQLDirective> = [],
-    additionalTypes: Array<GraphQLNamedType> = []
+    additionalTypes: Array<GraphQLNamedType> = [],
 ): void {
     const schema = getBaseSchema(document, validateTypeDefs, additionalDirectives, additionalTypes);
     if (validateTypeDefs) {

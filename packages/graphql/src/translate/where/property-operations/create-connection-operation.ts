@@ -80,7 +80,7 @@ export function createConnectionOperation({
             .to(childNode);
 
         const contextRelationship = context.relationships.find(
-            (x) => x.name === connectionField.relationshipTypeName
+            (x) => x.name === connectionField.relationshipTypeName,
         ) as Relationship;
 
         matchPatterns.push(matchPattern);

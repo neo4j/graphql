@@ -73,7 +73,7 @@ export class WebSocketTestClient {
                         reject(err);
                     },
                     complete: () => true,
-                }
+                },
             );
 
             this.client.on("connected", () => {

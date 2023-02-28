@@ -58,7 +58,7 @@ export const getURLProtocolFromText = (text: string | null | undefined): string 
 };
 
 export const usePrevious = (
-    value: string | number | boolean | null | undefined
+    value: string | number | boolean | null | undefined,
 ): string | number | boolean | null | undefined => {
     const ref = useRef();
     useEffect(() => {

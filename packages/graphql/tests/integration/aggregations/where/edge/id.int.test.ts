@@ -71,7 +71,7 @@ describe("aggregations-where-edge-id", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES { testId: "${testId}" }]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `

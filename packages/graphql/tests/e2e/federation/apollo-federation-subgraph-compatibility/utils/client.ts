@@ -16,7 +16,7 @@ export async function graphqlRequest(
         variables?: { [key: string]: any };
         operationName?: string;
     },
-    headers?: { [key: string]: any }
+    headers?: { [key: string]: any },
 ) {
     const resp = await fetch(url, {
         headers: {
@@ -41,7 +41,7 @@ export function productsRequest(
         variables?: { [key: string]: any };
         operationName?: string;
     },
-    headers?: { [key: string]: any }
+    headers?: { [key: string]: any },
 ) {
     return graphqlRequest(PRODUCTS_URL, req, headers);
 }
@@ -52,7 +52,7 @@ export function routerRequest(
         variables?: { [key: string]: any };
         operationName?: string;
     },
-    headers?: { [key: string]: any }
+    headers?: { [key: string]: any },
 ) {
     return graphqlRequest(ROUTER_URL, req, headers);
 }

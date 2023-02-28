@@ -107,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
                 CREATE (user:${User} { id: $userId, name: $userName })
                 MERGE (post)-[:POST_FOR]->(user)
             `,
-            { userId, postId, userName }
+            { userId, postId, userName },
         );
 
         const result = await graphql({

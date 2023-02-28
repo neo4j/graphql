@@ -135,7 +135,7 @@ describe("interface relationships", () => {
                 CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
                 CREATE (:Actor { name: $name })
             `,
-                { movieTitle, movieRuntime, name: actorName2 }
+                { movieTitle, movieRuntime, name: actorName2 },
             );
 
             const gqlResult = await graphql({
@@ -241,7 +241,7 @@ describe("interface relationships", () => {
                 CREATE (:Series { title: $movieTitle, episodes:$movieRuntime })
                 CREATE (:Actor { name: $name })
             `,
-                { movieTitle, movieRuntime, name: actorName2 }
+                { movieTitle, movieRuntime, name: actorName2 },
             );
 
             const gqlResult = await graphql({
@@ -337,7 +337,7 @@ describe("interface relationships", () => {
                 CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
                 CREATE (:Series { title: $movieTitle, episodes:$movieRuntime })
             `,
-                { movieTitle, movieRuntime }
+                { movieTitle, movieRuntime },
             );
 
             const gqlResult = await graphql({

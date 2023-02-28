@@ -33,7 +33,7 @@ import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSch
 export function publishEventsToPlugin(
     executeResult: ExecuteResult,
     plugin: Neo4jGraphQLSubscriptionsPlugin | undefined,
-    schemaModel: Neo4jGraphQLSchemaModel
+    schemaModel: Neo4jGraphQLSchemaModel,
 ): void {
     if (plugin) {
         const metadata: EventMeta[] = executeResult.records[0]?.meta || [];
@@ -43,7 +43,7 @@ export function publishEventsToPlugin(
             serializedEvents,
             "delete_relationship",
             "delete",
-            "create_relationship"
+            "create_relationship",
         );
         for (const subscriptionsEvent of serializedEventsWithoutDuplicates) {
             try {
@@ -111,7 +111,7 @@ function removeDuplicateEvents(events: SubscriptionsEvent[], ...eventTypes: Even
             (publishedEventWithId || []).concat({
                 fromTypename: event["fromTypename"],
                 toTypename: event["toTypename"],
-            })
+            }),
         );
         result.push(event);
         return result;
@@ -120,7 +120,7 @@ function removeDuplicateEvents(events: SubscriptionsEvent[], ...eventTypes: Even
 
 function isEventAlreadyPublished(
     event: SubscriptionsEvent,
-    publishedEventWithId: { fromTypename: string; toTypename: string }[] | undefined
+    publishedEventWithId: { fromTypename: string; toTypename: string }[] | undefined,
 ): boolean {
     if (!publishedEventWithId) {
         return false;
@@ -130,7 +130,7 @@ function isEventAlreadyPublished(
         return true;
     }
     const publishedEventWithTypenames = publishedEventWithId?.find(
-        (typenames) => typenames.fromTypename === event["fromTypename"] && typenames.toTypename === event["toTypename"]
+        (typenames) => typenames.fromTypename === event["fromTypename"] && typenames.toTypename === event["toTypename"],
     );
     if (publishedEventWithTypenames) {
         return true;
@@ -145,12 +145,12 @@ function isRelationshipSubscriptionMeta(event: EventMeta): event is Relationship
     return ["create_relationship", "delete_relationship"].includes(event.event);
 }
 function isRelationshipWithTypenameSubscriptionMeta(
-    event: RelationshipSubscriptionMeta
+    event: RelationshipSubscriptionMeta,
 ): event is RelationshipSubscriptionMetaTypenameParameters {
     return !!event["toTypename"] && !!event["fromTypename"];
 }
 function isRelationshipWithLabelsSubscriptionMeta(
-    event: RelationshipSubscriptionMeta
+    event: RelationshipSubscriptionMeta,
 ): event is RelationshipSubscriptionMetaLabelsParameters {
     return !!event["toLabels"] && !!event["fromLabels"];
 }
@@ -167,7 +167,7 @@ function serializeNodeSubscriptionEvent(event: NodeSubscriptionMeta): Subscripti
     } as SubscriptionsEvent;
 }
 function serializeRelationshipSubscriptionEvent(
-    event: RelationshipSubscriptionMetaTypenameParameters
+    event: RelationshipSubscriptionMetaTypenameParameters,
 ): SubscriptionsEvent {
     return {
         id: serializeNeo4jValue(event.id),

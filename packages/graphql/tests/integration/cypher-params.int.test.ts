@@ -119,7 +119,7 @@ describe("cypherParams", () => {
                 `
                 CREATE (:Movie {id: $movieId})
             `,
-                { movieId }
+                { movieId },
             );
 
             const gqlResult = await graphql({

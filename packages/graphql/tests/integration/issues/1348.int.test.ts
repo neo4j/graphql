@@ -147,7 +147,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
             updateProgrammeItems,
             (createProgrammeItemsResults.data?.[testProgrammeItem.operations.create] as any).info.bookmark as
                 | string
-                | undefined
+                | undefined,
         );
         expect(updateProgrammeItemsResults.errors).toBeUndefined();
 
@@ -167,7 +167,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
             query,
             (updateProgrammeItemsResults.data?.[testProgrammeItem.operations.update] as any).info.bookmark as
                 | string
-                | undefined
+                | undefined,
         );
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data as any).toEqual({

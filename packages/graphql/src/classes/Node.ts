@@ -313,7 +313,7 @@ class Node extends GraphElement {
     public getGlobalIdField(): string {
         if (!this.isGlobalNode || !this._idField) {
             throw new Error(
-                "The 'global' property needs to be set to true on an @id directive before accessing the unique node id field"
+                "The 'global' property needs to be set to true on an @id directive before accessing the unique node id field",
             );
         }
         return this._idField;

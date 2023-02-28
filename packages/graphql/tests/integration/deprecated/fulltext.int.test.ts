@@ -100,7 +100,7 @@ describe("@fulltext directive", () => {
                 driver,
                 driverConfig: { database: databaseName },
                 options: { create: true },
-            })
+            }),
         ).resolves.not.toThrow();
 
         const session = driver.session({ database: databaseName });
@@ -197,7 +197,7 @@ describe("@fulltext directive", () => {
                 driver,
                 driverConfig: { database: databaseName },
                 options: { create: true },
-            })
+            }),
         ).resolves.not.toThrow();
 
         const query = `
@@ -247,7 +247,7 @@ describe("@fulltext directive", () => {
                 driver,
                 driverConfig: { database: databaseName },
                 options: { create: true },
-            })
+            }),
         ).resolves.not.toThrow();
 
         const session = driver.session({ database: databaseName });
@@ -344,7 +344,7 @@ describe("@fulltext directive", () => {
                 driver,
                 driverConfig: { database: databaseName },
                 options: { create: true },
-            })
+            }),
         ).resolves.not.toThrow();
 
         const session = driver.session({ database: databaseName });
@@ -437,7 +437,7 @@ describe("@fulltext directive", () => {
             neoSchema.assertIndexesAndConstraints({
                 driver,
                 driverConfig: { database: databaseName },
-            })
+            }),
         ).rejects.toThrow(`Missing @fulltext index '${indexName}' on Node '${type.name}'`);
     });
 
@@ -466,8 +466,8 @@ describe("@fulltext directive", () => {
         try {
             await session.run(
                 [`CREATE FULLTEXT INDEX ${indexName}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(
-                    " "
-                )
+                    " ",
+                ),
             );
         } finally {
             await session.close();
@@ -477,7 +477,7 @@ describe("@fulltext directive", () => {
             neoSchema.assertIndexesAndConstraints({
                 driver,
                 driverConfig: { database: databaseName },
-            })
+            }),
         ).rejects.toThrow(`@fulltext index '${indexName}' on Node '${type.name}' is missing field 'description'`);
     });
 
@@ -510,7 +510,7 @@ describe("@fulltext directive", () => {
                     `CREATE FULLTEXT INDEX ${indexName}`,
                     `IF NOT EXISTS FOR (n:${type.name})`,
                     `ON EACH [n.title, n.description]`,
-                ].join(" ")
+                ].join(" "),
             );
         } finally {
             await session.close();
@@ -520,9 +520,9 @@ describe("@fulltext directive", () => {
             neoSchema.assertIndexesAndConstraints({
                 driver,
                 driverConfig: { database: databaseName },
-            })
+            }),
         ).rejects.toThrow(
-            `@fulltext index '${indexName}' on Node '${type.name}' is missing field 'description' aliased to field '${alias}'`
+            `@fulltext index '${indexName}' on Node '${type.name}' is missing field 'description' aliased to field '${alias}'`,
         );
     });
 
@@ -551,7 +551,7 @@ describe("@fulltext directive", () => {
                 driver,
                 driverConfig: { database: databaseName },
                 options: { create: true },
-            })
+            }),
         ).resolves.not.toThrow();
 
         // Previously this would have thrown, but the operation should be idempotent
@@ -560,7 +560,7 @@ describe("@fulltext directive", () => {
                 driver,
                 driverConfig: { database: databaseName },
                 options: { create: true },
-            })
+            }),
         ).resolves.not.toThrow();
 
         const session = driver.session({ database: databaseName });
@@ -632,8 +632,8 @@ describe("@fulltext directive", () => {
         try {
             await session.run(
                 [`CREATE FULLTEXT INDEX ${indexName}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(
-                    " "
-                )
+                    " ",
+                ),
             );
         } finally {
             await session.close();
@@ -644,9 +644,9 @@ describe("@fulltext directive", () => {
                 driver,
                 driverConfig: { database: databaseName },
                 options: { create: true },
-            })
+            }),
         ).rejects.toThrow(
-            `@fulltext index '${indexName}' on Node '${type.name}' already exists, but is missing field 'description'`
+            `@fulltext index '${indexName}' on Node '${type.name}' already exists, but is missing field 'description'`,
         );
     });
 
@@ -675,7 +675,7 @@ describe("@fulltext directive", () => {
                 driver,
                 driverConfig: { database: databaseName },
                 options: { create: true },
-            })
+            }),
         ).resolves.not.toThrow();
 
         const session = driver.session({ database: databaseName });

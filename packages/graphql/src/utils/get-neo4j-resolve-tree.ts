@@ -43,7 +43,7 @@ function getNeo4jArgumentValue({ argument, type }: { argument: unknown | unknown
 
     if (type.toString().startsWith("[") && type.toString().endsWith("]")) {
         return (argument as unknown[]).map((a) =>
-            getNeo4jArgumentValue({ argument: a, type: (type as GraphQLList<any>).ofType })
+            getNeo4jArgumentValue({ argument: a, type: (type as GraphQLList<any>).ofType }),
         );
     }
 
@@ -53,7 +53,7 @@ function getNeo4jArgumentValue({ argument, type }: { argument: unknown | unknown
 
             if (!field) {
                 throw new Error(
-                    `Error whilst generating Neo4j resolve tree: could not find field ${key} in type ${type.name}`
+                    `Error whilst generating Neo4j resolve tree: could not find field ${key} in type ${type.name}`,
                 );
             }
 
@@ -111,7 +111,7 @@ function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4j
 
         if (!argument) {
             throw new Error(
-                `Error whilst generating Neo4j resolve tree: could not find argument ${name} on field ${field.name}`
+                `Error whilst generating Neo4j resolve tree: could not find argument ${name} on field ${field.name}`,
             );
         }
 
@@ -128,7 +128,7 @@ function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4j
 
         if (!_type) {
             throw new Error(
-                `Error whilst generating Neo4j resolve tree: could not find type with name ${typeName} in schema`
+                `Error whilst generating Neo4j resolve tree: could not find type with name ${typeName} in schema`,
             );
         }
 
@@ -149,7 +149,7 @@ function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4j
                 [fieldName]: getNeo4jResolveTree(resolveInfo, {
                     resolveTree: f,
                     field: Object.values(type.getFields()).find(
-                        (typeField) => typeField.name === f.name
+                        (typeField) => typeField.name === f.name,
                     ) as GraphQLField<any, any>,
                 }),
             };

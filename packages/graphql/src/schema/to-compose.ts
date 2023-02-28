@@ -45,7 +45,7 @@ export function graphqlDirectivesToCompose(directives: DirectiveNode[]): Directi
     return directives.map((directive) => ({
         args: (directive.arguments || [])?.reduce(
             (r: DirectiveArgs, d) => ({ ...r, [d.name.value]: parseValueNode(d.value) }),
-            {}
+            {},
         ) as DirectiveArgs,
         name: directive.name.value,
     }));
@@ -97,7 +97,7 @@ export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<str
             const fieldType = f.typeMeta.input.create.pretty;
             const defaultValue = (f as PrimitiveField)?.defaultValue;
             const deprecatedDirectives = graphqlDirectivesToCompose(
-                f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                f.otherDirectives.filter((directive) => directive.name.value === "deprecated"),
             );
 
             if (defaultValue !== undefined) {
@@ -119,7 +119,7 @@ export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<str
 
 export function objectFieldsToSubscriptionsWhereInputFields(
     typeName: string,
-    fields: BaseField[]
+    fields: BaseField[],
 ): Record<string, InputField> {
     return fields.reduce((res, f) => {
         const fieldType = f.typeMeta.input.where.pretty;
@@ -188,7 +188,7 @@ export function objectFieldsToSubscriptionsWhereInputFields(
 export function objectFieldsToUpdateInputFields(fields: BaseField[]): Record<string, InputField> {
     return fields.reduce((res, f) => {
         const deprecatedDirectives = graphqlDirectivesToCompose(
-            f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+            f.otherDirectives.filter((directive) => directive.name.value === "deprecated"),
         );
         const staticField = f.readonly || (f as PrimitiveField)?.autogenerate;
         if (staticField) {

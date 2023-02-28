@@ -510,7 +510,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ releasedIn: 2020 });
@@ -531,7 +531,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ averageRating: 5.6 });
@@ -552,7 +552,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ fileSize: "3412" });
@@ -573,7 +573,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({});
@@ -594,7 +594,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ similarTitles: ["test"] });
@@ -616,7 +616,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ releasedIn: 2020 });
@@ -637,7 +637,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ averageRating: 6.2 });
@@ -658,7 +658,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ fileSize: "2020" });
@@ -679,7 +679,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({});
@@ -700,7 +700,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             }
         }
     `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ similarTitles: ["test"] });

@@ -59,7 +59,7 @@ function getWhereFields({
             ...fields.scalarFields,
         ].reduce((res, f) => {
             const deprecatedDirectives = graphqlDirectivesToCompose(
-                f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                f.otherDirectives.filter((directive) => directive.name.value === "deprecated"),
             );
 
             res[f.fieldName] = {

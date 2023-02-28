@@ -750,7 +750,7 @@ describe("integration/rfc/003", () => {
 
                     expect(result.errors).toBeTruthy();
                     expect((result.errors as any[])[0].message).toBe(
-                        "Movie.director must be less than or equal to one"
+                        "Movie.director must be less than or equal to one",
                     );
                 } finally {
                     await session.close();

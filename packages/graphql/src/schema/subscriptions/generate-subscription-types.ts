@@ -58,7 +58,7 @@ export function generateSubscriptionTypes({
             acc[node.name] = generateEventPayloadType(node, schemaComposer);
             return acc;
         },
-        {}
+        {},
     );
     hydrateSchemaWithSubscriptionWhereTypes(nodesWithSubscriptionOperation, schemaComposer);
 
@@ -226,7 +226,7 @@ export function generateSubscriptionTypes({
                 const { destinationProperties: props, destinationTypename: typename } = getRelationshipEventDataForNode(
                     source,
                     node,
-                    nodeToRelationFieldMap
+                    nodeToRelationFieldMap,
                 );
 
                 return {
@@ -312,7 +312,7 @@ export function generateSubscriptionTypes({
 
 function hydrateSchemaWithSubscriptionWhereTypes(
     nodesWithSubscriptionOperation: Node[],
-    schemaComposer: SchemaComposer
+    schemaComposer: SchemaComposer,
 ): void {
     nodesWithSubscriptionOperation.forEach((node) => generateSubscriptionWhereType(node, schemaComposer));
 }
@@ -320,7 +320,7 @@ function hydrateSchemaWithSubscriptionWhereTypes(
 function getRelationshipEventDataForNode(
     event: RelationshipSubscriptionsEvent,
     node: Node,
-    nodeToRelationFieldMap: Map<Node, Map<string, RelationField | undefined>>
+    nodeToRelationFieldMap: Map<Node, Map<string, RelationField | undefined>>,
 ): {
     direction: string;
     properties: Record<string, any>;

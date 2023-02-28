@@ -52,7 +52,7 @@ describe("auth/is-authenticated", () => {
             session,
             `CREATE(p:${Product} {id: "1", name: "Marvin"})
             CREATE(u:${User} {id: "1", password: "dontpanic42", name: "Arthur"})
-        `
+        `,
         );
     });
 

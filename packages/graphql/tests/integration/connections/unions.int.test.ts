@@ -83,7 +83,7 @@ describe("Connections -> Unions", () => {
                     book2WordCount,
                     journalSubject,
                     journalWordCount,
-                }
+                },
             );
             bookmarks = session.lastBookmark();
         } finally {
@@ -108,7 +108,7 @@ describe("Connections -> Unions", () => {
                     book1Title,
                     book2Title,
                     journalSubject,
-                }
+                },
             );
         } finally {
             await session.close();

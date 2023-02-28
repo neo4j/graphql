@@ -257,7 +257,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
                 generate({
                     charset: "numeric",
                     length: 6,
-                })
+                }),
             );
 
             const callback = () => Promise.resolve(int1);
@@ -318,7 +318,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
                 generate({
                     charset: "numeric",
                     length: 6,
-                })
+                }),
             );
 
             const callback = () => Promise.resolve(int1);
@@ -389,13 +389,13 @@ describe("integration/rfc/autogenerate-properties-node", () => {
                 generate({
                     charset: "numeric",
                     length: 6,
-                })
+                }),
             );
             const int2 = Number(
                 generate({
                     charset: "numeric",
                     length: 6,
-                })
+                }),
             );
 
             let counter = 0;

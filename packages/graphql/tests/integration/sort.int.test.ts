@@ -144,7 +144,7 @@ describe("sort", () => {
                     MERGE (a1)-[:ACTED_IN {screenTime: $actors[0].screenTime[m2.id]}]->(m2)<-[:ACTED_IN {screenTime: $actors[1].screenTime[m2.id]}]-(a2)
                     MERGE (s1)<-[:ACTED_IN {screenTime: $actors[0].screenTime[s1.id]}]-(a1)-[:ACTED_IN {screenTime: $actors[0].screenTime[s2.id]}]->(s2)
                 `,
-            { movies, series, actors }
+            { movies, series, actors },
         );
 
         bookmarks = session2.lastBookmark();
@@ -766,7 +766,7 @@ describe("sort", () => {
 
             expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any)[movieType.plural]).toEqual(
-                expect.toIncludeSameMembers([{ actors: [] }, { actors: [{ name: actors[1].name }] }])
+                expect.toIncludeSameMembers([{ actors: [] }, { actors: [{ name: actors[1].name }] }]),
             );
         });
     });

@@ -23,7 +23,7 @@ import type Cypher from "@neo4j/cypher-builder";
 export function compileCypherIfExists(
     element: any,
     env: Cypher.Environment,
-    { prefix = "", suffix = "" }: { prefix?: string; suffix?: string } = {}
+    { prefix = "", suffix = "" }: { prefix?: string; suffix?: string } = {},
 ): string {
     if (!element) return "";
     const cypher = element.getCypher(env);

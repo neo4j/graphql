@@ -178,7 +178,7 @@ describe("Subscriptions delete", () => {
                     properties: { old: { id: "4" }, new: undefined },
                     typename: typeActor.name,
                 },
-            ])
+            ]),
         );
     });
 
@@ -249,7 +249,7 @@ describe("Subscriptions delete", () => {
                     properties: { old: { id: "4" }, new: undefined },
                     typename: typeActor.name,
                 },
-            ])
+            ]),
         );
     });
 });

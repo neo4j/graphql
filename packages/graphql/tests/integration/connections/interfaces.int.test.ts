@@ -96,7 +96,7 @@ describe("Connections -> Interfaces", () => {
                     movie2Title,
                     movie2Runtime,
                     movie2ScreenTime,
-                }
+                },
             );
             bookmarks = session.lastBookmark();
         } finally {
@@ -121,7 +121,7 @@ describe("Connections -> Interfaces", () => {
                     seriesTitle,
                     movie1Title,
                     movie2Title,
-                }
+                },
             );
         } finally {
             await session.close();

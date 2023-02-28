@@ -108,7 +108,7 @@ describe("execute", () => {
                 });
 
                 expect(executeResult.records).toEqual([{ title }]);
-            })
+            }),
         );
     });
 

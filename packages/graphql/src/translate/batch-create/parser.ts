@@ -29,7 +29,7 @@ function getRelationshipFields(
     node: Node,
     key: string,
     value: any,
-    context: Context
+    context: Context,
 ): [RelationField | undefined, Node[]] {
     const relationField = node.relationFields.find((x) => key === x.fieldName);
     const refNodes: Node[] = [];
@@ -49,13 +49,13 @@ export function inputTreeToCypherMap(
     node: Node,
     context: Context,
     parentKey?: string,
-    relationship?: Relationship
+    relationship?: Relationship,
 ): Cypher.List | Cypher.Map {
     if (Array.isArray(input)) {
         return new Cypher.List(
             input.map((GraphQLCreateInput: GraphQLCreateInput) =>
-                inputTreeToCypherMap(GraphQLCreateInput, node, context, parentKey, relationship)
-            )
+                inputTreeToCypherMap(GraphQLCreateInput, node, context, parentKey, relationship),
+            ),
         );
     }
     const properties = (Object.entries(input) as GraphQLCreateInput).reduce(
@@ -63,7 +63,7 @@ export function inputTreeToCypherMap(
             const [relationField, relatedNodes] = getRelationshipFields(node, key, {}, context);
             if (relationField && relationField.properties) {
                 relationship = context.relationships.find(
-                    (x) => x.properties === relationField.properties
+                    (x) => x.properties === relationField.properties,
                 ) as unknown as Relationship;
             }
             let scalarOrEnum = false;
@@ -83,9 +83,9 @@ export function inputTreeToCypherMap(
                                 relationField ? relatedNodes[0] : node,
                                 context,
                                 key,
-                                relationship
-                            )
-                        )
+                                relationship,
+                            ),
+                        ),
                     );
                     return obj;
                 }
@@ -94,14 +94,14 @@ export function inputTreeToCypherMap(
                     relationField ? relatedNodes[0] : node,
                     context,
                     key,
-                    relationship
+                    relationship,
                 ) as Cypher.Map;
                 return obj;
             }
             obj[key] = new Cypher.Param(value);
             return obj;
         },
-        {} as Record<string, Cypher.Expr>
+        {} as Record<string, Cypher.Expr>,
     ) as Record<string, Cypher.Expr>;
     return new Cypher.Map(properties);
 }
@@ -113,7 +113,7 @@ function isScalarOrEnum(fieldName: string, graphElement: GraphElement) {
         graphElement.temporalFields,
         graphElement.pointFields,
         graphElement.scalarFields,
-        graphElement.enumFields
+        graphElement.enumFields,
     ];
     return scalarOrEnumFields.flat().some(scalarOrEnumPredicate);
 }
@@ -123,14 +123,14 @@ export function getTreeDescriptor(
     node: Node,
     context: Context,
     parentKey?: string,
-    relationship?: Relationship
+    relationship?: Relationship,
 ): TreeDescriptor {
     return Object.entries(input).reduce(
         (previous, [key, value]) => {
             const [relationField, relatedNodes] = getRelationshipFields(node, key, value, context);
             if (relationField && relationField.properties) {
                 relationship = context.relationships.find(
-                    (x) => x.properties === relationField.properties
+                    (x) => x.properties === relationField.properties,
                 ) as unknown as Relationship;
             }
 
@@ -149,8 +149,8 @@ export function getTreeDescriptor(
                 if (Array.isArray(value)) {
                     previous.children[key] = mergeTreeDescriptors(
                         value.map((el) =>
-                            getTreeDescriptor(el as GraphQLCreateInput, innerNode, context, key, relationship)
-                        )
+                            getTreeDescriptor(el as GraphQLCreateInput, innerNode, context, key, relationship),
+                        ),
                     );
                     return previous;
                 }
@@ -159,14 +159,14 @@ export function getTreeDescriptor(
                     innerNode,
                     context,
                     key,
-                    relationship
+                    relationship,
                 );
                 return previous;
             }
             previous.properties.add(key);
             return previous;
         },
-        { properties: new Set(), children: {} } as TreeDescriptor
+        { properties: new Set(), children: {} } as TreeDescriptor,
     );
 }
 
@@ -181,12 +181,12 @@ export function mergeTreeDescriptors(input: TreeDescriptor[]): TreeDescriptor {
                     const nodeChildren: TreeDescriptor =
                         node.children[childrenKey] ?? ({ properties: new Set(), children: {} } as TreeDescriptor);
                     return [childrenKey, mergeTreeDescriptors([previousChildren, nodeChildren])];
-                }
+                },
             );
             previous.children = Object.fromEntries(entries);
             return previous;
         },
-        { properties: new Set(), children: {} } as TreeDescriptor
+        { properties: new Set(), children: {} } as TreeDescriptor,
     );
 }
 
@@ -198,7 +198,7 @@ function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNo
             let edge;
             if (relationField.properties) {
                 edge = context.relationships.find(
-                    (x) => x.properties === relationField.properties
+                    (x) => x.properties === relationField.properties,
                 ) as unknown as Relationship;
             }
             if (relationField.interface || relationField.union) {
@@ -215,8 +215,8 @@ function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNo
                                 node,
                                 key,
                                 [relationField, relatedNodes],
-                                edge
-                            )
+                                edge,
+                            ),
                         );
                         break;
                     /*
@@ -249,7 +249,7 @@ function raiseAttributeAmbiguity(properties: Set<string> | Array<string>, graphE
             throw new Neo4jGraphQLError(
                 `Conflicting modification of ${[hash[dbName], property].map((n) => `[[${n}]]`).join(", ")} on type ${
                     graphElement.name
-                }`
+                }`,
             );
         }
         hash[dbName] = property;
@@ -280,7 +280,7 @@ function parseNestedCreate(
     parentNode: Node,
     relationshipPropertyPath: string,
     relationship: [RelationField | undefined, Node[]],
-    edge?: Relationship
+    edge?: Relationship,
 ) {
     const nodeProperties = input.children.node.properties;
     const edgeProperties = input.children.edge ? input.children.edge.properties : [];
@@ -298,7 +298,7 @@ function parseNestedCreate(
         [...edgeProperties],
         relationshipPropertyPath,
         relationship,
-        edge
+        edge,
     );
     if (input.children.node) {
         parser(input.children.node, node, context, nestedCreateAST);

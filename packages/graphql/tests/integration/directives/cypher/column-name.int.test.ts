@@ -106,7 +106,7 @@ describe("cypher with columnName argument", () => {
                         {
                             title: movieTitle,
                             name: actorName,
-                        }
+                        },
                     );
 
                     const gqlResult = await graphql({
@@ -178,7 +178,7 @@ describe("cypher with columnName argument", () => {
                         {
                             title: movieTitle,
                             name: actorName,
-                        }
+                        },
                     );
 
                     const gqlResult = await graphql({
@@ -258,7 +258,7 @@ describe("cypher with columnName argument", () => {
                         {
                             title: movieTitle,
                             name: actorName,
-                        }
+                        },
                     );
 
                     const req = createJwtRequest(secret);
@@ -340,7 +340,7 @@ describe("cypher with columnName argument", () => {
                             title2: movieTitle2,
                             title3: movieTitle3,
                             name: actorName,
-                        }
+                        },
                     );
 
                     const gqlResult = await graphql({
@@ -448,7 +448,7 @@ describe("cypher with columnName argument", () => {
                             title,
                             actorName,
                             directorName,
-                        }
+                        },
                     );
 
                     const gqlResult = await graphql({
@@ -538,7 +538,7 @@ describe("cypher with columnName argument", () => {
                         {
                             title: movieTitle,
                             name: actorName,
-                        }
+                        },
                     );
 
                     const gqlResult = await graphql({
@@ -609,7 +609,7 @@ describe("cypher with columnName argument", () => {
                         {
                             title: movieTitle,
                             name: actorName,
-                        }
+                        },
                     );
 
                     const gqlResult = await graphql({
@@ -680,7 +680,7 @@ describe("cypher with columnName argument", () => {
                         {
                             title: movieTitle,
                             name: actorName,
-                        }
+                        },
                     );
 
                     const gqlResult = await graphql({
@@ -751,7 +751,7 @@ describe("cypher with columnName argument", () => {
                     {
                         townId,
                         destinationId,
-                    }
+                    },
                 );
                 await session.close();
             });
@@ -788,7 +788,7 @@ describe("cypher with columnName argument", () => {
                 expect(gqlResultWithDefaultValue.errors).toBeFalsy();
 
                 expect((gqlResultWithDefaultValue?.data as any).townDestinationList).toEqual(
-                    expectedTownDestinationList
+                    expectedTownDestinationList,
                 );
 
                 // Schema with missing value
@@ -797,7 +797,7 @@ describe("cypher with columnName argument", () => {
                 expect(gqlResultWithMissingValue.errors).toBeFalsy();
 
                 expect((gqlResultWithMissingValue?.data as any).townDestinationList).toEqual(
-                    expectedTownDestinationList
+                    expectedTownDestinationList,
                 );
             });
 
@@ -827,7 +827,7 @@ describe("cypher with columnName argument", () => {
                 expect(gqlResultWithDefaultValue.errors).toBeFalsy();
 
                 expect((gqlResultWithDefaultValue?.data as any).townDestinationList).toEqual(
-                    expectedTownDestinationList
+                    expectedTownDestinationList,
                 );
 
                 // Schema with missing value
@@ -836,7 +836,7 @@ describe("cypher with columnName argument", () => {
                 expect(gqlResultWithMissingValue.errors).toBeFalsy();
 
                 expect((gqlResultWithMissingValue?.data as any).townDestinationList).toEqual(
-                    expectedTownDestinationList
+                    expectedTownDestinationList,
                 );
             });
         });
@@ -893,7 +893,7 @@ describe("cypher with columnName argument", () => {
                         CREATE (u:User:${testLabel} {id: "${userId}"})
                         CREATE (u)-[:WROTE]->(p)
                         CREATE (u)-[:WATCHED]->(m)
-                    `
+                    `,
                 );
                 await session.close();
             });

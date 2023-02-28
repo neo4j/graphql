@@ -35,7 +35,7 @@ export function augmentFulltextSchema(
     node: Node,
     composer: SchemaComposer,
     nodeWhereTypeName: string,
-    nodeSortTypeName: string
+    nodeSortTypeName: string,
 ) {
     if (node.fulltextDirective) {
         const fields = node.fulltextDirective.indexes.reduce((res, index) => {

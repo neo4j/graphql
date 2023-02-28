@@ -144,7 +144,7 @@ function createFulltextMatchClause(
     matchNode: Cypher.Node,
     whereInput: GraphQLWhereArg | undefined,
     node: Node,
-    context: Context
+    context: Context,
 ): {
     matchClause: Cypher.db.FullTextQueryNodes;
     whereOperators: Cypher.Predicate[];

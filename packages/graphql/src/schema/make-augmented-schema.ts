@@ -104,7 +104,7 @@ function makeAugmentedSchema(
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
         subgraph?: Subgraph;
-    } = { validateResolvers: true }
+    } = { validateResolvers: true },
 ): {
     nodes: Node[];
     relationships: Relationship[];
@@ -178,7 +178,7 @@ function makeAugmentedSchema(
     const relationshipProperties = interfaceTypes.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
     const interfaceRelationships = interfaceTypes.filter((i) => interfaceRelationshipNames.has(i.name.value));
     interfaceTypes = interfaceTypes.filter(
-        (i) => !(relationshipPropertyInterfaceNames.has(i.name.value) || interfaceRelationshipNames.has(i.name.value))
+        (i) => !(relationshipPropertyInterfaceNames.has(i.name.value) || interfaceRelationshipNames.has(i.name.value)),
     );
 
     const relationshipFields = new Map<string, ObjectFields>();
@@ -246,7 +246,7 @@ function makeAugmentedSchema(
             name: `${relationship.name.value}UpdateInput`,
             fields: objectFieldsToUpdateInputFields([
                 ...relFields.primitiveFields.filter(
-                    (field) => !field.autogenerate && !field.readonly && !field.callback
+                    (field) => !field.autogenerate && !field.readonly && !field.callback,
                 ),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
@@ -292,7 +292,7 @@ function makeAugmentedSchema(
 
     interfaceRelationships.forEach((interfaceRelationship) => {
         const implementations = objectTypes.filter((n) =>
-            n.interfaces?.some((i) => i.name.value === interfaceRelationship.name.value)
+            n.interfaces?.some((i) => i.name.value === interfaceRelationship.name.value),
         );
 
         const interfaceFields = getObjFieldMeta({
@@ -311,7 +311,7 @@ function makeAugmentedSchema(
         }
         if (!cartesianPointInTypeDefs) {
             cartesianPointInTypeDefs = interfaceFields.pointFields.some(
-                (field) => field.typeMeta.name === "CartesianPoint"
+                (field) => field.typeMeta.name === "CartesianPoint",
             );
         }
 
@@ -338,11 +338,11 @@ function makeAugmentedSchema(
                 [f.fieldName]: {
                     type: sortDirection.getTypeName(),
                     directives: graphqlDirectivesToCompose(
-                        f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                        f.otherDirectives.filter((directive) => directive.name.value === "deprecated"),
                     ),
                 },
             }),
-            {}
+            {},
         );
 
         if (Object.keys(interfaceSortableFields).length) {
@@ -350,15 +350,15 @@ function makeAugmentedSchema(
                 tc.addFields(interfaceSortableFields);
                 tc.setDescription(
                     `Fields to sort ${pluralize(
-                        interfaceRelationship.name.value
-                    )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${interfaceRelationship.name.value}Sort`} object.`
+                        interfaceRelationship.name.value,
+                    )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${interfaceRelationship.name.value}Sort`} object.`,
                 );
             });
 
             interfaceOptionsInput.addFields({
                 sort: {
                     description: `Specify one or more ${`${interfaceRelationship.name.value}Sort`} objects to sort ${pluralize(
-                        interfaceRelationship.name.value
+                        interfaceRelationship.name.value,
                     )} by. The sorts will be applied in the order in which they are arranged in the array.`,
                     type: interfaceSortInput.List,
                 },
@@ -389,7 +389,7 @@ function makeAugmentedSchema(
             composer.createInputTC({
                 name: `${interfaceRelationship.name.value}Implementations${suffix}`,
                 fields: {},
-            })
+            }),
         );
 
         composer.createInputTC({
@@ -412,7 +412,7 @@ function makeAugmentedSchema(
                     ]),
                     _on: implementationsUpdateInput,
                 });
-            }
+            },
         );
 
         addMathOperatorsToITC(interfaceRelationshipITC);
@@ -486,7 +486,7 @@ function makeAugmentedSchema(
                 `${interfaceRelationship.name.value}ConnectInput`,
                 (tc) => {
                     tc.addFields({ _on: implementationsConnectInput });
-                }
+                },
             );
             interfaceConnectInput.setField("_on", implementationsConnectInput);
         }
@@ -496,7 +496,7 @@ function makeAugmentedSchema(
                 `${interfaceRelationship.name.value}DeleteInput`,
                 (tc) => {
                     tc.addFields({ _on: implementationsDeleteInput });
-                }
+                },
             );
             interfaceDeleteInput.setField("_on", implementationsDeleteInput);
         }
@@ -506,7 +506,7 @@ function makeAugmentedSchema(
                 `${interfaceRelationship.name.value}DisconnectInput`,
                 (tc) => {
                     tc.addFields({ _on: implementationsDisconnectInput });
-                }
+                },
             );
             interfaceDisconnectInput.setField("_on", implementationsDisconnectInput);
         }
@@ -583,11 +583,11 @@ function makeAugmentedSchema(
                 [f.fieldName]: {
                     type: sortDirection.getTypeName(),
                     directives: graphqlDirectivesToCompose(
-                        f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                        f.otherDirectives.filter((directive) => directive.name.value === "deprecated"),
                     ),
                 },
             }),
-            {}
+            {},
         );
 
         const nodeSortTypeName = `${node.name}Sort`;
@@ -596,7 +596,7 @@ function makeAugmentedSchema(
                 name: nodeSortTypeName,
                 fields: sortFields,
                 description: `Fields to sort ${upperFirst(
-                    node.plural
+                    node.plural,
                 )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${nodeSortTypeName} object.`,
             });
 
@@ -605,7 +605,7 @@ function makeAugmentedSchema(
                 fields: {
                     sort: {
                         description: `Specify one or more ${nodeSortTypeName} objects to sort ${upperFirst(
-                            node.plural
+                            node.plural,
                         )} by. The sorts will be applied in the order in which they are arranged in the array.`,
                         type: sortInput.NonNull.List,
                     },
@@ -872,7 +872,7 @@ function makeAugmentedSchema(
             description: inter.description?.value,
             fields: objectComposeFields,
             directives: graphqlDirectivesToCompose(
-                (inter.directives || []).filter((x) => !["auth", "exclude"].includes(x.name.value))
+                (inter.directives || []).filter((x) => !["auth", "exclude"].includes(x.name.value)),
             ),
         });
     });
@@ -891,7 +891,7 @@ function makeAugmentedSchema(
 
     const emptyObjectsInterfaces = (
         parsedDoc.definitions.filter(
-            (x) => (x.kind === "ObjectTypeDefinition" && !isRootType(x)) || x.kind === "InterfaceTypeDefinition"
+            (x) => (x.kind === "ObjectTypeDefinition" && !isRootType(x)) || x.kind === "InterfaceTypeDefinition",
         ) as (InterfaceTypeDefinitionNode | ObjectTypeDefinitionNode)[]
     ).filter((x) => !x.fields?.length);
 
@@ -899,7 +899,7 @@ function makeAugmentedSchema(
         throw new Error(
             `Objects and Interfaces must have one or more fields: ${emptyObjectsInterfaces
                 .map((x) => x.name.value)
-                .join(", ")}`
+                .join(", ")}`,
         );
     }
 

@@ -22,7 +22,6 @@ import Debug from "debug";
 import type Node from "../Node";
 import type { DriverConfig } from "../..";
 import { DEBUG_EXECUTE } from "../../constants";
-import type { Neo4jDatabaseInfo } from "../Neo4jDatabaseInfo";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -54,7 +53,7 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
 
         existingIndexes[index.name] = {
             labelsOrTypes: index.labelsOrTypes,
-            properties: index.properties
+            properties: index.properties,
         };
     });
 
@@ -77,7 +76,7 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
                     indexesToCreate.push({
                         indexName: indexName,
                         label: node.getMainLabel(),
-                        properties
+                        properties,
                     });
                 } else {
                     index.fields.forEach((field) => {
@@ -89,7 +88,7 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
                             const aliasError = stringField?.dbPropertyName ? ` aliased to field '${fieldName}''` : "";
 
                             indexErrors.push(
-                                `@fulltext index '${indexName}' on Node '${node.name}' already exists, but is missing field '${field}'${aliasError}`
+                                `@fulltext index '${indexName}' on Node '${node.name}' already exists, but is missing field '${field}'${aliasError}`,
                             );
                         }
                     });
@@ -106,7 +105,7 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
         const cypher = [
             `CREATE CONSTRAINT ${constraintToCreate.constraintName}`,
             `IF NOT EXISTS FOR (n:${constraintToCreate.label})`,
-            `REQUIRE n.${constraintToCreate.property} IS UNIQUE`
+            `REQUIRE n.${constraintToCreate.property} IS UNIQUE`,
         ].join(" ");
 
         debug(`About to execute Cypher: ${cypher}`);
@@ -122,7 +121,7 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
         const cypher = [
             `CREATE FULLTEXT INDEX ${indexToCreate.indexName}`,
             `IF NOT EXISTS FOR (n:${indexToCreate.label})`,
-            `ON EACH [${indexToCreate.properties.map((p) => `n.${p}`).join(", ")}]`
+            `ON EACH [${indexToCreate.properties.map((p) => `n.${p}`).join(", ")}]`,
         ].join(" ");
 
         debug(`About to execute Cypher: ${cypher}`);
@@ -138,7 +137,7 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
 
     if (missingConstraints.length) {
         const missingConstraintMessages = missingConstraints.map(
-            (constraint) => `Missing constraint for ${constraint.label}.${constraint.property}`
+            (constraint) => `Missing constraint for ${constraint.label}.${constraint.property}`,
         );
         throw new Error(missingConstraintMessages.join("\n"));
     }
@@ -165,7 +164,7 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
 
         existingIndexes[index.name] = {
             labelsOrTypes: index.labelsOrTypes,
-            properties: index.properties
+            properties: index.properties,
         };
     });
 
@@ -193,7 +192,7 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
                         const aliasError = stringField?.dbPropertyName ? ` aliased to field '${fieldName}''` : "";
 
                         indexErrors.push(
-                            `@fulltext index '${indexName}' on Node '${node.name}' is missing field '${field}'${aliasError}`
+                            `@fulltext index '${indexName}' on Node '${node.name}' is missing field '${field}'${aliasError}`,
                         );
                     }
                 });
@@ -210,7 +209,7 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
 
 async function getMissingConstraints({
     nodes,
-    session
+    session,
 }: {
     nodes: Node[];
     session: Session;
@@ -246,7 +245,7 @@ async function getMissingConstraints({
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     constraintName: field.unique!.constraintName,
                     label: node.getMainLabel(),
-                    property
+                    property,
                 });
             }
         });
@@ -259,7 +258,7 @@ async function assertIndexesAndConstraints({
     driver,
     driverConfig,
     nodes,
-    options
+    options,
 }: {
     driver: Driver;
     driverConfig?: DriverConfig;

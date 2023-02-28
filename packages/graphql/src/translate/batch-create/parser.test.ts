@@ -113,7 +113,7 @@ describe("TreeDescriptor Parser", () => {
         }).instance();
         const treeDescriptor = Array.isArray(graphQLInput)
             ? mergeTreeDescriptors(
-                  graphQLInput.map((el: GraphQLCreateInput) => getTreeDescriptor(el, movieNode, context))
+                  graphQLInput.map((el: GraphQLCreateInput) => getTreeDescriptor(el, movieNode, context)),
               )
             : getTreeDescriptor(graphQLInput, movieNode, context);
 
@@ -217,7 +217,7 @@ describe("TreeDescriptor Parser", () => {
 
         const treeDescriptor = Array.isArray(graphQLInput)
             ? mergeTreeDescriptors(
-                  graphQLInput.map((el: GraphQLCreateInput) => getTreeDescriptor(el, movieNode, context))
+                  graphQLInput.map((el: GraphQLCreateInput) => getTreeDescriptor(el, movieNode, context)),
               )
             : getTreeDescriptor(graphQLInput, movieNode, context);
 
@@ -334,7 +334,7 @@ describe("TreeDescriptor Parser", () => {
         }).instance();
         const treeDescriptor = Array.isArray(graphQLInput)
             ? mergeTreeDescriptors(
-                  graphQLInput.map((el: GraphQLCreateInput) => getTreeDescriptor(el, movieNode, context))
+                  graphQLInput.map((el: GraphQLCreateInput) => getTreeDescriptor(el, movieNode, context)),
               )
             : getTreeDescriptor(graphQLInput, movieNode, context);
 

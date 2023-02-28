@@ -51,9 +51,9 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                 new Cypher.apoc.Validate(
                     Cypher.not(new Cypher.RawCypher(allowAuth[0])),
                     AUTH_FORBIDDEN_ERROR,
-                    new Cypher.Literal([0])
-                )
-            )
+                    new Cypher.Literal([0]),
+                ),
+            ),
         );
         cypherParams = { ...cypherParams, ...allowAuth[1] };
     }
@@ -87,9 +87,9 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                 new Cypher.apoc.Validate(
                     Cypher.not(Cypher.and(...authStrs.map((str) => new Cypher.RawCypher(str)))),
                     AUTH_FORBIDDEN_ERROR,
-                    new Cypher.Literal([0])
-                )
-            )
+                    new Cypher.Literal([0]),
+                ),
+            ),
         );
     }
 
@@ -139,7 +139,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                             field: field as TemporalField,
                             variable: new Cypher.NamedVariable(varName),
                             valueOverride: `${operator}(this.${fieldName})`,
-                        })
+                        }),
                     );
 
                     return;
@@ -163,17 +163,17 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                 }
 
                 thisProjections.push(
-                    new Cypher.RawCypher(`${entry[1].alias || entry[1].name}: ${operator}(this.${fieldName})`)
+                    new Cypher.RawCypher(`${entry[1].alias || entry[1].name}: ${operator}(this.${fieldName})`),
                 );
             });
 
             projections.set(
                 `${selection[1].alias || selection[1].name}`,
-                Cypher.count(new Cypher.NamedVariable(varName))
+                Cypher.count(new Cypher.NamedVariable(varName)),
             );
             projections.set(
                 `${selection[1].alias || selection[1].name}`,
-                new Cypher.RawCypher((env) => `{ ${thisProjections.map((p) => p.getCypher(env)).join(", ")} }`)
+                new Cypher.RawCypher((env) => `{ ${thisProjections.map((p) => p.getCypher(env)).join(", ")} }`),
             );
         }
     });

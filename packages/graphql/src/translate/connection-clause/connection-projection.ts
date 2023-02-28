@@ -167,8 +167,8 @@ function createConnectionNodeProjection({
             new Cypher.apoc.Validate(
                 Cypher.not(Cypher.and(...projectionMeta.authValidatePredicates)),
                 AUTH_FORBIDDEN_ERROR,
-                new Cypher.Literal([0])
-            )
+                new Cypher.Literal([0]),
+            ),
         );
 
         projectionSubqueries.push(projectionAuth);

@@ -105,7 +105,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
                 thirdLevelInput1,
                 thirdLevelInput2,
                 thirdLevelInput3,
-            }
+            },
         );
 
         const typeDefs = `

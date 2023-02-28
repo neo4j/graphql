@@ -38,8 +38,8 @@ export function createDatetimeElement({
         field.typeMeta.array
             ? `${resolveTree.alias}: [ dt in ${variable.getCypher(env)}.${dbFieldName} | ${wrapApocConvertDate("dt")} ]`
             : `${resolveTree.alias}: ${wrapApocConvertDate(
-                  valueOverride || `${variable.getCypher(env)}.${dbFieldName}`
-              )}`
+                  valueOverride || `${variable.getCypher(env)}.${dbFieldName}`,
+              )}`,
     );
 }
 

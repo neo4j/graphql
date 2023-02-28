@@ -132,7 +132,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
                     averageProductsCreatedPerYear: (_source, _args, context) => {
                         return Math.floor(
                             context.resolveTree.args.representations[0].totalProductsCreated /
-                                context.resolveTree.args.representations[0].yearsOfEmployment
+                                context.resolveTree.args.representations[0].yearsOfEmployment,
                         );
                     },
                 },
@@ -156,7 +156,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
                 { name: "products", url: productsUrl },
                 { name: "users", url: usersUrl },
             ],
-            4013
+            4013,
         );
 
         await gatewayServer.start();
@@ -180,7 +180,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
             CREATE (p2)-[:HAS_DIMENSIONS]->(dimension)
             CREATE (p2)-[:HAS_RESEARCH]->(:ProductResearch)-[:HAS_STUDY]->(:CaseStudy { caseNumber: "1235", description: "Studio Study" })
             CREATE (p2)-[:CREATED_BY]->(user)
-            `
+            `,
         );
     });
 
@@ -197,7 +197,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
           MATCH (r:ProductResearch)
           MATCH (c:CaseStudy)
           DETACH DELETE dimension, v, u, d, p, r, c
-          `
+          `,
         );
         await neo4j.close();
     });
@@ -207,7 +207,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
             {
                 query: `query { __typename }`,
             },
-            { "apollo-federation-include-trace": "ftv1" }
+            { "apollo-federation-include-trace": "ftv1" },
         );
 
         expect(resp).toEqual({
@@ -268,7 +268,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
             const { sdl } = serviceSDLQuery.data._service;
             const normalizedSDL = stripIgnoredCharacters(sdl);
             expect(normalizedSDL).toMatch(
-                /type User(@extends|@federation__extends)?(@key|@federation__key)\(fields:"email"( resolvable:true)?\)/
+                /type User(@extends|@federation__extends)?(@key|@federation__key)\(fields:"email"( resolvable:true)?\)/,
             );
         });
 
@@ -403,14 +403,14 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
             const { sdl } = serviceSDLQuery.data._service;
             const normalizedSDL = stripIgnoredCharacters(sdl);
             expect(normalizedSDL).toMatch(
-                /type Product.*(@key|@federation__key)\(fields:"id"( resolvable:true)?\).*\{/
+                /type Product.*(@key|@federation__key)\(fields:"id"( resolvable:true)?\).*\{/,
             );
             // need to end regex with unique field in Product as otherwise we can match against DeprecatedProduct key
             expect(normalizedSDL).toMatch(
-                /type Product.*(@key|@federation__key)\(fields:"sku package"( resolvable:true)?\).*variation/
+                /type Product.*(@key|@federation__key)\(fields:"sku package"( resolvable:true)?\).*variation/,
             );
             expect(normalizedSDL).toMatch(
-                /type Product.*(@key|@federation__key)\(fields:"sku variation { id }"( resolvable:true)?\).*\{/
+                /type Product.*(@key|@federation__key)\(fields:"sku variation { id }"( resolvable:true)?\).*\{/,
             );
         });
 

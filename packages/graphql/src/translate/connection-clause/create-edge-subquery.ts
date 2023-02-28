@@ -144,7 +144,7 @@ export function createEdgeSubquery({
             subqueryWith,
             withSortClause,
             ...projection.subqueries,
-            withReturn
+            withReturn,
         );
     }
 

@@ -173,7 +173,7 @@ describe("@fulltext directive", () => {
                     SET movie1 = $movie1
                     SET movie2 = $movie2
                 `,
-                    { person1, person2, person3, movie1, movie2 }
+                    { person1, person2, person3, movie1, movie2 },
                 );
             } finally {
                 await session.close();
@@ -217,10 +217,10 @@ describe("@fulltext directive", () => {
                 name: person3.name,
             });
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD],
             );
             expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
+                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD],
             );
         });
 
@@ -261,10 +261,10 @@ describe("@fulltext directive", () => {
                 name: person2.name,
             });
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD],
             );
             expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
+                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD],
             );
         });
 
@@ -462,7 +462,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person1.name);
             expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe(person3.name);
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD],
             );
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
         });
@@ -587,7 +587,7 @@ describe("@fulltext directive", () => {
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe(
-                `Float cannot represent non numeric value: "${nonNumberScoreInput}"`
+                `Float cannot represent non numeric value: "${nonNumberScoreInput}"`,
             );
         });
 
@@ -641,7 +641,7 @@ describe("@fulltext directive", () => {
                 },
             ]);
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD],
             );
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
         });
@@ -757,7 +757,7 @@ describe("@fulltext directive", () => {
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe(
-                `String cannot represent a non string value: ${nonStringValue}`
+                `String cannot represent a non string value: ${nonStringValue}`,
             );
         });
 
@@ -793,7 +793,7 @@ describe("@fulltext directive", () => {
             });
 
             expect((gqlResult.errors as any[])[0].message).toStartWith(
-                `Field "${invalidField}" is not defined by type`
+                `Field "${invalidField}" is not defined by type`,
             );
         });
 
@@ -828,10 +828,10 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe(person1.name);
             expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst].name).toBe(person2.name);
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeLessThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD],
             );
             expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeLessThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
+                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD],
             );
         });
 
@@ -933,7 +933,7 @@ describe("@fulltext directive", () => {
                 SET person1 = $person1
                 SET person2 = $person2
             `,
-                    { person1, person2 }
+                    { person1, person2 },
                 );
             } finally {
                 await session.close();
@@ -1014,7 +1014,7 @@ describe("@fulltext directive", () => {
                 SET person1 = $person1
                 SET person2 = $person2
             `,
-                    { person1, person2 }
+                    { person1, person2 },
                 );
             } finally {
                 await session.close();
@@ -1173,7 +1173,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual(person2);
             expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual(person1);
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeLessThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD],
             );
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
         });
@@ -1629,10 +1629,10 @@ describe("@fulltext directive", () => {
                 name: person3.name,
             });
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD],
             );
             expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
+                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD],
             );
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(3);
         });
@@ -1965,7 +1965,7 @@ describe("@fulltext directive", () => {
                 description: movie2.description,
             });
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD],
             );
         });
 
@@ -1992,7 +1992,7 @@ describe("@fulltext directive", () => {
                     SET person2 = $person2
                     SET person3 = $person3
                 `,
-                    { person1, person2, person3 }
+                    { person1, person2, person3 },
                 );
             } finally {
                 await session.close();
@@ -2046,10 +2046,10 @@ describe("@fulltext directive", () => {
                 name: person3.name,
             });
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD],
             );
             expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
+                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD],
             );
         });
 
@@ -2111,7 +2111,7 @@ describe("@fulltext directive", () => {
                 description: movie2.description,
             });
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD],
             );
         });
 
@@ -2137,7 +2137,7 @@ describe("@fulltext directive", () => {
                     SET movie1 = $movie1
                     SET movie2 = $movie2
                 `,
-                    { movie1, movie2 }
+                    { movie1, movie2 },
                 );
             } finally {
                 await session.close();
@@ -2209,7 +2209,7 @@ describe("@fulltext directive", () => {
                 title: movie2.title,
             });
             expect((gqlResult1.data?.[queryType1] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult1.data?.[queryType1] as any[])[1][SCORE_FIELD]
+                (gqlResult1.data?.[queryType1] as any[])[1][SCORE_FIELD],
             );
 
             expect(gqlResult2.errors).toBeFalsy();
@@ -2220,7 +2220,7 @@ describe("@fulltext directive", () => {
                 title: movie2.title,
             });
             expect((gqlResult2.data?.[queryType2] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
-                (gqlResult2.data?.[queryType2] as any[])[1][SCORE_FIELD]
+                (gqlResult2.data?.[queryType2] as any[])[1][SCORE_FIELD],
             );
         });
     });
@@ -2305,7 +2305,7 @@ describe("@fulltext directive", () => {
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
-                })
+                }),
             ).resolves.not.toThrow();
 
             const session = driver.session({ database: databaseName });
@@ -2347,7 +2347,7 @@ describe("@fulltext directive", () => {
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
-                })
+                }),
             ).resolves.not.toThrow();
 
             const session = driver.session({ database: databaseName });
@@ -2395,7 +2395,7 @@ describe("@fulltext directive", () => {
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
-                })
+                }),
             ).resolves.not.toThrow();
 
             const session = driver.session({ database: databaseName });
@@ -2436,7 +2436,7 @@ describe("@fulltext directive", () => {
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
-                })
+                }),
             ).resolves.not.toThrow();
 
             const session = driver.session({ database: databaseName });
@@ -2476,7 +2476,7 @@ describe("@fulltext directive", () => {
                 neoSchema.assertIndexesAndConstraints({
                     driver,
                     driverConfig: { database: databaseName },
-                })
+                }),
             ).rejects.toThrow(`Missing @fulltext index '${indexName1}' on Node '${type.name}'`);
         });
 
@@ -2505,7 +2505,7 @@ describe("@fulltext directive", () => {
                         `CREATE FULLTEXT INDEX ${indexName1}`,
                         `IF NOT EXISTS FOR (n:${type.name})`,
                         `ON EACH [n.title]`,
-                    ].join(" ")
+                    ].join(" "),
                 );
             } finally {
                 await session.close();
@@ -2515,7 +2515,7 @@ describe("@fulltext directive", () => {
                 neoSchema.assertIndexesAndConstraints({
                     driver,
                     driverConfig: { database: databaseName },
-                })
+                }),
             ).rejects.toThrow(`@fulltext index '${indexName1}' on Node '${type.name}' is missing field 'description'`);
         });
 
@@ -2544,7 +2544,7 @@ describe("@fulltext directive", () => {
                         `CREATE FULLTEXT INDEX ${indexName1}`,
                         `IF NOT EXISTS FOR (n:${type.name})`,
                         `ON EACH [n.title, n.description]`,
-                    ].join(" ")
+                    ].join(" "),
                 );
             } finally {
                 await session.close();
@@ -2554,9 +2554,9 @@ describe("@fulltext directive", () => {
                 neoSchema.assertIndexesAndConstraints({
                     driver,
                     driverConfig: { database: databaseName },
-                })
+                }),
             ).rejects.toThrow(
-                `@fulltext index '${indexName1}' on Node '${type.name}' is missing field 'description' aliased to field '${aliasName}'`
+                `@fulltext index '${indexName1}' on Node '${type.name}' is missing field 'description' aliased to field '${aliasName}'`,
             );
         });
 
@@ -2581,14 +2581,14 @@ describe("@fulltext directive", () => {
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
-                })
+                }),
             ).resolves.not.toThrow();
 
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
                     driverConfig: { database: databaseName },
-                })
+                }),
             ).resolves.not.toThrow();
         });
 
@@ -2617,7 +2617,7 @@ describe("@fulltext directive", () => {
                         `CREATE FULLTEXT INDEX ${indexName1}`,
                         `IF NOT EXISTS FOR (n:${type.name})`,
                         `ON EACH [n.title]`,
-                    ].join(" ")
+                    ].join(" "),
                 );
             } finally {
                 await session.close();
@@ -2628,9 +2628,9 @@ describe("@fulltext directive", () => {
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
-                })
+                }),
             ).rejects.toThrow(
-                `@fulltext index '${indexName1}' on Node '${type.name}' already exists, but is missing field 'description'`
+                `@fulltext index '${indexName1}' on Node '${type.name}' already exists, but is missing field 'description'`,
             );
         });
 
@@ -2655,7 +2655,7 @@ describe("@fulltext directive", () => {
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
-                })
+                }),
             ).resolves.not.toThrow();
 
             const session = driver.session({ database: databaseName });
@@ -2708,7 +2708,7 @@ describe("@fulltext directive", () => {
                     neoSchema.assertIndexesAndConstraints({
                         driver,
                         driverConfig: { database: databaseName },
-                    })
+                    }),
                 ).resolves.not.toThrow();
             } finally {
                 await session.close();
@@ -2749,7 +2749,7 @@ describe("@fulltext directive", () => {
                         driver,
                         driverConfig: { database: databaseName },
                         options: { create: true },
-                    })
+                    }),
                 ).resolves.not.toThrow();
 
                 const dbConstraintsResult = (await session.run(indexQueryCypher)).records.map((record) => {
@@ -2758,15 +2758,15 @@ describe("@fulltext directive", () => {
 
                 expect(
                     dbConstraintsResult.filter(
-                        (record) => record.labelsOrTypes.includes(baseType.name) && record.properties.includes("title")
-                    )
+                        (record) => record.labelsOrTypes.includes(baseType.name) && record.properties.includes("title"),
+                    ),
                 ).toHaveLength(0);
 
                 expect(
                     dbConstraintsResult.filter(
                         (record) =>
-                            record.labelsOrTypes.includes(additionalType.name) && record.properties.includes("title")
-                    )
+                            record.labelsOrTypes.includes(additionalType.name) && record.properties.includes("title"),
+                    ),
                 ).toHaveLength(1);
             } finally {
                 await session.close();

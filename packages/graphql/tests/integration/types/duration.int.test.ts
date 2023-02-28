@@ -94,7 +94,7 @@ describe("Duration", () => {
                         MATCH (movie:Movie {id: $id})
                         RETURN movie {.id, .duration} as movie
                     `,
-                    { id }
+                    { id },
                 );
 
                 const neo4jMovie: { id: string; duration: object } = neo4jResult.records[0].toObject().movie;
@@ -162,7 +162,7 @@ describe("Duration", () => {
                         MATCH (movie:Movie {id: $id})
                         RETURN movie {.id, .durations} as movie
                     `,
-                    { id }
+                    { id },
                 );
 
                 const neo4jMovie: { id: string; durations: { toString(): string }[] } =
@@ -210,7 +210,7 @@ describe("Duration", () => {
                         CREATE (movie:Movie)
                         SET movie = $movie
                     `,
-                    { movie: { id } }
+                    { movie: { id } },
                 );
 
                 const mutation = `
@@ -244,7 +244,7 @@ describe("Duration", () => {
                         MATCH (movie:Movie {id: $id})
                         RETURN movie {.id, .duration} as movie
                     `,
-                    { id }
+                    { id },
                 );
 
                 const neo4jMovie: { id: string; duration: { toString(): string } } =
@@ -285,7 +285,7 @@ describe("Duration", () => {
                         CREATE (movie:Movie)
                         SET movie = $movie
                     `,
-                    { movie: { id, duration: neo4jDuration } }
+                    { movie: { id, duration: neo4jDuration } },
                 );
 
                 const query = `
@@ -336,7 +336,7 @@ describe("Duration", () => {
                         parsedLong.months,
                         parsedLong.days,
                         parsedLong.seconds,
-                        parsedLong.nanoseconds
+                        parsedLong.nanoseconds,
                     );
 
                     const mediumId = generate({ readable: false });
@@ -346,7 +346,7 @@ describe("Duration", () => {
                         parsedMedium.months,
                         parsedMedium.days,
                         parsedMedium.seconds,
-                        parsedMedium.nanoseconds
+                        parsedMedium.nanoseconds,
                     );
 
                     const shortId = generate({ readable: false });
@@ -356,7 +356,7 @@ describe("Duration", () => {
                         parsedShort.months,
                         parsedShort.days,
                         parsedShort.seconds,
-                        parsedShort.nanoseconds
+                        parsedShort.nanoseconds,
                     );
 
                     try {
@@ -373,7 +373,7 @@ describe("Duration", () => {
                                 long: { id: longId, duration: neo4jLong },
                                 medium: { id: mediumId, duration: neo4jMedium },
                                 short: { id: shortId, duration: neo4jShort },
-                            }
+                            },
                         );
 
                         const query = `
@@ -436,7 +436,7 @@ describe("Duration", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             ));
     });
 });

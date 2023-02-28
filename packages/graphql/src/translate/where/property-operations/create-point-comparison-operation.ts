@@ -80,7 +80,7 @@ function createPointListComprehension(param: Cypher.Param): Cypher.ListComprehen
 function createPointDistanceExpression(
     property: Cypher.Expr,
     param: Cypher.Param,
-    neo4jDatabaseInfo: Neo4jDatabaseInfo
+    neo4jDatabaseInfo: Neo4jDatabaseInfo,
 ): Cypher.Function {
     const nestedPointRef = param.property("point");
     if (neo4jDatabaseInfo.gte("4.4")) {

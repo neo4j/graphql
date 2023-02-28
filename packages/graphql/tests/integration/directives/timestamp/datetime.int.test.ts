@@ -265,7 +265,7 @@ describe("timestamp/datetime", () => {
                     `
                     CREATE (:Movie {title: $title})<-[:ACTED_IN {screenTime: 30}]-(:Actor {name: $name})
                 `,
-                    { title, name }
+                    { title, name },
                 );
 
                 const result = await graphql({
@@ -455,7 +455,7 @@ describe("timestamp/datetime", () => {
                     `
                     CREATE (:Movie {title: $title})<-[:ACTED_IN {screenTime: 30}]-(:Actor {name: $name})
                 `,
-                    { title, name }
+                    { title, name },
                 );
 
                 const result = await graphql({
@@ -703,7 +703,7 @@ describe("timestamp/datetime", () => {
                     `
                     CREATE (:Movie {title: $title})<-[:ACTED_IN {screenTime: 30}]-(:Actor {name: $name})
                 `,
-                    { title, name }
+                    { title, name },
                 );
 
                 const result = await graphql({

@@ -57,7 +57,7 @@ function createConnectionFields({
             });
         });
         const deprecatedDirectives = graphqlDirectivesToCompose(
-            connectionField.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+            connectionField.otherDirectives.filter((directive) => directive.name.value === "deprecated"),
         );
 
         const connectionWhereName = `${connectionField.typeMeta.name}Where`;
@@ -243,7 +243,7 @@ function createConnectionFields({
 
         if (!connectionField.relationship.writeonly) {
             const deprecatedDirectives = graphqlDirectivesToCompose(
-                connectionField.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                connectionField.otherDirectives.filter((directive) => directive.name.value === "deprecated"),
             );
             composeNode.addFields({
                 [connectionField.fieldName]: {

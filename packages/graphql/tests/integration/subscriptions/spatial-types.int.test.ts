@@ -173,7 +173,7 @@ describe("Subscriptions to spatial types", () => {
                     },
                     typename: typeMovie.name,
                 },
-            ])
+            ]),
         );
     });
     test("update type with Point field", async () => {
@@ -260,7 +260,7 @@ describe("Subscriptions to spatial types", () => {
                     },
                     typename: typeMovie.name,
                 },
-            ])
+            ]),
         );
     });
     test("query type with Point field and filters", async () => {
@@ -503,7 +503,7 @@ describe("Subscriptions to spatial types", () => {
                     },
                     typename: typeMovie.name,
                 },
-            ])
+            ]),
         );
     });
     test("update type with CartesianPoint field", async () => {
@@ -590,7 +590,7 @@ describe("Subscriptions to spatial types", () => {
                     },
                     typename: typeMovie.name,
                 },
-            ])
+            ]),
         );
     });
     test("query type with CartesianPoint field and filters", async () => {

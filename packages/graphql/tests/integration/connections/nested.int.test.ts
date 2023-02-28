@@ -113,7 +113,7 @@ describe("Connections Alias", () => {
                 movieTitle,
                 actorName,
                 screenTime,
-            }
+            },
         );
 
         const result = await graphql({
@@ -177,7 +177,7 @@ describe("Connections Alias", () => {
                 movieTitle,
                 actorName,
                 screenTime,
-            }
+            },
         );
 
         const result = await graphql({

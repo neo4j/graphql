@@ -38,7 +38,7 @@ describe("ValidatePredicate", () => {
         const node = new Cypher.Node({ labels: ["Movie"] });
         const validatePredicate = new Cypher.apoc.ValidatePredicate(
             Cypher.eq(new Cypher.Literal(1), new Cypher.Literal(2)),
-            "That's not how math works"
+            "That's not how math works",
         );
         const query = new Cypher.Match(node);
         query.where(validatePredicate).return(node);

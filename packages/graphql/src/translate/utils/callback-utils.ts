@@ -27,7 +27,7 @@ export const addCallbackAndSetParam = (
     parent: any,
     callbackBucket: CallbackBucket,
     strs: string[],
-    operation: "CREATE" | "UPDATE"
+    operation: "CREATE" | "UPDATE",
 ): void => {
     if (!field.callback || !field.callback.operations.includes(operation)) {
         return;
@@ -50,7 +50,7 @@ export const addCallbackAndSetParamCypher = (
     parent: any,
     callbackBucket: CallbackBucket,
     operation: "CREATE" | "UPDATE",
-    node: Cypher.Node
+    node: Cypher.Node,
 ): [Cypher.PropertyRef, Cypher.RawCypher] | [] => {
     if (!field.callback || !field.callback.operations.includes(operation)) {
         return [];

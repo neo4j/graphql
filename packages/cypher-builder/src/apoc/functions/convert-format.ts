@@ -47,7 +47,7 @@ export class ConvertFormat extends CypherASTNode {
 export function convertFormat(
     temporalParam: Variable | PropertyRef,
     currentFormat: string,
-    convertTo: string
+    convertTo: string,
 ): ConvertFormat {
     return new ConvertFormat(temporalParam, currentFormat, convertTo);
 }

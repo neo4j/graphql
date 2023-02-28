@@ -54,7 +54,7 @@ describe("aggregations-top_level-basic", () => {
                 `
                     CREATE (:${randomType.name} {id: randomUUID()})
                     CREATE (:${randomType.name} {id: randomUUID()})
-                `
+                `,
             );
 
             const query = `

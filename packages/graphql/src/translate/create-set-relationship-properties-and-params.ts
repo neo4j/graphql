@@ -58,13 +58,13 @@ function createSetRelationshipPropertiesAndParams({
         ) {
             // DateTime -> datetime(); Time -> time()
             strs.push(
-                `SET ${varName}.${temporalField.dbPropertyName} = ${temporalField.typeMeta.name.toLowerCase()}()`
+                `SET ${varName}.${temporalField.dbPropertyName} = ${temporalField.typeMeta.name.toLowerCase()}()`,
             );
         }
     });
 
     relationship.primitiveFields.forEach((field) =>
-        addCallbackAndSetParam(field, varName, properties, callbackBucket, strs, operation)
+        addCallbackAndSetParam(field, varName, properties, callbackBucket, strs, operation),
     );
 
     Object.entries(properties).forEach(([key, value]) => {

@@ -85,7 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/402", () => {
                 `
                     CREATE (:Event {id: $eventId})-[:HAPPENS_IN]->(:Area {id: $areaId})
                 `,
-                { eventId, areaId }
+                { eventId, areaId },
             );
 
             const gqlResult = await graphql({

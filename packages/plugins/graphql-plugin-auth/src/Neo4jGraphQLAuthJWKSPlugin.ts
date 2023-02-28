@@ -96,7 +96,7 @@ class Neo4jGraphQLAuthJWKSPlugin {
         const getKey: jsonwebtoken.GetPublicKeyOrSecret = (header, callback) => {
             if (!this.client) {
                 debug(
-                    "JwksClient should NOT be empty! Make sure the 'tryToResolveKeys' method is called before decoding"
+                    "JwksClient should NOT be empty! Make sure the 'tryToResolveKeys' method is called before decoding",
                 );
                 return;
             }
@@ -111,7 +111,7 @@ class Neo4jGraphQLAuthJWKSPlugin {
         return new Promise((resolve, reject) => {
             if (!this.client)
                 reject(
-                    "JwksClient should not be empty! Make sure the 'tryToResolveKeys' method is called before decoding"
+                    "JwksClient should not be empty! Make sure the 'tryToResolveKeys' method is called before decoding",
                 );
             jsonwebtoken.verify(
                 token,
@@ -125,7 +125,7 @@ class Neo4jGraphQLAuthJWKSPlugin {
                     } else {
                         resolve(decoded as unknown as T);
                     }
-                }
+                },
             );
         });
     }

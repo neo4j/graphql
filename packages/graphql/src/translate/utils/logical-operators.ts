@@ -29,7 +29,7 @@ export function getCypherLogicalOperator(
     graphQLOperator: LogicalOperator | string
 ): (child: Cypher.Predicate) => Cypher.BooleanOp;
 export function getCypherLogicalOperator(
-    graphQLOperator: LogicalOperator | string
+    graphQLOperator: LogicalOperator | string,
 ): (
     left: Cypher.Predicate,
     right: Cypher.Predicate,

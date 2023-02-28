@@ -84,7 +84,7 @@ function createRelationshipFields({
         let relFields: ObjectFields | undefined;
 
         const deprecatedDirectives = graphqlDirectivesToCompose(
-            rel.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+            rel.otherDirectives.filter((directive) => directive.name.value === "deprecated"),
         );
 
         if (rel.properties) {
@@ -147,7 +147,7 @@ function createRelationshipFields({
                             : {}),
                         where: connectWhere,
                     });
-                }
+                },
             );
 
             const deleteFieldInput = schemaComposer.getOrCreateITC(
@@ -159,7 +159,7 @@ function createRelationshipFields({
                             : {}),
                         where: `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectionWhere`,
                     });
-                }
+                },
             );
 
             const disconnectFieldInput = schemaComposer.getOrCreateITC(
@@ -171,7 +171,7 @@ function createRelationshipFields({
                             : {}),
                         where: `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectionWhere`,
                     });
-                }
+                },
             );
 
             const createFieldInput = schemaComposer.getOrCreateITC(
@@ -185,7 +185,7 @@ function createRelationshipFields({
                             edge: `${rel.properties}CreateInput!`,
                         });
                     }
-                }
+                },
             );
 
             schemaComposer.getOrCreateITC(`${sourceName}${upperFirst(rel.fieldName)}UpdateConnectionInput`, (tc) => {
@@ -214,7 +214,7 @@ function createRelationshipFields({
                         update: `${sourceName}${upperFirst(rel.fieldName)}UpdateConnectionInput`,
                         where: `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectionWhere`,
                     });
-                }
+                },
             );
 
             const nodeFieldInput = schemaComposer.getOrCreateITC(
@@ -224,7 +224,7 @@ function createRelationshipFields({
                         create: rel.typeMeta.array ? createFieldInput.NonNull.List : createFieldInput,
                         connect: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput,
                     });
-                }
+                },
             );
 
             refNodes.forEach((n) => {
@@ -303,7 +303,7 @@ function createRelationshipFields({
                 schemaComposer.createInputTC({
                     name: `${typePrefix}${operation}Input`,
                     fields: {},
-                })
+                }),
             );
 
             const unionCreateFieldInput = schemaComposer.createInputTC({
@@ -508,11 +508,11 @@ function createRelationshipFields({
                 if (n.uniqueFields.length) {
                     // TODO: merge with createTopLevelConnectOrCreateInput
                     const nodeConnectOrCreateInput: InputTypeComposer<any> = schemaComposer.getOrCreateITC(
-                        `${sourceName}ConnectOrCreateInput`
+                        `${sourceName}ConnectOrCreateInput`,
                     );
 
                     const nodeRelationConnectOrCreateInput: InputTypeComposer<any> = schemaComposer.getOrCreateITC(
-                        `${sourceName}${upperFirst(rel.fieldName)}ConnectOrCreateInput`
+                        `${sourceName}${upperFirst(rel.fieldName)}ConnectOrCreateInput`,
                     );
 
                     nodeConnectOrCreateInput.addFields({
@@ -578,7 +578,7 @@ function createRelationshipFields({
 
             const fields = WHERE_AGGREGATION_TYPES.reduce<BaseField[]>((r, t) => {
                 const f = [...nodeOrRelFields.primitiveFields, ...nodeOrRelFields.temporalFields].filter(
-                    (y) => !y.typeMeta.array && y.typeMeta.name === t
+                    (y) => !y.typeMeta.array && y.typeMeta.name === t,
                 );
 
                 if (!f.length) {
@@ -642,7 +642,7 @@ function createRelationshipFields({
                                 [`${field.fieldName}_LONGEST_LENGTH_${operator}`]: "Int",
                                 [`${field.fieldName}_SHORTEST_LENGTH_${operator}`]: "Int",
                             };
-                        }, {})
+                        }, {}),
                     );
 
                     return;
@@ -674,7 +674,7 @@ function createRelationshipFields({
                                     ? { [`${field.fieldName}_SUM_${operator}`]: field.typeMeta.name }
                                     : {}),
                             };
-                        }, {})
+                        }, {}),
                     );
 
                     return;
@@ -691,8 +691,8 @@ function createRelationshipFields({
                             [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
                             [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
                         }),
-                        {}
-                    )
+                        {},
+                    ),
                 );
             });
 
@@ -812,7 +812,7 @@ function createRelationshipFields({
                 const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(
                     baseTypeName,
                     n,
-                    relFields
+                    relFields,
                 );
 
                 const aggregationFieldsBaseArgs = {
@@ -956,11 +956,11 @@ function createTopLevelConnectOrCreateInput({
     rel: RelationField;
 }): void {
     const nodeConnectOrCreateInput: InputTypeComposer<any> = schemaComposer.getOrCreateITC(
-        `${sourceName}ConnectOrCreateInput`
+        `${sourceName}ConnectOrCreateInput`,
     );
 
     const nodeFieldConnectOrCreateInputName = `${rel.connectionPrefix}${upperFirst(
-        rel.fieldName
+        rel.fieldName,
     )}ConnectOrCreateFieldInput`;
 
     nodeConnectOrCreateInput.addFields({

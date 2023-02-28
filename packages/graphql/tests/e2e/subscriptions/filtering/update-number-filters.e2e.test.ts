@@ -507,7 +507,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "bad_type_movie1" });
@@ -531,7 +531,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "bad_type_movie5" });
@@ -555,7 +555,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "bad_type_movie9" });
@@ -579,7 +579,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "bad_type_movie13" });
@@ -604,7 +604,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ id: 42 });
@@ -628,7 +628,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ id: 40 });
@@ -652,7 +652,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ id: 5 });
@@ -676,7 +676,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ id: 4 });
@@ -701,7 +701,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "bad_type_movie25", isFavorite: false });
@@ -725,7 +725,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "bad_type_movie27", isFavorite: false });
@@ -749,7 +749,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "bad_type_movie29", isFavorite: false });
@@ -773,7 +773,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "bad_type_movie31", isFavorite: false });
@@ -798,7 +798,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "bad_type_movie25", similarTitles: ["dummy"] });
@@ -859,7 +859,7 @@ describe("Update Subscriptions", () => {
     async function updateMovie(
         fieldName: string,
         oldValue: number | string,
-        newValue: number | string
+        newValue: number | string,
     ): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
@@ -867,7 +867,7 @@ describe("Update Subscriptions", () => {
                 query: `
                         mutation {
                             ${typeMovie.operations.update}(where: { ${fieldName}: ${makeTypedFieldValue(
-                    oldValue
+                    oldValue,
                 )} }, update: { ${fieldName}: ${makeTypedFieldValue(newValue)} }) {
                                 ${typeMovie.plural} {
                                     title

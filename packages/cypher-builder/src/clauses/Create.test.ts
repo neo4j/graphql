@@ -30,11 +30,11 @@ describe("CypherBuilder Create", () => {
             new Cypher.Pattern(movieNode).withProperties({
                 test: new Cypher.Param("test-value"),
                 id: idParam,
-            })
+            }),
         )
             .set(
                 [movieNode.property("title"), new Cypher.Param("The Matrix")],
-                [movieNode.property("runtime"), new Cypher.Param(120)]
+                [movieNode.property("runtime"), new Cypher.Param(120)],
             )
             .return(movieNode);
 

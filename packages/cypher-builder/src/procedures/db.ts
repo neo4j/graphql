@@ -66,7 +66,7 @@ export class FullTextQueryNodes extends Clause {
         const scoreYield = compileCypherIfExists(this.scoreVar, env, { prefix: ", score AS " });
 
         const textSearchStr = `CALL db.index.fulltext.queryNodes("${this.indexName}", ${this.phrase.getCypher(
-            env
+            env,
         )}) YIELD node AS ${targetId}${scoreYield}`;
 
         const whereStr = compileCypherIfExists(this.whereClause, env, { prefix: "\n" });

@@ -28,7 +28,7 @@ import Cypher from "@neo4j/cypher-builder";
 
 export function fulltextResolver(
     { node }: { node: Node },
-    index: FulltextIndex
+    index: FulltextIndex,
 ): ObjectTypeComposerFieldConfigDefinition<any, any, any> {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = createFulltextContext(index, args, _context, info);

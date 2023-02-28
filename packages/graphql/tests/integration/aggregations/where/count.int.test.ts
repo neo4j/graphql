@@ -62,7 +62,7 @@ describe("aggregations-where-count", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -125,7 +125,7 @@ describe("aggregations-where-count", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -188,7 +188,7 @@ describe("aggregations-where-count", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -256,7 +256,7 @@ describe("aggregations-where-count", () => {
                     CREATE (p:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
                     CREATE (p)<-[:LIKES]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -319,7 +319,7 @@ describe("aggregations-where-count", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `

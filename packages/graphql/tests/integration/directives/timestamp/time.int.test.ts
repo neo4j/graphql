@@ -79,7 +79,7 @@ describe("timestamp/time", () => {
                             MATCH (movie:Movie {id: $id})
                             RETURN movie {.id, .createdAt} as movie
                         `,
-                    { id }
+                    { id },
                 );
 
                 const neo4jMovie: { id: string; createdAt: Date } = neo4jResult.records[0].toObject().movie;
@@ -154,7 +154,7 @@ describe("timestamp/time", () => {
                             MATCH (:Actor {name: $name})-[r:ACTED_IN]->(:Movie {title: $title})
                             RETURN r { .createdAt, .screenTime} as relationship
                         `,
-                    { title, name }
+                    { title, name },
                 );
 
                 const neo4jRelationship: { createdAt: Date; screenTime: Integer } =
@@ -276,7 +276,7 @@ describe("timestamp/time", () => {
                     `
                             CREATE (:Movie {title: $title})<-[:ACTED_IN {screenTime: 30}]-(:Actor {name: $name})
                         `,
-                    { title, name }
+                    { title, name },
                 );
 
                 const graphqlResult = await graphql({
@@ -293,7 +293,7 @@ describe("timestamp/time", () => {
                             MATCH (:Actor {name: $name})-[r:ACTED_IN]->(:Movie {title: $title})
                             RETURN r { .updatedAt, .screenTime} as relationship
                         `,
-                    { title, name }
+                    { title, name },
                 );
 
                 const neo4jRelationship: { updatedAt: Date; screenTime: Integer } =
@@ -421,7 +421,7 @@ describe("timestamp/time", () => {
                             MATCH (:Actor {name: $name})-[r:ACTED_IN]->(:Movie {title: $title})
                             RETURN r { .createdAt, .screenTime } as relationship
                         `,
-                    { title, name }
+                    { title, name },
                 );
 
                 const neo4jRelationship: { createdAt: Date; screenTime: Integer } =
@@ -486,7 +486,7 @@ describe("timestamp/time", () => {
                     `
                             CREATE (:Movie {title: $title})<-[:ACTED_IN {screenTime: 30}]-(:Actor {name: $name})
                         `,
-                    { title, name }
+                    { title, name },
                 );
 
                 const graphqlResult = await graphql({
@@ -503,7 +503,7 @@ describe("timestamp/time", () => {
                             MATCH (:Actor {name: $name})-[r:ACTED_IN]->(:Movie {title: $title})
                             RETURN r { .updatedAt, .screenTime } as relationship
                         `,
-                    { title, name }
+                    { title, name },
                 );
 
                 const neo4jRelationship: { updatedAt: Date; screenTime: Integer } =
@@ -685,7 +685,7 @@ describe("timestamp/time", () => {
                             MATCH (:Actor {name: $name})-[r:ACTED_IN]->(:Movie {title: $title})
                             RETURN r { .createdAt, .screenTime } as relationship
                         `,
-                    { title, name }
+                    { title, name },
                 );
 
                 const neo4jRelationship: { createdAt: Date; screenTime: Integer } =
@@ -750,7 +750,7 @@ describe("timestamp/time", () => {
                     `
                             CREATE (:Movie {title: $title})<-[:ACTED_IN {screenTime: 30}]-(:Actor {name: $name})
                         `,
-                    { title, name }
+                    { title, name },
                 );
 
                 const graphqlResult = await graphql({
@@ -767,7 +767,7 @@ describe("timestamp/time", () => {
                             MATCH (:Actor {name: $name})-[r:ACTED_IN]->(:Movie {title: $title})
                             RETURN r { .updatedAt, .screenTime } as relationship
                         `,
-                    { title, name }
+                    { title, name },
                 );
 
                 const neo4jRelationship: { updatedAt: Date; screenTime: Integer } =

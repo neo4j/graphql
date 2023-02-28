@@ -109,7 +109,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`
+            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`,
         );
     });
 
@@ -197,7 +197,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`
+            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`,
         );
         expect((gqlResult?.data as any)?.[typeActor.operations.create]?.actors).toBeUndefined();
     });
@@ -281,7 +281,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`
+            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`,
         );
         expect((gqlResult?.data as any)?.[typeActor.operations.update]?.info).toBeUndefined();
     });
@@ -343,7 +343,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`
+            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`,
         );
         expect((gqlResult?.data as any)?.[typeActor.operations.update]?.info).toBeUndefined();
     });

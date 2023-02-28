@@ -62,13 +62,13 @@ function createSetRelationshipProperties({
         ) {
             // DateTime -> datetime(); Time -> time()
             strs.push(
-                `SET ${varName}.${temporalField.dbPropertyName} = ${temporalField.typeMeta.name.toLowerCase()}()`
+                `SET ${varName}.${temporalField.dbPropertyName} = ${temporalField.typeMeta.name.toLowerCase()}()`,
             );
         }
     });
 
     relationship.primitiveFields.forEach((field) =>
-        addCallbackAndSetParam(field, varName, properties, callbackBucket, strs, operation)
+        addCallbackAndSetParam(field, varName, properties, callbackBucket, strs, operation),
     );
 
     Object.entries(properties).forEach(([key, value], _idx, propertiesEntries) => {
@@ -90,7 +90,7 @@ function createSetRelationshipProperties({
             assertNonAmbiguousUpdate(propertiesEntries, arrayPushField.dbPropertyName);
 
             strs.push(
-                `SET ${varName}.${arrayPushField.dbPropertyName} = ${varName}.${arrayPushField.dbPropertyName} + $${paramName}`
+                `SET ${varName}.${arrayPushField.dbPropertyName} = ${varName}.${arrayPushField.dbPropertyName} + $${paramName}`,
             );
 
             return;
@@ -101,7 +101,7 @@ function createSetRelationshipProperties({
             assertNonAmbiguousUpdate(propertiesEntries, pointArrayPushField.dbPropertyName);
 
             strs.push(
-                `SET ${varName}.${pointArrayPushField.dbPropertyName} = ${varName}.${pointArrayPushField.dbPropertyName} + [p in $${paramName} | point(p)]`
+                `SET ${varName}.${pointArrayPushField.dbPropertyName} = ${varName}.${pointArrayPushField.dbPropertyName} + [p in $${paramName} | point(p)]`,
             );
 
             return;
@@ -112,7 +112,7 @@ function createSetRelationshipProperties({
             assertNonAmbiguousUpdate(propertiesEntries, arrayPopField.dbPropertyName);
 
             strs.push(
-                `SET ${varName}.${arrayPopField.dbPropertyName} = ${varName}.${arrayPopField.dbPropertyName}[0..-$${paramName}]`
+                `SET ${varName}.${arrayPopField.dbPropertyName} = ${varName}.${arrayPopField.dbPropertyName}[0..-$${paramName}]`,
             );
 
             return;
@@ -123,7 +123,7 @@ function createSetRelationshipProperties({
             assertNonAmbiguousUpdate(propertiesEntries, pointArrayPopField.dbPropertyName);
 
             strs.push(
-                `SET ${varName}.${pointArrayPopField.dbPropertyName} = ${varName}.${pointArrayPopField.dbPropertyName}[0..-$${paramName}]`
+                `SET ${varName}.${pointArrayPopField.dbPropertyName} = ${varName}.${pointArrayPopField.dbPropertyName}[0..-$${paramName}]`,
             );
 
             return;

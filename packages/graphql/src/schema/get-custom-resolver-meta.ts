@@ -39,7 +39,7 @@ type CustomResolverMeta = {
 
 const INVALID_DIRECTIVES_TO_REQUIRE = ["customResolver"];
 export const INVALID_REQUIRED_FIELD_ERROR = `It is not possible to require fields that use the following directives: ${INVALID_DIRECTIVES_TO_REQUIRE.map(
-    (name) => `\`@${name}\``
+    (name) => `\`@${name}\``,
 ).join(", ")}`;
 export const INVALID_SELECTION_SET_ERROR = "Invalid selection set passed to @customResolver required";
 
@@ -92,7 +92,7 @@ export function getCustomResolverMeta({
         objects,
         interfaces,
         unions,
-        selectionSetDocument
+        selectionSetDocument,
     );
     if (requiredFieldsResolveTree) {
         return {
@@ -106,7 +106,7 @@ function selectionSetToResolveTree(
     objects: ObjectTypeDefinitionNode[],
     interfaces: InterfaceTypeDefinitionNode[],
     unions: UnionTypeDefinitionNode[],
-    document: DocumentNode
+    document: DocumentNode,
 ) {
     if (document.definitions.length !== 1) {
         throw new Error(INVALID_SELECTION_SET_ERROR);
@@ -122,7 +122,7 @@ function selectionSetToResolveTree(
         objects,
         interfaces,
         unions,
-        selectionSetDocument.selectionSet
+        selectionSetDocument.selectionSet,
     );
 }
 
@@ -147,7 +147,7 @@ function nestedSelectionSetToResolveTrees(
     interfaces: InterfaceTypeDefinitionNode[],
     unions: UnionTypeDefinitionNode[],
     selectionSet: SelectionSetNode,
-    outerFieldType?: string
+    outerFieldType?: string,
 ): Record<string, ResolveTree> | FieldsByTypeName {
     const result = selectionSet.selections.reduce((acc, selection) => {
         let nestedResolveTree = {};
@@ -172,7 +172,7 @@ function nestedSelectionSetToResolveTrees(
                 objects,
                 interfaces,
                 unions,
-                selection.selectionSet
+                selection.selectionSet,
             );
 
             return {
@@ -190,7 +190,7 @@ function nestedSelectionSetToResolveTrees(
                 interfaces,
                 unions,
                 selection.selectionSet,
-                fieldType
+                fieldType,
             );
         }
 
@@ -245,7 +245,7 @@ function getInnerObjectFields({
         [...objects, ...interfaces].find((obj) => obj.name.value === fieldType)?.fields ||
         unionImplementations?.flatMap(
             (implementation) =>
-                [...objects, ...interfaces].find((obj) => obj.name.value === implementation.name.value)?.fields || []
+                [...objects, ...interfaces].find((obj) => obj.name.value === implementation.name.value)?.fields || [],
         );
     if (!innerObjectFields) {
         throw new Error(INVALID_SELECTION_SET_ERROR);
@@ -266,18 +266,18 @@ function validateRequiredField({
 }): void {
     const fieldImplementations = [objectFields.find((field) => field.name.value === selection.name.value)];
     const objectsImplementingInterface = objects.filter((obj) =>
-        obj.interfaces?.find((inter) => inter.name.value === outerFieldType)
+        obj.interfaces?.find((inter) => inter.name.value === outerFieldType),
     );
     objectsImplementingInterface.forEach((obj) =>
         obj.fields?.forEach((objField) => {
             if (objField.name.value === selection.name.value) {
                 fieldImplementations.push(objField);
             }
-        })
+        }),
     );
     if (
         fieldImplementations.find((field) =>
-            field?.directives?.find((directive) => INVALID_DIRECTIVES_TO_REQUIRE.includes(directive.name.value))
+            field?.directives?.find((directive) => INVALID_DIRECTIVES_TO_REQUIRE.includes(directive.name.value)),
         )
     ) {
         throw new Error(INVALID_REQUIRED_FIELD_ERROR);

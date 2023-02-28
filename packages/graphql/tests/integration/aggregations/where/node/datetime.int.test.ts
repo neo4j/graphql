@@ -65,7 +65,7 @@ describe("aggregations-where-node-datetime", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someDateTime: dateTime("${someDateTime.toISOString()}")})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -134,7 +134,7 @@ describe("aggregations-where-node-datetime", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -201,7 +201,7 @@ describe("aggregations-where-node-datetime", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -270,7 +270,7 @@ describe("aggregations-where-node-datetime", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `
@@ -337,7 +337,7 @@ describe("aggregations-where-node-datetime", () => {
                 `
                     CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someDateTime: datetime("${someDateTime.toISOString()}")})
                     CREATE (:Post {testString: "${testString}"})
-                `
+                `,
             );
 
             const query = `

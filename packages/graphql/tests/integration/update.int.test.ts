@@ -127,7 +127,7 @@ describe("update", () => {
                 {
                     id,
                     initialName,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -200,7 +200,7 @@ describe("update", () => {
                 {
                     initialMovieId,
                     actorName,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -262,7 +262,7 @@ describe("update", () => {
                 {
                     id1,
                     id2,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -345,7 +345,7 @@ describe("update", () => {
                 {
                     movieId,
                     initialName,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -419,7 +419,7 @@ describe("update", () => {
                     id,
                     actorName1,
                     actorName2,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -493,7 +493,7 @@ describe("update", () => {
                     id,
                     actorName1,
                     actorName2,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -584,7 +584,7 @@ describe("update", () => {
                     actorName1,
                     actorName2,
                     movieId2,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -605,7 +605,7 @@ describe("update", () => {
               MATCH (m:Movie {id: $id})
               RETURN m
             `,
-                { id: movieId2 }
+                { id: movieId2 },
             );
 
             expect(movie2.records).toHaveLength(0);
@@ -679,7 +679,7 @@ describe("update", () => {
                     name1,
                     name2,
                     name3,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -758,7 +758,7 @@ describe("update", () => {
         `,
                 {
                     movieId,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -825,7 +825,7 @@ describe("update", () => {
                 {
                     movieId,
                     actorId,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -904,7 +904,7 @@ describe("update", () => {
                     movieId,
                     actorId,
                     seriesId,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -976,7 +976,7 @@ describe("update", () => {
                     movieId,
                     actorId1,
                     actorId2,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -1068,7 +1068,7 @@ describe("update", () => {
                     productId,
                     photoId,
                     colorId,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -1214,7 +1214,7 @@ describe("update", () => {
                     photo1Id,
                     photo1_color0Id: photo1Color0Id,
                     photo1_color1Id: photo1Color1Id,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -1332,7 +1332,7 @@ describe("update", () => {
             `,
                 {
                     productId,
-                }
+                },
             );
 
             const gqlResult = await graphql({
@@ -1433,7 +1433,7 @@ describe("update", () => {
             `,
                 {
                     productId,
-                }
+                },
             );
 
             const gqlResult = await graphql({

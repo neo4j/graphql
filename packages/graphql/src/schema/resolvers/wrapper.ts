@@ -59,7 +59,7 @@ export const wrapResolver =
 
             debug(
                 "%s",
-                `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(info.variableValues, null, 2)}`
+                `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(info.variableValues, null, 2)}`,
             );
         }
 
@@ -69,7 +69,7 @@ export const wrapResolver =
             } else {
                 if (!driver) {
                     throw new Error(
-                        "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or a driver, session or transaction passed as context.executionContext in each request."
+                        "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or a driver, session or transaction passed as context.executionContext in each request.",
                     );
                 }
                 context.executionContext = driver;

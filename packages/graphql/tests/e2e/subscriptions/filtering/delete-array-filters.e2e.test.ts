@@ -418,7 +418,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "movie1", similarTitles: ["dummy", "movie"] });
@@ -442,7 +442,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "movie1", isFavorite: true });
@@ -466,7 +466,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "movie1", similarTitles: ["dummy", "movie"] });
@@ -490,7 +490,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
 
         await createMovie({ title: "movie1", isFavorite: true });

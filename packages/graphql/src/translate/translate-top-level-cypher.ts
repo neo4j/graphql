@@ -103,7 +103,7 @@ export function translateTopLevelCypher({
                 const innerNodePartialProjection = `[ this IN [this] WHERE (${labelsStatements.join(" AND ")})`;
                 if (!resolveTree.fieldsByTypeName[node.name]) {
                     headStrs.push(
-                        new Cypher.RawCypher(`${innerNodePartialProjection}| this { __resolveType: "${node.name}" }]`)
+                        new Cypher.RawCypher(`${innerNodePartialProjection}| this { __resolveType: "${node.name}" }]`),
                     );
                 } else {
                     const {
@@ -129,14 +129,14 @@ export function translateTopLevelCypher({
                                 .concat(`| this { __resolveType: "${node.name}", `)
                                 .concat(str.getCypher(env).replace("{", ""))
                                 .concat("]");
-                        })
+                        }),
                     );
                 }
             }
         });
 
         projectionStr = new Cypher.RawCypher(
-            (env) => `${headStrs.map((headStr) => headStr.getCypher(env)).join(" + ")}`
+            (env) => `${headStrs.map((headStr) => headStr.getCypher(env)).join(" + ")}`,
         );
     }
 
@@ -149,7 +149,7 @@ export function translateTopLevelCypher({
             ...res,
             ...{ [argument.name.value]: null },
         }),
-        {}
+        {},
     );
 
     const apocParams = Object.entries({ ...nullArgumentValues, ...resolveTree.args }).reduce(
@@ -157,7 +157,7 @@ export function translateTopLevelCypher({
             strs: [...result.strs, `${entry[0]}: $${entry[0]}`],
             params: { ...result.params, [entry[0]]: entry[1] },
         }),
-        { strs: initApocParamsStrs, params }
+        { strs: initApocParamsStrs, params },
     );
 
     params = { ...params, ...apocParams.params };
@@ -188,7 +188,7 @@ export function translateTopLevelCypher({
         if (projectionAuthStrs.length) {
             const validatePred = new Cypher.apoc.ValidatePredicate(
                 Cypher.not(Cypher.and(...projectionAuthStrs)),
-                AUTH_FORBIDDEN_ERROR
+                AUTH_FORBIDDEN_ERROR,
             );
             cypherStrs.push(`WHERE ${validatePred.getCypher(env)}`);
         }

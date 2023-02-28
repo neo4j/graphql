@@ -446,7 +446,7 @@ describe("Custom Resolvers", () => {
                     } finally {
                         await session.close();
                     }
-                })
+                }),
             );
         });
 

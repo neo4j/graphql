@@ -98,7 +98,7 @@ describe("Mathematical operations tests", () => {
                 {
                     id,
                     initialViewers: initialValue,
-                }
+                },
             );
             // Update movie
             const gqlResult = await graphql({
@@ -112,7 +112,7 @@ describe("Mathematical operations tests", () => {
             expect(gqlResult?.data?.[movie.operations.update]).toEqual({
                 [movie.plural]: [{ id, viewers: expected }],
             });
-        }
+        },
     );
 
     test.each([
@@ -174,7 +174,7 @@ describe("Mathematical operations tests", () => {
                 {
                     id,
                     initialViewers: initialValue,
-                }
+                },
             );
             // Update movie
             const gqlResult = await graphql({
@@ -185,7 +185,7 @@ describe("Mathematical operations tests", () => {
             });
             expect(gqlResult.errors).toBeDefined();
             expect(
-                (gqlResult.errors as GraphQLError[]).some((el) => el.message.toLowerCase().includes(expectedError))
+                (gqlResult.errors as GraphQLError[]).some((el) => el.message.toLowerCase().includes(expectedError)),
             ).toBeTruthy();
             const storedValue = await session.run(
                 `
@@ -193,10 +193,10 @@ describe("Mathematical operations tests", () => {
                 `,
                 {
                     id,
-                }
+                },
             );
             expect(storedValue.records[0].get("viewers")).toEqual(initialValue);
-        }
+        },
     );
 
     test("Should raise an error if the input fields are ambiguous", async () => {
@@ -234,7 +234,7 @@ describe("Mathematical operations tests", () => {
             {
                 id,
                 initialViewers,
-            }
+            },
         );
         // Update movie
         const gqlResult = await graphql({
@@ -246,8 +246,8 @@ describe("Mathematical operations tests", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("Cannot mutate the same field multiple times in one Mutation")
-            )
+                el.message.includes("Cannot mutate the same field multiple times in one Mutation"),
+            ),
         ).toBeTruthy();
         const storedValue = await session.run(
             `
@@ -255,7 +255,7 @@ describe("Mathematical operations tests", () => {
                 `,
             {
                 id,
-            }
+            },
         );
         expect(storedValue.records[0].get("viewers")).toEqual(initialViewers);
     });
@@ -299,7 +299,7 @@ describe("Mathematical operations tests", () => {
                 id,
                 initialViewers,
                 initialLength,
-            }
+            },
         );
         // Update movie
         const gqlResult = await graphql({
@@ -316,7 +316,7 @@ describe("Mathematical operations tests", () => {
                 `,
             {
                 id,
-            }
+            },
         );
         expect(storedValue.records[0].get("viewers")).toEqual(int(110));
         expect(storedValue.records[0].get("length")).toEqual(int(90));
@@ -379,7 +379,7 @@ describe("Mathematical operations tests", () => {
                 id,
                 initialViewers,
                 name,
-            }
+            },
         );
         // Update movie
         const gqlResult = await graphql({
@@ -396,7 +396,7 @@ describe("Mathematical operations tests", () => {
                 `,
             {
                 id,
-            }
+            },
         );
         expect(storedValue.records[0].get("viewers")).toEqual(int(110));
         expect(storedValue.records[0].get("name")).toBe(name);
@@ -464,7 +464,7 @@ describe("Mathematical operations tests", () => {
                 id,
                 initialViewers,
                 name,
-            }
+            },
         );
         // Update movie
         const gqlResult = await graphql({
@@ -481,7 +481,7 @@ describe("Mathematical operations tests", () => {
                 `,
             {
                 id,
-            }
+            },
         );
         expect(storedValue.records[0].get("viewers")).toEqual(int(110));
         expect(storedValue.records[0].get("name")).toBe(name);
@@ -554,7 +554,7 @@ describe("Mathematical operations tests", () => {
                 id,
                 initialViewers,
                 name,
-            }
+            },
         );
         // Update movie
         const gqlResult = await graphql({
@@ -571,7 +571,7 @@ describe("Mathematical operations tests", () => {
                 `,
             {
                 id,
-            }
+            },
         );
         expect(storedValue.records[0].get("viewers")).toEqual(int(110));
         expect(storedValue.records[0].get("name")).toBe(name);
@@ -611,7 +611,7 @@ describe("Mathematical operations tests", () => {
                 `,
             {
                 id,
-            }
+            },
         );
         // Update movie
         const gqlResult = await graphql({
@@ -624,8 +624,8 @@ describe("Mathematical operations tests", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes(`Cannot _INCREMENT ${increment} to Nan`)
-            )
+                el.message.includes(`Cannot _INCREMENT ${increment} to Nan`),
+            ),
         ).toBeTruthy();
         const storedValue = await session.run(
             `
@@ -633,7 +633,7 @@ describe("Mathematical operations tests", () => {
                 `,
             {
                 id,
-            }
+            },
         );
         expect(storedValue.records[0].get("viewers")).toBeNull();
     });
@@ -702,7 +702,7 @@ describe("Mathematical operations tests", () => {
             {
                 id,
                 initialPay,
-            }
+            },
         );
         // Update movie
         const gqlResult = await graphql({
@@ -719,7 +719,7 @@ describe("Mathematical operations tests", () => {
                 `,
             {
                 id,
-            }
+            },
         );
         expect(storedValue.records[0].get("pay")).toEqual(initialPay + payIncrement);
     });
@@ -791,7 +791,7 @@ describe("Mathematical operations tests", () => {
             {
                 id,
                 initialPay,
-            }
+            },
         );
         // Update movie
         const gqlResult = await graphql({
@@ -804,8 +804,8 @@ describe("Mathematical operations tests", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("Cannot mutate the same field multiple times in one Mutation")
-            )
+                el.message.includes("Cannot mutate the same field multiple times in one Mutation"),
+            ),
         ).toBeTruthy();
         const storedValue = await session.run(
             `
@@ -813,7 +813,7 @@ describe("Mathematical operations tests", () => {
                 `,
             {
                 id,
-            }
+            },
         );
         expect(storedValue.records[0].get("pay")).toEqual(initialPay);
     });

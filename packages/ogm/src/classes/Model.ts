@@ -438,7 +438,7 @@ class Model {
     }
 
     private getSelectionSetOrDefault(
-        selectionSet: string | DocumentNode | SelectionSetNode | undefined
+        selectionSet: string | DocumentNode | SelectionSetNode | undefined,
     ): string | DocumentNode | SelectionSetNode {
         const result = selectionSet || this._selectionSet;
         if (!result) {

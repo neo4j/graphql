@@ -28,7 +28,7 @@ const isEmptyObject = (obj: Record<string, unknown>) => !Object.keys(obj).length
 
 export function generateSubscriptionWhereType(
     node: Node,
-    schemaComposer: SchemaComposer
+    schemaComposer: SchemaComposer,
 ): InputTypeComposer | undefined {
     const typeName = node.name;
     if (schemaComposer.has(`${node.name}SubscriptionWhere`)) {
@@ -198,8 +198,8 @@ function makeRelationshipWhereType({
                 ...relationProperties.enumFields,
                 ...relationProperties.scalarFields,
                 ...relationProperties.temporalFields,
-            ])
-        )
+            ]),
+        ),
     );
 }
 
@@ -245,7 +245,7 @@ function makeRelationshipToUnionTypeWhereType({
                 tc.addFields({
                     ...(nodeExists && { node: `${concreteTypeName}SubscriptionWhere` }),
                     ...(edgeType && { edge: edgeType }),
-                })
+                }),
         );
 
         return acc;
@@ -282,7 +282,7 @@ function makeRelationshipToInterfaceTypeWhereType({
     if (!isEmptyObject(implementationsFields)) {
         interfaceImplementationsType = schemaComposer.getOrCreateITC(
             `${interfaceNodeTypeName}ImplementationsSubscriptionWhere`,
-            (tc) => tc.addFields(implementationsFields)
+            (tc) => tc.addFields(implementationsFields),
         );
     }
     if (interfaceImplementationsType || interfaceCommonFieldsOnImplementations) {
@@ -299,7 +299,7 @@ function makeRelationshipToInterfaceTypeWhereType({
         };
         if (!isEmptyObject(interfaceFields)) {
             interfaceNodeType = schemaComposer.getOrCreateITC(`${interfaceNodeTypeName}SubscriptionWhere`, (tc) =>
-                tc.addFields(interfaceFields)
+                tc.addFields(interfaceFields),
             );
         }
     }

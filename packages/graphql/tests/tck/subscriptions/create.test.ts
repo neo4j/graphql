@@ -106,7 +106,7 @@ describe("Subscriptions metadata on create", () => {
             query,
             {
                 req,
-            }
+            },
         );
         // TODO: make a test with rel type as union/ interface
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -191,7 +191,7 @@ describe("Subscriptions metadata on create", () => {
             query,
             {
                 req,
-            }
+            },
         );
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -293,7 +293,7 @@ describe("Subscriptions metadata on create", () => {
             query,
             {
                 req,
-            }
+            },
         );
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -413,7 +413,7 @@ describe("Subscriptions metadata on create", () => {
             query,
             {
                 req,
-            }
+            },
         );
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -558,7 +558,7 @@ describe("Subscriptions metadata on create", () => {
             query,
             {
                 req,
-            }
+            },
         );
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`

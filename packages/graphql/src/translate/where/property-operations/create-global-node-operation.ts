@@ -37,7 +37,7 @@ export function createGlobalNodeOperation({
     if (coalesceValue) {
         idProperty = Cypher.coalesce(
             idProperty as Cypher.PropertyRef,
-            new Cypher.RawCypher(`${coalesceValue}`) // TODO: move into Cypher.literal
+            new Cypher.RawCypher(`${coalesceValue}`), // TODO: move into Cypher.literal
         );
     }
     return Cypher.eq(idProperty, new Cypher.Param(id));

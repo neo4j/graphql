@@ -61,7 +61,7 @@ describe("Custom Scalar Filtering", () => {
                     CREATE (:${randomType.name} {property: $value})
                     CREATE (:${randomType.name} {property: $unwantedValue})
                 `,
-                    { value, unwantedValue }
+                    { value, unwantedValue },
                 );
 
                 const query = `
@@ -110,7 +110,7 @@ describe("Custom Scalar Filtering", () => {
                     CREATE (:${randomType.name} {property: $value2})
                     CREATE (:${randomType.name} {property: $unwantedValue})
                 `,
-                    { value1, value2, unwantedValue }
+                    { value1, value2, unwantedValue },
                 );
 
                 const query = `
@@ -162,7 +162,7 @@ describe("Custom Scalar Filtering", () => {
                     `
                     CREATE (:${randomType.name} {property: $value})
                 `,
-                    { value }
+                    { value },
                 );
 
                 const query = `
@@ -208,7 +208,7 @@ describe("Custom Scalar Filtering", () => {
                     `
                     CREATE (:${randomType.name} {property: $value})
                 `,
-                    { value }
+                    { value },
                 );
 
                 const query = `
@@ -259,7 +259,7 @@ describe("Custom Scalar Filtering", () => {
                     CREATE (:${randomType.name} {property: $value2})
                     CREATE (:${randomType.name} {property: $unwantedValue})
                 `,
-                    { value1, value2, unwantedValue }
+                    { value1, value2, unwantedValue },
                 );
 
                 const query = `
@@ -314,7 +314,7 @@ describe("Custom Scalar Filtering", () => {
                     `
                     CREATE (:${randomType.name} {property: $value})
                 `,
-                    { value }
+                    { value },
                 );
 
                 const query = `
@@ -362,7 +362,7 @@ describe("Custom Scalar Filtering", () => {
                     CREATE (:${randomType.name} {property: $unwantedValue1})
                     CREATE (:${randomType.name} {property: $unwantedValue2})
                 `,
-                    { value, unwantedValue1, unwantedValue2 }
+                    { value, unwantedValue1, unwantedValue2 },
                 );
 
                 const query = `
@@ -411,7 +411,7 @@ describe("Custom Scalar Filtering", () => {
                     CREATE (:${randomType.name} {property: $value2})
                     CREATE (:${randomType.name} {property: $unwantedValue})
                 `,
-                    { value1, value2, unwantedValue }
+                    { value1, value2, unwantedValue },
                 );
 
                 const query = `
@@ -463,7 +463,7 @@ describe("Custom Scalar Filtering", () => {
                     `
                     CREATE (:${randomType.name} {property: $value})
                 `,
-                    { value }
+                    { value },
                 );
 
                 const query = `
@@ -511,7 +511,7 @@ describe("Custom Scalar Filtering", () => {
                     CREATE (:${randomType.name} {property: $value})
                     CREATE (:${randomType.name} {property: $unwantedValue})
                 `,
-                    { value, unwantedValue }
+                    { value, unwantedValue },
                 );
 
                 const query = `
@@ -561,7 +561,7 @@ describe("Custom Scalar Filtering", () => {
                     CREATE (:${randomType.name} {property: $value2})
                     CREATE (:${randomType.name} {property: $unwantedValue})
                 `,
-                    { value1, value2, unwantedValue }
+                    { value1, value2, unwantedValue },
                 );
 
                 const query = `
@@ -614,7 +614,7 @@ describe("Custom Scalar Filtering", () => {
                     `
                     CREATE (:${randomType.name} {property: $value})
                 `,
-                    { value }
+                    { value },
                 );
 
                 const query = `
@@ -661,7 +661,7 @@ describe("Custom Scalar Filtering", () => {
                     CREATE (:${randomType.name} {property: $value})
                     CREATE (:${randomType.name} {property: $unwantedValue})
                 `,
-                    { value, unwantedValue }
+                    { value, unwantedValue },
                 );
 
                 const query = `
@@ -710,7 +710,7 @@ describe("Custom Scalar Filtering", () => {
                     CREATE (:${randomType.name} {property: $value2})
                     CREATE (:${randomType.name} {property: $unwantedValue})
                 `,
-                    { value1, value2, unwantedValue }
+                    { value1, value2, unwantedValue },
                 );
 
                 const query = `
@@ -763,7 +763,7 @@ describe("Custom Scalar Filtering", () => {
                     `
                     CREATE (:${randomType.name} {property: $value})
                 `,
-                    { value }
+                    { value },
                 );
 
                 const query = `
@@ -809,7 +809,7 @@ describe("Custom Scalar Filtering", () => {
                     CREATE (:${randomType.name} {property: $value})
                     CREATE (:${randomType.name} {property: $unwantedValue})
                 `,
-                    { value, unwantedValue }
+                    { value, unwantedValue },
                 );
 
                 const query = `
@@ -858,7 +858,7 @@ describe("Custom Scalar Filtering", () => {
                     CREATE (:${randomType.name} {property: $value2})
                     CREATE (:${randomType.name} {property: $unwantedValue})
                 `,
-                    { value1, value2, unwantedValue }
+                    { value1, value2, unwantedValue },
                 );
 
                 const query = `
@@ -910,7 +910,7 @@ describe("Custom Scalar Filtering", () => {
                     `
                     CREATE (:${randomType.name} {property: $value})
                 `,
-                    { value }
+                    { value },
                 );
 
                 const query = `

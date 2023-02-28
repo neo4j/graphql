@@ -192,7 +192,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 workspaceId,
                 p0id: pageIds[0],
                 p1id: pageIds[1],
-            }
+            },
         );
 
         const variableValues = {
@@ -207,7 +207,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 neoSchema,
                 variableValues,
                 userId,
-                session
+                session,
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -266,7 +266,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 p1id: pageIds[1],
                 p2id: pageIds[2],
                 p3id: pageIds[3],
-            }
+            },
         );
 
         const variableValues = {
@@ -281,7 +281,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 neoSchema,
                 variableValues,
                 userId,
-                session
+                session,
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -350,7 +350,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 p1id: pageIds[1],
                 p2id: pageIds[2],
                 p3id: pageIds[3],
-            }
+            },
         );
 
         const variableValues = {
@@ -365,7 +365,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 neoSchema,
                 variableValues,
                 userIds[1],
-                session
+                session,
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -433,7 +433,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 p1id: pageIds[1],
                 p2id: pageIds[2],
                 p3id: pageIds[3],
-            }
+            },
         );
 
         const variableValues = {
@@ -448,7 +448,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 neoSchema,
                 variableValues,
                 userIds[1],
-                session
+                session,
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -516,7 +516,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 p1id: pageIds[1],
                 p2id: pageIds[2],
                 p3id: pageIds[3],
-            }
+            },
         );
 
         const variableValues = {
@@ -531,7 +531,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 neoSchema,
                 variableValues,
                 userIds[1],
-                session
+                session,
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -599,7 +599,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 p1id: pageIds[1],
                 p2id: pageIds[2],
                 p3id: pageIds[3],
-            }
+            },
         );
 
         const variableValues = {
@@ -614,7 +614,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 neoSchema,
                 variableValues,
                 userIds[1],
-                session
+                session,
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -681,7 +681,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 p1id: pageIds[1],
                 p2id: pageIds[2],
                 p3id: pageIds[3],
-            }
+            },
         );
 
         const variableValues = {
@@ -696,7 +696,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 neoSchema,
                 variableValues,
                 userIds[1],
-                session
+                session,
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -764,7 +764,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 p1id: pageIds[1],
                 p2id: pageIds[2],
                 p3id: pageIds[3],
-            }
+            },
         );
 
         const variableValues = {
@@ -779,7 +779,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 neoSchema,
                 variableValues,
                 userIds[1],
-                session
+                session,
             );
 
             expect(usersResult?.errors).toBeFalsy();

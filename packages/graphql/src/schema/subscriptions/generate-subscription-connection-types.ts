@@ -57,7 +57,7 @@ function buildRelationshipDestinationInterfaceNodeType({
     const allFields = Object.values(relevantInterface).reduce((acc, x) => [...acc, ...x], []);
     const connectionFields = [...relevantInterface.relationFields, ...relevantInterface.connectionFields];
     const [interfaceComposeFields, interfaceConnectionComposeFields] = [allFields, connectionFields].map(
-        objectFieldsToComposeFields
+        objectFieldsToComposeFields,
     );
     const nodeTo = schemaComposer.createInterfaceTC({
         name: `${relationNodeTypeName}EventPayload`,

@@ -65,7 +65,7 @@ describe("aggregations-top_level-datetime", () => {
                 `,
                 {
                     testString,
-                }
+                },
             );
 
             const query = `
@@ -132,7 +132,7 @@ describe("aggregations-top_level-datetime", () => {
                 `,
                 {
                     testString,
-                }
+                },
             );
 
             const query = `
@@ -199,7 +199,7 @@ describe("aggregations-top_level-datetime", () => {
                 `,
                 {
                     testString,
-                }
+                },
             );
 
             const query = `

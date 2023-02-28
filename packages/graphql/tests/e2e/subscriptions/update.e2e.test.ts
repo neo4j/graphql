@@ -181,7 +181,7 @@ describe("Update Subscriptions", () => {
                 }
             }
         `,
-            onReturnError
+            onReturnError,
         );
         await createActor("Keanu");
         await updateActor("Keanu", "Keanoo");

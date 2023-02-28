@@ -26,7 +26,7 @@ export function createMatchWherePattern(
     matchPattern: Cypher.Pattern,
     preComputedWhereFields: Cypher.CompositeClause | undefined,
     auth: Cypher.Predicate | undefined,
-    wherePredicate: Cypher.Predicate | undefined
+    wherePredicate: Cypher.Predicate | undefined,
 ): Cypher.Clause {
     const matchClause = new Cypher.Match(matchPattern);
     const whereClause = preComputedWhereFields && !preComputedWhereFields?.empty ? new Cypher.With("*") : matchClause;
@@ -41,7 +41,7 @@ export function stringAggregationQuery(
     matchWherePattern: Cypher.Clause,
     fieldName: string,
     fieldRef: Cypher.Variable,
-    targetAlias: Cypher.Node | Cypher.Relationship
+    targetAlias: Cypher.Node | Cypher.Relationship,
 ): Cypher.RawCypher {
     const fieldPath = targetAlias.property(fieldName);
     return new Cypher.RawCypher((env) => {
@@ -60,7 +60,7 @@ export function numberAggregationQuery(
     matchWherePattern: Cypher.Clause,
     fieldName: string,
     fieldRef: Cypher.Variable,
-    targetAlias: Cypher.Node | Cypher.Relationship
+    targetAlias: Cypher.Node | Cypher.Relationship,
 ): Cypher.RawCypher {
     const fieldPath = targetAlias.property(fieldName);
     return new Cypher.RawCypher((env) => {
@@ -68,7 +68,7 @@ export function numberAggregationQuery(
 
         return dedent`${matchWherePattern.getCypher(env)}
         RETURN { min: min(${fieldPathCypher}), max: max(${fieldPathCypher}), average: avg(${fieldPathCypher}), sum: sum(${fieldPathCypher}) }  AS ${fieldRef.getCypher(
-            env
+            env,
         )}`;
     });
 }
@@ -77,7 +77,7 @@ export function defaultAggregationQuery(
     matchWherePattern: Cypher.Clause,
     fieldName: string,
     fieldRef: Cypher.Variable,
-    targetAlias: Cypher.Node | Cypher.Relationship
+    targetAlias: Cypher.Node | Cypher.Relationship,
 ): Cypher.RawCypher {
     const fieldPath = targetAlias.property(fieldName);
     return new Cypher.RawCypher((env) => {
@@ -92,7 +92,7 @@ export function dateTimeAggregationQuery(
     matchWherePattern: Cypher.Clause,
     fieldName: string,
     fieldRef: Cypher.Variable,
-    targetAlias: Cypher.Node | Cypher.Relationship
+    targetAlias: Cypher.Node | Cypher.Relationship,
 ): Cypher.RawCypher {
     const fieldPath = targetAlias.property(fieldName);
     return new Cypher.RawCypher((env) => {

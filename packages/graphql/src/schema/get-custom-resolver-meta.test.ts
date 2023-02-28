@@ -740,7 +740,7 @@ describe("getCustomResolverMeta", () => {
                 interfaces,
                 unions,
                 customResolvers: resolvers,
-            })
+            }),
         ).toThrow(INVALID_SELECTION_SET_ERROR);
     });
 
@@ -796,7 +796,7 @@ describe("getCustomResolverMeta", () => {
                 interfaces,
                 unions,
                 customResolvers: resolvers,
-            })
+            }),
         ).toThrow(`Custom resolver for ${customResolverField} has not been provided`);
     });
     test("Check throws error if customResolver defined on interface", () => {
@@ -855,7 +855,7 @@ describe("getCustomResolverMeta", () => {
                 interfaces,
                 unions,
                 customResolvers: resolvers,
-            })
+            }),
         ).toThrow(`Custom resolver for ${customResolverField} has not been provided`);
     });
 
@@ -915,7 +915,7 @@ describe("getCustomResolverMeta", () => {
                 interfaces,
                 unions,
                 customResolvers: resolvers,
-            })
+            }),
         ).not.toThrow();
     });
 });

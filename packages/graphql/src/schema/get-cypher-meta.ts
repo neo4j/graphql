@@ -26,7 +26,7 @@ type CypherMeta = {
 
 export function getCypherMeta(
     field: FieldDefinitionNode,
-    interfaceField?: FieldDefinitionNode
+    interfaceField?: FieldDefinitionNode,
 ): CypherMeta | undefined {
     const directive =
         field.directives?.find((x) => x.name.value === "cypher") ||

@@ -132,7 +132,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                 setLoading(false);
             }
         },
-        [isDebugChecked, constraintState, isRegexChecked, auth.selectedDatabaseName]
+        [isDebugChecked, constraintState, isRegexChecked, auth.selectedDatabaseName],
     );
 
     const introspect = useCallback(
@@ -161,7 +161,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                 setIsIntrospecting(false);
             }
         },
-        [buildSchema, refForEditorMirror.current, auth.selectedDatabaseName]
+        [buildSchema, refForEditorMirror.current, auth.selectedDatabaseName],
     );
 
     const onSubmit = useCallback(async () => {

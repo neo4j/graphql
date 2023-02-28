@@ -23,7 +23,7 @@ import type { CypherEnvironment } from "../Environment";
 export function serializeMap(
     env: CypherEnvironment,
     obj: Record<string, Expr | undefined>,
-    omitCurlyBraces = false
+    omitCurlyBraces = false,
 ): string {
     const valuesList = Object.entries(obj)
         .filter(([, value]) => value !== undefined)

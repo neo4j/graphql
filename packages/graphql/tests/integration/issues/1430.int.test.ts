@@ -112,7 +112,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
 
         expect(createMutationResults.errors).toHaveLength(1);
         expect(createMutationResults.errors?.[0].message).toBe(
-            `Relationship field "${testAbce.name}.interface" cannot have more than one node linked`
+            `Relationship field "${testAbce.name}.interface" cannot have more than one node linked`,
         );
         expect(createMutationResults.data as any).toBeNull();
     });
@@ -196,7 +196,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
 
         expect(updateMutationResults.errors).toHaveLength(1);
         expect(updateMutationResults.errors?.[0].message).toContain(
-            `Relationship field "${testAbce.name}.interface" cannot have more than one node linked`
+            `Relationship field "${testAbce.name}.interface" cannot have more than one node linked`,
         );
         expect(updateMutationResults.data as any).toBeNull();
     });
@@ -281,7 +281,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
 
         expect(updateMutationResults.errors).toHaveLength(1);
         expect(updateMutationResults.errors?.[0].message).toContain(
-            `Relationship field "${testAbce.name}.interface" cannot have more than one node linked`
+            `Relationship field "${testAbce.name}.interface" cannot have more than one node linked`,
         );
         expect(updateMutationResults.data as any).toBeNull();
     });
@@ -366,7 +366,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
 
         expect(updateMutationResults.errors).toHaveLength(1);
         expect(updateMutationResults.errors?.[0].message).toContain(
-            `Relationship field "${testAbce.name}.interface" cannot have more than one node linked`
+            `Relationship field "${testAbce.name}.interface" cannot have more than one node linked`,
         );
         expect(updateMutationResults.data as any).toBeNull();
     });

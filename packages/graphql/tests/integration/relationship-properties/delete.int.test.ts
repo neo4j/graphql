@@ -87,7 +87,7 @@ describe("Relationship properties - delete", () => {
                     CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName1})
                     CREATE (m)<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName2})
                 `,
-                { movieTitle, screenTime, actorName1, actorName2 }
+                { movieTitle, screenTime, actorName1, actorName2 },
             );
 
             const gqlResult = await graphql({
@@ -175,7 +175,7 @@ describe("Relationship properties - delete", () => {
                 `
                     CREATE (:Movie {title:$movieTitle})<-[:ACTED_IN {screenTime:$screenTime}]-(:Actor {name:$actorName})
                 `,
-                { movieTitle, screenTime, actorName }
+                { movieTitle, screenTime, actorName },
             );
 
             const gqlResult = await graphql({

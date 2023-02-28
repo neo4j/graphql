@@ -28,7 +28,7 @@ export class Editor extends Screen {
                 // @ts-ignore -Find a better solution
                 document[`${id}`].setValue(query);
             },
-            { query, id: EDITOR_QUERY_INPUT }
+            { query, id: EDITOR_QUERY_INPUT },
         );
     }
 
@@ -39,7 +39,7 @@ export class Editor extends Screen {
                 // @ts-ignore -Find a better solution
                 document[`${id}`].setValue(params);
             },
-            { params, id: EDITOR_PARAMS_INPUT }
+            { params, id: EDITOR_PARAMS_INPUT },
         );
     }
 

@@ -38,7 +38,7 @@ export function translateRead(
         node: Node;
         isRootConnectionField?: boolean;
     },
-    varName = "this"
+    varName = "this",
 ): Cypher.CypherResult {
     const { resolveTree } = context;
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
@@ -74,8 +74,8 @@ export function translateRead(
             new Cypher.apoc.Validate(
                 Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
                 AUTH_FORBIDDEN_ERROR,
-                new Cypher.Literal([0])
-            )
+                new Cypher.Literal([0]),
+            ),
         );
     }
 
@@ -134,7 +134,7 @@ export function translateRead(
     if (context.fulltextIndex?.scoreVariable) {
         returnClause = new Cypher.Return(
             [projectionExpression, varName],
-            [context.fulltextIndex?.scoreVariable, SCORE_FIELD]
+            [context.fulltextIndex?.scoreVariable, SCORE_FIELD],
         );
     }
 
@@ -204,7 +204,7 @@ export function translateRead(
         projectionSubqueriesBeforeSort,
         orderClause, // Required for performance optimization
         projectionSubqueries,
-        projectionClause
+        projectionClause,
     );
     return readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
 }
