@@ -301,48 +301,48 @@ export type CallbackOperations = "CREATE" | "UPDATE";
 export enum CypherRuntime {
     INTERPRETED = "interpreted",
     SLOTTED = "slotted",
-    PIPELINED = "pipelined"
+    PIPELINED = "pipelined",
 }
 
 export enum CypherPlanner {
     COST = "cost",
     IDP = "idp",
-    DP = "dp"
+    DP = "dp",
 }
 
 export enum CypherConnectComponentsPlanner {
     GREEDY = "greedy",
-    IDP = "idp"
+    IDP = "idp",
 }
 
 export enum CypherUpdateStrategy {
     DEFAULT = "default",
-    EAGER = "eager"
+    EAGER = "eager",
 }
 
 export enum CypherExpressionEngine {
     DEFAULT = "default",
     INTERPRETED = "interpreted",
-    COMPILED = "compiled"
+    COMPILED = "compiled",
 }
 
 export enum CypherOperatorEngine {
     DEFAULT = "default",
     INTERPRETED = "interpreted",
-    COMPILED = "compiled"
+    COMPILED = "compiled",
 }
 
 export enum CypherInterpretedPipesFallback {
     DEFAULT = "default",
     DISABLED = "disabled",
     WHITELISTED_PLANS_ONLY = "whitelisted_plans_only",
-    ALL = "all"
+    ALL = "all",
 }
 
 export enum CypherReplanning {
     DEFAULT = "default",
     FORCE = "force",
-    SKIP = "skip"
+    SKIP = "skip",
 }
 
 /*
