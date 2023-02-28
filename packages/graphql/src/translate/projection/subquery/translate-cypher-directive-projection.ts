@@ -102,7 +102,7 @@ export function translateCypherDirectiveProjection({
         referencedNodes.forEach((refNode) => {
             if (refNode) {
                 const subqueryParam = new Cypher.Node();
-                const cypherNodeRef = resultVariable as Cypher.Node;
+                const cypherNodeRef = resultVariable;
                 const hasLabelsPredicates = refNode.getLabels(context).map((label) => cypherNodeRef.hasLabel(label));
                 const labelsSubPredicate = Cypher.and(...hasLabelsPredicates);
 
