@@ -39,15 +39,15 @@ export async function startServer({ typeDefs, resolvers, driver }): Promise<stri
 
     schema = wrapSchema({
         schema,
-        transforms: [new FilterObjectFields(filter)]
+        transforms: [new FilterObjectFields(filter)],
     });
 
     const server = new ApolloServer({
-        schema
+        schema,
     });
 
     const { url } = await startStandaloneServer(server, {
-        listen: { port: 4001 }
+        listen: { port: 4001 },
     });
 
     return url;

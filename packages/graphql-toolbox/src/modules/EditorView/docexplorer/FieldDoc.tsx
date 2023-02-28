@@ -48,7 +48,7 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
       </div>
     );
     const deprecatedArgs = field.args.filter(arg =>
-      Boolean(arg.deprecationReason),
+      Boolean(arg.deprecationReason)
     );
     if (deprecatedArgs.length > 0) {
       deprecatedArgsDef = (
