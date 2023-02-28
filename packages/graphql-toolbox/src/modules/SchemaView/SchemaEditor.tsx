@@ -19,8 +19,9 @@
 
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { EditorFromTextArea } from "codemirror";
-import { Button, HeroIcon, IconButton } from "@neo4j-ndl/react";
-import tokens from "@neo4j-ndl/base/lib/tokens/js/tokens";
+import { Button, IconButton } from "@neo4j-ndl/react";
+import { StarIconOutline } from "@neo4j-ndl/react/icons";
+import { tokens } from "@neo4j-ndl/base";
 import { CodeMirror } from "../../utils/utils";
 import {
     DEFAULT_TYPE_DEFS,
@@ -171,7 +172,7 @@ export const SchemaEditor = ({
                     <Fragment>
                         <ProTooltip
                             tooltipText="This will overwrite your current type definitions!"
-                            width={290}
+                            width={300}
                             left={-99}
                             top={39}
                         >
@@ -181,7 +182,7 @@ export const SchemaEditor = ({
                                 className="mr-2"
                                 color="primary"
                                 fill="outlined"
-                                buttonSize="small"
+                                size="small"
                                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                                 onClick={introspect}
                                 disabled={loading}
@@ -197,7 +198,7 @@ export const SchemaEditor = ({
                             className="mr-2"
                             color="neutral"
                             fill="outlined"
-                            buttonSize="small"
+                            size="small"
                             onClick={formatTheCode}
                             disabled={loading}
                         >
@@ -207,24 +208,22 @@ export const SchemaEditor = ({
                         <ProTooltip
                             tooltipText="Save as Favorite"
                             arrowPositionOverride="top-right"
-                            width={110}
+                            width={120}
                             left={-71}
                             top={42}
                         >
                             <IconButton
                                 data-test-schema-editor-favourite-button
                                 aria-label="Save as favorite"
-                                buttonSize="small"
+                                size="small"
                                 color="neutral"
                                 onClick={saveAsFavorite}
                                 disabled={loading}
                             >
-                                <HeroIcon
+                                <StarIconOutline
                                     style={{
                                         color: tokens.colors.neutral[80],
                                     }}
-                                    iconName="StarIcon"
-                                    type="outline"
                                 />
                             </IconButton>
                         </ProTooltip>
