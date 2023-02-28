@@ -130,7 +130,7 @@ export function translateCypherDirectiveProjection({
                         subqueries.push(withAndSubqueries);
                     }
                     const projection = new Cypher.RawCypher(
-                        (env) => `{ __resolveType: "${refNode.name}", ${str.getCypher(env).replace("{", "")}`,
+                        (env) => `{ __resolveType: "${refNode.name}", ${str.getCypher(env).replace("{", "")}`
                     );
                     unionProjections.push({
                         projection,
@@ -164,7 +164,7 @@ export function translateCypherDirectiveProjection({
             ...r,
             [argument.name.value]: null,
         }),
-        {},
+        {}
     );
     const extraArgs = { ...nullArgumentValues, ...field.args };
 
@@ -184,7 +184,7 @@ export function translateCypherDirectiveProjection({
     });
 
     const callSt = new Cypher.Call(
-        Cypher.concat(customCypherClause, unionExpression, ...subqueries, returnClause),
+        Cypher.concat(customCypherClause, unionExpression, ...subqueries, returnClause)
     ).innerWith(nodeRef);
 
     const sortInput = (context.resolveTree.args.sort ??
