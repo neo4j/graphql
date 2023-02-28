@@ -70,12 +70,12 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
             LIMIT $param1
             CALL {
                 WITH this
-                MATCH (this)-[this1:dcterms__title]->(this_dcterms__title:\`dcterms_title\`:\`property\`)
-                WHERE this_dcterms__title.value CONTAINS $param2
-                WITH this_dcterms__title { .value } AS this_dcterms__title
-                RETURN collect(this_dcterms__title) AS this_dcterms__title
+                MATCH (this)-[this1:dcterms__title]->(this2:\`dcterms_title\`:\`property\`)
+                WHERE this2.value CONTAINS $param2
+                WITH this2 { .value } AS this2
+                RETURN collect(this2) AS var3
             }
-            RETURN this { iri: this.uri, dcterms__title: this_dcterms__title } AS this"
+            RETURN this { iri: this.uri, dcterms__title: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

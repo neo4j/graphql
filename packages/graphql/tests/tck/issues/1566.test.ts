@@ -85,15 +85,15 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnMany(\\"Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)
-                   return pag SKIP ($limit * $pageIndex) LIMIT $limit\\", { limit: $param1, page: $param2, this: this, auth: $auth }) AS this_hasFeedItems
+                   return pag SKIP ($limit * $pageIndex) LIMIT $limit\\", { limit: $param1, page: $param2, this: this, auth: $auth }) AS this0
                 WITH *
-                WHERE (this_hasFeedItems:\`Content\` OR this_hasFeedItems:\`Project\`)
+                WHERE (this0:\`Content\` OR this0:\`Project\`)
                 RETURN collect(CASE
-                    WHEN this_hasFeedItems:\`Content\` THEN this_hasFeedItems { __resolveType: \\"Content\\",  .name }
-                    WHEN this_hasFeedItems:\`Project\` THEN this_hasFeedItems { __resolveType: \\"Project\\",  .name }
-                END) AS this_hasFeedItems
+                    WHEN this0:\`Content\` THEN this0 { __resolveType: \\"Content\\",  .name }
+                    WHEN this0:\`Project\` THEN this0 { __resolveType: \\"Project\\",  .name }
+                END) AS this0
             }
-            RETURN this { .id, hasFeedItems: this_hasFeedItems } AS this"
+            RETURN this { .id, hasFeedItems: this0 } AS this"
         `);
     });
 });

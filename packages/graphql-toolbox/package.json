@@ -39,8 +39,8 @@
     },
     "author": "Neo4j",
     "dependencies": {
-        "@neo4j-ndl/base": "0.16.4",
-        "@neo4j-ndl/react": "0.17.7",
+        "@neo4j-ndl/base": "1.0.0",
+        "@neo4j-ndl/react": "1.0.1",
         "@neo4j/graphql": "3.17.0",
         "@neo4j/introspector": "1.0.3",
         "codemirror": "5.65.12",
