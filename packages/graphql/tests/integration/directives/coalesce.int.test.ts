@@ -204,7 +204,7 @@ describe("@coalesce directive", () => {
 
             type ${type.name} {
                 id: ID
-                statuses: [Status!]! @coalesce(value: [ACTIVE, INACTIVE])
+                statuses: [Status!] @coalesce(value: [ACTIVE, INACTIVE])
             }
         `;
 
