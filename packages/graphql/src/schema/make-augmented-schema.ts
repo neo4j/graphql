@@ -752,65 +752,67 @@ function makeAugmentedSchema(
         ensureNonEmptyInput(composer, `${node.name}UpdateInput`);
         ensureNonEmptyInput(composer, `${node.name}CreateInput`);
 
-        const rootTypeFieldNames = node.rootTypeFieldNames;
+        if (node.federationResolvable) {
+            const rootTypeFieldNames = node.rootTypeFieldNames;
 
-        if (!node.exclude?.operations.includes("read") && node.federationResolvable) {
-            composer.Query.addFields({
-                [rootTypeFieldNames.read]: findResolver({ node }),
-            });
-            composer.Query.setFieldDirectives(
-                rootTypeFieldNames.read,
-                graphqlDirectivesToCompose(node.propagatedDirectives)
-            );
+            if (!node.exclude?.operations.includes("read")) {
+                composer.Query.addFields({
+                    [rootTypeFieldNames.read]: findResolver({ node }),
+                });
+                composer.Query.setFieldDirectives(
+                    rootTypeFieldNames.read,
+                    graphqlDirectivesToCompose(node.propagatedDirectives)
+                );
 
-            composer.Query.addFields({
-                [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
-            });
-            composer.Query.setFieldDirectives(
-                rootTypeFieldNames.aggregate,
-                graphqlDirectivesToCompose(node.propagatedDirectives)
-            );
+                composer.Query.addFields({
+                    [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
+                });
+                composer.Query.setFieldDirectives(
+                    rootTypeFieldNames.aggregate,
+                    graphqlDirectivesToCompose(node.propagatedDirectives)
+                );
 
-            composer.Query.addFields({
-                [`${node.plural}Connection`]: rootConnectionResolver({ node, composer }),
-            });
-            composer.Query.setFieldDirectives(
-                `${node.plural}Connection`,
-                graphqlDirectivesToCompose(node.propagatedDirectives)
-            );
-        }
+                composer.Query.addFields({
+                    [`${node.plural}Connection`]: rootConnectionResolver({ node, composer }),
+                });
+                composer.Query.setFieldDirectives(
+                    `${node.plural}Connection`,
+                    graphqlDirectivesToCompose(node.propagatedDirectives)
+                );
+            }
 
-        if (!node.exclude?.operations.includes("create") && node.federationResolvable) {
-            composer.Mutation.addFields({
-                [rootTypeFieldNames.create]: createResolver({ node }),
-            });
-            composer.Mutation.setFieldDirectives(
-                rootTypeFieldNames.create,
-                graphqlDirectivesToCompose(node.propagatedDirectives)
-            );
-        }
+            if (!node.exclude?.operations.includes("create")) {
+                composer.Mutation.addFields({
+                    [rootTypeFieldNames.create]: createResolver({ node }),
+                });
+                composer.Mutation.setFieldDirectives(
+                    rootTypeFieldNames.create,
+                    graphqlDirectivesToCompose(node.propagatedDirectives)
+                );
+            }
 
-        if (!node.exclude?.operations.includes("delete") && node.federationResolvable) {
-            composer.Mutation.addFields({
-                [rootTypeFieldNames.delete]: deleteResolver({ node }),
-            });
-            composer.Mutation.setFieldDirectives(
-                rootTypeFieldNames.delete,
-                graphqlDirectivesToCompose(node.propagatedDirectives)
-            );
-        }
+            if (!node.exclude?.operations.includes("delete")) {
+                composer.Mutation.addFields({
+                    [rootTypeFieldNames.delete]: deleteResolver({ node }),
+                });
+                composer.Mutation.setFieldDirectives(
+                    rootTypeFieldNames.delete,
+                    graphqlDirectivesToCompose(node.propagatedDirectives)
+                );
+            }
 
-        if (!node.exclude?.operations.includes("update") && node.federationResolvable) {
-            composer.Mutation.addFields({
-                [rootTypeFieldNames.update]: updateResolver({
-                    node,
-                    schemaComposer: composer,
-                }),
-            });
-            composer.Mutation.setFieldDirectives(
-                rootTypeFieldNames.update,
-                graphqlDirectivesToCompose(node.propagatedDirectives)
-            );
+            if (!node.exclude?.operations.includes("update")) {
+                composer.Mutation.addFields({
+                    [rootTypeFieldNames.update]: updateResolver({
+                        node,
+                        schemaComposer: composer,
+                    }),
+                });
+                composer.Mutation.setFieldDirectives(
+                    rootTypeFieldNames.update,
+                    graphqlDirectivesToCompose(node.propagatedDirectives)
+                );
+            }
         }
     });
 
