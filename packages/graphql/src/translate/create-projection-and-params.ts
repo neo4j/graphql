@@ -29,7 +29,7 @@ import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
-import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
+import { generateMissingOrAliasedFields, filterFieldsInSelection, generateResolveTree } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
@@ -354,8 +354,8 @@ export default function createProjectionAndParams({
             // If fieldname is not found in fields of selection set
             ...(!Object.values(existingProjection).find((field) => field.name === sortFieldName)
                 ? // generate a basic resolve tree
-                  generateProjectionField({ name: sortFieldName })
-                : {})
+                  generateResolveTree({ name: sortFieldName })
+                : {}),
         }),
         // and add it to existing fields for projection
         existingProjection
@@ -373,7 +373,7 @@ export default function createProjectionAndParams({
     const mergedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
         mergedSelectedFields,
         generateMissingOrAliasedSortFields({ selection: mergedSelectedFields, resolveTree }),
-        generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node })
+        ...generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
     ]);
 
     const { projection, params, meta, subqueries, subqueriesBeforeSort } = Object.values(mergedFields).reduce(reducer, {
@@ -421,14 +421,14 @@ const generateMissingOrAliasedRequiredFields = ({
 }: {
     node: Node;
     selection: Record<string, ResolveTree>;
-}): Record<string, ResolveTree> => {
+}): Record<string, ResolveTree>[] => {
     const requiredFields = removeDuplicates(
         filterFieldsInSelection({ fields: node.customResolverFields, selection })
             .map((f) => f.requiredFields)
             .flat()
     );
 
-    return generateMissingOrAliasedFields({ fieldNames: requiredFields, selection });
+    return requiredFields;
 };
 
 function createFulltextProjection({

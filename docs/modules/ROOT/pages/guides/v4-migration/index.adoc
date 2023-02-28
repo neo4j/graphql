@@ -406,6 +406,75 @@ type query {
 
 Additionally, escaping strings is no longer needed.
 
+=== `@customResolver` changes
+
+In version 4.0.0, it is now possible to require non-scalar fields. This means it is also possible to require fields on related type.
+To make this possible, the `requires` argument now accept a graphql selection set instead of a list of strings.
+
+Therefore, the following type definitions:
+
+[source, graphql, indent=0]
+----
+type User {
+    firstName: String!
+    lastName: String!
+    fullName: String! @customResolver(requires: ["firstName", "lastName"])
+}
+----
+
+Would need to be modified to use a selection set as below:
+
+[source, graphql, indent=0]
+----
+type User {
+    firstName: String!
+    lastName: String!
+    fullName: String! @customResolver(requires: "firstName lastName")
+}
+----
+
+Below is a more advanced example showing what the selection set is capable of:
+
+[source, graphql, indent=0]
+----
+interface Publication {
+    publicationYear: Int!
+}
+
+type Author {
+    name: String!
+    publications: [Publication!]! @relationship(type: "WROTE", direction: OUT)
+    publicationsWithAuthor: [String!]!
+        @customResolver(
+            requires: "name publications { publicationYear ...on Book { title } ... on Journal { subject } }"
+        )
+}
+
+type Book implements Publication {
+    title: String!
+    publicationYear: Int!
+    author: [Author!]! @relationship(type: "WROTE", direction: IN)
+}
+
+type Journal implements Publication {
+    subject: String!
+    publicationYear: Int!
+    author: [Author!]! @relationship(type: "WROTE", direction: IN)
+}
+----
+
+Additionally, the requires argument also validates the required selection set against your type definitions.
+Therefore, as there is no field called `someFieldThatDoesNotExist`, an error would be thrown on startup if you tried to use the following type definitions:
+
+[source, graphql, indent=0]
+----
+type User {
+    firstName: String!
+    lastName: String!
+    fullName: String! @customResolver(requires: "firstName someFieldThatDoesNotExist")
+}
+----
+
 
 == Miscellaneous changes
 
