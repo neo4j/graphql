@@ -22,6 +22,8 @@ import {
     DocumentNode,
     FieldDefinitionNode,
     Kind,
+    NamedTypeNode,
+    NonNullTypeNode,
     ObjectFieldNode,
     ObjectTypeDefinitionNode,
     ObjectValueNode,
@@ -253,9 +255,9 @@ function validateAuthorizationFilterRule(
                 }
                 // ... validate fields
                 const typeFields = (typeDefinition.fields || []).reduce((acc, f) => {
-                    acc[f.name.value] = f.name.kind;
+                    acc[f.name.value] = ((f.type as NonNullTypeNode).type as NamedTypeNode).name.value;
                     return acc;
-                });
+                }, {});
                 const fieldDoesNotExist = nodeWhere.value.fields.find((f) => !typeFields[f.name.value]);
                 if (fieldDoesNotExist) {
                     throw new Error(`unknown field ${fieldDoesNotExist} in where.node`);
