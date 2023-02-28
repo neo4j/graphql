@@ -26,22 +26,6 @@ describe("Relationship properties - read", () => {
     let driver: Driver;
     let neo4j: Neo4j;
 
-    const typeDefs = gql`
-        type Movie {
-            title: String!
-            actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
-        }
-
-        type Actor {
-            name: String!
-            movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
-        }
-
-        interface ActedIn {
-            screenTime: Int!
-        }
-    `;
-
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
@@ -51,10 +35,50 @@ describe("Relationship properties - read", () => {
         await driver.close();
     });
 
-    test("Projecting node and relationship properties with no arguments", async () => {
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+    test("should throw error if the @relationshipProperties directive is not used", async () => {
+        const typeDefs = gql`
+            type Movie {
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
+
+            type Actor {
+                name: String!
+                movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            }
+
+            interface ActedIn {
+                screenTime: Int!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
         await expect(neoSchema.getSchema()).rejects.toThrow(
+            "The `@relationshipProperties` directive could not be found on the `ActedIn` interface"
+        );
+    });
+
+    test("should not throw error if the @relationshipProperties directive is used", async () => {
+        const typeDefs = gql`
+            type Movie {
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
+
+            type Actor {
+                name: String!
+                movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            }
+
+            interface ActedIn @relationshipProperties {
+                screenTime: Int!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow(
             "The `@relationshipProperties` directive could not be found on the `ActedIn` interface"
         );
     });
