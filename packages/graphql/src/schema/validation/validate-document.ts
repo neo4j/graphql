@@ -40,7 +40,6 @@ import { PointDistance } from "../../graphql/input-objects/PointDistance";
 import { CartesianPointDistance } from "../../graphql/input-objects/CartesianPointDistance";
 import { RESERVED_TYPE_NAMES } from "../../constants";
 import { isRootType } from "../../utils/is-root-type";
-import { validateCustomResolverRequires } from "./validate-custom-resolver-requires";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
@@ -161,6 +160,7 @@ function filterDocument(document: DocumentNode): DocumentNode {
 
 function getBaseSchema(
     document: DocumentNode,
+    validateTypeDefs = true,
     additionalDirectives: Array<GraphQLDirective> = [],
     additionalTypes: Array<GraphQLNamedType> = []
 ): GraphQLSchema {
@@ -181,21 +181,24 @@ function getBaseSchema(
         ],
     });
 
-    return extendSchema(schemaToExtend, doc);
+    return extendSchema(schemaToExtend, doc, { assumeValid: !validateTypeDefs });
 }
 
 function validateDocument(
     document: DocumentNode,
+    validateTypeDefs = true,
     additionalDirectives: Array<GraphQLDirective> = [],
     additionalTypes: Array<GraphQLNamedType> = []
-): void {
-    const schema = getBaseSchema(document, additionalDirectives, additionalTypes);
-    const errors = validateSchema(schema);
-    const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
-    if (filteredErrors.length) {
-        throw new Error(filteredErrors.join("\n"));
+): GraphQLSchema {
+    const schema = getBaseSchema(document, validateTypeDefs, additionalDirectives, additionalTypes);
+    if (validateTypeDefs) {
+        const errors = validateSchema(schema);
+        const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
+        if (filteredErrors.length) {
+            throw new Error(filteredErrors.join("\n"));
+        }
     }
-    validateCustomResolverRequires(document, schema);
+    return schema;
 }
 
 export default validateDocument;

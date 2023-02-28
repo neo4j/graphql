@@ -19,7 +19,6 @@
 
 import { parse, ValueNode, GraphQLError, GraphQLScalarType, Kind } from "graphql";
 
-// A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
 export const GraphQLSelectionSet = new GraphQLScalarType({
     name: "SelectionSet",
     description:
