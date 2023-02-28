@@ -252,7 +252,7 @@ export default function createProjectionAndParams({
                 subqueryReturnAlias,
                 nestedProjection: recurse.projection,
                 nestedSubqueries: [...recurse.subqueriesBeforeSort, ...recurse.subqueries],
-                targetNode: targetNode ,
+                targetNode: targetNode,
                 relationField,
                 relationshipDirection: direction,
                 optionsInput,
