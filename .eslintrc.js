@@ -6,7 +6,16 @@ module.exports = {
         es2021: true,
     },
     rules: {
-        "comma-dangle": ["error", "always-multiline"],
+        "comma-dangle": [
+            "error",
+            {
+                arrays: "always-multiline",
+                objects: "always-multiline",
+                imports: "always-multiline",
+                exports: "always-multiline",
+                functions: "never",
+            },
+        ],
         "eslint-comments/no-unused-disable": "error",
         // Expensive rules disabled below
         "import/default": "off",
