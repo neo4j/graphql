@@ -148,10 +148,10 @@ describe("Cypher directive", () => {
                     MATCH (a:Actor)
                     RETURN a
                 }
-                WITH a AS this_topActor
-                RETURN head(collect(this_topActor { .name })) AS this_topActor
+                WITH a AS this0
+                RETURN head(collect(this0 { .name })) AS this0
             }
-            RETURN this { .title, topActor: this_topActor } AS this"
+            RETURN this { .title, topActor: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -180,10 +180,10 @@ describe("Cypher directive", () => {
                     WITH this AS this
                     RETURN rand() as res
                 }
-                UNWIND res AS this_randomNumber
-                RETURN head(collect(this_randomNumber)) AS this_randomNumber
+                UNWIND res AS this0
+                RETURN head(collect(this0)) AS this0
             }
-            RETURN this { randomNumber: this_randomNumber } AS this"
+            RETURN this { randomNumber: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -214,10 +214,10 @@ describe("Cypher directive", () => {
                     WITH this AS this
                     RETURN rand() as res
                 }
-                UNWIND res AS this_randomNumber
-                RETURN head(collect(this_randomNumber)) AS this_randomNumber
+                UNWIND res AS this0
+                RETURN head(collect(this0)) AS this0
             }
-            RETURN this { randomNumber: this_randomNumber } AS this"
+            RETURN this { randomNumber: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -253,13 +253,13 @@ describe("Cypher directive", () => {
                     WITH this AS this
                     RETURN rand() as res
                 }
-                UNWIND res AS this_randomNumber
-                RETURN head(collect(this_randomNumber)) AS this_randomNumber
+                UNWIND res AS this0
+                RETURN head(collect(this0)) AS this0
             }
             WITH *
-            ORDER BY this_randomNumber ASC
+            ORDER BY this0 ASC
             LIMIT $param0
-            RETURN this { randomNumber: this_randomNumber } AS this"
+            RETURN this { randomNumber: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -302,21 +302,21 @@ describe("Cypher directive", () => {
                     MATCH (a:Actor)
                     RETURN a
                 }
-                WITH a AS this_topActor
+                WITH a AS this0
                 CALL {
-                    WITH this_topActor
+                    WITH this0
                     CALL {
-                        WITH this_topActor
-                        WITH this_topActor AS this
+                        WITH this0
+                        WITH this0 AS this
                         MATCH (m:Movie {title: $param0})
                         RETURN m
                     }
-                    WITH m AS this_topActor_movies
-                    RETURN collect(this_topActor_movies { .title }) AS this_topActor_movies
+                    WITH m AS this1
+                    RETURN collect(this1 { .title }) AS this1
                 }
-                RETURN head(collect(this_topActor { .name, movies: this_topActor_movies })) AS this_topActor
+                RETURN head(collect(this0 { .name, movies: this1 })) AS this0
             }
-            RETURN this { .title, topActor: this_topActor } AS this"
+            RETURN this { .title, topActor: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -362,43 +362,43 @@ describe("Cypher directive", () => {
                     MATCH (a:Actor)
                     RETURN a
                 }
-                WITH a AS this_topActor
+                WITH a AS this0
                 CALL {
-                    WITH this_topActor
+                    WITH this0
                     CALL {
-                        WITH this_topActor
-                        WITH this_topActor AS this
+                        WITH this0
+                        WITH this0 AS this
                         MATCH (m:Movie {title: $param0})
                         RETURN m
                     }
-                    WITH m AS this_topActor_movies
+                    WITH m AS this1
                     CALL {
-                        WITH this_topActor_movies
+                        WITH this1
                         CALL {
-                            WITH this_topActor_movies
-                            WITH this_topActor_movies AS this
+                            WITH this1
+                            WITH this1 AS this
                             MATCH (a:Actor)
                             RETURN a
                         }
-                        WITH a AS this_topActor_movies_topActor
+                        WITH a AS this2
                         CALL {
-                            WITH this_topActor_movies_topActor
+                            WITH this2
                             CALL {
-                                WITH this_topActor_movies_topActor
-                                WITH this_topActor_movies_topActor AS this
+                                WITH this2
+                                WITH this2 AS this
                                 MATCH (m:Movie {title: $param1})
                                 RETURN m
                             }
-                            WITH m AS this_topActor_movies_topActor_movies
-                            RETURN collect(this_topActor_movies_topActor_movies { .title }) AS this_topActor_movies_topActor_movies
+                            WITH m AS this3
+                            RETURN collect(this3 { .title }) AS this3
                         }
-                        RETURN head(collect(this_topActor_movies_topActor { .name, movies: this_topActor_movies_topActor_movies })) AS this_topActor_movies_topActor
+                        RETURN head(collect(this2 { .name, movies: this3 })) AS this2
                     }
-                    RETURN collect(this_topActor_movies { .title, topActor: this_topActor_movies_topActor }) AS this_topActor_movies
+                    RETURN collect(this1 { .title, topActor: this2 }) AS this1
                 }
-                RETURN head(collect(this_topActor { .name, movies: this_topActor_movies })) AS this_topActor
+                RETURN head(collect(this0 { .name, movies: this1 })) AS this0
             }
-            RETURN this { .title, topActor: this_topActor } AS this"
+            RETURN this { .title, topActor: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -439,21 +439,21 @@ describe("Cypher directive", () => {
                     MATCH (a:Actor)
                     RETURN a
                 }
-                WITH a AS this_topActor
+                WITH a AS this0
                 CALL {
-                    WITH this_topActor
+                    WITH this0
                     CALL {
-                        WITH this_topActor
-                        WITH this_topActor AS this
+                        WITH this0
+                        WITH this0 AS this
                         MATCH (m:Movie {title: $param0})
                         RETURN m
                     }
-                    WITH m AS this_topActor_movies
-                    RETURN collect(this_topActor_movies { .title }) AS this_topActor_movies
+                    WITH m AS this1
+                    RETURN collect(this1 { .title }) AS this1
                 }
-                RETURN head(collect(this_topActor { .name, movies: this_topActor_movies })) AS this_topActor
+                RETURN head(collect(this0 { .name, movies: this1 })) AS this0
             }
-            RETURN this { .title, topActor: this_topActor } AS this"
+            RETURN this { .title, topActor: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -507,50 +507,50 @@ describe("Cypher directive", () => {
                     WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                     RETURN n
                 }
-                WITH n AS this_movieOrTVShow
+                WITH n AS this0
                 WITH *
-                WHERE (this_movieOrTVShow:\`Movie\` OR this_movieOrTVShow:\`TVShow\`)
-                WITH *, this_movieOrTVShow AS this_movieOrTVShow_0
+                WHERE (this0:\`Movie\` OR this0:\`TVShow\`)
+                WITH *, this0 AS this1
                 CALL {
-                    WITH this_movieOrTVShow_0
+                    WITH this1
                     CALL {
-                        WITH this_movieOrTVShow_0
-                        WITH this_movieOrTVShow_0 AS this
+                        WITH this1
+                        WITH this1 AS this
                         MATCH (a:Actor)
                         RETURN a
                     }
-                    WITH a AS this_movieOrTVShow_0_topActor
-                    RETURN head(collect(this_movieOrTVShow_0_topActor { .name, .year })) AS this_movieOrTVShow_0_topActor
+                    WITH a AS this2
+                    RETURN head(collect(this2 { .name, .year })) AS this2
                 }
                 CALL {
-                    WITH this_movieOrTVShow_0
+                    WITH this1
                     CALL {
-                        WITH this_movieOrTVShow_0
-                        WITH this_movieOrTVShow_0 AS this
+                        WITH this1
+                        WITH this1 AS this
                         MATCH (a:Actor)
                         RETURN a
                     }
-                    WITH a AS this_movieOrTVShow_0_actors
-                    RETURN collect(this_movieOrTVShow_0_actors { .name }) AS this_movieOrTVShow_0_actors
+                    WITH a AS this3
+                    RETURN collect(this3 { .name }) AS this3
                 }
-                WITH *, this_movieOrTVShow AS this_movieOrTVShow_1
+                WITH *, this0 AS this4
                 CALL {
-                    WITH this_movieOrTVShow_1
+                    WITH this4
                     CALL {
-                        WITH this_movieOrTVShow_1
-                        WITH this_movieOrTVShow_1 AS this
+                        WITH this4
+                        WITH this4 AS this
                         MATCH (a:Actor)
                         RETURN a
                     }
-                    WITH a AS this_movieOrTVShow_1_topActor
-                    RETURN head(collect(this_movieOrTVShow_1_topActor { .name })) AS this_movieOrTVShow_1_topActor
+                    WITH a AS this5
+                    RETURN head(collect(this5 { .name })) AS this5
                 }
                 RETURN collect(CASE
-                    WHEN this_movieOrTVShow:\`Movie\` THEN this_movieOrTVShow { __resolveType: \\"Movie\\",  .id, .title, topActor: this_movieOrTVShow_0_topActor, actors: this_movieOrTVShow_0_actors }
-                    WHEN this_movieOrTVShow:\`TVShow\` THEN this_movieOrTVShow { __resolveType: \\"TVShow\\",  .id, .title, topActor: this_movieOrTVShow_1_topActor }
-                END) AS this_movieOrTVShow
+                    WHEN this0:\`Movie\` THEN this0 { __resolveType: \\"Movie\\",  .id, .title, topActor: this2, actors: this3 }
+                    WHEN this0:\`TVShow\` THEN this0 { __resolveType: \\"TVShow\\",  .id, .title, topActor: this5 }
+                END) AS this0
             }
-            RETURN this { movieOrTVShow: this_movieOrTVShow } AS this"
+            RETURN this { movieOrTVShow: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -587,15 +587,15 @@ describe("Cypher directive", () => {
                     WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                     RETURN n
                 }
-                WITH n AS this_movieOrTVShow
+                WITH n AS this0
                 WITH *
-                WHERE (this_movieOrTVShow:\`Movie\` OR this_movieOrTVShow:\`TVShow\`)
+                WHERE (this0:\`Movie\` OR this0:\`TVShow\`)
                 RETURN collect(CASE
-                    WHEN this_movieOrTVShow:\`Movie\` THEN this_movieOrTVShow { __resolveType: \\"Movie\\" }
-                    WHEN this_movieOrTVShow:\`TVShow\` THEN this_movieOrTVShow { __resolveType: \\"TVShow\\" }
-                END) AS this_movieOrTVShow
+                    WHEN this0:\`Movie\` THEN this0 { __resolveType: \\"Movie\\" }
+                    WHEN this0:\`TVShow\` THEN this0 { __resolveType: \\"TVShow\\" }
+                END) AS this0
             }
-            RETURN this { movieOrTVShow: this_movieOrTVShow } AS this"
+            RETURN this { movieOrTVShow: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -656,11 +656,11 @@ describe("Cypher directive", () => {
                 WITH m as this
                 CALL {
                     WITH this
-                    MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Actor\`)
-                    WITH this_actors { .name } AS this_actors
-                    RETURN collect(this_actors) AS this_actors
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                    WITH this1 { .name } AS this1
+                    RETURN collect(this1) AS var2
                 }
-                RETURN this { .title, actors: this_actors } AS this"
+                RETURN this { .title, actors: var2 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -724,11 +724,11 @@ describe("Cypher directive", () => {
                 WITH m as this
                 CALL {
                     WITH this
-                    MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Actor\`)
-                    WITH this_actors { .name } AS this_actors
-                    RETURN collect(this_actors) AS this_actors
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                    WITH this1 { .name } AS this1
+                    RETURN collect(this1) AS var2
                 }
-                RETURN this { .title, actors: this_actors } AS this"
+                RETURN this { .title, actors: var2 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -793,16 +793,16 @@ describe("Cypher directive", () => {
                         MATCH (m:Movie {title: $param0})
                         RETURN m
                     }
-                    WITH m AS this_custom
+                    WITH m AS this0
                     CALL {
-                        WITH this_custom
-                        MATCH (this_custom)<-[this0:ACTED_IN]-(this_custom_actors:\`Actor\`)
-                        WITH this_custom_actors { .name } AS this_custom_actors
-                        RETURN collect(this_custom_actors) AS this_custom_actors
+                        WITH this0
+                        MATCH (this0)<-[this1:ACTED_IN]-(this2:\`Actor\`)
+                        WITH this2 { .name } AS this2
+                        RETURN collect(this2) AS var3
                     }
-                    RETURN collect(this_custom { .title, actors: this_custom_actors }) AS this_custom
+                    RETURN collect(this0 { .title, actors: var3 }) AS this0
                 }
-                RETURN this { custom: this_custom } AS this"
+                RETURN this { custom: this0 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`

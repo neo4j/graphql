@@ -37,7 +37,7 @@ describe("Cypher Points", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true }
+            config: { enableRegex: true },
         });
     });
 
@@ -56,16 +56,16 @@ describe("Cypher Points", () => {
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
             WHERE this.point = point($param0)
-            RETURN this { point: (CASE
+            RETURN this { point: CASE
                 WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
                 ELSE NULL
-            END) } AS this"
+            END } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -92,16 +92,16 @@ describe("Cypher Points", () => {
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
             WHERE NOT (this.point = point($param0))
-            RETURN this { point: (CASE
+            RETURN this { point: CASE
                 WHEN this.point IS NOT NULL THEN { point: this.point }
                 ELSE NULL
-            END) } AS this"
+            END } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -129,16 +129,16 @@ describe("Cypher Points", () => {
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
             WHERE this.point IN [var0 IN $param0 | point(var0)]
-            RETURN this { point: (CASE
+            RETURN this { point: CASE
                 WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
                 ELSE NULL
-            END) } AS this"
+            END } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -168,16 +168,16 @@ describe("Cypher Points", () => {
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
             WHERE NOT (this.point IN [var0 IN $param0 | point(var0)])
-            RETURN this { point: (CASE
+            RETURN this { point: CASE
                 WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
                 ELSE NULL
-            END) } AS this"
+            END } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -222,16 +222,16 @@ describe("Cypher Points", () => {
 
             const req = createJwtRequest("secret", {});
             const result = await translateQuery(neoSchema, query, {
-                req
+                req,
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`PointContainer\`)
                 WHERE point.distance(this.point, point($param0.point)) < $param0.distance
-                RETURN this { point: (CASE
+                RETURN this { point: CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } AS this"
+                END } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -261,16 +261,16 @@ describe("Cypher Points", () => {
 
             const req = createJwtRequest("secret", {});
             const result = await translateQuery(neoSchema, query, {
-                req
+                req,
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`PointContainer\`)
                 WHERE point.distance(this.point, point($param0.point)) <= $param0.distance
-                RETURN this { point: (CASE
+                RETURN this { point: CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } AS this"
+                END } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -300,16 +300,16 @@ describe("Cypher Points", () => {
 
             const req = createJwtRequest("secret", {});
             const result = await translateQuery(neoSchema, query, {
-                req
+                req,
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`PointContainer\`)
                 WHERE point.distance(this.point, point($param0.point)) > $param0.distance
-                RETURN this { point: (CASE
+                RETURN this { point: CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } AS this"
+                END } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -339,16 +339,16 @@ describe("Cypher Points", () => {
 
             const req = createJwtRequest("secret", {});
             const result = await translateQuery(neoSchema, query, {
-                req
+                req,
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`PointContainer\`)
                 WHERE point.distance(this.point, point($param0.point)) >= $param0.distance
-                RETURN this { point: (CASE
+                RETURN this { point: CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } AS this"
+                END } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -380,16 +380,16 @@ describe("Cypher Points", () => {
 
             const req = createJwtRequest("secret", {});
             const result = await translateQuery(neoSchema, query, {
-                req
+                req,
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`PointContainer\`)
                 WHERE point.distance(this.point, point($param0.point)) = $param0.distance
-                RETURN this { point: (CASE
+                RETURN this { point: CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } AS this"
+                END } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -420,16 +420,16 @@ describe("Cypher Points", () => {
             const req = createJwtRequest("secret", {});
             const result = await translateQuery(neoSchema, query, {
                 req,
-                neo4jVersion: "4.4"
+                neo4jVersion: "4.4",
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`PointContainer\`)
                 WHERE point.distance(this.point, point($param0.point)) < $param0.distance
-                RETURN this { point: (CASE
+                RETURN this { point: CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } AS this"
+                END } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -460,16 +460,16 @@ describe("Cypher Points", () => {
             const req = createJwtRequest("secret", {});
             const result = await translateQuery(neoSchema, query, {
                 req,
-                neo4jVersion: "4.4"
+                neo4jVersion: "4.4",
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`PointContainer\`)
                 WHERE point.distance(this.point, point($param0.point)) <= $param0.distance
-                RETURN this { point: (CASE
+                RETURN this { point: CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } AS this"
+                END } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -500,16 +500,16 @@ describe("Cypher Points", () => {
             const req = createJwtRequest("secret", {});
             const result = await translateQuery(neoSchema, query, {
                 req,
-                neo4jVersion: "4.4"
+                neo4jVersion: "4.4",
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`PointContainer\`)
                 WHERE point.distance(this.point, point($param0.point)) > $param0.distance
-                RETURN this { point: (CASE
+                RETURN this { point: CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } AS this"
+                END } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -540,16 +540,16 @@ describe("Cypher Points", () => {
             const req = createJwtRequest("secret", {});
             const result = await translateQuery(neoSchema, query, {
                 req,
-                neo4jVersion: "4.4"
+                neo4jVersion: "4.4",
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`PointContainer\`)
                 WHERE point.distance(this.point, point($param0.point)) >= $param0.distance
-                RETURN this { point: (CASE
+                RETURN this { point: CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } AS this"
+                END } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -582,16 +582,16 @@ describe("Cypher Points", () => {
             const req = createJwtRequest("secret", {});
             const result = await translateQuery(neoSchema, query, {
                 req,
-                neo4jVersion: "4.4"
+                neo4jVersion: "4.4",
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`PointContainer\`)
                 WHERE point.distance(this.point, point($param0.point)) = $param0.distance
-                RETURN this { point: (CASE
+                RETURN this { point: CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } AS this"
+                END } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -625,22 +625,22 @@ describe("Cypher Points", () => {
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`PointContainer\`)
+                WITH create_var0
+                CREATE (create_this1:\`PointContainer\`)
                 SET
-                    create_this0.point = point(create_var1.point)
-                RETURN create_this0
+                    create_this1.point = point(create_var0.point)
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { point: (CASE
-                WHEN create_this0.point IS NOT NULL THEN { point: create_this0.point, crs: create_this0.point.crs }
+            RETURN collect(create_this1 { point: CASE
+                WHEN create_this1.point IS NOT NULL THEN { point: create_this1.point, crs: create_this1.point.crs }
                 ELSE NULL
-            END) }) AS data"
+            END }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -675,17 +675,17 @@ describe("Cypher Points", () => {
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
             WHERE this.id = $param0
             SET this.point = point($this_update_point)
-            RETURN collect(DISTINCT this { point: (CASE
+            RETURN collect(DISTINCT this { point: CASE
                 WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
                 ELSE NULL
-            END) }) AS data"
+            END }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

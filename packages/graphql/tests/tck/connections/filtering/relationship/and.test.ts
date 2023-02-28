@@ -85,20 +85,20 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> AND", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE (this_connection_actorsConnectionthis0.role ENDS WITH $this_connection_actorsConnectionparam0 AND this_connection_actorsConnectionthis0.screenTime < $this_connection_actorsConnectionparam1)
-                WITH { role: this_connection_actorsConnectionthis0.role, screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE (this0.role ENDS WITH $param0 AND this0.screenTime < $param1)
+                WITH { role: this0.role, screenTime: this0.screenTime, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": \\"Gump\\",
-                \\"this_connection_actorsConnectionparam1\\": {
+                \\"param0\\": \\"Gump\\",
+                \\"param1\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 }
@@ -133,19 +133,19 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> AND", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE NOT (this_connection_actorsConnectionthis0.role ENDS WITH $this_connection_actorsConnectionparam0)
-                WITH { role: this_connection_actorsConnectionthis0.role, screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE NOT (this0.role ENDS WITH $param0)
+                WITH { role: this0.role, screenTime: this0.screenTime, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": \\"Gump\\"
+                \\"param0\\": \\"Gump\\"
             }"
         `);
     });

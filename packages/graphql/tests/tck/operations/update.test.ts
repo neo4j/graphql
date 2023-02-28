@@ -565,11 +565,11 @@ describe("Cypher Update", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:ACTED_IN]->(this_movies:\`Movie\`)
-                WITH this_movies { .id, .title } AS this_movies
-                RETURN collect(this_movies) AS this_movies
+                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:\`Movie\`)
+                WITH update_this1 { .id, .title } AS update_this1
+                RETURN collect(update_this1) AS update_var2
             }
-            RETURN collect(DISTINCT this { .name, movies: this_movies }) AS data"
+            RETURN collect(DISTINCT this { .name, movies: update_var2 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -615,11 +615,11 @@ describe("Cypher Update", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:ACTED_IN]->(this_movies:\`Movie\`)
-                WITH this_movies { .id, .title } AS this_movies
-                RETURN collect(this_movies) AS this_movies
+                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:\`Movie\`)
+                WITH update_this1 { .id, .title } AS update_this1
+                RETURN collect(update_this1) AS update_var2
             }
-            RETURN collect(DISTINCT this { .name, movies: this_movies }) AS data"
+            RETURN collect(DISTINCT this { .name, movies: update_var2 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -674,11 +674,11 @@ describe("Cypher Update", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:ACTED_IN]->(this_movies:\`Movie\`)
-                WITH this_movies { .id, .title } AS this_movies
-                RETURN collect(this_movies) AS this_movies
+                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:\`Movie\`)
+                WITH update_this1 { .id, .title } AS update_this1
+                RETURN collect(update_this1) AS update_var2
             }
-            RETURN collect(DISTINCT this { .name, movies: this_movies }) AS data"
+            RETURN collect(DISTINCT this { .name, movies: update_var2 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -100,19 +100,19 @@ describe("Interface Relationships - Update create", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[update_this0:ACTED_IN]->(this_actedIn:\`Movie\`)
-                    WITH this_actedIn { __resolveType: \\"Movie\\", __id: id(this), .runtime, .title } AS this_actedIn
-                    RETURN this_actedIn AS this_actedIn
+                    MATCH (this)-[update_this0:ACTED_IN]->(update_this1:\`Movie\`)
+                    WITH update_this1 { __resolveType: \\"Movie\\", __id: id(this), .runtime, .title } AS update_this1
+                    RETURN update_this1 AS update_var2
                     UNION
                     WITH *
-                    MATCH (this)-[update_this1:ACTED_IN]->(this_actedIn:\`Series\`)
-                    WITH this_actedIn { __resolveType: \\"Series\\", __id: id(this), .episodes, .title } AS this_actedIn
-                    RETURN this_actedIn AS this_actedIn
+                    MATCH (this)-[update_this3:ACTED_IN]->(update_this4:\`Series\`)
+                    WITH update_this4 { __resolveType: \\"Series\\", __id: id(this), .episodes, .title } AS update_this4
+                    RETURN update_this4 AS update_var2
                 }
-                WITH this_actedIn
-                RETURN collect(this_actedIn) AS this_actedIn
+                WITH update_var2
+                RETURN collect(update_var2) AS update_var2
             }
-            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: update_var2 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

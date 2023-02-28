@@ -96,8 +96,8 @@ describe("#387", () => {
                     WITH this AS this
                     return '' + '' as result
                 }
-                UNWIND result AS this_url_works
-                RETURN head(collect(this_url_works)) AS this_url_works
+                UNWIND result AS this0
+                RETURN head(collect(this0)) AS this0
             }
             CALL {
                 WITH this
@@ -106,8 +106,8 @@ describe("#387", () => {
                     WITH this AS this
                     return '' + '' as result
                 }
-                UNWIND result AS this_url_fails
-                RETURN head(collect(this_url_fails)) AS this_url_fails
+                UNWIND result AS this1
+                RETURN head(collect(this1)) AS this1
             }
             CALL {
                 WITH this
@@ -116,8 +116,8 @@ describe("#387", () => {
                     WITH this AS this
                     return ['' + ''] as result
                 }
-                UNWIND result AS this_url_array_works
-                RETURN collect(this_url_array_works) AS this_url_array_works
+                UNWIND result AS this2
+                RETURN collect(this2) AS this2
             }
             CALL {
                 WITH this
@@ -126,10 +126,10 @@ describe("#387", () => {
                     WITH this AS this
                     return ['' + ''] as result
                 }
-                UNWIND result AS this_url_array_fails
-                RETURN collect(this_url_array_fails) AS this_url_array_fails
+                UNWIND result AS this3
+                RETURN collect(this3) AS this3
             }
-            RETURN this { url_works: this_url_works, url_fails: this_url_fails, url_array_works: this_url_array_works, url_array_fails: this_url_array_fails } AS this"
+            RETURN this { url_works: this0, url_fails: this1, url_array_works: this2, url_array_fails: this3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

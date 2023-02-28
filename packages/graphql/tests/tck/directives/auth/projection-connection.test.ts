@@ -83,20 +83,20 @@ describe("Cypher Auth Projection On Connections", () => {
             WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                MATCH (this)-[this_connection_postsConnectionthis0:HAS_POST]->(this_Post:\`Post\`)
-                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND any(this_connection_postsConnectionthis1 IN [(this_Post)<-[:HAS_POST]-(this_connection_postsConnectionthis1:\`User\`) | this_connection_postsConnectionthis1] WHERE (this_connection_postsConnectionthis1.id IS NOT NULL AND this_connection_postsConnectionthis1.id = $this_connection_postsConnectionparam0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH { node: { content: this_Post.content } } AS edge
+                MATCH (this)-[this0:HAS_POST]->(this1:\`Post\`)
+                WHERE apoc.util.validatePredicate(NOT ((exists((this1)<-[:HAS_POST]-(:\`User\`)) AND any(this2 IN [(this1)<-[:HAS_POST]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH { node: { content: this1.content } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_postsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            RETURN this { .name, postsConnection: this_postsConnection } AS this"
+            RETURN this { .name, postsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"super_admin\\",
-                \\"this_connection_postsConnectionparam0\\": \\"super_admin\\"
+                \\"param1\\": \\"super_admin\\"
             }"
         `);
     });
@@ -134,30 +134,30 @@ describe("Cypher Auth Projection On Connections", () => {
             WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                MATCH (this)-[this_connection_postsConnectionthis0:HAS_POST]->(this_Post:\`Post\`)
-                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND any(this_connection_postsConnectionthis1 IN [(this_Post)<-[:HAS_POST]-(this_connection_postsConnectionthis1:\`User\`) | this_connection_postsConnectionthis1] WHERE (this_connection_postsConnectionthis1.id IS NOT NULL AND this_connection_postsConnectionthis1.id = $this_connection_postsConnectionparam0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MATCH (this)-[this0:HAS_POST]->(this1:\`Post\`)
+                WHERE apoc.util.validatePredicate(NOT ((exists((this1)<-[:HAS_POST]-(:\`User\`)) AND any(this2 IN [(this1)<-[:HAS_POST]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
-                    WITH this_Post
-                    MATCH (this_Post)<-[this_Post_connection_creatorConnectionthis0:HAS_POST]-(this_Post_User:\`User\`)
-                    WHERE apoc.util.validatePredicate(NOT ((this_Post_User.id IS NOT NULL AND this_Post_User.id = $this_Post_connection_creatorConnectionparam0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH { node: { name: this_Post_User.name } } AS edge
+                    WITH this1
+                    MATCH (this1:\`Post\`)<-[this3:HAS_POST]-(this4:\`User\`)
+                    WHERE apoc.util.validatePredicate(NOT ((this4.id IS NOT NULL AND this4.id = $param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WITH { node: { name: this4.name } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS this_Post_creatorConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS var5
                 }
-                WITH { node: { content: this_Post.content, creatorConnection: this_Post_creatorConnection } } AS edge
+                WITH { node: { content: this1.content, creatorConnection: var5 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_postsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var6
             }
-            RETURN this { .name, postsConnection: this_postsConnection } AS this"
+            RETURN this { .name, postsConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"super_admin\\",
-                \\"this_connection_postsConnectionparam0\\": \\"super_admin\\",
-                \\"this_Post_connection_creatorConnectionparam0\\": \\"super_admin\\"
+                \\"param1\\": \\"super_admin\\",
+                \\"param2\\": \\"super_admin\\"
             }"
         `);
     });
