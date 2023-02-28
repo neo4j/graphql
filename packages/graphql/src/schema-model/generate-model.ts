@@ -28,6 +28,7 @@ import {
     ObjectTypeDefinitionNode,
     ObjectValueNode,
     StringValueNode,
+    TypeNode,
     UnionTypeDefinitionNode,
     ValueNode,
 } from "graphql";
@@ -204,7 +205,72 @@ function createEntityAnnotation(
     );
 }
 
+
 // validation helpers
+
+function validateListWhere(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
+    
+
+}
+
+function validateNumberWhere(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
+    if (graphQLFieldType.isList) {
+        validateListWhere(whereField, graphQLFieldType);
+    }
+}
+
+function validateStringWhere(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
+    if (graphQLFieldType.isList) {
+        validateListWhere(whereField, graphQLFieldType);
+    }
+
+}
+
+// Maybe booleans value should not be part of the generic operators refactor
+function validateBooleanWhere(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
+    if (graphQLFieldType.isList) {
+        validateListWhere(whereField, graphQLFieldType);
+    }
+
+}
+
+function validateObjectWhere(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
+    if (graphQLFieldType.isList) {
+       // 1..n relationship filters
+    }
+    // 1..1 relationship filter
+    
+}
+
+function validateWhereField(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
+
+    switch (graphQLFieldType.type) {
+        case "Int":
+            validateNumberWhere(whereField, graphQLFieldType);
+            break;
+        case "Float":
+            validateNumberWhere(whereField, graphQLFieldType);
+            break;
+        // I believe ID should treated as string
+        case "ID": 
+        case "String":
+            validateStringWhere(whereField, graphQLFieldType);
+            break;
+        case "Boolean":
+            if (graphQLFieldType.isList) {
+                // I believe we don't support boolean list filter
+                throw new Error();
+            }
+            validateBooleanWhere(whereField, graphQLFieldType);
+            break;
+        
+        default:
+            // This could be or an Enum type or an Object type
+            validateObjectWhere(whereField, graphQLFieldType);
+            break;
+    }
+}
+
 function validateAuthorizationFilterRule(
     argument: ArgumentNode | ObjectFieldNode,
     typeDefinition: ObjectTypeDefinitionNode,
@@ -255,17 +321,52 @@ function validateAuthorizationFilterRule(
                 }
                 // ... validate fields
                 const typeFields = (typeDefinition.fields || []).reduce((acc, f) => {
-                    acc[f.name.value] = ((f.type as NonNullTypeNode).type as NamedTypeNode).name.value;
+                    acc[f.name.value] = getGraphQLFieldTypeFromTypNode(f.type);
                     return acc;
-                }, {});
+                }, {}) as Record<string, GraphQLFieldType>;
                 const fieldDoesNotExist = nodeWhere.value.fields.find((f) => !typeFields[f.name.value]);
                 if (fieldDoesNotExist) {
-                    throw new Error(`unknown field ${fieldDoesNotExist} in where.node`);
+                    throw new Error(`unknown field ${fieldDoesNotExist.name.value} in where.node`);
                 }
+                nodeWhere.value.fields.forEach((field) => {
+                    validateWhereField(field, typeFields[field.name.value]);
+                });
             }
         }
     });
 }
+
+interface GraphQLFieldType {
+    type: string;
+    isNullable: boolean;
+    isList: boolean;
+}
+
+function getGraphQLFieldTypeFromTypNode(type: TypeNode): GraphQLFieldType {
+    switch (type.kind) {
+        case Kind.NAMED_TYPE:
+            return {
+                type: type.name.value,
+                isNullable: false,
+                isList: false,
+            };
+        case Kind.LIST_TYPE:
+            return {
+                type: getGraphQLFieldTypeFromTypNode(type.type).type,
+                isNullable: false,
+                isList: true,
+            };
+        case Kind.NON_NULL_TYPE: {
+            const nestedType = getGraphQLFieldTypeFromTypNode(type.type);
+            return {
+                type: nestedType.type,
+                isNullable: true,
+                isList: nestedType.isList,
+            };
+        }
+    }
+}
+
 function validateAuthorizationAnnotation(directive: DirectiveNode, typeDefinition: ObjectTypeDefinitionNode) {
     const dirArgs = directive.arguments;
     const filterBeforeValidation = dirArgs?.find((arg) => arg.name.value === "filter");
@@ -366,18 +467,22 @@ function parseArguments(directive: DirectiveNode): Record<string, unknown> {
 }
 
 function getArgumentValueByType(argumentValue: ValueNode): unknown {
-    // TODO: parse other kinds
-    if (argumentValue.kind === Kind.STRING) {
-        return argumentValue.value;
-    }
-    if (argumentValue.kind === Kind.LIST) {
-        return argumentValue.values.map((v) => getArgumentValueByType(v));
-    }
-
-    if (argumentValue.kind === Kind.OBJECT) {
-        return argumentValue.fields.reduce((acc, field) => {
-            acc[field.name.value] = getArgumentValueByType(field.value);
-            return acc;
-        }, {});
+    switch (argumentValue.kind) {
+        case Kind.STRING:
+        case Kind.INT:
+        case Kind.FLOAT:
+        case Kind.BOOLEAN:
+        case Kind.ENUM:
+            return argumentValue.value;
+        case Kind.NULL:
+            return null;
+        case Kind.LIST:
+            return argumentValue.values.map((v) => getArgumentValueByType(v));
+        case Kind.OBJECT: {
+            return argumentValue.fields.reduce((acc, field) => {
+                acc[field.name.value] = getArgumentValueByType(field.value);
+                return acc;
+            }, {});
+        }
     }
 }

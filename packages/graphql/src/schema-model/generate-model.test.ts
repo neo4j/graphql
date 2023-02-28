@@ -83,18 +83,6 @@ describe("ConcreteEntity generation", () => {
 });
 
 describe("@authorization directive validation", () => {
-    test("validate without correct arguments", () => {
-        const typeDefs = gql`
-            type User @authorization(validate: { banana: [{ where: { node: { id: { equals: "$jwt.sub" } } } }] }) {
-                id: ID!
-                name: String!
-            }
-        `;
-
-        const document = getDocument(typeDefs);
-        expect(() => generateModel(document)).toThrow();
-    });
-
     test("validate pre not array", () => {
         const typeDefs = gql`
             type User @authorization(validate: { pre: { where: { node: { id: { equals: "$jwt.sub" } } } } }) {
@@ -143,7 +131,7 @@ describe("@authorization directive validation", () => {
         expect(() => generateModel(document)).not.toThrow();
     });
 
-    test("validate array", () => {
+    test("validate should be of type object", () => {
         const typeDefs = gql`
             type User @authorization(validate: [{ where: { node: { id: { equals: "$jwt.sub" } } } }]) {
                 id: ID!
@@ -155,7 +143,7 @@ describe("@authorization directive validation", () => {
         expect(() => generateModel(document)).toThrow();
     });
 
-    test("filter not array", () => {
+    test("filter should be of type object", () => {
         const typeDefs = gql`
             type User @authorization(filter: { where: { node: { id: { equals: "$jwt.sub" } } } }) {
                 id: ID!
@@ -178,4 +166,169 @@ describe("@authorization directive validation", () => {
         const document = getDocument(typeDefs);
         expect(() => generateModel(document)).toThrow();
     });
+
+    test("validate without correct arguments", () => {
+        const typeDefs = gql`
+            type User @authorization(validate: { banana: [{ where: { node: { id: { equals: "$jwt.sub" } } } }] }) {
+                id: ID!
+                name: String!
+            }
+        `;
+
+        const document = getDocument(typeDefs);
+        expect(() => generateModel(document)).toThrow();
+    });
+
+    test("validate without correct arguments where (2)", () => {
+        const typeDefs = gql`
+            type User @authorization(validate: { pre: [{ where: { node: { banana: { equals: "$jwt.sub" } } } }] }) {
+                id: ID!
+                name: String!
+            }
+        `;
+
+        const document = getDocument(typeDefs);
+        expect(() => generateModel(document)).toThrow();
+    });
+
+    test("validate without correct arguments where (3)", () => {
+        const typeDefs = gql`
+            type User @authorization(validate: { pre: [{ where: { node: { id: { thisIsNotRight: "$jwt.sub" } } } }] }) {
+                id: ID!
+                athh: String
+            }
+        `;
+
+        const document = getDocument(typeDefs);
+        expect(() => generateModel(document)).toThrow();
+    });
+
+    test("validate without correct arguments where (4)", () => {
+        const typeDefs = gql`
+            type User @authorization(validate: { pre: [{ where: { node: { id: { thisIsNotRight: "$jwt.sub" } } } }] }) {
+                id: ID!
+                name: String!
+            }
+        `;
+
+        const document = getDocument(typeDefs);
+        expect(() => generateModel(document)).toThrow();
+    });
+
+    // correct arguments
+
+    test("validate correct arguments", () => {
+        const typeDefs = gql`
+            type User @authorization(validate: { pre: [{ where: { node: { id: { equals: "valid-string" } } } }] }) {
+                id: ID!
+                name: String!
+            }
+        `;
+
+        const document = getDocument(typeDefs);
+        expect(() => generateModel(document)).not.toThrow();
+    });
+
+    // wrong operations
+
+    describe("validate incorrect operations", () => {
+        test("filter operation cannot be CREATE", () => {
+            const typeDefs = gql`
+                type User
+                    @authorization(
+                        filter: [{ operation: [CREATE], where: { node: { id: { equals: "valid-string" } } } }]
+                    ) {
+                    id: ID!
+                    name: String!
+                }
+            `;
+
+            const document = getDocument(typeDefs);
+            expect(() => generateModel(document)).toThrow();
+        });
+
+        test("valid filter operation", () => {
+            const typeDefs = gql`
+                type User
+                    @authorization(
+                        filter: [
+                            {
+                                operation: [READ, CREATE_RELATIONSHIP]
+                                where: { node: { id: { equals: "valid-string" } } }
+                            }
+                        ]
+                    ) {
+                    id: ID!
+                    name: String!
+                }
+            `;
+
+            const document = getDocument(typeDefs);
+            expect(() => generateModel(document)).not.toThrow();
+        });
+    });
+
+    describe("requireAuthentication", () => {
+        test("requireAuthentication should throw if not of type boolean", () => {
+            const typeDefs = gql`
+                type User
+                    @authorization(
+                        filter: [{ requireAuthentication: 22, where: { node: { id: { equals: "valid-string" } } } }]
+                    ) {
+                    id: ID!
+                    name: String!
+                }
+            `;
+
+            const document = getDocument(typeDefs);
+            expect(() => generateModel(document)).toThrow();
+        });
+
+        test("should not throw if undefined", () => {
+            const typeDefs = gql`
+                type User
+                    @authorization(
+                        filter: [
+                            {
+                                where: { node: { id: { equals: "valid-string" } } }
+                            }
+                        ]
+                    ) {
+                    id: ID!
+                    name: String!
+                }
+            `;
+
+            const document = getDocument(typeDefs);
+            expect(() => generateModel(document)).not.toThrow();
+        });
+    });
+});
+
+/// me
+
+describe("simone test", () => {
+    test("1", () => {
+        const typeDefs = gql`
+            enum test {
+                MAGIC
+            }
+            type User
+                @authorization(
+                    filter: [{ requireAuthentication: true, where: { node: { name: { equals: ["1"] } } } }]
+                ) {
+                id: ID!
+                name: [test!]!
+            }
+
+            type Post {
+                title: test
+            }
+        `;
+
+        const document = getDocument(typeDefs);
+        expect(generateModel(document)).toBeDefined();
+       
+    });
+
 });
