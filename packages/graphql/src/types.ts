@@ -544,3 +544,5 @@ export type PredicateReturn = {
     predicate: Cypher.Predicate | undefined;
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
 };
+
+export type CypherFieldReferenceMap = Record<string, Cypher.Node | Cypher.Variable>;
