@@ -32,7 +32,11 @@ import { getDefinitionNodes } from "../schema/get-definition-nodes";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
 import type { Annotation } from "./annotation/Annotation";
-import { AuthorizationAnnotation, AuthorizationFilterRule } from "./annotation/AuthorizationAnnotation";
+import {
+    AuthorizationAnnotation,
+    AuthorizationFilterRule,
+    AuthorizationFilterRules,
+} from "./annotation/AuthorizationAnnotation";
 import { CypherAnnotation } from "./annotation/CypherAnnotation";
 import { Attribute } from "./attribute/Attribute";
 import { CompositeEntity } from "./entity/CompositeEntity";
@@ -141,7 +145,8 @@ function createEntityAnnotation(directives: readonly DirectiveNode[]): Annotatio
     );
 }
 
-function authorizationFilterRuleValidation(argument: ArgumentNode | ObjectFieldNode) {
+// validation helpers
+function avalidateAuthorizationFilterRule(argument: ArgumentNode | ObjectFieldNode) {
     if (argument?.value.kind !== Kind.LIST) {
         throw new Error(`${argument.name.value} should be a List`);
     }
@@ -149,12 +154,11 @@ function authorizationFilterRuleValidation(argument: ArgumentNode | ObjectFieldN
         throw new Error(`${argument.name.value} rules should be objects`);
     }
 }
-
-function parseAuthorizationAnnotation(directive: DirectiveNode): AuthorizationAnnotation {
+function validateAuthorizationAnnotation(directive: DirectiveNode) {
     const dirArgs = directive.arguments;
     const filterBeforeValidation = dirArgs?.find((arg) => arg.name.value === "filter");
     if (filterBeforeValidation) {
-        authorizationFilterRuleValidation(filterBeforeValidation);
+        avalidateAuthorizationFilterRule(filterBeforeValidation);
     }
     const validateBeforeValidation = dirArgs?.find((arg) => arg.name.value === "validate");
     if (validateBeforeValidation) {
@@ -163,16 +167,19 @@ function parseAuthorizationAnnotation(directive: DirectiveNode): AuthorizationAn
         }
         const validateFieldsBeforeValidation = validateBeforeValidation?.value.fields
             .filter((f) => ["pre", "post"].includes(f.name.value))
-            .map(authorizationFilterRuleValidation);
+            .map(avalidateAuthorizationFilterRule);
         if (!validateFieldsBeforeValidation.length) {
             throw new Error("validate should contain `pre` or `post`");
         }
     }
     const filterSubscriptionsBeforeValidation = dirArgs?.find((arg) => arg.name.value === "filterSubscriptions");
     if (filterSubscriptionsBeforeValidation) {
-        authorizationFilterRuleValidation(filterSubscriptionsBeforeValidation);
+        avalidateAuthorizationFilterRule(filterSubscriptionsBeforeValidation);
     }
+}
 
+function parseAuthorizationAnnotation(directive: DirectiveNode): AuthorizationAnnotation {
+    validateAuthorizationAnnotation(directive);
     const { filter, filterSubscriptions, validate } = parseArguments(directive) as {
         filter?: Record<string, any>[];
         filterSubscriptions?: Record<string, any>[];
@@ -184,16 +191,16 @@ function parseAuthorizationAnnotation(directive: DirectiveNode): AuthorizationAn
     }
 
     const filterRules = filter?.map(
-        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: "AuthorizationFilterValidationRule" })
+        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: AuthorizationFilterRules.filter })
     );
     const filterSubscriptionRules = filterSubscriptions?.map(
-        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: "AuthorizationFilterSubscriptionValidationRule" })
+        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: AuthorizationFilterRules.filterSubscription })
     );
     const validatePreRules = validate?.pre?.map(
-        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: "AuthorizationPreValidationRule" })
+        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: AuthorizationFilterRules.validationPre })
     );
     const validatePostRules = validate?.post?.map(
-        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: "AuthorizationPostValidationRule" })
+        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: AuthorizationFilterRules.validationPost })
     );
 
     return new AuthorizationAnnotation({

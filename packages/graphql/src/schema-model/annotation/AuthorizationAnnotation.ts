@@ -52,7 +52,7 @@ export type AuthorizationFilterOperation =
     | "CREATE_RELATIONSHIP"
     | "DELETE_RELATIONSHIP";
 
-const AuthorizationFilterRules = {
+export const AuthorizationFilterRules = {
     filter: "AuthorizationFilterValidationRule",
     filterSubscription: "AuthorizationFilterSubscriptionValidationRule",
     validationPre: "AuthorizationPreValidationRule",
