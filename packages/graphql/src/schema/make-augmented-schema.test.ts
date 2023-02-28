@@ -23,7 +23,7 @@ import type {
     NamedTypeNode,
     ListTypeNode,
     NonNullTypeNode,
-    InputObjectTypeDefinitionNode
+    InputObjectTypeDefinitionNode,
 } from "graphql";
 import { pluralize } from "graphql-compose";
 import { gql } from "apollo-server";
@@ -160,7 +160,7 @@ describe("makeAugmentedSchema", () => {
 
             const neoSchema = makeAugmentedSchema(typeDefs, {
                 enableRegex: true,
-                validateResolvers: true
+                validateResolvers: true,
             });
 
             const document = neoSchema.typeDefs;
