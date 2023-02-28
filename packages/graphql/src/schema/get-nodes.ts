@@ -194,6 +194,14 @@ function getNodes(
                         `Cannot find interface specified in ${definition.name.value}.${relationship.fieldName}`
                     );
                 }
+                const relationshipPropertiesDirective = propertiesInterface.directives?.find(
+                    (directive) => directive.name.value === "relationshipProperties"
+                );
+                if (!relationshipPropertiesDirective) {
+                    throw new Error(
+                        `The \`@relationshipProperties\` directive could not be found on the \`${relationship.properties}\` interface`
+                    );
+                }
                 relationshipPropertyInterfaceNames.add(relationship.properties);
             }
             if (relationship.interface) {
