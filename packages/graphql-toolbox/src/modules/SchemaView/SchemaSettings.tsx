@@ -18,7 +18,8 @@
  */
 
 import React from "react";
-import { Checkbox, HeroIcon } from "@neo4j-ndl/react";
+import { Checkbox } from "@neo4j-ndl/react";
+import { QuestionMarkCircleIconOutline } from "@neo4j-ndl/react/icons";
 import { ProTooltip } from "../../components/ProTooltip";
 import { Storage } from "../../utils/storage";
 import { LOCAL_STATE_CONSTRAINT, LOCAL_STATE_ENABLE_DEBUG, LOCAL_STATE_ENABLE_REGEX } from "../../constants";
@@ -73,7 +74,7 @@ export const SchemaSettings = ({
                 left={28}
                 top={-13}
             >
-                <HeroIcon className="ml-1 h-4 w-4" iconName="QuestionMarkCircleIcon" type="outline" />
+                <QuestionMarkCircleIconOutline className="ml-1 h-4 w-4" />
             </ProTooltip>
         );
     };
@@ -104,7 +105,7 @@ export const SchemaSettings = ({
                                 </a>
                             </span>
                         }
-                        width={150}
+                        width={160}
                     />
                 </div>
                 <div className="mb-1 flex items-baseline">
@@ -130,7 +131,7 @@ export const SchemaSettings = ({
                                 </a>
                             </span>
                         }
-                        width={360}
+                        width={370}
                     />
                 </div>
                 <div className="mt-3 flex flex-col">
@@ -150,7 +151,7 @@ export const SchemaSettings = ({
                                     </a>
                                 </span>
                             }
-                            width={150}
+                            width={160}
                         />
                     </div>
                     <div className="mt-2">

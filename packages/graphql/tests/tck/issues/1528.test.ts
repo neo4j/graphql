@@ -80,21 +80,21 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
             "MATCH (this:\`Genre\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_moviesConnectionthis0:IS_GENRE]-(this_Movie:\`Movie\`)
-                WITH this_connection_moviesConnectionthis0, this_Movie
-                ORDER BY this_Movie.actorsCount DESC
+                MATCH (this)<-[this0:IS_GENRE]-(this1:\`Movie\`)
+                WITH this0, this1
+                ORDER BY this1.actorsCount DESC
                 CALL {
-                    WITH this_Movie
+                    WITH this1
                     CALL {
-                        WITH this_Movie
-                        WITH this_Movie AS this
+                        WITH this1
+                        WITH this1 AS this
                         MATCH (this)<-[:ACTED_IN]-(ac:Person)
                         RETURN count(ac) as res
                     }
-                    UNWIND res AS this_Movie_actorsCount
-                    RETURN head(collect(this_Movie_actorsCount)) AS this_Movie_actorsCount
+                    UNWIND res AS this2
+                    RETURN head(collect(this2)) AS this2
                 }
-                WITH { node: { title: this_Movie.title, actorsCount: this_Movie_actorsCount } } AS edge
+                WITH { node: { title: this1.title, actorsCount: this2 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 CALL {
@@ -102,12 +102,12 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
                     UNWIND edges AS edge
                     WITH edge
                     ORDER BY edge.node.actorsCount DESC
-                    RETURN collect(edge) AS this_connection_moviesConnectionvar1
+                    RETURN collect(edge) AS var3
                 }
-                WITH this_connection_moviesConnectionvar1 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_moviesConnection
+                WITH var3 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            RETURN this { moviesConnection: this_moviesConnection } AS this"
+            RETURN this { moviesConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

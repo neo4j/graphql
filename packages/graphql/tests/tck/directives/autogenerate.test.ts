@@ -59,16 +59,16 @@ describe("Cypher autogenerate directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`Movie\`)
+                WITH create_var0
+                CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this0.name = create_var1.name,
-                    create_this0.id = randomUUID()
-                RETURN create_this0
+                    create_this1.name = create_var0.name,
+                    create_this1.id = randomUUID()
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .id, .name }) AS data"
+            RETURN collect(create_this1 { .id, .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
