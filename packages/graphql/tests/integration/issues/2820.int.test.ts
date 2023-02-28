@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            driver
+            driver,
         });
 
         session = await neo4j.getSession();
@@ -112,7 +112,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues()
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -140,7 +140,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues()
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -151,28 +151,28 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
                     {
                         node: {
                             __typename: Movie.name,
-                            title: "House"
-                        }
+                            title: "House",
+                        },
                     },
                     {
                         node: {
                             __typename: Series.name,
-                            title: "House"
-                        }
+                            title: "House",
+                        },
                     },
                     {
                         node: {
                             __typename: Movie.name,
-                            title: "Friends"
-                        }
+                            title: "Friends",
+                        },
                     },
                     {
                         node: {
                             __typename: Series.name,
-                            title: "Friends"
-                        }
-                    }
-                ])
+                            title: "Friends",
+                        },
+                    },
+                ]),
             });
         });
 
@@ -195,7 +195,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues()
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -205,25 +205,25 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
                 edges: expect.toIncludeAllMembers([
                     {
                         node: {
-                            __typename: Movie.name
-                        }
+                            __typename: Movie.name,
+                        },
                     },
                     {
                         node: {
-                            __typename: Series.name
-                        }
+                            __typename: Series.name,
+                        },
                     },
                     {
                         node: {
-                            __typename: Movie.name
-                        }
+                            __typename: Movie.name,
+                        },
                     },
                     {
                         node: {
-                            __typename: Series.name
-                        }
-                    }
-                ])
+                            __typename: Series.name,
+                        },
+                    },
+                ]),
             });
         });
 
@@ -242,7 +242,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues()
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -250,20 +250,20 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             expect((result.data?.[Actor.plural] as any)[0].actedIn).toIncludeAllMembers([
                 {
                     __typename: Movie.name,
-                    title: "House"
+                    title: "House",
                 },
                 {
                     __typename: Series.name,
-                    title: "House"
+                    title: "House",
                 },
                 {
                     __typename: Movie.name,
-                    title: "Friends"
+                    title: "Friends",
                 },
                 {
                     __typename: Series.name,
-                    title: "Friends"
-                }
+                    title: "Friends",
+                },
             ]);
         });
 
@@ -281,24 +281,24 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues()
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
 
             expect((result.data?.[Actor.plural] as any)[0].actedIn).toIncludeAllMembers([
                 {
-                    __typename: Movie.name
+                    __typename: Movie.name,
                 },
                 {
-                    __typename: Series.name
+                    __typename: Series.name,
                 },
                 {
-                    __typename: Movie.name
+                    __typename: Movie.name,
                 },
                 {
-                    __typename: Series.name
-                }
+                    __typename: Series.name,
+                },
             ]);
         });
     });
@@ -318,7 +318,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues()
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -351,7 +351,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues()
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -362,28 +362,28 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
                     {
                         node: {
                             __typename: Movie.name,
-                            title: "House"
-                        }
+                            title: "House",
+                        },
                     },
                     {
                         node: {
                             __typename: Series.name,
-                            title: "House"
-                        }
+                            title: "House",
+                        },
                     },
                     {
                         node: {
                             __typename: Movie.name,
-                            title: "Friends"
-                        }
+                            title: "Friends",
+                        },
                     },
                     {
                         node: {
                             __typename: Series.name,
-                            title: "Friends"
-                        }
-                    }
-                ])
+                            title: "Friends",
+                        },
+                    },
+                ]),
             });
         });
 
@@ -406,7 +406,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues()
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -416,25 +416,25 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
                 edges: expect.toIncludeAllMembers([
                     {
                         node: {
-                            __typename: Movie.name
-                        }
+                            __typename: Movie.name,
+                        },
                     },
                     {
                         node: {
-                            __typename: Series.name
-                        }
+                            __typename: Series.name,
+                        },
                     },
                     {
                         node: {
-                            __typename: Movie.name
-                        }
+                            __typename: Movie.name,
+                        },
                     },
                     {
                         node: {
-                            __typename: Series.name
-                        }
-                    }
-                ])
+                            __typename: Series.name,
+                        },
+                    },
+                ]),
             });
         });
 
@@ -458,7 +458,7 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues()
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -466,20 +466,20 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             expect((result.data?.[Actor.plural] as any)[0].actedInUnion).toIncludeAllMembers([
                 {
                     __typename: Movie.name,
-                    title: "House"
+                    title: "House",
                 },
                 {
                     __typename: Series.name,
-                    title: "House"
+                    title: "House",
                 },
                 {
                     __typename: Movie.name,
-                    title: "Friends"
+                    title: "Friends",
                 },
                 {
                     __typename: Series.name,
-                    title: "Friends"
-                }
+                    title: "Friends",
+                },
             ]);
         });
 
@@ -497,24 +497,24 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues()
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
 
             expect((result.data?.[Actor.plural] as any)[0].actedInUnion).toIncludeAllMembers([
                 {
-                    __typename: Movie.name
+                    __typename: Movie.name,
                 },
                 {
-                    __typename: Series.name
+                    __typename: Series.name,
                 },
                 {
-                    __typename: Movie.name
+                    __typename: Movie.name,
                 },
                 {
-                    __typename: Series.name
-                }
+                    __typename: Series.name,
+                },
             ]);
         });
     });
