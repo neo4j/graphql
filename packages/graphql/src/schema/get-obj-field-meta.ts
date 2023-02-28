@@ -31,7 +31,7 @@ import type {
     StringValueNode,
     EnumValueNode,
     UnionTypeDefinitionNode,
-    ValueNode
+    ValueNode,
 } from "graphql";
 import { Kind } from "graphql";
 import getAuth from "./get-auth";
@@ -57,7 +57,7 @@ import type {
     TimeStampOperations,
     ConnectionField,
     CustomResolverField,
-    Neo4jGraphQLCallbacks
+    Neo4jGraphQLCallbacks,
 } from "../types";
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
@@ -95,7 +95,7 @@ function getObjFieldMeta({
     enums,
     callbacks,
     customResolvers,
-    validateResolvers
+    validateResolvers,
 }: {
     obj: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
@@ -121,7 +121,7 @@ function getObjFieldMeta({
                 ...(field?.directives || []),
                 ...(interfaceField?.directives || []).filter(
                     (d) => !field.directives?.find((fd) => fd.name.value === d.name.value)
-                )
+                ),
             ];
 
             checkDirectiveCombinations(directives);
@@ -178,7 +178,7 @@ function getObjFieldMeta({
                             "alias",
                             "unique",
                             "callback",
-                            "populatedBy"
+                            "populatedBy",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
@@ -190,7 +190,7 @@ function getObjFieldMeta({
                 writeonly:
                     directives.some((d) => d.name.value === "writeonly") ||
                     interfaceField?.directives?.some((x) => x.name.value === "writeonly"),
-                ...(unique ? { unique } : {})
+                ...(unique ? { unique } : {}),
             };
 
             if (aliasDirective) {
@@ -232,7 +232,7 @@ function getObjFieldMeta({
                 const relationField: RelationField = {
                     ...baseField,
                     ...relationshipMeta,
-                    inherited: false
+                    inherited: false,
                 };
 
                 if (fieldUnion) {
@@ -244,7 +244,7 @@ function getObjFieldMeta({
 
                     const unionField: UnionField = {
                         ...baseField,
-                        nodes
+                        nodes,
                     };
 
                     relationField.union = unionField;
@@ -257,7 +257,7 @@ function getObjFieldMeta({
 
                     relationField.interface = {
                         ...baseField,
-                        implementations
+                        implementations,
                     };
                 }
 
@@ -291,22 +291,22 @@ function getObjFieldMeta({
                         input: {
                             where: {
                                 type: `${connectionTypeName}Where`,
-                                pretty: `${connectionTypeName}Where`
+                                pretty: `${connectionTypeName}Where`,
                             },
                             create: {
                                 type: "",
-                                pretty: ""
+                                pretty: "",
                             },
                             update: {
                                 type: "",
-                                pretty: ""
-                            }
-                        }
+                                pretty: "",
+                            },
+                        },
                     },
                     otherDirectives: baseField.otherDirectives,
                     arguments: [...(field.arguments || [])],
                     description: field.description?.value,
-                    relationship: relationField
+                    relationship: relationField,
                 };
 
                 res.relationFields.push(relationField);
@@ -329,7 +329,7 @@ function getObjFieldMeta({
                     ...baseField,
                     ...cypherMeta,
                     isEnum: !!fieldEnum,
-                    isScalar: !!fieldScalar || SCALAR_TYPES.includes(typeMeta.name)
+                    isScalar: !!fieldScalar || SCALAR_TYPES.includes(typeMeta.name),
                 };
                 res.cypherFields.push(cypherField);
             } else if (customResolverMeta) {
@@ -339,13 +339,13 @@ function getObjFieldMeta({
                     throw new Error("@default directive can only be used on primitive type fields");
                 }
                 const scalarField: CustomScalarField = {
-                    ...baseField
+                    ...baseField,
                 };
                 res.scalarFields.push(scalarField);
             } else if (fieldEnum) {
                 const enumField: CustomEnumField = {
                     kind: "Enum",
-                    ...baseField
+                    ...baseField,
                 };
 
                 if (defaultDirective) {
@@ -408,7 +408,7 @@ function getObjFieldMeta({
                 }
 
                 const unionField: UnionField = {
-                    ...baseField
+                    ...baseField,
                 };
                 res.unionFields.push(unionField);
             } else if (fieldInterface) {
@@ -421,7 +421,7 @@ function getObjFieldMeta({
                 }
 
                 res.interfaceFields.push({
-                    ...baseField
+                    ...baseField,
                 });
             } else if (fieldObject) {
                 if (defaultDirective) {
@@ -433,13 +433,13 @@ function getObjFieldMeta({
                 }
 
                 const objectField: ObjectField = {
-                    ...baseField
+                    ...baseField,
                 };
                 res.objectFields.push(objectField);
             } else {
                 if (["DateTime", "Date", "Time", "LocalDateTime", "LocalTime"].includes(typeMeta.name)) {
                     const temporalField: TemporalField = {
-                        ...baseField
+                        ...baseField,
                     };
 
                     if (timestampDirective) {
@@ -488,12 +488,12 @@ function getObjFieldMeta({
                     }
 
                     const pointField: PointField = {
-                        ...baseField
+                        ...baseField,
                     };
                     res.pointFields.push(pointField);
                 } else {
                     const primitiveField: PrimitiveField = {
-                        ...baseField
+                        ...baseField,
                     };
 
                     if (populatedByDirective) {
@@ -619,7 +619,7 @@ function getObjFieldMeta({
             objectFields: [],
             temporalFields: [],
             pointFields: [],
-            customResolverFields: []
+            customResolverFields: [],
         }
     ) as ObjectFields;
 }

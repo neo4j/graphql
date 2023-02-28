@@ -46,7 +46,7 @@ describe("@coalesce directive", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({
-            typeDefs
+            typeDefs,
         });
 
         await expect(neoSchema.getSchema()).rejects.toThrow(
@@ -63,7 +63,7 @@ describe("@coalesce directive", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({
-            typeDefs
+            typeDefs,
         });
 
         await expect(neoSchema.getSchema()).rejects.toThrow(
@@ -79,7 +79,7 @@ describe("@coalesce directive", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({
-            typeDefs
+            typeDefs,
         });
 
         await expect(neoSchema.getSchema()).rejects.toThrow(
@@ -98,7 +98,7 @@ describe("@coalesce directive", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({
-            typeDefs
+            typeDefs,
         });
 
         const query = `
@@ -113,7 +113,7 @@ describe("@coalesce directive", () => {
         const session = await neo4j.getSession();
 
         const id = generate({
-            charset: "alphabetic"
+            charset: "alphabetic",
         });
 
         try {
@@ -124,14 +124,14 @@ describe("@coalesce directive", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark())
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
 
             expect((gqlResult.data as any)[type.plural][0]).toEqual({
                 id,
-                classification: null
+                classification: null,
             });
         } finally {
             await session.close();
@@ -153,7 +153,7 @@ describe("@coalesce directive", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({
-            typeDefs
+            typeDefs,
         });
 
         const query = `
@@ -168,7 +168,7 @@ describe("@coalesce directive", () => {
         const session = await neo4j.getSession();
 
         const id = generate({
-            charset: "alphabetic"
+            charset: "alphabetic",
         });
 
         try {
@@ -179,14 +179,14 @@ describe("@coalesce directive", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark())
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
 
             expect((gqlResult.data as any)[type.plural][0]).toEqual({
                 id,
-                status: null
+                status: null,
             });
         } finally {
             await session.close();
@@ -209,7 +209,7 @@ describe("@coalesce directive", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({
-            typeDefs
+            typeDefs,
         });
 
         const query = `
@@ -224,7 +224,7 @@ describe("@coalesce directive", () => {
         const session = await neo4j.getSession();
 
         const id = generate({
-            charset: "alphabetic"
+            charset: "alphabetic",
         });
 
         try {
@@ -235,14 +235,14 @@ describe("@coalesce directive", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark())
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
 
             expect((gqlResult.data as any)[type.plural][0]).toEqual({
                 id,
-                statuses: null
+                statuses: null,
             });
         } finally {
             await session.close();

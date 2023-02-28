@@ -56,7 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/1781", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            driver
+            driver,
         });
     });
 
@@ -84,14 +84,14 @@ describe("https://github.com/neo4j/graphql/issues/1781", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: mutation,
-            contextValue: neo4j.getContextValues()
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [myType.operations.create]: {
-                [myType.plural]: [{ enumList: [], enumList2: ["FOO", "BAR"] }]
-            }
+                [myType.plural]: [{ enumList: [], enumList2: ["FOO", "BAR"] }],
+            },
         });
     });
 });

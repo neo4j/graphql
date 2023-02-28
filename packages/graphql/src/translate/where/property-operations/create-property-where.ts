@@ -38,7 +38,7 @@ export function createPropertyWhere({
     value,
     element,
     targetElement,
-    context
+    context,
 }: {
     key: string;
     value: any;
@@ -78,8 +78,8 @@ export function createPropertyWhere({
                     node,
                     value,
                     targetElement,
-                    coalesceValue
-                })
+                    coalesceValue,
+                }),
             };
         }
 
@@ -109,7 +109,7 @@ export function createPropertyWhere({
                 relationField,
                 relationship,
                 context,
-                matchNode: targetElement
+                matchNode: targetElement,
             });
         }
 
@@ -120,7 +120,7 @@ export function createPropertyWhere({
                 parentNode: targetElement as Cypher.Node,
                 operator,
                 value,
-                isNot
+                isNot,
             });
         }
 
@@ -131,18 +131,18 @@ export function createPropertyWhere({
                 connectionField,
                 context,
                 parentNode: targetElement as Cypher.Node,
-                operator
+                operator,
             });
         }
 
         if (value === null) {
             if (isNot) {
                 return {
-                    predicate: Cypher.isNotNull(propertyRef)
+                    predicate: Cypher.isNotNull(propertyRef),
                 };
             }
             return {
-                predicate: Cypher.isNull(propertyRef)
+                predicate: Cypher.isNull(propertyRef),
             };
         }
     }
@@ -157,11 +157,11 @@ export function createPropertyWhere({
         operator,
         durationField,
         pointField,
-        neo4jDatabaseInfo: context.neo4jDatabaseInfo
+        neo4jDatabaseInfo: context.neo4jDatabaseInfo,
     });
     if (isNot) {
         return {
-            predicate: Cypher.not(comparisonOp)
+            predicate: Cypher.not(comparisonOp),
         };
     }
     return { predicate: comparisonOp };

@@ -53,7 +53,7 @@ describe("Cypher coalesce()", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true }
+            config: { enableRegex: true },
         });
 
         const query = gql`
@@ -92,8 +92,8 @@ describe("Cypher coalesce()", () => {
                 numberOfFriends: 10,
                 rating: 3.5,
                 fromInterface: "Some string",
-                toBeOverridden: "Some string"
-            }
+                toBeOverridden: "Some string",
+            },
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -134,8 +134,8 @@ describe("Cypher coalesce()", () => {
             typeDefs,
             config: { enableRegex: true },
             plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({ secret })
-            }
+                auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
+            },
         });
 
         const query = gql`
@@ -149,7 +149,7 @@ describe("Cypher coalesce()", () => {
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -185,8 +185,8 @@ describe("Cypher coalesce()", () => {
             typeDefs,
             config: { enableRegex: true },
             plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({ secret })
-            }
+                auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
+            },
         });
 
         const query = gql`
@@ -206,7 +206,7 @@ describe("Cypher coalesce()", () => {
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -247,7 +247,7 @@ describe("Cypher coalesce()", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({
-            typeDefs
+            typeDefs,
         });
 
         const query = gql`
@@ -267,7 +267,7 @@ describe("Cypher coalesce()", () => {
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
