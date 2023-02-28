@@ -406,6 +406,48 @@ type query {
 
 Additionally, escaping strings is no longer needed.
 
+=== Mandatory `@relationshipProperties`
+
+Upcoming changes to interfaces require us to distinguish between interfaces that are used to specify relationship properties, and others. Therefore, the `@relationshipProperties` directive is now required on all relationship property interfaces.
+If it is not included, an error will be thrown.
+
+As a result, in version 4.0.0, the following type definitions are invalid:
+
+[source, graphql, indent=0]
+----
+type Person {
+  name: String!
+  movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+}
+
+type Movie {
+  title: String!
+  actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+}
+
+interface ActedIn {
+  screenTime: Int!
+}
+----
+
+Instead, they would need to be updated as below:
+
+[source, graphql, indent=0]
+----
+type Person {
+  name: String!
+  movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+}
+
+type Movie {
+  title: String!
+  actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+}
+
+interface ActedIn @relationshipProperties {
+  screenTime: Int!
+}
+----
 
 == Miscellaneous changes
 
