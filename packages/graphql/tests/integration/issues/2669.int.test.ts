@@ -50,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/2669", () => {
             movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
         }
 
-        interface ActedIn {
+        interface ActedIn @relationshipProperties {
             time: Int @alias(property: "screentime")
         }
         `;

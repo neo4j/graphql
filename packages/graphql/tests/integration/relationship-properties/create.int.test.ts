@@ -135,7 +135,7 @@ describe("Relationship properties - create", () => {
                 publications: [Publication!]! @relationship(type: "WROTE", properties: "Wrote", direction: OUT)
             }
 
-            interface Wrote {
+            interface Wrote @relationshipProperties {
                 words: Int!
             }
         `;

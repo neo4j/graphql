@@ -49,7 +49,7 @@ describe("aggregations-where-edge-id", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 testId: ID
             }
         `;

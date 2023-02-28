@@ -49,7 +49,7 @@ describe("aggregations-where-edge-datetime", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someDateTime: DateTime
             }
         `;
@@ -118,7 +118,7 @@ describe("aggregations-where-edge-datetime", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someDateTime: DateTime
             }
         `;
@@ -189,7 +189,7 @@ describe("aggregations-where-edge-datetime", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someDateTime: DateTime
             }
         `;
@@ -258,7 +258,7 @@ describe("aggregations-where-edge-datetime", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someDateTime: DateTime
             }
         `;
@@ -329,7 +329,7 @@ describe("aggregations-where-edge-datetime", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someDateTime: DateTime
             }
         `;

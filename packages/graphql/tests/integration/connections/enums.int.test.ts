@@ -60,7 +60,7 @@ describe("Enum Relationship Properties", () => {
                 SUPPORTING
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 roleType: RoleType!
             }
         `;

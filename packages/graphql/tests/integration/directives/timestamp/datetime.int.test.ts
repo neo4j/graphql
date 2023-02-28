@@ -99,7 +99,7 @@ describe("timestamp/datetime", () => {
                     name: String!
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     createdAt: DateTime! @timestamp(operations: [CREATE])
                     screenTime: Int!
                 }
@@ -223,7 +223,7 @@ describe("timestamp/datetime", () => {
                     name: String!
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     updatedAt: DateTime! @timestamp(operations: [UPDATE])
                     screenTime: Int!
                 }
@@ -349,7 +349,7 @@ describe("timestamp/datetime", () => {
                     name: String!
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     createdAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
                     screenTime: Int!
                 }
@@ -413,7 +413,7 @@ describe("timestamp/datetime", () => {
                     name: String!
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
                     screenTime: Int!
                 }
@@ -597,7 +597,7 @@ describe("timestamp/datetime", () => {
                     name: String!
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     createdAt: DateTime! @timestamp
                     screenTime: Int!
                 }
@@ -661,7 +661,7 @@ describe("timestamp/datetime", () => {
                     name: String!
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     updatedAt: DateTime! @timestamp
                     screenTime: Int!
                 }

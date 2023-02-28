@@ -134,7 +134,7 @@ describe("Relationship properties - delete", () => {
 
             union ActedInUnion = Movie | Show
 
-            interface ActedInInterface {
+            interface ActedInInterface @relationshipProperties {
                 screenTime: Int!
             }
         `;

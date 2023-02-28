@@ -136,7 +136,7 @@ describe("Relationship properties - disconnect", () => {
 
             union ActedInUnion = Movie | Show
 
-            interface ActedInInterface {
+            interface ActedInInterface @relationshipProperties {
                 screenTime: Int!
             }
         `;
