@@ -68,7 +68,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
                 year: Int!
             }
             
-            interface Review {
+            interface Review @relationshipProperties {
                 score: Int!
             }
         

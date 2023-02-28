@@ -40,7 +40,7 @@ describe("Enums", () => {
                 SUPPORTING
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 roleType: RoleType!
             }
         `;
