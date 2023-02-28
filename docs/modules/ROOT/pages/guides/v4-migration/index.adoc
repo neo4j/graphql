@@ -130,6 +130,75 @@ const neoSchema = new Neo4jGraphQL({
 })
 ----
 
+==== `requires` changes
+
+In version 4.0.0, it is now possible to require non-scalar fields. This means it is also possible to require fields on related type.
+To make this possible, the `requires` argument now accept a graphql selection set instead of a list of strings.
+
+Therefore, the following type definitions:
+
+[source, graphql, indent=0]
+----
+type User {
+    firstName: String!
+    lastName: String!
+    fullName: String! @customResolver(requires: ["firstName", "lastName"])
+}
+----
+
+Would need to be modified to use a selection set as below:
+
+[source, graphql, indent=0]
+----
+type User {
+    firstName: String!
+    lastName: String!
+    fullName: String! @customResolver(requires: "firstName lastName")
+}
+----
+
+Below is a more advanced example showing what the selection set is capable of:
+
+[source, graphql, indent=0]
+----
+interface Publication {
+    publicationYear: Int!
+}
+
+type Author {
+    name: String!
+    publications: [Publication!]! @relationship(type: "WROTE", direction: OUT)
+    publicationsWithAuthor: [String!]!
+        @customResolver(
+            requires: "name publications { publicationYear ...on Book { title } ... on Journal { subject } }"
+        )
+}
+
+type Book implements Publication {
+    title: String!
+    publicationYear: Int!
+    author: [Author!]! @relationship(type: "WROTE", direction: IN)
+}
+
+type Journal implements Publication {
+    subject: String!
+    publicationYear: Int!
+    author: [Author!]! @relationship(type: "WROTE", direction: IN)
+}
+----
+
+Additionally, the requires argument also validates the required selection set against your type definitions.
+Therefore, as there is no field called `someFieldThatDoesNotExist`, an error would be thrown on startup if you tried to use the following type definitions:
+
+[source, graphql, indent=0]
+----
+type User {
+    firstName: String!
+    lastName: String!
+    fullName: String! @customResolver(requires: "firstName someFieldThatDoesNotExist")
+}
+----
+
 [plural-migration]
 === `plural` argument removed from `@node` and replaced with `@plural`
 
@@ -406,75 +475,48 @@ type query {
 
 Additionally, escaping strings is no longer needed.
 
-=== `@customResolver` changes
+=== Mandatory `@relationshipProperties`
 
-In version 4.0.0, it is now possible to require non-scalar fields. This means it is also possible to require fields on related type.
-To make this possible, the `requires` argument now accept a graphql selection set instead of a list of strings.
+Upcoming changes to interfaces require us to distinguish between interfaces that are used to specify relationship properties, and others. Therefore, the `@relationshipProperties` directive is now required on all relationship property interfaces.
+If it is not included, an error will be thrown.
 
-Therefore, the following type definitions:
-
-[source, graphql, indent=0]
-----
-type User {
-    firstName: String!
-    lastName: String!
-    fullName: String! @customResolver(requires: ["firstName", "lastName"])
-}
-----
-
-Would need to be modified to use a selection set as below:
+As a result, in version 4.0.0, the following type definitions are invalid:
 
 [source, graphql, indent=0]
 ----
-type User {
-    firstName: String!
-    lastName: String!
-    fullName: String! @customResolver(requires: "firstName lastName")
+type Person {
+  name: String!
+  movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+}
+
+type Movie {
+  title: String!
+  actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+}
+
+interface ActedIn {
+  screenTime: Int!
 }
 ----
 
-Below is a more advanced example showing what the selection set is capable of:
+Instead, they would need to be updated as below:
 
 [source, graphql, indent=0]
 ----
-interface Publication {
-    publicationYear: Int!
+type Person {
+  name: String!
+  movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
 }
 
-type Author {
-    name: String!
-    publications: [Publication!]! @relationship(type: "WROTE", direction: OUT)
-    publicationsWithAuthor: [String!]!
-        @customResolver(
-            requires: "name publications { publicationYear ...on Book { title } ... on Journal { subject } }"
-        )
+type Movie {
+  title: String!
+  actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
 }
 
-type Book implements Publication {
-    title: String!
-    publicationYear: Int!
-    author: [Author!]! @relationship(type: "WROTE", direction: IN)
-}
-
-type Journal implements Publication {
-    subject: String!
-    publicationYear: Int!
-    author: [Author!]! @relationship(type: "WROTE", direction: IN)
+interface ActedIn @relationshipProperties {
+  screenTime: Int!
 }
 ----
-
-Additionally, the requires argument also validates the required selection set against your type definitions.
-Therefore, as there is no field called `someFieldThatDoesNotExist`, an error would be thrown on startup if you tried to use the following type definitions:
-
-[source, graphql, indent=0]
-----
-type User {
-    firstName: String!
-    lastName: String!
-    fullName: String! @customResolver(requires: "firstName someFieldThatDoesNotExist")
-}
-----
-
 
 == Miscellaneous changes
 

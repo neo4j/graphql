@@ -68,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
                 movies: [${movieType.name}!]! @relationship(type: "IN_GENRE", direction: IN, properties: "${inGenreInterface.name}")
             }
 
-            interface ${inGenreInterface.name} {
+            interface ${inGenreInterface.name} @relationshipProperties {
                 intValue: Int!
             }
         `;

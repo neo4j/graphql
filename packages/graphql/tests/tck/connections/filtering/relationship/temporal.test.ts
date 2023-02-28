@@ -41,7 +41,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 startDate: Date
                 endDateTime: DateTime
             }

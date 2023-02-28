@@ -50,7 +50,7 @@ describe("composite-where", () => {
                     actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int
                 }
             `;
@@ -139,7 +139,7 @@ describe("composite-where", () => {
                     actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int
                 }
             `;

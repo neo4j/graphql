@@ -50,7 +50,7 @@ describe("aggregations-where-edge-int", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someInt: Int
             }
         `;
@@ -115,7 +115,7 @@ describe("aggregations-where-edge-int", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someInt: Int
             }
         `;
@@ -182,7 +182,7 @@ describe("aggregations-where-edge-int", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someInt: Int
             }
         `;
@@ -248,7 +248,7 @@ describe("aggregations-where-edge-int", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someInt: Int
             }
         `;
@@ -314,7 +314,7 @@ describe("aggregations-where-edge-int", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someInt: Int
             }
         `;
@@ -377,7 +377,7 @@ describe("aggregations-where-edge-int", () => {
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someInt: Int
             }
         `;
@@ -652,7 +652,7 @@ describe("aggregations-where-edge-int", () => {
                   likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
                 }
 
-                interface Likes {
+                interface Likes @relationshipProperties {
                     someInt: Int
                 }
             `;

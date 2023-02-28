@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
             fullName: String!
         }
 
-        interface RelationProps {
+        interface RelationProps @relationshipProperties {
             current: Boolean!
         }
 

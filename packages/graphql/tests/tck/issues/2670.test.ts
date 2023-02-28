@@ -41,7 +41,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "InGenre")
         }
 
-        interface InGenre {
+        interface InGenre @relationshipProperties {
             intValue: Int!
         }
     `;

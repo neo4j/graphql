@@ -478,7 +478,7 @@ describe("String Comparators", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: String
             }
 

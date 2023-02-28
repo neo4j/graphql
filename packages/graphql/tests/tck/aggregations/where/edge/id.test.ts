@@ -38,7 +38,7 @@ describe("Cypher Aggregations where edge with ID", () => {
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Liked")
             }
 
-            interface Liked {
+            interface Liked @relationshipProperties {
                 id: ID
                 someIdAlias: ID @alias(property: "_someIdAlias")
             }

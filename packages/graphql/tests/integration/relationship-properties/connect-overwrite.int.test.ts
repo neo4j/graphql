@@ -70,10 +70,10 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     directed: [ ${typeMovie.name}!]! @relationship(type: "DIRECTED", properties: "Directed", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
-                interface Directed {
+                interface Directed @relationshipProperties {
                     year: Int!
                 }
             `;
@@ -312,7 +312,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
             `;
@@ -709,7 +709,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
             `;
@@ -1352,7 +1352,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     directed: [${typeMovie.name}!]! @relationship(type: "DIRECTED", properties: "Directed", direction: OUT)
                 }
 
-                interface Directed {
+                interface Directed @relationshipProperties {
                     year: Int!
                 }
             `;

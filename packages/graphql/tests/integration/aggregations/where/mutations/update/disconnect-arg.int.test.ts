@@ -63,7 +63,7 @@ describe("Disconnect using aggregate where", () => {
                 likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}")
             }
 
-            interface ${likeInterface.name} {
+            interface ${likeInterface.name} @relationshipProperties {
                 likedAt: DateTime
             }
         `;
@@ -315,7 +315,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                 likes: [${userUnion.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}")
             }
 
-            interface ${likeInterface.name} {
+            interface ${likeInterface.name} @relationshipProperties {
                 likedAt: DateTime
             }
         `;

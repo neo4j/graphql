@@ -49,7 +49,7 @@ describe("Relationship properties - delete", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -134,7 +134,7 @@ describe("Relationship properties - delete", () => {
 
             union ActedInUnion = Movie | Show
 
-            interface ActedInInterface {
+            interface ActedInInterface @relationshipProperties {
                 screenTime: Int!
             }
         `;

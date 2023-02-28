@@ -829,7 +829,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties {
+                    interface RelProperties @relationshipProperties {
                         id: ID!
                         callback: String! @populatedBy(operations: [CREATE], callback: "callback")
                     }
@@ -939,7 +939,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties {
+                    interface RelProperties @relationshipProperties {
                         id: ID!
                         callback: String! @populatedBy(operations: [UPDATE], callback: "callback")
                     }
@@ -1067,7 +1067,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties {
+                    interface RelProperties @relationshipProperties {
                         id: ID!
                         callback: String! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
@@ -1224,7 +1224,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties {
+                    interface RelProperties @relationshipProperties {
                         id: ID!
                         callback: Int! @populatedBy(operations: [CREATE], callback: "callback")
                     }
@@ -1337,7 +1337,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties {
+                    interface RelProperties @relationshipProperties {
                         id: ID!
                         callback: Int! @populatedBy(operations: [UPDATE], callback: "callback")
                     }
@@ -1471,7 +1471,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties {
+                    interface RelProperties @relationshipProperties {
                         id: ID!
                         callback: Int! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
@@ -1621,7 +1621,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties {
+                    interface RelProperties @relationshipProperties {
                         id: ID!
                         title: String!
                         slug: String! @populatedBy(operations: [CREATE], callback: "callback")
@@ -1734,7 +1734,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties {
+                    interface RelProperties @relationshipProperties {
                         id: ID!
                         title: String!
                         slug: String! @populatedBy(operations: [UPDATE], callback: "callback")

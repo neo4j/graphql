@@ -42,7 +42,7 @@ describe("Create or Connect", () => {
                     movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screentime: Int!
                 }
             `;
@@ -200,7 +200,7 @@ describe("Create or Connect", () => {
                     movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screentime: Int!
                 }
             `;
@@ -484,7 +484,7 @@ describe("Create or Connect", () => {
                     movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     id: ID! @id
                     createdAt: DateTime! @timestamp(operations: [CREATE])
                     updatedAt: DateTime! @timestamp(operations: [UPDATE])

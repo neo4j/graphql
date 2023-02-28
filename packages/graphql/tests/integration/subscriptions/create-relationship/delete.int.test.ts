@@ -74,7 +74,7 @@ describe("Subscriptions connect with delete", () => {
                 year: Int!
             }
             
-            interface Review {
+            interface Review @relationshipProperties {
                 score: Int!
             }
         

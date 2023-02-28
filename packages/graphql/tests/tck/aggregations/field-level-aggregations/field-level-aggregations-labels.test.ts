@@ -40,7 +40,7 @@ describe("Field Level Aggregations Alias", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 time: Int
             }
         `;

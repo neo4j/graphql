@@ -64,7 +64,7 @@ describe("Subscriptions metadata on create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -239,7 +239,7 @@ describe("Subscriptions metadata on create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -358,11 +358,11 @@ describe("Subscriptions metadata on create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
-            interface Directed {
+            interface Directed @relationshipProperties {
                 year: Int!
             }
 
@@ -486,11 +486,11 @@ describe("Subscriptions metadata on create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
-            interface Directed {
+            interface Directed @relationshipProperties {
                 year: Int!
             }
 

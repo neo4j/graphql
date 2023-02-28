@@ -893,7 +893,7 @@ describe("generate", () => {
             type Person {
                 name: String!
             }
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;

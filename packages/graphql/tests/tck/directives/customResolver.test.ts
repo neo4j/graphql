@@ -273,17 +273,17 @@ describe("@customResolver directive", () => {
                 "MATCH (this:\`User\`)
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:LIVES_AT]->(this_address:\`Address\`)
+                    MATCH (this)-[this0:LIVES_AT]->(this1:\`Address\`)
                     CALL {
-                        WITH this_address
-                        MATCH (this_address)-[this1:IN_CITY]->(this_address_city:\`City\`)
-                        WITH this_address_city { .name, .population } AS this_address_city
-                        RETURN head(collect(this_address_city)) AS this_address_city
+                        WITH this1
+                        MATCH (this1)-[this2:IN_CITY]->(this3:\`City\`)
+                        WITH this3 { .name, .population } AS this3
+                        RETURN head(collect(this3)) AS var4
                     }
-                    WITH this_address { city: this_address_city } AS this_address
-                    RETURN head(collect(this_address)) AS this_address
+                    WITH this1 { city: var4 } AS this1
+                    RETURN head(collect(this1)) AS var5
                 }
-                RETURN this { .firstName, .lastName, .fullName, address: this_address } AS this"
+                RETURN this { .firstName, .lastName, .fullName, address: var5 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -335,17 +335,17 @@ describe("@customResolver directive", () => {
                 "MATCH (this:\`User\`)
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:LIVES_AT]->(this_address:\`Address\`)
+                    MATCH (this)-[this0:LIVES_AT]->(this1:\`Address\`)
                     CALL {
-                        WITH this_address
-                        MATCH (this_address)-[this1:IN_CITY]->(this_address_city:\`City\`)
-                        WITH this_address_city { .population, .name } AS this_address_city
-                        RETURN head(collect(this_address_city)) AS this_address_city
+                        WITH this1
+                        MATCH (this1)-[this2:IN_CITY]->(this3:\`City\`)
+                        WITH this3 { .population, .name } AS this3
+                        RETURN head(collect(this3)) AS var4
                     }
-                    WITH this_address { city: this_address_city } AS this_address
-                    RETURN head(collect(this_address)) AS this_address
+                    WITH this1 { city: var4 } AS this1
+                    RETURN head(collect(this1)) AS var5
                 }
-                RETURN this { .lastName, .fullName, address: this_address, .firstName } AS this"
+                RETURN this { .lastName, .fullName, address: var5, .firstName } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -369,17 +369,17 @@ describe("@customResolver directive", () => {
                 "MATCH (this:\`User\`)
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:LIVES_AT]->(this_address:\`Address\`)
+                    MATCH (this)-[this0:LIVES_AT]->(this1:\`Address\`)
                     CALL {
-                        WITH this_address
-                        MATCH (this_address)-[this1:IN_CITY]->(this_address_city:\`City\`)
-                        WITH this_address_city { .name, .population } AS this_address_city
-                        RETURN head(collect(this_address_city)) AS this_address_city
+                        WITH this1
+                        MATCH (this1)-[this2:IN_CITY]->(this3:\`City\`)
+                        WITH this3 { .name, .population } AS this3
+                        RETURN head(collect(this3)) AS var4
                     }
-                    WITH this_address { city: this_address_city } AS this_address
-                    RETURN head(collect(this_address)) AS this_address
+                    WITH this1 { city: var4 } AS this1
+                    RETURN head(collect(this1)) AS var5
                 }
-                RETURN this { .fullName, .firstName, .lastName, address: this_address } AS this"
+                RETURN this { .fullName, .firstName, .lastName, address: var5 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -453,19 +453,19 @@ describe("@customResolver directive", () => {
                     WITH this
                     CALL {
                         WITH *
-                        MATCH (this)-[this0:WROTE]->(this_publications:\`Book\`)
-                        WITH this_publications { __resolveType: \\"Book\\", __id: id(this), .title } AS this_publications
-                        RETURN this_publications AS this_publications
+                        MATCH (this)-[this0:WROTE]->(this1:\`Book\`)
+                        WITH this1 { __resolveType: \\"Book\\", __id: id(this), .title } AS this1
+                        RETURN this1 AS var2
                         UNION
                         WITH *
-                        MATCH (this)-[this1:WROTE]->(this_publications:\`Journal\`)
-                        WITH this_publications { __resolveType: \\"Journal\\", __id: id(this), .subject } AS this_publications
-                        RETURN this_publications AS this_publications
+                        MATCH (this)-[this3:WROTE]->(this4:\`Journal\`)
+                        WITH this4 { __resolveType: \\"Journal\\", __id: id(this), .subject } AS this4
+                        RETURN this4 AS var2
                     }
-                    WITH this_publications
-                    RETURN collect(this_publications) AS this_publications
+                    WITH var2
+                    RETURN collect(var2) AS var2
                 }
-                RETURN this { .name, .publicationsWithAuthor, publications: this_publications } AS this"
+                RETURN this { .name, .publicationsWithAuthor, publications: var2 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -518,19 +518,19 @@ describe("@customResolver directive", () => {
                     WITH this
                     CALL {
                         WITH *
-                        MATCH (this)-[this0:WROTE]->(this_publications:\`Book\`)
-                        WITH this_publications { __resolveType: \\"Book\\", __id: id(this), .title } AS this_publications
-                        RETURN this_publications AS this_publications
+                        MATCH (this)-[this0:WROTE]->(this1:\`Book\`)
+                        WITH this1 { __resolveType: \\"Book\\", __id: id(this), .title } AS this1
+                        RETURN this1 AS var2
                         UNION
                         WITH *
-                        MATCH (this)-[this1:WROTE]->(this_publications:\`Journal\`)
-                        WITH this_publications { __resolveType: \\"Journal\\", __id: id(this), .subject } AS this_publications
-                        RETURN this_publications AS this_publications
+                        MATCH (this)-[this3:WROTE]->(this4:\`Journal\`)
+                        WITH this4 { __resolveType: \\"Journal\\", __id: id(this), .subject } AS this4
+                        RETURN this4 AS var2
                     }
-                    WITH this_publications
-                    RETURN collect(this_publications) AS this_publications
+                    WITH var2
+                    RETURN collect(var2) AS var2
                 }
-                RETURN this { .publicationsWithAuthor, publications: this_publications, .name } AS this"
+                RETURN this { .publicationsWithAuthor, publications: var2, .name } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -556,19 +556,19 @@ describe("@customResolver directive", () => {
                     WITH this
                     CALL {
                         WITH *
-                        MATCH (this)-[this0:WROTE]->(this_publications:\`Book\`)
-                        WITH this_publications { __resolveType: \\"Book\\", __id: id(this), .title } AS this_publications
-                        RETURN this_publications AS this_publications
+                        MATCH (this)-[this0:WROTE]->(this1:\`Book\`)
+                        WITH this1 { __resolveType: \\"Book\\", __id: id(this), .title } AS this1
+                        RETURN this1 AS var2
                         UNION
                         WITH *
-                        MATCH (this)-[this1:WROTE]->(this_publications:\`Journal\`)
-                        WITH this_publications { __resolveType: \\"Journal\\", __id: id(this), .subject } AS this_publications
-                        RETURN this_publications AS this_publications
+                        MATCH (this)-[this3:WROTE]->(this4:\`Journal\`)
+                        WITH this4 { __resolveType: \\"Journal\\", __id: id(this), .subject } AS this4
+                        RETURN this4 AS var2
                     }
-                    WITH this_publications
-                    RETURN collect(this_publications) AS this_publications
+                    WITH var2
+                    RETURN collect(var2) AS var2
                 }
-                RETURN this { .publicationsWithAuthor, .name, publications: this_publications } AS this"
+                RETURN this { .publicationsWithAuthor, .name, publications: var2 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -647,19 +647,19 @@ describe("@customResolver directive", () => {
                     WITH this
                     CALL {
                         WITH *
-                        MATCH (this)-[this0:WROTE]->(this_publications:\`Book\`)
-                        WITH this_publications { __resolveType: \\"Book\\", __id: id(this), .title, .publicationYear } AS this_publications
-                        RETURN this_publications AS this_publications
+                        MATCH (this)-[this0:WROTE]->(this1:\`Book\`)
+                        WITH this1 { __resolveType: \\"Book\\", __id: id(this), .title, .publicationYear } AS this1
+                        RETURN this1 AS var2
                         UNION
                         WITH *
-                        MATCH (this)-[this1:WROTE]->(this_publications:\`Journal\`)
-                        WITH this_publications { __resolveType: \\"Journal\\", __id: id(this), .subject, .publicationYear } AS this_publications
-                        RETURN this_publications AS this_publications
+                        MATCH (this)-[this3:WROTE]->(this4:\`Journal\`)
+                        WITH this4 { __resolveType: \\"Journal\\", __id: id(this), .subject, .publicationYear } AS this4
+                        RETURN this4 AS var2
                     }
-                    WITH this_publications
-                    RETURN collect(this_publications) AS this_publications
+                    WITH var2
+                    RETURN collect(var2) AS var2
                 }
-                RETURN this { .name, .publicationsWithAuthor, publications: this_publications } AS this"
+                RETURN this { .name, .publicationsWithAuthor, publications: var2 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -712,19 +712,19 @@ describe("@customResolver directive", () => {
                     WITH this
                     CALL {
                         WITH *
-                        MATCH (this)-[this0:WROTE]->(this_publications:\`Book\`)
-                        WITH this_publications { __resolveType: \\"Book\\", __id: id(this), .title, .publicationYear } AS this_publications
-                        RETURN this_publications AS this_publications
+                        MATCH (this)-[this0:WROTE]->(this1:\`Book\`)
+                        WITH this1 { __resolveType: \\"Book\\", __id: id(this), .title, .publicationYear } AS this1
+                        RETURN this1 AS var2
                         UNION
                         WITH *
-                        MATCH (this)-[this1:WROTE]->(this_publications:\`Journal\`)
-                        WITH this_publications { __resolveType: \\"Journal\\", __id: id(this), .subject, .publicationYear } AS this_publications
-                        RETURN this_publications AS this_publications
+                        MATCH (this)-[this3:WROTE]->(this4:\`Journal\`)
+                        WITH this4 { __resolveType: \\"Journal\\", __id: id(this), .subject, .publicationYear } AS this4
+                        RETURN this4 AS var2
                     }
-                    WITH this_publications
-                    RETURN collect(this_publications) AS this_publications
+                    WITH var2
+                    RETURN collect(var2) AS var2
                 }
-                RETURN this { .publicationsWithAuthor, publications: this_publications, .name } AS this"
+                RETURN this { .publicationsWithAuthor, publications: var2, .name } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -750,19 +750,19 @@ describe("@customResolver directive", () => {
                     WITH this
                     CALL {
                         WITH *
-                        MATCH (this)-[this0:WROTE]->(this_publications:\`Book\`)
-                        WITH this_publications { __resolveType: \\"Book\\", __id: id(this), .title, .publicationYear } AS this_publications
-                        RETURN this_publications AS this_publications
+                        MATCH (this)-[this0:WROTE]->(this1:\`Book\`)
+                        WITH this1 { __resolveType: \\"Book\\", __id: id(this), .title, .publicationYear } AS this1
+                        RETURN this1 AS var2
                         UNION
                         WITH *
-                        MATCH (this)-[this1:WROTE]->(this_publications:\`Journal\`)
-                        WITH this_publications { __resolveType: \\"Journal\\", __id: id(this), .subject, .publicationYear } AS this_publications
-                        RETURN this_publications AS this_publications
+                        MATCH (this)-[this3:WROTE]->(this4:\`Journal\`)
+                        WITH this4 { __resolveType: \\"Journal\\", __id: id(this), .subject, .publicationYear } AS this4
+                        RETURN this4 AS var2
                     }
-                    WITH this_publications
-                    RETURN collect(this_publications) AS this_publications
+                    WITH var2
+                    RETURN collect(var2) AS var2
                 }
-                RETURN this { .publicationsWithAuthor, .name, publications: this_publications } AS this"
+                RETURN this { .publicationsWithAuthor, .name, publications: var2 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
