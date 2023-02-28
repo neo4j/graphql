@@ -330,7 +330,6 @@ class Neo4jGraphQL {
         this._relationships = relationships;
 
         const referenceResolvers = subgraph.getReferenceResolvers(this._nodes, this.driver as Driver);
-        // const subgraphTypeDefs = subgraph.augmentGeneratedSchemaDefinition(typeDefs);
         const wrappedResolvers = this.wrapResolvers([resolvers, referenceResolvers]);
 
         const schema = subgraph.buildSchema({
