@@ -96,8 +96,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             }
             RETURN this0
             }
-            RETURN [
-            this0 { .title }] AS data"
+            RETURN [ this0 { .title } ] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

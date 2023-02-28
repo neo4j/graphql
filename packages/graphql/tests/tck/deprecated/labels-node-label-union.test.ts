@@ -85,23 +85,23 @@ describe("Node directive with unions", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this0:SEARCH]->(this_search:\`Category\`:\`ExtraLabel1\`:\`ExtraLabel2\`)
-                    WHERE this_search.name = $param1
-                    WITH this_search { __resolveType: \\"Genre\\", __id: id(this), .name } AS this_search
-                    RETURN this_search AS this_search
+                    MATCH (this)-[this0:SEARCH]->(this1:\`Category\`:\`ExtraLabel1\`:\`ExtraLabel2\`)
+                    WHERE this1.name = $param1
+                    WITH this1 { __resolveType: \\"Genre\\", __id: id(this), .name } AS this1
+                    RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)-[this1:SEARCH]->(this_search:\`Film\`)
-                    WHERE this_search.title = $param2
-                    WITH this_search { __resolveType: \\"Movie\\", __id: id(this), .title } AS this_search
-                    RETURN this_search AS this_search
+                    MATCH (this)-[this3:SEARCH]->(this4:\`Film\`)
+                    WHERE this4.title = $param2
+                    WITH this4 { __resolveType: \\"Movie\\", __id: id(this), .title } AS this4
+                    RETURN this4 AS var2
                 }
-                WITH this_search
+                WITH var2
                 SKIP $param3
                 LIMIT $param4
-                RETURN collect(this_search) AS this_search
+                RETURN collect(var2) AS var2
             }
-            RETURN this { search: this_search } AS this"
+            RETURN this { search: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

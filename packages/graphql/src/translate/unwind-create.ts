@@ -54,15 +54,11 @@ export default async function unwindCreate({
     createNodeAST.accept(unwindCreateVisitor);
     const [rootNodeVariable, createCypher] = unwindCreateVisitor.build() as [Cypher.Node, Cypher.Clause];
 
-    const connectionStrs: string[] = [];
-    const interfaceStrs: string[] = [];
     const projectionWith: string[] = [];
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
-    let replacedProjectionParams: Record<string, unknown> = {};
     let projectionCypher: Cypher.Expr | undefined;
-    let authCalls: string | undefined;
 
     if (metaNames.length > 0) {
         projectionWith.push(`${metaNames.join(" + ")} AS meta`);
@@ -74,39 +70,14 @@ export default async function unwindCreate({
             node,
             context,
             resolveTree: nodeProjection,
-            varName: "REPLACE_ME",
+            varName: rootNodeVariable,
+            cypherFieldAliasMap: {},
         });
         projectionSubquery = Cypher.concat(...projection.subqueries);
-
-        replacedProjectionParams = Object.entries(projection.params).reduce((res, [key, value]) => {
-            return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
-        }, {});
-
         projectionCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
-            return `${rootNodeVariable.getCypher(env)} ${projection.projection
-                // First look to see if projection param is being reassigned
-                // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
-                .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-                .replace(/\$REPLACE_ME/g, "$projection")
-                .replace(/REPLACE_ME/g, `${rootNodeVariable.getCypher(env)}`)}`;
+            return `${rootNodeVariable.getCypher(env)} ${projection.projection.getCypher(env)}`;
         });
     }
-
-    const replacedConnectionStrs = connectionStrs.length
-        ? new Cypher.RawCypher((env: Cypher.Environment) => {
-              return connectionStrs
-                  .map((connectionStr) => connectionStr.replace(/REPLACE_ME/g, `${rootNodeVariable.getCypher(env)}`))
-                  .join("\n");
-          })
-        : undefined;
-
-    const replacedInterfaceStrs = interfaceStrs.length
-        ? new Cypher.RawCypher((env: Cypher.Environment) => {
-              return interfaceStrs
-                  .map((interfaceStr) => interfaceStr.replace(/REPLACE_ME/g, `${rootNodeVariable.getCypher(env)}`))
-                  .join("\n");
-          })
-        : undefined;
 
     const unwindCreate = Cypher.concat(unwindQuery, createCypher);
     const returnStatement = generateCreateReturnStatementCypher(projectionCypher, context.subscriptionsEnabled);
@@ -114,32 +85,17 @@ export default async function unwindCreate({
 
     const createQuery = new Cypher.RawCypher((env) => {
         const projectionSubqueryStr = compileCypherIfExists(projectionSubquery, env);
-        const projectionConnectionStrs = compileCypherIfExists(replacedConnectionStrs, env);
-        const projectionInterfaceStrs = compileCypherIfExists(replacedInterfaceStrs, env);
-
-        const replacedProjectionSubqueryStrs = projectionSubqueryStr
-            .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-            .replace(/\$REPLACE_ME/g, "$projection")
-            .replace(/REPLACE_ME/g, `${rootNodeVariable.getCypher(env)}`);
 
         const cypher = filterTruthy([
             unwindCreate.getCypher(env),
             projectionWithStr,
-            authCalls,
-            projectionConnectionStrs,
-            projectionInterfaceStrs,
-            replacedProjectionSubqueryStrs,
+            projectionSubqueryStr,
             returnStatement.getCypher(env),
         ])
             .filter(Boolean)
             .join("\n");
 
-        return [
-            cypher,
-            {
-                ...replacedProjectionParams,
-            },
-        ];
+        return cypher;
     });
     const createQueryCypher = createQuery.build("create_");
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({

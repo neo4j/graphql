@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import Relationship from "../../../classes/Relationship";
 import type { TemporalField, PointField, PrimitiveField } from "../../../types";
@@ -134,8 +135,10 @@ describe("createRelationshipPropertyElement", () => {
         };
 
         const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
-
-        expect(element).toBe("int: this.int");
+        new Cypher.RawCypher((env) => {
+            expect(element.getCypher(env)).toBe("int: this.int");
+            return "";
+        }).build();
     });
 
     test("returns an element for a datetime property", () => {
@@ -147,10 +150,12 @@ describe("createRelationshipPropertyElement", () => {
         };
 
         const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
-
-        expect(element).toBe(
-            'datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time")',
-        );
+        new Cypher.RawCypher((env) => {
+            expect(element.getCypher(env)).toBe(
+                'datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time")',
+            );
+            return "";
+        }).build();
     });
 
     test("returns an element for a point property", () => {
@@ -177,12 +182,14 @@ describe("createRelationshipPropertyElement", () => {
         };
 
         const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
-
-        expect(element).toMatchInlineSnapshot(`
+        new Cypher.RawCypher((env) => {
+            expect(element.getCypher(env)).toMatchInlineSnapshot(`
             "point: (CASE
                 WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
                 ELSE NULL
             END)"
         `);
+            return "";
+        }).build();
     });
 });

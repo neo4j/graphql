@@ -19,7 +19,8 @@
 
 import { useCallback, useContext, useState } from "react";
 import { FormInput } from "./FormInput";
-import { Button, HeroIcon } from "@neo4j-ndl/react";
+import { Button } from "@neo4j-ndl/react";
+import { ExclamationTriangleIconOutline } from "@neo4j-ndl/react/icons";
 import { DEFAULT_BOLT_URL, DEFAULT_USERNAME } from "../../constants";
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
@@ -71,7 +72,7 @@ export const Login = () => {
                 left={36}
                 top={-58}
             >
-                <HeroIcon className="n-text-warning-50" iconName="ExclamationIcon" type="outline" />
+                <ExclamationTriangleIconOutline className="n-text-warning-50" />
             </ProTooltip>
         );
     };
