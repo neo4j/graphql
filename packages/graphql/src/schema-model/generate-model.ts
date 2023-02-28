@@ -24,6 +24,8 @@ import {
     Kind,
     ObjectFieldNode,
     ObjectTypeDefinitionNode,
+    ObjectValueNode,
+    StringValueNode,
     UnionTypeDefinitionNode,
     ValueNode,
 } from "graphql";
@@ -34,8 +36,11 @@ import { filterTruthy } from "../utils/utils";
 import type { Annotation } from "./annotation/Annotation";
 import {
     AuthorizationAnnotation,
+    AuthorizationFilterOperation,
     AuthorizationFilterRule,
     AuthorizationFilterRules,
+    AuthorizationFilterRuleType,
+    getDefaultRuleOperations,
 } from "./annotation/AuthorizationAnnotation";
 import { CypherAnnotation } from "./annotation/CypherAnnotation";
 import { Attribute } from "./attribute/Attribute";
@@ -45,6 +50,37 @@ import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionNodes = getDefinitionNodes(document);
+
+    //  Q: where to set interface fields?
+
+    // const interfaceTypes = definitionNodes.interfaceTypes.map((entity) => ({
+    //     name: entity.name.value,
+    //     fields: entity.fields,
+    // }));
+
+    // init interface to typennames map
+    const interfaceToImplementingTypeNamesMap = definitionNodes.interfaceTypes.reduce((acc, entity) => {
+        const interfaceTypeName = entity.name.value;
+        acc.set(interfaceTypeName, []);
+        return acc;
+    }, new Map<string, string[]>());
+
+    // hydrate interface to typennames map
+    definitionNodes.objectTypes.forEach((el) => {
+        if (!el.interfaces) {
+            return;
+        }
+        const objectTypeName = el.name.value;
+        el.interfaces?.forEach((i) => {
+            const interfaceTypeName = i.name.value;
+            const before = interfaceToImplementingTypeNamesMap.get(interfaceTypeName);
+            if (!before) {
+                throw new Error(`Could not find composite entity with name ${interfaceTypeName}`);
+            }
+            interfaceToImplementingTypeNamesMap.set(interfaceTypeName, before.concat(objectTypeName));
+        });
+    });
+
     const concreteEntities = definitionNodes.objectTypes.map(generateConcreteEntity);
     const concreteEntitiesMap = concreteEntities.reduce((acc, entity) => {
         if (acc.has(entity.name)) {
@@ -54,48 +90,63 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         return acc;
     }, new Map<string, ConcreteEntity>());
 
-    // TODO: add interfaces as well
-    const compositeEntities = definitionNodes.unionTypes.map((entity) => {
-        return generateCompositeEntity(entity, concreteEntitiesMap);
+    const interfaceEntities = Array.from(interfaceToImplementingTypeNamesMap.entries()).map(
+        ([name, concreteEntities]) => {
+            return generateCompositeEntity(name, concreteEntities, concreteEntitiesMap);
+        }
+    );
+    const unionEntities = definitionNodes.unionTypes.map((entity) => {
+        return generateCompositeEntity(
+            entity.name.value,
+            entity.types?.map((t) => t.name.value) || [],
+            concreteEntitiesMap
+        );
     });
 
-    return new Neo4jGraphQLSchemaModel({ compositeEntities, concreteEntities });
+    return new Neo4jGraphQLSchemaModel({
+        compositeEntities: [...unionEntities, ...interfaceEntities],
+        concreteEntities,
+    });
 }
 
 function generateCompositeEntity(
-    definition: UnionTypeDefinitionNode,
+    entityDefinitionName: string,
+    entityImplementingTypeNames: string[],
     concreteEntities: Map<string, ConcreteEntity>
 ): CompositeEntity {
-    const compositeFields = (definition.types || []).map((type) => {
-        const concreteEntity = concreteEntities.get(type.name.value);
+    const compositeFields = entityImplementingTypeNames.map((type) => {
+        const concreteEntity = concreteEntities.get(type);
         if (!concreteEntity) {
-            throw new Error(`Could not find concrete entity with name ${type.name.value}`);
+            throw new Error(`Could not find concrete entity with name ${type}`);
         }
         return concreteEntity;
     });
 
     if (!compositeFields.length) {
-        throw new Error(`Composite entity ${definition.name.value} has no concrete entities`);
+        throw new Error(`Composite entity ${entityDefinitionName} has no concrete entities`);
     }
+    // TODO: add annotations
     return new CompositeEntity({
-        name: definition.name.value,
+        name: entityDefinitionName,
         concreteEntities: compositeFields,
     });
 }
 
 function generateConcreteEntity(definition: ObjectTypeDefinitionNode): ConcreteEntity {
-    const fields = (definition.fields || []).map(generateField);
+    const fields = (definition.fields || []).map((fieldDefinition) => generateField(fieldDefinition, definition));
     const directives = (definition.directives || []).reduce((acc, directive) => {
         acc.set(directive.name.value, parseArguments(directive));
         return acc;
     }, new Map<string, Record<string, unknown>>());
     const labels = getLabels(definition, directives.get("node") || {});
+    // TODO: add inheritedAnnotations from interfaces
+    // const inheritedAnnotations = definition.interfaces?.map(i => i.)
 
     return new ConcreteEntity({
         name: definition.name.value,
         labels,
         attributes: filterTruthy(fields),
-        annotations: createEntityAnnotation(definition.directives || []),
+        annotations: createEntityAnnotation(definition.directives || [], definition),
     });
 }
 
@@ -106,10 +157,10 @@ function getLabels(definition: ObjectTypeDefinitionNode, nodeDirectiveArguments:
     return [definition.name.value];
 }
 
-function generateField(field: FieldDefinitionNode): Attribute | undefined {
+function generateField(field: FieldDefinitionNode, typeDefinition: ObjectTypeDefinitionNode): Attribute | undefined {
     const typeMeta = getFieldTypeMeta(field.type); // TODO: without originalType
     if (SCALAR_TYPES.includes(typeMeta.name)) {
-        const annotations = createFieldAnnotations(field.directives || []);
+        const annotations = createFieldAnnotations(field.directives || [], typeDefinition);
         return new Attribute({
             name: field.name.value,
             annotations,
@@ -117,14 +168,17 @@ function generateField(field: FieldDefinitionNode): Attribute | undefined {
     }
 }
 
-function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
+function createFieldAnnotations(
+    directives: readonly DirectiveNode[],
+    typeDefinition: ObjectTypeDefinitionNode
+): Annotation[] {
     return filterTruthy(
         directives.map((directive) => {
             switch (directive.name.value) {
                 case "cypher":
                     return parseCypherAnnotation(directive);
                 case "authorization":
-                    return parseAuthorizationAnnotation(directive);
+                    return parseAuthorizationAnnotation(directive, typeDefinition);
                 default:
                     return undefined;
             }
@@ -132,12 +186,15 @@ function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotatio
     );
 }
 
-function createEntityAnnotation(directives: readonly DirectiveNode[]): Annotation[] {
+function createEntityAnnotation(
+    directives: readonly DirectiveNode[],
+    typeDefinition: ObjectTypeDefinitionNode
+): Annotation[] {
     return filterTruthy(
         directives.map((directive) => {
             switch (directive.name.value) {
                 case "authorization":
-                    return parseAuthorizationAnnotation(directive);
+                    return parseAuthorizationAnnotation(directive, typeDefinition);
                 default:
                     return undefined;
             }
@@ -146,40 +203,118 @@ function createEntityAnnotation(directives: readonly DirectiveNode[]): Annotatio
 }
 
 // validation helpers
-function avalidateAuthorizationFilterRule(argument: ArgumentNode | ObjectFieldNode) {
+function validateAuthorizationFilterRule(
+    argument: ArgumentNode | ObjectFieldNode,
+    typeDefinition: ObjectTypeDefinitionNode,
+    ruleType: AuthorizationFilterRuleType
+) {
     if (argument?.value.kind !== Kind.LIST) {
         throw new Error(`${argument.name.value} should be a List`);
     }
     if (argument?.value.values.find((v) => v.kind !== Kind.OBJECT)) {
         throw new Error(`${argument.name.value} rules should be objects`);
     }
+    argument?.value.values.forEach((v) => {
+        const value = v as ObjectValueNode;
+        const operations = value.fields.find((f) => f.name.value === "operations");
+        if (operations) {
+            if (operations.value.kind !== Kind.LIST) {
+                throw new Error("operations should be a List");
+            }
+            const possibleValues = getDefaultRuleOperations(ruleType);
+            if (possibleValues) {
+                operations.value.values.forEach((v) => {
+                    if (v.kind !== Kind.STRING) {
+                        throw new Error("operations is a List of Strings");
+                    }
+                    if (!possibleValues.includes(v.value as AuthorizationFilterOperation)) {
+                        throw new Error(`${v.value} operation is not allowed`);
+                    }
+                });
+            }
+        }
+        const requireAuthentication = value.fields.find((f) => f.name.value === "requireAuthentication");
+        if (requireAuthentication && requireAuthentication?.value.kind !== Kind.BOOLEAN) {
+            throw new Error("requireAuthentication should be a Boolean");
+        }
+        const where = value.fields.find((f) => f.name.value === "where");
+        if (where) {
+            if (where.value.kind !== Kind.OBJECT) {
+                throw new Error("where should be an object");
+            }
+            const nodeWhere = where.value.fields.find((f) => f.name.value === "node");
+            const jwtWhere = where.value.fields.find((f) => f.name.value === "jwtPayload");
+            if (!nodeWhere && !jwtWhere) {
+                throw new Error("where should contain `node` or `jwtPayload`");
+            }
+            if (nodeWhere) {
+                if (nodeWhere.value.kind !== Kind.OBJECT) {
+                    throw new Error("where.node should be an object");
+                }
+                // ... validate fields
+                const typeFields = (typeDefinition.fields || []).reduce((acc, f) => {
+                    acc[f.name.value] = f.name.kind;
+                    return acc;
+                });
+                const fieldDoesNotExist = nodeWhere.value.fields.find((f) => !typeFields[f.name.value]);
+                if (fieldDoesNotExist) {
+                    throw new Error(`unknown field ${fieldDoesNotExist} in where.node`);
+                }
+            }
+        }
+    });
 }
-function validateAuthorizationAnnotation(directive: DirectiveNode) {
+function validateAuthorizationAnnotation(directive: DirectiveNode, typeDefinition: ObjectTypeDefinitionNode) {
     const dirArgs = directive.arguments;
     const filterBeforeValidation = dirArgs?.find((arg) => arg.name.value === "filter");
     if (filterBeforeValidation) {
-        avalidateAuthorizationFilterRule(filterBeforeValidation);
+        validateAuthorizationFilterRule(filterBeforeValidation, typeDefinition, AuthorizationFilterRules.filter);
     }
     const validateBeforeValidation = dirArgs?.find((arg) => arg.name.value === "validate");
     if (validateBeforeValidation) {
         if (validateBeforeValidation?.value.kind !== Kind.OBJECT) {
             throw new Error("validate should be an Object");
         }
-        const validateFieldsBeforeValidation = validateBeforeValidation?.value.fields
-            .filter((f) => ["pre", "post"].includes(f.name.value))
-            .map(avalidateAuthorizationFilterRule);
-        if (!validateFieldsBeforeValidation.length) {
+        const validatePreFieldsBeforeValidation = validateBeforeValidation?.value.fields.find(
+            (f) => f.name.value === "pre"
+        );
+        const validatePostFieldsBeforeValidation = validateBeforeValidation?.value.fields.find(
+            (f) => f.name.value === "post"
+        );
+        if (!validatePreFieldsBeforeValidation && !validatePostFieldsBeforeValidation) {
             throw new Error("validate should contain `pre` or `post`");
         }
+        if (validateBeforeValidation?.value.fields.find((f) => f.name.value !== "post" && f.name.value !== "pre")) {
+            throw new Error("validate should only contain `pre` or `post`");
+        }
+        validatePreFieldsBeforeValidation &&
+            validateAuthorizationFilterRule(
+                validatePreFieldsBeforeValidation,
+                typeDefinition,
+                AuthorizationFilterRules.validationPre
+            );
+        validatePreFieldsBeforeValidation &&
+            validateAuthorizationFilterRule(
+                validatePreFieldsBeforeValidation,
+                typeDefinition,
+                AuthorizationFilterRules.validationPost
+            );
     }
     const filterSubscriptionsBeforeValidation = dirArgs?.find((arg) => arg.name.value === "filterSubscriptions");
     if (filterSubscriptionsBeforeValidation) {
-        avalidateAuthorizationFilterRule(filterSubscriptionsBeforeValidation);
+        validateAuthorizationFilterRule(
+            filterSubscriptionsBeforeValidation,
+            typeDefinition,
+            AuthorizationFilterRules.filterSubscription
+        );
     }
 }
 
-function parseAuthorizationAnnotation(directive: DirectiveNode): AuthorizationAnnotation {
-    validateAuthorizationAnnotation(directive);
+function parseAuthorizationAnnotation(
+    directive: DirectiveNode,
+    typeDefinition: ObjectTypeDefinitionNode
+): AuthorizationAnnotation {
+    validateAuthorizationAnnotation(directive, typeDefinition);
     const { filter, filterSubscriptions, validate } = parseArguments(directive) as {
         filter?: Record<string, any>[];
         filterSubscriptions?: Record<string, any>[];

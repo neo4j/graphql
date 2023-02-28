@@ -60,7 +60,7 @@ export const AuthorizationFilterRules = {
 } as const;
 export type AuthorizationFilterRuleType = typeof AuthorizationFilterRules[keyof typeof AuthorizationFilterRules];
 
-const getDefaultRuleOperations = (
+export const getDefaultRuleOperations = (
     ruleType: AuthorizationFilterRuleType
 ): AuthorizationFilterOperation[] | undefined => {
     switch (ruleType) {
