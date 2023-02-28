@@ -17,10 +17,12 @@
  * limitations under the License.
  */
 import {
+    ArgumentNode,
     DirectiveNode,
     DocumentNode,
     FieldDefinitionNode,
     Kind,
+    ObjectFieldNode,
     ObjectTypeDefinitionNode,
     UnionTypeDefinitionNode,
     ValueNode,
@@ -139,7 +141,38 @@ function createEntityAnnotation(directives: readonly DirectiveNode[]): Annotatio
     );
 }
 
+function authorizationFilterRuleValidation(argument: ArgumentNode | ObjectFieldNode) {
+    if (argument?.value.kind !== Kind.LIST) {
+        throw new Error(`${argument.name.value} should be a List`);
+    }
+    if (argument?.value.values.find((v) => v.kind !== Kind.OBJECT)) {
+        throw new Error(`${argument.name.value} rules should be objects`);
+    }
+}
+
 function parseAuthorizationAnnotation(directive: DirectiveNode): AuthorizationAnnotation {
+    const dirArgs = directive.arguments;
+    const filterBeforeValidation = dirArgs?.find((arg) => arg.name.value === "filter");
+    if (filterBeforeValidation) {
+        authorizationFilterRuleValidation(filterBeforeValidation);
+    }
+    const validateBeforeValidation = dirArgs?.find((arg) => arg.name.value === "validate");
+    if (validateBeforeValidation) {
+        if (validateBeforeValidation?.value.kind !== Kind.OBJECT) {
+            throw new Error("validate should be an Object");
+        }
+        const validateFieldsBeforeValidation = validateBeforeValidation?.value.fields
+            .filter((f) => ["pre", "post"].includes(f.name.value))
+            .map(authorizationFilterRuleValidation);
+        if (!validateFieldsBeforeValidation.length) {
+            throw new Error("validate should contain `pre` or `post`");
+        }
+    }
+    const filterSubscriptionsBeforeValidation = dirArgs?.find((arg) => arg.name.value === "filterSubscriptions");
+    if (filterSubscriptionsBeforeValidation) {
+        authorizationFilterRuleValidation(filterSubscriptionsBeforeValidation);
+    }
+
     const { filter, filterSubscriptions, validate } = parseArguments(directive) as {
         filter?: Record<string, any>[];
         filterSubscriptions?: Record<string, any>[];
@@ -148,18 +181,6 @@ function parseAuthorizationAnnotation(directive: DirectiveNode): AuthorizationAn
     // TODO: validate further than  Record<string, any>
     if (!filter && !filterSubscriptions && !validate) {
         throw new Error("one of filter/ filterSubscriptions/ validate required");
-    }
-    if (filter && !Array.isArray(filter)) {
-        throw new Error("filter should be an Array");
-    }
-    if (filterSubscriptions && !Array.isArray(filterSubscriptions)) {
-        throw new Error("filter should be an Array");
-    }
-    if (validate?.pre && !Array.isArray(validate.pre)) {
-        throw new Error("validate pre should be an Array");
-    }
-    if (validate?.post && !Array.isArray(validate.post)) {
-        throw new Error("validate post should be an Array");
     }
 
     const filterRules = filter?.map(

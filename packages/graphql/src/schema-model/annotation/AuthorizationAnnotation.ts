@@ -52,21 +52,23 @@ export type AuthorizationFilterOperation =
     | "CREATE_RELATIONSHIP"
     | "DELETE_RELATIONSHIP";
 
-export type AuthorizationFilterRuleType =
-    | "AuthorizationFilterValidationRule"
-    | "AuthorizationFilterSubscriptionValidationRule"
-    | "AuthorizationPreValidationRule"
-    | "AuthorizationPostValidationRule";
+const AuthorizationFilterRules = {
+    filter: "AuthorizationFilterValidationRule",
+    filterSubscription: "AuthorizationFilterSubscriptionValidationRule",
+    validationPre: "AuthorizationPreValidationRule",
+    validationPost: "AuthorizationPostValidationRule",
+} as const;
+export type AuthorizationFilterRuleType = typeof AuthorizationFilterRules[keyof typeof AuthorizationFilterRules];
 
 const getDefaultRuleOperations = (
     ruleType: AuthorizationFilterRuleType
 ): AuthorizationFilterOperation[] | undefined => {
     switch (ruleType) {
-        case "AuthorizationFilterValidationRule":
+        case AuthorizationFilterRules.filter:
             return ["READ", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"];
-        case "AuthorizationPreValidationRule":
+        case AuthorizationFilterRules.validationPre:
             return ["READ", "CREATE", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"];
-        case "AuthorizationPostValidationRule":
+        case AuthorizationFilterRules.validationPost:
             return ["CREATE", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"];
         default:
             return undefined;
@@ -80,7 +82,7 @@ export class AuthorizationFilterRule {
     where: AuthorizationFilterWhere; // UserAuthorizationWhere
 
     constructor(rule: Record<string, any>) {
-        const { operations, requireAuthentication = true, where, ruleType } = rule;
+        const { operations, requireAuthentication, where, ruleType } = rule;
 
         this.operations = operations || getDefaultRuleOperations(ruleType);
         this.requireAuthentication = requireAuthentication === undefined ? true : requireAuthentication;
