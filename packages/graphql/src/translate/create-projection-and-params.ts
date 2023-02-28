@@ -29,7 +29,7 @@ import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
-import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
+import { generateMissingOrAliasedFields, filterFieldsInSelection, generateResolveTree } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
@@ -132,19 +132,19 @@ export default function createProjectionAndParams({
                 let referenceNodes;
                 if (relationField.interface) {
                     const interfaceImplementations = context.nodes.filter((x) =>
-                        relationField.interface?.implementations?.includes(x.name)
+                        relationField.interface?.implementations?.includes(x.name),
                     );
 
                     if (field.args.where) {
                         // Enrich concrete types with shared filters
                         const interfaceSharedFilters = Object.fromEntries(
-                            Object.entries(field.args.where).filter(([key]) => key !== "_on")
+                            Object.entries(field.args.where).filter(([key]) => key !== "_on"),
                         );
                         if (Object.keys(interfaceSharedFilters).length > 0) {
                             field.args.where = getAugmentedImplementationFilters(
                                 field.args.where as GraphQLWhereArg,
                                 interfaceSharedFilters,
-                                interfaceImplementations
+                                interfaceImplementations,
                             );
                         } else {
                             field.args.where = { ...(field.args.where["_on"] || {}) };
@@ -158,13 +158,13 @@ export default function createProjectionAndParams({
                             // where exists but has no filters defined
                             Object.keys(field.args.where).length === 0 ||
                             // where exists and has a filter on this implementation
-                            Object.prototype.hasOwnProperty.call(field.args.where, x.name)
+                            Object.prototype.hasOwnProperty.call(field.args.where, x.name),
                     );
                 } else {
                     referenceNodes = context.nodes.filter(
                         (x) =>
                             relationField.union?.nodes?.includes(x.name) &&
-                            (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name))
+                            (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name)),
                     );
                 }
 
@@ -275,7 +275,7 @@ export default function createProjectionAndParams({
                 res.subqueries.push(aggregationFieldProjection.projectionSubqueryCypher);
             }
             res.projection.push(
-                new Cypher.RawCypher((env) => `${alias}: ${aggregationFieldProjection.projectionCypher.getCypher(env)}`)
+                new Cypher.RawCypher((env) => `${alias}: ${aggregationFieldProjection.projectionCypher.getCypher(env)}`),
             );
             return res;
         }
@@ -290,7 +290,7 @@ export default function createProjectionAndParams({
                     nodeVariable: varName,
                     returnVariable,
                     cypherFieldAliasMap,
-                })
+                }),
             ).innerWith(varName);
 
             res.subqueries.push(connectionClause);
@@ -319,7 +319,7 @@ export default function createProjectionAndParams({
 
             if (alias !== field.name || dbFieldName !== field.name || literalElements) {
                 res.projection.push(
-                    new Cypher.RawCypher((env) => `${alias}: ${varName.property(dbFieldName).getCypher(env)}`)
+                    new Cypher.RawCypher((env) => `${alias}: ${varName.property(dbFieldName).getCypher(env)}`),
                 );
             } else {
                 res.projection.push(new Cypher.RawCypher(`.${dbFieldName}`));
@@ -361,11 +361,11 @@ export default function createProjectionAndParams({
             // If fieldname is not found in fields of selection set
             ...(!Object.values(existingProjection).find((field) => field.name === sortFieldName)
                 ? // generate a basic resolve tree
-                  generateProjectionField({ name: sortFieldName })
+                  generateResolveTree({ name: sortFieldName })
                 : {}),
         }),
         // and add it to existing fields for projection
-        existingProjection
+        existingProjection,
     );
 
     // Include fields of implemented interfaces to allow for fragments on interfaces
@@ -380,7 +380,7 @@ export default function createProjectionAndParams({
     const mergedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
         mergedSelectedFields,
         generateMissingOrAliasedSortFields({ selection: mergedSelectedFields, resolveTree }),
-        generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
+        ...generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
     ]);
 
     const { projection, params, meta, subqueries, subqueriesBeforeSort } = Object.values(mergedFields).reduce(reducer, {
@@ -435,14 +435,14 @@ const generateMissingOrAliasedRequiredFields = ({
 }: {
     node: Node;
     selection: Record<string, ResolveTree>;
-}): Record<string, ResolveTree> => {
+}): Record<string, ResolveTree>[] => {
     const requiredFields = removeDuplicates(
         filterFieldsInSelection({ fields: node.customResolverFields, selection })
             .map((f) => f.requiredFields)
-            .flat()
+            .flat(),
     );
 
-    return generateMissingOrAliasedFields({ fieldNames: requiredFields, selection });
+    return requiredFields;
 };
 
 function createFulltextProjection({
@@ -493,7 +493,7 @@ function createFulltextProjection({
 function getAugmentedImplementationFilters(
     where: GraphQLWhereArg,
     interfaceSharedFilters: Record<string, any>,
-    implementations: Node[]
+    implementations: Node[],
 ) {
     return Object.fromEntries(
         implementations.map((node) => {
@@ -507,6 +507,6 @@ function getAugmentedImplementationFilters(
                     ...where["_on"][node.name],
                 },
             ];
-        })
+        }),
     );
 }
