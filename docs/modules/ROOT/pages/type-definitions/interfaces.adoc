@@ -5,7 +5,7 @@ The Neo4j GraphQL Library supports the use of interfaces on relationship fields.
 
 == Type definitions
 
-The following schema defines a `Actor` type, that has a relationship `ACTED_IN`, of type `[Production!]!`. `Production` is an interface type with `Movie` and `Series` implementations. Note in this example that relationship properties have also been used with the `@relationshipProperties` directive as syntactic sugar, so that interfaces representing relationship properties can be easily distinguished.
+The following schema defines a `Actor` type, that has a relationship `ACTED_IN`, of type `[Production!]!`. `Production` is an interface type with `Movie` and `Series` implementations. Note in this example that relationship properties have also been used with the `@relationshipProperties` directive, so that interfaces representing relationship properties can be easily distinguished.
 
 [source, graphql, indent=0]
 ----
