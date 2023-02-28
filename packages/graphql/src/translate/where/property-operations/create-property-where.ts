@@ -38,7 +38,7 @@ export function createPropertyWhere({
     value,
     element,
     targetElement,
-    context,
+    context
 }: {
     key: string;
     value: any;
@@ -61,7 +61,7 @@ export function createPropertyWhere({
 
     const coalesceValue = [...element.primitiveFields, ...element.temporalFields, ...element.enumFields].find(
         (f) => fieldName === f.fieldName
-    )?.coalesceValue as string | undefined;
+    )?.coalesceValue;
 
     let dbFieldName = mapToDbProperty(element, fieldName);
     if (prefix) {
@@ -78,16 +78,22 @@ export function createPropertyWhere({
                     node,
                     value,
                     targetElement,
-                    coalesceValue,
-                }),
+                    coalesceValue
+                })
             };
         }
 
         if (coalesceValue) {
-            propertyRef = Cypher.coalesce(
-                propertyRef,
-                new Cypher.RawCypher(`${coalesceValue}`) // TODO: move into Cypher.literal
-            );
+            if (Array.isArray(coalesceValue)) {
+                const list = new Cypher.List(coalesceValue.map((v) => new Cypher.Literal(v)));
+
+                propertyRef = Cypher.coalesce(propertyRef, list);
+            } else {
+                propertyRef = Cypher.coalesce(
+                    propertyRef,
+                    new Cypher.RawCypher(`${coalesceValue}`) // TODO: move into Cypher.literal
+                );
+            }
         }
 
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
@@ -103,7 +109,7 @@ export function createPropertyWhere({
                 relationField,
                 relationship,
                 context,
-                matchNode: targetElement,
+                matchNode: targetElement
             });
         }
 
@@ -114,7 +120,7 @@ export function createPropertyWhere({
                 parentNode: targetElement as Cypher.Node,
                 operator,
                 value,
-                isNot,
+                isNot
             });
         }
 
@@ -125,18 +131,18 @@ export function createPropertyWhere({
                 connectionField,
                 context,
                 parentNode: targetElement as Cypher.Node,
-                operator,
+                operator
             });
         }
 
         if (value === null) {
             if (isNot) {
                 return {
-                    predicate: Cypher.isNotNull(propertyRef),
+                    predicate: Cypher.isNotNull(propertyRef)
                 };
             }
             return {
-                predicate: Cypher.isNull(propertyRef),
+                predicate: Cypher.isNull(propertyRef)
             };
         }
     }
@@ -151,11 +157,11 @@ export function createPropertyWhere({
         operator,
         durationField,
         pointField,
-        neo4jDatabaseInfo: context.neo4jDatabaseInfo,
+        neo4jDatabaseInfo: context.neo4jDatabaseInfo
     });
     if (isNot) {
         return {
-            predicate: Cypher.not(comparisonOp),
+            predicate: Cypher.not(comparisonOp)
         };
     }
     return { predicate: comparisonOp };

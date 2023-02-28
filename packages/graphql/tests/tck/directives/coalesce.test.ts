@@ -53,7 +53,7 @@ describe("Cypher coalesce()", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
+            config: { enableRegex: true }
         });
 
         const query = gql`
@@ -92,8 +92,8 @@ describe("Cypher coalesce()", () => {
                 numberOfFriends: 10,
                 rating: 3.5,
                 fromInterface: "Some string",
-                toBeOverridden: "Some string",
-            },
+                toBeOverridden: "Some string"
+            }
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -134,8 +134,8 @@ describe("Cypher coalesce()", () => {
             typeDefs,
             config: { enableRegex: true },
             plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
-            },
+                auth: new Neo4jGraphQLAuthJWTPlugin({ secret })
+            }
         });
 
         const query = gql`
@@ -149,7 +149,7 @@ describe("Cypher coalesce()", () => {
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req,
+            req
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -185,8 +185,8 @@ describe("Cypher coalesce()", () => {
             typeDefs,
             config: { enableRegex: true },
             plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
-            },
+                auth: new Neo4jGraphQLAuthJWTPlugin({ secret })
+            }
         });
 
         const query = gql`
@@ -206,7 +206,7 @@ describe("Cypher coalesce()", () => {
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req,
+            req
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -226,6 +226,70 @@ describe("Cypher coalesce()", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_connection_moviesConnectionparam0\\": \\"ACTIVE\\"
+            }"
+        `);
+    });
+
+    test("Coalesce with enum list in projection", async () => {
+        const typeDefs = gql`
+            enum Status {
+                ACTIVE
+                INACTIVE
+            }
+            type Movie {
+                id: ID
+                statuses: [Status!]! @coalesce(value: [ACTIVE, INACTIVE])
+            }
+
+            type Actor {
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs
+        });
+
+        const query = gql`
+            query Actors {
+                actors {
+                    moviesConnection(where: { node: { statuses: [ACTIVE, INACTIVE] } }) {
+                        edges {
+                            node {
+                                id
+                                statuses
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Actor\`)
+            CALL {
+                WITH this
+                MATCH (this)-[this_connection_moviesConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
+                WHERE coalesce(this_Movie.statuses, [ \\"ACTIVE\\", \\"INACTIVE\\" ]) = $this_connection_moviesConnectionparam0
+                WITH { node: { id: this_Movie.id, statuses: this_Movie.statuses } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_moviesConnection
+            }
+            RETURN this { moviesConnection: this_moviesConnection } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_connection_moviesConnectionparam0\\": [
+                    \\"ACTIVE\\",
+                    \\"INACTIVE\\"
+                ]
             }"
         `);
     });
