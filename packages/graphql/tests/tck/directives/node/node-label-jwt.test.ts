@@ -99,7 +99,7 @@ describe("Label in Node directive", () => {
             WHERE this.age > $param0
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this1:\`Film\`)
+                MATCH (this)-[this0:\`ACTED_IN\`]->(this1:\`Film\`)
                 WHERE this1.title = $param1
                 WITH this1 { .title } AS this1
                 RETURN collect(this1) AS var2

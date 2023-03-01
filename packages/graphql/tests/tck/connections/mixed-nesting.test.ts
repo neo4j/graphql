@@ -80,11 +80,11 @@ describe("Mixed nesting", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WHERE this1.name = $param1
                 CALL {
                     WITH this1
-                    MATCH (this1)-[this2:ACTED_IN]->(this3:\`Movie\`)
+                    MATCH (this1)-[this2:\`ACTED_IN\`]->(this3:\`Movie\`)
                     WHERE NOT (this3.title = $param2)
                     WITH this3 { .title } AS this3
                     RETURN collect(this3) AS var4
@@ -143,15 +143,15 @@ describe("Mixed nesting", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WHERE this1.name = $param1
                 CALL {
                     WITH this1
-                    MATCH (this1:\`Actor\`)-[this2:ACTED_IN]->(this3:\`Movie\`)
+                    MATCH (this1:\`Actor\`)-[this2:\`ACTED_IN\`]->(this3:\`Movie\`)
                     WHERE NOT (this3.title = $param2)
                     CALL {
                         WITH this3
-                        MATCH (this3)<-[this4:ACTED_IN]-(this5:\`Actor\`)
+                        MATCH (this3)<-[this4:\`ACTED_IN\`]-(this5:\`Actor\`)
                         WHERE NOT (this5.name = $param3)
                         WITH this5 { .name } AS this5
                         RETURN collect(this5) AS var6
@@ -209,11 +209,11 @@ describe("Mixed nesting", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WHERE this1.name = $param1
                 CALL {
                     WITH this1
-                    MATCH (this1:\`Actor\`)-[this2:ACTED_IN]->(this3:\`Movie\`)
+                    MATCH (this1:\`Actor\`)-[this2:\`ACTED_IN\`]->(this3:\`Movie\`)
                     WHERE NOT (this3.title = $param2)
                     WITH { screenTime: this2.screenTime, node: { title: this3.title } } AS edge
                     WITH collect(edge) AS edges

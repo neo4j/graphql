@@ -64,7 +64,7 @@ describe("Undirected connections", () => {
             "MATCH (this:\`User\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:FRIENDS_WITH]-(this1:\`User\`)
+                MATCH (this)-[this0:\`FRIENDS_WITH\`]-(this1:\`User\`)
                 WITH { node: { __resolveType: \\"User\\", __id: id(this1) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount

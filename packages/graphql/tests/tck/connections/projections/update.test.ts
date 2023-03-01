@@ -87,7 +87,7 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)<-[update_this0:ACTED_IN]-(update_this1:\`Actor\`)
+                MATCH (this)<-[update_this0:\`ACTED_IN\`]-(update_this1:\`Actor\`)
                 WITH { screenTime: update_this0.screenTime, node: { name: update_this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount

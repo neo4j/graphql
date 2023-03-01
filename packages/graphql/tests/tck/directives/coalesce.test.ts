@@ -213,7 +213,7 @@ describe("Cypher coalesce()", () => {
             "MATCH (this:\`Actor\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                MATCH (this)-[this0:\`ACTED_IN\`]->(this1:\`Movie\`)
                 WHERE coalesce(this1.status, \\"ACTIVE\\") = $param0
                 WITH { node: { id: this1.id, status: this1.status } } AS edge
                 WITH collect(edge) AS edges
@@ -274,7 +274,7 @@ describe("Cypher coalesce()", () => {
             "MATCH (this:\`Actor\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                MATCH (this)-[this0:\`ACTED_IN\`]->(this1:\`Movie\`)
                 WHERE coalesce(this1.statuses, [ \\"ACTIVE\\", \\"INACTIVE\\" ]) = $param0
                 WITH { node: { id: this1.id, statuses: this1.statuses } } AS edge
                 WITH collect(edge) AS edges

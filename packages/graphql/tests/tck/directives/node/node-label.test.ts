@@ -97,7 +97,7 @@ describe("Label in Node directive", () => {
             "MATCH (this:\`Film\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Person\`)
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var2
             }
@@ -132,7 +132,7 @@ describe("Label in Node directive", () => {
             "MATCH (this:\`Film\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Person\`)
                 WITH { node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -220,7 +220,7 @@ describe("Label in Node directive", () => {
                     CREATE (create_this5:\`Person\`)
                     SET
                         create_this5.name = create_var3.name
-                    MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
+                    MERGE (create_this1)<-[create_this6:\`ACTED_IN\`]-(create_this5)
                     RETURN collect(NULL) AS create_var7
                 }
                 RETURN create_this1
@@ -320,7 +320,7 @@ describe("Label in Node directive", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
+            	MATCH (this)<-[this_acted_in0_relationship:\`ACTED_IN\`]-(this_actors0:\`Person\`)
             	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
             	SET this_actors0.name = $this_update_actors0_name
             	RETURN count(*) AS update_this_actors0
@@ -389,7 +389,7 @@ describe("Label in Node directive", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_actors0_node
-            			MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
+            			MERGE (this)<-[:\`ACTED_IN\`]-(this_connect_actors0_node)
             			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
@@ -432,7 +432,7 @@ describe("Label in Node directive", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:\`Person\`)
+            OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:\`ACTED_IN\`]-(this_disconnect_actors0:\`Person\`)
             WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actor_this_disconnect_actors0param0
             CALL {
             	WITH this_disconnect_actors0, this_disconnect_actors0_rel, this
@@ -516,7 +516,7 @@ describe("Label in Node directive", () => {
             "MATCH (this:\`Film\`)
             WHERE this.id = $param0
             WITH this
-            OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
+            OPTIONAL MATCH (this)<-[this_actors0_relationship:\`ACTED_IN\`]-(this_actors0:\`Person\`)
             WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
             WITH this, collect(DISTINCT this_actors0) AS this_actors0_to_delete
             CALL {
@@ -568,7 +568,7 @@ describe("Label in Node directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
             WHERE EXISTS {
-                MATCH (this)<-[:ACTED_IN]-(this0:\`Person\`)
+                MATCH (this)<-[:\`ACTED_IN\`]-(this0:\`Person\`)
                 WHERE this0.name = $param0
             }
             DETACH DELETE this"

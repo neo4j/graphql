@@ -97,7 +97,7 @@ describe("Node directive with additionalLabels", () => {
             "MATCH (this:\`Film\`:\`Multimedia\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`:\`Person\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`:\`Person\`)
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var2
             }
@@ -143,7 +143,7 @@ describe("Node directive with additionalLabels", () => {
                     CREATE (create_this5:\`Actor\`:\`Person\`)
                     SET
                         create_this5.name = create_var3.name
-                    MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
+                    MERGE (create_this1)<-[create_this6:\`ACTED_IN\`]-(create_this5)
                     RETURN collect(NULL) AS create_var7
                 }
                 RETURN create_this1

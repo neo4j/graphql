@@ -90,7 +90,7 @@ describe("Interface Relationships - Update update", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
+            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Movie)
             	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	SET this_actedIn0.title = $this_update_actedIn0_title
             	RETURN count(*) AS update_this_actedIn0
@@ -102,7 +102,7 @@ describe("Interface Relationships - Update update", () => {
             	WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
+            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Series)
             	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	SET this_actedIn0.title = $this_update_actedIn0_title
             	RETURN count(*) AS update_this_actedIn0
@@ -172,12 +172,12 @@ describe("Interface Relationships - Update update", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
+            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Movie)
             	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	WITH this, this_actedIn0
             	CALL {
             		WITH this, this_actedIn0
-            		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
+            		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:\`ACTED_IN\`]-(this_actedIn0_actors0:Actor)
             		SET this_actedIn0_actors0.name = $this_update_actedIn0_actors0_name
             		RETURN count(*) AS update_this_actedIn0_actors0
             	}
@@ -190,12 +190,12 @@ describe("Interface Relationships - Update update", () => {
             	WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
+            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Series)
             	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	WITH this, this_actedIn0
             	CALL {
             		WITH this, this_actedIn0
-            		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
+            		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:\`ACTED_IN\`]-(this_actedIn0_actors0:Actor)
             		SET this_actedIn0_actors0.name = $this_update_actedIn0_actors0_name
             		RETURN count(*) AS update_this_actedIn0_actors0
             	}
@@ -276,12 +276,12 @@ describe("Interface Relationships - Update update", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
+            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Movie)
             	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	WITH this, this_actedIn0
             	CALL {
             		WITH this, this_actedIn0
-            		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
+            		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:\`ACTED_IN\`]-(this_actedIn0_actors0:Actor)
             		SET this_actedIn0_actors0.name = $this_update_actedIn0_on_Movie_actors0_name
             		RETURN count(*) AS update_this_actedIn0_actors0
             	}
@@ -294,7 +294,7 @@ describe("Interface Relationships - Update update", () => {
             	WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
+            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Series)
             	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	RETURN count(*) AS update_this_actedIn0
             }
@@ -380,12 +380,12 @@ describe("Interface Relationships - Update update", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
+            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Movie)
             	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	WITH this, this_actedIn0
             	CALL {
             		WITH this, this_actedIn0
-            		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
+            		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:\`ACTED_IN\`]-(this_actedIn0_actors0:Actor)
             		SET this_actedIn0_actors0.name = $this_update_actedIn0_on_Movie_actors0_name
             		RETURN count(*) AS update_this_actedIn0_actors0
             	}
@@ -398,12 +398,12 @@ describe("Interface Relationships - Update update", () => {
             	WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
+            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Series)
             	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
             	WITH this, this_actedIn0
             	CALL {
             		WITH this, this_actedIn0
-            		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
+            		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:\`ACTED_IN\`]-(this_actedIn0_actors0:Actor)
             		SET this_actedIn0_actors0.name = $this_update_actedIn0_actors0_name
             		RETURN count(*) AS update_this_actedIn0_actors0
             	}
