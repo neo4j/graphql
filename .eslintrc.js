@@ -1,3 +1,11 @@
+const commaDangle = {
+    arrays: "always-multiline",
+    objects: "always-multiline",
+    imports: "always-multiline",
+    exports: "always-multiline",
+    functions: "never",
+};
+
 module.exports = {
     extends: ["eslint:recommended", "plugin:eslint-comments/recommended", "plugin:import/recommended", "prettier"],
     root: true,
@@ -6,7 +14,7 @@ module.exports = {
         es2021: true,
     },
     rules: {
-        "comma-dangle": ["error", "only-multiline"],
+        "comma-dangle": ["error", commaDangle],
         "eslint-comments/no-unused-disable": "error",
         // Expensive rules disabled below
         "import/default": "off",
@@ -28,6 +36,16 @@ module.exports = {
                 project: "./**/tsconfig.json",
             },
             rules: {
+                "comma-dangle": "off",
+                "@typescript-eslint/comma-dangle": [
+                    "error",
+                    {
+                        ...commaDangle,
+                        enums: "always-multiline",
+                        generics: "always-multiline",
+                        tuples: "always-multiline",
+                    },
+                ],
                 "@typescript-eslint/ban-ts-comment": ["error", { "ts-ignore": "allow-with-description" }],
                 "@typescript-eslint/restrict-template-expressions": "off",
                 "@typescript-eslint/no-explicit-any": "off",

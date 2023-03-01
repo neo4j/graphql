@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { PointField } from "../../../types";
 import createPointElement from "./create-point-element";
@@ -55,15 +56,18 @@ describe("createPointElement", () => {
         const element = createPointElement({
             resolveTree,
             field,
-            variable: "this",
+            variable: new Cypher.NamedVariable("this"),
         });
 
-        expect(element).toMatchInlineSnapshot(`
+        new Cypher.RawCypher((env) => {
+            expect(element.getCypher(env)).toMatchInlineSnapshot(`
             "point: (CASE
                 WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
                 ELSE NULL
             END)"
-        `);
+            `);
+            return "";
+        }).build();
     });
 
     test("returns projection element for array of point values", () => {
@@ -100,14 +104,16 @@ describe("createPointElement", () => {
         const element = createPointElement({
             resolveTree,
             field,
-            variable: "this",
+            variable: new Cypher.NamedVariable("this"),
         });
-
-        expect(element).toMatchInlineSnapshot(`
-            "points: (CASE
-                WHEN this.points IS NOT NULL THEN [p_var0 IN this.points | { point: p_var0, crs: p_var0.crs }]
-                ELSE NULL
-            END)"
-        `);
+        new Cypher.RawCypher((env) => {
+            expect(element.getCypher(env)).toMatchInlineSnapshot(`
+                "points: (CASE
+                    WHEN this.points IS NOT NULL THEN [p_var0 IN this.points | { point: p_var0, crs: p_var0.crs }]
+                    ELSE NULL
+                END)"
+            `);
+            return "";
+        }).build();
     });
 });

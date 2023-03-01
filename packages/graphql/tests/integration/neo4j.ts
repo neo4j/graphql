@@ -112,7 +112,7 @@ class Neo4j {
         return {
             ...(options || {}),
             driver: this.driver,
-            driverConfig: { database }
+            driverConfig: { database },
         };
     }
 
@@ -121,7 +121,7 @@ class Neo4j {
         return {
             ...(options || {}),
             driver: this.driver,
-            driverConfig: { database, bookmarks }
+            driverConfig: { database, bookmarks },
         };
     }
 }

@@ -98,20 +98,20 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
                     WITH this AS this
                     MATCH (this)-[:AUTHORED_BOOK]->(b:Book) RETURN b AS result ORDER BY b.year DESC LIMIT 1
                 }
-                WITH result AS this_mostRecentBook
+                WITH result AS this0
                 CALL {
-                    WITH this_mostRecentBook
+                    WITH this0
                     CALL {
-                        WITH this_mostRecentBook
-                        WITH this_mostRecentBook AS this
+                        WITH this0
+                        WITH this0 AS this
                         OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result
                     }
-                    UNWIND result AS this_mostRecentBook_soldCopies
-                    RETURN head(collect(this_mostRecentBook_soldCopies)) AS this_mostRecentBook_soldCopies
+                    UNWIND result AS this1
+                    RETURN head(collect(this1)) AS this1
                 }
-                RETURN head(collect(this_mostRecentBook { .name, .year, soldCopies: this_mostRecentBook_soldCopies })) AS this_mostRecentBook
+                RETURN head(collect(this0 { .name, .year, soldCopies: this1 })) AS this0
             }
-            RETURN this { .name, mostRecentBook: this_mostRecentBook } AS this"
+            RETURN this { .name, mostRecentBook: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -141,15 +141,15 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
                     WITH this AS this
                     MATCH (this)-[:AUTHORED_BOOK]->(b:Book) RETURN b AS result ORDER BY b.year DESC LIMIT 1
                 }
-                WITH result AS this_mostRecentBook
+                WITH result AS this0
                 CALL {
-                    WITH this_mostRecentBook
-                    UNWIND apoc.cypher.runFirstColumnSingle(\\"OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result\\", { this: this_mostRecentBook, auth: $auth }) AS this_mostRecentBook_soldCopiesWithoutColumnName
-                    RETURN head(collect(this_mostRecentBook_soldCopiesWithoutColumnName)) AS this_mostRecentBook_soldCopiesWithoutColumnName
+                    WITH this0
+                    UNWIND apoc.cypher.runFirstColumnSingle(\\"OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result\\", { this: this0, auth: $auth }) AS this1
+                    RETURN head(collect(this1)) AS this1
                 }
-                RETURN head(collect(this_mostRecentBook { .name, .year, soldCopiesWithoutColumnName: this_mostRecentBook_soldCopiesWithoutColumnName })) AS this_mostRecentBook
+                RETURN head(collect(this0 { .name, .year, soldCopiesWithoutColumnName: this1 })) AS this0
             }
-            RETURN this { .name, mostRecentBook: this_mostRecentBook } AS this"
+            RETURN this { .name, mostRecentBook: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

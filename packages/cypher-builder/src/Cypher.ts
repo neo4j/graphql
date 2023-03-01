@@ -75,7 +75,7 @@ export {
     contains,
     startsWith,
     endsWith,
-    matches
+    matches,
 } from "./expressions/operations/comparison";
 export { plus, minus } from "./expressions/operations/math";
 
@@ -95,7 +95,7 @@ export {
     sum,
     randomUUID,
     id,
-    elementId
+    elementId,
 } from "./expressions/functions/CypherFunctions";
 
 export {
@@ -103,7 +103,7 @@ export {
     cypherDate as date,
     cypherLocalTime as localtime,
     cypherLocalDatetime as localdatetime,
-    cypherTime as time
+    cypherTime as time,
 } from "./expressions/functions/TemporalFunctions";
 
 export * from "./expressions/functions/StringFunctions";

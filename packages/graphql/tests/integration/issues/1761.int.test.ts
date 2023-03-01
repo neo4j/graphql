@@ -20,18 +20,17 @@
 import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
-import { Neo4jGraphQL } from "../../../src";
+import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
-import { Neo4jGraphQLAuthJWTPlugin } from "../../../../plugins/graphql-plugin-auth/src";
 
-describe("https://github.com/neo4j/graphql/issues/2889", () => {
+describe("https://github.com/neo4j/graphql/issues/1761", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
     let session: Session;
 
-    let MyEnumHolder: UniqueType;
+    let myType: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -41,32 +40,28 @@ describe("https://github.com/neo4j/graphql/issues/2889", () => {
     beforeEach(async () => {
         session = await neo4j.getSession();
 
-        MyEnumHolder = new UniqueType("MyEnumHolder");
+        myType = new UniqueType("MyType");
 
         const typeDefs = `
             enum MyEnum {
-                FIRST
-                SECOND
+                FOO
+                BAR
             }
 
-            type ${MyEnumHolder} {
-                myEnums: [MyEnum!]!
+            type ${myType} {
+                enumList: [MyEnum!]! @default(value: [])
+                enumList2: [MyEnum!]! @default(value: [FOO, BAR])
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
-            },
         });
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [MyEnumHolder]);
+        await cleanNodes(session, [myType]);
         await session.close();
     });
 
@@ -74,12 +69,13 @@ describe("https://github.com/neo4j/graphql/issues/2889", () => {
         await driver.close();
     });
 
-    test("should be able to create node with list of enums", async () => {
-        const query = `
+    test("should be able to create node with @default list enum", async () => {
+        const mutation = `
             mutation {
-                ${MyEnumHolder.operations.create}(input: [{ myEnums: [FIRST, SECOND] }]) {
-                    ${MyEnumHolder.plural} {
-                        myEnums
+                ${myType.operations.create}(input: [{}]) {
+                    ${myType.plural} {
+                        enumList
+                        enumList2
                     }
                 }
             }
@@ -87,13 +83,15 @@ describe("https://github.com/neo4j/graphql/issues/2889", () => {
 
         const result = await graphql({
             schema: await neoSchema.getSchema(),
-            source: query,
+            source: mutation,
             contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();
-        expect((result.data?.[MyEnumHolder.operations.create] as any)[MyEnumHolder.plural]).toEqual([
-            { myEnums: ["FIRST", "SECOND"] },
-        ]);
+        expect(result.data).toEqual({
+            [myType.operations.create]: {
+                [myType.plural]: [{ enumList: [], enumList2: ["FOO", "BAR"] }],
+            },
+        });
     });
 });
