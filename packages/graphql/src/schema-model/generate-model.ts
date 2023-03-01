@@ -22,6 +22,7 @@ import {
     DocumentNode,
     FieldDefinitionNode,
     Kind,
+    ListValueNode,
     NamedTypeNode,
     NonNullTypeNode,
     ObjectFieldNode,
@@ -42,8 +43,10 @@ import {
     AuthorizationAnnotation,
     AuthorizationFilterOperation,
     AuthorizationFilterRule,
+    AuthorizationFilterRuleArguments,
     AuthorizationFilterRules,
     AuthorizationFilterRuleType,
+    AuthorizationFilterRuleWhereArguments,
     getDefaultRuleOperations,
 } from "./annotation/AuthorizationAnnotation";
 import { CypherAnnotation } from "./annotation/CypherAnnotation";
@@ -206,7 +209,7 @@ function createEntityAnnotation(
     );
 }
 
-// validation helpers
+// ============= validation helpers
 const NUMBER_KEY_OPERATORS = [...LOGICAL_OPERATORS, "equals", "in", "lt", "lte", "gt", "gte"] as const;
 const STRING_KEY_OPERATORS = [
     ...LOGICAL_OPERATORS,
@@ -217,10 +220,12 @@ const STRING_KEY_OPERATORS = [
     "startsWith",
     "endsWith",
 ] as const;
+const LIST_KEY_OPERATORS = [...LOGICAL_OPERATORS, "includes", "equals"] as const;
 
-export type NumberWhereOperator = (typeof NUMBER_KEY_OPERATORS)[number];
-export type StringWhereOperator = (typeof STRING_KEY_OPERATORS)[number];
-export type LogicalWhereOperator = (typeof LOGICAL_OPERATORS)[number];
+export type NumberWhereOperator = typeof NUMBER_KEY_OPERATORS[number];
+export type StringWhereOperator = typeof STRING_KEY_OPERATORS[number];
+export type ListWhereOperator = typeof LIST_KEY_OPERATORS[number];
+export type LogicalWhereOperator = typeof LOGICAL_OPERATORS[number];
 
 const LOGICAL_WHERE_OPERATOR_ENTRIES = [
     ["OR", Kind.LIST],
@@ -228,6 +233,7 @@ const LOGICAL_WHERE_OPERATOR_ENTRIES = [
     ["AND", Kind.LIST],
 ] as Array<[LogicalWhereOperator, GraphQLValueKind]>;
 
+// TODO: variables?
 type GraphQLValueKind =
     | Kind.STRING
     | Kind.INT
@@ -268,39 +274,112 @@ const StringKindWhereMap = new Map<StringWhereOperator, GraphQLValueKind>([
     ["endsWith", Kind.STRING],
 ]);
 
-function validateLogicalFields(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
-    return undefined;
-}
+const getListKindWhereMap = (kind: GraphQLValueKind) =>
+    new Map<ListWhereOperator, GraphQLValueKind>([
+        ...LOGICAL_WHERE_OPERATOR_ENTRIES,
+        ["includes", kind],
+        ["equals", Kind.LIST],
+    ]);
 
-function validateListWhere(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
+function validateListWhere(whereField: ObjectFieldNode) {
+    const operatorName = whereField.name.value;
+    const operatorKind = getListKindWhereMap(whereField.value.kind as GraphQLValueKind).get(
+        operatorName as ListWhereOperator
+    );
+    if (!operatorKind) {
+        throw new Error(`${operatorName} is not supported on List fields`);
+    }
+    const doValueTypesMatch = whereField.value.kind === operatorKind;
+    if (!doValueTypesMatch) {
+        throw new Error(`unexpected type for ${operatorName}`);
+    }
+    if ((LOGICAL_OPERATORS as ReadonlyArray<unknown>).includes(operatorName)) {
+        if (operatorName === "NOT") {
+            (whereField.value as ObjectValueNode).fields.forEach(validateListWhere);
+        } else {
+            (whereField.value as ListValueNode).values.map((v) =>
+                (v as ObjectValueNode).fields.forEach(validateListWhere)
+            );
+        }
+    }
     return undefined;
 }
 
 function validateIntField(whereField: ObjectFieldNode) {
-    return undefined;
+    const operatorName = whereField.name.value;
+    const operatorKind = IntKindWhereMap.get(operatorName as NumberWhereOperator);
+    if (!operatorKind) {
+        throw new Error(`${operatorName} is not supported on Int fields`);
+    }
+    const doValueTypesMatch = whereField.value.kind === operatorKind;
+    if (!doValueTypesMatch) {
+        throw new Error(`unexpected type for ${operatorName}`);
+    }
+    if ((LOGICAL_OPERATORS as ReadonlyArray<unknown>).includes(operatorName)) {
+        if (operatorName === "NOT") {
+            (whereField.value as ObjectValueNode).fields.forEach(validateIntField);
+        } else {
+            (whereField.value as ListValueNode).values.map((v) =>
+                (v as ObjectValueNode).fields.forEach(validateIntField)
+            );
+        }
+    }
 }
 
 function validateFloatField(whereField: ObjectFieldNode) {
-    return undefined;
+    const operatorName = whereField.name.value;
+    const operatorKind = FloatKindWhereMap.get(operatorName as NumberWhereOperator);
+    if (!operatorKind) {
+        throw new Error(`${operatorName} is not supported on Float fields`);
+    }
+    const doValueTypesMatch = whereField.value.kind === operatorKind;
+    if (!doValueTypesMatch) {
+        throw new Error(`unexpected type for ${operatorName}`);
+    }
+    if ((LOGICAL_OPERATORS as ReadonlyArray<unknown>).includes(operatorName)) {
+        if (operatorName === "NOT") {
+            (whereField.value as ObjectValueNode).fields.forEach(validateFloatField);
+        } else {
+            (whereField.value as ListValueNode).values.map((v) =>
+                (v as ObjectValueNode).fields.forEach(validateFloatField)
+            );
+        }
+    }
 }
 
 function validateStringField(whereField: ObjectFieldNode) {
-    return undefined;
-}
-
-function getArgumentType(field: ObjectFieldNode) {
-    return undefined;
+    const operatorName = whereField.name.value;
+    const operatorKind = StringKindWhereMap.get(operatorName as StringWhereOperator);
+    if (!operatorKind) {
+        throw new Error(`${operatorName} is not supported on String fields`);
+    }
+    const doValueTypesMatch = whereField.value.kind === operatorKind;
+    if (!doValueTypesMatch) {
+        throw new Error(`unexpected type for ${operatorName}`);
+    }
+    if ((LOGICAL_OPERATORS as ReadonlyArray<unknown>).includes(operatorName)) {
+        if (operatorName === "NOT") {
+            (whereField.value as ObjectValueNode).fields.forEach(validateStringField);
+        } else {
+            (whereField.value as ListValueNode).values.map((v) =>
+                (v as ObjectValueNode).fields.forEach(validateStringField)
+            );
+        }
+    }
 }
 
 function validateNumberWhere(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
+    if (whereField.kind !== Kind.OBJECT_FIELD) {
+        throw new Error("String filter should be of type Object");
+    }
     if (graphQLFieldType.isList) {
-        validateListWhere(whereField, graphQLFieldType);
+        validateListWhere(whereField);
     }
     if (graphQLFieldType.type === "Float") {
-        validateFloatField(whereField);
+        (whereField.value as ObjectValueNode).fields.forEach(validateFloatField);
     }
     if (graphQLFieldType.type === "Int") {
-        validateIntField(whereField);
+        (whereField.value as ObjectValueNode).fields.forEach(validateIntField);
     }
 }
 
@@ -308,13 +387,13 @@ function validateStringWhere(whereField: ObjectFieldNode, graphQLFieldType: Grap
     if (whereField.kind !== Kind.OBJECT_FIELD) {
         throw new Error("String filter should be of type Object");
     }
-    (whereField.value as ObjectValueNode).fields.forEach(field => validateStringField(field));
+    (whereField.value as ObjectValueNode).fields.forEach(validateStringField);
     if (graphQLFieldType.isList) {
-        validateListWhere(whereField, graphQLFieldType);
+        validateListWhere(whereField);
     }
-
 }
 
+// TODO:
 // Maybe booleans value should not be part of the generic operators refactor
 function validateBooleanWhere(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
     if (graphQLFieldType.isList) {
@@ -324,7 +403,11 @@ function validateBooleanWhere(whereField: ObjectFieldNode, graphQLFieldType: Gra
     }
 }
 
+// TODO:
 function validateObjectWhere(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
+    if (whereField.kind !== Kind.OBJECT_FIELD) {
+        throw new Error("String filter should be of type Object");
+    }
     if (graphQLFieldType.isList) {
         // 1..n relationship filters
     }
@@ -345,10 +428,51 @@ function validateWhereField(whereField: ObjectFieldNode, graphQLFieldType: Graph
             validateBooleanWhere(whereField, graphQLFieldType);
             break;
         default:
-            // This could be or an Enum type or an Object type
+            // TODO: This could be or an Enum type or an Object type
             validateObjectWhere(whereField, graphQLFieldType);
             break;
     }
+}
+
+function validateAllFields(typeFields: Record<string, GraphQLFieldType>, field: ObjectFieldNode) {
+    const fieldValue = field.value;
+    console.log(">", JSON.stringify(field, null, 2));
+    if (fieldValue.kind !== Kind.OBJECT) {
+        throw new Error(`${field.name.value} should be an object`);
+    }
+
+    if (
+        fieldValue.fields.length > 1 &&
+        fieldValue.fields.find((f) => (LOGICAL_OPERATORS as ReadonlyArray<unknown>).includes(f.name.value))
+    ) {
+        throw new Error(`logical operators cannot be combined`);
+    }
+
+    // console.log(JSON.stringify(fieldValue.fields, null, 2));
+
+    fieldValue.fields.forEach((innerField) => {
+        const isLogicalOperator = (LOGICAL_OPERATORS as ReadonlyArray<unknown>).includes(innerField.name.value);
+        const ifTypeField = typeFields[innerField.name.value];
+
+        if (!isLogicalOperator && !ifTypeField) {
+            throw new Error(`unknown field ${innerField.name.value} in ${field.name.value}`);
+        }
+        if (isLogicalOperator) {
+            if (innerField.name.value === "NOT") {
+                validateAllFields(typeFields, innerField);
+            } else {
+                if (innerField.value.kind !== Kind.LIST) {
+                    throw new Error(`${innerField.name.value} should be of type List`);
+                }
+                innerField.value.values
+                    .map((v) => (v as ObjectValueNode).fields)
+                    .flat()
+                    .forEach((listInnerField) => validateAllFields(typeFields, listInnerField));
+            }
+        } else {
+            validateWhereField(innerField, typeFields[innerField.name.value]);
+        }
+    });
 }
 
 function validateAuthorizationFilterRule(
@@ -362,9 +486,12 @@ function validateAuthorizationFilterRule(
     if (argument?.value.values.find((v) => v.kind !== Kind.OBJECT)) {
         throw new Error(`${argument.name.value} rules should be objects`);
     }
+
     argument?.value.values.forEach((v) => {
         const value = v as ObjectValueNode;
-        const operations = value.fields.find((f) => f.name.value === "operations");
+        // console.log("value", JSON.stringify(value, null, 2));
+        const operations = value.fields.find((f) => f.name.value === AuthorizationFilterRuleArguments.operations);
+        // console.log("op", JSON.stringify(operations, null, 2));
         if (operations) {
             if (operations.value.kind !== Kind.LIST) {
                 throw new Error("operations should be a List");
@@ -372,8 +499,8 @@ function validateAuthorizationFilterRule(
             const possibleValues = getDefaultRuleOperations(ruleType);
             if (possibleValues) {
                 operations.value.values.forEach((v) => {
-                    if (v.kind !== Kind.STRING) {
-                        throw new Error("operations is a List of Strings");
+                    if (v.kind !== Kind.ENUM) {
+                        throw new Error("operations should be a List of values from the Enum");
                     }
                     if (!possibleValues.includes(v.value as AuthorizationFilterOperation)) {
                         throw new Error(`${v.value} operation is not allowed`);
@@ -381,41 +508,33 @@ function validateAuthorizationFilterRule(
                 });
             }
         }
-        const requireAuthentication = value.fields.find((f) => f.name.value === "requireAuthentication");
+        const requireAuthentication = value.fields.find(
+            (f) => f.name.value === AuthorizationFilterRuleArguments.requireAuthentication
+        );
         if (requireAuthentication && requireAuthentication?.value.kind !== Kind.BOOLEAN) {
             throw new Error("requireAuthentication should be a Boolean");
         }
-        const where = value.fields.find((f) => f.name.value === "where");
+        const where = value.fields.find((f) => f.name.value === AuthorizationFilterRuleArguments.where);
         if (where) {
             if (where.value.kind !== Kind.OBJECT) {
                 throw new Error("where should be an object");
             }
-            const nodeWhere = where.value.fields.find((f) => f.name.value === "node");
-            const jwtWhere = where.value.fields.find((f) => f.name.value === "jwtPayload");
+            const nodeWhere = where.value.fields.find(
+                (f) => f.name.value === AuthorizationFilterRuleWhereArguments.node
+            );
+            const jwtWhere = where.value.fields.find(
+                (f) => f.name.value === AuthorizationFilterRuleWhereArguments.jwtPayload
+            );
             if (!nodeWhere && !jwtWhere) {
                 throw new Error("where should contain `node` or `jwtPayload`");
             }
             if (nodeWhere) {
-                if (nodeWhere.value.kind !== Kind.OBJECT) {
-                    throw new Error("where.node should be an object");
-                }
                 // ... validate fields
                 const typeFields = (typeDefinition.fields || []).reduce((acc, f) => {
-                    acc[f.name.value] = getGraphQLFieldTypeFromTypNode(f.type);
+                    acc[f.name.value] = getGraphQLFieldTypeFromTypeNode(f.type);
                     return acc;
                 }, {}) as Record<string, GraphQLFieldType>;
-
-                const fieldDoesNotExist = nodeWhere.value.fields.find(
-                    (f) =>
-                        !(LOGICAL_OPERATORS as ReadonlyArray<unknown>).includes(f.name.value) &&
-                        !typeFields[f.name.value]
-                );
-                if (fieldDoesNotExist) {
-                    throw new Error(`unknown field ${fieldDoesNotExist.name.value} in where.node`);
-                }
-                nodeWhere.value.fields.forEach((field) => {
-                    validateWhereField(field, typeFields[field.name.value]);
-                });
+                validateAllFields(typeFields, nodeWhere);
             }
         }
     });
@@ -427,7 +546,7 @@ interface GraphQLFieldType {
     isList: boolean;
 }
 
-function getGraphQLFieldTypeFromTypNode(type: TypeNode): GraphQLFieldType {
+function getGraphQLFieldTypeFromTypeNode(type: TypeNode): GraphQLFieldType {
     switch (type.kind) {
         case Kind.NAMED_TYPE:
             return {
@@ -437,12 +556,12 @@ function getGraphQLFieldTypeFromTypNode(type: TypeNode): GraphQLFieldType {
             };
         case Kind.LIST_TYPE:
             return {
-                type: getGraphQLFieldTypeFromTypNode(type.type).type,
+                type: getGraphQLFieldTypeFromTypeNode(type.type).type,
                 isNullable: true,
                 isList: true,
             };
         case Kind.NON_NULL_TYPE: {
-            const nestedType = getGraphQLFieldTypeFromTypNode(type.type);
+            const nestedType = getGraphQLFieldTypeFromTypeNode(type.type);
             return {
                 type: nestedType.type,
                 isNullable: false,
@@ -451,6 +570,8 @@ function getGraphQLFieldTypeFromTypNode(type: TypeNode): GraphQLFieldType {
         }
     }
 }
+
+// ============ real authorization stuff from this point
 
 function validateAuthorizationAnnotation(directive: DirectiveNode, typeDefinition: ObjectTypeDefinitionNode) {
     const dirArgs = directive.arguments;

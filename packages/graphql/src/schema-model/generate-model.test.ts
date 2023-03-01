@@ -236,7 +236,7 @@ describe("@authorization directive validation", () => {
             const typeDefs = gql`
                 type User
                     @authorization(
-                        filter: [{ operation: [CREATE], where: { node: { id: { equals: "valid-string" } } } }]
+                        filter: [{ operations: [CREATE], where: { node: { id: { equals: "valid-string" } } } }]
                     ) {
                     id: ID!
                     name: String!
@@ -253,7 +253,7 @@ describe("@authorization directive validation", () => {
                     @authorization(
                         filter: [
                             {
-                                operation: [READ, CREATE_RELATIONSHIP]
+                                operations: [READ, CREATE_RELATIONSHIP]
                                 where: { node: { id: { equals: "valid-string" } } }
                             }
                         ]
@@ -286,14 +286,7 @@ describe("@authorization directive validation", () => {
 
         test("should not throw if undefined", () => {
             const typeDefs = gql`
-                type User
-                    @authorization(
-                        filter: [
-                            {
-                                where: { node: { id: { equals: "valid-string" } } }
-                            }
-                        ]
-                    ) {
+                type User @authorization(filter: [{ where: { node: { id: { equals: "valid-string" } } } }]) {
                     id: ID!
                     name: String!
                 }
@@ -307,21 +300,190 @@ describe("@authorization directive validation", () => {
 
 /// me
 
-describe("simone test", () => {
-    test("1", () => {
+describe("simone suite", () => {
+    // test("1", () => {
+    //     const typeDefs = gql`
+    //         type User
+    //             @authorization(
+    //                 filter: [{ requireAuthentication: true, where: { node: { name: { equals: "1" } } } }]
+    //             ) {
+    //             name: String!
+    //         }
+
+    //     `;
+
+    //     const document = getDocument(typeDefs);
+    //     expect(generateModel(document)).toBeDefined();
+
+    // });
+
+    test.only("node.and ok", () => {
         const typeDefs = gql`
             type User
                 @authorization(
-                    filter: [{ requireAuthentication: true, where: { node: { name: { equals: "1" } } } }]
+                    filter: [
+                        {
+                            requireAuthentication: true
+                            where: { node: { AND: [{ name: { equals: "1" } }, { bananas: { includes: 1 } }] } }
+                        }
+                    ]
                 ) {
                 name: String!
+                bananas: [Int]
             }
-          
         `;
 
         const document = getDocument(typeDefs);
         expect(generateModel(document)).toBeDefined();
-       
     });
 
+    test("node.name.and ok", () => {
+        const typeDefs = gql`
+            type User
+                @authorization(
+                    filter: [
+                        {
+                            requireAuthentication: true
+                            where: { node: { name: { AND: [{ equals: "12" }, { "contains": "2" }] } } }
+                        }
+                    ]
+                ) {
+                name: String!
+                bananas: [Int]
+            }
+        `;
+
+        const document = getDocument(typeDefs);
+        expect(generateModel(document)).toBeDefined();
+    });
+
+    test("node.name.and.not ok", () => {
+        const typeDefs = gql`
+            type User
+                @authorization(
+                    filter: [
+                        {
+                            requireAuthentication: true
+                            where: { node: { name: { AND: [{ equals: "12" }, { "contains": "2" }, { NOT: { startsWith: "3" } }] } } }
+                        }
+                    ]
+                ) {
+                name: String!
+                bananas: [Int]
+            }
+        `;
+
+        const document = getDocument(typeDefs);
+        expect(generateModel(document)).toBeDefined();
+    });
+
+    test("node.bananas.and ok", () => {
+        const typeDefs = gql`
+            type User
+                @authorization(
+                    filter: [
+                        {
+                            requireAuthentication: true
+                            where: { node: { bananas: { AND: [{ includes: 1 }, { equals: [2, 3] }] } } }
+                        }
+                    ]
+                ) {
+                name: String!
+                bananas: [Int]
+            }
+        `;
+
+        const document = getDocument(typeDefs);
+        expect(generateModel(document)).toBeDefined();
+    });
+
+    test("node.bananas.and.and ok", () => {
+        const typeDefs = gql`
+            type User
+                @authorization(
+                    filter: [
+                        {
+                            requireAuthentication: true
+                            where: {
+                                node: {
+                                    bananas: {
+                                        AND: [
+                                            { includes: 1 }
+                                            { equals: [2, 3] }
+                                            { AND: [{ NOT: { includes: 2 } }, { equals: [5] }] }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                ) {
+                name: String!
+                bananas: [Int]
+            }
+        `;
+
+        const document = getDocument(typeDefs);
+        expect(generateModel(document)).toBeDefined();
+    });
+
+    test("node.bananas.and cannot be combined", () => {
+        const typeDefs = gql`
+            type User
+                @authorization(
+                    filter: [
+                        {
+                            requireAuthentication: true
+                            where: { node: { bananas: { AND: [{ includes: 1 }, { equals: [2, 3] }], includes: 42 } } }
+                        }
+                    ]
+                ) {
+                name: String!
+                bananas: [Int]
+            }
+        `;
+
+        const document = getDocument(typeDefs);
+        expect(generateModel(document)).toBeDefined();
+    });
+
+    test("node.name.hocuspocus operator does not exist", () => {
+        const typeDefs = gql`
+            type User
+                @authorization(
+                    filter: [
+                        {
+                            requireAuthentication: true
+                            where: { node: { name: { hocuspocus: [{ equals: "12" }, { "contains": "2" }] } } }
+                        }
+                    ]
+                ) {
+                name: String!
+                bananas: [Int]
+            }
+        `;
+
+        const document = getDocument(typeDefs);
+        expect(generateModel(document)).toBeDefined();
+    });
+
+    test("node.bananas.and.includes.and operator cannot be used here", () => {
+        const typeDefs = gql`
+            type User
+                @authorization(
+                    filter: [
+                        {
+                            requireAuthentication: true
+                            where: { node: { bananas: { AND: [{ includes: { NOT: { 1 } } }, { equals: [2, 3] }] } } }
+                        }
+                    ]
+                ) {
+                name: String!
+                bananas: [Int]
+            }
+        `;
+
+        const document = getDocument(typeDefs);
+        expect(generateModel(document)).toBeDefined();
+    });
 });

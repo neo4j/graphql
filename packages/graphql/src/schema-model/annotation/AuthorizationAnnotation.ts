@@ -75,6 +75,12 @@ export const getDefaultRuleOperations = (
     }
 };
 
+export const AuthorizationFilterRuleArguments = {
+    operations: "operations",
+    requireAuthentication: "requireAuthentication",
+    where: "where",
+};
+
 export class AuthorizationFilterRule {
     // UserAuthorizationFilterRule
     operations?: AuthorizationFilterOperation[]; // AuthorizationFilterOperation, this is not available for subscription
@@ -97,6 +103,10 @@ export class AuthorizationFilterRule {
     }
 }
 
+export const AuthorizationFilterRuleWhereArguments = {
+    jwtPayload: "jwtPayload",
+    node: "node",
+};
 export class AuthorizationFilterWhere {
     jwtPayload?: Record<string, any>;
     node?: Record<string, any>; // UserWhere
