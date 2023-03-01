@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { Annotation } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Entity } from "./Entity";
@@ -54,14 +55,14 @@ export class ConcreteEntity implements Entity {
 
     private addAttribute(attribute: Attribute): void {
         if (this.attributes.has(attribute.name)) {
-            throw new Error(`Attribute ${attribute.name} already exists in ${this.name}`);
+            throw new Neo4jGraphQLSchemaValidationError(`Attribute ${attribute.name} already exists in ${this.name}`);
         }
         this.attributes.set(attribute.name, attribute);
     }
 
     private addAnnotation(annotation: Annotation): void {
         if (this.annotations.has(annotation.name)) {
-            throw new Error(`Annotation ${annotation.name} already exists in ${this.name}`);
+            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotation.name} already exists in ${this.name}`);
         }
         this.annotations.set(annotation.name, annotation);
     }

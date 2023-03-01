@@ -59,14 +59,4 @@ describe("AuthorizationFilterRule", () => {
         ]);
         expect(authFilterRule.requireAuthentication).toBeTrue();
     });
-
-    it("throws an error if where does not contain name of jwtPayload", () => {
-        const rule = {
-            where: { something: { name: { equals: "Banana" } } },
-            ruleType: "AuthorizationFilterValidationRule",
-        };
-        expect(() => new AuthorizationFilterRule(rule)).toThrow(
-            "At least one between jwtPayload or node should be present to construct the AuthorizationFilterWhere"
-        );
-    });
 });
