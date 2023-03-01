@@ -20,7 +20,7 @@
 import { AuthorizationAnnotation, AuthorizationFilterRule } from "./AuthorizationAnnotation";
 
 describe("AuthorizationAnnotation", () => {
-    it("Exports class correctly", () => {
+    it("initialize class correctly", () => {
         const preRule = {
             where: { node: { name: { equals: "Keanu" } } },
             ruleType: "AuthorizationPreValidationRule",
@@ -44,7 +44,7 @@ describe("AuthorizationAnnotation", () => {
 });
 
 describe("AuthorizationFilterRule", () => {
-    it("Exports class correctly", () => {
+    it("initialize class correctly", () => {
         const rule = {
             where: { node: { name: { equals: "Keanu" } } },
             ruleType: "AuthorizationFilterValidationRule",
@@ -60,9 +60,9 @@ describe("AuthorizationFilterRule", () => {
         expect(authFilterRule.requireAuthentication).toBeTrue();
     });
 
-    it("Throws an error if where does not contain name of jwtPayload", () => {
+    it("throws an error if where does not contain name of jwtPayload", () => {
         const rule = {
-            where: { banana: { name: { equals: "Banana" } } },
+            where: { something: { name: { equals: "Banana" } } },
             ruleType: "AuthorizationFilterValidationRule",
         };
         expect(() => new AuthorizationFilterRule(rule)).toThrow(
