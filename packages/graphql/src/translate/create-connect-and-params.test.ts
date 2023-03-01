@@ -34,7 +34,8 @@ describe("createConnectAndParams", () => {
             relationFields: [
                 {
                     direction: "OUT",
-                    type: "SIMILAR",
+                    type: "`SIMILAR`",
+                    typeUnescaped: "SIMILAR",
                     fieldName: "similarMovies",
                     queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
                     inherited: false,
@@ -104,7 +105,7 @@ describe("createConnectAndParams", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this0_node
-            			MERGE (this)-[:SIMILAR]->(this0_node)
+            			MERGE (this)-[:\`SIMILAR\`]->(this0_node)
             			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
@@ -121,7 +122,7 @@ describe("createConnectAndParams", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0_node
             			UNWIND connectedNodes as this0_node_similarMovies0_node
-            			MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node)
+            			MERGE (this0_node)-[:\`SIMILAR\`]->(this0_node_similarMovies0_node)
             			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
