@@ -237,7 +237,7 @@ export function filterByRelationshipProperties({
 }): boolean {
     const receivedEventProperties = receivedEvent.properties;
     const receivedEventRelationshipType = receivedEvent.relationshipName;
-    const relationships = node.relationFields.filter((f) => f.type === receivedEventRelationshipType);
+    const relationships = node.relationFields.filter((f) => f.typeUnescaped === receivedEventRelationshipType);
     if (!relationships.length) {
         return false;
     }
