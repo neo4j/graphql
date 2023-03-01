@@ -41,7 +41,7 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -87,13 +87,13 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[update_this0:ACTED_IN]-(update_this1:\`Actor\`)
+                WITH { screenTime: update_this0.screenTime, node: { name: update_this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS update_var2
             }
-            RETURN collect(DISTINCT this { .title, actorsConnection: this_actorsConnection }) AS data"
+            RETURN collect(DISTINCT this { .title, actorsConnection: update_var2 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

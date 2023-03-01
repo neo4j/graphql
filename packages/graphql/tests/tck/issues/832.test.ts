@@ -253,9 +253,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
             RETURN this1
             }
-            RETURN [
-            this0 { .id },
-            this1 { .id }] AS data"
+            RETURN [ this0 { .id }, this1 { .id } ] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -404,8 +402,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
             RETURN this0
             }
-            RETURN [
-            this0 { .id }] AS data"
+            RETURN [ this0 { .id } ] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -539,8 +536,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
             RETURN this0
             }
-            RETURN [
-            this0 { .id }] AS data"
+            RETURN [ this0 { .id } ] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -769,65 +765,71 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
             RETURN this1
             }
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(this0_Person:\`Person\`)
-                RETURN { __resolveType: \\"Person\\", id: this0_Person.id } AS this0_subjects
-                UNION
+                CALL {
+                    WITH *
+                    MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Person\`)
+                    WITH create_this1 { __resolveType: \\"Person\\", __id: id(this0), .id } AS create_this1
+                    RETURN create_this1 AS create_var2
+                    UNION
+                    WITH *
+                    MATCH (this0)<-[create_this3:ACTED_IN]-(create_this4:\`Place\`)
+                    WITH create_this4 { __resolveType: \\"Place\\", __id: id(this0), .id } AS create_this4
+                    RETURN create_this4 AS create_var2
+                }
+                WITH create_var2
+                RETURN collect(create_var2) AS create_var2
+            }
+            CALL {
                 WITH this0
-                MATCH (this0)<-[create_this1:ACTED_IN]-(this0_Place:\`Place\`)
-                RETURN { __resolveType: \\"Place\\", id: this0_Place.id } AS this0_subjects
+                CALL {
+                    WITH *
+                    MATCH (this0)-[create_this5:ACTED_IN]->(create_this6:\`Person\`)
+                    WITH create_this6 { __resolveType: \\"Person\\", __id: id(this0), .id } AS create_this6
+                    RETURN create_this6 AS create_var7
+                    UNION
+                    WITH *
+                    MATCH (this0)-[create_this8:ACTED_IN]->(create_this9:\`Place\`)
+                    WITH create_this9 { __resolveType: \\"Place\\", __id: id(this0), .id } AS create_this9
+                    RETURN create_this9 AS create_var7
+                }
+                WITH create_var7
+                RETURN collect(create_var7) AS create_var7
             }
-            RETURN collect(this0_subjects) AS this0_subjects
-            }
-            WITH *
-            CALL {
-            WITH *
-            CALL {
-                WITH this0
-                MATCH (this0)-[create_this2:ACTED_IN]->(this0_Person:\`Person\`)
-                RETURN { __resolveType: \\"Person\\", id: this0_Person.id } AS this0_objects
-                UNION
-                WITH this0
-                MATCH (this0)-[create_this3:ACTED_IN]->(this0_Place:\`Place\`)
-                RETURN { __resolveType: \\"Place\\", id: this0_Place.id } AS this0_objects
-            }
-            RETURN collect(this0_objects) AS this0_objects
-            }
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this1
-                MATCH (this1)<-[create_this0:ACTED_IN]-(this1_Person:\`Person\`)
-                RETURN { __resolveType: \\"Person\\", id: this1_Person.id } AS this1_subjects
-                UNION
-                WITH this1
-                MATCH (this1)<-[create_this1:ACTED_IN]-(this1_Place:\`Place\`)
-                RETURN { __resolveType: \\"Place\\", id: this1_Place.id } AS this1_subjects
+                CALL {
+                    WITH *
+                    MATCH (this1)<-[create_this10:ACTED_IN]-(create_this11:\`Person\`)
+                    WITH create_this11 { __resolveType: \\"Person\\", __id: id(this1), .id } AS create_this11
+                    RETURN create_this11 AS create_var12
+                    UNION
+                    WITH *
+                    MATCH (this1)<-[create_this13:ACTED_IN]-(create_this14:\`Place\`)
+                    WITH create_this14 { __resolveType: \\"Place\\", __id: id(this1), .id } AS create_this14
+                    RETURN create_this14 AS create_var12
+                }
+                WITH create_var12
+                RETURN collect(create_var12) AS create_var12
             }
-            RETURN collect(this1_subjects) AS this1_subjects
-            }
-            WITH *
             CALL {
-            WITH *
-            CALL {
                 WITH this1
-                MATCH (this1)-[create_this2:ACTED_IN]->(this1_Person:\`Person\`)
-                RETURN { __resolveType: \\"Person\\", id: this1_Person.id } AS this1_objects
-                UNION
-                WITH this1
-                MATCH (this1)-[create_this3:ACTED_IN]->(this1_Place:\`Place\`)
-                RETURN { __resolveType: \\"Place\\", id: this1_Place.id } AS this1_objects
+                CALL {
+                    WITH *
+                    MATCH (this1)-[create_this15:ACTED_IN]->(create_this16:\`Person\`)
+                    WITH create_this16 { __resolveType: \\"Person\\", __id: id(this1), .id } AS create_this16
+                    RETURN create_this16 AS create_var17
+                    UNION
+                    WITH *
+                    MATCH (this1)-[create_this18:ACTED_IN]->(create_this19:\`Place\`)
+                    WITH create_this19 { __resolveType: \\"Place\\", __id: id(this1), .id } AS create_this19
+                    RETURN create_this19 AS create_var17
+                }
+                WITH create_var17
+                RETURN collect(create_var17) AS create_var17
             }
-            RETURN collect(this1_objects) AS this1_objects
-            }
-            RETURN [
-            this0 { .id, subjects: this0_subjects, objects: this0_objects },
-            this1 { .id, subjects: this1_subjects, objects: this1_objects }] AS data"
+            RETURN [ this0 { .id, subjects: create_var2, objects: create_var7 }, this1 { .id, subjects: create_var12, objects: create_var17 } ] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -940,9 +942,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             SET this1.kind = $this1_kind
             RETURN this1
             }
-            RETURN [
-            this0 { .id },
-            this1 { .id }] AS data"
+            RETURN [ this0 { .id }, this1 { .id } ] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

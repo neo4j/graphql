@@ -31,7 +31,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
 
-                interface RelProperties {
+                interface RelProperties @relationshipProperties {
                     id: ID!
                     callback1: String! @callback(operations: [CREATE], name: "callback4") @default(value: "Test")
                 }
@@ -57,7 +57,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
 
-                interface RelProperties {
+                interface RelProperties @relationshipProperties {
                     id: ID!
                     callback1: String! @callback(operations: [CREATE], name: "callback4") @id
                 }
@@ -84,7 +84,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
                 genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
             }
 
-            interface RelProperties {
+            interface RelProperties @relationshipProperties {
                 id: ID!
                 callback1: String! @callback(operations: [CREATE], name: "callback4")
             }
@@ -111,7 +111,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
                 genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
             }
 
-            interface RelProperties {
+            interface RelProperties @relationshipProperties {
                 id: ID!
                 callback1: String! @callback(operations: [CREATE], name: "callback1")
                 callback2: String! @callback(operations: [UPDATE], name: "callback2")
@@ -524,10 +524,22 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
               genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
               genresAggregate: MovieGenresAggregateInput
               genresConnection: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_ALL: MovieGenresConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_NONE: MovieGenresConnectionWhere
               genresConnection_NOT: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_SINGLE: MovieGenresConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_SOME: MovieGenresConnectionWhere
               \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
               genres_ALL: GenreWhere
@@ -693,7 +705,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
                 genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
             }
 
-            interface RelProperties {
+            interface RelProperties @relationshipProperties {
                 id: ID!
                 callback1: Int! @callback(operations: [CREATE], name: "callback1")
                 callback2: Int! @callback(operations: [UPDATE], name: "callback2")
@@ -1083,10 +1095,22 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
               genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
               genresAggregate: MovieGenresAggregateInput
               genresConnection: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_ALL: MovieGenresConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_NONE: MovieGenresConnectionWhere
               genresConnection_NOT: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_SINGLE: MovieGenresConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_SOME: MovieGenresConnectionWhere
               \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
               genres_ALL: GenreWhere

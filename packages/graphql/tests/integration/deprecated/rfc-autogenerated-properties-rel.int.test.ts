@@ -58,7 +58,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
                     )
                 }
 
-                interface RelProperties {
+                interface RelProperties @relationshipProperties {
                     id: ID!
                     callback: String! @callback(operations: [CREATE], name: "callback")
                 }
@@ -168,7 +168,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
                     )
                 }
 
-                interface RelProperties {
+                interface RelProperties @relationshipProperties {
                     id: ID!
                     callback: String! @callback(operations: [UPDATE], name: "callback")
                 }
@@ -296,7 +296,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
                     )
                 }
 
-                interface RelProperties {
+                interface RelProperties @relationshipProperties {
                     id: ID!
                     callback: String! @callback(operations: [CREATE, UPDATE], name: "callback")
                 }
@@ -453,7 +453,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
                     )
                 }
 
-                interface RelProperties {
+                interface RelProperties @relationshipProperties {
                     id: ID!
                     callback: Int! @callback(operations: [CREATE], name: "callback")
                 }
@@ -566,7 +566,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
                     )
                 }
 
-                interface RelProperties {
+                interface RelProperties @relationshipProperties {
                     id: ID!
                     callback: Int! @callback(operations: [UPDATE], name: "callback")
                 }
@@ -700,7 +700,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
                     )
                 }
 
-                interface RelProperties {
+                interface RelProperties @relationshipProperties {
                     id: ID!
                     callback: Int! @callback(operations: [CREATE, UPDATE], name: "callback")
                 }
@@ -850,7 +850,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
                     )
                 }
 
-                interface RelProperties {
+                interface RelProperties @relationshipProperties {
                     id: ID!
                     title: String!
                     slug: String! @callback(operations: [CREATE], name: "callback")
@@ -963,7 +963,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
                     )
                 }
 
-                interface RelProperties {
+                interface RelProperties @relationshipProperties {
                     id: ID!
                     title: String!
                     slug: String! @callback(operations: [UPDATE], name: "callback")

@@ -42,7 +42,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -85,19 +85,19 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE this_Actor.age < $this_connection_actorsConnectionparam0
-                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, age: this_Actor.age } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE this1.age < $param0
+                WITH { screenTime: this0.screenTime, node: { name: this1.name, age: this1.age } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": {
+                \\"param0\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 }
@@ -132,19 +132,19 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE this_Actor.age <= $this_connection_actorsConnectionparam0
-                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, age: this_Actor.age } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE this1.age <= $param0
+                WITH { screenTime: this0.screenTime, node: { name: this1.name, age: this1.age } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": {
+                \\"param0\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 }
@@ -179,19 +179,19 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE this_Actor.age > $this_connection_actorsConnectionparam0
-                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, age: this_Actor.age } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE this1.age > $param0
+                WITH { screenTime: this0.screenTime, node: { name: this1.name, age: this1.age } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": {
+                \\"param0\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 }
@@ -226,19 +226,19 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE this_Actor.age >= $this_connection_actorsConnectionparam0
-                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, age: this_Actor.age } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE this1.age >= $param0
+                WITH { screenTime: this0.screenTime, node: { name: this1.name, age: this1.age } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": {
+                \\"param0\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 }

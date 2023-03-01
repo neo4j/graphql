@@ -1617,7 +1617,7 @@ describe("Advanced Filtering", () => {
                             id: ID
                         }
 
-                        interface ActedIn {
+                        interface ActedIn @relationshipProperties {
                             id: String
                         }
                 `;
@@ -1684,7 +1684,7 @@ describe("Advanced Filtering", () => {
                             id: ID
                         }
 
-                        interface ActedIn {
+                        interface ActedIn @relationshipProperties {
                             id: String
                         }
                 `;
@@ -1904,7 +1904,7 @@ describe("Advanced Filtering", () => {
                             id: ID
                         }
 
-                        interface ActedIn {
+                        interface ActedIn @relationshipProperties {
                             id: ID
                         }
                 `;
@@ -2420,7 +2420,7 @@ describe("Advanced Filtering", () => {
                 });
             });
         });
-        
+
         test("should test for not null", async () => {
             const session = await neo4j.getSession();
 

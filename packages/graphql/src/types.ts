@@ -192,8 +192,8 @@ export type CustomScalarField = BaseField;
 export interface CustomEnumField extends BaseField {
     // TODO Must be "Enum" - really needs refactoring into classes
     kind: string;
-    defaultValue?: string;
-    coalesceValue?: string;
+    defaultValue?: string | string[];
+    coalesceValue?: string | string[];
 }
 
 export interface UnionField extends BaseField {
@@ -201,7 +201,7 @@ export interface UnionField extends BaseField {
 }
 
 export interface CustomResolverField extends BaseField {
-    requiredFields: string[];
+    requiredFields: Record<string, ResolveTree>;
 }
 
 export interface InterfaceField extends BaseField {
@@ -543,6 +543,6 @@ export interface Neo4jFeaturesSettings {
 export type PredicateReturn = {
     predicate: Cypher.Predicate | undefined;
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
-    requiredVariables: Cypher.Variable[];
-    aggregatingVariables: Cypher.Variable[];
 };
+
+export type CypherFieldReferenceMap = Record<string, Cypher.Node | Cypher.Variable>;

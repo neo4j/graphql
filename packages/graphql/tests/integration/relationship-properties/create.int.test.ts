@@ -49,7 +49,7 @@ describe("Relationship properties - create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -135,7 +135,7 @@ describe("Relationship properties - create", () => {
                 publications: [Publication!]! @relationship(type: "WROTE", properties: "Wrote", direction: OUT)
             }
 
-            interface Wrote {
+            interface Wrote @relationshipProperties {
                 words: Int!
             }
         `;

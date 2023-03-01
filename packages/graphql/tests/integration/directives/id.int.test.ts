@@ -192,7 +192,7 @@ describe("@id directive", () => {
                 name: String!
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 id: ID! @id
                 screenTime: Int!
             }

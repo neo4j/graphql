@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
                 genres: [${genreType.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "${inGenreInterface.name}")
             }
 
-            interface ${inGenreInterface.name} {
+            interface ${inGenreInterface.name} @relationshipProperties {
                 intValue: Int!
             }
         `;
@@ -419,6 +419,9 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [movieType.plural]: expect.toIncludeSameMembers([
+                {
+                    title: movieTitle2,
+                },
                 {
                     title: movieTitle4,
                 },

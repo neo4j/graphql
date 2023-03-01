@@ -96,15 +96,15 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
                     WITH this AS this
                     Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag) return pag SKIP ($param0 * $param1) LIMIT $param0
                 }
-                WITH pag AS this_hasFeedItems
+                WITH pag AS this0
                 WITH *
-                WHERE ((this_hasFeedItems:\`ContentPiece\` AND this_hasFeedItems:\`UNIVERSAL\`) OR (this_hasFeedItems:\`Project\` AND this_hasFeedItems:\`UNIVERSAL\`))
+                WHERE ((this0:\`ContentPiece\` AND this0:\`UNIVERSAL\`) OR (this0:\`Project\` AND this0:\`UNIVERSAL\`))
                 RETURN collect(CASE
-                    WHEN (this_hasFeedItems:\`ContentPiece\` AND this_hasFeedItems:\`UNIVERSAL\`) THEN this_hasFeedItems { __resolveType: \\"ContentPiece\\",  .id }
-                    WHEN (this_hasFeedItems:\`Project\` AND this_hasFeedItems:\`UNIVERSAL\`) THEN this_hasFeedItems { __resolveType: \\"Project\\",  .id }
-                END) AS this_hasFeedItems
+                    WHEN (this0:\`ContentPiece\` AND this0:\`UNIVERSAL\`) THEN this0 { __resolveType: \\"ContentPiece\\",  .id }
+                    WHEN (this0:\`Project\` AND this0:\`UNIVERSAL\`) THEN this0 { __resolveType: \\"Project\\",  .id }
+                END) AS this0
             }
-            RETURN this { .id, hasFeedItems: this_hasFeedItems } AS this"
+            RETURN this { .id, hasFeedItems: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

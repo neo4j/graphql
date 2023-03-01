@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                     @relationship(type: "HAS", properties: "RelationProps", direction: OUT)
             }
 
-            interface RelationProps {
+            interface RelationProps @relationshipProperties {
                 current: Boolean!
             }
         `;

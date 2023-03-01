@@ -42,7 +42,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -52,9 +52,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
             config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret
-                })
-            }
+                    secret,
+                }),
+            },
         });
     });
 
@@ -94,29 +94,29 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
 
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE point.distance(this_Actor.currentLocation, point($this_connection_actorsConnectionparam0.point)) = $this_connection_actorsConnectionparam0.distance
-                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, currentLocation: (CASE
-                    WHEN this_Actor.currentLocation IS NOT NULL THEN { point: this_Actor.currentLocation }
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE point.distance(this1.currentLocation, point($param0.point)) = $param0.distance
+                WITH { screenTime: this0.screenTime, node: { name: this1.name, currentLocation: CASE
+                    WHEN this1.currentLocation IS NOT NULL THEN { point: this1.currentLocation }
                     ELSE NULL
-                END) } } AS edge
+                END } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": {
+                \\"param0\\": {
                     \\"point\\": {
                         \\"longitude\\": 1,
                         \\"latitude\\": 2

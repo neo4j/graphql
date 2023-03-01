@@ -39,7 +39,8 @@ Note there is a directive on each "end" of the relationship in this case, but it
 
 === Relationship properties
 
-In order to add relationship properties to a relationship, you need to add a new type to your type definitions, but this time it will be of type `interface`. For example, for your "ACTED_IN" relationship, add a property "roles":
+In order to add relationship properties to a relationship, you need to add a new type to your type definitions, but this time it will be of type `interface`. This interface must be decorated with the `@relationshipProperties` directive.
+For example, for your "ACTED_IN" relationship, add a property "roles":
 
 [source, graphql, indent=0]
 ----

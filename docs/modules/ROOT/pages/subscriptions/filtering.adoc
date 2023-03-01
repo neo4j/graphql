@@ -335,7 +335,7 @@ type Magazine implements Reviewer {
     reputation: Int!
 }
 
-interface Review {
+interface Review @relationshipProperties {
     score: Int!
 }
 ----

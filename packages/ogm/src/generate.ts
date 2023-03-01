@@ -192,7 +192,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     args?: any;
                     context?: any;
                     rootValue?: any;
-                }): Promise<Create${upperFirst(node.plural as string)}MutationResponse>
+                }): Promise<Create${upperFirst(node.plural)}MutationResponse>
                 public update(args: {
                     where?: ${node.name}Where;
                     update?: ${node.name}UpdateInput;
@@ -204,7 +204,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     args?: any;
                     context?: any;
                     rootValue?: any;
-                }): Promise<Update${upperFirst(node.plural as string)}MutationResponse>
+                }): Promise<Update${upperFirst(node.plural)}MutationResponse>
                 public delete(args: {
                     where?: ${node.name}Where;
                     ${node.relationFields.length ? `delete?: ${node.name}DeleteInput` : ""}

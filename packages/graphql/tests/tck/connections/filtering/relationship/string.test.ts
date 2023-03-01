@@ -47,7 +47,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 role: String!
                 screenTime: Int!
             }
@@ -94,19 +94,19 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE this_connection_actorsConnectionthis0.role CONTAINS $this_connection_actorsConnectionparam0
-                WITH { role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE this0.role CONTAINS $param0
+                WITH { role: this0.role, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": \\"Forrest\\"
+                \\"param0\\": \\"Forrest\\"
             }"
         `);
     });
@@ -137,19 +137,19 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE NOT (this_connection_actorsConnectionthis0.role CONTAINS $this_connection_actorsConnectionparam0)
-                WITH { role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE NOT (this0.role CONTAINS $param0)
+                WITH { role: this0.role, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": \\"Forrest\\"
+                \\"param0\\": \\"Forrest\\"
             }"
         `);
     });
@@ -180,19 +180,19 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE this_connection_actorsConnectionthis0.role STARTS WITH $this_connection_actorsConnectionparam0
-                WITH { role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE this0.role STARTS WITH $param0
+                WITH { role: this0.role, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": \\"Forrest\\"
+                \\"param0\\": \\"Forrest\\"
             }"
         `);
     });
@@ -223,19 +223,19 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE NOT (this_connection_actorsConnectionthis0.role STARTS WITH $this_connection_actorsConnectionparam0)
-                WITH { role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE NOT (this0.role STARTS WITH $param0)
+                WITH { role: this0.role, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": \\"Forrest\\"
+                \\"param0\\": \\"Forrest\\"
             }"
         `);
     });
@@ -266,19 +266,19 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE this_connection_actorsConnectionthis0.role ENDS WITH $this_connection_actorsConnectionparam0
-                WITH { role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE this0.role ENDS WITH $param0
+                WITH { role: this0.role, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": \\"Gump\\"
+                \\"param0\\": \\"Gump\\"
             }"
         `);
     });
@@ -309,19 +309,19 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE NOT (this_connection_actorsConnectionthis0.role ENDS WITH $this_connection_actorsConnectionparam0)
-                WITH { role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE NOT (this0.role ENDS WITH $param0)
+                WITH { role: this0.role, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": \\"Gump\\"
+                \\"param0\\": \\"Gump\\"
             }"
         `);
     });
@@ -352,19 +352,19 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE this_connection_actorsConnectionthis0.role =~ $this_connection_actorsConnectionparam0
-                WITH { role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE this0.role =~ $param0
+                WITH { role: this0.role, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": \\"Forrest.+\\"
+                \\"param0\\": \\"Forrest.+\\"
             }"
         `);
     });

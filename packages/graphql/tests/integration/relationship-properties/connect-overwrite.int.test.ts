@@ -22,7 +22,7 @@ import { DocumentNode, graphql } from "graphql";
 import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("Relationship properties - connect with and without `overwrite` argument", () => {
@@ -54,8 +54,8 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         let screenTimeUpdate: number;
 
         beforeEach(async () => {
-            typeActor = generateUniqueType("Actor");
-            typeMovie = generateUniqueType("Movie");
+            typeActor = new UniqueType("Actor");
+            typeMovie = new UniqueType("Movie");
 
             typeDefs = gql`
                 type ${typeMovie.name} {
@@ -70,10 +70,10 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     directed: [ ${typeMovie.name}!]! @relationship(type: "DIRECTED", properties: "Directed", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
-                interface Directed {
+                interface Directed @relationshipProperties {
                     year: Int!
                 }
             `;
@@ -298,8 +298,8 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         let screenTimeOther: number;
 
         beforeEach(async () => {
-            typeActor = generateUniqueType("Actor");
-            typeMovie = generateUniqueType("Movie");
+            typeActor = new UniqueType("Actor");
+            typeMovie = new UniqueType("Movie");
 
             typeDefs = gql`
                 type ${typeMovie.name} {
@@ -312,7 +312,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
             `;
@@ -709,7 +709,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
             `;
@@ -1338,8 +1338,8 @@ describe("Relationship properties - connect with and without `overwrite` argumen
         let yearOther: number;
 
         beforeEach(async () => {
-            typeActor = generateUniqueType("Actor");
-            typeMovie = generateUniqueType("Movie");
+            typeActor = new UniqueType("Actor");
+            typeMovie = new UniqueType("Movie");
 
             typeDefs = gql`
                 type ${typeMovie.name} {
@@ -1352,7 +1352,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     directed: [${typeMovie.name}!]! @relationship(type: "DIRECTED", properties: "Directed", direction: OUT)
                 }
 
-                interface Directed {
+                interface Directed @relationshipProperties {
                     year: Int!
                 }
             `;

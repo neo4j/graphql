@@ -141,31 +141,6 @@ function getNodes(
             validateResolvers: options.validateResolvers,
         });
 
-        // Ensure that all required fields are returning either a scalar type or an enum
-
-        const violativeRequiredField = nodeFields.customResolverFields
-            .filter((f) => f.requiredFields.length)
-            .map((f) => f.requiredFields)
-            .flat()
-            .find(
-                (requiredField) =>
-                    ![
-                        ...nodeFields.primitiveFields,
-                        ...nodeFields.scalarFields,
-                        ...nodeFields.enumFields,
-                        ...nodeFields.temporalFields,
-                        ...nodeFields.cypherFields.filter((field) => field.isScalar || field.isEnum),
-                    ]
-                        .map((x) => x.fieldName)
-                        .includes(requiredField)
-            );
-
-        if (violativeRequiredField) {
-            throw new Error(
-                `Cannot have ${violativeRequiredField} as a required field on node ${definition.name.value}. Required fields must return a scalar type.`
-            );
-        }
-
         let fulltextDirective: FullText;
         if (fulltextDirectiveDefinition) {
             fulltextDirective = parseFulltextDirective({
@@ -192,6 +167,14 @@ function getNodes(
                 if (!propertiesInterface) {
                     throw new Error(
                         `Cannot find interface specified in ${definition.name.value}.${relationship.fieldName}`
+                    );
+                }
+                const relationshipPropertiesDirective = propertiesInterface.directives?.find(
+                    (directive) => directive.name.value === "relationshipProperties"
+                );
+                if (!relationshipPropertiesDirective) {
+                    throw new Error(
+                        `The \`@relationshipProperties\` directive could not be found on the \`${relationship.properties}\` interface`
                     );
                 }
                 relationshipPropertyInterfaceNames.add(relationship.properties);

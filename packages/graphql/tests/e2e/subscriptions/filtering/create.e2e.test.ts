@@ -521,7 +521,6 @@ describe("Create Subscription with optional filters valid for all types", () => 
         ]);
     });
 
-
     // all but boolean types
     test("subscription with IN on String", async () => {
         await wsClient.subscribe(`

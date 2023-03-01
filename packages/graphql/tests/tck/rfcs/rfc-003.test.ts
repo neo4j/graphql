@@ -56,21 +56,21 @@ describe("tck/rfs/003", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "UNWIND $create_param0 AS create_var1
+                    "UNWIND $create_param0 AS create_var0
                     CALL {
-                        WITH create_var1
-                        CREATE (create_this0:\`Movie\`)
+                        WITH create_var0
+                        CREATE (create_this1:\`Movie\`)
                         SET
-                            create_this0.id = create_var1.id
-                        WITH create_this0
+                            create_this1.id = create_var0.id
+                        WITH create_this1
                         CALL {
-                        	WITH create_this0
-                        	MATCH (create_this0)<-[create_this0_director_Director_unique:DIRECTED]-(:Director)
-                        	WITH count(create_this0_director_Director_unique) as c
+                        	WITH create_this1
+                        	MATCH (create_this1)<-[create_this1_director_Director_unique:DIRECTED]-(:Director)
+                        	WITH count(create_this1_director_Director_unique) as c
                         	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
-                        	RETURN c AS create_this0_director_Director_unique_ignored
+                        	RETURN c AS create_this1_director_Director_unique_ignored
                         }
-                        RETURN create_this0
+                        RETURN create_this1
                     }
                     RETURN 'Query cannot conclude with CALL'"
                 `);
@@ -118,21 +118,21 @@ describe("tck/rfs/003", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "UNWIND $create_param0 AS create_var1
+                    "UNWIND $create_param0 AS create_var0
                     CALL {
-                        WITH create_var1
-                        CREATE (create_this0:\`Movie\`)
+                        WITH create_var0
+                        CREATE (create_this1:\`Movie\`)
                         SET
-                            create_this0.id = create_var1.id
-                        WITH create_this0
+                            create_this1.id = create_var0.id
+                        WITH create_this1
                         CALL {
-                        	WITH create_this0
-                        	MATCH (create_this0)<-[create_this0_director_Director_unique:DIRECTED]-(:Director)
-                        	WITH count(create_this0_director_Director_unique) as c
+                        	WITH create_this1
+                        	MATCH (create_this1)<-[create_this1_director_Director_unique:DIRECTED]-(:Director)
+                        	WITH count(create_this1_director_Director_unique) as c
                         	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
-                        	RETURN c AS create_this0_director_Director_unique_ignored
+                        	RETURN c AS create_this1_director_Director_unique_ignored
                         }
-                        RETURN create_this0
+                        RETURN create_this1
                     }
                     RETURN 'Query cannot conclude with CALL'"
                 `);
@@ -187,21 +187,21 @@ describe("tck/rfs/003", () => {
                     });
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                        "UNWIND $create_param0 AS create_var1
+                        "UNWIND $create_param0 AS create_var0
                         CALL {
-                            WITH create_var1
-                            CREATE (create_this0:\`Movie\`)
+                            WITH create_var0
+                            CREATE (create_this1:\`Movie\`)
                             SET
-                                create_this0.id = create_var1.id
-                            WITH create_this0, create_var1
+                                create_this1.id = create_var0.id
+                            WITH create_this1, create_var0
                             CALL {
-                                WITH create_this0, create_var1
-                                UNWIND create_var1.director.create AS create_var2
-                                WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
+                                WITH create_this1, create_var0
+                                UNWIND create_var0.director.create AS create_var2
+                                WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
                                 CREATE (create_this5:\`Director\`)
                                 SET
                                     create_this5.id = create_var3.id
-                                MERGE (create_this5)-[create_this6:DIRECTED]->(create_this0)
+                                MERGE (create_this1)<-[create_this6:DIRECTED]-(create_this5)
                                 WITH create_this5
                                 CALL {
                                 	WITH create_this5
@@ -212,15 +212,15 @@ describe("tck/rfs/003", () => {
                                 }
                                 RETURN collect(NULL) AS create_var7
                             }
-                            WITH create_this0
+                            WITH create_this1
                             CALL {
-                            	WITH create_this0
-                            	MATCH (create_this0)<-[create_this0_director_Director_unique:DIRECTED]-(:Director)
-                            	WITH count(create_this0_director_Director_unique) as c
+                            	WITH create_this1
+                            	MATCH (create_this1)<-[create_this1_director_Director_unique:DIRECTED]-(:Director)
+                            	WITH count(create_this1_director_Director_unique) as c
                             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
-                            	RETURN c AS create_this0_director_Director_unique_ignored
+                            	RETURN c AS create_this1_director_Director_unique_ignored
                             }
-                            RETURN create_this0
+                            RETURN create_this1
                         }
                         RETURN 'Query cannot conclude with CALL'"
                     `);
@@ -281,21 +281,21 @@ describe("tck/rfs/003", () => {
                     });
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                        "UNWIND $create_param0 AS create_var1
+                        "UNWIND $create_param0 AS create_var0
                         CALL {
-                            WITH create_var1
-                            CREATE (create_this0:\`Movie\`)
+                            WITH create_var0
+                            CREATE (create_this1:\`Movie\`)
                             SET
-                                create_this0.id = create_var1.id
-                            WITH create_this0, create_var1
+                                create_this1.id = create_var0.id
+                            WITH create_this1, create_var0
                             CALL {
-                                WITH create_this0, create_var1
-                                UNWIND create_var1.director.create AS create_var2
-                                WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
+                                WITH create_this1, create_var0
+                                UNWIND create_var0.director.create AS create_var2
+                                WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
                                 CREATE (create_this5:\`Director\`)
                                 SET
                                     create_this5.id = create_var3.id
-                                MERGE (create_this5)-[create_this6:DIRECTED]->(create_this0)
+                                MERGE (create_this1)<-[create_this6:DIRECTED]-(create_this5)
                                 WITH create_this5
                                 CALL {
                                 	WITH create_this5
@@ -306,15 +306,15 @@ describe("tck/rfs/003", () => {
                                 }
                                 RETURN collect(NULL) AS create_var7
                             }
-                            WITH create_this0
+                            WITH create_this1
                             CALL {
-                            	WITH create_this0
-                            	MATCH (create_this0)<-[create_this0_director_Director_unique:DIRECTED]-(:Director)
-                            	WITH count(create_this0_director_Director_unique) as c
+                            	WITH create_this1
+                            	MATCH (create_this1)<-[create_this1_director_Director_unique:DIRECTED]-(:Director)
+                            	WITH count(create_this1_director_Director_unique) as c
                             	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
-                            	RETURN c AS create_this0_director_Director_unique_ignored
+                            	RETURN c AS create_this1_director_Director_unique_ignored
                             }
-                            RETURN create_this0
+                            RETURN create_this1
                         }
                         RETURN 'Query cannot conclude with CALL'"
                     `);
@@ -1248,7 +1248,7 @@ describe("tck/rfs/003", () => {
                         CALL {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
-                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_this_disconnect_director0param0
+                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0
                         CALL {
                         	WITH this_disconnect_director0, this_disconnect_director0_rel, this
                         	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
@@ -1273,7 +1273,7 @@ describe("tck/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"param0\\": \\"movieId-5\\",
-                            \\"updateMovies_args_disconnect_director_where_this_disconnect_director0param0\\": \\"directorId-5\\",
+                            \\"updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0\\": \\"directorId-5\\",
                             \\"updateMovies\\": {
                                 \\"args\\": {
                                     \\"disconnect\\": {
@@ -1364,7 +1364,7 @@ describe("tck/rfs/003", () => {
                         CALL {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
-                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_this_disconnect_director0param0
+                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0
                         CALL {
                         	WITH this_disconnect_director0, this_disconnect_director0_rel, this
                         	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
@@ -1377,9 +1377,9 @@ describe("tck/rfs/003", () => {
                         WITH *
                         CALL {
                             WITH this
-                            MATCH (this_director:\`Director\`)-[update_this0:DIRECTED]->(this)
-                            WITH this_director { .id } AS this_director
-                            RETURN head(collect(this_director)) AS this_director
+                            MATCH (this)<-[update_this0:DIRECTED]-(update_this1:\`Director\`)
+                            WITH update_this1 { .id } AS update_this1
+                            RETURN head(collect(update_this1)) AS update_var2
                         }
                         WITH *
                         CALL {
@@ -1389,13 +1389,13 @@ describe("tck/rfs/003", () => {
                         	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
-                        RETURN collect(DISTINCT this { .id, director: this_director }) AS data"
+                        RETURN collect(DISTINCT this { .id, director: update_var2 }) AS data"
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"param0\\": \\"movieId-6\\",
-                            \\"updateMovies_args_disconnect_director_where_this_disconnect_director0param0\\": \\"directorId-6\\",
+                            \\"updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0\\": \\"directorId-6\\",
                             \\"this_connect_director0_node_param0\\": \\"directorId2-6\\",
                             \\"updateMovies\\": {
                                 \\"args\\": {
@@ -1485,7 +1485,7 @@ describe("tck/rfs/003", () => {
                         CALL {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
-                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_this_disconnect_director0param0
+                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0
                         CALL {
                         	WITH this_disconnect_director0, this_disconnect_director0_rel, this
                         	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
@@ -1498,9 +1498,9 @@ describe("tck/rfs/003", () => {
                         WITH *
                         CALL {
                             WITH this
-                            MATCH (this_director:\`Director\`)-[update_this0:DIRECTED]->(this)
-                            WITH this_director { .id } AS this_director
-                            RETURN head(collect(this_director)) AS this_director
+                            MATCH (this)<-[update_this0:DIRECTED]-(update_this1:\`Director\`)
+                            WITH update_this1 { .id } AS update_this1
+                            RETURN head(collect(update_this1)) AS update_var2
                         }
                         WITH *
                         CALL {
@@ -1510,13 +1510,13 @@ describe("tck/rfs/003", () => {
                         	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
-                        RETURN collect(DISTINCT this { .id, director: this_director }) AS data"
+                        RETURN collect(DISTINCT this { .id, director: update_var2 }) AS data"
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"param0\\": \\"movieId-6\\",
-                            \\"updateMovies_args_disconnect_director_where_this_disconnect_director0param0\\": \\"directorId-6\\",
+                            \\"updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0\\": \\"directorId-6\\",
                             \\"this_connect_director0_node_param0\\": \\"directorId2-6\\",
                             \\"updateMovies\\": {
                                 \\"args\\": {

@@ -17,10 +17,13 @@
  * limitations under the License.
  */
 
-import { mergeTypeDefs } from "@graphql-tools/merge";
-import type { TypeSource } from "@graphql-tools/utils";
-import type { DocumentNode } from "graphql";
-
-export function getDocument(typeDefs: TypeSource): DocumentNode {
-    return mergeTypeDefs(typeDefs);
-}
+export const resolvers = {
+    User: {
+        averageProductsCreatedPerYear: (_source, _args, context) => {
+            return Math.floor(
+                context.resolveTree.args.representations[0].totalProductsCreated /
+                    context.resolveTree.args.representations[0].yearsOfEmployment
+            );
+        },
+    },
+};

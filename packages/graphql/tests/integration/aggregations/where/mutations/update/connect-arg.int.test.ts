@@ -65,7 +65,7 @@ describe("Connect using aggregate where", () => {
                 likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}")
             }
 
-            interface ${likeInterface.name} {
+            interface ${likeInterface.name} @relationshipProperties {
                 likedAt: DateTime
             }
         `;
@@ -396,7 +396,7 @@ describe("Connect UNIONs using aggregate where", () => {
                 likes: [${userUnion.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}")
             }
 
-            interface ${likeInterface.name} {
+            interface ${likeInterface.name} @relationshipProperties {
                 likedAt: DateTime
             }
         `;

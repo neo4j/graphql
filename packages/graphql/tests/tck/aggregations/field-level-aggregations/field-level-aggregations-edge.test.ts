@@ -40,7 +40,7 @@ describe("Field Level Aggregations", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screentime: Int
             }
         `;
@@ -78,10 +78,10 @@ describe("Field Level Aggregations", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this_actorsAggregate_this1:\`Actor\`)-[this_actorsAggregate_this0:ACTED_IN]->(this)
-                RETURN { min: min(this_actorsAggregate_this0.screentime), max: max(this_actorsAggregate_this0.screentime), average: avg(this_actorsAggregate_this0.screentime), sum: sum(this_actorsAggregate_this0.screentime) }  AS this_actorsAggregate_var2
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                RETURN { min: min(this0.screentime), max: max(this0.screentime), average: avg(this0.screentime), sum: sum(this0.screentime) }  AS var2
             }
-            RETURN this { actorsAggregate: { edge: { screentime: this_actorsAggregate_var2 } } } AS this"
+            RETURN this { actorsAggregate: { edge: { screentime: var2 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

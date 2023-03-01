@@ -893,7 +893,7 @@ describe("generate", () => {
             type Person {
                 name: String!
             }
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -1470,9 +1470,13 @@ describe("generate", () => {
               actorsConnection?: InputMaybe<MovieActorsConnectionWhere>;
               /** @deprecated Use \`actorsConnection_NONE\` instead. */
               actorsConnection_NOT?: InputMaybe<MovieActorsConnectionWhere>;
+              /** Return Movies where all of the related MovieActorsConnections match this filter */
               actorsConnection_ALL?: InputMaybe<MovieActorsConnectionWhere>;
+              /** Return Movies where none of the related MovieActorsConnections match this filter */
               actorsConnection_NONE?: InputMaybe<MovieActorsConnectionWhere>;
+              /** Return Movies where one of the related MovieActorsConnections match this filter */
               actorsConnection_SINGLE?: InputMaybe<MovieActorsConnectionWhere>;
+              /** Return Movies where some of the related MovieActorsConnections match this filter */
               actorsConnection_SOME?: InputMaybe<MovieActorsConnectionWhere>;
             };
 

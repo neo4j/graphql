@@ -99,7 +99,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn {
+                    interface ActedIn @relationshipProperties {
                         createdAt: Time! @timestamp(operations: [CREATE])
                         screenTime: Int!
                     }
@@ -232,7 +232,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn {
+                    interface ActedIn @relationshipProperties {
                         updatedAt: Time! @timestamp(operations: [UPDATE])
                         screenTime: Int!
                     }
@@ -366,7 +366,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn {
+                    interface ActedIn @relationshipProperties {
                         createdAt: Time! @timestamp(operations: [CREATE, UPDATE])
                         screenTime: Int!
                     }
@@ -442,7 +442,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn {
+                    interface ActedIn @relationshipProperties {
                         updatedAt: Time! @timestamp(operations: [CREATE, UPDATE])
                         screenTime: Int!
                     }
@@ -631,7 +631,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn {
+                    interface ActedIn @relationshipProperties {
                         createdAt: Time! @timestamp
                         screenTime: Int!
                     }
@@ -706,7 +706,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn {
+                    interface ActedIn @relationshipProperties {
                         updatedAt: Time! @timestamp
                         screenTime: Int!
                     }

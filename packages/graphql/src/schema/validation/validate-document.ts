@@ -24,6 +24,8 @@ import type {
     InputValueDefinitionNode,
     FieldDefinitionNode,
     TypeNode,
+    GraphQLDirective,
+    GraphQLNamedType,
 } from "graphql";
 import { GraphQLSchema, extendSchema, validateSchema, specifiedDirectives, Kind } from "graphql";
 import pluralize from "pluralize";
@@ -38,6 +40,7 @@ import { PointDistance } from "../../graphql/input-objects/PointDistance";
 import { CartesianPointDistance } from "../../graphql/input-objects/CartesianPointDistance";
 import { RESERVED_TYPE_NAMES } from "../../constants";
 import { isRootType } from "../../utils/is-root-type";
+import { validateCustomResolverRequires } from "./validate-custom-resolver-requires";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
@@ -156,11 +159,16 @@ function filterDocument(document: DocumentNode): DocumentNode {
     };
 }
 
-function validateDocument(document: DocumentNode): void {
+function getBaseSchema(
+    document: DocumentNode,
+    validateTypeDefs = true,
+    additionalDirectives: Array<GraphQLDirective> = [],
+    additionalTypes: Array<GraphQLNamedType> = []
+): GraphQLSchema {
     const doc = filterDocument(document);
 
     const schemaToExtend = new GraphQLSchema({
-        directives: [...Object.values(directives), ...specifiedDirectives],
+        directives: [...Object.values(directives), ...specifiedDirectives, ...additionalDirectives],
         types: [
             ...Object.values(scalars),
             Point,
@@ -170,18 +178,28 @@ function validateDocument(document: DocumentNode): void {
             CartesianPointInput,
             CartesianPointDistance,
             SortDirection,
+            ...additionalTypes,
         ],
     });
 
-    const schema = extendSchema(schemaToExtend, doc);
+    return extendSchema(schemaToExtend, doc, { assumeValid: !validateTypeDefs });
+}
 
-    const errors = validateSchema(schema);
-
-    const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
-
-    if (filteredErrors.length) {
-        throw new Error(filteredErrors.join("\n"));
+function validateDocument(
+    document: DocumentNode,
+    validateTypeDefs = true,
+    additionalDirectives: Array<GraphQLDirective> = [],
+    additionalTypes: Array<GraphQLNamedType> = []
+): void {
+    const schema = getBaseSchema(document, validateTypeDefs, additionalDirectives, additionalTypes);
+    if (validateTypeDefs) {
+        const errors = validateSchema(schema);
+        const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
+        if (filteredErrors.length) {
+            throw new Error(filteredErrors.join("\n"));
+        }
     }
+    validateCustomResolverRequires(document, schema);
 }
 
 export default validateDocument;

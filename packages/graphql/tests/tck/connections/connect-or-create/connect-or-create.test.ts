@@ -42,7 +42,7 @@ describe("Create or Connect", () => {
                     movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screentime: Int!
                 }
             `;
@@ -103,8 +103,7 @@ describe("Create or Connect", () => {
                 }
                 RETURN this0
                 }
-                RETURN [
-                this0 { .name }] AS data"
+                RETURN [ this0 { .name } ] AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -201,7 +200,7 @@ describe("Create or Connect", () => {
                     movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screentime: Int!
                 }
             `;
@@ -264,8 +263,7 @@ describe("Create or Connect", () => {
                 }
                 RETURN this0
                 }
-                RETURN [
-                this0 { .name }] AS data"
+                RETURN [ this0 { .name } ] AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -328,8 +326,7 @@ describe("Create or Connect", () => {
                 }
                 RETURN this0
                 }
-                RETURN [
-                this0 { .name }] AS data"
+                RETURN [ this0 { .name } ] AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -487,7 +484,7 @@ describe("Create or Connect", () => {
                     movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     id: ID! @id
                     createdAt: DateTime! @timestamp(operations: [CREATE])
                     updatedAt: DateTime! @timestamp(operations: [UPDATE])
@@ -553,8 +550,7 @@ describe("Create or Connect", () => {
                 }
                 RETURN this0
                 }
-                RETURN [
-                this0 { .name }] AS data"
+                RETURN [ this0 { .name } ] AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`

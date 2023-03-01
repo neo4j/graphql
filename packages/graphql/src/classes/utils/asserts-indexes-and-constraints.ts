@@ -54,7 +54,7 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
 
         existingIndexes[index.name] = {
             labelsOrTypes: index.labelsOrTypes,
-            properties: index.properties
+            properties: index.properties,
         };
     });
 
@@ -77,7 +77,7 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
                     indexesToCreate.push({
                         indexName: indexName,
                         label: node.getMainLabel(),
-                        properties
+                        properties,
                     });
                 } else {
                     index.fields.forEach((field) => {
@@ -106,7 +106,7 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
         const cypher = [
             `CREATE CONSTRAINT ${constraintToCreate.constraintName}`,
             `IF NOT EXISTS FOR (n:${constraintToCreate.label})`,
-            `REQUIRE n.${constraintToCreate.property} IS UNIQUE`
+            `REQUIRE n.${constraintToCreate.property} IS UNIQUE`,
         ].join(" ");
 
         debug(`About to execute Cypher: ${cypher}`);
@@ -122,7 +122,7 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
         const cypher = [
             `CREATE FULLTEXT INDEX ${indexToCreate.indexName}`,
             `IF NOT EXISTS FOR (n:${indexToCreate.label})`,
-            `ON EACH [${indexToCreate.properties.map((p) => `n.${p}`).join(", ")}]`
+            `ON EACH [${indexToCreate.properties.map((p) => `n.${p}`).join(", ")}]`,
         ].join(" ");
 
         debug(`About to execute Cypher: ${cypher}`);
@@ -165,7 +165,7 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
 
         existingIndexes[index.name] = {
             labelsOrTypes: index.labelsOrTypes,
-            properties: index.properties
+            properties: index.properties,
         };
     });
 
@@ -210,7 +210,7 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
 
 async function getMissingConstraints({
     nodes,
-    session
+    session,
 }: {
     nodes: Node[];
     session: Session;
@@ -246,7 +246,7 @@ async function getMissingConstraints({
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     constraintName: field.unique!.constraintName,
                     label: node.getMainLabel(),
-                    property
+                    property,
                 });
             }
         });
@@ -259,7 +259,7 @@ async function assertIndexesAndConstraints({
     driver,
     driverConfig,
     nodes,
-    options
+    options,
 }: {
     driver: Driver;
     driverConfig?: DriverConfig;
