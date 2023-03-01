@@ -310,20 +310,13 @@ describe("@authorization directive validation", () => {
 describe("simone test", () => {
     test("1", () => {
         const typeDefs = gql`
-            enum test {
-                MAGIC
-            }
             type User
                 @authorization(
-                    filter: [{ requireAuthentication: true, where: { node: { name: { equals: ["1"] } } } }]
+                    filter: [{ requireAuthentication: true, where: { node: { name: { equals: "1" } } } }]
                 ) {
-                id: ID!
-                name: [test!]!
+                name: String!
             }
-
-            type Post {
-                title: test
-            }
+          
         `;
 
         const document = getDocument(typeDefs);

@@ -32,7 +32,8 @@ import {
     UnionTypeDefinitionNode,
     ValueNode,
 } from "graphql";
-import { SCALAR_TYPES } from "../constants";
+import { eq } from "semver";
+import { LOGICAL_OPERATORS, SCALAR_TYPES } from "../constants";
 import { getDefinitionNodes } from "../schema/get-definition-nodes";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
@@ -205,21 +206,109 @@ function createEntityAnnotation(
     );
 }
 
-
 // validation helpers
+const NUMBER_KEY_OPERATORS = [...LOGICAL_OPERATORS, "equals", "in", "lt", "lte", "gt", "gte"] as const;
+const STRING_KEY_OPERATORS = [
+    ...LOGICAL_OPERATORS,
+    "equals",
+    "in",
+    "matches",
+    "contains",
+    "startsWith",
+    "endsWith",
+] as const;
+
+export type NumberWhereOperator = (typeof NUMBER_KEY_OPERATORS)[number];
+export type StringWhereOperator = (typeof STRING_KEY_OPERATORS)[number];
+export type LogicalWhereOperator = (typeof LOGICAL_OPERATORS)[number];
+
+const LOGICAL_WHERE_OPERATOR_ENTRIES = [
+    ["OR", Kind.LIST],
+    ["NOT", Kind.OBJECT],
+    ["AND", Kind.LIST],
+] as Array<[LogicalWhereOperator, GraphQLValueKind]>;
+
+type GraphQLValueKind =
+    | Kind.STRING
+    | Kind.INT
+    | Kind.FLOAT
+    | Kind.BOOLEAN
+    | Kind.ENUM
+    | Kind.NULL
+    | Kind.LIST
+    | Kind.OBJECT;
+
+const FloatKindWhereMap = new Map<NumberWhereOperator, GraphQLValueKind>([
+    ...LOGICAL_WHERE_OPERATOR_ENTRIES,
+    ["equals", Kind.FLOAT],
+    ["in", Kind.LIST],
+    ["lt", Kind.FLOAT],
+    ["lte", Kind.FLOAT],
+    ["gt", Kind.FLOAT],
+    ["gte", Kind.FLOAT],
+]);
+
+const IntKindWhereMap = new Map<NumberWhereOperator, GraphQLValueKind>([
+    ...LOGICAL_WHERE_OPERATOR_ENTRIES,
+    ["equals", Kind.INT],
+    ["in", Kind.LIST],
+    ["lt", Kind.INT],
+    ["lte", Kind.INT],
+    ["gt", Kind.INT],
+    ["gte", Kind.INT],
+]);
+
+const StringKindWhereMap = new Map<StringWhereOperator, GraphQLValueKind>([
+    ...LOGICAL_WHERE_OPERATOR_ENTRIES,
+    ["equals", Kind.STRING],
+    ["in", Kind.LIST],
+    ["matches", Kind.STRING],
+    ["contains", Kind.STRING],
+    ["startsWith", Kind.STRING],
+    ["endsWith", Kind.STRING],
+]);
+
+function validateLogicalFields(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
+    return undefined;
+}
 
 function validateListWhere(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
-    
+    return undefined;
+}
 
+function validateIntField(whereField: ObjectFieldNode) {
+    return undefined;
+}
+
+function validateFloatField(whereField: ObjectFieldNode) {
+    return undefined;
+}
+
+function validateStringField(whereField: ObjectFieldNode) {
+    return undefined;
+}
+
+function getArgumentType(field: ObjectFieldNode) {
+    return undefined;
 }
 
 function validateNumberWhere(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
     if (graphQLFieldType.isList) {
         validateListWhere(whereField, graphQLFieldType);
     }
+    if (graphQLFieldType.type === "Float") {
+        validateFloatField(whereField);
+    }
+    if (graphQLFieldType.type === "Int") {
+        validateIntField(whereField);
+    }
 }
 
 function validateStringWhere(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
+    if (whereField.kind !== Kind.OBJECT_FIELD) {
+        throw new Error("String filter should be of type Object");
+    }
+    (whereField.value as ObjectValueNode).fields.forEach(field => validateStringField(field));
     if (graphQLFieldType.isList) {
         validateListWhere(whereField, graphQLFieldType);
     }
@@ -229,41 +318,32 @@ function validateStringWhere(whereField: ObjectFieldNode, graphQLFieldType: Grap
 // Maybe booleans value should not be part of the generic operators refactor
 function validateBooleanWhere(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
     if (graphQLFieldType.isList) {
-        validateListWhere(whereField, graphQLFieldType);
+        throw new Error(
+            `Field ${whereField.name.value} is not supported, the library does not support array filters for type Boolean`
+        );
     }
-
 }
 
 function validateObjectWhere(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
     if (graphQLFieldType.isList) {
-       // 1..n relationship filters
+        // 1..n relationship filters
     }
     // 1..1 relationship filter
-    
 }
 
 function validateWhereField(whereField: ObjectFieldNode, graphQLFieldType: GraphQLFieldType) {
-
     switch (graphQLFieldType.type) {
         case "Int":
-            validateNumberWhere(whereField, graphQLFieldType);
-            break;
         case "Float":
             validateNumberWhere(whereField, graphQLFieldType);
             break;
-        // I believe ID should treated as string
-        case "ID": 
+        case "ID":
         case "String":
             validateStringWhere(whereField, graphQLFieldType);
             break;
         case "Boolean":
-            if (graphQLFieldType.isList) {
-                // I believe we don't support boolean list filter
-                throw new Error();
-            }
             validateBooleanWhere(whereField, graphQLFieldType);
             break;
-        
         default:
             // This could be or an Enum type or an Object type
             validateObjectWhere(whereField, graphQLFieldType);
@@ -324,7 +404,12 @@ function validateAuthorizationFilterRule(
                     acc[f.name.value] = getGraphQLFieldTypeFromTypNode(f.type);
                     return acc;
                 }, {}) as Record<string, GraphQLFieldType>;
-                const fieldDoesNotExist = nodeWhere.value.fields.find((f) => !typeFields[f.name.value]);
+
+                const fieldDoesNotExist = nodeWhere.value.fields.find(
+                    (f) =>
+                        !(LOGICAL_OPERATORS as ReadonlyArray<unknown>).includes(f.name.value) &&
+                        !typeFields[f.name.value]
+                );
                 if (fieldDoesNotExist) {
                     throw new Error(`unknown field ${fieldDoesNotExist.name.value} in where.node`);
                 }
@@ -347,20 +432,20 @@ function getGraphQLFieldTypeFromTypNode(type: TypeNode): GraphQLFieldType {
         case Kind.NAMED_TYPE:
             return {
                 type: type.name.value,
-                isNullable: false,
+                isNullable: true,
                 isList: false,
             };
         case Kind.LIST_TYPE:
             return {
                 type: getGraphQLFieldTypeFromTypNode(type.type).type,
-                isNullable: false,
+                isNullable: true,
                 isList: true,
             };
         case Kind.NON_NULL_TYPE: {
             const nestedType = getGraphQLFieldTypeFromTypNode(type.type);
             return {
                 type: nestedType.type,
-                isNullable: true,
+                isNullable: false,
                 isList: nestedType.isList,
             };
         }
