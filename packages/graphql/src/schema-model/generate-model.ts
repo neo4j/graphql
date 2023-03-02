@@ -35,29 +35,29 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionNodes = getDefinitionNodes(document);
 
     // init interface to typennames map
-    // const interfaceToImplementingTypeNamesMap = definitionNodes.interfaceTypes.reduce((acc, entity) => {
-    //     const interfaceTypeName = entity.name.value;
-    //     acc.set(interfaceTypeName, []);
-    //     return acc;
-    // }, new Map<string, string[]>());
+    const interfaceToImplementingTypeNamesMap = definitionNodes.interfaceTypes.reduce((acc, entity) => {
+        const interfaceTypeName = entity.name.value;
+        acc.set(interfaceTypeName, []);
+        return acc;
+    }, new Map<string, string[]>());
 
-    // // hydrate interface to typennames map
-    // definitionNodes.objectTypes.forEach((el) => {
-    //     if (!el.interfaces) {
-    //         return;
-    //     }
-    //     const objectTypeName = el.name.value;
-    //     el.interfaces?.forEach((i) => {
-    //         const interfaceTypeName = i.name.value;
-    //         const before = interfaceToImplementingTypeNamesMap.get(interfaceTypeName);
-    //         if (!before) {
-    //             throw new Neo4jGraphQLSchemaValidationError(
-    //                 `Could not find composite entity with name ${interfaceTypeName}`
-    //             );
-    //         }
-    //         interfaceToImplementingTypeNamesMap.set(interfaceTypeName, before.concat(objectTypeName));
-    //     });
-    // });
+    // hydrate interface to typennames map
+    definitionNodes.objectTypes.forEach((el) => {
+        if (!el.interfaces) {
+            return;
+        }
+        const objectTypeName = el.name.value;
+        el.interfaces?.forEach((i) => {
+            const interfaceTypeName = i.name.value;
+            const before = interfaceToImplementingTypeNamesMap.get(interfaceTypeName);
+            if (!before) {
+                throw new Neo4jGraphQLSchemaValidationError(
+                    `Could not find composite entity with name ${interfaceTypeName}`
+                );
+            }
+            interfaceToImplementingTypeNamesMap.set(interfaceTypeName, before.concat(objectTypeName));
+        });
+    });
 
     const concreteEntities = definitionNodes.objectTypes.map(generateConcreteEntity);
     const concreteEntitiesMap = concreteEntities.reduce((acc, entity) => {
@@ -68,11 +68,11 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         return acc;
     }, new Map<string, ConcreteEntity>());
 
-    // const interfaceEntities = Array.from(interfaceToImplementingTypeNamesMap.entries()).map(
-    //     ([name, concreteEntities]) => {
-    //         return generateCompositeEntity(name, concreteEntities, concreteEntitiesMap);
-    //     }
-    // );
+    const interfaceEntities = Array.from(interfaceToImplementingTypeNamesMap.entries()).map(
+        ([name, concreteEntities]) => {
+            return generateCompositeEntity(name, concreteEntities, concreteEntitiesMap);
+        }
+    );
     const unionEntities = definitionNodes.unionTypes.map((entity) => {
         return generateCompositeEntity(
             entity.name.value,
@@ -82,7 +82,7 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     });
 
     return new Neo4jGraphQLSchemaModel({
-        compositeEntities: unionEntities,
+        compositeEntities: [...unionEntities, ...interfaceEntities],
         concreteEntities,
     });
 }
@@ -100,11 +100,12 @@ function generateCompositeEntity(
         return concreteEntity;
     });
 
-    if (!compositeFields.length) {
-        throw new Neo4jGraphQLSchemaValidationError(
-            `Composite entity ${entityDefinitionName} has no concrete entities`
-        );
-    }
+    // TODO: fix for interfaces annotated with @relationshipFields - which will never have concrete entities
+    // if (!compositeFields.length) {
+    //     throw new Neo4jGraphQLSchemaValidationError(
+    //         `Composite entity ${entityDefinitionName} has no concrete entities`
+    //     );
+    // }
     // TODO: add annotations
     return new CompositeEntity({
         name: entityDefinitionName,
