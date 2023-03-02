@@ -64,6 +64,52 @@ export function plus(...exprs: Expr[]): MathOp {
  * @group Expressions
  * @category Operators
  */
-export function minus(leftExpr: Expr, rightExpr: Expr): MathOp {
+export function minus(leftExpr: Expr, rightExpr: Expr): MathOp
+export function minus(...exprs: Expr[]): MathOp;
+export function minus(...exprs: Expr[]): MathOp {
     return createOp("-", [leftExpr, rightExpr]);
+}
+
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-mathematical)
+ * @group Expressions
+ * @category Operators
+ */
+export function multiplication(leftExpr: Expr, rightExpr: Expr): MathOp
+export function multiplication(...exprs: Expr[]): MathOp;
+export function multiplication(...exprs: Expr[]): MathOp {
+    return createOp("*", [leftExpr, rightExpr]);
+}
+
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-mathematical)
+ * @group Expressions
+ * @category Operators
+ */
+export function division(leftExpr: Expr, rightExpr: Expr): MathOp
+export function division(...exprs: Expr[]): MathOp;
+export function division(...exprs: Expr[]): MathOp {
+    return createOp("/", [leftExpr, rightExpr]);
+}
+
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-mathematical)
+ * @group Expressions
+ * @category Operators
+ */
+export function modulo(leftExpr: Expr, rightExpr: Expr): MathOp
+export function modulo(...exprs: Expr[]): MathOp;
+export function modulo(...exprs: Expr[]): MathOp {
+    return createOp("%", [leftExpr, rightExpr]);
+}
+
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-mathematical)
+ * @group Expressions
+ * @category Operators
+ */
+export function exponentiation(leftExpr: Expr, rightExpr: Expr): MathOp
+export function exponentiation(...exprs: Expr[]): MathOp;
+export function exponentiation(...exprs: Expr[]): MathOp {
+    return createOp("^", [leftExpr, rightExpr]);
 }
