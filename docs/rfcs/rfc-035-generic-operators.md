@@ -12,6 +12,7 @@ type User {
 }
 type Post {
     content: String!
+    public: Boolean
     likes: [User!]! @relationship(type: "LIKES", direction: IN)
 }
 ```
@@ -63,6 +64,7 @@ input PostWhere {
     content_NOT_ENDS_WITH: String
     likes: UserWhere @deprecated(reason: "Use `likes_SOME` instead.")
     likes_NOT: UserWhere @deprecated(reason: "Use `likes_NONE` instead.")
+    public: Boolean
     likesAggregate: PostLikesAggregateInput
 
     """
@@ -216,8 +218,8 @@ input IntListWhere {
     OR: [IntListWhere!]
     AND: [IntListWhere!]
     NOT: IntListWhere
-    all: [Int!]
-    some: Int
+    equals: [Int!]
+    includes: Int
 }
 
 input StringWhere {
@@ -305,6 +307,18 @@ query Posts {
 ```graphql
 query Posts {
     posts(where: { likes: { some: { node: { name: { equals: "Simone" } } } } }) {
+        content
+    }
+}
+```
+
+As no operators would be available for Boolean fields apart from equals, the syntax for booleans will not change.
+
+**Public posts**
+
+```graphql
+query Posts {
+    posts(where: { public: true }) {
         content
     }
 }
