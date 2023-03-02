@@ -6,7 +6,7 @@ Consider the following type definition:
 
 ```graphql
 type User {
-    someArr: [Int!]!
+    integerList: [Int!]!
     someFloat: Float
     name: String
 }
@@ -24,10 +24,10 @@ input UserWhere {
     OR: [UserWhere!]
     AND: [UserWhere!]
     NOT: UserWhere
-    someArr: [Int!]
-    someArr_NOT: [Int!]
-    someArr_INCLUDES: Int
-    someArr_NOT_INCLUDES: Int
+    integerList: [Int!]
+    integerList_NOT: [Int!]
+    integerList_INCLUDES: Int
+    integerList_NOT_INCLUDES: Int
     someFloat: Float
     someFloat_NOT: Float
     someFloat_IN: [Float]
@@ -189,7 +189,7 @@ input UserWhere {
     OR: [UserWhere!]
     AND: [UserWhere!]
     NOT: PostWhere
-    someArr: [Int!]
+    integerList: IntListWhere
     someFloat: FloatWhere
     name: StringWhere
 }
@@ -219,7 +219,21 @@ input IntListWhere {
     AND: [IntListWhere!]
     NOT: IntListWhere
     equals: [Int!]
-    includes: Int
+    all: IntWhere
+    some: IntWhere
+    single: IntWhere
+    none: IntWhere
+}
+
+input IntWhere {
+    OR: [IntListWhere!]
+    AND: [IntListWhere!]
+    NOT: IntListWhere
+    equals: [Int!]
+    all: IntWhere
+    some: IntWhere
+    single: IntWhere
+    none: IntWhere
 }
 
 input StringWhere {
@@ -312,6 +326,16 @@ query Posts {
 }
 ```
 
+**User with all the integers in the integerList greater than 5**
+
+```graphql
+query users {
+    users(where: { integerList: { all: { gt: 5 } } }) {
+        integerList
+    }
+}
+```
+
 As no operators would be available for Boolean fields apart from equals, the syntax for booleans will not change.
 
 **Public posts**
@@ -332,15 +356,15 @@ Consider the `User` update scenario, the current UserUpdateInput looks like this
 
 ```graphql
 input UserUpdateInput {
-    someArr: [Int!]
+    integerList: [Int!]
     someFloat: Float
     name: String
     someFloat_ADD: Float
     someFloat_SUBTRACT: Float
     someFloat_DIVIDE: Float
     someFloat_MULTIPLY: Float
-    someArr_POP: Int
-    someArr_PUSH: [Int!]
+    integerList_POP: Int
+    integerList_PUSH: [Int!]
 }
 ```
 
@@ -375,7 +399,7 @@ Applying the new design principle it would look like this:
 ```graphql
 input UserUpdateInput {
     someFloat: FloatUpdate
-    someArr: IntListUpdate
+    integerList: IntListUpdate
     name: StringUpdate
 }
 
@@ -450,8 +474,8 @@ A potential solution to reduce this unnecessary overhead, could be to provide th
 input UserUpdateInput {
     someFloat: Float
     someFloat_OPERATORS: FloatUpdate
-    someArr: [Int!]
-    someArr_OPERATORS: IntListUpdate
+    integerList: [Int!]
+    integerList_OPERATORS: IntListUpdate
     name: String
     name_OPERATORS: StringUpdate
 }
