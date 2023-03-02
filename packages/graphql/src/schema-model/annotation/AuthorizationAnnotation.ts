@@ -19,6 +19,15 @@
 
 import type { Annotation } from "./Annotation";
 
+export const AuthorizationAnnotationArguments = {
+    filter: "filter",
+    validate: "validate",
+    filterSubscriptions: "filterSubscriptions",
+};
+export const AuthorizationValidateFilterArguments = {
+    pre: "pre",
+    post: "post",
+};
 export class AuthorizationAnnotation implements Annotation {
     name = "AUTHORIZATION";
     filter?: AuthorizationFilterRule[];
@@ -102,7 +111,9 @@ export const getDefaultRuleOperations = (
             return ["READ", "CREATE", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"];
         case AuthorizationFilterRules.validationPost:
             return ["CREATE", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"];
-        default:
+        case AuthorizationFilterRules.filterSubscription:
             return undefined;
+        default:
+            throw new Error(`unrecognized ruleType in default operations`);
     }
 };

@@ -16,17 +16,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ArgumentNode, DirectiveNode, Kind, ObjectFieldNode, ObjectTypeDefinitionNode, ObjectValueNode } from "graphql";
+import {
+    ArgumentNode,
+    BooleanValueNode,
+    DirectiveNode,
+    EnumValueNode,
+    Kind,
+    ListValueNode,
+    ObjectFieldNode,
+    ObjectTypeDefinitionNode,
+    ObjectValueNode,
+    ValueNode,
+} from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import { LOGICAL_OPERATORS } from "../../constants";
 import {
     AuthorizationAnnotation,
+    AuthorizationAnnotationArguments,
     AuthorizationFilterOperation,
     AuthorizationFilterRule,
     AuthorizationFilterRuleArguments,
     AuthorizationFilterRules,
     AuthorizationFilterRuleType,
     AuthorizationFilterRuleWhereArguments,
+    AuthorizationValidateFilterArguments,
     getDefaultRuleOperations,
 } from "../annotation/AuthorizationAnnotation";
 import { getTypeNodeMetadata, TypeNodeMetadata, validateField } from "./filter";
@@ -37,15 +50,23 @@ export function parseAuthorizationAnnotation(
     typeDefinition: ObjectTypeDefinitionNode
 ): AuthorizationAnnotation {
     validateAuthorizationAnnotation(directive, typeDefinition);
-    const { filter, filterSubscriptions, validate } = parseArguments(directive) as {
+    const { filter, filterSubscriptions, validate, ...unrecognizedArguments } = parseArguments(directive) as {
         filter?: Record<string, any>[];
         filterSubscriptions?: Record<string, any>[];
         validate?: { pre: Record<string, any>[]; post: Record<string, any>[] };
     };
     if (!filter && !filterSubscriptions && !validate) {
-        throw new Neo4jGraphQLSchemaValidationError("one of filter/ filterSubscriptions/ validate required");
+        throw new Neo4jGraphQLSchemaValidationError(
+            `@authorization requires at least one of ${Object.values(AuthorizationAnnotationArguments).join(
+                ", "
+            )} arguments`
+        );
     }
-
+    if (Object.keys(unrecognizedArguments).length) {
+        throw new Neo4jGraphQLSchemaValidationError(
+            `@authorization unrecognized arguments: ${Object.keys(unrecognizedArguments).join(", ")}`
+        );
+    }
     const filterRules = filter?.map(
         (rule) => new AuthorizationFilterRule({ ...rule, ruleType: AuthorizationFilterRules.filter })
     );
@@ -58,7 +79,6 @@ export function parseAuthorizationAnnotation(
     const validatePostRules = validate?.post?.map(
         (rule) => new AuthorizationFilterRule({ ...rule, ruleType: AuthorizationFilterRules.validationPost })
     );
-
     return new AuthorizationAnnotation({
         filter: filterRules,
         filterSubscriptions: filterSubscriptionRules,
@@ -67,115 +87,53 @@ export function parseAuthorizationAnnotation(
     });
 }
 
-function validateAuthorizationFilterRule(
-    argument: ArgumentNode | ObjectFieldNode,
-    typeDefinition: ObjectTypeDefinitionNode,
-    ruleType: AuthorizationFilterRuleType
-) {
-    if (argument?.value.kind !== Kind.LIST) {
-        throw new Neo4jGraphQLSchemaValidationError(`${argument.name.value} should be a List`);
-    }
-    if (argument?.value.values.find((v) => v.kind !== Kind.OBJECT)) {
-        throw new Neo4jGraphQLSchemaValidationError(`${argument.name.value} rules should be objects`);
-    }
-
-    argument?.value.values.forEach((v) => {
-        const value = v as ObjectValueNode;
-        const operations = value.fields.find((f) => f.name.value === AuthorizationFilterRuleArguments.operations);
-        if (operations) {
-            if (operations.value.kind !== Kind.LIST) {
-                throw new Neo4jGraphQLSchemaValidationError(
-                    `${AuthorizationFilterRuleArguments.operations} should be a List`
-                );
-            }
-            const possibleValues = getDefaultRuleOperations(ruleType);
-            if (possibleValues) {
-                operations.value.values.forEach((v) => {
-                    if (v.kind !== Kind.ENUM) {
-                        throw new Neo4jGraphQLSchemaValidationError(
-                            `${AuthorizationFilterRuleArguments.operations} should be a List of values from the Enum`
-                        );
-                    }
-                    if (!possibleValues.includes(v.value as AuthorizationFilterOperation)) {
-                        throw new Neo4jGraphQLSchemaValidationError(`${v.value} operation is not allowed`);
-                    }
-                });
-            }
-        }
-        const requireAuthentication = value.fields.find(
-            (f) => f.name.value === AuthorizationFilterRuleArguments.requireAuthentication
-        );
-        if (requireAuthentication && requireAuthentication?.value.kind !== Kind.BOOLEAN) {
-            throw new Neo4jGraphQLSchemaValidationError(
-                `${AuthorizationFilterRuleArguments.requireAuthentication} should be a Boolean`
-            );
-        }
-        const where = value.fields.find((f) => f.name.value === AuthorizationFilterRuleArguments.where);
-        if (where) {
-            if (where.value.kind !== Kind.OBJECT) {
-                throw new Neo4jGraphQLSchemaValidationError(
-                    `${AuthorizationFilterRuleArguments.where} should be an object`
-                );
-            }
-            const nodeWhere = where.value.fields.find(
-                (f) => f.name.value === AuthorizationFilterRuleWhereArguments.node
-            );
-            const jwtWhere = where.value.fields.find(
-                (f) => f.name.value === AuthorizationFilterRuleWhereArguments.jwtPayload
-            );
-            if (!nodeWhere && !jwtWhere) {
-                throw new Neo4jGraphQLSchemaValidationError(
-                    `valid options in ${AuthorizationFilterRuleArguments.where} are: ${Object.keys(
-                        AuthorizationFilterRuleWhereArguments
-                    ).join(", ")}`
-                );
-            }
-            if (nodeWhere) {
-                // ... validate fields
-                const typeFields = (typeDefinition.fields || []).reduce((acc, f) => {
-                    acc[f.name.value] = getTypeNodeMetadata(f.type);
-                    return acc;
-                }, {}) as Record<string, TypeNodeMetadata>;
-
-                const fieldValue = nodeWhere.value;
-                if (fieldValue.kind !== Kind.OBJECT) {
-                    throw new Neo4jGraphQLSchemaValidationError(`${nodeWhere.name.value} should be an object`);
-                }
-
-                if (
-                    fieldValue.fields.length > 1 &&
-                    fieldValue.fields.find((f) => (LOGICAL_OPERATORS as ReadonlyArray<unknown>).includes(f.name.value))
-                ) {
-                    throw new Neo4jGraphQLSchemaValidationError(`logical operators cannot be combined`);
-                }
-                fieldValue.fields.forEach((field) => validateField(field, nodeWhere, typeFields));
-            }
-        }
-    });
-}
-
 function validateAuthorizationAnnotation(directive: DirectiveNode, typeDefinition: ObjectTypeDefinitionNode) {
     const dirArgs = directive.arguments;
-    const filterBeforeValidation = dirArgs?.find((arg) => arg.name.value === "filter");
+    if (!dirArgs) {
+        throw new Neo4jGraphQLSchemaValidationError(
+            `@authorization requires at least one of ${Object.values(AuthorizationAnnotationArguments).join(
+                ", "
+            )} arguments`
+        );
+    }
+    const filterBeforeValidation = dirArgs.find((arg) => arg.name.value === AuthorizationAnnotationArguments.filter);
     if (filterBeforeValidation) {
         validateAuthorizationFilterRule(filterBeforeValidation, typeDefinition, AuthorizationFilterRules.filter);
     }
-    const validateBeforeValidation = dirArgs?.find((arg) => arg.name.value === "validate");
+    const validateBeforeValidation = dirArgs.find(
+        (arg) => arg.name.value === AuthorizationAnnotationArguments.validate
+    );
     if (validateBeforeValidation) {
-        if (validateBeforeValidation?.value.kind !== Kind.OBJECT) {
-            throw new Neo4jGraphQLSchemaValidationError("validate should be an Object");
+        if (
+            !validateValueIsObjectKind(
+                validateBeforeValidation.value,
+                `${AuthorizationAnnotationArguments.validate} should be of type Object`
+            )
+        ) {
+            return;
         }
-        const validatePreFieldsBeforeValidation = validateBeforeValidation?.value.fields.find(
-            (f) => f.name.value === "pre"
+        const validatePreFieldsBeforeValidation = validateBeforeValidation.value.fields.find(
+            (f) => f.name.value === AuthorizationValidateFilterArguments.pre
         );
-        const validatePostFieldsBeforeValidation = validateBeforeValidation?.value.fields.find(
-            (f) => f.name.value === "post"
+        const validatePostFieldsBeforeValidation = validateBeforeValidation.value.fields.find(
+            (f) => f.name.value === AuthorizationValidateFilterArguments.post
         );
         if (!validatePreFieldsBeforeValidation && !validatePostFieldsBeforeValidation) {
-            throw new Neo4jGraphQLSchemaValidationError("validate should contain `pre` or `post`");
+            throw new Neo4jGraphQLSchemaValidationError(
+                `${AuthorizationAnnotationArguments.validate} should contain one of ${Object.values(
+                    AuthorizationValidateFilterArguments
+                ).join(", ")}`
+            );
         }
-        if (validateBeforeValidation?.value.fields.find((f) => f.name.value !== "post" && f.name.value !== "pre")) {
-            throw new Neo4jGraphQLSchemaValidationError("validate should only contain `pre` or `post`");
+        const unknownArgument = validateBeforeValidation.value.fields.find(
+            (f) =>
+                f.name.value !== AuthorizationValidateFilterArguments.pre &&
+                f.name.value !== AuthorizationValidateFilterArguments.post
+        );
+        if (unknownArgument) {
+            throw new Neo4jGraphQLSchemaValidationError(
+                `${AuthorizationAnnotationArguments.validate} unknown argument ${unknownArgument}`
+            );
         }
         validatePreFieldsBeforeValidation &&
             validateAuthorizationFilterRule(
@@ -190,7 +148,9 @@ function validateAuthorizationAnnotation(directive: DirectiveNode, typeDefinitio
                 AuthorizationFilterRules.validationPost
             );
     }
-    const filterSubscriptionsBeforeValidation = dirArgs?.find((arg) => arg.name.value === "filterSubscriptions");
+    const filterSubscriptionsBeforeValidation = dirArgs.find(
+        (arg) => arg.name.value === AuthorizationAnnotationArguments.filterSubscriptions
+    );
     if (filterSubscriptionsBeforeValidation) {
         validateAuthorizationFilterRule(
             filterSubscriptionsBeforeValidation,
@@ -198,4 +158,163 @@ function validateAuthorizationAnnotation(directive: DirectiveNode, typeDefinitio
             AuthorizationFilterRules.filterSubscription
         );
     }
+}
+
+const ruleFieldsAccumulator: {
+    operations: ObjectFieldNode | undefined;
+    requireAuthentication: ObjectFieldNode | undefined;
+    where: ObjectFieldNode | undefined;
+} = {
+    operations: undefined,
+    requireAuthentication: undefined,
+    where: undefined,
+};
+function validateAuthorizationFilterRule(
+    argument: ArgumentNode | ObjectFieldNode,
+    typeDefinition: ObjectTypeDefinitionNode,
+    ruleType: AuthorizationFilterRuleType
+) {
+    const argumentValue = argument.value;
+    if (!validateValueIsListKind(argumentValue, `${argument.name.value} should be a List`)) {
+        return;
+    }
+    argumentValue.values.forEach((ruleArgument) => {
+        if (!validateValueIsObjectKind(ruleArgument, `${argument.name.value} rules should be of type Object`)) {
+            return;
+        }
+        const ruleFields = ruleArgument.fields.reduce((acc, f) => {
+            if (f.name.value === AuthorizationFilterRuleArguments.operations) {
+                acc.operations = f;
+                return acc;
+            }
+            if (f.name.value === AuthorizationFilterRuleArguments.requireAuthentication) {
+                acc.requireAuthentication = f;
+                return acc;
+            }
+            if (f.name.value === AuthorizationFilterRuleArguments.where) {
+                acc.where = f;
+                return acc;
+            }
+            throw new Neo4jGraphQLSchemaValidationError(`@authorization unknown argument ${f.name.value}`);
+        }, ruleFieldsAccumulator);
+        if (!Object.keys(ruleFields).length) {
+            throw new Neo4jGraphQLSchemaValidationError(
+                `@authorization requires one of ${Object.values(AuthorizationFilterRuleArguments).join(", ")} arguments`
+            );
+        }
+        const { operations, requireAuthentication, where } = ruleFields;
+        if (operations) {
+            validateOperationsArgument(operations, getDefaultRuleOperations(ruleType));
+        }
+        if (
+            requireAuthentication &&
+            !validateValueIsBooleanKind(
+                requireAuthentication.value,
+                `${AuthorizationFilterRuleArguments.requireAuthentication} should be of type Boolean`
+            )
+        ) {
+            return;
+        }
+        if (where) {
+            const typeFields = (typeDefinition.fields || []).reduce((acc, f) => {
+                acc[f.name.value] = getTypeNodeMetadata(f.type);
+                return acc;
+            }, {}) as Record<string, TypeNodeMetadata>;
+            validateWhereArgument(where, typeFields);
+        }
+    });
+}
+
+function validateOperationsArgument(
+    operations: ObjectFieldNode,
+    possibleValues: AuthorizationFilterOperation[] | undefined
+) {
+    const operationsFieldValue = operations.value;
+    if (
+        !validateValueIsListKind(
+            operationsFieldValue,
+            `${AuthorizationFilterRuleArguments.operations} should be a List`
+        ) ||
+        !possibleValues
+    ) {
+        return;
+    }
+    const operationsListValues = operationsFieldValue.values;
+    operationsListValues.forEach((operationsListValue) => {
+        if (
+            !validateValueIsEnumKind(
+                operationsListValue,
+                `${AuthorizationFilterRuleArguments.operations} List values should be of type Enum value`
+            )
+        ) {
+            return;
+        }
+        if (!possibleValues.includes(operationsListValue.value as AuthorizationFilterOperation)) {
+            throw new Neo4jGraphQLSchemaValidationError(`${operationsListValue.value} operation is not allowed`);
+        }
+    });
+}
+
+function validateWhereArgument(where: ObjectFieldNode, typeFields: Record<string, TypeNodeMetadata>) {
+    const whereFieldValue = where.value;
+    if (
+        !validateValueIsObjectKind(
+            whereFieldValue,
+            `${AuthorizationFilterRuleArguments.where} should be of type Object`
+        )
+    ) {
+        return;
+    }
+    const nodeWhere = whereFieldValue.fields.find((f) => f.name.value === AuthorizationFilterRuleWhereArguments.node);
+    const jwtWhere = whereFieldValue.fields.find(
+        (f) => f.name.value === AuthorizationFilterRuleWhereArguments.jwtPayload
+    );
+    if (!nodeWhere && !jwtWhere) {
+        throw new Neo4jGraphQLSchemaValidationError(
+            `valid options in ${AuthorizationFilterRuleArguments.where} are: ${Object.keys(
+                AuthorizationFilterRuleWhereArguments
+            ).join(", ")}`
+        );
+    }
+    if (nodeWhere) {
+        const fieldValue = nodeWhere.value;
+        if (!validateValueIsObjectKind(fieldValue, `${nodeWhere.name.value} should be of type Object`)) {
+            return;
+        }
+        if (
+            fieldValue.fields.length > 1 &&
+            fieldValue.fields.find((f) => (LOGICAL_OPERATORS as ReadonlyArray<unknown>).includes(f.name.value))
+        ) {
+            throw new Neo4jGraphQLSchemaValidationError(`logical operators cannot be combined`);
+        }
+        fieldValue.fields.forEach((field) => validateField(field, nodeWhere, typeFields));
+    }
+    if (jwtWhere) {
+        // TODO: implement me
+    }
+}
+
+function validateValueIsListKind(value: ValueNode, errorMessage: string): value is ListValueNode {
+    if (value.kind !== Kind.LIST) {
+        throw new Neo4jGraphQLSchemaValidationError(errorMessage);
+    }
+    return true;
+}
+function validateValueIsObjectKind(value: ValueNode, errorMessage: string): value is ObjectValueNode {
+    if (value.kind !== Kind.OBJECT) {
+        throw new Neo4jGraphQLSchemaValidationError(errorMessage);
+    }
+    return true;
+}
+function validateValueIsEnumKind(value: ValueNode, errorMessage: string): value is EnumValueNode {
+    if (value.kind !== Kind.ENUM) {
+        throw new Neo4jGraphQLSchemaValidationError(errorMessage);
+    }
+    return true;
+}
+function validateValueIsBooleanKind(value: ValueNode, errorMessage: string): value is BooleanValueNode {
+    if (value.kind !== Kind.BOOLEAN) {
+        throw new Neo4jGraphQLSchemaValidationError(errorMessage);
+    }
+    return true;
 }

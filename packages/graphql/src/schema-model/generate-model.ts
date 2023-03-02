@@ -35,29 +35,29 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionNodes = getDefinitionNodes(document);
 
     // init interface to typennames map
-    const interfaceToImplementingTypeNamesMap = definitionNodes.interfaceTypes.reduce((acc, entity) => {
-        const interfaceTypeName = entity.name.value;
-        acc.set(interfaceTypeName, []);
-        return acc;
-    }, new Map<string, string[]>());
+    // const interfaceToImplementingTypeNamesMap = definitionNodes.interfaceTypes.reduce((acc, entity) => {
+    //     const interfaceTypeName = entity.name.value;
+    //     acc.set(interfaceTypeName, []);
+    //     return acc;
+    // }, new Map<string, string[]>());
 
-    // hydrate interface to typennames map
-    definitionNodes.objectTypes.forEach((el) => {
-        if (!el.interfaces) {
-            return;
-        }
-        const objectTypeName = el.name.value;
-        el.interfaces?.forEach((i) => {
-            const interfaceTypeName = i.name.value;
-            const before = interfaceToImplementingTypeNamesMap.get(interfaceTypeName);
-            if (!before) {
-                throw new Neo4jGraphQLSchemaValidationError(
-                    `Could not find composite entity with name ${interfaceTypeName}`
-                );
-            }
-            interfaceToImplementingTypeNamesMap.set(interfaceTypeName, before.concat(objectTypeName));
-        });
-    });
+    // // hydrate interface to typennames map
+    // definitionNodes.objectTypes.forEach((el) => {
+    //     if (!el.interfaces) {
+    //         return;
+    //     }
+    //     const objectTypeName = el.name.value;
+    //     el.interfaces?.forEach((i) => {
+    //         const interfaceTypeName = i.name.value;
+    //         const before = interfaceToImplementingTypeNamesMap.get(interfaceTypeName);
+    //         if (!before) {
+    //             throw new Neo4jGraphQLSchemaValidationError(
+    //                 `Could not find composite entity with name ${interfaceTypeName}`
+    //             );
+    //         }
+    //         interfaceToImplementingTypeNamesMap.set(interfaceTypeName, before.concat(objectTypeName));
+    //     });
+    // });
 
     const concreteEntities = definitionNodes.objectTypes.map(generateConcreteEntity);
     const concreteEntitiesMap = concreteEntities.reduce((acc, entity) => {
@@ -68,11 +68,11 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         return acc;
     }, new Map<string, ConcreteEntity>());
 
-    const interfaceEntities = Array.from(interfaceToImplementingTypeNamesMap.entries()).map(
-        ([name, concreteEntities]) => {
-            return generateCompositeEntity(name, concreteEntities, concreteEntitiesMap);
-        }
-    );
+    // const interfaceEntities = Array.from(interfaceToImplementingTypeNamesMap.entries()).map(
+    //     ([name, concreteEntities]) => {
+    //         return generateCompositeEntity(name, concreteEntities, concreteEntitiesMap);
+    //     }
+    // );
     const unionEntities = definitionNodes.unionTypes.map((entity) => {
         return generateCompositeEntity(
             entity.name.value,
@@ -82,7 +82,7 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     });
 
     return new Neo4jGraphQLSchemaModel({
-        compositeEntities: [...unionEntities, ...interfaceEntities],
+        compositeEntities: unionEntities,
         concreteEntities,
     });
 }
@@ -119,7 +119,7 @@ function generateConcreteEntity(definition: ObjectTypeDefinitionNode): ConcreteE
         return acc;
     }, new Map<string, Record<string, unknown>>());
     const labels = getLabels(definition, directives.get("node") || {});
-    // TODO: add inheritedAnnotations from interfaces
+    // TODO: add annotations inherited from interface
 
     return new ConcreteEntity({
         name: definition.name.value,

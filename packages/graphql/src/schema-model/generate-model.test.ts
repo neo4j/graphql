@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
+import { mergeTypeDefs } from "@graphql-tools/merge";
 import { gql } from "apollo-server";
-import { getDocument } from "../schema/get-document";
 import type { AuthorizationAnnotation } from "./annotation/AuthorizationAnnotation";
 import { generateModel } from "./generate-model";
 import type { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
@@ -44,7 +44,7 @@ describe("ConcreteEntity generation", () => {
             }
         `;
 
-        const document = getDocument(typeDefs);
+        const document = mergeTypeDefs(typeDefs);
         schemaModel = generateModel(document);
     });
 

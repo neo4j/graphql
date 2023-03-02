@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
+import { mergeTypeDefs } from "@graphql-tools/merge";
 import { gql } from "apollo-server";
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
-import { getDocument } from "../schema/get-document";
 import { generateModel } from "./generate-model";
 
 describe("@authorization directive validation", () => {
@@ -32,8 +32,11 @@ describe("@authorization directive validation", () => {
                 }
             `;
 
-            const document = getDocument(typeDefs);
-            expect(() => generateModel(document)).toThrow();
+            const document = mergeTypeDefs(typeDefs);
+            expect(() => generateModel(document)).toThrowWithMessage(
+                Neo4jGraphQLSchemaValidationError,
+                "pre should be a List"
+            );
         });
 
         test("validate pre and post, pre should be of type array", () => {
@@ -50,8 +53,11 @@ describe("@authorization directive validation", () => {
                 }
             `;
 
-            const document = getDocument(typeDefs);
-            expect(() => generateModel(document)).toThrow();
+            const document = mergeTypeDefs(typeDefs);
+            expect(() => generateModel(document)).toThrowWithMessage(
+                Neo4jGraphQLSchemaValidationError,
+                "pre should be a List"
+            );
         });
 
         test("validate should be of type object", () => {
@@ -62,8 +68,11 @@ describe("@authorization directive validation", () => {
                 }
             `;
 
-            const document = getDocument(typeDefs);
-            expect(() => generateModel(document)).toThrow();
+            const document = mergeTypeDefs(typeDefs);
+            expect(() => generateModel(document)).toThrowWithMessage(
+                Neo4jGraphQLSchemaValidationError,
+                "validate should be of type Object"
+            );
         });
 
         test("filter should be of type object", () => {
@@ -74,8 +83,11 @@ describe("@authorization directive validation", () => {
                 }
             `;
 
-            const document = getDocument(typeDefs);
-            expect(() => generateModel(document)).toThrow();
+            const document = mergeTypeDefs(typeDefs);
+            expect(() => generateModel(document)).toThrowWithMessage(
+                Neo4jGraphQLSchemaValidationError,
+                "filter should be a List"
+            );
         });
     });
 
@@ -88,8 +100,11 @@ describe("@authorization directive validation", () => {
                 }
             `;
 
-            const document = getDocument(typeDefs);
-            expect(() => generateModel(document)).toThrow();
+            const document = mergeTypeDefs(typeDefs);
+            expect(() => generateModel(document)).toThrowWithMessage(
+                Neo4jGraphQLSchemaValidationError,
+                "@authorization requires at least one of filter, validate, filterSubscriptions arguments"
+            );
         });
 
         test("validate with incorrect arguments", () => {
@@ -101,11 +116,10 @@ describe("@authorization directive validation", () => {
                 }
             `;
 
-            const document = getDocument(typeDefs);
-            // TODO: do this for all tests! please =)
+            const document = mergeTypeDefs(typeDefs);
             expect(() => generateModel(document)).toThrowWithMessage(
                 Neo4jGraphQLSchemaValidationError,
-                "validate should contain `pre` or `post`"
+                "validate should contain one of pre, post"
             );
         });
 
@@ -118,8 +132,11 @@ describe("@authorization directive validation", () => {
                 }
             `;
 
-            const document = getDocument(typeDefs);
-            expect(() => generateModel(document)).toThrow();
+            const document = mergeTypeDefs(typeDefs);
+            expect(() => generateModel(document)).toThrowWithMessage(
+                Neo4jGraphQLSchemaValidationError,
+                "unknown field iAmWrong in node"
+            );
         });
 
         test("validate node incorrect operation", () => {
@@ -130,8 +147,11 @@ describe("@authorization directive validation", () => {
                 }
             `;
 
-            const document = getDocument(typeDefs);
-            expect(() => generateModel(document)).toThrow();
+            const document = mergeTypeDefs(typeDefs);
+            expect(() => generateModel(document)).toThrowWithMessage(
+                Neo4jGraphQLSchemaValidationError,
+                "iAmWrong is not supported on ID fields"
+            );
         });
 
         test("validate.pre correct arguments", () => {
@@ -142,7 +162,7 @@ describe("@authorization directive validation", () => {
                 }
             `;
 
-            const document = getDocument(typeDefs);
+            const document = mergeTypeDefs(typeDefs);
             expect(() => generateModel(document)).not.toThrow();
         });
 
@@ -160,7 +180,7 @@ describe("@authorization directive validation", () => {
                 }
             `;
 
-            const document = getDocument(typeDefs);
+            const document = mergeTypeDefs(typeDefs);
             expect(() => generateModel(document)).not.toThrow();
         });
     });
@@ -177,8 +197,11 @@ describe("@authorization directive validation", () => {
                 }
             `;
 
-            const document = getDocument(typeDefs);
-            expect(() => generateModel(document)).toThrow();
+            const document = mergeTypeDefs(typeDefs);
+            expect(() => generateModel(document)).toThrowWithMessage(
+                Neo4jGraphQLSchemaValidationError,
+                "CREATE operation is not allowed"
+            );
         });
 
         test("valid filter operation", () => {
@@ -197,12 +220,24 @@ describe("@authorization directive validation", () => {
                 }
             `;
 
-            const document = getDocument(typeDefs);
+            const document = mergeTypeDefs(typeDefs);
             expect(() => generateModel(document)).not.toThrow();
         });
     });
 
     describe("requireAuthentication", () => {
+        test("should not throw if undefined", () => {
+            const typeDefs = gql`
+                type User @authorization(filter: [{ where: { node: { id: { equals: "valid-string" } } } }]) {
+                    id: ID!
+                    name: String!
+                }
+            `;
+
+            const document = mergeTypeDefs(typeDefs);
+            expect(() => generateModel(document)).not.toThrow();
+        });
+
         test("requireAuthentication should throw if not of type boolean", () => {
             const typeDefs = gql`
                 type User
@@ -214,20 +249,11 @@ describe("@authorization directive validation", () => {
                 }
             `;
 
-            const document = getDocument(typeDefs);
-            expect(() => generateModel(document)).toThrow();
-        });
-
-        test("should not throw if undefined", () => {
-            const typeDefs = gql`
-                type User @authorization(filter: [{ where: { node: { id: { equals: "valid-string" } } } }]) {
-                    id: ID!
-                    name: String!
-                }
-            `;
-
-            const document = getDocument(typeDefs);
-            expect(() => generateModel(document)).not.toThrow();
+            const document = mergeTypeDefs(typeDefs);
+            expect(() => generateModel(document)).toThrowWithMessage(
+                Neo4jGraphQLSchemaValidationError,
+                "requireAuthentication should be of type Boolean"
+            );
         });
     });
 });
@@ -249,7 +275,7 @@ describe("filter", () => {
             }
         `;
 
-        const document = getDocument(typeDefs);
+        const document = mergeTypeDefs(typeDefs);
         expect(generateModel(document)).toBeDefined();
     });
 
@@ -269,7 +295,7 @@ describe("filter", () => {
             }
         `;
 
-        const document = getDocument(typeDefs);
+        const document = mergeTypeDefs(typeDefs);
         expect(generateModel(document)).toBeDefined();
     });
 
@@ -296,7 +322,7 @@ describe("filter", () => {
             }
         `;
 
-        const document = getDocument(typeDefs);
+        const document = mergeTypeDefs(typeDefs);
         expect(generateModel(document)).toBeDefined();
     });
 
@@ -316,7 +342,7 @@ describe("filter", () => {
             }
         `;
 
-        const document = getDocument(typeDefs);
+        const document = mergeTypeDefs(typeDefs);
         expect(generateModel(document)).toBeDefined();
     });
 
@@ -340,7 +366,7 @@ describe("filter", () => {
             }
         `;
 
-        const document = getDocument(typeDefs);
+        const document = mergeTypeDefs(typeDefs);
         expect(generateModel(document)).toBeDefined();
     });
 
@@ -360,7 +386,7 @@ describe("filter", () => {
             }
         `;
 
-        const document = getDocument(typeDefs);
+        const document = mergeTypeDefs(typeDefs);
         expect(generateModel(document)).toBeDefined();
     });
 
@@ -390,7 +416,7 @@ describe("filter", () => {
             }
         `;
 
-        const document = getDocument(typeDefs);
+        const document = mergeTypeDefs(typeDefs);
         expect(generateModel(document)).toBeDefined();
     });
 
@@ -410,7 +436,7 @@ describe("filter", () => {
             }
         `;
 
-        const document = getDocument(typeDefs);
+        const document = mergeTypeDefs(typeDefs);
         expect(() => generateModel(document)).toThrow();
     });
 
@@ -430,8 +456,11 @@ describe("filter", () => {
             }
         `;
 
-        const document = getDocument(typeDefs);
-        expect(() => generateModel(document)).toThrow();
+        const document = mergeTypeDefs(typeDefs);
+        expect(() => generateModel(document)).toThrowWithMessage(
+            Neo4jGraphQLSchemaValidationError,
+            "hocuspocus is not supported on String fields"
+        );
     });
 
     test("node.scores.and.includes.and operator cannot be used here", () => {
@@ -452,7 +481,10 @@ describe("filter", () => {
             }
         `;
 
-        const document = getDocument(typeDefs);
-        expect(() => generateModel(document)).toThrow();
+        const document = mergeTypeDefs(typeDefs);
+        expect(() => generateModel(document)).toThrowWithMessage(
+            Neo4jGraphQLSchemaValidationError,
+            "unexpected type for includes"
+        );
     });
 });

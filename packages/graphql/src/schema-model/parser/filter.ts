@@ -91,7 +91,6 @@ const getListKindWhereMap = (kind: GraphQLValueKind) =>
         ["equals", Kind.LIST],
     ]);
 
-// TODO: rename
 const getKindWhereMapForType = (
     type: TypeNodeMetadata
 ): Map<StringWhereOperator | NumberWhereOperator | ListWhereOperator, GraphQLValueKind> | undefined => {
@@ -109,26 +108,6 @@ const getKindWhereMapForType = (
     }
 };
 
-function walk(
-    primaryfield: ObjectFieldNode,
-    cb: (innerField: ObjectFieldNode, field: ObjectFieldNode, typeFields: Record<string, TypeNodeMetadata>) => void,
-    innerField: ObjectFieldNode,
-    field: ObjectFieldNode,
-    typeFields: Record<string, TypeNodeMetadata>
-) {
-    if (primaryfield.name.value === "NOT") {
-        // innerField, field, typeFields
-        cb(innerField, field, typeFields);
-    } else {
-        if (primaryfield.value.kind !== Kind.LIST) {
-            throw new Neo4jGraphQLSchemaValidationError(`${primaryfield.name.value} should be of type List`);
-        }
-        primaryfield.value.values
-            .map((v) => (v as ObjectValueNode).fields)
-            .flat()
-            .forEach((otherInnerField) => cb(otherInnerField, innerField, typeFields)); // listInnerField, innerField, typeFields
-    }
-}
 export function validateField(
     innerField: ObjectFieldNode,
     field: ObjectFieldNode,
@@ -142,6 +121,9 @@ export function validateField(
     }
     if (isLogicalOperator) {
         if (innerField.name.value === "NOT") {
+            if (innerField.value.kind !== Kind.OBJECT) {
+                throw new Neo4jGraphQLSchemaValidationError(`${innerField.name.value} should be of type Object`);
+            }
             validateField(innerField, field, typeFields);
         } else {
             if (innerField.value.kind !== Kind.LIST) {
@@ -161,13 +143,13 @@ export function validateField(
                             (LOGICAL_OPERATORS as ReadonlyArray<unknown>).includes(f.name.value)
                         )
                     ) {
-                        // TODO: add this combination check in all applicable places
+                        // checks logical operators cannot be combined with any other operators
+                        // TODO: add check in all applicable places
                         throw new Neo4jGraphQLSchemaValidationError(`logical operators cannot be combined`);
                     }
                 })
                 .forEach((listInnerField) => validateField(listInnerField, innerField, typeFields));
         }
-        // walk(innerField, validateField, innerField, field, typeFields);
     } else {
         validateWhereField(innerField, typeFields[innerField.name.value]);
     }
