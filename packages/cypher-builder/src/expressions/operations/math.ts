@@ -64,7 +64,7 @@ export function plus(...exprs: Expr[]): MathOp {
  * @group Expressions
  * @category Operators
  */
-export function minus(leftExpr: Expr, rightExpr: Expr): MathOp
+export function minus(leftExpr: Expr, rightExpr: Expr): MathOp;
 export function minus(...exprs: Expr[]): MathOp;
 export function minus(...exprs: Expr[]): MathOp {
     return createOp("-", [leftExpr, rightExpr]);
@@ -75,7 +75,7 @@ export function minus(...exprs: Expr[]): MathOp {
  * @group Expressions
  * @category Operators
  */
-export function multiplication(leftExpr: Expr, rightExpr: Expr): MathOp
+export function multiplication(leftExpr: Expr, rightExpr: Expr): MathOp;
 export function multiplication(...exprs: Expr[]): MathOp;
 export function multiplication(...exprs: Expr[]): MathOp {
     return createOp("*", [leftExpr, rightExpr]);
@@ -86,7 +86,7 @@ export function multiplication(...exprs: Expr[]): MathOp {
  * @group Expressions
  * @category Operators
  */
-export function division(leftExpr: Expr, rightExpr: Expr): MathOp
+export function division(leftExpr: Expr, rightExpr: Expr): MathOp;
 export function division(...exprs: Expr[]): MathOp;
 export function division(...exprs: Expr[]): MathOp {
     return createOp("/", [leftExpr, rightExpr]);
@@ -97,7 +97,7 @@ export function division(...exprs: Expr[]): MathOp {
  * @group Expressions
  * @category Operators
  */
-export function modulo(leftExpr: Expr, rightExpr: Expr): MathOp
+export function modulo(leftExpr: Expr, rightExpr: Expr): MathOp;
 export function modulo(...exprs: Expr[]): MathOp;
 export function modulo(...exprs: Expr[]): MathOp {
     return createOp("%", [leftExpr, rightExpr]);
@@ -108,7 +108,7 @@ export function modulo(...exprs: Expr[]): MathOp {
  * @group Expressions
  * @category Operators
  */
-export function exponentiation(leftExpr: Expr, rightExpr: Expr): MathOp
+export function exponentiation(leftExpr: Expr, rightExpr: Expr): MathOp;
 export function exponentiation(...exprs: Expr[]): MathOp;
 export function exponentiation(...exprs: Expr[]): MathOp {
     return createOp("^", [leftExpr, rightExpr]);
