@@ -77,7 +77,7 @@ export {
     endsWith,
     matches,
 } from "./expressions/operations/comparison";
-export { MathOp as Math, plus, minus } from "./expressions/operations/math";
+export { plus, minus, multiplication, division, modulo, exponentiation } from "./expressions/operations/math";
 
 // --Functions
 export { CypherFunction as Function } from "./expressions/functions/CypherFunctions";
