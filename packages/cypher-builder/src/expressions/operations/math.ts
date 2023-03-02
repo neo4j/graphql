@@ -21,7 +21,7 @@ import type { Expr } from "../../types";
 import type { CypherEnvironment } from "../../Environment";
 import { CypherASTNode } from "../../CypherASTNode";
 
-type MathOperator = "+" | "-";
+type MathOperator = "+" | "-" | "*", "/", "%", "^";
 
 export class MathOp extends CypherASTNode {
     private operator: MathOperator;
