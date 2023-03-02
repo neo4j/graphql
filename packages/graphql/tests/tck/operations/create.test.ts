@@ -63,15 +63,15 @@ describe("Cypher Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`Movie\`)
+                WITH create_var0
+                CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this0.id = create_var1.id
-                RETURN create_this0
+                    create_this1.id = create_var0.id
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .id }) AS data"
+            RETURN collect(create_this1 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -103,15 +103,15 @@ describe("Cypher Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`Movie\`)
+                WITH create_var0
+                CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this0.id = create_var1.id
-                RETURN create_this0
+                    create_this1.id = create_var0.id
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .id }) AS data"
+            RETURN collect(create_this1 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -151,26 +151,26 @@ describe("Cypher Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`Movie\`)
+                WITH create_var0
+                CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this0.id = create_var1.id
-                WITH create_this0, create_var1
+                    create_this1.id = create_var0.id
+                WITH create_this1, create_var0
                 CALL {
-                    WITH create_this0, create_var1
-                    UNWIND create_var1.actors.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
+                    WITH create_this1, create_var0
+                    UNWIND create_var0.actors.create AS create_var2
+                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
                     CREATE (create_this5:\`Actor\`)
                     SET
                         create_this5.name = create_var3.name
-                    MERGE (create_this0)<-[create_this6:ACTED_IN]-(create_this5)
+                    MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
                     RETURN collect(NULL) AS create_var7
                 }
-                RETURN create_this0
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .id }) AS data"
+            RETURN collect(create_this1 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -238,21 +238,21 @@ describe("Cypher Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`Movie\`)
+                WITH create_var0
+                CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this0.id = create_var1.id
-                WITH create_this0, create_var1
+                    create_this1.id = create_var0.id
+                WITH create_this1, create_var0
                 CALL {
-                    WITH create_this0, create_var1
-                    UNWIND create_var1.actors.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
+                    WITH create_this1, create_var0
+                    UNWIND create_var0.actors.create AS create_var2
+                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
                     CREATE (create_this5:\`Actor\`)
                     SET
                         create_this5.name = create_var3.name
-                    MERGE (create_this0)<-[create_this6:ACTED_IN]-(create_this5)
+                    MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
                     WITH create_this5, create_var3
                     CALL {
                         WITH create_this5, create_var3
@@ -266,9 +266,9 @@ describe("Cypher Create", () => {
                     }
                     RETURN collect(NULL) AS create_var13
                 }
-                RETURN create_this0
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .id }) AS data"
+            RETURN collect(create_this1 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -364,8 +364,7 @@ describe("Cypher Create", () => {
             }
             RETURN this0
             }
-            RETURN [
-            this0 { .id }] AS data"
+            RETURN [ this0 { .id } ] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -431,28 +430,27 @@ describe("Cypher Create", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0)-[create_this0:ACTED_IN]->(this0_movies:\`Movie\`)
+                MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:\`Movie\`)
                 CALL {
-                    WITH this0_movies
-                    MATCH (this0_movies)<-[this0_movies_connection_actorsConnectionthis0:ACTED_IN]-(this0_movies_Actor:\`Actor\`)
-                    WHERE this0_movies_Actor.name = $projection_movies_connection_actorsConnectionparam0
-                    WITH { node: { name: this0_movies_Actor.name } } AS edge
+                    WITH create_this1
+                    MATCH (create_this1:\`Movie\`)<-[create_this2:ACTED_IN]-(create_this3:\`Actor\`)
+                    WHERE create_this3.name = $create_param0
+                    WITH { node: { name: create_this3.name } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS this0_movies_actorsConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS create_var4
                 }
-                WITH this0_movies { actorsConnection: this0_movies_actorsConnection } AS this0_movies
-                RETURN collect(this0_movies) AS this0_movies
+                WITH create_this1 { actorsConnection: create_var4 } AS create_this1
+                RETURN collect(create_this1) AS create_var5
             }
-            RETURN [
-            this0 { .name, movies: this0_movies }] AS data"
+            RETURN [ this0 { .name, movies: create_var5 } ] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"create_param0\\": \\"Dan\\",
                 \\"this0_name\\": \\"Dan\\",
                 \\"this0_movies_connect0_node_param0\\": \\"1\\",
-                \\"projection_movies_connection_actorsConnectionparam0\\": \\"Dan\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

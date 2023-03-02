@@ -19,7 +19,7 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { mergeDeep } from "@graphql-tools/utils";
-import type { ConnectionField, ConnectionSortArg, Context } from "../../types";
+import type { ConnectionField, ConnectionSortArg, Context, CypherFieldReferenceMap } from "../../types";
 import type { Node } from "../../classes";
 
 import createProjectionAndParams from "../create-projection-and-params";
@@ -37,16 +37,18 @@ export function createEdgeProjection({
     context,
     relatedNode,
     resolveType,
-    extraFields = []
+    extraFields = [],
+    cypherFieldAliasMap,
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
     relationshipRef: Cypher.Relationship;
-    relatedNodeVariableName: string;
+    relatedNodeVariableName: Cypher.Node;
     context: Context;
     relatedNode: Node;
     resolveType?: boolean;
     extraFields?: Array<string>;
+    cypherFieldAliasMap: CypherFieldReferenceMap;
 }): { projection: Cypher.Map; subqueries: Cypher.Clause[] } {
     const connection = resolveTree.fieldsByTypeName[field.typeMeta.name];
 
@@ -63,7 +65,7 @@ export function createEdgeProjection({
                 const prop = createRelationshipPropertyValue({
                     resolveTree: property,
                     relationship,
-                    relationshipVariable: relationshipRef
+                    relationshipVariable: relationshipRef,
                 });
 
                 edgeProjectionProperties.set(property.alias, prop);
@@ -83,7 +85,8 @@ export function createEdgeProjection({
                 node: relatedNode,
                 resolveTree,
                 nodeRefVarName: relatedNodeVariableName,
-                resolveType
+                resolveType,
+                cypherFieldAliasMap,
             });
             const alias = nodeField.alias;
             edgeProjectionProperties.set(alias, nodeProjection.projection);
@@ -96,10 +99,10 @@ export function createEdgeProjection({
             projection: new Cypher.Map({
                 node: new Cypher.Map({
                     __resolveType: new Cypher.Literal(relatedNode.name),
-                    __id: Cypher.id(new Cypher.NamedVariable(relatedNodeVariableName))
-                })
+                    __id: Cypher.id(relatedNodeVariableName),
+                }),
             }),
-            subqueries
+            subqueries,
         };
     }
 
@@ -112,18 +115,20 @@ function createConnectionNodeProjection({
     context,
     node,
     resolveType = false,
-    resolveTree
+    resolveTree,
+    cypherFieldAliasMap,
 }: {
     nodeResolveTree: ResolveTree;
     context;
-    nodeRefVarName: string;
+    nodeRefVarName: Cypher.Node;
     node: Node;
     resolveType?: boolean;
     resolveTree: ResolveTree; // Global resolve tree
+    cypherFieldAliasMap: CypherFieldReferenceMap;
 }): { projection: Cypher.Expr; subqueries: Cypher.Clause[] } {
     const selectedFields: Record<string, ResolveTree> = mergeDeep([
         nodeResolveTree.fieldsByTypeName[node.name],
-        ...node.interfaces.map((i) => nodeResolveTree?.fieldsByTypeName[i.name.value])
+        ...node.interfaces.map((i) => nodeResolveTree?.fieldsByTypeName[i.name.value]),
     ]);
 
     const sortInput = (resolveTree.args.sort ?? []) as ConnectionSortArg[];
@@ -135,10 +140,10 @@ function createConnectionNodeProjection({
             fieldsByTypeName: {
                 [node.name]: generateMissingOrAliasedFields({
                     fieldNames: nodeSortFields,
-                    selection: selectedFields
-                })
-            }
-        }
+                    selection: selectedFields,
+                }),
+            },
+        },
     ]);
 
     const nodeProjectionAndParams = createProjectionAndParams({
@@ -147,26 +152,30 @@ function createConnectionNodeProjection({
         context,
         varName: nodeRefVarName,
         literalElements: true,
-        resolveType
+        resolveType,
+        cypherFieldAliasMap,
     });
 
     const projectionMeta = nodeProjectionAndParams.meta;
     const projectionSubqueries = [
         ...nodeProjectionAndParams.subqueriesBeforeSort,
-        ...nodeProjectionAndParams.subqueries
+        ...nodeProjectionAndParams.subqueries,
     ];
 
-    if (projectionMeta?.authValidateStrs?.length) {
-        const authStrs = projectionMeta.authValidateStrs;
-        const projectionAuth = new Cypher.RawCypher(() => {
-            return `CALL apoc.util.validate(NOT (${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-        });
+    if (projectionMeta?.authValidatePredicates?.length) {
+        const projectionAuth = new Cypher.CallProcedure(
+            new Cypher.apoc.Validate(
+                Cypher.not(Cypher.and(...projectionMeta.authValidatePredicates)),
+                AUTH_FORBIDDEN_ERROR,
+                new Cypher.Literal([0])
+            )
+        );
+
         projectionSubqueries.push(projectionAuth);
     }
+
     return {
         subqueries: projectionSubqueries,
-        projection: new Cypher.RawCypher(() => {
-            return [`${nodeProjectionAndParams.projection}`, nodeProjectionAndParams.params];
-        })
+        projection: nodeProjectionAndParams.projection,
     };
 }

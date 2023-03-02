@@ -56,13 +56,14 @@ export function translateResolveReference({
         node,
         context,
         resolveTree,
-        varName,
+        varName: matchNode,
+        cypherFieldAliasMap: {},
     });
 
     const projectionSubqueries = Cypher.concat(...projection.subqueries, ...projection.subqueriesBeforeSort);
 
-    const projectionExpression = new Cypher.RawCypher(() => {
-        return [`${varName} ${projection.projection}`, projection.params];
+    const projectionExpression = new Cypher.RawCypher((env) => {
+        return [`${varName} ${projection.projection.getCypher(env)}`, projection.params];
     });
 
     const returnClause = new Cypher.Return([projectionExpression, varName]);

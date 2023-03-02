@@ -3,7 +3,7 @@ module.exports = {
     apps: [
         {
             name: "subgraph",
-            script: "dist/bundle.js"
-        }
-    ]
+            script: "dist/bundle.js",
+        },
+    ],
 };

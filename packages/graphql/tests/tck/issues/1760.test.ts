@@ -127,50 +127,50 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             WHERE (this.current = $param0 AND apoc.util.validatePredicate(NOT ((any(var1 IN [\\"ALL\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id\\", { this: this, auth: $auth }) AS this_relatedId
-                RETURN head(collect(this_relatedId)) AS this_relatedId
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id\\", { this: this, auth: $auth }) AS this2
+                RETURN head(collect(this2)) AS this2
             }
             WITH *
-            ORDER BY this_relatedId ASC
+            ORDER BY this2 ASC
             SKIP $param3
             LIMIT $param4
             CALL {
                 WITH this
-                MATCH (this)-[this_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_NameDetails:\`NameDetails\`)
-                WHERE apoc.util.validatePredicate(NOT ((any(this_connection_nameDetailsConnectionvar2 IN [\\"ALL\\"] WHERE any(this_connection_nameDetailsConnectionvar1 IN $auth.roles WHERE this_connection_nameDetailsConnectionvar1 = this_connection_nameDetailsConnectionvar2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH { node: { fullName: this_NameDetails.fullName } } AS edge
+                MATCH (this)-[this3:HAS_NAME]->(this4:\`NameDetails\`)
+                WHERE apoc.util.validatePredicate(NOT ((any(var6 IN [\\"ALL\\"] WHERE any(var5 IN $auth.roles WHERE var5 = var6)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH { node: { fullName: this4.fullName } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_nameDetailsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var7
             }
             CALL {
                 WITH this
-                MATCH (this)-[this_connection_marketsConnectionthis0:HAS_MARKETS]->(this_Market:\`Market\`)
-                WHERE apoc.util.validatePredicate(NOT ((any(this_connection_marketsConnectionvar2 IN [\\"ALL\\"] WHERE any(this_connection_marketsConnectionvar1 IN $auth.roles WHERE this_connection_marketsConnectionvar1 = this_connection_marketsConnectionvar2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MATCH (this)-[this8:HAS_MARKETS]->(this9:\`Market\`)
+                WHERE apoc.util.validatePredicate(NOT ((any(var11 IN [\\"ALL\\"] WHERE any(var10 IN $auth.roles WHERE var10 = var11)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
-                    WITH this_Market
-                    MATCH (this_Market)-[this_Market_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_Market_NameDetails:\`NameDetails\`)
-                    WHERE apoc.util.validatePredicate(NOT ((any(this_Market_connection_nameDetailsConnectionvar2 IN [\\"ALL\\"] WHERE any(this_Market_connection_nameDetailsConnectionvar1 IN $auth.roles WHERE this_Market_connection_nameDetailsConnectionvar1 = this_Market_connection_nameDetailsConnectionvar2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH { node: { fullName: this_Market_NameDetails.fullName } } AS edge
+                    WITH this9
+                    MATCH (this9:\`Market\`)-[this12:HAS_NAME]->(this13:\`NameDetails\`)
+                    WHERE apoc.util.validatePredicate(NOT ((any(var15 IN [\\"ALL\\"] WHERE any(var14 IN $auth.roles WHERE var14 = var15)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WITH { node: { fullName: this13.fullName } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS this_Market_nameDetailsConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS var16
                 }
-                WITH { node: { nameDetailsConnection: this_Market_nameDetailsConnection } } AS edge
+                WITH { node: { nameDetailsConnection: var16 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_marketsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var17
             }
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_baseObjectConnectionthis0:HAS_BASE]-(this_BaseObject:\`BaseObject\`)
-                WHERE apoc.util.validatePredicate(NOT ((any(this_connection_baseObjectConnectionvar2 IN [\\"ALL\\"] WHERE any(this_connection_baseObjectConnectionvar1 IN $auth.roles WHERE this_connection_baseObjectConnectionvar1 = this_connection_baseObjectConnectionvar2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH { node: { id: this_BaseObject.id } } AS edge
+                MATCH (this)<-[this18:HAS_BASE]-(this19:\`BaseObject\`)
+                WHERE apoc.util.validatePredicate(NOT ((any(var21 IN [\\"ALL\\"] WHERE any(var20 IN $auth.roles WHERE var20 = var21)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH { node: { id: this19.id } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_baseObjectConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var22
             }
-            RETURN this { relatedId: this_relatedId, nameDetailsConnection: this_nameDetailsConnection, marketsConnection: this_marketsConnection, baseObjectConnection: this_baseObjectConnection } AS this"
+            RETURN this { relatedId: this2, nameDetailsConnection: var7, marketsConnection: var17, baseObjectConnection: var22 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
