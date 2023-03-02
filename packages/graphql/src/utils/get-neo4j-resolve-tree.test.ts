@@ -123,7 +123,7 @@ describe("getNeo4jResolveTree", () => {
             args: {
                 test2: 'test2 from resolver',
                 test3: 42,
-            } as any
+            } as any,
         } as GetNeo4jResolveTreeOptions);
         expect(resolveTree).toEqual({
             name: 'aMutation',
@@ -133,7 +133,7 @@ describe("getNeo4jResolveTree", () => {
                 test3: {
                     high: 0,
                     low: 42,
-                }
+                },
             },
             fieldsByTypeName: {
 

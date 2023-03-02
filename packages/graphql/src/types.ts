@@ -192,8 +192,8 @@ export type CustomScalarField = BaseField;
 export interface CustomEnumField extends BaseField {
     // TODO Must be "Enum" - really needs refactoring into classes
     kind: string;
-    defaultValue?: string;
-    coalesceValue?: string;
+    defaultValue?: string | string[];
+    coalesceValue?: string | string[];
 }
 
 export interface UnionField extends BaseField {
@@ -544,3 +544,5 @@ export type PredicateReturn = {
     predicate: Cypher.Predicate | undefined;
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
 };
+
+export type CypherFieldReferenceMap = Record<string, Cypher.Node | Cypher.Variable>;
