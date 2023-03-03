@@ -27,7 +27,7 @@ import type {
     ObjectTypeDefinitionNode,
 } from "graphql";
 import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
-import type { Directive, ObjectTypeComposer } from "graphql-compose";
+import type { ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import type { BaseField, Neo4jGraphQLCallbacks, Neo4jFeaturesSettings } from "../types";
