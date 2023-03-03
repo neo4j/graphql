@@ -16621,7 +16621,7 @@ __metadata:
     jest: 29.4.3
     jsonwebtoken: 9.0.0
     neo4j-driver: 5.6.0
-    nodemon: 2.0.20
+    nodemon: 2.0.21
     randomstring: 1.2.3
     ts-jest: 29.0.5
     ts-node: 10.9.1
@@ -16969,7 +16969,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemon@npm:2.0.20, nodemon@npm:^2.0.7":
+"nodemon@npm:2.0.21":
+  version: 2.0.21
+  resolution: "nodemon@npm:2.0.21"
+  dependencies:
+    chokidar: ^3.5.2
+    debug: ^3.2.7
+    ignore-by-default: ^1.0.1
+    minimatch: ^3.1.2
+    pstree.remy: ^1.1.8
+    semver: ^5.7.1
+    simple-update-notifier: ^1.0.7
+    supports-color: ^5.5.0
+    touch: ^3.1.0
+    undefsafe: ^2.0.5
+  bin:
+    nodemon: bin/nodemon.js
+  checksum: 0b9fe2d11fd95c51b66d61bd1ee85cddf579c9e674c9429752a74f445f1b98576235ae860858783728baa3666c87e4ef938ab67167cc34fe4bb8fcec74d6885b
+  languageName: node
+  linkType: hard
+
+"nodemon@npm:^2.0.7":
   version: 2.0.20
   resolution: "nodemon@npm:2.0.20"
   dependencies:
