@@ -81,3 +81,63 @@ describe("ConcreteEntity generation", () => {
         expect(authAnnotation.validatePre).toHaveLength(1);
     });
 });
+
+
+
+describe("ComposeEntity generation", () => {
+    let schemaModel: Neo4jGraphQLSchemaModel;
+
+    beforeAll(() => {
+        const typeDefs = gql`
+            
+            union Tool = Screwdriver | Pencil
+
+            type Screwdriver {
+                length: Int
+            }
+
+            type Pencil {
+                colour: String
+            }
+
+
+            interface Human {
+                id: ID!
+            }
+
+            type User implements Human
+                @authorization(
+                    validate: {
+                        pre: [{ where: { node: { id: { equals: "$jwt.sub" } } } }]
+                        post: [{ where: { node: { id: { equals: "$jwt.sub" } } } }]
+                    }
+                ) {
+                id: ID!
+                name: String!
+                preferiteTool: Tool
+            }
+
+            extend type User {
+                password: String! @authorization(filter: [{ where: { node: { id: { equals: "$jwt.sub" } } } }])
+            }
+        `;
+
+        const document = mergeTypeDefs(typeDefs);
+        schemaModel = generateModel(document);
+    });
+
+    test("creates the concrete entity", () => {
+        expect(schemaModel.concreteEntities).toHaveLength(3); // User, Pencil, Screwdriver
+    });
+
+    test("creates the composite entity", () => {
+        expect(schemaModel.compositeEntities).toHaveLength(2); // Human, Tool
+    });
+
+    test("composite entities has correct concrete entities", () => {
+        const toolEntities = schemaModel.compositeEntities.find((e) => e.name === "Tool");
+        expect(toolEntities?.concreteEntities).toHaveLength(2); // Pencil, Screwdriver
+        const humanEntities = schemaModel.compositeEntities.find((e) => e.name === "Human");
+        expect(humanEntities?.concreteEntities).toHaveLength(1); // User
+    });
+});
