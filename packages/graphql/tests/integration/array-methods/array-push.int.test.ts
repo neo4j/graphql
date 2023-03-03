@@ -58,9 +58,8 @@ describe("array-push", () => {
     const localDateTime = `${faker.date.past().toISOString().split("Z")[0]}`;
     // Expected localTime and localDateTime may cause flakiness with the ms precision.
     const expectedLocalTime = expect.stringContaining(localTime);
-    const expectedLocalDateTime = expect.stringContaining(localDateTime); 
+    const expectedLocalDateTime = expect.stringContaining(localDateTime);
 
-    console.log(localTime)
     test.each<ArrayPushTest>([
         { description: "a single Int element", inputType: "Int", inputValue: 100, expectedOutputValue: [100] },
         {
