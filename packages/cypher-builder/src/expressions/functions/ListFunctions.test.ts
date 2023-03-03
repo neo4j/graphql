@@ -37,7 +37,7 @@ describe("List Functions", () => {
 
         const listExpr = new Cypher.List([new Cypher.Param(2), new Cypher.Param(3)]);
 
-        const reduceFn = Cypher.reduce(acc, new Cypher.Param(0), listElement, listExpr, Cypher.plus(acc, listElement));
+        const reduceFn = Cypher.reduce(acc, new Cypher.Param(0), listElement, listExpr, Cypher.add(acc, listElement));
 
         const queryResult = new TestClause(reduceFn).build();
         expect(queryResult.cypher).toMatchInlineSnapshot(

@@ -37,8 +37,9 @@ import type { HasLabel } from "./expressions/HasLabel";
 import type { Reference } from "./references/Reference";
 import type { ApocFunction, ApocPredicate, ApocProcedure } from "./apoc/types";
 import type { ListIndex } from "./expressions/list/ListIndex";
+import type { StringOp } from "./expressions/operations/string";
 
-export type Operation = BooleanOp | ComparisonOp | MathOp;
+export type Operation = BooleanOp | ComparisonOp | MathOp | StringOp;
 
 /** Represents a Cypher Expression
  *  @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/expressions/)

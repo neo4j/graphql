@@ -70,8 +70,8 @@ function createDurationOperation({
     property: Cypher.Expr;
     param: Cypher.Expr;
 }) {
-    const variable = Cypher.plus(Cypher.datetime(), param);
-    const propertyRef = Cypher.plus(Cypher.datetime(), property);
+    const variable = Cypher.append(Cypher.datetime(), param);
+    const propertyRef = Cypher.append(Cypher.datetime(), property);
 
     return createBaseOperation({
         operator,

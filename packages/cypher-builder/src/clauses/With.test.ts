@@ -71,7 +71,7 @@ describe("CypherBuilder With", () => {
         });
 
         test("With expression aliased", () => {
-            const expr = Cypher.plus(new Cypher.Param("The "), new Cypher.Param("Matrix"));
+            const expr = Cypher.append(new Cypher.Param("The "), new Cypher.Param("Matrix"));
             const alias = new Cypher.Variable();
             const withQuery = new Cypher.With([expr, alias]);
 
