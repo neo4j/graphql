@@ -105,8 +105,8 @@ The parameter `labels` defines the list of label to be used in Neo4j instead of 
 
 [source, graphql, indent=0]
 ----
-type Movie @node(labels: ["Film"]) {
-    title: String!
+type Dog @node(labels: ["K9"]) {
+    name: String!
 }
 ----
 
@@ -115,8 +115,8 @@ This way, the following query:
 [source, graphql, indent=0]
 ----
 {
-  movies {
-    title
+  dogs {
+    name
   }
 }
 ----
@@ -125,8 +125,8 @@ Generates the cypher query:
 
 [source, cypher, indent=0]
 ----
-MATCH (this: Film)
-RETURN this { .title } as this
+MATCH (this: K9)
+RETURN this { .name } as name
 ----
 
 If the GraphQL type name should still be used as a label, it needs to be specified as well:
@@ -157,6 +157,16 @@ MATCH (this:Dog:K9)
 RETURN this { .name } as this
 ----
 
+Please note that defining `labels` means you take control of the database labels of the node. Because indexes and constraints in the Neo4j database can only be assigned one label, for the moment the first label in the `labels` list will be used.
+
+The following example results in a unique constraint be asserted for the label `K9` and the property `name`:
+
+[source, graphql, indent=0]
+----
+type Dog @node(labels: ["K9", "Dog"]) {
+    name: String! @unique
+}
+----
 
 ==== `label`
 
