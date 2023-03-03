@@ -185,7 +185,7 @@ export default function createProjectionAndParams({
                     const direction = getCypherRelationshipDirection(relationField, field.args);
 
                     const nestedProjection = new Cypher.RawCypher((env) => {
-                        const nestedProj = recurse.projection.getCypher(env).replace(/{|}/gm, "").trim();
+                        const nestedProj = recurse.projection.getCypher(env).replace(/^{|}$/gm, "").trim();
                         return `{ __resolveType: "${refNode.name}", __id: id(${varName.getCypher(env)})${
                             nestedProj && `, ${nestedProj}`
                         } }`;
