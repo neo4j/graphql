@@ -26,7 +26,7 @@ npm install @apollo/server @neo4j/graphql graphql-tag neo4j-driver
 === Example subgraphs
 
 NOTE: In the two subgraphs below, notice that `@shareable` has been applied to both of the `Location` definitions.
-This is necessary because the Neo4j GraphQL Library generates identically named types for the `Location` definitions, which causes a collision when the Gateway stitches the two federated schemas.
+This is a necessary workaround because the Neo4j GraphQL Library generates identically named types for the `Location` definitions, which causes a collision when the Gateway stitches the two federated schemas.
 
 ==== Locations
 
@@ -66,7 +66,7 @@ const neo4jgraphql = new Neo4jGraphQL({
   driver,
 });
 
-neo4jgraphql.getSubgraphSchema.then((schema) => {
+neo4jgraphql.getSubgraphSchema().then((schema) => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
@@ -126,7 +126,7 @@ const neo4jgraphql = new Neo4jGraphQL({
   driver,
 });
 
-neo4jgraphql.getSubgraphSchema.then((schema) => {
+neo4jgraphql.getSubgraphSchema().then((schema) => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
