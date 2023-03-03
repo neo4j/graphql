@@ -1,6 +1,7 @@
 {
     "name": "neo4j-graphql",
     "author": "Neo4j Inc.",
+    "license": "Apache-2.0",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/neo4j/graphql.git"
