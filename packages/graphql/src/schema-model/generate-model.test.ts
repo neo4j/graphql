@@ -82,8 +82,6 @@ describe("ConcreteEntity generation", () => {
     });
 });
 
-
-
 describe("ComposeEntity generation", () => {
     let schemaModel: Neo4jGraphQLSchemaModel;
 
