@@ -3172,7 +3172,7 @@ __metadata:
     "@types/webpack": 5.28.0
     autoprefixer: 10.4.13
     codemirror: 5.65.12
-    codemirror-graphql: 2.0.3
+    codemirror-graphql: 2.0.4
     compression-webpack-plugin: 10.0.0
     copy-webpack-plugin: 11.0.0
     cross-env: 7.0.3
@@ -8105,16 +8105,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror-graphql@npm:2.0.3":
-  version: 2.0.3
-  resolution: "codemirror-graphql@npm:2.0.3"
+"codemirror-graphql@npm:2.0.4":
+  version: 2.0.4
+  resolution: "codemirror-graphql@npm:2.0.4"
   dependencies:
-    graphql-language-service: 5.1.1
+    graphql-language-service: 5.1.2
   peerDependencies:
     "@codemirror/language": 6.0.0
     codemirror: ^5.65.3
     graphql: ^15.5.0 || ^16.0.0
-  checksum: 81d5537606f32855734a4a15d5fd201b1cdce2a26606d4030dc8fecd67f50dd9247f8ab88a78c1dee1a3f3a4397427c2e65a9321a52c00a81ba3650d7aa6c458
+  checksum: 56bf443cab375abbb00dfaff3c7378a3dcded442463b9c48fb7368c3b9cacf5773939f8b6b261581f63e1ff6029278df603d7bb4a938d5b346f85f6c9bbe20b6
   languageName: node
   linkType: hard
 
@@ -11816,9 +11816,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-language-service@npm:5.1.1":
-  version: 5.1.1
-  resolution: "graphql-language-service@npm:5.1.1"
+"graphql-language-service@npm:5.1.2":
+  version: 5.1.2
+  resolution: "graphql-language-service@npm:5.1.2"
   dependencies:
     nullthrows: ^1.0.0
     vscode-languageserver-types: ^3.17.1
@@ -11826,7 +11826,7 @@ __metadata:
     graphql: ^15.5.0 || ^16.0.0
   bin:
     graphql: dist/temp-bin.js
-  checksum: 3e83a9b0846b1298cbdebd5a640a4741e5ce567a19c2b1328e5b8bf1645e0647adab26048b56cc316ab94d8229cb23289370c4ea3d139ecb5d77d62de6c524b5
+  checksum: 23551077017db9f57f17e73472145931db48b091d44ceeaa789bd69845b2ed48b1e9b8604319564b755788e6870eca93732a597bcd70ffcaf273f7970dfc7e68
   languageName: node
   linkType: hard
 
@@ -16621,7 +16621,7 @@ __metadata:
     jest: 29.4.3
     jsonwebtoken: 9.0.0
     neo4j-driver: 5.6.0
-    nodemon: 2.0.20
+    nodemon: 2.0.21
     randomstring: 1.2.3
     ts-jest: 29.0.5
     ts-node: 10.9.1
@@ -16969,7 +16969,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemon@npm:2.0.20, nodemon@npm:^2.0.7":
+"nodemon@npm:2.0.21":
+  version: 2.0.21
+  resolution: "nodemon@npm:2.0.21"
+  dependencies:
+    chokidar: ^3.5.2
+    debug: ^3.2.7
+    ignore-by-default: ^1.0.1
+    minimatch: ^3.1.2
+    pstree.remy: ^1.1.8
+    semver: ^5.7.1
+    simple-update-notifier: ^1.0.7
+    supports-color: ^5.5.0
+    touch: ^3.1.0
+    undefsafe: ^2.0.5
+  bin:
+    nodemon: bin/nodemon.js
+  checksum: 0b9fe2d11fd95c51b66d61bd1ee85cddf579c9e674c9429752a74f445f1b98576235ae860858783728baa3666c87e4ef938ab67167cc34fe4bb8fcec74d6885b
+  languageName: node
+  linkType: hard
+
+"nodemon@npm:^2.0.7":
   version: 2.0.20
   resolution: "nodemon@npm:2.0.20"
   dependencies:
