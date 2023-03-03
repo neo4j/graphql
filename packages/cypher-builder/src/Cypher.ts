@@ -77,7 +77,9 @@ export {
     endsWith,
     matches,
 } from "./expressions/operations/comparison";
-export { plus, minus } from "./expressions/operations/math";
+export { plus, minus, add, divide, multiply, subtract, remainder, pow } from "./expressions/operations/math";
+// Concat exported as append as concat is colliding with the Composite Clause concat
+export { concat as append } from "./expressions/operations/string";
 
 // --Functions
 export { CypherFunction as Function } from "./expressions/functions/CypherFunctions";
