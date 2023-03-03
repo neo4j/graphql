@@ -444,7 +444,7 @@ input ${typename}AuthorizationFilterRule {
   where: ${typename}AuthorizationWhere!
 }
 
-input ${typename}AuthorizationFilterRule {
+input ${typename}AuthorizationValidateRule {
   before: [AuthorizationValidateBefore!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
   after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
   requireAuthentication: Boolean! = true
@@ -508,7 +508,7 @@ input PostAuthorizationFilterRule {
   where: PostAuthorizationWhere!
 }
 
-input PostAuthorizationFilterRule {
+input PostAuthorizationValidateRule {
   before: [AuthorizationValidateBefore!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
   after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
   requireAuthentication: Boolean! = true
@@ -534,7 +534,7 @@ input UserAuthorizationFilterRule {
   where: UserAuthorizationWhere!
 }
 
-input UserAuthorizationFilterRule {
+input UserAuthorizationValidateRule {
   before: [AuthorizationValidateBefore!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
   after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
   requireAuthentication: Boolean! = true
