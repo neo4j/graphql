@@ -182,20 +182,24 @@ For filtering edges, we can use the `fields` property and the array operators if
 
 ```graphql
 query PeopleAndMoviesActedAfter2001 {
-    peopleConnection(where: { edges: { node: { movies: { edges: { some: { fields: { year: { gt: 1999 } } } } } } } }) {
-        edges {
-            node {
-                name
-                movies {
-                    edges {
-                        node {
-                            title
-                        }
-                    }
-                }
-            }
-        }
+  peopleConnection(
+    where: {
+      edges: { node: { movies: { some: { fields: { year: { gt: 1999 } } } } } }
     }
+  ) {
+    edges {
+      node {
+        name
+        movies {
+          edges {
+            node {
+              title
+            }
+          }
+        }
+      }
+    }
+  }
 }
 ```
 
@@ -690,11 +694,11 @@ interface ActedIn {
 ### "Top Level" aggregation
 
 type MoviesAggregation {
-    node: MoviesAggregationNode!
+    nodes: MoviesAggregationNode!
 }
 
 type PeopleAggregation {
-    node: PeopleAggregationNode!
+    nodes: PeopleAggregationNode!
 }
 
 ### "Node" aggregation
