@@ -70,7 +70,7 @@ describe("Connections Alias", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WITH { node: { __resolveType: \\"Actor\\", __id: id(this1) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -114,21 +114,21 @@ describe("Connections Alias", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WHERE this.\`title\` = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WHERE this1.name = $param1
-                WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                WHERE this1.\`name\` = $param1
+                WITH { screenTime: this0.\`screenTime\`, node: { name: this1.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var2
             }
             CALL {
                 WITH this
-                MATCH (this)<-[this3:ACTED_IN]-(this4:\`Actor\`)
-                WHERE this4.name = $param2
-                WITH { screenTime: this3.screenTime, node: { name: this4.name } } AS edge
+                MATCH (this)<-[this3:\`ACTED_IN\`]-(this4:\`Actor\`)
+                WHERE this4.\`name\` = $param2
+                WITH { screenTime: this3.\`screenTime\`, node: { name: this4.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var5

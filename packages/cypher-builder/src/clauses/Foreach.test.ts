@@ -34,7 +34,7 @@ describe("Foreach", () => {
             "FOREACH (var0 IN [1, 2, 3] |
                 CREATE (this1:\`Movie\`)
                 SET
-                    this1.id = var0
+                    this1.\`id\` = var0
             )
             WITH *"
         `);

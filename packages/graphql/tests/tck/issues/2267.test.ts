@@ -71,17 +71,17 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Place\`)
             WITH *
-            ORDER BY this.displayName ASC
+            ORDER BY this.\`displayName\` ASC
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)<-[this0:ACTIVITY]-(this1:\`Post\`)
+                    MATCH (this)<-[this0:\`ACTIVITY\`]-(this1:\`Post\`)
                     WITH this1 { __resolveType: \\"Post\\", __id: id(this), .name } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)<-[this3:ACTIVITY]-(this4:\`Story\`)
+                    MATCH (this)<-[this3:\`ACTIVITY\`]-(this4:\`Story\`)
                     WITH this4 { __resolveType: \\"Story\\", __id: id(this), .name } AS this4
                     RETURN this4 AS var2
                 }

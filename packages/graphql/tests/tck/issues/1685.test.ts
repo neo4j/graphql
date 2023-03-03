@@ -73,10 +73,10 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)<-[this0:HAS_GENRE]-(this1:\`Movie\`)
+                    MATCH (this)<-[this0:\`HAS_GENRE\`]-(this1:\`Movie\`)
                     WHERE EXISTS {
-                        MATCH (this1)-[this2:HAS_GENRE]->(this3:\`Genre\`)
-                        WHERE this3.name = $param0
+                        MATCH (this1)-[this2:\`HAS_GENRE\`]->(this3:\`Genre\`)
+                        WHERE this3.\`name\` = $param0
                     }
                     WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
                     RETURN edge

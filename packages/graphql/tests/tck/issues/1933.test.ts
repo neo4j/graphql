@@ -82,20 +82,20 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             "MATCH (this:\`Employee\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:PARTICIPATES]->(this1:\`Project\`)
-                RETURN sum(this0.allocation) <= $param0 AS var2
+                MATCH (this)-[this0:\`PARTICIPATES\`]->(this1:\`Project\`)
+                RETURN sum(this0.\`allocation\`) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
             CALL {
                 WITH this
-                MATCH (this)-[this3:PARTICIPATES]->(this4:\`Project\`)
+                MATCH (this)-[this3:\`PARTICIPATES\`]->(this4:\`Project\`)
                 RETURN count(this4) AS var5
             }
             CALL {
                 WITH this
-                MATCH (this)-[this3:PARTICIPATES]->(this4:\`Project\`)
-                RETURN { min: min(this3.allocation), max: max(this3.allocation), average: avg(this3.allocation), sum: sum(this3.allocation) }  AS var6
+                MATCH (this)-[this3:\`PARTICIPATES\`]->(this4:\`Project\`)
+                RETURN { min: min(this3.\`allocation\`), max: max(this3.\`allocation\`), average: avg(this3.\`allocation\`), sum: sum(this3.\`allocation\`) }  AS var6
             }
             RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var5, edge: { allocation: var6 } } } AS this"
         `);
@@ -135,20 +135,20 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             "MATCH (this:\`Employee\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:PARTICIPATES]->(this1:\`Project\`)
-                RETURN any(var2 IN collect(this0.allocation) WHERE var2 <= $param0) AS var3
+                MATCH (this)-[this0:\`PARTICIPATES\`]->(this1:\`Project\`)
+                RETURN any(var2 IN collect(this0.\`allocation\`) WHERE var2 <= $param0) AS var3
             }
             WITH *
             WHERE var3 = true
             CALL {
                 WITH this
-                MATCH (this)-[this4:PARTICIPATES]->(this5:\`Project\`)
+                MATCH (this)-[this4:\`PARTICIPATES\`]->(this5:\`Project\`)
                 RETURN count(this5) AS var6
             }
             CALL {
                 WITH this
-                MATCH (this)-[this4:PARTICIPATES]->(this5:\`Project\`)
-                RETURN { min: min(this4.allocation), max: max(this4.allocation), average: avg(this4.allocation), sum: sum(this4.allocation) }  AS var7
+                MATCH (this)-[this4:\`PARTICIPATES\`]->(this5:\`Project\`)
+                RETURN { min: min(this4.\`allocation\`), max: max(this4.\`allocation\`), average: avg(this4.\`allocation\`), sum: sum(this4.\`allocation\`) }  AS var7
             }
             RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var6, edge: { allocation: var7 } } } AS this"
         `);

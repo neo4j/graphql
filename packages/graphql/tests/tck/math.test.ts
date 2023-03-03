@@ -180,7 +180,7 @@ describe("Math operators", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:\`Movie\`)
+                MATCH (this)-[update_this0:\`ACTED_IN\`]->(update_this1:\`Movie\`)
                 WITH update_this1 { .viewers } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
@@ -240,14 +240,14 @@ describe("Math operators", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:\`Movie\`)
+                MATCH (this)-[update_this0:\`ACTED_IN\`]->(update_this1:\`Movie\`)
                 WITH update_this1 { .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[update_this3:ACTED_IN]->(update_this4:\`Movie\`)
-                WITH { pay: update_this3.pay } AS edge
+                MATCH (this)-[update_this3:\`ACTED_IN\`]->(update_this4:\`Movie\`)
+                WITH { pay: update_this3.\`pay\` } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS update_var5
@@ -330,7 +330,7 @@ describe("Math operators", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[update_this0:MARRIED_WITH]->(update_this1:\`Star\`)
+                    MATCH (this)-[update_this0:\`MARRIED_WITH\`]->(update_this1:\`Star\`)
                     WITH update_this1 { __resolveType: \\"Star\\", __id: id(this), .marriageLength } AS update_this1
                     RETURN update_this1 AS update_var2
                 }
@@ -406,7 +406,7 @@ describe("Math operators", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[update_this0:MARRIED_WITH]->(update_this1:\`Star\`)
+                    MATCH (this)-[update_this0:\`MARRIED_WITH\`]->(update_this1:\`Star\`)
                     WITH update_this1 { __resolveType: \\"Star\\", __id: id(this), .marriageLength } AS update_this1
                     RETURN update_this1 AS update_var2
                 }

@@ -19,6 +19,7 @@
 
 import type { CypherEnvironment } from "../Environment";
 import type { CypherCompilable, Expr } from "../types";
+import { escapeLabel } from "../utils/escape-label";
 import type { Reference } from "./Reference";
 import type { Variable } from "./Variable";
 
@@ -57,7 +58,7 @@ export class PropertyRef implements CypherCompilable {
 
     private getPropertyCypher(prop: string | Expr, env: CypherEnvironment): string {
         if (typeof prop === "string") {
-            return `.${prop}`;
+            return `.${escapeLabel(prop)}`;
         } else {
             const exprStr = prop.getCypher(env);
             return `[${exprStr}]`;

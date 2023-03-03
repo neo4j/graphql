@@ -106,7 +106,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             UNWIND edges AS this
             WITH this, totalCount
             WITH *
-            ORDER BY this.title ASC
+            ORDER BY this.\`title\` ASC
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)

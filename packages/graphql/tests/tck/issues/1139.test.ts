@@ -78,7 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id = $param0
+            WHERE this.\`id\` = $param0
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[a:WROTE]->(wrote:Post)

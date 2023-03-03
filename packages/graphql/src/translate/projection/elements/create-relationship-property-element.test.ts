@@ -184,11 +184,11 @@ describe("createRelationshipPropertyElement", () => {
         const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
         new Cypher.RawCypher((env) => {
             expect(element.getCypher(env)).toMatchInlineSnapshot(`
-            "point: (CASE
-                WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
-                ELSE NULL
-            END)"
-        `);
+                "point: (CASE
+                    WHEN this.\`point\` IS NOT NULL THEN { point: this.\`point\`, crs: this.\`point\`.\`crs\` }
+                    ELSE NULL
+                END)"
+            `);
             return "";
         }).build();
     });

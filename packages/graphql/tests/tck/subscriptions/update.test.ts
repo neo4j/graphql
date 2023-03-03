@@ -71,7 +71,7 @@ describe("Subscriptions metadata on update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
             MATCH (this:\`Movie\`)
-            WHERE this.id = $param0
+            WHERE this.\`id\` = $param0
             WITH this { .* } AS oldProps, this, meta
             CALL {
             	WITH *
@@ -120,7 +120,7 @@ describe("Subscriptions metadata on update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
             MATCH (this:\`Movie\`)
-            WHERE this.id = $param0
+            WHERE this.\`id\` = $param0
             WITH this { .* } AS oldProps, this, meta
             CALL {
             	WITH *
@@ -129,7 +129,7 @@ describe("Subscriptions metadata on update", () => {
             CALL {
             	WITH this, meta
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
+            	WHERE this_actors0.\`name\` = $updateMovies_args_update_actors0_where_this_actors0param0
             	WITH this_actors0 { .* } AS oldProps, this, meta, this_actors0
             	CALL {
             		WITH *

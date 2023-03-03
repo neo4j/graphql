@@ -109,8 +109,8 @@ describe("Relationship Properties Connect Cypher", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Actor\`)
-                WITH { screenTime: create_this0.screenTime, node: { name: create_this1.name } } AS edge
+                MATCH (this0)<-[create_this0:\`ACTED_IN\`]-(create_this1:\`Actor\`)
+                WITH { screenTime: create_this0.\`screenTime\`, node: { name: create_this1.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS create_var2
@@ -169,7 +169,7 @@ describe("Relationship Properties Connect Cypher", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-            	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_param0
+            	WHERE this0_actors_connect0_node.\`name\` = $this0_actors_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -190,8 +190,8 @@ describe("Relationship Properties Connect Cypher", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Actor\`)
-                WITH { screenTime: create_this0.screenTime, node: { name: create_this1.name } } AS edge
+                MATCH (this0)<-[create_this0:\`ACTED_IN\`]-(create_this1:\`Actor\`)
+                WITH { screenTime: create_this0.\`screenTime\`, node: { name: create_this1.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS create_var2
@@ -238,7 +238,7 @@ describe("Relationship Properties Connect Cypher", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WHERE this.\`title\` = $param0
             WITH this
             CALL {
             	WITH this
@@ -262,8 +262,8 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)<-[update_this0:ACTED_IN]-(update_this1:\`Actor\`)
-                WITH { screenTime: update_this0.screenTime, node: { name: update_this1.name } } AS edge
+                MATCH (this)<-[update_this0:\`ACTED_IN\`]-(update_this1:\`Actor\`)
+                WITH { screenTime: update_this0.\`screenTime\`, node: { name: update_this1.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS update_var2
@@ -312,12 +312,12 @@ describe("Relationship Properties Connect Cypher", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WHERE this.\`title\` = $param0
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
-            	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
+            	WHERE this_connect_actors0_node.\`name\` = $this_connect_actors0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this_connect_actors0_node) as connectedNodes, collect(this) as parentNodes
@@ -337,8 +337,8 @@ describe("Relationship Properties Connect Cypher", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)<-[update_this0:ACTED_IN]-(update_this1:\`Actor\`)
-                WITH { screenTime: update_this0.screenTime, node: { name: update_this1.name } } AS edge
+                MATCH (this)<-[update_this0:\`ACTED_IN\`]-(update_this1:\`Actor\`)
+                WITH { screenTime: update_this0.\`screenTime\`, node: { name: update_this1.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS update_var2

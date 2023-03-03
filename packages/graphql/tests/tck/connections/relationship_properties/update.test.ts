@@ -73,12 +73,12 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WHERE this.\`title\` = $param0
             WITH this
             CALL {
             	WITH this
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
+            	WHERE this_actors0.\`name\` = $updateMovies_args_update_actors0_where_this_actors0param0
             	SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
             	RETURN count(*) AS update_this_actors0
             }
@@ -145,12 +145,12 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WHERE this.\`title\` = $param0
             WITH this
             CALL {
             	WITH this
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
+            	WHERE this_actors0.\`name\` = $updateMovies_args_update_actors0_where_this_actors0param0
             	SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
             	SET this_actors0.name = $this_update_actors0_name
             	RETURN count(*) AS update_this_actors0

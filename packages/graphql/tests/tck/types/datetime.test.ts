@@ -57,8 +57,8 @@ describe("Cypher DateTime", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.datetime = $param0
-            RETURN this { datetime: apoc.date.convertFormat(toString(this.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
+            WHERE this.\`datetime\` = $param0
+            RETURN this { datetime: apoc.date.convertFormat(toString(this.\`datetime\`), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -99,10 +99,10 @@ describe("Cypher DateTime", () => {
                 WITH create_var0
                 CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this1.datetime = create_var0.datetime
+                    create_this1.\`datetime\` = create_var0.\`datetime\`
                 RETURN create_this1
             }
-            RETURN collect(create_this1 { datetime: apoc.date.convertFormat(toString(create_this1.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }) AS data"
+            RETURN collect(create_this1 { datetime: apoc.date.convertFormat(toString(create_this1.\`datetime\`), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -146,7 +146,7 @@ describe("Cypher DateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             SET this.datetime = $this_update_datetime
-            RETURN collect(DISTINCT this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }) AS data"
+            RETURN collect(DISTINCT this { .id, datetime: apoc.date.convertFormat(toString(this.\`datetime\`), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

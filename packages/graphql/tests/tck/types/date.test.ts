@@ -57,7 +57,7 @@ describe("Cypher Date", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.date = $param0
+            WHERE this.\`date\` = $param0
             RETURN this { .date } AS this"
         `);
 
@@ -88,7 +88,7 @@ describe("Cypher Date", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.date >= $param0
+            WHERE this.\`date\` >= $param0
             RETURN this { .date } AS this"
         `);
 
@@ -125,7 +125,7 @@ describe("Cypher Date", () => {
                 WITH create_var0
                 CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this1.date = create_var0.date
+                    create_this1.\`date\` = create_var0.\`date\`
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .date }) AS data"

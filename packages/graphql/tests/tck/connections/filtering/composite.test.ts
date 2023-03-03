@@ -88,12 +88,12 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WHERE this.\`title\` = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WHERE ((this0.screenTime > $param1 AND this0.screenTime < $param2) AND (this1.firstName = $param3 AND this1.lastName = $param4))
-                WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                WHERE ((this0.\`screenTime\` > $param1 AND this0.\`screenTime\` < $param2) AND (this1.\`firstName\` = $param3 AND this1.\`lastName\` = $param4))
+                WITH { screenTime: this0.\`screenTime\`, node: { firstName: this1.\`firstName\`, lastName: this1.\`lastName\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var2
@@ -148,12 +148,12 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WHERE this.\`title\` = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WHERE (NOT (this0.screenTime < $param1 AND this0.screenTime > $param2) AND NOT (this1.firstName = $param3 AND this1.lastName = $param4))
-                WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                WHERE (NOT (this0.\`screenTime\` < $param1 AND this0.\`screenTime\` > $param2) AND NOT (this1.\`firstName\` = $param3 AND this1.\`lastName\` = $param4))
+                WITH { screenTime: this0.\`screenTime\`, node: { firstName: this1.\`firstName\`, lastName: this1.\`lastName\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var2

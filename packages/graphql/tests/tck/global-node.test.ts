@@ -63,7 +63,7 @@ describe("Global nodes", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WHERE this.\`title\` = $param0
             RETURN this { .title } AS this"
         `);
     });
@@ -103,8 +103,8 @@ describe("Global nodes", () => {
         });
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WHERE this.id = $param0
-            RETURN this { .name, dbId: this.id } AS this"
+            WHERE this.\`id\` = $param0
+            RETURN this { .name, dbId: this.\`id\` } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -150,7 +150,7 @@ describe("Global nodes", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WHERE this.id = $param0
+            WHERE this.\`id\` = $param0
             RETURN this { .name } AS this"
         `);
 
@@ -195,7 +195,7 @@ describe("Global nodes", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WHERE this.dbId = $param0
+            WHERE this.\`dbId\` = $param0
             RETURN this { .dbId, .name } AS this"
         `);
 

@@ -112,7 +112,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Bacenta\`)
-            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE (this.\`id\` = $param0 AND apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(:ServiceLog)-[:HAS_BUSSING]->(records:BussingRecord)-[:BUSSED_ON]->(date:TimeGraph)
@@ -126,8 +126,8 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 }
                 CALL {
                     WITH this0
-                    MATCH (this0)-[this2:BUSSED_ON]->(this3:\`TimeGraph\`)
-                    WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MATCH (this0)-[this2:\`BUSSED_ON\`]->(this3:\`TimeGraph\`)
+                    WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this3 { .date } AS this3
                     RETURN head(collect(this3)) AS var4
                 }

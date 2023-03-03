@@ -78,7 +78,7 @@ describe("Cypher Aggregations Count", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WHERE this.\`title\` = $param0
             RETURN { count: count(this) }"
         `);
 

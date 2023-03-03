@@ -68,7 +68,7 @@ describe("Root Connection Query tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WHERE this.\`title\` = $param0
             WITH collect(this) AS edges
             WITH edges, size(edges) AS totalCount
             UNWIND edges AS this
@@ -107,7 +107,7 @@ describe("Root Connection Query tests", () => {
             UNWIND edges AS this
             WITH this, totalCount
             WITH *
-            ORDER BY this.title ASC
+            ORDER BY this.\`title\` ASC
             LIMIT $param0
             WITH { node: this { .title } } AS edge, totalCount, this
             WITH collect(edge) AS edges, totalCount
@@ -139,13 +139,13 @@ describe("Root Connection Query tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title CONTAINS $param0
+            WHERE this.\`title\` CONTAINS $param0
             WITH collect(this) AS edges
             WITH edges, size(edges) AS totalCount
             UNWIND edges AS this
             WITH this, totalCount
             WITH *
-            ORDER BY this.title ASC
+            ORDER BY this.\`title\` ASC
             LIMIT $param1
             WITH { node: this { .title } } AS edge, totalCount, this
             WITH collect(edge) AS edges, totalCount
@@ -190,12 +190,12 @@ describe("Root Connection Query tests", () => {
             UNWIND edges AS this
             WITH this, totalCount
             WITH *
-            ORDER BY this.title ASC
+            ORDER BY this.\`title\` ASC
             LIMIT $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WITH { node: { name: this1.name } } AS edge
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                WITH { node: { name: this1.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var2

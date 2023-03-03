@@ -126,8 +126,8 @@ describe("Subscriptions metadata on create", () => {
             WITH this0, this0_meta AS meta
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Actor\`)
-                WITH { screenTime: create_this0.screenTime, node: { name: create_this1.name } } AS edge
+                MATCH (this0)<-[create_this0:\`ACTED_IN\`]-(create_this1:\`Actor\`)
+                WITH { screenTime: create_this0.\`screenTime\`, node: { name: create_this1.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS create_var2
@@ -210,8 +210,8 @@ describe("Subscriptions metadata on create", () => {
             WITH this0, this0_meta AS meta
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Actor\`)
-                WITH { node: { name: create_this1.name } } AS edge
+                MATCH (this0)<-[create_this0:\`ACTED_IN\`]-(create_this1:\`Actor\`)
+                WITH { node: { name: create_this1.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS create_var2
@@ -319,8 +319,8 @@ describe("Subscriptions metadata on create", () => {
             WITH this0, this0_meta AS meta
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Actor\`)
-                WITH { screenTime: create_this0.screenTime, node: { name: create_this1.name } } AS edge
+                MATCH (this0)<-[create_this0:\`ACTED_IN\`]-(create_this1:\`Actor\`)
+                WITH { screenTime: create_this0.\`screenTime\`, node: { name: create_this1.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS create_var2
@@ -441,12 +441,12 @@ describe("Subscriptions metadata on create", () => {
                 WITH this0
                 CALL {
                     WITH *
-                    MATCH (this0)<-[create_this0:DIRECTED]-(create_this1:\`Actor\`)
+                    MATCH (this0)<-[create_this0:\`DIRECTED\`]-(create_this1:\`Actor\`)
                     WITH create_this1 { __resolveType: \\"Actor\\", __id: id(this0), .name } AS create_this1
                     RETURN create_this1 AS create_var2
                     UNION
                     WITH *
-                    MATCH (this0)<-[create_this3:DIRECTED]-(create_this4:\`Person\`)
+                    MATCH (this0)<-[create_this3:\`DIRECTED\`]-(create_this4:\`Person\`)
                     WITH create_this4 { __resolveType: \\"Person\\", __id: id(this0), .name } AS create_this4
                     RETURN create_this4 AS create_var2
                 }
@@ -592,10 +592,10 @@ describe("Subscriptions metadata on create", () => {
                 WITH this0
                 CALL {
                     WITH *
-                    MATCH (this0)<-[create_this0:DIRECTED]-(create_this1:\`Actor\`)
+                    MATCH (this0)<-[create_this0:\`DIRECTED\`]-(create_this1:\`Actor\`)
                     CALL {
                         WITH create_this1
-                        MATCH (create_this1)-[create_this2:ACTED_IN]->(create_this3:\`Movie\`)
+                        MATCH (create_this1)-[create_this2:\`ACTED_IN\`]->(create_this3:\`Movie\`)
                         WITH create_this3 { .title } AS create_this3
                         RETURN collect(create_this3) AS create_var4
                     }
@@ -603,7 +603,7 @@ describe("Subscriptions metadata on create", () => {
                     RETURN create_this1 AS create_var5
                     UNION
                     WITH *
-                    MATCH (this0)<-[create_this6:DIRECTED]-(create_this7:\`Person\`)
+                    MATCH (this0)<-[create_this6:\`DIRECTED\`]-(create_this7:\`Person\`)
                     WITH create_this7 { __resolveType: \\"Person\\", __id: id(this0), .name } AS create_this7
                     RETURN create_this7 AS create_var5
                 }
@@ -750,7 +750,7 @@ describe("Subscriptions metadata on create", () => {
             WITH this0, this0_meta AS meta
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Actor\`)
+                MATCH (this0)<-[create_this0:\`ACTED_IN\`]-(create_this1:\`Actor\`)
                 WITH create_this1 { .name } AS create_this1
                 RETURN collect(create_this1) AS create_var2
             }
@@ -813,7 +813,7 @@ describe("Subscriptions metadata on create", () => {
             WITH this0, this0_meta AS meta
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Actor\`)
+                MATCH (this0)<-[create_this0:\`ACTED_IN\`]-(create_this1:\`Actor\`)
                 WITH create_this1 { .name } AS create_this1
                 RETURN collect(create_this1) AS create_var2
             }
@@ -899,13 +899,13 @@ describe("Subscriptions metadata on create", () => {
             WITH this0, this0_meta AS meta
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Actor\`)
+                MATCH (this0)<-[create_this0:\`ACTED_IN\`]-(create_this1:\`Actor\`)
                 CALL {
                     WITH create_this1
-                    MATCH (create_this1)-[create_this2:ACTED_IN]->(create_this3:\`Movie\`)
+                    MATCH (create_this1)-[create_this2:\`ACTED_IN\`]->(create_this3:\`Movie\`)
                     CALL {
                         WITH create_this3
-                        MATCH (create_this3)<-[create_this4:ACTED_IN]-(create_this5:\`Actor\`)
+                        MATCH (create_this3)<-[create_this4:\`ACTED_IN\`]-(create_this5:\`Actor\`)
                         WITH create_this5 { .name } AS create_this5
                         RETURN collect(create_this5) AS create_var6
                     }

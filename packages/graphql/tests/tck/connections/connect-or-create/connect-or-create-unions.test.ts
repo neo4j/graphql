@@ -118,11 +118,11 @@ describe("Create or connect with unions", () => {
                 WITH this0
                 MERGE (this0_actedIn_Movie_connectOrCreate0:\`Movie\` { isan: $this0_actedIn_Movie_connectOrCreate_param0 })
                 ON CREATE SET
-                    this0_actedIn_Movie_connectOrCreate0.title = $this0_actedIn_Movie_connectOrCreate_param1,
-                    this0_actedIn_Movie_connectOrCreate0.isan = $this0_actedIn_Movie_connectOrCreate_param2
-                MERGE (this0)-[this0_actedIn_Movie_connectOrCreate_this0:ACTED_IN]->(this0_actedIn_Movie_connectOrCreate0)
+                    this0_actedIn_Movie_connectOrCreate0.\`title\` = $this0_actedIn_Movie_connectOrCreate_param1,
+                    this0_actedIn_Movie_connectOrCreate0.\`isan\` = $this0_actedIn_Movie_connectOrCreate_param2
+                MERGE (this0)-[this0_actedIn_Movie_connectOrCreate_this0:\`ACTED_IN\`]->(this0_actedIn_Movie_connectOrCreate0)
                 ON CREATE SET
-                    this0_actedIn_Movie_connectOrCreate_this0.screentime = $this0_actedIn_Movie_connectOrCreate_param3
+                    this0_actedIn_Movie_connectOrCreate_this0.\`screentime\` = $this0_actedIn_Movie_connectOrCreate_param3
                 RETURN COUNT(*) AS _
             }
             WITH this0
@@ -130,11 +130,11 @@ describe("Create or connect with unions", () => {
                 WITH this0
                 MERGE (this0_actedIn_Series_connectOrCreate0:\`Series\` { isan: $this0_actedIn_Series_connectOrCreate_param0 })
                 ON CREATE SET
-                    this0_actedIn_Series_connectOrCreate0.title = $this0_actedIn_Series_connectOrCreate_param1,
-                    this0_actedIn_Series_connectOrCreate0.isan = $this0_actedIn_Series_connectOrCreate_param2
-                MERGE (this0)-[this0_actedIn_Series_connectOrCreate_this0:ACTED_IN]->(this0_actedIn_Series_connectOrCreate0)
+                    this0_actedIn_Series_connectOrCreate0.\`title\` = $this0_actedIn_Series_connectOrCreate_param1,
+                    this0_actedIn_Series_connectOrCreate0.\`isan\` = $this0_actedIn_Series_connectOrCreate_param2
+                MERGE (this0)-[this0_actedIn_Series_connectOrCreate_this0:\`ACTED_IN\`]->(this0_actedIn_Series_connectOrCreate0)
                 ON CREATE SET
-                    this0_actedIn_Series_connectOrCreate_this0.screentime = $this0_actedIn_Series_connectOrCreate_param3
+                    this0_actedIn_Series_connectOrCreate_this0.\`screentime\` = $this0_actedIn_Series_connectOrCreate_param3
                 RETURN COUNT(*) AS _
             }
             RETURN this0
@@ -206,18 +206,18 @@ describe("Create or connect with unions", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WHERE this.name = $param0
+            WHERE this.\`name\` = $param0
             SET this.name = $this_update_name
             WITH this
             CALL {
                 WITH this
                 MERGE (this_actedIn_Movie0_connectOrCreate0:\`Movie\` { isan: $this_actedIn_Movie0_connectOrCreate_param0 })
                 ON CREATE SET
-                    this_actedIn_Movie0_connectOrCreate0.title = $this_actedIn_Movie0_connectOrCreate_param1,
-                    this_actedIn_Movie0_connectOrCreate0.isan = $this_actedIn_Movie0_connectOrCreate_param2
-                MERGE (this)-[this_actedIn_Movie0_connectOrCreate_this0:ACTED_IN]->(this_actedIn_Movie0_connectOrCreate0)
+                    this_actedIn_Movie0_connectOrCreate0.\`title\` = $this_actedIn_Movie0_connectOrCreate_param1,
+                    this_actedIn_Movie0_connectOrCreate0.\`isan\` = $this_actedIn_Movie0_connectOrCreate_param2
+                MERGE (this)-[this_actedIn_Movie0_connectOrCreate_this0:\`ACTED_IN\`]->(this_actedIn_Movie0_connectOrCreate0)
                 ON CREATE SET
-                    this_actedIn_Movie0_connectOrCreate_this0.screentime = $this_actedIn_Movie0_connectOrCreate_param3
+                    this_actedIn_Movie0_connectOrCreate_this0.\`screentime\` = $this_actedIn_Movie0_connectOrCreate_param3
                 RETURN COUNT(*) AS _
             }
             WITH this
@@ -225,11 +225,11 @@ describe("Create or connect with unions", () => {
                 WITH this
                 MERGE (this_actedIn_Series0_connectOrCreate0:\`Series\` { isan: $this_actedIn_Series0_connectOrCreate_param0 })
                 ON CREATE SET
-                    this_actedIn_Series0_connectOrCreate0.title = $this_actedIn_Series0_connectOrCreate_param1,
-                    this_actedIn_Series0_connectOrCreate0.isan = $this_actedIn_Series0_connectOrCreate_param2
-                MERGE (this)-[this_actedIn_Series0_connectOrCreate_this0:ACTED_IN]->(this_actedIn_Series0_connectOrCreate0)
+                    this_actedIn_Series0_connectOrCreate0.\`title\` = $this_actedIn_Series0_connectOrCreate_param1,
+                    this_actedIn_Series0_connectOrCreate0.\`isan\` = $this_actedIn_Series0_connectOrCreate_param2
+                MERGE (this)-[this_actedIn_Series0_connectOrCreate_this0:\`ACTED_IN\`]->(this_actedIn_Series0_connectOrCreate0)
                 ON CREATE SET
-                    this_actedIn_Series0_connectOrCreate_this0.screentime = $this_actedIn_Series0_connectOrCreate_param3
+                    this_actedIn_Series0_connectOrCreate_this0.\`screentime\` = $this_actedIn_Series0_connectOrCreate_param3
                 RETURN COUNT(*) AS _
             }
             RETURN collect(DISTINCT this { .name }) AS data"

@@ -75,10 +75,10 @@ describe("Field Level Aggregations Alias", () => {
             "MATCH (this:\`Film\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this1:ACTED_IN]-(this0:\`Person\`)
+                MATCH (this)<-[this1:\`ACTED_IN\`]-(this0:\`Person\`)
                 WITH this0
-                ORDER BY size(this0.name) DESC
-                WITH collect(this0.name) AS list
+                ORDER BY size(this0.\`name\`) DESC
+                WITH collect(this0.\`name\`) AS list
                 RETURN { longest: head(list), shortest: last(list) } AS var2
             }
             RETURN this { actorsAggregate: { node: { name: var2 } } } AS this"

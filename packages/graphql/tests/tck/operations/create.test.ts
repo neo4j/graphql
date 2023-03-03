@@ -68,7 +68,7 @@ describe("Cypher Create", () => {
                 WITH create_var0
                 CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this1.id = create_var0.id
+                    create_this1.\`id\` = create_var0.\`id\`
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
@@ -108,7 +108,7 @@ describe("Cypher Create", () => {
                 WITH create_var0
                 CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this1.id = create_var0.id
+                    create_this1.\`id\` = create_var0.\`id\`
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
@@ -156,16 +156,16 @@ describe("Cypher Create", () => {
                 WITH create_var0
                 CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this1.id = create_var0.id
+                    create_this1.\`id\` = create_var0.\`id\`
                 WITH create_this1, create_var0
                 CALL {
                     WITH create_this1, create_var0
-                    UNWIND create_var0.actors.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
+                    UNWIND create_var0.\`actors\`.\`create\` AS create_var2
+                    WITH create_var2.\`node\` AS create_var3, create_var2.\`edge\` AS create_var4, create_this1
                     CREATE (create_this5:\`Actor\`)
                     SET
-                        create_this5.name = create_var3.name
-                    MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
+                        create_this5.\`name\` = create_var3.\`name\`
+                    MERGE (create_this1)<-[create_this6:\`ACTED_IN\`]-(create_this5)
                     RETURN collect(NULL) AS create_var7
                 }
                 RETURN create_this1
@@ -243,25 +243,25 @@ describe("Cypher Create", () => {
                 WITH create_var0
                 CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this1.id = create_var0.id
+                    create_this1.\`id\` = create_var0.\`id\`
                 WITH create_this1, create_var0
                 CALL {
                     WITH create_this1, create_var0
-                    UNWIND create_var0.actors.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
+                    UNWIND create_var0.\`actors\`.\`create\` AS create_var2
+                    WITH create_var2.\`node\` AS create_var3, create_var2.\`edge\` AS create_var4, create_this1
                     CREATE (create_this5:\`Actor\`)
                     SET
-                        create_this5.name = create_var3.name
-                    MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
+                        create_this5.\`name\` = create_var3.\`name\`
+                    MERGE (create_this1)<-[create_this6:\`ACTED_IN\`]-(create_this5)
                     WITH create_this5, create_var3
                     CALL {
                         WITH create_this5, create_var3
-                        UNWIND create_var3.movies.create AS create_var7
-                        WITH create_var7.node AS create_var8, create_var7.edge AS create_var9, create_this5
+                        UNWIND create_var3.\`movies\`.\`create\` AS create_var7
+                        WITH create_var7.\`node\` AS create_var8, create_var7.\`edge\` AS create_var9, create_this5
                         CREATE (create_this10:\`Movie\`)
                         SET
-                            create_this10.id = create_var8.id
-                        MERGE (create_this5)-[create_this11:ACTED_IN]->(create_this10)
+                            create_this10.\`id\` = create_var8.\`id\`
+                        MERGE (create_this5)-[create_this11:\`ACTED_IN\`]->(create_this10)
                         RETURN collect(NULL) AS create_var12
                     }
                     RETURN collect(NULL) AS create_var13
@@ -346,7 +346,7 @@ describe("Cypher Create", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-            	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_param0
+            	WHERE this0_actors_connect0_node.\`name\` = $this0_actors_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -410,7 +410,7 @@ describe("Cypher Create", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_movies_connect0_node:Movie)
-            	WHERE this0_movies_connect0_node.id = $this0_movies_connect0_node_param0
+            	WHERE this0_movies_connect0_node.\`id\` = $this0_movies_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_movies_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -430,12 +430,12 @@ describe("Cypher Create", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:\`Movie\`)
+                MATCH (this0)-[create_this0:\`ACTED_IN\`]->(create_this1:\`Movie\`)
                 CALL {
                     WITH create_this1
-                    MATCH (create_this1:\`Movie\`)<-[create_this2:ACTED_IN]-(create_this3:\`Actor\`)
-                    WHERE create_this3.name = $create_param0
-                    WITH { node: { name: create_this3.name } } AS edge
+                    MATCH (create_this1:\`Movie\`)<-[create_this2:\`ACTED_IN\`]-(create_this3:\`Actor\`)
+                    WHERE create_this3.\`name\` = $create_param0
+                    WITH { node: { name: create_this3.\`name\` } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS create_var4

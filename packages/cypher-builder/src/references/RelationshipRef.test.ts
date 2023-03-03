@@ -32,6 +32,6 @@ describe("RelationshipRef", () => {
         const testClause = new TestClause(actedIn);
 
         const queryResult = testClause.build();
-        expect(queryResult.cypher).toMatchInlineSnapshot(`"(this0:\`Actor\`)-[this1:ACTED_IN]->(this2:\`Movie\`)"`);
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"(this0:\`Actor\`)-[this1:\`ACTED_IN\`]->(this2:\`Movie\`)"`);
     });
 });

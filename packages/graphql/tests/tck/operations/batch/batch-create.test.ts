@@ -80,7 +80,7 @@ describe("Batch Create", () => {
                 WITH create_var0
                 CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this1.id = create_var0.id
+                    create_this1.\`id\` = create_var0.\`id\`
                 WITH create_this1
                 CALL {
                 	WITH create_this1
@@ -150,28 +150,28 @@ describe("Batch Create", () => {
                 WITH create_var0
                 CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this1.id = create_var0.id
+                    create_this1.\`id\` = create_var0.\`id\`
                 WITH create_this1, create_var0
                 CALL {
                     WITH create_this1, create_var0
-                    UNWIND create_var0.actors.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
+                    UNWIND create_var0.\`actors\`.\`create\` AS create_var2
+                    WITH create_var2.\`node\` AS create_var3, create_var2.\`edge\` AS create_var4, create_this1
                     CREATE (create_this5:\`Actor\`)
                     SET
-                        create_this5.name = create_var3.name,
-                        create_this5.id = randomUUID()
-                    MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
+                        create_this5.\`name\` = create_var3.\`name\`,
+                        create_this5.\`id\` = randomUUID()
+                    MERGE (create_this1)<-[create_this6:\`ACTED_IN\`]-(create_this5)
                     SET
-                        create_this6.year = create_var4.year
+                        create_this6.\`year\` = create_var4.\`year\`
                     WITH create_this5, create_var3
                     CALL {
                         WITH create_this5, create_var3
-                        UNWIND create_var3.website.create AS create_var7
-                        WITH create_var7.node AS create_var8, create_var7.edge AS create_var9, create_this5
+                        UNWIND create_var3.\`website\`.\`create\` AS create_var7
+                        WITH create_var7.\`node\` AS create_var8, create_var7.\`edge\` AS create_var9, create_this5
                         CREATE (create_this10:\`Website\`)
                         SET
-                            create_this10.address = create_var8.address
-                        MERGE (create_this5)-[create_this11:HAS_WEBSITE]->(create_this10)
+                            create_this10.\`address\` = create_var8.\`address\`
+                        MERGE (create_this5)-[create_this11:\`HAS_WEBSITE\`]->(create_this10)
                         RETURN collect(NULL) AS create_var12
                     }
                     WITH create_this5
@@ -187,12 +187,12 @@ describe("Batch Create", () => {
                 WITH create_this1, create_var0
                 CALL {
                     WITH create_this1, create_var0
-                    UNWIND create_var0.website.create AS create_var14
-                    WITH create_var14.node AS create_var15, create_var14.edge AS create_var16, create_this1
+                    UNWIND create_var0.\`website\`.\`create\` AS create_var14
+                    WITH create_var14.\`node\` AS create_var15, create_var14.\`edge\` AS create_var16, create_this1
                     CREATE (create_this17:\`Website\`)
                     SET
-                        create_this17.address = create_var15.address
-                    MERGE (create_this1)-[create_this18:HAS_WEBSITE]->(create_this17)
+                        create_this17.\`address\` = create_var15.\`address\`
+                    MERGE (create_this1)-[create_this18:\`HAS_WEBSITE\`]->(create_this17)
                     RETURN collect(NULL) AS create_var19
                 }
                 WITH create_this1
@@ -282,19 +282,19 @@ describe("Batch Create", () => {
                 WITH create_var4
                 CREATE (create_this0:\`Movie\`)
                 SET
-                    create_this0.id = create_var4.id
+                    create_this0.\`id\` = create_var4.\`id\`
                 WITH create_this0, create_var4
                 CALL {
                     WITH create_this0, create_var4
-                    UNWIND create_var4.actors.create AS create_var5
-                    WITH create_var5.node AS create_var6, create_var5.edge AS create_var7, create_this0
+                    UNWIND create_var4.\`actors\`.\`create\` AS create_var5
+                    WITH create_var5.\`node\` AS create_var6, create_var5.\`edge\` AS create_var7, create_this0
                     CREATE (create_this8:\`Actor\`)
                     SET
-                        create_this8.name = create_var6.name,
-                        create_this8.id = randomUUID()
-                    MERGE (create_this0)<-[create_this9:ACTED_IN]-(create_this8)
+                        create_this8.\`name\` = create_var6.\`name\`,
+                        create_this8.\`id\` = randomUUID()
+                    MERGE (create_this0)<-[create_this9:\`ACTED_IN\`]-(create_this8)
                     SET
-                        create_this9.year = create_var7.year
+                        create_this9.\`year\` = create_var7.\`year\`
                     WITH create_this8
                     CALL {
                     	WITH create_this8
@@ -317,7 +317,7 @@ describe("Batch Create", () => {
             }
             CALL {
                 WITH create_this0
-                MATCH (create_this0)<-[create_this1:ACTED_IN]-(create_this2:\`Actor\`)
+                MATCH (create_this0)<-[create_this1:\`ACTED_IN\`]-(create_this2:\`Actor\`)
                 WITH create_this2 { .name } AS create_this2
                 RETURN collect(create_this2) AS create_var3
             }
@@ -401,7 +401,7 @@ describe("Batch Create", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-            	WHERE this0_actors_connect0_node.id = $this0_actors_connect0_node_param0
+            	WHERE this0_actors_connect0_node.\`id\` = $this0_actors_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -434,7 +434,7 @@ describe("Batch Create", () => {
             CALL {
             	WITH this1
             	OPTIONAL MATCH (this1_actors_connect0_node:Actor)
-            	WHERE this1_actors_connect0_node.id = $this1_actors_connect0_node_param0
+            	WHERE this1_actors_connect0_node.\`id\` = $this1_actors_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this1_actors_connect0_node) as connectedNodes, collect(this1) as parentNodes
@@ -462,13 +462,13 @@ describe("Batch Create", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Actor\`)
+                MATCH (this0)<-[create_this0:\`ACTED_IN\`]-(create_this1:\`Actor\`)
                 WITH create_this1 { .name } AS create_this1
                 RETURN collect(create_this1) AS create_var2
             }
             CALL {
                 WITH this1
-                MATCH (this1)<-[create_this3:ACTED_IN]-(create_this4:\`Actor\`)
+                MATCH (this1)<-[create_this3:\`ACTED_IN\`]-(create_this4:\`Actor\`)
                 WITH create_this4 { .name } AS create_this4
                 RETURN collect(create_this4) AS create_var5
             }
@@ -603,7 +603,7 @@ describe("Batch Create", () => {
             CALL {
             	WITH this3
             	OPTIONAL MATCH (this3_actors_connect0_node:Actor)
-            	WHERE this3_actors_connect0_node.id = $this3_actors_connect0_node_param0
+            	WHERE this3_actors_connect0_node.\`id\` = $this3_actors_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this3_actors_connect0_node) as connectedNodes, collect(this3) as parentNodes
@@ -637,8 +637,8 @@ describe("Batch Create", () => {
                 WITH this4
                 MERGE (this4_actors_connectOrCreate0:\`Actor\` { id: $this4_actors_connectOrCreate_param0 })
                 ON CREATE SET
-                    this4_actors_connectOrCreate0.name = $this4_actors_connectOrCreate_param1
-                MERGE (this4)<-[this4_actors_connectOrCreate_this0:ACTED_IN]-(this4_actors_connectOrCreate0)
+                    this4_actors_connectOrCreate0.\`name\` = $this4_actors_connectOrCreate_param1
+                MERGE (this4)<-[this4_actors_connectOrCreate_this0:\`ACTED_IN\`]-(this4_actors_connectOrCreate0)
                 RETURN COUNT(*) AS _
             }
             WITH this4
@@ -653,61 +653,61 @@ describe("Batch Create", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0)-[create_this0:HAS_WEBSITE]->(create_this1:\`Website\`)
+                MATCH (this0)-[create_this0:\`HAS_WEBSITE\`]->(create_this1:\`Website\`)
                 WITH create_this1 { .address } AS create_this1
                 RETURN head(collect(create_this1)) AS create_var2
             }
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this3:ACTED_IN]-(create_this4:\`Actor\`)
+                MATCH (this0)<-[create_this3:\`ACTED_IN\`]-(create_this4:\`Actor\`)
                 WITH create_this4 { .name } AS create_this4
                 RETURN collect(create_this4) AS create_var5
             }
             CALL {
                 WITH this1
-                MATCH (this1)-[create_this6:HAS_WEBSITE]->(create_this7:\`Website\`)
+                MATCH (this1)-[create_this6:\`HAS_WEBSITE\`]->(create_this7:\`Website\`)
                 WITH create_this7 { .address } AS create_this7
                 RETURN head(collect(create_this7)) AS create_var8
             }
             CALL {
                 WITH this1
-                MATCH (this1)<-[create_this9:ACTED_IN]-(create_this10:\`Actor\`)
+                MATCH (this1)<-[create_this9:\`ACTED_IN\`]-(create_this10:\`Actor\`)
                 WITH create_this10 { .name } AS create_this10
                 RETURN collect(create_this10) AS create_var11
             }
             CALL {
                 WITH this2
-                MATCH (this2)-[create_this12:HAS_WEBSITE]->(create_this13:\`Website\`)
+                MATCH (this2)-[create_this12:\`HAS_WEBSITE\`]->(create_this13:\`Website\`)
                 WITH create_this13 { .address } AS create_this13
                 RETURN head(collect(create_this13)) AS create_var14
             }
             CALL {
                 WITH this2
-                MATCH (this2)<-[create_this15:ACTED_IN]-(create_this16:\`Actor\`)
+                MATCH (this2)<-[create_this15:\`ACTED_IN\`]-(create_this16:\`Actor\`)
                 WITH create_this16 { .name } AS create_this16
                 RETURN collect(create_this16) AS create_var17
             }
             CALL {
                 WITH this3
-                MATCH (this3)-[create_this18:HAS_WEBSITE]->(create_this19:\`Website\`)
+                MATCH (this3)-[create_this18:\`HAS_WEBSITE\`]->(create_this19:\`Website\`)
                 WITH create_this19 { .address } AS create_this19
                 RETURN head(collect(create_this19)) AS create_var20
             }
             CALL {
                 WITH this3
-                MATCH (this3)<-[create_this21:ACTED_IN]-(create_this22:\`Actor\`)
+                MATCH (this3)<-[create_this21:\`ACTED_IN\`]-(create_this22:\`Actor\`)
                 WITH create_this22 { .name } AS create_this22
                 RETURN collect(create_this22) AS create_var23
             }
             CALL {
                 WITH this4
-                MATCH (this4)-[create_this24:HAS_WEBSITE]->(create_this25:\`Website\`)
+                MATCH (this4)-[create_this24:\`HAS_WEBSITE\`]->(create_this25:\`Website\`)
                 WITH create_this25 { .address } AS create_this25
                 RETURN head(collect(create_this25)) AS create_var26
             }
             CALL {
                 WITH this4
-                MATCH (this4)<-[create_this27:ACTED_IN]-(create_this28:\`Actor\`)
+                MATCH (this4)<-[create_this27:\`ACTED_IN\`]-(create_this28:\`Actor\`)
                 WITH create_this28 { .name } AS create_this28
                 RETURN collect(create_this28) AS create_var29
             }

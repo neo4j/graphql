@@ -62,10 +62,10 @@ describe("RunFirstColumn", () => {
 
         expect(cypherResult.cypher).toMatchInlineSnapshot(`
             "MATCH (this0:\`Movie\`)
-            WHERE this0.title = $param0
+            WHERE this0.\`title\` = $param0
             RETURN { result: apoc.cypher.runFirstColumnMany(\\"MATCH (this0)
             SET
-                this0.released = $param1
+                this0.\`released\` = $param1
             RETURN this0\\", { this0: this0, param1: $param1 }) }"
         `);
         expect(cypherResult.params).toMatchInlineSnapshot(`

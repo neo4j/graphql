@@ -94,26 +94,26 @@ describe("Relationship Properties Create Cypher", () => {
                 WITH create_var4
                 CREATE (create_this0:\`Movie\`)
                 SET
-                    create_this0.title = create_var4.title
+                    create_this0.\`title\` = create_var4.\`title\`
                 WITH create_this0, create_var4
                 CALL {
                     WITH create_this0, create_var4
-                    UNWIND create_var4.actors.create AS create_var5
-                    WITH create_var5.node AS create_var6, create_var5.edge AS create_var7, create_this0
+                    UNWIND create_var4.\`actors\`.\`create\` AS create_var5
+                    WITH create_var5.\`node\` AS create_var6, create_var5.\`edge\` AS create_var7, create_this0
                     CREATE (create_this8:\`Actor\`)
                     SET
-                        create_this8.name = create_var6.name
-                    MERGE (create_this0)<-[create_this9:ACTED_IN]-(create_this8)
+                        create_this8.\`name\` = create_var6.\`name\`
+                    MERGE (create_this0)<-[create_this9:\`ACTED_IN\`]-(create_this8)
                     SET
-                        create_this9.screenTime = create_var7.screenTime
+                        create_this9.\`screenTime\` = create_var7.\`screenTime\`
                     RETURN collect(NULL) AS create_var10
                 }
                 RETURN create_this0
             }
             CALL {
                 WITH create_this0
-                MATCH (create_this0:\`Movie\`)<-[create_this1:ACTED_IN]-(create_this2:\`Actor\`)
-                WITH { screenTime: create_this1.screenTime, node: { name: create_this2.name } } AS edge
+                MATCH (create_this0:\`Movie\`)<-[create_this1:\`ACTED_IN\`]-(create_this2:\`Actor\`)
+                WITH { screenTime: create_this1.\`screenTime\`, node: { name: create_this2.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS create_var3

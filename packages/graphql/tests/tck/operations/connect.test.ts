@@ -121,7 +121,7 @@ describe("Cypher Connect", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_colors_connect0_node:Color)
-            	WHERE this0_colors_connect0_node.name = $this0_colors_connect0_node_param0
+            	WHERE this0_colors_connect0_node.\`name\` = $this0_colors_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_colors_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -138,7 +138,7 @@ describe("Cypher Connect", () => {
             CALL {
             	WITH this0, this0_colors_connect0_node
             	OPTIONAL MATCH (this0_colors_connect0_node_photos0_node:Photo)
-            	WHERE this0_colors_connect0_node_photos0_node.id = $this0_colors_connect0_node_photos0_node_param0
+            	WHERE this0_colors_connect0_node_photos0_node.\`id\` = $this0_colors_connect0_node_photos0_node_param0
             	CALL {
             		WITH *
             		WITH this0, collect(this0_colors_connect0_node_photos0_node) as connectedNodes, collect(this0_colors_connect0_node) as parentNodes
@@ -163,7 +163,7 @@ describe("Cypher Connect", () => {
             CALL {
             	WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node
             	OPTIONAL MATCH (this0_colors_connect0_node_photos0_node_color0_node:Color)
-            	WHERE this0_colors_connect0_node_photos0_node_color0_node.id = $this0_colors_connect0_node_photos0_node_color0_node_param0
+            	WHERE this0_colors_connect0_node_photos0_node_color0_node.\`id\` = $this0_colors_connect0_node_photos0_node_color0_node_param0
             	CALL {
             		WITH *
             		WITH this0, this0_colors_connect0_node, collect(this0_colors_connect0_node_photos0_node_color0_node) as connectedNodes, collect(this0_colors_connect0_node_photos0_node) as parentNodes
@@ -195,7 +195,7 @@ describe("Cypher Connect", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_photos_connect0_node:Photo)
-            	WHERE this0_photos_connect0_node.id = $this0_photos_connect0_node_param0
+            	WHERE this0_photos_connect0_node.\`id\` = $this0_photos_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_photos_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -212,7 +212,7 @@ describe("Cypher Connect", () => {
             CALL {
             	WITH this0, this0_photos_connect0_node
             	OPTIONAL MATCH (this0_photos_connect0_node_color0_node:Color)
-            	WHERE this0_photos_connect0_node_color0_node.name = $this0_photos_connect0_node_color0_node_param0
+            	WHERE this0_photos_connect0_node_color0_node.\`name\` = $this0_photos_connect0_node_color0_node_param0
             	CALL {
             		WITH *
             		WITH this0, collect(this0_photos_connect0_node_color0_node) as connectedNodes, collect(this0_photos_connect0_node) as parentNodes
@@ -242,7 +242,7 @@ describe("Cypher Connect", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_photos_connect1_node:Photo)
-            	WHERE this0_photos_connect1_node.id = $this0_photos_connect1_node_param0
+            	WHERE this0_photos_connect1_node.\`id\` = $this0_photos_connect1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_photos_connect1_node) as connectedNodes, collect(this0) as parentNodes
@@ -259,7 +259,7 @@ describe("Cypher Connect", () => {
             CALL {
             	WITH this0, this0_photos_connect1_node
             	OPTIONAL MATCH (this0_photos_connect1_node_color0_node:Color)
-            	WHERE this0_photos_connect1_node_color0_node.name = $this0_photos_connect1_node_color0_node_param0
+            	WHERE this0_photos_connect1_node_color0_node.\`name\` = $this0_photos_connect1_node_color0_node_param0
             	CALL {
             		WITH *
             		WITH this0, collect(this0_photos_connect1_node_color0_node) as connectedNodes, collect(this0_photos_connect1_node) as parentNodes

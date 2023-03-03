@@ -23,6 +23,7 @@ import { NodeRef } from "../references/NodeRef";
 import { Pattern } from "./Pattern";
 import { PatternElement } from "./PatternElement";
 import type { Param } from "../references/Param";
+import { escapeLabel } from "../utils/escape-label";
 
 type LengthOption =
     | number
@@ -105,7 +106,7 @@ export class PartialPattern extends PatternElement<RelationshipRef> {
     }
 
     private getRelationshipTypesString(relationship: RelationshipRef): string {
-        const type = relationship.type; // TODO: escape label
-        return relationship.type ? `:${type}` : "";
+        const type = relationship.type;
+        return type ? `:${escapeLabel(type)}` : "";
     }
 }

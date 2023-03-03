@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
-            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
+            	WHERE this0_subjects_connect0_node.\`id\` IN $this0_subjects_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -112,7 +112,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect1_node:Place)
-            	WHERE this0_subjects_connect1_node.id IN $this0_subjects_connect1_node_param0
+            	WHERE this0_subjects_connect1_node.\`id\` IN $this0_subjects_connect1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_subjects_connect1_node) as connectedNodes, collect(this0) as parentNodes
@@ -132,7 +132,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
-            	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
+            	WHERE this0_objects_connect0_node.\`id\` IN $this0_objects_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -151,7 +151,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_objects_connect1_node:Place)
-            	WHERE this0_objects_connect1_node.id IN $this0_objects_connect1_node_param0
+            	WHERE this0_objects_connect1_node.\`id\` IN $this0_objects_connect1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_objects_connect1_node) as connectedNodes, collect(this0) as parentNodes
@@ -177,7 +177,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             	WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Person)
-            	WHERE this1_subjects_connect0_node.id IN $this1_subjects_connect0_node_param0
+            	WHERE this1_subjects_connect0_node.\`id\` IN $this1_subjects_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this1_subjects_connect0_node) as connectedNodes, collect(this1) as parentNodes
@@ -196,7 +196,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             		WITH this1
             	OPTIONAL MATCH (this1_subjects_connect1_node:Place)
-            	WHERE this1_subjects_connect1_node.id IN $this1_subjects_connect1_node_param0
+            	WHERE this1_subjects_connect1_node.\`id\` IN $this1_subjects_connect1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this1_subjects_connect1_node) as connectedNodes, collect(this1) as parentNodes
@@ -216,7 +216,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             	WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Person)
-            	WHERE this1_objects_connect0_node.id IN $this1_objects_connect0_node_param0
+            	WHERE this1_objects_connect0_node.\`id\` IN $this1_objects_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this1_objects_connect0_node) as connectedNodes, collect(this1) as parentNodes
@@ -235,7 +235,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             		WITH this1
             	OPTIONAL MATCH (this1_objects_connect1_node:Place)
-            	WHERE this1_objects_connect1_node.id IN $this1_objects_connect1_node_param0
+            	WHERE this1_objects_connect1_node.\`id\` IN $this1_objects_connect1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this1_objects_connect1_node) as connectedNodes, collect(this1) as parentNodes
@@ -326,7 +326,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
-            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
+            	WHERE this0_subjects_connect0_node.\`id\` IN $this0_subjects_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -345,7 +345,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect1_node:Place)
-            	WHERE this0_subjects_connect1_node.id IN $this0_subjects_connect1_node_param0
+            	WHERE this0_subjects_connect1_node.\`id\` IN $this0_subjects_connect1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_subjects_connect1_node) as connectedNodes, collect(this0) as parentNodes
@@ -365,7 +365,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
-            	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
+            	WHERE this0_objects_connect0_node.\`id\` IN $this0_objects_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -384,7 +384,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_objects_connect1_node:Place)
-            	WHERE this0_objects_connect1_node.id IN $this0_objects_connect1_node_param0
+            	WHERE this0_objects_connect1_node.\`id\` IN $this0_objects_connect1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_objects_connect1_node) as connectedNodes, collect(this0) as parentNodes
@@ -460,7 +460,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
-            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
+            	WHERE this0_subjects_connect0_node.\`id\` IN $this0_subjects_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -479,7 +479,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect1_node:Place)
-            	WHERE this0_subjects_connect1_node.id IN $this0_subjects_connect1_node_param0
+            	WHERE this0_subjects_connect1_node.\`id\` IN $this0_subjects_connect1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_subjects_connect1_node) as connectedNodes, collect(this0) as parentNodes
@@ -499,7 +499,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
-            	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
+            	WHERE this0_objects_connect0_node.\`id\` IN $this0_objects_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -518,7 +518,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_objects_connect1_node:Place)
-            	WHERE this0_objects_connect1_node.id IN $this0_objects_connect1_node_param0
+            	WHERE this0_objects_connect1_node.\`id\` IN $this0_objects_connect1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_objects_connect1_node) as connectedNodes, collect(this0) as parentNodes
@@ -605,7 +605,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
-            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
+            	WHERE this0_subjects_connect0_node.\`id\` IN $this0_subjects_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -624,7 +624,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect1_node:Place)
-            	WHERE this0_subjects_connect1_node.id IN $this0_subjects_connect1_node_param0
+            	WHERE this0_subjects_connect1_node.\`id\` IN $this0_subjects_connect1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_subjects_connect1_node) as connectedNodes, collect(this0) as parentNodes
@@ -644,7 +644,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
-            	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
+            	WHERE this0_objects_connect0_node.\`id\` IN $this0_objects_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -663,7 +663,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_objects_connect1_node:Place)
-            	WHERE this0_objects_connect1_node.id IN $this0_objects_connect1_node_param0
+            	WHERE this0_objects_connect1_node.\`id\` IN $this0_objects_connect1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_objects_connect1_node) as connectedNodes, collect(this0) as parentNodes
@@ -689,7 +689,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             	WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Person)
-            	WHERE this1_subjects_connect0_node.id IN $this1_subjects_connect0_node_param0
+            	WHERE this1_subjects_connect0_node.\`id\` IN $this1_subjects_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this1_subjects_connect0_node) as connectedNodes, collect(this1) as parentNodes
@@ -708,7 +708,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             		WITH this1
             	OPTIONAL MATCH (this1_subjects_connect1_node:Place)
-            	WHERE this1_subjects_connect1_node.id IN $this1_subjects_connect1_node_param0
+            	WHERE this1_subjects_connect1_node.\`id\` IN $this1_subjects_connect1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this1_subjects_connect1_node) as connectedNodes, collect(this1) as parentNodes
@@ -728,7 +728,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             	WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Person)
-            	WHERE this1_objects_connect0_node.id IN $this1_objects_connect0_node_param0
+            	WHERE this1_objects_connect0_node.\`id\` IN $this1_objects_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this1_objects_connect0_node) as connectedNodes, collect(this1) as parentNodes
@@ -747,7 +747,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             		WITH this1
             	OPTIONAL MATCH (this1_objects_connect1_node:Place)
-            	WHERE this1_objects_connect1_node.id IN $this1_objects_connect1_node_param0
+            	WHERE this1_objects_connect1_node.\`id\` IN $this1_objects_connect1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this1_objects_connect1_node) as connectedNodes, collect(this1) as parentNodes
@@ -769,12 +769,12 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 WITH this0
                 CALL {
                     WITH *
-                    MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Person\`)
+                    MATCH (this0)<-[create_this0:\`ACTED_IN\`]-(create_this1:\`Person\`)
                     WITH create_this1 { __resolveType: \\"Person\\", __id: id(this0), .id } AS create_this1
                     RETURN create_this1 AS create_var2
                     UNION
                     WITH *
-                    MATCH (this0)<-[create_this3:ACTED_IN]-(create_this4:\`Place\`)
+                    MATCH (this0)<-[create_this3:\`ACTED_IN\`]-(create_this4:\`Place\`)
                     WITH create_this4 { __resolveType: \\"Place\\", __id: id(this0), .id } AS create_this4
                     RETURN create_this4 AS create_var2
                 }
@@ -785,12 +785,12 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 WITH this0
                 CALL {
                     WITH *
-                    MATCH (this0)-[create_this5:ACTED_IN]->(create_this6:\`Person\`)
+                    MATCH (this0)-[create_this5:\`ACTED_IN\`]->(create_this6:\`Person\`)
                     WITH create_this6 { __resolveType: \\"Person\\", __id: id(this0), .id } AS create_this6
                     RETURN create_this6 AS create_var7
                     UNION
                     WITH *
-                    MATCH (this0)-[create_this8:ACTED_IN]->(create_this9:\`Place\`)
+                    MATCH (this0)-[create_this8:\`ACTED_IN\`]->(create_this9:\`Place\`)
                     WITH create_this9 { __resolveType: \\"Place\\", __id: id(this0), .id } AS create_this9
                     RETURN create_this9 AS create_var7
                 }
@@ -801,12 +801,12 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 WITH this1
                 CALL {
                     WITH *
-                    MATCH (this1)<-[create_this10:ACTED_IN]-(create_this11:\`Person\`)
+                    MATCH (this1)<-[create_this10:\`ACTED_IN\`]-(create_this11:\`Person\`)
                     WITH create_this11 { __resolveType: \\"Person\\", __id: id(this1), .id } AS create_this11
                     RETURN create_this11 AS create_var12
                     UNION
                     WITH *
-                    MATCH (this1)<-[create_this13:ACTED_IN]-(create_this14:\`Place\`)
+                    MATCH (this1)<-[create_this13:\`ACTED_IN\`]-(create_this14:\`Place\`)
                     WITH create_this14 { __resolveType: \\"Place\\", __id: id(this1), .id } AS create_this14
                     RETURN create_this14 AS create_var12
                 }
@@ -817,12 +817,12 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 WITH this1
                 CALL {
                     WITH *
-                    MATCH (this1)-[create_this15:ACTED_IN]->(create_this16:\`Person\`)
+                    MATCH (this1)-[create_this15:\`ACTED_IN\`]->(create_this16:\`Person\`)
                     WITH create_this16 { __resolveType: \\"Person\\", __id: id(this1), .id } AS create_this16
                     RETURN create_this16 AS create_var17
                     UNION
                     WITH *
-                    MATCH (this1)-[create_this18:ACTED_IN]->(create_this19:\`Place\`)
+                    MATCH (this1)-[create_this18:\`ACTED_IN\`]->(create_this19:\`Place\`)
                     WITH create_this19 { __resolveType: \\"Place\\", __id: id(this1), .id } AS create_this19
                     RETURN create_this19 AS create_var17
                 }
@@ -899,7 +899,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
-            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
+            	WHERE this0_subjects_connect0_node.\`id\` IN $this0_subjects_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -918,7 +918,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect1_node:Place)
-            	WHERE this0_subjects_connect1_node.id IN $this0_subjects_connect1_node_param0
+            	WHERE this0_subjects_connect1_node.\`id\` IN $this0_subjects_connect1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_subjects_connect1_node) as connectedNodes, collect(this0) as parentNodes

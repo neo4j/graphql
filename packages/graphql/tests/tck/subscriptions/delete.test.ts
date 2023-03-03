@@ -69,7 +69,7 @@ describe("Subscriptions metadata on delete", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
             MATCH (this:\`Movie\`)
-            WHERE this.id = $param0
+            WHERE this.\`id\` = $param0
             WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             CALL {
             	WITH this
@@ -113,11 +113,11 @@ describe("Subscriptions metadata on delete", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
             MATCH (this:\`Movie\`)
-            WHERE this.id = $param0
+            WHERE this.\`id\` = $param0
             WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             WITH this, meta
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
+            WHERE this_actors0.\`name\` = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
             WITH this, meta, collect(DISTINCT this_actors0) AS this_actors0_to_delete, this_actors0_relationship
             WITH this, this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Actor\\" } + { event: \\"delete_relationship\\", timestamp: timestamp(), id_from: id(n), id_to: id(this), id: id(this_actors0_relationship), relationshipName: \\"ACTED_IN\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\", properties: { from: n { .* }, to: this { .* }, relationship: this_actors0_relationship { .* } } }) AS meta
             CALL {
@@ -186,17 +186,17 @@ describe("Subscriptions metadata on delete", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
             MATCH (this:\`Movie\`)
-            WHERE this.id = $param0
+            WHERE this.\`id\` = $param0
             WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             WITH this, meta
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
+            WHERE this_actors0.\`name\` = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
             WITH this, meta, this_actors0, this_actors0_relationship
             OPTIONAL MATCH (this_actors0)-[this_actors0_movies0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
-            WHERE this_actors0_movies0.id = $this_deleteMovies_args_delete_actors0_delete_movies0_where_this_actors0_movies0param0
+            WHERE this_actors0_movies0.\`id\` = $this_deleteMovies_args_delete_actors0_delete_movies0_where_this_actors0_movies0param0
             WITH this, meta, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship
             OPTIONAL MATCH (this_actors0_movies0)<-[this_actors0_movies0_actors0_relationship:ACTED_IN]-(this_actors0_movies0_actors0:Actor)
-            WHERE this_actors0_movies0_actors0.name = $this_deleteMovies_args_delete_actors0_delete_movies0_delete_actors0_where_this_actors0_movies0_actors0param0
+            WHERE this_actors0_movies0_actors0.\`name\` = $this_deleteMovies_args_delete_actors0_delete_movies0_delete_actors0_where_this_actors0_movies0_actors0param0
             WITH this, meta, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, collect(DISTINCT this_actors0_movies0_actors0) AS this_actors0_movies0_actors0_to_delete, this_actors0_movies0_actors0_relationship
             WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, this_actors0_movies0_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Actor\\" } + { event: \\"delete_relationship\\", timestamp: timestamp(), id_from: id(n), id_to: id(this_actors0_movies0), id: id(this_actors0_movies0_actors0_relationship), relationshipName: \\"ACTED_IN\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\", properties: { from: n { .* }, to: this_actors0_movies0 { .* }, relationship: this_actors0_movies0_actors0_relationship { .* } } }) AS meta
             CALL {

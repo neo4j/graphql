@@ -173,7 +173,7 @@ describe("tck/rfcs/query-limits", () => {
                 LIMIT $param0
                 CALL {
                     WITH this
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                    MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Person\`)
                     WITH this1 { .id } AS this1
                     LIMIT $param1
                     RETURN collect(this1) AS var2
@@ -222,8 +222,8 @@ describe("tck/rfcs/query-limits", () => {
                 LIMIT $param0
                 CALL {
                     WITH this
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
-                    WITH { node: { id: this1.id } } AS edge
+                    MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Person\`)
+                    WITH { node: { id: this1.\`id\` } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
@@ -280,8 +280,8 @@ describe("tck/rfcs/query-limits", () => {
                 LIMIT $param0
                 CALL {
                     WITH this
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
-                    WITH { node: { id: this1.id } } AS edge
+                    MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Person\`)
+                    WITH { node: { id: this1.\`id\` } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
@@ -336,8 +336,8 @@ describe("tck/rfcs/query-limits", () => {
                 "MATCH (this:\`Festival\`)
                 CALL {
                     WITH this
-                    MATCH (this)<-[this0:PART_OF]-(this1:\`Show\`)
-                    WITH { node: { id: this1.id } } AS edge
+                    MATCH (this)<-[this0:\`PART_OF\`]-(this1:\`Show\`)
+                    WITH { node: { id: this1.\`id\` } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
@@ -386,7 +386,7 @@ describe("tck/rfcs/query-limits", () => {
                 LIMIT $param0
                 CALL {
                     WITH this
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                    MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Person\`)
                     WITH this1 { .id } AS this1
                     LIMIT $param1
                     RETURN collect(this1) AS var2

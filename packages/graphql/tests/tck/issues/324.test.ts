@@ -94,7 +94,7 @@ describe("#324", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Person\`)
-            WHERE this.identifier = $param0
+            WHERE this.\`identifier\` = $param0
             WITH this
             CALL {
             	WITH this
@@ -108,7 +108,7 @@ describe("#324", () => {
             		CALL {
             			WITH this, this_car0, this_car0_manufacturer0
             			OPTIONAL MATCH (this_car0_manufacturer0_logo0_connect0_node:Logo)
-            			WHERE this_car0_manufacturer0_logo0_connect0_node.identifier = $this_car0_manufacturer0_logo0_connect0_node_param0
+            			WHERE this_car0_manufacturer0_logo0_connect0_node.\`identifier\` = $this_car0_manufacturer0_logo0_connect0_node_param0
             			CALL {
             				WITH *
             				WITH this, this_car0, collect(this_car0_manufacturer0_logo0_connect0_node) as connectedNodes, collect(this_car0_manufacturer0) as parentNodes

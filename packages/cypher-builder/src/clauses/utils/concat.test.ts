@@ -32,7 +32,7 @@ describe("CypherBuilder concat", () => {
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "MATCH (this0:\`Movie\`)
             WHERE $param0 = $param1
-            RETURN this0.title AS movie"
+            RETURN this0.\`title\` AS movie"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`
@@ -63,10 +63,10 @@ describe("CypherBuilder concat", () => {
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "CREATE (this0:\`Movie\`)
             SET
-                this0.title = $param0
+                this0.\`title\` = $param0
             CREATE (this1:\`Movie\`)
             SET
-                this1.title = $param0"
+                this1.\`title\` = $param0"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`

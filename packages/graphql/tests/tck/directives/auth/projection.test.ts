@@ -71,10 +71,10 @@ describe("Cypher Auth Projection", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WITH this
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this.\`id\` IS NOT NULL AND this.\`id\` = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.id = $this_update_id
             WITH *
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $update_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this.\`id\` IS NOT NULL AND this.\`id\` = $update_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -110,7 +110,7 @@ describe("Cypher Auth Projection", () => {
                 WITH create_var0
                 CREATE (create_this1:\`User\`)
                 SET
-                    create_this1.id = create_var0.id
+                    create_this1.\`id\` = create_var0.\`id\`
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"

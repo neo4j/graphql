@@ -72,10 +72,10 @@ describe("Cypher TimeStamps On Time Fields", () => {
                 WITH create_var0
                 CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this1.id = create_var0.id,
-                    create_this1.createdAt = time(),
-                    create_this1.interfaceTimestamp = time(),
-                    create_this1.overrideTimestamp = time()
+                    create_this1.\`id\` = create_var0.\`id\`,
+                    create_this1.\`createdAt\` = time(),
+                    create_this1.\`interfaceTimestamp\` = time(),
+                    create_this1.\`overrideTimestamp\` = time()
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"

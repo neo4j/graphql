@@ -87,9 +87,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WHERE (this0.startDate > $param0 AND this0.endDateTime < $param1)
-                WITH { startDate: this0.startDate, endDateTime: apoc.date.convertFormat(toString(this0.endDateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), node: { name: this1.name } } AS edge
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                WHERE (this0.\`startDate\` > $param0 AND this0.\`endDateTime\` < $param1)
+                WITH { startDate: this0.\`startDate\`, endDateTime: apoc.date.convertFormat(toString(this0.\`endDateTime\`), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), node: { name: this1.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var2

@@ -85,9 +85,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> OR", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WHERE (this1.firstName = $param0 OR this1.lastName = $param1)
-                WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                WHERE (this1.\`firstName\` = $param0 OR this1.\`lastName\` = $param1)
+                WITH { screenTime: this0.\`screenTime\`, node: { firstName: this1.\`firstName\`, lastName: this1.\`lastName\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var2

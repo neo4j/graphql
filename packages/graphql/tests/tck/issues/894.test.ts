@@ -69,12 +69,12 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.name = $param0
+            WHERE this.\`name\` = $param0
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_activeOrganization0_node:Organization)
-            	WHERE this_connect_activeOrganization0_node._id = $this_connect_activeOrganization0_node_param0
+            	WHERE this_connect_activeOrganization0_node.\`_id\` = $this_connect_activeOrganization0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this_connect_activeOrganization0_node) as connectedNodes, collect(this) as parentNodes
@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_activeOrganization0_rel:ACTIVELY_MANAGING]->(this_disconnect_activeOrganization0:Organization)
-            WHERE NOT (this_disconnect_activeOrganization0._id = $updateUsers_args_disconnect_activeOrganization_where_Organization_this_disconnect_activeOrganization0param0)
+            WHERE NOT (this_disconnect_activeOrganization0.\`_id\` = $updateUsers_args_disconnect_activeOrganization_where_Organization_this_disconnect_activeOrganization0param0)
             CALL {
             	WITH this_disconnect_activeOrganization0, this_disconnect_activeOrganization0_rel, this
             	WITH collect(this_disconnect_activeOrganization0) as this_disconnect_activeOrganization0, this_disconnect_activeOrganization0_rel, this
@@ -113,7 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDUser.activeOrganization must be less than or equal to one', [0])
             	RETURN c AS this_activeOrganization_Organization_unique_ignored
             }
-            RETURN collect(DISTINCT this { id: this._id }) AS data"
+            RETURN collect(DISTINCT this { id: this.\`_id\` }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

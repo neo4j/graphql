@@ -86,11 +86,11 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
             "MATCH (this:\`Bulk\`:\`BULK\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:MATERIAL_BULK]->(this1:\`Material\`)
+                MATCH (this)-[this0:\`MATERIAL_BULK\`]->(this1:\`Material\`)
                 CALL {
                     WITH this1
-                    MATCH (this1:\`Material\`)-[this2:MATERIAL_SUPPLIER]->(this3:\`Supplier\`)
-                    WITH { supplierMaterialNumber: this2.supplierMaterialNumber, node: { supplierId: this3.supplierId } } AS edge
+                    MATCH (this1:\`Material\`)-[this2:\`MATERIAL_SUPPLIER\`]->(this3:\`Supplier\`)
+                    WITH { supplierMaterialNumber: this2.\`supplierMaterialNumber\`, node: { supplierId: this3.\`supplierId\` } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var4

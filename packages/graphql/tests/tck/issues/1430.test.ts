@@ -80,7 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`ABCE\`)
-            WHERE this.id = $param0
+            WHERE this.\`id\` = $param0
             CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
             CREATE (this_create_interface_ChildOne0_node_ChildOne:ChildOne)
             SET this_create_interface_ChildOne0_node_ChildOne.id = randomUUID()
@@ -91,12 +91,12 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[update_this0:HAS_INTERFACE]->(update_this1:\`ChildOne\`)
+                    MATCH (this)-[update_this0:\`HAS_INTERFACE\`]->(update_this1:\`ChildOne\`)
                     WITH update_this1 { __resolveType: \\"ChildOne\\", __id: id(this), .id, .name } AS update_this1
                     RETURN update_this1 AS update_var2
                     UNION
                     WITH *
-                    MATCH (this)-[update_this3:HAS_INTERFACE]->(update_this4:\`ChildTwo\`)
+                    MATCH (this)-[update_this3:\`HAS_INTERFACE\`]->(update_this4:\`ChildTwo\`)
                     WITH update_this4 { __resolveType: \\"ChildTwo\\", __id: id(this), .id, .name } AS update_this4
                     RETURN update_this4 AS update_var2
                 }
@@ -138,14 +138,14 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`ABCE\`)
-            WHERE this.id = $param0
+            WHERE this.\`id\` = $param0
             CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
             CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildTwo)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_interface0_node:ChildOne)
-            	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_param0
+            	WHERE this_connect_interface0_node.\`name\` = $this_connect_interface0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this_connect_interface0_node) as connectedNodes, collect(this) as parentNodes
@@ -164,7 +164,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             CALL {
             		WITH this
             	OPTIONAL MATCH (this_connect_interface1_node:ChildTwo)
-            	WHERE this_connect_interface1_node.name = $this_connect_interface1_node_param0
+            	WHERE this_connect_interface1_node.\`name\` = $this_connect_interface1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this_connect_interface1_node) as connectedNodes, collect(this) as parentNodes
@@ -185,12 +185,12 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[update_this0:HAS_INTERFACE]->(update_this1:\`ChildOne\`)
+                    MATCH (this)-[update_this0:\`HAS_INTERFACE\`]->(update_this1:\`ChildOne\`)
                     WITH update_this1 { __resolveType: \\"ChildOne\\", __id: id(this), .id, .name } AS update_this1
                     RETURN update_this1 AS update_var2
                     UNION
                     WITH *
-                    MATCH (this)-[update_this3:HAS_INTERFACE]->(update_this4:\`ChildTwo\`)
+                    MATCH (this)-[update_this3:\`HAS_INTERFACE\`]->(update_this4:\`ChildTwo\`)
                     WITH update_this4 { __resolveType: \\"ChildTwo\\", __id: id(this), .id, .name } AS update_this4
                     RETURN update_this4 AS update_var2
                 }

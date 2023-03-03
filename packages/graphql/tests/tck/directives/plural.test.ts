@@ -113,7 +113,7 @@ describe("Plural directive", () => {
                 WITH create_var0
                 CREATE (create_this1:\`Tech\`)
                 SET
-                    create_this1.name = create_var0.name
+                    create_this1.\`name\` = create_var0.\`name\`
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .name }) AS data"
@@ -177,7 +177,7 @@ describe("Plural directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Tech\`)
-            WHERE this.name = $param0
+            WHERE this.\`name\` = $param0
             DETACH DELETE this"
         `);
 

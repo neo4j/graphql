@@ -109,10 +109,10 @@ describe("Cypher Auth isAuthenticated", () => {
                 WITH create_var0
                 CREATE (create_this1:\`Post\`)
                 SET
-                    create_this1.id = create_var0.id,
-                    create_this1.content = create_var0.content
+                    create_this1.\`id\` = create_var0.\`id\`,
+                    create_this1.\`content\` = create_var0.\`content\`
                 WITH *
-                CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
@@ -161,9 +161,9 @@ describe("Cypher Auth isAuthenticated", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE this.id = $param0
+            WHERE this.\`id\` = $param0
             WITH this
-            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.id = $this_update_id
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -212,7 +212,7 @@ describe("Cypher Auth isAuthenticated", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Comment)
             	WITH this, this_connect_content0_node
-            	CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	CALL {
             		WITH *
             		WITH collect(this_connect_content0_node) as connectedNodes, collect(this) as parentNodes
@@ -232,7 +232,7 @@ describe("Cypher Auth isAuthenticated", () => {
             		WITH this
             	OPTIONAL MATCH (this_connect_content1_node:Post)
             	WITH this, this_connect_content1_node
-            	CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	CALL {
             		WITH *
             		WITH collect(this_connect_content1_node) as connectedNodes, collect(this) as parentNodes
@@ -294,7 +294,7 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
-            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             	WITH this_disconnect_content0, this_disconnect_content0_rel, this
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
@@ -308,7 +308,7 @@ describe("Cypher Auth isAuthenticated", () => {
             	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
-            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             	WITH this_disconnect_content0, this_disconnect_content0_rel, this
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
@@ -367,7 +367,7 @@ describe("Cypher Auth isAuthenticated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
             WITH this
-            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             DETACH DELETE this"
         `);
 
@@ -408,7 +408,7 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
             WITH this, this_content_Comment0
-            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this, collect(DISTINCT this_content_Comment0) AS this_content_Comment0_to_delete
             CALL {
             	WITH this_content_Comment0_to_delete
@@ -419,7 +419,7 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
             WITH this, this_content_Post0
-            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
             CALL {
             	WITH this_content_Post0_to_delete
@@ -428,7 +428,7 @@ describe("Cypher Auth isAuthenticated", () => {
             	RETURN count(*) AS _
             }
             WITH this
-            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             DETACH DELETE this"
         `);
 

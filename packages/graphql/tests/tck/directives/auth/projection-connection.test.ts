@@ -80,12 +80,12 @@ describe("Cypher Auth Projection On Connections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ((this.\`id\` IS NOT NULL AND this.\`id\` = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                MATCH (this)-[this0:HAS_POST]->(this1:\`Post\`)
-                WHERE apoc.util.validatePredicate(NOT ((exists((this1)<-[:HAS_POST]-(:\`User\`)) AND any(this2 IN [(this1)<-[:HAS_POST]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH { node: { content: this1.content } } AS edge
+                MATCH (this)-[this0:\`HAS_POST\`]->(this1:\`Post\`)
+                WHERE apoc.util.validatePredicate(NOT ((exists((this1)<-[:\`HAS_POST\`]-(:\`User\`)) AND any(this2 IN [(this1)<-[:\`HAS_POST\`]-(this2:\`User\`) | this2] WHERE (this2.\`id\` IS NOT NULL AND this2.\`id\` = $param1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH { node: { content: this1.\`content\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var3
@@ -131,21 +131,21 @@ describe("Cypher Auth Projection On Connections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ((this.\`id\` IS NOT NULL AND this.\`id\` = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                MATCH (this)-[this0:HAS_POST]->(this1:\`Post\`)
-                WHERE apoc.util.validatePredicate(NOT ((exists((this1)<-[:HAS_POST]-(:\`User\`)) AND any(this2 IN [(this1)<-[:HAS_POST]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MATCH (this)-[this0:\`HAS_POST\`]->(this1:\`Post\`)
+                WHERE apoc.util.validatePredicate(NOT ((exists((this1)<-[:\`HAS_POST\`]-(:\`User\`)) AND any(this2 IN [(this1)<-[:\`HAS_POST\`]-(this2:\`User\`) | this2] WHERE (this2.\`id\` IS NOT NULL AND this2.\`id\` = $param1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
                     WITH this1
-                    MATCH (this1:\`Post\`)<-[this3:HAS_POST]-(this4:\`User\`)
-                    WHERE apoc.util.validatePredicate(NOT ((this4.id IS NOT NULL AND this4.id = $param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH { node: { name: this4.name } } AS edge
+                    MATCH (this1:\`Post\`)<-[this3:\`HAS_POST\`]-(this4:\`User\`)
+                    WHERE apoc.util.validatePredicate(NOT ((this4.\`id\` IS NOT NULL AND this4.\`id\` = $param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WITH { node: { name: this4.\`name\` } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var5
                 }
-                WITH { node: { content: this1.content, creatorConnection: var5 } } AS edge
+                WITH { node: { content: this1.\`content\`, creatorConnection: var5 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var6

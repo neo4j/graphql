@@ -33,7 +33,7 @@ test("Match node with mathematical operator", () => {
     const queryResult = matchQuery.build();
     expect(queryResult.cypher).toMatchInlineSnapshot(`
         "MATCH (this0:\`Movie\`)
-        WHERE this0.released = 10 + $param0
+        WHERE this0.\`released\` = 10 + $param0
         RETURN this0"
     `);
 

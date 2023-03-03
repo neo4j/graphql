@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Community\`)
-            WHERE this.id = $param0
+            WHERE this.\`id\` = $param0
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnMany(\\"Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)

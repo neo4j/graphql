@@ -87,22 +87,22 @@ describe("Interfaces tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`SomeNode\`)
-            WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                MATCH (this)-[this0:HAS_OTHER_NODES]->(this1:\`OtherNode\`)
-                WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MATCH (this)-[this0:\`HAS_OTHER_NODES\`]->(this1:\`OtherNode\`)
+                WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
                     WITH this1
                     CALL {
                         WITH *
-                        MATCH (this1)-[this2:HAS_INTERFACE_NODES]->(this3:\`SomeNode\`)
-                        WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                        MATCH (this1)-[this2:\`HAS_INTERFACE_NODES\`]->(this3:\`SomeNode\`)
+                        WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                         WITH this3 { __resolveType: \\"SomeNode\\", __id: id(this1), .id } AS this3
                         RETURN this3 AS var4
                         UNION
                         WITH *
-                        MATCH (this1)-[this5:HAS_INTERFACE_NODES]->(this6:\`MyImplementation\`)
+                        MATCH (this1)-[this5:\`HAS_INTERFACE_NODES\`]->(this6:\`MyImplementation\`)
                         WITH this6 { __resolveType: \\"MyImplementation\\", __id: id(this1), .id } AS this6
                         RETURN this6 AS var4
                     }

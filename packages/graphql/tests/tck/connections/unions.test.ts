@@ -90,13 +90,13 @@ describe("Cypher -> Connections -> Unions", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:WROTE]->(this1:\`Book\`)
-                    WITH { words: this0.words, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
+                    MATCH (this)-[this0:\`WROTE\`]->(this1:\`Book\`)
+                    WITH { words: this0.\`words\`, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.\`title\` } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this2:WROTE]->(this3:\`Journal\`)
-                    WITH { words: this2.words, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.subject } } AS edge
+                    MATCH (this)-[this2:\`WROTE\`]->(this3:\`Journal\`)
+                    WITH { words: this2.\`words\`, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.\`subject\` } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -147,15 +147,15 @@ describe("Cypher -> Connections -> Unions", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:WROTE]->(this1:\`Book\`)
-                    WHERE this1.title = $param0
-                    WITH { words: this0.words, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
+                    MATCH (this)-[this0:\`WROTE\`]->(this1:\`Book\`)
+                    WHERE this1.\`title\` = $param0
+                    WITH { words: this0.\`words\`, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.\`title\` } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this2:WROTE]->(this3:\`Journal\`)
-                    WHERE this3.subject = $param1
-                    WITH { words: this2.words, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.subject } } AS edge
+                    MATCH (this)-[this2:\`WROTE\`]->(this3:\`Journal\`)
+                    WHERE this3.\`subject\` = $param1
+                    WITH { words: this2.\`words\`, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.\`subject\` } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -208,15 +208,15 @@ describe("Cypher -> Connections -> Unions", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:WROTE]->(this1:\`Book\`)
-                    WHERE this0.words = $param0
-                    WITH { words: this0.words, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
+                    MATCH (this)-[this0:\`WROTE\`]->(this1:\`Book\`)
+                    WHERE this0.\`words\` = $param0
+                    WITH { words: this0.\`words\`, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.\`title\` } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this2:WROTE]->(this3:\`Journal\`)
-                    WHERE this2.words = $param1
-                    WITH { words: this2.words, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.subject } } AS edge
+                    MATCH (this)-[this2:\`WROTE\`]->(this3:\`Journal\`)
+                    WHERE this2.\`words\` = $param1
+                    WITH { words: this2.\`words\`, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.\`subject\` } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -278,15 +278,15 @@ describe("Cypher -> Connections -> Unions", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:WROTE]->(this1:\`Book\`)
-                    WHERE (this1.title = $param0 AND this0.words = $param1)
-                    WITH { words: this0.words, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
+                    MATCH (this)-[this0:\`WROTE\`]->(this1:\`Book\`)
+                    WHERE (this1.\`title\` = $param0 AND this0.\`words\` = $param1)
+                    WITH { words: this0.\`words\`, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.\`title\` } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this2:WROTE]->(this3:\`Journal\`)
-                    WHERE (this3.subject = $param2 AND this2.words = $param3)
-                    WITH { words: this2.words, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.subject } } AS edge
+                    MATCH (this)-[this2:\`WROTE\`]->(this3:\`Journal\`)
+                    WHERE (this3.\`subject\` = $param2 AND this2.\`words\` = $param3)
+                    WITH { words: this2.\`words\`, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.\`subject\` } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -345,20 +345,20 @@ describe("Cypher -> Connections -> Unions", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:WROTE]->(this1:\`Book\`)
-                    WITH { words: this0.words, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
+                    MATCH (this)-[this0:\`WROTE\`]->(this1:\`Book\`)
+                    WITH { words: this0.\`words\`, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.\`title\` } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this2:WROTE]->(this3:\`Journal\`)
-                    WITH { words: this2.words, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.subject } } AS edge
+                    MATCH (this)-[this2:\`WROTE\`]->(this3:\`Journal\`)
+                    WITH { words: this2.\`words\`, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.\`subject\` } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 UNWIND edges AS edge
                 WITH edge, totalCount
-                ORDER BY edge.words ASC
+                ORDER BY edge.\`words\` ASC
                 WITH collect(edge) AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var4
             }

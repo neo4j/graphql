@@ -81,10 +81,10 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                 WITH this
                 MERGE (this_connectOrCreate_children0:\`Child\` { tcId: $this_connectOrCreate_children_param0 })
                 ON CREATE SET
-                    this_connectOrCreate_children0.tcId = $this_connectOrCreate_children_param1
-                MERGE (this)<-[this_connectOrCreate_children_this0:HAS]-(this_connectOrCreate_children0)
+                    this_connectOrCreate_children0.\`tcId\` = $this_connectOrCreate_children_param1
+                MERGE (this)<-[this_connectOrCreate_children_this0:\`HAS\`]-(this_connectOrCreate_children0)
                 WITH *
-                CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"upstream\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"upstream\\"] WHERE any(auth_var0 IN $auth.\`roles\` WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN COUNT(*) AS _
             }
             WITH this
@@ -92,10 +92,10 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                 WITH this
                 MERGE (this_connectOrCreate_children1:\`Child\` { tcId: $this_connectOrCreate_children_param2 })
                 ON CREATE SET
-                    this_connectOrCreate_children1.tcId = $this_connectOrCreate_children_param3
-                MERGE (this)<-[this_connectOrCreate_children_this1:HAS]-(this_connectOrCreate_children1)
+                    this_connectOrCreate_children1.\`tcId\` = $this_connectOrCreate_children_param3
+                MERGE (this)<-[this_connectOrCreate_children_this1:\`HAS\`]-(this_connectOrCreate_children1)
                 WITH *
-                CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"upstream\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"upstream\\"] WHERE any(auth_var0 IN $auth.\`roles\` WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN COUNT(*) AS _
             }
             WITH *

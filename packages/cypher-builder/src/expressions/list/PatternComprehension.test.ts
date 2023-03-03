@@ -29,7 +29,7 @@ describe("Pattern comprehension", () => {
 
         const queryResult = new TestClause(comprehension).build();
 
-        expect(queryResult.cypher).toMatchInlineSnapshot(`"[(this0:\`Movie\`) | this0.released = $param0]"`);
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"[(this0:\`Movie\`) | this0.\`released\` = $param0]"`);
 
         expect(queryResult.params).toMatchInlineSnapshot(`
             Object {

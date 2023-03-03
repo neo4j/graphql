@@ -71,8 +71,8 @@ describe("#413", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this1:\`Person\`)
-                WITH { node: { name: this1.name } } AS edge
+                MATCH (this)-[this0:\`ACTED_IN\`]->(this1:\`Person\`)
+                WITH { node: { name: this1.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var2

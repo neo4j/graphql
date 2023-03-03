@@ -72,29 +72,29 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Component\`)
-            WHERE this.uuid = $param0
+            WHERE this.\`uuid\` = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:OUTPUT]-(this1:\`Process\`)
+                MATCH (this)<-[this0:\`OUTPUT\`]-(this1:\`Process\`)
                 CALL {
                     WITH this1
-                    MATCH (this1:\`Process\`)<-[this2:INPUT]-(this3:\`Component\`)
+                    MATCH (this1:\`Process\`)<-[this2:\`INPUT\`]-(this3:\`Component\`)
                     WITH this2, this3
-                    ORDER BY this3.uuid DESC
-                    WITH { node: { uuid: this3.uuid } } AS edge
+                    ORDER BY this3.\`uuid\` DESC
+                    WITH { node: { uuid: this3.\`uuid\` } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge
-                        ORDER BY edge.node.uuid DESC
+                        ORDER BY edge.\`node\`.\`uuid\` DESC
                         RETURN collect(edge) AS var4
                     }
                     WITH var4 AS edges, totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var5
                 }
-                WITH { node: { uuid: this1.uuid, componentInputsConnection: var5 } } AS edge
+                WITH { node: { uuid: this1.\`uuid\`, componentInputsConnection: var5 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var6

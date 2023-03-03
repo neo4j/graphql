@@ -56,7 +56,7 @@ describe("db procedures", () => {
 
             expect(cypher).toMatchInlineSnapshot(`
                 "CALL db.index.fulltext.queryNodes(\\"my-text-index\\", $param0) YIELD node AS this0
-                WHERE this0.title = $param1
+                WHERE this0.\`title\` = $param1
                 RETURN this0"
             `);
             expect(params).toMatchInlineSnapshot(`

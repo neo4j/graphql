@@ -96,7 +96,7 @@ describe("createConnectAndParams", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this0_node:Movie)
-            	WHERE this0_node.title = $this0_node_param0
+            	WHERE this0_node.\`title\` = $this0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_node) as connectedNodes, collect(this) as parentNodes
@@ -113,7 +113,7 @@ describe("createConnectAndParams", () => {
             CALL {
             	WITH this, this0_node
             	OPTIONAL MATCH (this0_node_similarMovies0_node:Movie)
-            	WHERE this0_node_similarMovies0_node.title = $this0_node_similarMovies0_node_param0
+            	WHERE this0_node_similarMovies0_node.\`title\` = $this0_node_similarMovies0_node_param0
             	CALL {
             		WITH *
             		WITH this, collect(this0_node_similarMovies0_node) as connectedNodes, collect(this0_node) as parentNodes

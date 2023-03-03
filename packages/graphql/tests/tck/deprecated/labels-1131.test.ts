@@ -89,16 +89,16 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`BibliographicReference\`:\`Resource\`)
-            WHERE this.uri = $param0
+            WHERE this.\`uri\` = $param0
             SET this.prefLabel = $this_update_prefLabel
             WITH this
             CALL {
                 WITH this
                 MERGE (this_isInPublication0_connectOrCreate0:\`Concept\`:\`Resource\` { uri: $this_isInPublication0_connectOrCreate_param0 })
                 ON CREATE SET
-                    this_isInPublication0_connectOrCreate0.uri = $this_isInPublication0_connectOrCreate_param1,
-                    this_isInPublication0_connectOrCreate0.prefLabel = $this_isInPublication0_connectOrCreate_param2
-                MERGE (this)-[this_isInPublication0_connectOrCreate_this0:isInPublication]->(this_isInPublication0_connectOrCreate0)
+                    this_isInPublication0_connectOrCreate0.\`uri\` = $this_isInPublication0_connectOrCreate_param1,
+                    this_isInPublication0_connectOrCreate0.\`prefLabel\` = $this_isInPublication0_connectOrCreate_param2
+                MERGE (this)-[this_isInPublication0_connectOrCreate_this0:\`isInPublication\`]->(this_isInPublication0_connectOrCreate0)
                 RETURN COUNT(*) AS _
             }
             WITH this
@@ -106,20 +106,20 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
                 WITH this
                 MERGE (this_isInPublication1_connectOrCreate0:\`Concept\`:\`Resource\` { uri: $this_isInPublication1_connectOrCreate_param0 })
                 ON CREATE SET
-                    this_isInPublication1_connectOrCreate0.uri = $this_isInPublication1_connectOrCreate_param1,
-                    this_isInPublication1_connectOrCreate0.prefLabel = $this_isInPublication1_connectOrCreate_param2
-                MERGE (this)-[this_isInPublication1_connectOrCreate_this0:isInPublication]->(this_isInPublication1_connectOrCreate0)
+                    this_isInPublication1_connectOrCreate0.\`uri\` = $this_isInPublication1_connectOrCreate_param1,
+                    this_isInPublication1_connectOrCreate0.\`prefLabel\` = $this_isInPublication1_connectOrCreate_param2
+                MERGE (this)-[this_isInPublication1_connectOrCreate_this0:\`isInPublication\`]->(this_isInPublication1_connectOrCreate0)
                 RETURN COUNT(*) AS _
             }
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:isInPublication]->(update_this1:\`Concept\`:\`Resource\`)
-                WHERE update_this1.uri IN $update_param0
-                WITH update_this1 { iri: update_this1.uri, .prefLabel } AS update_this1
+                MATCH (this)-[update_this0:\`isInPublication\`]->(update_this1:\`Concept\`:\`Resource\`)
+                WHERE update_this1.\`uri\` IN $update_param0
+                WITH update_this1 { iri: update_this1.\`uri\`, .prefLabel } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
-            RETURN collect(DISTINCT this { iri: this.uri, .prefLabel, isInPublication: update_var2 }) AS data"
+            RETURN collect(DISTINCT this { iri: this.\`uri\`, .prefLabel, isInPublication: update_var2 }) AS data"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

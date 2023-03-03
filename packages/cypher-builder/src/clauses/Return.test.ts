@@ -60,7 +60,7 @@ describe("CypherBuilder Return", () => {
         const queryResult = matchQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "RETURN this0
-            ORDER BY this0.age DESC"
+            ORDER BY this0.\`age\` DESC"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);

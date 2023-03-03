@@ -28,7 +28,7 @@ describe("Property", () => {
         const testClause = new TestClause(property);
 
         const queryResult = testClause.build();
-        expect(queryResult.cypher).toMatchInlineSnapshot(`"var0.myProperty"`);
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"var0.\`myProperty\`"`);
     });
 
     it("Serialize nested string property", () => {
@@ -38,7 +38,7 @@ describe("Property", () => {
         const testClause = new TestClause(property);
 
         const queryResult = testClause.build();
-        expect(queryResult.cypher).toMatchInlineSnapshot(`"var0.myProperty.myNestedValue"`);
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"var0.\`myProperty\`.\`myNestedValue\`"`);
     });
 
     it("Nested properties should not modify parent prop", () => {
@@ -50,10 +50,10 @@ describe("Property", () => {
         const testClause2 = new TestClause(nestedProp);
 
         const queryResult = testClause1.build();
-        expect(queryResult.cypher).toMatchInlineSnapshot(`"var0.myProperty"`);
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"var0.\`myProperty\`"`);
 
         const queryResult2 = testClause2.build();
-        expect(queryResult2.cypher).toMatchInlineSnapshot(`"var0.myProperty.myNestedValue"`);
+        expect(queryResult2.cypher).toMatchInlineSnapshot(`"var0.\`myProperty\`.\`myNestedValue\`"`);
     });
 
     describe("Expression", () => {

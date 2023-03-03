@@ -61,10 +61,10 @@ describe("createPointElement", () => {
 
         new Cypher.RawCypher((env) => {
             expect(element.getCypher(env)).toMatchInlineSnapshot(`
-            "point: (CASE
-                WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
-                ELSE NULL
-            END)"
+                "point: (CASE
+                    WHEN this.\`point\` IS NOT NULL THEN { point: this.\`point\`, crs: this.\`point\`.\`crs\` }
+                    ELSE NULL
+                END)"
             `);
             return "";
         }).build();
@@ -109,7 +109,7 @@ describe("createPointElement", () => {
         new Cypher.RawCypher((env) => {
             expect(element.getCypher(env)).toMatchInlineSnapshot(`
                 "points: (CASE
-                    WHEN this.points IS NOT NULL THEN [p_var0 IN this.points | { point: p_var0, crs: p_var0.crs }]
+                    WHEN this.\`points\` IS NOT NULL THEN [p_var0 IN this.\`points\` | { point: p_var0, crs: p_var0.\`crs\` }]
                     ELSE NULL
                 END)"
             `);

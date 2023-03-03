@@ -86,7 +86,7 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
-            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
+            	WHERE this_connect_actedIn0_node.\`title\` STARTS WITH $this_connect_actedIn0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this_connect_actedIn0_node) as connectedNodes, collect(this) as parentNodes
@@ -106,7 +106,7 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             		WITH this
             	OPTIONAL MATCH (this_connect_actedIn1_node:Series)
-            	WHERE this_connect_actedIn1_node.title STARTS WITH $this_connect_actedIn1_node_param0
+            	WHERE this_connect_actedIn1_node.\`title\` STARTS WITH $this_connect_actedIn1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this_connect_actedIn1_node) as connectedNodes, collect(this) as parentNodes
@@ -174,7 +174,7 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
-            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
+            	WHERE this_connect_actedIn0_node.\`title\` STARTS WITH $this_connect_actedIn0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this_connect_actedIn0_node) as connectedNodes, collect(this) as parentNodes
@@ -192,7 +192,7 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             	WITH this, this_connect_actedIn0_node
             	OPTIONAL MATCH (this_connect_actedIn0_node_actors0_node:Actor)
-            	WHERE this_connect_actedIn0_node_actors0_node.name = $this_connect_actedIn0_node_actors0_node_param0
+            	WHERE this_connect_actedIn0_node_actors0_node.\`name\` = $this_connect_actedIn0_node_actors0_node_param0
             	CALL {
             		WITH *
             		WITH this, collect(this_connect_actedIn0_node_actors0_node) as connectedNodes, collect(this_connect_actedIn0_node) as parentNodes
@@ -214,7 +214,7 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             		WITH this
             	OPTIONAL MATCH (this_connect_actedIn1_node:Series)
-            	WHERE this_connect_actedIn1_node.title STARTS WITH $this_connect_actedIn1_node_param0
+            	WHERE this_connect_actedIn1_node.\`title\` STARTS WITH $this_connect_actedIn1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this_connect_actedIn1_node) as connectedNodes, collect(this) as parentNodes
@@ -232,7 +232,7 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             	WITH this, this_connect_actedIn1_node
             	OPTIONAL MATCH (this_connect_actedIn1_node_actors0_node:Actor)
-            	WHERE this_connect_actedIn1_node_actors0_node.name = $this_connect_actedIn1_node_actors0_node_param0
+            	WHERE this_connect_actedIn1_node_actors0_node.\`name\` = $this_connect_actedIn1_node_actors0_node_param0
             	CALL {
             		WITH *
             		WITH this, collect(this_connect_actedIn1_node_actors0_node) as connectedNodes, collect(this_connect_actedIn1_node) as parentNodes
@@ -316,7 +316,7 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
-            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
+            	WHERE this_connect_actedIn0_node.\`title\` STARTS WITH $this_connect_actedIn0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this_connect_actedIn0_node) as connectedNodes, collect(this) as parentNodes
@@ -334,7 +334,7 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             	WITH this, this_connect_actedIn0_node
             	OPTIONAL MATCH (this_connect_actedIn0_node_on_Movie0_actors0_node:Actor)
-            	WHERE this_connect_actedIn0_node_on_Movie0_actors0_node.name = $this_connect_actedIn0_node_on_Movie0_actors0_node_param0
+            	WHERE this_connect_actedIn0_node_on_Movie0_actors0_node.\`name\` = $this_connect_actedIn0_node_on_Movie0_actors0_node_param0
             	CALL {
             		WITH *
             		WITH this, collect(this_connect_actedIn0_node_on_Movie0_actors0_node) as connectedNodes, collect(this_connect_actedIn0_node) as parentNodes
@@ -356,7 +356,7 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             		WITH this
             	OPTIONAL MATCH (this_connect_actedIn1_node:Series)
-            	WHERE this_connect_actedIn1_node.title STARTS WITH $this_connect_actedIn1_node_param0
+            	WHERE this_connect_actedIn1_node.\`title\` STARTS WITH $this_connect_actedIn1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this_connect_actedIn1_node) as connectedNodes, collect(this) as parentNodes
@@ -439,7 +439,7 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
-            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
+            	WHERE this_connect_actedIn0_node.\`title\` STARTS WITH $this_connect_actedIn0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this_connect_actedIn0_node) as connectedNodes, collect(this) as parentNodes
@@ -457,7 +457,7 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             	WITH this, this_connect_actedIn0_node
             	OPTIONAL MATCH (this_connect_actedIn0_node_on_Movie0_actors0_node:Actor)
-            	WHERE this_connect_actedIn0_node_on_Movie0_actors0_node.name = $this_connect_actedIn0_node_on_Movie0_actors0_node_param0
+            	WHERE this_connect_actedIn0_node_on_Movie0_actors0_node.\`name\` = $this_connect_actedIn0_node_on_Movie0_actors0_node_param0
             	CALL {
             		WITH *
             		WITH this, collect(this_connect_actedIn0_node_on_Movie0_actors0_node) as connectedNodes, collect(this_connect_actedIn0_node) as parentNodes
@@ -479,7 +479,7 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             		WITH this
             	OPTIONAL MATCH (this_connect_actedIn1_node:Series)
-            	WHERE this_connect_actedIn1_node.title STARTS WITH $this_connect_actedIn1_node_param0
+            	WHERE this_connect_actedIn1_node.\`title\` STARTS WITH $this_connect_actedIn1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this_connect_actedIn1_node) as connectedNodes, collect(this) as parentNodes
@@ -497,7 +497,7 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             	WITH this, this_connect_actedIn1_node
             	OPTIONAL MATCH (this_connect_actedIn1_node_actors0_node:Actor)
-            	WHERE this_connect_actedIn1_node_actors0_node.name = $this_connect_actedIn1_node_actors0_node_param0
+            	WHERE this_connect_actedIn1_node_actors0_node.\`name\` = $this_connect_actedIn1_node_actors0_node_param0
             	CALL {
             		WITH *
             		WITH this, collect(this_connect_actedIn1_node_actors0_node) as connectedNodes, collect(this_connect_actedIn1_node) as parentNodes

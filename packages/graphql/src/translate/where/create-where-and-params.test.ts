@@ -40,7 +40,7 @@ describe("createWhereAndParams", () => {
 
         const result = createWhereAndParams({ whereInput, varName, node, context });
 
-        expect(result[0]).toBe(`WHERE this.title = $this_param0`);
+        expect(result[0]).toMatchInlineSnapshot(`"WHERE this.\`title\` = $this_param0"`);
         expect(result[1]).toBe("");
         expect(result[2]).toMatchObject({ this_param0: whereInput.title });
     });
@@ -64,7 +64,7 @@ describe("createWhereAndParams", () => {
 
         const result = createWhereAndParams({ whereInput, varName, node, context });
 
-        expect(result[0]).toBe(`WHERE this.title = $this_param0`);
+        expect(result[0]).toMatchInlineSnapshot(`"WHERE this.\`title\` = $this_param0"`);
         expect(result[1]).toBe("");
         expect(result[2]).toMatchObject({ this_param0: "some title" });
     });

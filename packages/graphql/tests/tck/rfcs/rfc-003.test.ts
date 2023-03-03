@@ -61,7 +61,7 @@ describe("tck/rfs/003", () => {
                         WITH create_var0
                         CREATE (create_this1:\`Movie\`)
                         SET
-                            create_this1.id = create_var0.id
+                            create_this1.\`id\` = create_var0.\`id\`
                         WITH create_this1
                         CALL {
                         	WITH create_this1
@@ -123,7 +123,7 @@ describe("tck/rfs/003", () => {
                         WITH create_var0
                         CREATE (create_this1:\`Movie\`)
                         SET
-                            create_this1.id = create_var0.id
+                            create_this1.\`id\` = create_var0.\`id\`
                         WITH create_this1
                         CALL {
                         	WITH create_this1
@@ -192,16 +192,16 @@ describe("tck/rfs/003", () => {
                             WITH create_var0
                             CREATE (create_this1:\`Movie\`)
                             SET
-                                create_this1.id = create_var0.id
+                                create_this1.\`id\` = create_var0.\`id\`
                             WITH create_this1, create_var0
                             CALL {
                                 WITH create_this1, create_var0
-                                UNWIND create_var0.director.create AS create_var2
-                                WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
+                                UNWIND create_var0.\`director\`.\`create\` AS create_var2
+                                WITH create_var2.\`node\` AS create_var3, create_var2.\`edge\` AS create_var4, create_this1
                                 CREATE (create_this5:\`Director\`)
                                 SET
-                                    create_this5.id = create_var3.id
-                                MERGE (create_this1)<-[create_this6:DIRECTED]-(create_this5)
+                                    create_this5.\`id\` = create_var3.\`id\`
+                                MERGE (create_this1)<-[create_this6:\`DIRECTED\`]-(create_this5)
                                 WITH create_this5
                                 CALL {
                                 	WITH create_this5
@@ -286,16 +286,16 @@ describe("tck/rfs/003", () => {
                             WITH create_var0
                             CREATE (create_this1:\`Movie\`)
                             SET
-                                create_this1.id = create_var0.id
+                                create_this1.\`id\` = create_var0.\`id\`
                             WITH create_this1, create_var0
                             CALL {
                                 WITH create_this1, create_var0
-                                UNWIND create_var0.director.create AS create_var2
-                                WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
+                                UNWIND create_var0.\`director\`.\`create\` AS create_var2
+                                WITH create_var2.\`node\` AS create_var3, create_var2.\`edge\` AS create_var4, create_this1
                                 CREATE (create_this5:\`Director\`)
                                 SET
-                                    create_this5.id = create_var3.id
-                                MERGE (create_this1)<-[create_this6:DIRECTED]-(create_this5)
+                                    create_this5.\`id\` = create_var3.\`id\`
+                                MERGE (create_this1)<-[create_this6:\`DIRECTED\`]-(create_this5)
                                 WITH create_this5
                                 CALL {
                                 	WITH create_this5
@@ -372,7 +372,7 @@ describe("tck/rfs/003", () => {
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "MATCH (this:\`Movie\`)
-                        WHERE this.id = $param0
+                        WHERE this.\`id\` = $param0
                         SET this.id = $this_update_id
                         WITH this
                         CALL {
@@ -426,7 +426,7 @@ describe("tck/rfs/003", () => {
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "MATCH (this:\`Movie\`)
-                        WHERE this.id = $param0
+                        WHERE this.\`id\` = $param0
                         SET this.id = $this_update_id
                         WITH this
                         CALL {
@@ -490,7 +490,7 @@ describe("tck/rfs/003", () => {
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
-                            WHERE this.id = $param0
+                            WHERE this.\`id\` = $param0
                             WITH this
                             CALL {
                             	WITH this
@@ -567,7 +567,7 @@ describe("tck/rfs/003", () => {
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
-                            WHERE this.id = $param0
+                            WHERE this.\`id\` = $param0
                             WITH this
                             CALL {
                             	WITH this
@@ -644,7 +644,7 @@ describe("tck/rfs/003", () => {
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
-                            WHERE this.id = $param0
+                            WHERE this.\`id\` = $param0
                             WITH this
                             CREATE (this_director0_create0_node:Director)
                             SET this_director0_create0_node.id = $this_director0_create0_node_id
@@ -732,13 +732,13 @@ describe("tck/rfs/003", () => {
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
-                            WHERE this.id = $param0
+                            WHERE this.\`id\` = $param0
                             WITH this
                             OPTIONAL MATCH (this)<-[this_delete_director0_relationship:DIRECTED]-(this_delete_director0:Director)
-                            WHERE this_delete_director0.id = $updateMovies_args_delete_director_where_this_delete_director0param0
+                            WHERE this_delete_director0.\`id\` = $updateMovies_args_delete_director_where_this_delete_director0param0
                             WITH this, this_delete_director0
                             OPTIONAL MATCH (this_delete_director0)-[this_delete_director0_address0_relationship:HAS_ADDRESS]->(this_delete_director0_address0:Address)
-                            WHERE this_delete_director0_address0.id = $updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0
+                            WHERE this_delete_director0_address0.\`id\` = $updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0
                             WITH this, this_delete_director0, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
                             CALL {
                             	WITH this_delete_director0_address0_to_delete
@@ -855,13 +855,13 @@ describe("tck/rfs/003", () => {
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
-                            WHERE this.id = $param0
+                            WHERE this.\`id\` = $param0
                             WITH this
                             OPTIONAL MATCH (this)<-[this_delete_director0_relationship:DIRECTED]-(this_delete_director0:Director)
-                            WHERE this_delete_director0.id = $updateMovies_args_delete_director_where_this_delete_director0param0
+                            WHERE this_delete_director0.\`id\` = $updateMovies_args_delete_director_where_this_delete_director0param0
                             WITH this, this_delete_director0
                             OPTIONAL MATCH (this_delete_director0)-[this_delete_director0_address0_relationship:HAS_ADDRESS]->(this_delete_director0_address0:Address)
-                            WHERE this_delete_director0_address0.id = $updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0
+                            WHERE this_delete_director0_address0.\`id\` = $updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0
                             WITH this, this_delete_director0, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
                             CALL {
                             	WITH this_delete_director0_address0_to_delete
@@ -969,7 +969,7 @@ describe("tck/rfs/003", () => {
                         CALL {
                         	WITH this0
                         	OPTIONAL MATCH (this0_director_connect0_node:Director)
-                        	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_param0
+                        	WHERE this0_director_connect0_node.\`id\` = $this0_director_connect0_node_param0
                         	CALL {
                         		WITH *
                         		WITH collect(this0_director_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -1046,7 +1046,7 @@ describe("tck/rfs/003", () => {
                         CALL {
                         	WITH this0
                         	OPTIONAL MATCH (this0_director_connect0_node:Director)
-                        	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_param0
+                        	WHERE this0_director_connect0_node.\`id\` = $this0_director_connect0_node_param0
                         	CALL {
                         		WITH *
                         		WITH collect(this0_director_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -1141,7 +1141,7 @@ describe("tck/rfs/003", () => {
                             CALL {
                             	WITH this0
                             	OPTIONAL MATCH (this0_director_connect0_node:Director)
-                            	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_param0
+                            	WHERE this0_director_connect0_node.\`id\` = $this0_director_connect0_node_param0
                             	CALL {
                             		WITH *
                             		WITH collect(this0_director_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -1158,7 +1158,7 @@ describe("tck/rfs/003", () => {
                             CALL {
                             	WITH this0, this0_director_connect0_node
                             	OPTIONAL MATCH (this0_director_connect0_node_address0_node:Address)
-                            	WHERE this0_director_connect0_node_address0_node.street = $this0_director_connect0_node_address0_node_param0
+                            	WHERE this0_director_connect0_node_address0_node.\`street\` = $this0_director_connect0_node_address0_node_param0
                             	CALL {
                             		WITH *
                             		WITH this0, collect(this0_director_connect0_node_address0_node) as connectedNodes, collect(this0_director_connect0_node) as parentNodes
@@ -1243,12 +1243,12 @@ describe("tck/rfs/003", () => {
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "MATCH (this:\`Movie\`)
-                        WHERE this.id = $param0
+                        WHERE this.\`id\` = $param0
                         WITH this
                         CALL {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
-                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0
+                        WHERE this_disconnect_director0.\`id\` = $updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0
                         CALL {
                         	WITH this_disconnect_director0, this_disconnect_director0_rel, this
                         	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
@@ -1339,12 +1339,12 @@ describe("tck/rfs/003", () => {
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "MATCH (this:\`Movie\`)
-                        WHERE this.id = $param0
+                        WHERE this.\`id\` = $param0
                         WITH this
                         CALL {
                         	WITH this
                         	OPTIONAL MATCH (this_connect_director0_node:Director)
-                        	WHERE this_connect_director0_node.id = $this_connect_director0_node_param0
+                        	WHERE this_connect_director0_node.\`id\` = $this_connect_director0_node_param0
                         	CALL {
                         		WITH *
                         		WITH collect(this_connect_director0_node) as connectedNodes, collect(this) as parentNodes
@@ -1364,7 +1364,7 @@ describe("tck/rfs/003", () => {
                         CALL {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
-                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0
+                        WHERE this_disconnect_director0.\`id\` = $updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0
                         CALL {
                         	WITH this_disconnect_director0, this_disconnect_director0_rel, this
                         	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
@@ -1377,7 +1377,7 @@ describe("tck/rfs/003", () => {
                         WITH *
                         CALL {
                             WITH this
-                            MATCH (this)<-[update_this0:DIRECTED]-(update_this1:\`Director\`)
+                            MATCH (this)<-[update_this0:\`DIRECTED\`]-(update_this1:\`Director\`)
                             WITH update_this1 { .id } AS update_this1
                             RETURN head(collect(update_this1)) AS update_var2
                         }
@@ -1460,12 +1460,12 @@ describe("tck/rfs/003", () => {
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "MATCH (this:\`Movie\`)
-                        WHERE this.id = $param0
+                        WHERE this.\`id\` = $param0
                         WITH this
                         CALL {
                         	WITH this
                         	OPTIONAL MATCH (this_connect_director0_node:Director)
-                        	WHERE this_connect_director0_node.id = $this_connect_director0_node_param0
+                        	WHERE this_connect_director0_node.\`id\` = $this_connect_director0_node_param0
                         	CALL {
                         		WITH *
                         		WITH collect(this_connect_director0_node) as connectedNodes, collect(this) as parentNodes
@@ -1485,7 +1485,7 @@ describe("tck/rfs/003", () => {
                         CALL {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
-                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0
+                        WHERE this_disconnect_director0.\`id\` = $updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0
                         CALL {
                         	WITH this_disconnect_director0, this_disconnect_director0_rel, this
                         	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
@@ -1498,7 +1498,7 @@ describe("tck/rfs/003", () => {
                         WITH *
                         CALL {
                             WITH this
-                            MATCH (this)<-[update_this0:DIRECTED]-(update_this1:\`Director\`)
+                            MATCH (this)<-[update_this0:\`DIRECTED\`]-(update_this1:\`Director\`)
                             WITH update_this1 { .id } AS update_this1
                             RETURN head(collect(update_this1)) AS update_var2
                         }

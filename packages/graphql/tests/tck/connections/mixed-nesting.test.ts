@@ -77,19 +77,19 @@ describe("Mixed nesting", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WHERE this.\`title\` = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WHERE this1.name = $param1
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                WHERE this1.\`name\` = $param1
                 CALL {
                     WITH this1
-                    MATCH (this1)-[this2:ACTED_IN]->(this3:\`Movie\`)
-                    WHERE NOT (this3.title = $param2)
+                    MATCH (this1)-[this2:\`ACTED_IN\`]->(this3:\`Movie\`)
+                    WHERE NOT (this3.\`title\` = $param2)
                     WITH this3 { .title } AS this3
                     RETURN collect(this3) AS var4
                 }
-                WITH { screenTime: this0.screenTime, node: { name: this1.name, movies: var4 } } AS edge
+                WITH { screenTime: this0.\`screenTime\`, node: { name: this1.\`name\`, movies: var4 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var5
@@ -140,28 +140,28 @@ describe("Mixed nesting", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WHERE this.\`title\` = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WHERE this1.name = $param1
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                WHERE this1.\`name\` = $param1
                 CALL {
                     WITH this1
-                    MATCH (this1:\`Actor\`)-[this2:ACTED_IN]->(this3:\`Movie\`)
-                    WHERE NOT (this3.title = $param2)
+                    MATCH (this1:\`Actor\`)-[this2:\`ACTED_IN\`]->(this3:\`Movie\`)
+                    WHERE NOT (this3.\`title\` = $param2)
                     CALL {
                         WITH this3
-                        MATCH (this3)<-[this4:ACTED_IN]-(this5:\`Actor\`)
-                        WHERE NOT (this5.name = $param3)
+                        MATCH (this3)<-[this4:\`ACTED_IN\`]-(this5:\`Actor\`)
+                        WHERE NOT (this5.\`name\` = $param3)
                         WITH this5 { .name } AS this5
                         RETURN collect(this5) AS var6
                     }
-                    WITH { node: { title: this3.title, actors: var6 } } AS edge
+                    WITH { node: { title: this3.\`title\`, actors: var6 } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var7
                 }
-                WITH { screenTime: this0.screenTime, node: { name: this1.name, moviesConnection: var7 } } AS edge
+                WITH { screenTime: this0.\`screenTime\`, node: { name: this1.\`name\`, moviesConnection: var7 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var8
@@ -206,16 +206,16 @@ describe("Mixed nesting", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WHERE this.\`title\` = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WHERE this1.name = $param1
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                WHERE this1.\`name\` = $param1
                 CALL {
                     WITH this1
-                    MATCH (this1:\`Actor\`)-[this2:ACTED_IN]->(this3:\`Movie\`)
-                    WHERE NOT (this3.title = $param2)
-                    WITH { screenTime: this2.screenTime, node: { title: this3.title } } AS edge
+                    MATCH (this1:\`Actor\`)-[this2:\`ACTED_IN\`]->(this3:\`Movie\`)
+                    WHERE NOT (this3.\`title\` = $param2)
+                    WITH { screenTime: this2.\`screenTime\`, node: { title: this3.\`title\` } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var4

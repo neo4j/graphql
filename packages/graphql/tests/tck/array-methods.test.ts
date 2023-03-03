@@ -182,7 +182,7 @@ describe("Arrays Methods", () => {
             CALL apoc.util.validate(this.filmingLocations IS NULL, \\"Property %s cannot be NULL\\", ['filmingLocations'])
             SET this.filmingLocations = this.filmingLocations + [p in $this_update_filmingLocations_PUSH | point(p)]
             RETURN collect(DISTINCT this { .title, filmingLocations: CASE
-                WHEN this.filmingLocations IS NOT NULL THEN [update_var0 IN this.filmingLocations | { point: update_var0 }]
+                WHEN this.\`filmingLocations\` IS NOT NULL THEN [update_var0 IN this.\`filmingLocations\` | { point: update_var0 }]
                 ELSE NULL
             END }) AS data"
         `);
@@ -238,7 +238,7 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WITH this
-            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
             RETURN collect(DISTINCT this { .title, .ratings }) AS data"
@@ -409,7 +409,7 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WITH this
-            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.\`isAuthenticated\` = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings[0..-$this_update_ratings_POP]
             RETURN collect(DISTINCT this { .title, .ratings }) AS data"
@@ -544,7 +544,7 @@ describe("Arrays Methods", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WHERE this.id = $param0
+            WHERE this.\`id\` = $param0
             WITH this
             CALL {
             	WITH this
@@ -555,14 +555,14 @@ describe("Arrays Methods", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:\`Movie\`)
+                MATCH (this)-[update_this0:\`ACTED_IN\`]->(update_this1:\`Movie\`)
                 WITH update_this1 { .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[update_this3:ACTED_IN]->(update_this4:\`Movie\`)
-                WITH { pay: update_this3.pay } AS edge
+                MATCH (this)-[update_this3:\`ACTED_IN\`]->(update_this4:\`Movie\`)
+                WITH { pay: update_this3.\`pay\` } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS update_var5
@@ -648,7 +648,7 @@ describe("Arrays Methods", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WHERE this.id = $param0
+            WHERE this.\`id\` = $param0
             WITH this
             CALL {
             	WITH this
@@ -659,14 +659,14 @@ describe("Arrays Methods", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:\`Movie\`)
+                MATCH (this)-[update_this0:\`ACTED_IN\`]->(update_this1:\`Movie\`)
                 WITH update_this1 { .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[update_this3:ACTED_IN]->(update_this4:\`Movie\`)
-                WITH { pay: update_this3.pay } AS edge
+                MATCH (this)-[update_this3:\`ACTED_IN\`]->(update_this4:\`Movie\`)
+                WITH { pay: update_this3.\`pay\` } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS update_var5

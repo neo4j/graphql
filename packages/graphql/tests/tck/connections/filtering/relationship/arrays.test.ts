@@ -84,9 +84,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WHERE this0.screenTime IN $param0
-                WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                WHERE this0.\`screenTime\` IN $param0
+                WITH { screenTime: this0.\`screenTime\`, node: { name: this1.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var2
@@ -136,9 +136,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WHERE NOT (this0.screenTime IN $param0)
-                WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                WHERE NOT (this0.\`screenTime\` IN $param0)
+                WITH { screenTime: this0.\`screenTime\`, node: { name: this1.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var2
@@ -188,9 +188,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WHERE $param0 IN this0.quotes
-                WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                WHERE $param0 IN this0.\`quotes\`
+                WITH { screenTime: this0.\`screenTime\`, node: { name: this1.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var2
@@ -231,9 +231,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WHERE NOT ($param0 IN this0.quotes)
-                WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                WHERE NOT ($param0 IN this0.\`quotes\`)
+                WITH { screenTime: this0.\`screenTime\`, node: { name: this1.\`name\` } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var2

@@ -37,21 +37,21 @@ describe("Console.log", () => {
             "<Clause Create> \\"\\"\\"
                 CREATE (this0:\`Movie\`)
                 SET
-                    this0.released = $param0
+                    this0.\`released\` = $param0
             \\"\\"\\""
         `);
         expect(query.toString()).toMatchInlineSnapshot(`
             "<Clause Create> \\"\\"\\"
                 CREATE (this0:\`Movie\`)
                 SET
-                    this0.released = $param0
+                    this0.\`released\` = $param0
             \\"\\"\\""
         `);
         expect(query[customInspectSymbol]()).toMatchInlineSnapshot(`
             "<Clause Create> \\"\\"\\"
                 CREATE (this0:\`Movie\`)
                 SET
-                    this0.released = $param0
+                    this0.\`released\` = $param0
             \\"\\"\\""
         `);
     });

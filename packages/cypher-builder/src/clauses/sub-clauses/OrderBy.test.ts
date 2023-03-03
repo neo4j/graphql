@@ -38,7 +38,7 @@ describe("CypherBuilder OrderBy", () => {
 
         const queryResult = testClause.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-            "ORDER BY this0.name DESC, this0.age ASC
+            "ORDER BY this0.\`name\` DESC, this0.\`age\` ASC
             SKIP 10
             LIMIT 5"
         `);

@@ -101,7 +101,7 @@ describe("Interface Relationships - Create connect", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Movie)
-            	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_param0
+            	WHERE this0_actedIn_connect0_node.\`title\` STARTS WITH $this0_actedIn_connect0_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_actedIn_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -121,7 +121,7 @@ describe("Interface Relationships - Create connect", () => {
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect1_node:Series)
-            	WHERE this0_actedIn_connect1_node.title STARTS WITH $this0_actedIn_connect1_node_param0
+            	WHERE this0_actedIn_connect1_node.\`title\` STARTS WITH $this0_actedIn_connect1_node_param0
             	CALL {
             		WITH *
             		WITH collect(this0_actedIn_connect1_node) as connectedNodes, collect(this0) as parentNodes
@@ -144,12 +144,12 @@ describe("Interface Relationships - Create connect", () => {
                 WITH this0
                 CALL {
                     WITH *
-                    MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:\`Movie\`)
+                    MATCH (this0)-[create_this0:\`ACTED_IN\`]->(create_this1:\`Movie\`)
                     WITH create_this1 { __resolveType: \\"Movie\\", __id: id(this0), .runtime, .title } AS create_this1
                     RETURN create_this1 AS create_var2
                     UNION
                     WITH *
-                    MATCH (this0)-[create_this3:ACTED_IN]->(create_this4:\`Series\`)
+                    MATCH (this0)-[create_this3:\`ACTED_IN\`]->(create_this4:\`Series\`)
                     WITH create_this4 { __resolveType: \\"Series\\", __id: id(this0), .episodes, .title } AS create_this4
                     RETURN create_this4 AS create_var2
                 }

@@ -57,7 +57,7 @@ describe("Cypher LocalTime", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.time = $param0
+            WHERE this.\`time\` = $param0
             RETURN this { .time } AS this"
         `);
 
@@ -89,7 +89,7 @@ describe("Cypher LocalTime", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.time >= $param0
+            WHERE this.\`time\` >= $param0
             RETURN this { .time } AS this"
         `);
 
@@ -127,7 +127,7 @@ describe("Cypher LocalTime", () => {
                 WITH create_var0
                 CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this1.time = create_var0.time
+                    create_this1.\`time\` = create_var0.\`time\`
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .time }) AS data"

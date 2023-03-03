@@ -166,7 +166,7 @@ describe("Cypher Create Pringles", () => {
             CALL {
             	WITH this0, this0_photos1_node
             	OPTIONAL MATCH (this0_photos1_node_color_connect0_node:Color)
-            	WHERE this0_photos1_node_color_connect0_node.id = $this0_photos1_node_color_connect0_node_param0
+            	WHERE this0_photos1_node_color_connect0_node.\`id\` = $this0_photos1_node_color_connect0_node_param0
             	CALL {
             		WITH *
             		WITH this0, collect(this0_photos1_node_color_connect0_node) as connectedNodes, collect(this0_photos1_node) as parentNodes
@@ -200,7 +200,7 @@ describe("Cypher Create Pringles", () => {
             CALL {
             	WITH this0, this0_photos2_node
             	OPTIONAL MATCH (this0_photos2_node_color_connect0_node:Color)
-            	WHERE this0_photos2_node_color_connect0_node.id = $this0_photos2_node_color_connect0_node_param0
+            	WHERE this0_photos2_node_color_connect0_node.\`id\` = $this0_photos2_node_color_connect0_node_param0
             	CALL {
             		WITH *
             		WITH this0, collect(this0_photos2_node_color_connect0_node) as connectedNodes, collect(this0_photos2_node) as parentNodes
@@ -294,18 +294,18 @@ describe("Cypher Create Pringles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Product\`)
-            WHERE this.name = $param0
+            WHERE this.\`name\` = $param0
             WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_has_photo0_relationship:HAS_PHOTO]->(this_photos0:Photo)
-            	WHERE this_photos0.description = $updateProducts_args_update_photos0_where_this_photos0param0
+            	WHERE this_photos0.\`description\` = $updateProducts_args_update_photos0_where_this_photos0param0
             	SET this_photos0.description = $this_update_photos0_description
             	WITH this, this_photos0
             	CALL {
             	WITH this, this_photos0
             	OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
-            	WHERE this_photos0_color0_disconnect0.name = $updateProducts_args_update_photos0_update_node_color_disconnect_where_Color_this_photos0_color0_disconnect0param0
+            	WHERE this_photos0_color0_disconnect0.\`name\` = $updateProducts_args_update_photos0_update_node_color_disconnect_where_Color_this_photos0_color0_disconnect0param0
             	CALL {
             		WITH this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
             		WITH collect(this_photos0_color0_disconnect0) as this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
@@ -319,7 +319,7 @@ describe("Cypher Create Pringles", () => {
             	CALL {
             		WITH this, this_photos0
             		OPTIONAL MATCH (this_photos0_color0_connect0_node:Color)
-            		WHERE this_photos0_color0_connect0_node.name = $this_photos0_color0_connect0_node_param0
+            		WHERE this_photos0_color0_connect0_node.\`name\` = $this_photos0_color0_connect0_node_param0
             		CALL {
             			WITH *
             			WITH this, collect(this_photos0_color0_connect0_node) as connectedNodes, collect(this_photos0) as parentNodes

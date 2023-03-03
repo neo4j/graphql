@@ -65,8 +65,8 @@ describe("Cypher Aggregations where node with Logical AND + OR", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
-                RETURN any(var2 IN collect(this1.someFloat) WHERE var2 = $param0) AS var3, any(var4 IN collect(this1.someFloat) WHERE var4 = $param1) AS var5
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
+                RETURN any(var2 IN collect(this1.\`someFloat\`) WHERE var2 = $param0) AS var3, any(var4 IN collect(this1.\`someFloat\`) WHERE var4 = $param1) AS var5
             }
             WITH *
             WHERE (var3 = true AND var5 = true)
@@ -99,8 +99,8 @@ describe("Cypher Aggregations where node with Logical AND + OR", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
-                RETURN any(var2 IN collect(this1.someFloat) WHERE var2 = $param0) AS var3, any(var4 IN collect(this1.someFloat) WHERE var4 = $param1) AS var5
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
+                RETURN any(var2 IN collect(this1.\`someFloat\`) WHERE var2 = $param0) AS var3, any(var4 IN collect(this1.\`someFloat\`) WHERE var4 = $param1) AS var5
             }
             WITH *
             WHERE (var3 = true OR var5 = true)
@@ -133,8 +133,8 @@ describe("Cypher Aggregations where node with Logical AND + OR", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
-                RETURN any(var2 IN collect(this1.someFloat) WHERE var2 = $param0) AS var3
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
+                RETURN any(var2 IN collect(this1.\`someFloat\`) WHERE var2 = $param0) AS var3
             }
             WITH *
             WHERE NOT (var3 = true)

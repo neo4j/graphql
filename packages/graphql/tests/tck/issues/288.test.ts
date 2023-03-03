@@ -69,8 +69,8 @@ describe("#288", () => {
                 WITH create_var0
                 CREATE (create_this1:\`USER\`)
                 SET
-                    create_this1.USERID = create_var0.USERID,
-                    create_this1.COMPANYID = create_var0.COMPANYID
+                    create_this1.\`USERID\` = create_var0.\`USERID\`,
+                    create_this1.\`COMPANYID\` = create_var0.\`COMPANYID\`
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .USERID, .COMPANYID }) AS data"
@@ -108,7 +108,7 @@ describe("#288", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`USER\`)
-            WHERE this.USERID = $param0
+            WHERE this.\`USERID\` = $param0
             SET this.COMPANYID = $this_update_COMPANYID
             RETURN collect(DISTINCT this { .USERID, .COMPANYID }) AS data"
         `);

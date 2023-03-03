@@ -29,10 +29,10 @@ describe("CypherBuilder Merge", () => {
 
         const queryResult = query.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-                "MERGE (this0:\`MyLabel\`)
-                ON CREATE SET
-                    this0.age = $param0"
-            `);
+            "MERGE (this0:\`MyLabel\`)
+            ON CREATE SET
+                this0.\`age\` = $param0"
+        `);
         expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {
                   "param0": 23,
@@ -56,10 +56,10 @@ describe("CypherBuilder Merge", () => {
 
         const queryResult = query.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-                "MERGE (this0:\`MyLabel\` { test: $param0 })
-                ON CREATE SET
-                    this0.age = $param1"
-            `);
+            "MERGE (this0:\`MyLabel\` { test: $param0 })
+            ON CREATE SET
+                this0.\`age\` = $param1"
+        `);
         expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {
                   "param0": "test",
@@ -88,10 +88,10 @@ describe("CypherBuilder Merge", () => {
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "MERGE (this0)-[this1]->(this2)
             ON CREATE SET
-                this0.age = $param0,
-                this0.name = $param1,
-                this1.screentime = $param2
-            RETURN this0.title AS movie"
+                this0.\`age\` = $param0,
+                this0.\`name\` = $param1,
+                this1.\`screentime\` = $param2
+            RETURN this0.\`title\` AS movie"
         `);
         expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {

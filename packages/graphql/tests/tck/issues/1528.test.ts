@@ -79,23 +79,23 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
             "MATCH (this:\`Genre\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:IS_GENRE]-(this1:\`Movie\`)
+                MATCH (this)<-[this0:\`IS_GENRE\`]-(this1:\`Movie\`)
                 WITH this0, this1
-                ORDER BY this1.actorsCount DESC
+                ORDER BY this1.\`actorsCount\` DESC
                 CALL {
                     WITH this1
                     UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:ACTED_IN]-(ac:Person)
                     RETURN count(ac)\\", { this: this1, auth: $auth }) AS this2
                     RETURN head(collect(this2)) AS this2
                 }
-                WITH { node: { title: this1.title, actorsCount: this2 } } AS edge
+                WITH { node: { title: this1.\`title\`, actorsCount: this2 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 CALL {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge
-                    ORDER BY edge.node.actorsCount DESC
+                    ORDER BY edge.\`node\`.\`actorsCount\` DESC
                     RETURN collect(edge) AS var3
                 }
                 WITH var3 AS edges, totalCount
