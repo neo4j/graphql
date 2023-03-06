@@ -81,28 +81,30 @@ export function augmentFulltextSchema(
             },
         });
 
-        composer.createObjectTC({
-            name: node.fulltextTypeNames.result,
-            description: fulltextResultDescription,
-            fields: {
-                [SCORE_FIELD]: new GraphQLNonNull(GraphQLFloat),
-                [node.singular]: `${node.name}!`,
-            },
-        });
-
-        node.fulltextDirective.indexes.forEach((index) => {
-            // TODO: remove indexName assignment and undefined check once the name argument has been removed.
-            const indexName = index.indexName || index.name;
-            if (indexName === undefined) {
-                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
-            }
-            let queryName = `${node.plural}Fulltext${upperFirst(indexName)}`;
-            if (index.queryName) {
-                queryName = index.queryName;
-            }
-            composer.Query.addFields({
-                [queryName]: fulltextResolver({ node }, index),
+        if (node.federationResolvable) {
+            composer.createObjectTC({
+                name: node.fulltextTypeNames.result,
+                description: fulltextResultDescription,
+                fields: {
+                    [SCORE_FIELD]: new GraphQLNonNull(GraphQLFloat),
+                    [node.singular]: `${node.name}!`,
+                },
             });
-        });
+
+            node.fulltextDirective.indexes.forEach((index) => {
+                // TODO: remove indexName assignment and undefined check once the name argument has been removed.
+                const indexName = index.indexName || index.name;
+                if (indexName === undefined) {
+                    throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+                }
+                let queryName = `${node.plural}Fulltext${upperFirst(indexName)}`;
+                if (index.queryName) {
+                    queryName = index.queryName;
+                }
+                composer.Query.addFields({
+                    [queryName]: fulltextResolver({ node }, index),
+                });
+            });
+        }
     }
 }
