@@ -42,9 +42,9 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
         Review = new UniqueType("Review");
 
         const locations = `
-            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
-            type ${Location} @key(fields: "id") {
+            type ${Location} @key(fields: "id") @shareable {
                 id: ID!
                 "The name of the location"
                 name: String
@@ -56,9 +56,9 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
         `;
 
         const reviews = `
-            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
-            type ${Location} @key(fields: "id") {
+            type ${Location} @key(fields: "id") @shareable {
                 id: ID!
                 "The calculated overall rating based on all reviews"
                 overallRating: Float

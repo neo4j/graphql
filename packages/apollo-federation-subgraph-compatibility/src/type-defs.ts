@@ -22,12 +22,14 @@ import { gql } from "graphql-tag";
 export const typeDefs = gql`
     extend schema
         @link(
-            url: "https://specs.apollo.dev/federation/v2.0"
+            url: "https://specs.apollo.dev/federation/v2.3"
             import: [
+                "@composeDirective"
                 "@extends"
                 "@external"
-                "@inaccessible"
                 "@key"
+                "@inaccessible"
+                "@interfaceObject"
                 "@override"
                 "@provides"
                 "@requires"
@@ -35,8 +37,12 @@ export const typeDefs = gql`
                 "@tag"
             ]
         )
+        @link(url: "https://myspecs.dev/myCustomDirective/v1.0", import: ["@custom"])
+        @composeDirective(name: "@custom")
 
-    type Product @key(fields: "id") @key(fields: "sku package") @key(fields: "sku variation { id }") {
+    directive @custom on OBJECT
+
+    type Product @custom @key(fields: "id") @key(fields: "sku package") @key(fields: "sku variation { id }") {
         id: ID!
         sku: String
         package: String
@@ -85,12 +91,18 @@ export const typeDefs = gql`
             )
     }
 
-    # should be extends
+    # Should be extend type as below
+    # extend type User @key(fields: "email") {
     type User @key(fields: "email") @extends {
         averageProductsCreatedPerYear: Int @requires(fields: "totalProductsCreated yearsOfEmployment")
         email: ID! @external
         name: String @override(from: "users")
         totalProductsCreated: Int @external
         yearsOfEmployment: Int! @external
+    }
+
+    type Inventory @interfaceObject @key(fields: "id") {
+        id: ID!
+        deprecatedProducts: [DeprecatedProduct!]!
     }
 `;
