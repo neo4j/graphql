@@ -2,4 +2,4 @@
 "@neo4j/graphql": major
 ---
 
-Escape relationship type strings
+Relationship type strings are now automatically escaped using backticks. If you were using backticks in the `type` argument of your `@relationship` directives, these should now be removed to avoid backticks being added into your relationship type labels.
