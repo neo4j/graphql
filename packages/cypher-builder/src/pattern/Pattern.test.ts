@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Path } from "neo4j-driver";
 import Cypher, { Param } from "..";
 import { TestClause } from "../utils/TestClause";
 

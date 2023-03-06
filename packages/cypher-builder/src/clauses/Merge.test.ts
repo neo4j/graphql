@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Path } from "neo4j-driver";
 import Cypher from "..";
 
 describe("CypherBuilder Merge", () => {

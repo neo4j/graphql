@@ -22,7 +22,6 @@ import type { NodeRef } from "../references/NodeRef";
 import type { Param } from "../references/Param";
 import type { Path } from "../references/Path";
 import { RelationshipRef } from "../references/RelationshipRef";
-import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import { escapeLabel } from "../utils/escape-label";
 import { PartialPattern } from "./PartialPattern";
 import { PatternElement } from "./PatternElement";
