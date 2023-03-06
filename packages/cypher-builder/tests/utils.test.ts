@@ -20,8 +20,8 @@
 import Cypher from "../src";
 
 describe("Cypher.utils", () => {
-    test("escapeLabel", () => {
-        const label = Cypher.utils.escapeLabel("TestLabel");
+    test("escapeString", () => {
+        const label = Cypher.utils.escapeString("TestLabel");
         expect(label).toBe("`TestLabel`");
     });
 });

@@ -46,7 +46,7 @@ export class NodeDirective {
         if (!typeName) {
             throw new Neo4jGraphQLError("Could not generate label string in @node directive due to empty typeName");
         }
-        const labels = this.getLabels(typeName, context).map((l) => this.escapeLabel(l));
+        const labels = this.getLabels(typeName, context).map((l) => this.escapeString(l));
         return `:${labels.join(":")}`;
     }
 
@@ -78,7 +78,7 @@ export class NodeDirective {
         });
     }
 
-    private escapeLabel(label: string): string {
-        return Cypher.utils.escapeLabel(label);
+    private escapeString(string: string): string {
+        return Cypher.utils.escapeString(string);
     }
 }

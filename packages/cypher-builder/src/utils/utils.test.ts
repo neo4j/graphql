@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { escapeLabel } from "./escape-label";
+import { escapeString } from "./escape-string";
 
 describe("CypherBuilder Utils", () => {
-    describe("escapeLabel", () => {
+    describe("escapeString", () => {
         const cases = [
             ["`", "````"],
             ["\u0060", "````"],
@@ -58,7 +58,7 @@ describe("CypherBuilder Utils", () => {
             ["\u005cu005cu0060", "`\\u005cu0060`"],
         ];
         test.each(cases)('Parse "%s"', (value, expected) => {
-            const escapedLabel = escapeLabel(value);
+            const escapedLabel = escapeString(value);
             expect(escapedLabel).toBe(expected);
         });
     });

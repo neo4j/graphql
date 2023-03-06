@@ -23,7 +23,7 @@ import Property from "./classes/Property";
 import Relationship from "./classes/Relationship";
 import type { Neo4jStruct, NodeMap, PropertyRecord, RelationshipMap } from "./types";
 import cleanTypeName from "./utils/clean-type-name";
-import { escapeLabel } from "./utils/escape-label";
+import { escapeString } from "./utils/escape-label";
 import nodeKey from "./utils/node-key";
 
 interface NodeTypePropertiesRecord extends PropertyRecord {
@@ -113,7 +113,7 @@ async function introspectRelationships(sessionFactory: () => Session): Promise<R
                 setTimeout(r, 3000);
             });
 
-            const escapedType = escapeLabel(cleanTypeName(relType));
+            const escapedType = escapeString(cleanTypeName(relType));
             const relationshipsRes = await conSession.readTransaction((tx) =>
                 tx.run(`
             MATCH (n)-[r:${escapedType}]->(m)

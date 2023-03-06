@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-export function escapeLabel(label: string): string {
-    const escapedLabel = label.replace(/\\u0060/g, "`").replace(/`/g, "``");
-    return `\`${escapedLabel}\``;
+export function escapeString(string: string): string {
+    const escapedString = string.replace(/\\u0060/g, "`").replace(/`/g, "``");
+    return `\`${escapedString}\``;
 }

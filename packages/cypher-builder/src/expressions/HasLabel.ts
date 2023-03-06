@@ -19,7 +19,7 @@
 
 import { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
-import { escapeLabel } from "../utils/escape-label";
+import { escapeString } from "../utils/escape-string";
 import type { NodeRef } from "../references/NodeRef";
 
 /** Generates a predicate to check if a node has a label
@@ -48,7 +48,7 @@ export class HasLabel extends CypherASTNode {
         const nodeId = this.node.getCypher(env);
         const labelsStr = this.expectedLabels
             .map((label) => {
-                return `:${escapeLabel(label)}`;
+                return `:${escapeString(label)}`;
             })
             .join("");
         return `${nodeId}${labelsStr}`;
