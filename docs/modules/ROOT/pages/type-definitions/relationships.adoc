@@ -291,12 +291,3 @@ type User {
 }
 ----
 
-Not this:
-
-[source, graphql, indent=0]
-----
-type User {
-    name: String!
-    posts: [Post!]! @relationship(type: "`HAS_POST`", direction: OUT)
-}
-----
