@@ -26,14 +26,15 @@ import { mixin } from "./utils/mixin";
 import { WithSet } from "./mixins/WithSet";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import type { NodeRef } from "../references/NodeRef";
+import { WithPathAssign } from "./mixins/WithPathAssign";
 
-export interface Merge extends WithReturn, WithSet {}
+export interface Merge extends WithReturn, WithSet, WithPathAssign {}
 
 /**
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/merge/)
  * @group Clauses
  */
-@mixin(WithReturn, WithSet)
+@mixin(WithReturn, WithSet, WithPathAssign)
 export class Merge extends Clause {
     private pattern: Pattern;
     private onCreateClause: OnCreate;
@@ -60,7 +61,9 @@ export class Merge extends Clause {
      * @hidden
      */
     public getCypher(env: CypherEnvironment): string {
-        const mergeStr = `MERGE ${this.pattern.getCypher(env)}`;
+        const pathAssignStr = this.compilePath(env);
+
+        const mergeStr = `MERGE ${pathAssignStr}${this.pattern.getCypher(env)}`;
         const setCypher = compileCypherIfExists(this.setSubClause, env, { prefix: "\n" });
         const onCreateStr = compileCypherIfExists(this.onCreateClause, env, { prefix: "\n" });
         const returnStr = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });

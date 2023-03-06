@@ -23,6 +23,7 @@ import { NodeRef } from "../references/NodeRef";
 import { Pattern } from "./Pattern";
 import { PatternElement } from "./PatternElement";
 import type { Param } from "../references/Param";
+import type { Path } from "../references/Path";
 
 type LengthOption =
     | number
@@ -77,6 +78,9 @@ export class PartialPattern extends PatternElement<RelationshipRef> {
         return this;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const prevStr = this.previous.getCypher(env);
 

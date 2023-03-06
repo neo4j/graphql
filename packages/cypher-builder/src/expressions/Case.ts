@@ -79,7 +79,7 @@ class When<T extends Expr | undefined> extends CypherASTNode {
     }
 
     /**
-     * @hidden
+     * @internal
      */
     public getCypher(env: CypherEnvironment): string {
         const predicateStr = this.predicate.getCypher(env);

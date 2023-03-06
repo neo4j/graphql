@@ -46,7 +46,7 @@ export class CypherFunction extends CypherASTNode {
     }
 
     /**
-     * @hidden
+     * @internal
      */
     public getCypher(env: CypherEnvironment): string {
         const argsStr = this.params.map((expr) => expr.getCypher(env)).join(", ");

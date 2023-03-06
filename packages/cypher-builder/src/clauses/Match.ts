@@ -26,18 +26,19 @@ import { WithWhere } from "./mixins/WithWhere";
 import { WithSet } from "./mixins/WithSet";
 import { WithWith } from "./mixins/WithWith";
 import { DeleteClause, DeleteInput } from "./sub-clauses/Delete";
-import type { PropertyRef } from "../references/PropertyRef";
+import { WithPathAssign } from "./mixins/WithPathAssign";
 import { RemoveClause } from "./sub-clauses/Remove";
+import type { PropertyRef } from "../references/PropertyRef";
 import type { CypherEnvironment } from "../Environment";
 import type { NodeRef } from "../references/NodeRef";
 
-export interface Match extends WithReturn, WithWhere, WithSet, WithWith {}
+export interface Match extends WithReturn, WithWhere, WithSet, WithWith, WithPathAssign {}
 
 /**
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/match/)
  * @group Clauses
  */
-@mixin(WithReturn, WithWhere, WithSet, WithWith)
+@mixin(WithReturn, WithWhere, WithSet, WithWith, WithPathAssign)
 export class Match extends Clause {
     private pattern: Pattern;
     private deleteClause: DeleteClause | undefined;
@@ -95,7 +96,9 @@ export class Match extends Clause {
      * @hidden
      */
     public getCypher(env: CypherEnvironment): string {
-        const nodeCypher = this.pattern.getCypher(env);
+        const pathAssignStr = this.compilePath(env);
+
+        const patternCypher = this.pattern.getCypher(env);
 
         const whereCypher = compileCypherIfExists(this.whereSubClause, env, { prefix: "\n" });
         const returnCypher = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
@@ -105,7 +108,7 @@ export class Match extends Clause {
         const removeCypher = compileCypherIfExists(this.removeClause, env, { prefix: "\n" });
         const optionalMatch = this._optional ? "OPTIONAL " : "";
 
-        return `${optionalMatch}MATCH ${nodeCypher}${whereCypher}${setCypher}${removeCypher}${deleteCypher}${withCypher}${returnCypher}`;
+        return `${optionalMatch}MATCH ${pathAssignStr}${patternCypher}${whereCypher}${setCypher}${removeCypher}${deleteCypher}${withCypher}${returnCypher}`;
     }
 
     private createDeleteClause(deleteInput: DeleteInput): DeleteClause {

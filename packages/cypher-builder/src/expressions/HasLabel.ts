@@ -42,7 +42,7 @@ export class HasLabel extends CypherASTNode {
     }
 
     /**
-     * @hidden
+     * @internal
      */
     public getCypher(env: CypherEnvironment): string {
         const nodeId = this.node.getCypher(env);
