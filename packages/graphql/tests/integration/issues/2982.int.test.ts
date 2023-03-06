@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
 import { cleanNodes } from "../../utils/clean-nodes";
 
-describe("https://github.com/neo4j/graphql/issues/tbd", () => {
+describe("https://github.com/neo4j/graphql/issues/2982", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
