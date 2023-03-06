@@ -181,9 +181,11 @@ describe("Subgraph", () => {
 
             expect(plugin["importArgument"]).toEqual(
                 new Map([
+                    ["composeDirective", "federation__composeDirective"],
                     ["key", "key"],
                     ["shareable", "shared"],
                     ["inaccessible", "federation__inaccessible"],
+                    ["interfaceObject", "federation__interfaceObject"],
                     ["override", "federation__override"],
                     ["external", "ext"],
                     ["provides", "federation__provides"],
