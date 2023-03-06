@@ -71,13 +71,13 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
             "MATCH (this:\`Team\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:OWNS_RISK]->(this1:\`Risk\`)
+                MATCH (this)-[this0:\`OWNS_RISK\`]->(this1:\`Risk\`)
                 WHERE $param0 IN this1.mitigationState
                 RETURN count(this1) AS var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[this3:OWNS_RISK]->(this4:\`Risk\`)
+                MATCH (this)-[this3:\`OWNS_RISK\`]->(this4:\`Risk\`)
                 WHERE $param1 IN this4.mitigationState
                 RETURN count(this4) AS var5
             }

@@ -371,7 +371,7 @@ function getRelationField({
         relationshipNameToRelationField = nodeToRelationFieldMap.get(node) as Map<string, RelationField | undefined>;
     }
     if (!relationshipNameToRelationField.has(relationshipName)) {
-        const relationField = node.relationFields.find((f) => f.type === relationshipName);
+        const relationField = node.relationFields.find((f) => f.typeUnescaped === relationshipName);
         relationshipNameToRelationField.set(relationshipName, relationField);
     }
     return relationshipNameToRelationField.get(relationshipName);

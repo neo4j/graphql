@@ -94,11 +94,11 @@ describe("#601", () => {
             WHERE apoc.util.validatePredicate(NOT (any(var1 IN [\\"view\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                MATCH (this)-[this2:REQUIRES]->(this3:\`Document\`)
+                MATCH (this)-[this2:\`REQUIRES\`]->(this3:\`Document\`)
                 WHERE apoc.util.validatePredicate(NOT (any(var5 IN [\\"view\\"] WHERE any(var4 IN $auth.roles WHERE var4 = var5))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
                     WITH this3
-                    MATCH (this3:\`Document\`)<-[this6:UPLOADED]-(this7:\`CustomerContact\`)
+                    MATCH (this3:\`Document\`)<-[this6:\`UPLOADED\`]-(this7:\`CustomerContact\`)
                     WHERE apoc.util.validatePredicate(NOT (any(var9 IN [\\"view\\"] WHERE any(var8 IN $auth.roles WHERE var8 = var9))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH { fileId: this6.fileId, uploadedAt: apoc.date.convertFormat(toString(this6.uploadedAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS edge
                     WITH collect(edge) AS edges

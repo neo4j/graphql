@@ -127,32 +127,32 @@ describe("Cypher Create Pringles", () => {
             CREATE (this0_sizes0_node:Size)
             SET this0_sizes0_node.id = $this0_sizes0_node_id
             SET this0_sizes0_node.name = $this0_sizes0_node_name
-            MERGE (this0)-[:HAS_SIZE]->(this0_sizes0_node)
+            MERGE (this0)-[:\`HAS_SIZE\`]->(this0_sizes0_node)
             WITH this0
             CREATE (this0_sizes1_node:Size)
             SET this0_sizes1_node.id = $this0_sizes1_node_id
             SET this0_sizes1_node.name = $this0_sizes1_node_name
-            MERGE (this0)-[:HAS_SIZE]->(this0_sizes1_node)
+            MERGE (this0)-[:\`HAS_SIZE\`]->(this0_sizes1_node)
             WITH this0
             CREATE (this0_colors0_node:Color)
             SET this0_colors0_node.id = $this0_colors0_node_id
             SET this0_colors0_node.name = $this0_colors0_node_name
-            MERGE (this0)-[:HAS_COLOR]->(this0_colors0_node)
+            MERGE (this0)-[:\`HAS_COLOR\`]->(this0_colors0_node)
             WITH this0
             CREATE (this0_colors1_node:Color)
             SET this0_colors1_node.id = $this0_colors1_node_id
             SET this0_colors1_node.name = $this0_colors1_node_name
-            MERGE (this0)-[:HAS_COLOR]->(this0_colors1_node)
+            MERGE (this0)-[:\`HAS_COLOR\`]->(this0_colors1_node)
             WITH this0
             CREATE (this0_photos0_node:Photo)
             SET this0_photos0_node.id = $this0_photos0_node_id
             SET this0_photos0_node.description = $this0_photos0_node_description
             SET this0_photos0_node.url = $this0_photos0_node_url
-            MERGE (this0)-[:HAS_PHOTO]->(this0_photos0_node)
+            MERGE (this0)-[:\`HAS_PHOTO\`]->(this0_photos0_node)
             WITH this0, this0_photos0_node
             CALL {
             	WITH this0_photos0_node
-            	MATCH (this0_photos0_node)-[this0_photos0_node_color_Color_unique:OF_COLOR]->(:Color)
+            	MATCH (this0_photos0_node)-[this0_photos0_node_color_Color_unique:\`OF_COLOR\`]->(:Color)
             	WITH count(this0_photos0_node_color_Color_unique) as c
             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
             	RETURN c AS this0_photos0_node_color_Color_unique_ignored
@@ -174,7 +174,7 @@ describe("Cypher Create Pringles", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0_photos1_node
             			UNWIND connectedNodes as this0_photos1_node_color_connect0_node
-            			MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
+            			MERGE (this0_photos1_node)-[:\`OF_COLOR\`]->(this0_photos1_node_color_connect0_node)
             			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
@@ -182,11 +182,11 @@ describe("Cypher Create Pringles", () => {
             WITH this0, this0_photos1_node, this0_photos1_node_color_connect0_node
             	RETURN count(*) AS connect_this0_photos1_node_color_connect_Color
             }
-            MERGE (this0)-[:HAS_PHOTO]->(this0_photos1_node)
+            MERGE (this0)-[:\`HAS_PHOTO\`]->(this0_photos1_node)
             WITH this0, this0_photos1_node
             CALL {
             	WITH this0_photos1_node
-            	MATCH (this0_photos1_node)-[this0_photos1_node_color_Color_unique:OF_COLOR]->(:Color)
+            	MATCH (this0_photos1_node)-[this0_photos1_node_color_Color_unique:\`OF_COLOR\`]->(:Color)
             	WITH count(this0_photos1_node_color_Color_unique) as c
             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
             	RETURN c AS this0_photos1_node_color_Color_unique_ignored
@@ -208,7 +208,7 @@ describe("Cypher Create Pringles", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0_photos2_node
             			UNWIND connectedNodes as this0_photos2_node_color_connect0_node
-            			MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
+            			MERGE (this0_photos2_node)-[:\`OF_COLOR\`]->(this0_photos2_node_color_connect0_node)
             			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
@@ -216,11 +216,11 @@ describe("Cypher Create Pringles", () => {
             WITH this0, this0_photos2_node, this0_photos2_node_color_connect0_node
             	RETURN count(*) AS connect_this0_photos2_node_color_connect_Color
             }
-            MERGE (this0)-[:HAS_PHOTO]->(this0_photos2_node)
+            MERGE (this0)-[:\`HAS_PHOTO\`]->(this0_photos2_node)
             WITH this0, this0_photos2_node
             CALL {
             	WITH this0_photos2_node
-            	MATCH (this0_photos2_node)-[this0_photos2_node_color_Color_unique:OF_COLOR]->(:Color)
+            	MATCH (this0_photos2_node)-[this0_photos2_node_color_Color_unique:\`OF_COLOR\`]->(:Color)
             	WITH count(this0_photos2_node_color_Color_unique) as c
             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
             	RETURN c AS this0_photos2_node_color_Color_unique_ignored
@@ -298,13 +298,13 @@ describe("Cypher Create Pringles", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_has_photo0_relationship:HAS_PHOTO]->(this_photos0:Photo)
+            	MATCH (this)-[this_has_photo0_relationship:\`HAS_PHOTO\`]->(this_photos0:Photo)
             	WHERE this_photos0.description = $updateProducts_args_update_photos0_where_this_photos0param0
             	SET this_photos0.description = $this_update_photos0_description
             	WITH this, this_photos0
             	CALL {
             	WITH this, this_photos0
-            	OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
+            	OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:\`OF_COLOR\`]->(this_photos0_color0_disconnect0:Color)
             	WHERE this_photos0_color0_disconnect0.name = $updateProducts_args_update_photos0_update_node_color_disconnect_where_Color_this_photos0_color0_disconnect0param0
             	CALL {
             		WITH this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
@@ -327,7 +327,7 @@ describe("Cypher Create Pringles", () => {
             				WITH connectedNodes, parentNodes
             				UNWIND parentNodes as this_photos0
             				UNWIND connectedNodes as this_photos0_color0_connect0_node
-            				MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
+            				MERGE (this_photos0)-[:\`OF_COLOR\`]->(this_photos0_color0_connect0_node)
             				RETURN count(*) AS _
             			}
             			RETURN count(*) AS _
@@ -338,7 +338,7 @@ describe("Cypher Create Pringles", () => {
             	WITH this, this_photos0
             	CALL {
             		WITH this_photos0
-            		MATCH (this_photos0)-[this_photos0_color_Color_unique:OF_COLOR]->(:Color)
+            		MATCH (this_photos0)-[this_photos0_color_Color_unique:\`OF_COLOR\`]->(:Color)
             		WITH count(this_photos0_color_Color_unique) as c
             		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
             		RETURN c AS this_photos0_color_Color_unique_ignored

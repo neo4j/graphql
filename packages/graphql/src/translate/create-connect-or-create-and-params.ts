@@ -258,7 +258,7 @@ function mergeStatement({
                 relVariable: relationship.getCypher(env),
                 fromVariable: fromNode.getCypher(env),
                 toVariable: toNode.getCypher(env),
-                typename: relationField.type,
+                typename: relationField.typeUnescaped,
                 fromTypename,
                 toTypename,
             });

@@ -442,7 +442,7 @@ describe("Cypher Auth isAuthenticated", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_posts0_node
-            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            			MERGE (this)-[:\`HAS_POST\`]->(this_connect_posts0_node)
             			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
@@ -494,7 +494,7 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
+            OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:\`HAS_POST\`]->(this_disconnect_posts0:Post)
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -594,7 +594,7 @@ describe("Cypher Auth isAuthenticated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WITH this
-            OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
+            OPTIONAL MATCH (this)-[this_posts0_relationship:\`HAS_POST\`]->(this_posts0:Post)
             WITH this, this_posts0
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this, collect(DISTINCT this_posts0) AS this_posts0_to_delete

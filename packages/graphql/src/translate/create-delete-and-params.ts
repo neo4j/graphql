@@ -269,7 +269,7 @@ function createDeleteAndParams({
                             relVariable: relationshipVariable,
                             fromVariable,
                             toVariable,
-                            typename: relationField.type,
+                            typename: relationField.typeUnescaped,
                             fromTypename,
                             toTypename,
                         });

@@ -68,7 +68,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN any(var2 IN collect(this0.someDuration) WHERE datetime() + var2 = datetime() + $param0) AS var3
             }
             WITH *
@@ -112,7 +112,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN any(var2 IN collect(this0._someDurationAlias) WHERE datetime() + var2 = datetime() + $param0) AS var3
             }
             WITH *
@@ -156,7 +156,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN any(var2 IN collect(this0.someDuration) WHERE datetime() + var2 > datetime() + $param0) AS var3
             }
             WITH *
@@ -200,7 +200,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN any(var2 IN collect(this0.someDuration) WHERE datetime() + var2 >= datetime() + $param0) AS var3
             }
             WITH *
@@ -244,7 +244,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN any(var2 IN collect(this0.someDuration) WHERE datetime() + var2 < datetime() + $param0) AS var3
             }
             WITH *
@@ -288,7 +288,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN any(var2 IN collect(this0.someDuration) WHERE datetime() + var2 <= datetime() + $param0) AS var3
             }
             WITH *
@@ -332,7 +332,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN avg(this0.someDuration) = $param0 AS var2
             }
             WITH *
@@ -376,7 +376,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN avg(this0.someDuration) > $param0 AS var2
             }
             WITH *
@@ -420,7 +420,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN avg(this0.someDuration) >= $param0 AS var2
             }
             WITH *
@@ -464,7 +464,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN avg(this0.someDuration) < $param0 AS var2
             }
             WITH *
@@ -508,7 +508,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN avg(this0.someDuration) <= $param0 AS var2
             }
             WITH *
@@ -552,7 +552,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN min(this0.someDuration) = $param0 AS var2
             }
             WITH *
@@ -596,7 +596,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN min(this0.someDuration) > $param0 AS var2
             }
             WITH *
@@ -640,7 +640,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN min(this0.someDuration) >= $param0 AS var2
             }
             WITH *
@@ -684,7 +684,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN min(this0.someDuration) < $param0 AS var2
             }
             WITH *
@@ -728,7 +728,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN min(this0.someDuration) <= $param0 AS var2
             }
             WITH *
@@ -772,7 +772,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN max(this0.someDuration) = $param0 AS var2
             }
             WITH *
@@ -816,7 +816,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN max(this0.someDuration) > $param0 AS var2
             }
             WITH *
@@ -860,7 +860,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN max(this0.someDuration) >= $param0 AS var2
             }
             WITH *
@@ -904,7 +904,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN max(this0.someDuration) < $param0 AS var2
             }
             WITH *
@@ -948,7 +948,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN max(this0.someDuration) <= $param0 AS var2
             }
             WITH *

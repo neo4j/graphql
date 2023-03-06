@@ -150,6 +150,7 @@ export interface BaseField {
  */
 export interface RelationField extends BaseField {
     direction: "OUT" | "IN";
+    typeUnescaped: string;
     type: string;
     connectionPrefix?: string;
     inherited: boolean;

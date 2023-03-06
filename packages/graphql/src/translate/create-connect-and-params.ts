@@ -282,7 +282,7 @@ function createConnectAndParams({
                 relVariable: relationshipName,
                 fromVariable,
                 toVariable,
-                typename: relationField.type,
+                typename: relationField.typeUnescaped,
                 fromTypename,
                 toTypename,
             });

@@ -75,7 +75,7 @@ describe("Cypher relationship", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:TOP_ACTOR]->(this1:\`Actor\`)
+                MATCH (this)-[this0:\`TOP_ACTOR\`]->(this1:\`Actor\`)
                 WITH this1 { .name } AS this1
                 RETURN head(collect(this1)) AS var2
             }
@@ -106,7 +106,7 @@ describe("Cypher relationship", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var2
             }
@@ -140,10 +140,10 @@ describe("Cypher relationship", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:TOP_ACTOR]->(this1:\`Actor\`)
+                MATCH (this)-[this0:\`TOP_ACTOR\`]->(this1:\`Actor\`)
                 CALL {
                     WITH this1
-                    MATCH (this1)-[this2:ACTED_IN]->(this3:\`Movie\`)
+                    MATCH (this1)-[this2:\`ACTED_IN\`]->(this3:\`Movie\`)
                     WITH this3 { .title } AS this3
                     RETURN collect(this3) AS var4
                 }
@@ -181,11 +181,11 @@ describe("Cypher relationship", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)-[this0:TOP_ACTOR]->(this1:\`Actor\`)
+                MATCH (this)-[this0:\`TOP_ACTOR\`]->(this1:\`Actor\`)
                 WHERE this1.name = $param1
                 CALL {
                     WITH this1
-                    MATCH (this1)-[this2:ACTED_IN]->(this3:\`Movie\`)
+                    MATCH (this1)-[this2:\`ACTED_IN\`]->(this3:\`Movie\`)
                     WHERE this3.title = $param2
                     WITH this3 { .title } AS this3
                     RETURN collect(this3) AS var4

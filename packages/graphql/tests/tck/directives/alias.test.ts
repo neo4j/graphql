@@ -75,7 +75,7 @@ describe("Cypher alias directive", () => {
             "MATCH (this:\`Actor\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                MATCH (this)-[this0:\`ACTED_IN\`]->(this1:\`Movie\`)
                 WITH this1 { .title, rating: this1.ratingPropInDb } AS this1
                 RETURN collect(this1) AS var2
             }
@@ -114,7 +114,7 @@ describe("Cypher alias directive", () => {
             "MATCH (this:\`Actor\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                MATCH (this)-[this0:\`ACTED_IN\`]->(this1:\`Movie\`)
                 WITH { character: this0.characterPropInDb, screenTime: this0.screenTime, node: { title: this1.title, rating: this1.ratingPropInDb } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -187,7 +187,7 @@ describe("Cypher alias directive", () => {
                     SET
                         create_this11.title = create_var9.title,
                         create_this11.ratingPropInDb = create_var9.rating
-                    MERGE (create_this0)-[create_this12:ACTED_IN]->(create_this11)
+                    MERGE (create_this0)-[create_this12:\`ACTED_IN\`]->(create_this11)
                     SET
                         create_this12.characterPropInDb = create_var10.character,
                         create_this12.screenTime = create_var10.screenTime
@@ -197,13 +197,13 @@ describe("Cypher alias directive", () => {
             }
             CALL {
                 WITH create_this0
-                MATCH (create_this0)-[create_this1:ACTED_IN]->(create_this2:\`Movie\`)
+                MATCH (create_this0)-[create_this1:\`ACTED_IN\`]->(create_this2:\`Movie\`)
                 WITH create_this2 { .title, rating: create_this2.ratingPropInDb } AS create_this2
                 RETURN collect(create_this2) AS create_var3
             }
             CALL {
                 WITH create_this0
-                MATCH (create_this0:\`Actor\`)-[create_this4:ACTED_IN]->(create_this5:\`Movie\`)
+                MATCH (create_this0:\`Actor\`)-[create_this4:\`ACTED_IN\`]->(create_this5:\`Movie\`)
                 WITH { character: create_this4.characterPropInDb, screenTime: create_this4.screenTime, node: { title: create_this5.title, rating: create_this5.ratingPropInDb } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount

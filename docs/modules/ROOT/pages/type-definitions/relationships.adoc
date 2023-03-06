@@ -278,3 +278,16 @@ type Post {
 ----
 
 The relationship at `User.posts` is considered a "many" relationship. Relationships such as the one above should always be of type `NonNullListType` and `NonNullNamedType`, meaning both the array and the type inside of it should have a `!`.
+
+== Relationship types are automatically escaped
+
+Relationship types are automatically escaped (wrapped with backticks ``), so there's no need to add escape characters around the relationship type names. For example, do this:
+
+[source, graphql, indent=0]
+----
+type User {
+    name: String!
+    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+}
+----
+
