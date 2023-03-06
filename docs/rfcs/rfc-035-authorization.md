@@ -14,15 +14,12 @@ type JWKS = {
 type AuthorizationConfig = {
   secret: string | JWKS
   verify: boolean;
-  jwtPayload: Schema;
 }
 ```
 
 `AuthorizationConfig.secret` will assume symmetric type if passed a string, or other types by passing in different objects. This will allow us to use the same configuration for a variety of secret types. `jose` also supports SPKI encoded RSA keys.
 
 `AuthorizationConfig.verify` will be `true` by default, but can be set to `false` if the desired behaviour is to decode only.
-
-`AuthorizationConfig.jwtPayload` is of type `Schema` from the `jsonschema` library. This will allow users to define the structure of their JWT payload using a JSON schema. This will feed into the GraphQL types generated for usage in authorization rules.
 
 To configure auth with a symmetric secret "secret", the following can be executed:
 
@@ -36,6 +33,27 @@ new Neo4jGraphQL({
   }
 })
 ```
+
+## JWT Payload
+
+As part of this proposal, users will be able to define the structure of their JWT payload using a GraphQL directive:
+
+```gql
+directive @jwtPayload on OBJECT
+```
+
+This is a directive purely for flagging which type should be used as the representation of the JWT payload structure, and it can only be used once.
+
+Then a type such as the following can be included in users' type definitions:
+
+```gql
+type JWTPayload @jwtPayload {
+  sub: String!
+  roles: [String!]!
+}
+```
+
+This will be used for the generation of filters later down the line.
 
 ## Directive
 
@@ -242,29 +260,15 @@ input UserWhere {
 }
 ```
 
-#### JWT Payload schema
+#### JWT Payload filtering
 
-The generated types for the directive will depends on `jwtPayload` when instantiating the feature. Given the following:
+The generated types for the directive will depend on the type labelled with `@jwtPayload`. Given the following:
 
-```ts
-new Neo4jGraphQL({
-  typeDefs,
-  features: {
-    authorization: {
-      secret: "secret",
-      jwtPayload: {
-        type: "object",
-        properties: {
-            sub: { type: "string" },
-            roles: {
-                type: "array",
-                items: { type: "string" }
-            }
-        }
-      }
-    }
-  }
-})
+```gql
+type JWTPayload @jwtPayload {
+  sub: String!
+  roles: [String!]!
+}
 ```
 
 For the purposes of filtering, this will generate the following input type:
