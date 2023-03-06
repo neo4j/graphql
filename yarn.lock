@@ -315,9 +315,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/federation-subgraph-compatibility-tests@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@apollo/federation-subgraph-compatibility-tests@npm:1.2.0"
+"@apollo/federation-subgraph-compatibility-tests@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "@apollo/federation-subgraph-compatibility-tests@npm:1.2.1"
   dependencies:
     "@apollo/rover": ^0.12.2
     debug: ^4.3.4
@@ -327,20 +327,20 @@ __metadata:
     make-fetch-happen: ^11.0.3
     pm2: ^5.2.2
     ts-jest: ^29.0.5
-  checksum: 57c05686deddbcc4954744497d09b62c24a9af547d94d772cdaef4846bed61e560ef81027f91655eb02fa5ec7ac96e76d92b6bd453f570c24229cc50a5d7f2a5
+  checksum: 5620086789fb55dd52385ef4abb48991a94977c2cc1617e14f60c4c128809c357ea07b4cfb468b98ec5353a25080cf8c12abca7d9c36a3accf8494ebf59a0585
   languageName: node
   linkType: hard
 
-"@apollo/federation-subgraph-compatibility@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@apollo/federation-subgraph-compatibility@npm:1.2.0"
+"@apollo/federation-subgraph-compatibility@npm:1.2.1":
+  version: 1.2.1
+  resolution: "@apollo/federation-subgraph-compatibility@npm:1.2.1"
   dependencies:
-    "@apollo/federation-subgraph-compatibility-tests": ^1.2.0
+    "@apollo/federation-subgraph-compatibility-tests": ^1.2.1
     commander: ^10.0.0
     debug: ^4.3.4
   bin:
     fedtest: dist/compatibilityTestCommand.js
-  checksum: 13bc13b54713ab54e931a2dd4d942b69d117328a99f8b125c68ed3b4bbd7a4e45c38d3a919f91e9b79e02f1284822881613a53eb0af86824d877652ab618dab1
+  checksum: a33667af43803f8e5c79d5cc72ddf8c2e00af3440365705a6125d113c1640691e005bc420d264b141bb00422bba95d1b8ac834878aa6badf7cf1d618fc312a44
   languageName: node
   linkType: hard
 
@@ -6213,7 +6213,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "apollo-federation-subgraph-compatibility@workspace:packages/apollo-federation-subgraph-compatibility"
   dependencies:
-    "@apollo/federation-subgraph-compatibility": 1.2.0
+    "@apollo/federation-subgraph-compatibility": 1.2.1
     "@apollo/server": ^4.4.0
     "@graphql-tools/wrap": ^9.3.6
     "@neo4j/graphql": ^3.16.1
