@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { DirectiveNode, FieldDefinitionNode, StringValueNode } from "graphql";
 import { RelationshipQueryDirectionOption } from "../constants";
 
@@ -66,7 +67,7 @@ function getRelationshipMeta(
     }
 
     const direction = directionArg.value.value as "IN" | "OUT";
-    const type = `\`${typeArg.value.value}\``;
+    const type = Cypher.utils.escapeLabel(typeArg.value.value);
     const typeUnescaped = typeArg.value.value;
     const properties = (propertiesArg?.value as StringValueNode)?.value;
 
