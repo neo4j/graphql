@@ -3223,7 +3223,7 @@ __metadata:
     cross-env: 7.0.3
     css-loader: 6.7.3
     dotenv-webpack: 8.0.1
-    fork-ts-checker-webpack-plugin: 7.3.0
+    fork-ts-checker-webpack-plugin: 8.0.0
     graphiql-explorer: 0.9.0
     graphql: 16.6.0
     graphql-query-complexity: 0.12.0
@@ -6217,7 +6217,7 @@ __metadata:
     "@apollo/server": ^4.4.0
     "@graphql-tools/wrap": ^9.3.6
     "@neo4j/graphql": ^3.16.1
-    fork-ts-checker-webpack-plugin: 7.3.0
+    fork-ts-checker-webpack-plugin: 8.0.0
     graphql: 16.6.0
     graphql-tag: ^2.12.6
     neo4j-driver: ^5.5.0
@@ -11238,9 +11238,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fork-ts-checker-webpack-plugin@npm:7.3.0":
-  version: 7.3.0
-  resolution: "fork-ts-checker-webpack-plugin@npm:7.3.0"
+"fork-ts-checker-webpack-plugin@npm:8.0.0":
+  version: 8.0.0
+  resolution: "fork-ts-checker-webpack-plugin@npm:8.0.0"
   dependencies:
     "@babel/code-frame": ^7.16.7
     chalk: ^4.1.2
@@ -11256,12 +11256,8 @@ __metadata:
     tapable: ^2.2.1
   peerDependencies:
     typescript: ">3.6.0"
-    vue-template-compiler: "*"
     webpack: ^5.11.0
-  peerDependenciesMeta:
-    vue-template-compiler:
-      optional: true
-  checksum: 49c2af801e264349a3fdf0afe4ad33065960c43bd7e56c8351a5e0d32c8c54146cc89d6a0b70b1e0f810de96787bd0c7fd275cc8727a9aea1a077c53de99659a
+  checksum: aad4cbc5b802e6281a2700a379837697c93ad95288468f9595219d91d9c26674736d37852bb4c4341e9122f26181e9e05fc1a362e8d029fdd88e99de7816037b
   languageName: node
   linkType: hard
 
