@@ -21,13 +21,13 @@ type User @write(operations: [CREATE, UPDATE]) {
 type Post @write(operations: [CREATE, UPDATE, DELETE]) {
   content: String!
   comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT) @write(operations: [CREATE])
-  author: User! @relationship(type: "HAS_AUTHOR", direction: OUT) @write(operations: [CONNECT])
+  author: User! @relationship(type: "HAS_AUTHOR", direction: OUT) @write(operations: [CREATE_RELATIONSHIP])
 }
 
 type Comment @write(operations: [UPDATE, DELETE]) {
   content: String!
   post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
-  author: User! @relationship(type: "HAS_AUTHOR", direction: OUT) @write(operations: [CONNECT])
+  author: User! @relationship(type: "HAS_AUTHOR", direction: OUT) @write(operations: [CREATE_RELATIONSHIP])
 }
 
 extend schema @readonly
@@ -89,7 +89,7 @@ type Actor {
 }
 ```
 
-*OPEN QUESTION*: given the following, how would you re-enable reads for the `Actor.movies` relationship?
+_OPEN QUESTION_: given the following, how would you re-enable reads for the `Actor.movies` relationship?
 
 ```gql
 type Movie @writeonly {
@@ -123,7 +123,7 @@ type Actor {
 
 At present, it is the intention to only introduce toggling for aggregation queries.
 
-Due to future intentions of API design in the library, Connections will become the primary currency, and we want to normalize their usage as opposed to encourage them being disabled. 
+Due to future intentions of API design in the library, Connections will become the primary currency, and we want to normalize their usage as opposed to encourage them being disabled.
 
 #### Aggregations
 
@@ -206,8 +206,8 @@ This option takes an unopinionated view of root-level versus nested operations, 
 * `CREATE`
 * `UPDATE`
 * `DELETE`
-* `CONNECT`
-* `DISCONNECT`
+* `CREATE_RELATIONSHIP`
+* `DELETE_RELATIONSHIP`
 
 The directive for toggling these operations will be defined as:
 
@@ -216,25 +216,25 @@ enum WriteOperation {
   CREATE
   DELETE
   UPDATE
-  CONNECT
-  DISCONNECT
+  CREATE_RELATIONSHIP
+  DELETE_RELATIONSHIP
 }
 
 directive @write(
-  operations: [WriteOperation!]! = [CREATE, UPDATE, DELETE, CONNECT, DISCONNECT]
+  operations: [WriteOperation!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
 ) on SCHEMA | OBJECT | FIELD_DEFINITION
 ```
 
 To remove create operations from both the Mutation type and also nested operations, one can simply do:
 
 ```gql
-extend schema @write(operations: [UPDATE, DELETE, CONNECT, DISCONNECT])
+extend schema @write(operations: [UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])
 ```
 
 For a particular type, you can remove its create operation from the Mutation type and also from any nested relationship operations pointing _to_ it by doing:
 
 ```gql
-type User @write(operations: [UPDATE, DELETE, CONNECT, DISCONNECT]) {
+type User @write(operations: [UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]) {
   name: String!
 }
 ```
@@ -247,7 +247,7 @@ type User {
 }
 
 type Post {
-  author: User! @relationship(type: "HAS_AUTHOR", direction: OUT) @write(operations: [UPDATE, DELETE, CONNECT, DISCONNECT]) 
+  author: User! @relationship(type: "HAS_AUTHOR", direction: OUT) @write(operations: [UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]) 
 }
 ```
 
@@ -256,7 +256,7 @@ It should be noted, that when used on a field definition, it is only valid when 
 The `@write` directive can also be used in multiple locations to introduce complex rules:
 
 ```gql
-type Comment @write(operations: [CREATE, DELETE, UPDATE, CONNECT, DISCONNECT]) {
+type Comment @write(operations: [CREATE, DELETE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]) {
   content: String!
 }
 
@@ -264,7 +264,7 @@ type Post {
   comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT) @write(operations: [CREATE])
 }
 
-extend schema @write(operations: [CREATE, UPDATE, CONNECT, DISCONNECT])
+extend schema @write(operations: [CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])
 ```
 
 In the above example:
@@ -275,104 +275,4 @@ In the above example:
 
 ##### `connectOrCreate`
 
-The existence of the `connectOrCreate` operation will depend on both the `CREATE` and `CONNECT` operations being present in the `@write` directive.
-
-#### Option 2: differentiating root and nested operations
-
-Write operations can be bundled together, given that they are either grouped within the `Mutation` type, or as nested operations.
-
-However, even these two groupings highlight a discrepancy in functionality - the difference between root operations and nested relationship operations.
-
-It's worth noting that in this proposal, there is a difference between the operations which we expose and the underlying database operation that occurs. This proposal discusses the former. `CREATE` refers to either the `create*` Mutation field or the `create` nested operation, whilst `CONNECT` refers to the `connect` nested operation. A nested `create` implies the creation of a new relationship (or a "connect"), but nested create operations will still be permitted even if `CONNECT` has been removed. Only the nested field would have been removed.
-
-#### Root-level write operations
-
-The current root-level operations are as follows:
-
-* `CREATE`
-* `DELETE`
-* `UPDATE`
-
-It makes sense for these to be togglable at both a global and type level. This should be done using a directive such as:
-
-```gql
-enum WriteOperation {
-  CREATE
-  DELETE
-  UPDATE
-}
-
-directive @write(
-  operations: [WriteOperation!]! = [CREATE, UPDATE, DELETE]
-) on SCHEMA | OBJECT
-```
-
-The implication here is that all three write operations are enabled for the whole schema by default. Let's say you want to disable `DELETE` operations for the whole schema. This will be achievable by simply doing:
-
-```gql
-extend schema @write(operations: [CREATE, UPDATE])
-```
-
-However, let's say you had a type `Comment` that you want to be able to delete as an exception. You could do:
-
-```gql
-type Comment @write(operations: [CREATE, DELETE, UPDATE])
-
-extend schema @write(operations: [CREATE, UPDATE])
-```
-
-Alternatively, you could do the following as by default `operations` is set to all:
-
-```gql
-type Comment @write
-
-extend schema @write(operations: [CREATE, UPDATE])
-```
-
-This brings us to an important point: object-level `@write` directives overwrite the specifications of the schema-level `@write` directive.
-
-#### Nested write operations
-
-Nested operations have additional operations given they are performed over relationships:
-
-* `CREATE`
-* `DELETE`
-* `UPDATE`
-* `CONNECT`
-* `DISCONNECT`
-
-Given that relationships are intended to be extremely contextual, it seems to be against the philosophy of a graph database to globally toggle `CONNECT` and `DISCONNECT` operations.
-
-Instead, these will be configurable within the `@relationship` directive, which will now have definition (note that existing enums have not been defined):
-
-```graphql
-enum RelationshipWriteOperation {
-  CREATE
-  DELETE
-  UPDATE
-  CONNECT
-  DISCONNECT
-  CONNECT_OR_CREATE
-}
-
-directive @relationship (
-  type: String!
-  direction: RelationshipDirection!
-  properties: String
-  queryDirection: RelationshipQueryDirection
-  writeOperations: [RelationshipWriteOperation!]! = [CREATE, DELETE, UPDATE, CONNECT, DISCONNECT, CONNECT_OR_CREATE]
-) on FIELD_DEFINITION
-```
-
-Note, once again, all nested operations are enabled by default. 
-
-For instance, to remove the `connect` and `disconnect` nested operations, you could do the following:
-
-```gql
-type Movie {
-  title: String!
-  actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, writeOperations: [CREATE, UPDATE, DELETE])
-}
-```
-
-Note, that whilst `connect` has been disabled, a relationship will be implicitly created by the creation of a related node. This operation is purely referring to the nested operation name.
+The existence of the `connectOrCreate` operation will depend on both the `CREATE` and `CREATE_RELATIONSHIP` operations being present in the `@write` directive.
