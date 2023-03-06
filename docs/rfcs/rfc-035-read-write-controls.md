@@ -174,7 +174,7 @@ type Actor {
 }
 ```
 
-The above will enable only the `Actor.moviesAggregate` field.
+The above will enable only the `Actor.moviesAggregate` field. The use of the `@aggregations` directive on a non-relationship field will throw an error.
 
 Finally, the `@aggregations` directive can be used to override the toggle at a higher level:
 
