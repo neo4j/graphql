@@ -92,6 +92,17 @@ jobs:
           NEO_PASSWORD: password
           NEO_URL: bolt://localhost:7687
 
+      - name: PR Branch - Run @neo4j/graphql Subgraph Schema performance tests
+        run: |
+          yarn performance --subgraph-schema # Warmup
+          yarn performance --subgraph-schema >> ./performance/subgraphSchemaPerformance
+          cat ./performance/schemaPerformance >> ./performance/performanceReport
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
       - name: Save PR number
         env:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
