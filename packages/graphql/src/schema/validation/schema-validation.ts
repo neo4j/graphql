@@ -24,6 +24,7 @@ import {
     DefinitionNode,
     DirectiveLocation,
     DocumentNode,
+    execute,
     extendSchema,
     GraphQLBoolean,
     GraphQLDirective,
@@ -33,6 +34,7 @@ import {
     GraphQLNamedType,
     GraphQLNonNull,
     GraphQLSchema,
+    GraphQLString,
     InputObjectTypeDefinitionNode,
     Kind,
     parse,
@@ -41,11 +43,9 @@ import {
     validate,
     validateSchema,
 } from "graphql";
-import { validateSDL } from "graphql/validation/validate";
 
 const directives: GraphQLDirective[] = [];
 const types: GraphQLNamedType[] = [];
-const authedNodes: string[] = [];
 
 export function makeValidationSchema(userDocument: DocumentNode, augmentedDocument: DocumentNode) {
     // const validateBeforeTC = composer.createEnumTC(
@@ -58,69 +58,60 @@ export function makeValidationSchema(userDocument: DocumentNode, augmentedDocume
     //     `enum AuthorizationFilterOperation { READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP }`
     // );
     const augmentendSchema = buildASTSchema(augmentedDocument, { assumeValid: true });
-    const enhancedDefinitions = userDocument.definitions.reduce((acc, definition) => {
+    const userSchema = buildASTSchema(userDocument, { assumeValid: true });
+
+    const enhancedDefinitions = augmentedDocument.definitions.reduce((acc, definition) => {
         switch (definition.kind) {
             case Kind.OBJECT_TYPE_DEFINITION: {
-                // apply
                 const typeName = definition.name.value;
                 const authDirectivePredicate = (directive) => directive.name.value === "authorization";
-                const authDirective = definition.directives?.find(authDirectivePredicate);
+                const authDirective = userSchema.getType(typeName)?.astNode?.directives?.find(authDirectivePredicate);
                 if (!authDirective) {
                     acc.push(definition);
                     return acc;
                 }
-                makeAuthorizationTypesForTypename(typeName, augmentedDocument, augmentendSchema);
-                const newDirectives = definition.directives
-                    ?.filter((directive) => !authDirectivePredicate(directive))
-                    .concat({
-                        ...authDirective,
-                        name: { value: `${typeName}Authorization`, kind: authDirective.name.kind },
-                    });
+                makeAuthorizationTypesForTypename(typeName, augmentendSchema);
 
                 acc.push({
                     ...definition,
-                    directives: newDirectives,
+                    directives: [
+                        // TODO: augmentedSchema does not remove the @authorization
+                        {
+                            ...authDirective,
+                            name: { value: `${typeName}Authorization`, kind: authDirective.name.kind },
+                        },
+                    ],
                 });
                 return acc;
             }
+            // TODO: implement these as well
+            // case Kind.FIELD_DEFINITION:
+            // case Kind.INTERFACE_TYPE_DEFINITION:
             default:
                 acc.push(definition);
                 return acc;
         }
     }, [] as DefinitionNode[]);
-    // console.log("new dirs", enhancedDefinitions);
-    const enhancedUserDocument: DocumentNode = { ...userDocument, definitions: enhancedDefinitions };
-    // console.log(">enhancedUserDocument>", JSON.stringify(enhancedUserDocument.definitions, null, 2));
-    const enhancedUserSchema = buildASTSchema(enhancedUserDocument, { assumeValid: true });
-    // console.log(">type?>", enhancedUserSchema.getType("Post"));
+    const enhancedAugmentedDocument: DocumentNode = { ...augmentedDocument, definitions: enhancedDefinitions };
+    const enhancedAugmentedSchema = buildASTSchema(enhancedAugmentedDocument, { assumeValid: true });
 
     const schemaToExtend = new GraphQLSchema({
         directives,
         types,
     });
-
     const validatationSchema = mergeSchemas({
-        schemas: [augmentendSchema, schemaToExtend, enhancedUserSchema],
-        // assumeValid: true,
+        schemas: [enhancedAugmentedSchema, schemaToExtend],
     });
     // console.log(">type?validation>", validatationSchema.getType("Post"));
 
-    console.log("validate start", printSchema(enhancedUserSchema));
+    console.log("validate start", printSchema(validatationSchema));
     // const errors = validate(validatationSchema, userDocument);
-    const errors = validate(validatationSchema, parse(`{ posts { content } }`));
+    const errors = validate(validatationSchema, parse(`{ posts { author { name } } }`));
     // const errors = validateSchema(validatationSchema);
     console.log("validate end", errors);
-
-    //const validationSchema = extendSchema(schemaToExtend, augmentedDocument);
 }
 
-function makeAuthorizationTypesForTypename(
-    typename: string,
-    augmentedDocument: DocumentNode,
-    augmentendSchema: GraphQLSchema
-) {
-    console.log("in for", typename);
-    authedNodes.push(typename);
+function makeAuthorizationTypesForTypename(typename: string, augmentendSchema: GraphQLSchema) {
     const type = augmentendSchema.getType(`${typename}Where`);
 
     const authorizationWhere = new GraphQLInputObjectType({
@@ -196,7 +187,7 @@ export interface GraphQLInputFieldConfig {
                 // },
                 requireAuthentication: {
                     type: GraphQLBoolean,
-                    defaultValue: true,
+                    // defaultValue: true,
                 },
                 where: {
                     type: authorizationWhere,
@@ -218,7 +209,7 @@ export interface GraphQLInputFieldConfig {
                 // },
                 requireAuthentication: {
                     type: GraphQLBoolean,
-                    defaultValue: true,
+                    // defaultValue: true,
                 },
                 where: {
                     type: authorizationWhere,
