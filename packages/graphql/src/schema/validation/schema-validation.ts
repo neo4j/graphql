@@ -19,6 +19,7 @@
 
 import { mergeSchemas } from "@graphql-tools/schema";
 import {
+    buildASTSchema,
     buildSchema,
     DirectiveLocation,
     DocumentNode,
@@ -53,6 +54,7 @@ export function makeValidationSchema(userDocument: DocumentNode, augmentedDocume
     // const filterTC = composer.createEnumTC(
     //     `enum AuthorizationFilterOperation { READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP }`
     // );
+    const augmentendSchema = buildASTSchema(augmentedDocument, { assumeValid: true });
 
     const generateCustomAnnotation: ASTVisitor = {
         // Name: { leave: (node) => node.value },
@@ -186,7 +188,7 @@ export function makeValidationSchema(userDocument: DocumentNode, augmentedDocume
 
         ObjectTypeDefinition: {
             leave: ({ description, name, interfaces, directives, fields }) =>
-                makeAuthorizationTypesForTypename(name.value, augmentedDocument),
+                makeAuthorizationTypesForTypename(name.value, augmentedDocument, augmentendSchema),
         },
 
         // FieldDefinition: {
@@ -343,13 +345,21 @@ export function makeValidationSchema(userDocument: DocumentNode, augmentedDocume
     //         }
     //     }
     // }
+    const validatationSchema = mergeSchemas({
+        schemas: [augmentendSchema, schemaToExtend],
+    })
+    
 
-    const validationSchema = extendSchema(schemaToExtend, augmentedDocument);
+    //const validationSchema = extendSchema(schemaToExtend, augmentedDocument);
 }
 
-function makeAuthorizationTypesForTypename(typename: string, augmentedDocument: DocumentNode) {
+function makeAuthorizationTypesForTypename(
+    typename: string,
+    augmentedDocument: DocumentNode,
+    augmentendSchema: GraphQLSchema
+) {
     console.log("in for", typename);
-    const whereTypeDefinitionNode = augmentedDocument.definitions.find(
+/*     const whereTypeDefinitionNode = augmentedDocument.definitions.find(
         (d) => d.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION && d.name.value === `${typename}Where`
     ) as InputObjectTypeDefinitionNode;
 
@@ -357,8 +367,11 @@ function makeAuthorizationTypesForTypename(typename: string, augmentedDocument: 
         name: `${typename}Where`,
         fields: {},
         astNode: whereTypeDefinitionNode,
-    });
+    }); */
+    //typeFromAST(augmentendSchema, whereTypeDefinitionNode)
+    const type = augmentendSchema.getType(`${typename}Where`);
 
+    
     const authorizationWhere = new GraphQLInputObjectType({
         name: `${typename}AuthorizationWhere`,
         fields() {
@@ -373,7 +386,7 @@ function makeAuthorizationTypesForTypename(typename: string, augmentedDocument: 
                     type: authorizationWhere,
                 },
                 node: {
-                    type: nodeArgumentType,
+                    type: type as GraphQLInputObjectType,
                 },
             };
         },
