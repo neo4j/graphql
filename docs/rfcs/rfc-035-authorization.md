@@ -311,7 +311,7 @@ input UserAuthorizationFilterRule {
   where: UserAuthorizationWhere!
 }
 
-enum AuthorizationValidateBefore {
+enum AuthorizationValidateOperation {
   READ
   CREATE
   UPDATE
@@ -320,17 +320,14 @@ enum AuthorizationValidateBefore {
   DELETE_RELATIONSHIP
 }
 
-enum AuthorizationValidateAfter {
-  CREATE
-  UPDATE
-  DELETE
-  CREATE_RELATIONSHIP
-  DELETE_RELATIONSHIP
+enum AuthorizationValidateWhen {
+  BEFORE
+  AFTER
 }
 
 input UserAuthorizationValidationRule {
-  before: [AuthorizationValidateBefore!]! = [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-  after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  operations: [AuthorizationValidateOperation!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  when: [AuthorizationValidateStage!]! = [BEFORE, AFTER]
   requireAuthentication: Boolean! = true
   where: UserAuthorizationWhere!
 }
@@ -366,7 +363,7 @@ input PostAuthorizationFilterRule {
   where: PostAuthorizationWhere!
 }
 
-enum AuthorizationValidateBefore {
+enum AuthorizationValidateOperation {
   READ
   CREATE
   UPDATE
@@ -375,17 +372,14 @@ enum AuthorizationValidateBefore {
   DELETE_RELATIONSHIP
 }
 
-enum AuthorizationValidateAfter {
-  CREATE
-  UPDATE
-  DELETE
-  CREATE_RELATIONSHIP
-  DELETE_RELATIONSHIP
+enum AuthorizationValidateWhen {
+  BEFORE
+  AFTER
 }
 
 input PostAuthorizationValidationRule {
-  before: [AuthorizationValidateBefore!]! = [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-  after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  operations: [AuthorizationValidateOperation!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  when: [AuthorizationValidateStage!]! = [BEFORE, AFTER]
   requireAuthentication: Boolean! = true
   where: PostAuthorizationWhere!
 }
@@ -409,7 +403,7 @@ enum AuthorizationFilterOperation {
   DELETE_RELATIONSHIP
 }
 
-enum AuthorizationValidateBefore {
+enum AuthorizationValidateOperation {
   READ
   CREATE
   UPDATE
@@ -418,12 +412,9 @@ enum AuthorizationValidateBefore {
   DELETE_RELATIONSHIP
 }
 
-enum AuthorizationValidateAfter {
-  CREATE
-  UPDATE
-  DELETE
-  CREATE_RELATIONSHIP
-  DELETE_RELATIONSHIP
+enum AuthorizationValidateWhen {
+  BEFORE
+  AFTER
 }
 ```
 
@@ -445,8 +436,8 @@ input ${typename}AuthorizationFilterRule {
 }
 
 input ${typename}AuthorizationValidateRule {
-  before: [AuthorizationValidateBefore!]! = [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-  after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  operations: [AuthorizationValidateOperation!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  when: [AuthorizationValidateStage!]! = [BEFORE, AFTER]
   requireAuthentication: Boolean! = true
   where: ${typename}AuthorizationWhere!
 }
@@ -509,8 +500,8 @@ input PostAuthorizationFilterRule {
 }
 
 input PostAuthorizationValidateRule {
-  before: [AuthorizationValidateBefore!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-  after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  operations: [AuthorizationValidateOperation!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  when: [AuthorizationValidateStage!]! = [BEFORE, AFTER]
   requireAuthentication: Boolean! = true
   where: PostAuthorizationWhere!
 }
@@ -535,8 +526,8 @@ input UserAuthorizationFilterRule {
 }
 
 input UserAuthorizationValidateRule {
-  before: [AuthorizationValidateBefore!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-  after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  operations: [AuthorizationValidateOperation!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  when: [AuthorizationValidateStage!]! = [BEFORE, AFTER]
   requireAuthentication: Boolean! = true
   where: UserAuthorizationWhere!
 }
