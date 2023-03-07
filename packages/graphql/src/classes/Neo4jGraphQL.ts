@@ -48,6 +48,7 @@ import { Executor, ExecutorConstructorParam } from "./Executor";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { validateDocument } from "../schema/validation";
+import { makeValidationSchema } from "../schema/validation/schema-validation";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
@@ -270,12 +271,14 @@ class Neo4jGraphQL {
 
             const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
 
-            validateDocument(document, validateTypeDefs);
+            // 1. optionally validate user type defs
+            // validateDocument(document, validateTypeDefs);
 
             if (!this.schemaModel) {
                 this.schemaModel = generateModel(document);
             }
 
+            // 2. new type defs with library types
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
                 enableRegex: this.config?.enableRegex,
@@ -284,6 +287,9 @@ class Neo4jGraphQL {
                 callbacks: this.config.callbacks,
                 userCustomResolvers: this.resolvers,
             });
+            // 3. parse type defs and create @userAuthorization stuff
+            const validationSchema = makeValidationSchema(document, typeDefs);
+            // 4. validate new type defs
 
             this._nodes = nodes;
             this._relationships = relationships;
