@@ -191,7 +191,7 @@ export default function createProjectionAndParams({
                         const nestedProj = recurse.projection
                             .getCypher(env)
                             .replaceAll("\n", " ")
-                            .replace(/^\s*{\s*|\s*}\s*$/g, "");
+                            .replaceAll(/(^\s*{\s*)|(\s*}\s*$)/g, "");
 
                         return `{ __resolveType: "${refNode.name}", __id: id(${varName.getCypher(env)})${
                             nestedProj && `, ${nestedProj}`
