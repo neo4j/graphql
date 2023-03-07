@@ -329,7 +329,7 @@ enum AuthorizationValidateAfter {
 }
 
 input UserAuthorizationValidationRule {
-  before: [AuthorizationValidateBefore!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  before: [AuthorizationValidateBefore!]! = [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
   after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
   requireAuthentication: Boolean! = true
   where: UserAuthorizationWhere!
@@ -384,7 +384,7 @@ enum AuthorizationValidateAfter {
 }
 
 input PostAuthorizationValidationRule {
-  before: [AuthorizationValidateBefore!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  before: [AuthorizationValidateBefore!]! = [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
   after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
   requireAuthentication: Boolean! = true
   where: PostAuthorizationWhere!
@@ -445,7 +445,7 @@ input ${typename}AuthorizationFilterRule {
 }
 
 input ${typename}AuthorizationValidateRule {
-  before: [AuthorizationValidateBefore!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  before: [AuthorizationValidateBefore!]! = [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
   after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
   requireAuthentication: Boolean! = true
   where: ${typename}AuthorizationWhere!
