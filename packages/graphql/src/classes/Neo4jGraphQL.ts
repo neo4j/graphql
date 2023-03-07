@@ -18,7 +18,7 @@
  */
 
 import type { Driver } from "neo4j-driver";
-import type { DocumentNode, GraphQLSchema } from "graphql";
+import { buildASTSchema, buildSchema, DocumentNode, GraphQLSchema } from "graphql";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
@@ -297,12 +297,13 @@ class Neo4jGraphQL {
             // Wrap the generated and custom resolvers, which adds a context including the schema to every request
             const wrappedResolvers = this.wrapResolvers(resolvers);
 
-            const schema = makeExecutableSchema({
-                typeDefs,
-                resolvers: wrappedResolvers,
-            });
+            // const schema = makeExecutableSchema({
+            //     typeDefs,
+            //     resolvers: wrappedResolvers,
+            // });
 
-            resolve(this.addDefaultFieldResolvers(schema));
+            // resolve(this.addDefaultFieldResolvers(schema));
+            resolve(buildASTSchema(typeDefs, { assumeValid: true }));
         });
     }
 

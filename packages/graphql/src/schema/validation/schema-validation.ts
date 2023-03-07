@@ -21,6 +21,7 @@ import { mergeSchemas } from "@graphql-tools/schema";
 import {
     buildASTSchema,
     buildSchema,
+    DefinitionNode,
     DirectiveLocation,
     DocumentNode,
     extendSchema,
@@ -35,9 +36,12 @@ import {
     InputObjectTypeDefinitionNode,
     Kind,
     parse,
+    printSchema,
     typeFromAST,
     validate,
+    validateSchema,
 } from "graphql";
+import { validateSDL } from "graphql/validation/validate";
 
 const directives: GraphQLDirective[] = [];
 const types: GraphQLNamedType[] = [];
@@ -54,31 +58,41 @@ export function makeValidationSchema(userDocument: DocumentNode, augmentedDocume
     //     `enum AuthorizationFilterOperation { READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP }`
     // );
     const augmentendSchema = buildASTSchema(augmentedDocument, { assumeValid: true });
-    userDocument.definitions.forEach((definition) => {
+    const enhancedDefinitions = userDocument.definitions.reduce((acc, definition) => {
         switch (definition.kind) {
             case Kind.OBJECT_TYPE_DEFINITION: {
                 // apply
                 const typeName = definition.name.value;
                 const authDirectivePredicate = (directive) => directive.name.value === "authorization";
                 const authDirective = definition.directives?.find(authDirectivePredicate);
-                if (authDirective) {
-                    makeAuthorizationTypesForTypename(typeName, augmentedDocument, augmentendSchema);
-                    definition = {
-                        ...definition,
-                        directives: definition.directives
-                            ?.filter((directive) => !authDirectivePredicate(directive))
-                            .concat({
-                                ...authDirective,
-                                name: { value: `${typeName}Authorization`, kind: authDirective.name.kind },
-                            }),
-                    };
+                if (!authDirective) {
+                    acc.push(definition);
+                    return acc;
                 }
-                return definition;
+                makeAuthorizationTypesForTypename(typeName, augmentedDocument, augmentendSchema);
+                const newDirectives = definition.directives
+                    ?.filter((directive) => !authDirectivePredicate(directive))
+                    .concat({
+                        ...authDirective,
+                        name: { value: `${typeName}Authorization`, kind: authDirective.name.kind },
+                    });
+
+                acc.push({
+                    ...definition,
+                    directives: newDirectives,
+                });
+                return acc;
             }
             default:
-                return definition;
+                acc.push(definition);
+                return acc;
         }
-    });
+    }, [] as DefinitionNode[]);
+    // console.log("new dirs", enhancedDefinitions);
+    const enhancedUserDocument: DocumentNode = { ...userDocument, definitions: enhancedDefinitions };
+    // console.log(">enhancedUserDocument>", JSON.stringify(enhancedUserDocument.definitions, null, 2));
+    const enhancedUserSchema = buildASTSchema(enhancedUserDocument, { assumeValid: true });
+    // console.log(">type?>", enhancedUserSchema.getType("Post"));
 
     const schemaToExtend = new GraphQLSchema({
         directives,
@@ -86,8 +100,16 @@ export function makeValidationSchema(userDocument: DocumentNode, augmentedDocume
     });
 
     const validatationSchema = mergeSchemas({
-        schemas: [augmentendSchema, schemaToExtend],
+        schemas: [augmentendSchema, schemaToExtend, enhancedUserSchema],
+        // assumeValid: true,
     });
+    // console.log(">type?validation>", validatationSchema.getType("Post"));
+
+    console.log("validate start", printSchema(enhancedUserSchema));
+    // const errors = validate(validatationSchema, userDocument);
+    const errors = validate(validatationSchema, parse(`{ posts { content } }`));
+    // const errors = validateSchema(validatationSchema);
+    console.log("validate end", errors);
 
     //const validationSchema = extendSchema(schemaToExtend, augmentedDocument);
 }
