@@ -42,7 +42,7 @@ describe("Unions", () => {
                 author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
             }
 
-            interface Wrote {
+            interface Wrote @relationshipProperties {
                 words: Int!
             }
         `;
@@ -283,10 +283,22 @@ describe("Unions", () => {
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               publicationsConnection: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Use \`publicationsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Authors where all of the related AuthorPublicationsConnections match this filter
+              \\"\\"\\"
               publicationsConnection_ALL: AuthorPublicationsConnectionWhere
+              \\"\\"\\"
+              Return Authors where none of the related AuthorPublicationsConnections match this filter
+              \\"\\"\\"
               publicationsConnection_NONE: AuthorPublicationsConnectionWhere
               publicationsConnection_NOT: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Use \`publicationsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Authors where one of the related AuthorPublicationsConnections match this filter
+              \\"\\"\\"
               publicationsConnection_SINGLE: AuthorPublicationsConnectionWhere
+              \\"\\"\\"
+              Return Authors where some of the related AuthorPublicationsConnections match this filter
+              \\"\\"\\"
               publicationsConnection_SOME: AuthorPublicationsConnectionWhere
             }
 
@@ -536,10 +548,22 @@ describe("Unions", () => {
               author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
               authorAggregate: BookAuthorAggregateInput
               authorConnection: BookAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Books where all of the related BookAuthorConnections match this filter
+              \\"\\"\\"
               authorConnection_ALL: BookAuthorConnectionWhere
+              \\"\\"\\"
+              Return Books where none of the related BookAuthorConnections match this filter
+              \\"\\"\\"
               authorConnection_NONE: BookAuthorConnectionWhere
               authorConnection_NOT: BookAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Books where one of the related BookAuthorConnections match this filter
+              \\"\\"\\"
               authorConnection_SINGLE: BookAuthorConnectionWhere
+              \\"\\"\\"
+              Return Books where some of the related BookAuthorConnections match this filter
+              \\"\\"\\"
               authorConnection_SOME: BookAuthorConnectionWhere
               \\"\\"\\"Return Books where all of the related Authors match this filter\\"\\"\\"
               author_ALL: AuthorWhere
@@ -842,10 +866,22 @@ describe("Unions", () => {
               author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
               authorAggregate: JournalAuthorAggregateInput
               authorConnection: JournalAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Journals where all of the related JournalAuthorConnections match this filter
+              \\"\\"\\"
               authorConnection_ALL: JournalAuthorConnectionWhere
+              \\"\\"\\"
+              Return Journals where none of the related JournalAuthorConnections match this filter
+              \\"\\"\\"
               authorConnection_NONE: JournalAuthorConnectionWhere
               authorConnection_NOT: JournalAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Journals where one of the related JournalAuthorConnections match this filter
+              \\"\\"\\"
               authorConnection_SINGLE: JournalAuthorConnectionWhere
+              \\"\\"\\"
+              Return Journals where some of the related JournalAuthorConnections match this filter
+              \\"\\"\\"
               authorConnection_SOME: JournalAuthorConnectionWhere
               \\"\\"\\"Return Journals where all of the related Authors match this filter\\"\\"\\"
               author_ALL: AuthorWhere

@@ -82,7 +82,8 @@ describe("Subscriptions metadata on update", () => {
             WITH this, meta + { event: \\"update\\", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             WITH *
             UNWIND (CASE meta WHEN [] then [null] else meta end) AS m
-            RETURN collect(DISTINCT this { .id }) AS data, collect(DISTINCT m) as meta"
+            RETURN collect(DISTINCT this { .id }) AS data
+            , collect(DISTINCT m) as meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -127,7 +128,7 @@ describe("Subscriptions metadata on update", () => {
             	WITH this, meta
             CALL {
             	WITH this, meta
-            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
+            	MATCH (this)<-[this_acted_in0_relationship:\`ACTED_IN\`]-(this_actors0:Actor)
             	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
             	WITH this_actors0 { .* } AS oldProps, this, meta, this_actors0
             	CALL {
@@ -146,7 +147,8 @@ describe("Subscriptions metadata on update", () => {
             WITH this, meta + { event: \\"update\\", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             WITH *
             UNWIND (CASE meta WHEN [] then [null] else meta end) AS m
-            RETURN collect(DISTINCT this { .id }) AS data, collect(DISTINCT m) as meta"
+            RETURN collect(DISTINCT this { .id }) AS data
+            , collect(DISTINCT m) as meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -75,28 +75,28 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
             WHERE (this.uuid = $param0 AND this.archivedAt IS NULL)
             CALL {
                 WITH this
-                MATCH (this)-[this_connection_valuationsConnectionthis0:IS_VALUATION_AGENT]->(this_Valuation:\`Valuation\`)
-                WHERE this_Valuation.archivedAt IS NULL
-                WITH { node: { uuid: this_Valuation.uuid } } AS edge
+                MATCH (this)-[this0:\`IS_VALUATION_AGENT\`]->(this1:\`Valuation\`)
+                WHERE this1.archivedAt IS NULL
+                WITH { node: { uuid: this1.uuid } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 CALL {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge
-                    LIMIT $this_connection_valuationsConnectionparam0
-                    RETURN collect(edge) AS this_connection_valuationsConnectionvar1
+                    LIMIT $param1
+                    RETURN collect(edge) AS var2
                 }
-                WITH this_connection_valuationsConnectionvar1 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_valuationsConnection
+                WITH var2 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            RETURN this { .uuid, valuationsConnection: this_valuationsConnection } AS this"
+            RETURN this { .uuid, valuationsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"a1\\",
-                \\"this_connection_valuationsConnectionparam0\\": {
+                \\"param1\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }

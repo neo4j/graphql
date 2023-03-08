@@ -81,31 +81,31 @@ describe("#488", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Journalist\`)
             WHERE EXISTS {
-                MATCH (this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`)
+                MATCH (this)-[this0:\`HAS_KEYWORD\`]->(this1:\`Emoji\`)
                 WHERE this1.type = $param0
             }
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this2:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
-                    WITH this_keywords  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords
-                    RETURN this_keywords AS this_keywords
+                    MATCH (this)-[this2:\`HAS_KEYWORD\`]->(this3:\`Emoji\`)
+                    WITH this3 { __resolveType: \\"Emoji\\", __id: id(this), .id, .type } AS this3
+                    RETURN this3 AS var4
                     UNION
                     WITH *
-                    MATCH (this)-[this3:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
-                    WITH this_keywords { __resolveType: \\"Hashtag\\" } AS this_keywords
-                    RETURN this_keywords AS this_keywords
+                    MATCH (this)-[this5:\`HAS_KEYWORD\`]->(this6:\`Hashtag\`)
+                    WITH this6 { __resolveType: \\"Hashtag\\", __id: id(this) } AS this6
+                    RETURN this6 AS var4
                     UNION
                     WITH *
-                    MATCH (this)-[this4:HAS_KEYWORD]->(this_keywords:\`Text\`)
-                    WITH this_keywords { __resolveType: \\"Text\\" } AS this_keywords
-                    RETURN this_keywords AS this_keywords
+                    MATCH (this)-[this7:\`HAS_KEYWORD\`]->(this8:\`Text\`)
+                    WITH this8 { __resolveType: \\"Text\\", __id: id(this) } AS this8
+                    RETURN this8 AS var4
                 }
-                WITH this_keywords
-                RETURN collect(this_keywords) AS this_keywords
+                WITH var4
+                RETURN collect(var4) AS var4
             }
-            RETURN this { .name, keywords: this_keywords } AS this"
+            RETURN this { .name, keywords: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -138,31 +138,31 @@ describe("#488", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Journalist\`)
             WHERE NOT (EXISTS {
-                MATCH (this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`)
+                MATCH (this)-[this0:\`HAS_KEYWORD\`]->(this1:\`Emoji\`)
                 WHERE this1.type = $param0
             })
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this2:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
-                    WITH this_keywords  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords
-                    RETURN this_keywords AS this_keywords
+                    MATCH (this)-[this2:\`HAS_KEYWORD\`]->(this3:\`Emoji\`)
+                    WITH this3 { __resolveType: \\"Emoji\\", __id: id(this), .id, .type } AS this3
+                    RETURN this3 AS var4
                     UNION
                     WITH *
-                    MATCH (this)-[this3:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
-                    WITH this_keywords { __resolveType: \\"Hashtag\\" } AS this_keywords
-                    RETURN this_keywords AS this_keywords
+                    MATCH (this)-[this5:\`HAS_KEYWORD\`]->(this6:\`Hashtag\`)
+                    WITH this6 { __resolveType: \\"Hashtag\\", __id: id(this) } AS this6
+                    RETURN this6 AS var4
                     UNION
                     WITH *
-                    MATCH (this)-[this4:HAS_KEYWORD]->(this_keywords:\`Text\`)
-                    WITH this_keywords { __resolveType: \\"Text\\" } AS this_keywords
-                    RETURN this_keywords AS this_keywords
+                    MATCH (this)-[this7:\`HAS_KEYWORD\`]->(this8:\`Text\`)
+                    WITH this8 { __resolveType: \\"Text\\", __id: id(this) } AS this8
+                    RETURN this8 AS var4
                 }
-                WITH this_keywords
-                RETURN collect(this_keywords) AS this_keywords
+                WITH var4
+                RETURN collect(var4) AS var4
             }
-            RETURN this { .name, keywords: this_keywords } AS this"
+            RETURN this { .name, keywords: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

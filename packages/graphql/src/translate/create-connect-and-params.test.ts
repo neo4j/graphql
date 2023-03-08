@@ -34,7 +34,8 @@ describe("createConnectAndParams", () => {
             relationFields: [
                 {
                     direction: "OUT",
-                    type: "SIMILAR",
+                    type: "`SIMILAR`",
+                    typeUnescaped: "SIMILAR",
                     fieldName: "similarMovies",
                     queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
                     inherited: false,

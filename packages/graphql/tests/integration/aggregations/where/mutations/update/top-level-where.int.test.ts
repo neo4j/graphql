@@ -252,7 +252,6 @@ describe("Delete using top level aggregate where", () => {
         });
     });
 
-
     test("AND within an AND, with NOT", async () => {
         const query = `
             mutation {

@@ -294,7 +294,7 @@ describe("Subscription authentication", () => {
                 year: Int!
             }
             
-            interface Review {
+            interface Review @relationshipProperties {
                 score: Int!
             }
         

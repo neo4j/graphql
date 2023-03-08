@@ -33,7 +33,7 @@ describe("Startup Validation", () => {
             id: ID!
             firstName: String!
             lastName: String!
-            fullName: String @customResolver(requires: ["firstName", "lastName"])
+            fullName: String @customResolver(requires: "firstName lastName")
         } 
     `;
 
@@ -49,7 +49,7 @@ describe("Startup Validation", () => {
             id: ID!
             firstName: String!
             lastName: String!
-            fullName: String @customResolver(requires: ["firstName", "lastName"])
+            fullName: String @customResolver(requires: "firstName lastName")
         }
 
         type Point {

@@ -82,7 +82,8 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_activeOrganization0_node
-            			MERGE (this)-[:ACTIVELY_MANAGING]->(this_connect_activeOrganization0_node)
+            			MERGE (this)-[:\`ACTIVELY_MANAGING\`]->(this_connect_activeOrganization0_node)
+            			RETURN count(*) AS _
             		}
             	}
             WITH this, this_connect_activeOrganization0_node
@@ -91,8 +92,8 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_activeOrganization0_rel:ACTIVELY_MANAGING]->(this_disconnect_activeOrganization0:Organization)
-            WHERE NOT (this_disconnect_activeOrganization0._id = $updateUsers_args_disconnect_activeOrganization_where_this_disconnect_activeOrganization0param0)
+            OPTIONAL MATCH (this)-[this_disconnect_activeOrganization0_rel:\`ACTIVELY_MANAGING\`]->(this_disconnect_activeOrganization0:Organization)
+            WHERE NOT (this_disconnect_activeOrganization0._id = $updateUsers_args_disconnect_activeOrganization_where_Organization_this_disconnect_activeOrganization0param0)
             CALL {
             	WITH this_disconnect_activeOrganization0, this_disconnect_activeOrganization0_rel, this
             	WITH collect(this_disconnect_activeOrganization0) as this_disconnect_activeOrganization0, this_disconnect_activeOrganization0_rel, this
@@ -105,7 +106,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             WITH *
             CALL {
             	WITH this
-            	MATCH (this)-[this_activeOrganization_Organization_unique:ACTIVELY_MANAGING]->(:Organization)
+            	MATCH (this)-[this_activeOrganization_Organization_unique:\`ACTIVELY_MANAGING\`]->(:Organization)
             	WITH count(this_activeOrganization_Organization_unique) as c
             	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDUser.activeOrganization must be less than or equal to one', [0])
             	RETURN c AS this_activeOrganization_Organization_unique_ignored
@@ -116,7 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Luke Skywalker\\",
-                \\"updateUsers_args_disconnect_activeOrganization_where_this_disconnect_activeOrganization0param0\\": \\"test-id\\",
+                \\"updateUsers_args_disconnect_activeOrganization_where_Organization_this_disconnect_activeOrganization0param0\\": \\"test-id\\",
                 \\"this_connect_activeOrganization0_node_param0\\": \\"test-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {

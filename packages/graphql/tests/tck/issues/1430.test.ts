@@ -81,23 +81,29 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`ABCE\`)
             WHERE this.id = $param0
-            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
+            CALL apoc.util.validate(EXISTS((this)-[:\`HAS_INTERFACE\`]->(:ChildOne)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
             CREATE (this_create_interface_ChildOne0_node_ChildOne:ChildOne)
             SET this_create_interface_ChildOne0_node_ChildOne.id = randomUUID()
             SET this_create_interface_ChildOne0_node_ChildOne.name = $this_create_interface_ChildOne0_node_ChildOne_name
-            MERGE (this)-[:HAS_INTERFACE]->(this_create_interface_ChildOne0_node_ChildOne)
-            WITH *
+            MERGE (this)-[:\`HAS_INTERFACE\`]->(this_create_interface_ChildOne0_node_ChildOne)
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:HAS_INTERFACE]->(this_ChildOne:\`ChildOne\`)
-                RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS this_interface
-                UNION
-                WITH this
-                MATCH (this)-[update_this1:HAS_INTERFACE]->(this_ChildTwo:\`ChildTwo\`)
-                RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS this_interface
+                CALL {
+                    WITH *
+                    MATCH (this)-[update_this0:\`HAS_INTERFACE\`]->(update_this1:\`ChildOne\`)
+                    WITH update_this1 { __resolveType: \\"ChildOne\\", __id: id(this), .id, .name } AS update_this1
+                    RETURN update_this1 AS update_var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[update_this3:\`HAS_INTERFACE\`]->(update_this4:\`ChildTwo\`)
+                    WITH update_this4 { __resolveType: \\"ChildTwo\\", __id: id(this), .id, .name } AS update_this4
+                    RETURN update_this4 AS update_var2
+                }
+                WITH update_var2
+                RETURN head(collect(update_var2)) AS update_var2
             }
-            RETURN collect(DISTINCT this { .id, interface: this_interface }) AS data"
+            RETURN collect(DISTINCT this { .id, interface: update_var2 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -133,8 +139,8 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`ABCE\`)
             WHERE this.id = $param0
-            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
-            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildTwo)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
+            CALL apoc.util.validate(EXISTS((this)-[:\`HAS_INTERFACE\`]->(:ChildOne)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
+            CALL apoc.util.validate(EXISTS((this)-[:\`HAS_INTERFACE\`]->(:ChildTwo)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
             WITH this
             CALL {
             	WITH this
@@ -147,7 +153,8 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_interface0_node
-            			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
+            			MERGE (this)-[:\`HAS_INTERFACE\`]->(this_connect_interface0_node)
+            			RETURN count(*) AS _
             		}
             	}
             WITH this, this_connect_interface0_node
@@ -164,24 +171,31 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_interface1_node
-            			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface1_node)
+            			MERGE (this)-[:\`HAS_INTERFACE\`]->(this_connect_interface1_node)
+            			RETURN count(*) AS _
             		}
             	}
             WITH this, this_connect_interface1_node
             	RETURN count(*) AS connect_this_connect_interface_ChildTwo
             }
             WITH *
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:HAS_INTERFACE]->(this_ChildOne:\`ChildOne\`)
-                RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS this_interface
-                UNION
-                WITH this
-                MATCH (this)-[update_this1:HAS_INTERFACE]->(this_ChildTwo:\`ChildTwo\`)
-                RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS this_interface
+                CALL {
+                    WITH *
+                    MATCH (this)-[update_this0:\`HAS_INTERFACE\`]->(update_this1:\`ChildOne\`)
+                    WITH update_this1 { __resolveType: \\"ChildOne\\", __id: id(this), .id, .name } AS update_this1
+                    RETURN update_this1 AS update_var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[update_this3:\`HAS_INTERFACE\`]->(update_this4:\`ChildTwo\`)
+                    WITH update_this4 { __resolveType: \\"ChildTwo\\", __id: id(this), .id, .name } AS update_this4
+                    RETURN update_this4 AS update_var2
+                }
+                WITH update_var2
+                RETURN head(collect(update_var2)) AS update_var2
             }
-            RETURN collect(DISTINCT this { .id, interface: this_interface }) AS data"
+            RETURN collect(DISTINCT this { .id, interface: update_var2 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

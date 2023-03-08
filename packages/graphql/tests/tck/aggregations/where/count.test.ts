@@ -63,7 +63,7 @@ describe("Cypher Aggregations where with count", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN count(this1) = $param0 AS var2
             }
             WITH *
@@ -99,7 +99,7 @@ describe("Cypher Aggregations where with count", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN count(this1) < $param0 AS var2
             }
             WITH *
@@ -135,7 +135,7 @@ describe("Cypher Aggregations where with count", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN count(this1) <= $param0 AS var2
             }
             WITH *
@@ -171,7 +171,7 @@ describe("Cypher Aggregations where with count", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN count(this1) > $param0 AS var2
             }
             WITH *
@@ -207,7 +207,7 @@ describe("Cypher Aggregations where with count", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN count(this1) >= $param0 AS var2
             }
             WITH *

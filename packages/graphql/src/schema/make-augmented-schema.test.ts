@@ -161,7 +161,6 @@ describe("makeAugmentedSchema", () => {
             const neoSchema = makeAugmentedSchema(typeDefs, {
                 enableRegex: true,
                 validateResolvers: true,
-                validateTypeDefs: true,
             });
 
             const document = neoSchema.typeDefs;
@@ -209,7 +208,7 @@ describe("makeAugmentedSchema", () => {
                 name: String
             }
 
-            interface ActedIn @auth(rules: [{ operations: [CREATE], roles: ["admin"] }]) {
+            interface ActedIn @auth(rules: [{ operations: [CREATE], roles: ["admin"] }]) @relationshipProperties {
                 screenTime: Int
             }
         `;
@@ -217,24 +216,6 @@ describe("makeAugmentedSchema", () => {
         expect(() => makeAugmentedSchema(typeDefs)).toThrow(
             "Cannot have @auth directive on relationship properties interface"
         );
-    });
-
-    test("should throw error if @cypher is used on relationship properties interface", () => {
-        const typeDefs = gql`
-            type Movie {
-                actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-            }
-
-            type Actor {
-                name: String
-            }
-
-            interface ActedIn @cypher(statement: "RETURN rand() as rand", columnName: "rand") {
-                screenTime: Int
-            }
-        `;
-
-        expect(() => makeAugmentedSchema(typeDefs)).toThrow('Directive "@cypher" may not be used on INTERFACE.');
     });
 
     test("should throw error if @auth is used on relationship property", () => {
@@ -247,7 +228,7 @@ describe("makeAugmentedSchema", () => {
                 name: String
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int @auth(rules: [{ operations: [CREATE], roles: ["admin"] }])
             }
         `;
@@ -265,7 +246,7 @@ describe("makeAugmentedSchema", () => {
                 name: String
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
@@ -285,7 +266,7 @@ describe("makeAugmentedSchema", () => {
                 name: String
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 id: ID @cypher(statement: "RETURN id(this) as id", columnName: "id")
                 roles: [String]
             }
@@ -304,7 +285,7 @@ describe("makeAugmentedSchema", () => {
                             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
 
-                        interface ActedIn {
+                        interface ActedIn @relationshipProperties {
                             node: ID
                         }
 
@@ -325,7 +306,7 @@ describe("makeAugmentedSchema", () => {
                             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
 
-                        interface ActedIn {
+                        interface ActedIn @relationshipProperties {
                             cursor: ID
                         }
 
@@ -353,7 +334,7 @@ describe("makeAugmentedSchema", () => {
                     name: String
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     id: ID @unique
                     roles: [String]
                 }

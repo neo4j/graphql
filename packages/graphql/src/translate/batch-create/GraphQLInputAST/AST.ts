@@ -18,15 +18,15 @@
  */
 
 import type { IAST, Visitor } from "./types";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 export abstract class AST implements IAST {
-    id = uuidv4()
+    id = uuidv4();
     children: IAST[] = [];
 
     addChildren(node: IAST): void {
         this.children.push(node);
     }
 
-    abstract accept(visitor: Visitor): void
+    abstract accept(visitor: Visitor): void;
 }

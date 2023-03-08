@@ -165,7 +165,7 @@ describe("Math operators", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
+            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Movie)
             	WITH this_actedIn0, this
             	CALL {
             	WITH this_actedIn0
@@ -180,11 +180,11 @@ describe("Math operators", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:ACTED_IN]->(this_actedIn:\`Movie\`)
-                WITH this_actedIn { .viewers } AS this_actedIn
-                RETURN collect(this_actedIn) AS this_actedIn
+                MATCH (this)-[update_this0:\`ACTED_IN\`]->(update_this1:\`Movie\`)
+                WITH update_this1 { .viewers } AS update_this1
+                RETURN collect(update_this1) AS update_var2
             }
-            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: update_var2 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -226,7 +226,7 @@ describe("Math operators", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
+            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Movie)
             	WITH this_acted_in0_relationship, this
             	CALL {
             	WITH this_acted_in0_relationship
@@ -240,19 +240,19 @@ describe("Math operators", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:ACTED_IN]->(this_actedIn:\`Movie\`)
-                WITH this_actedIn { .title } AS this_actedIn
-                RETURN collect(this_actedIn) AS this_actedIn
+                MATCH (this)-[update_this0:\`ACTED_IN\`]->(update_this1:\`Movie\`)
+                WITH update_this1 { .title } AS update_this1
+                RETURN collect(update_this1) AS update_var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                WITH { pay: this_connection_actedInConnectionthis0.pay } AS edge
+                MATCH (this)-[update_this3:\`ACTED_IN\`]->(update_this4:\`Movie\`)
+                WITH { pay: update_this3.pay } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS update_var5
             }
-            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection: this_actedInConnection }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: update_var2, actedInConnection: update_var5 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -303,7 +303,7 @@ describe("Math operators", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
+            	MATCH (this)-[this_married_with0_relationship:\`MARRIED_WITH\`]->(this_marriedWith0:Star)
             	WITH this_marriedWith0, this
             	CALL {
             	WITH this_marriedWith0
@@ -316,7 +316,7 @@ describe("Math operators", () => {
             	WITH this, this_marriedWith0
             	CALL {
             		WITH this_marriedWith0
-            		MATCH (this_marriedWith0)<-[this_marriedWith0_marriedWith_Actor_unique:MARRIED_WITH]-(:Actor)
+            		MATCH (this_marriedWith0)<-[this_marriedWith0_marriedWith_Actor_unique:\`MARRIED_WITH\`]-(:Actor)
             		WITH count(this_marriedWith0_marriedWith_Actor_unique) as c
             		CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDStar.marriedWith must be less than or equal to one', [0])
             		RETURN c AS this_marriedWith0_marriedWith_Actor_unique_ignored
@@ -326,13 +326,18 @@ describe("Math operators", () => {
             RETURN count(*) AS update_this_Star
             }
             WITH *
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:MARRIED_WITH]->(this_Star:\`Star\`)
-                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS this_marriedWith
+                CALL {
+                    WITH *
+                    MATCH (this)-[update_this0:\`MARRIED_WITH\`]->(update_this1:\`Star\`)
+                    WITH update_this1 { __resolveType: \\"Star\\", __id: id(this), .marriageLength } AS update_this1
+                    RETURN update_this1 AS update_var2
+                }
+                WITH update_var2
+                RETURN head(collect(update_var2)) AS update_var2
             }
-            RETURN collect(DISTINCT this { .name, marriedWith: this_marriedWith }) AS data"
+            RETURN collect(DISTINCT this { .name, marriedWith: update_var2 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -374,11 +379,11 @@ describe("Math operators", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
+            	MATCH (this)-[this_married_with0_relationship:\`MARRIED_WITH\`]->(this_marriedWith0:Star)
             	WITH this, this_marriedWith0
             	CALL {
             		WITH this_marriedWith0
-            		MATCH (this_marriedWith0)<-[this_marriedWith0_marriedWith_Actor_unique:MARRIED_WITH]-(:Actor)
+            		MATCH (this_marriedWith0)<-[this_marriedWith0_marriedWith_Actor_unique:\`MARRIED_WITH\`]-(:Actor)
             		WITH count(this_marriedWith0_marriedWith_Actor_unique) as c
             		CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDStar.marriedWith must be less than or equal to one', [0])
             		RETURN c AS this_marriedWith0_marriedWith_Actor_unique_ignored
@@ -397,13 +402,18 @@ describe("Math operators", () => {
             RETURN count(*) AS update_this_Star
             }
             WITH *
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:MARRIED_WITH]->(this_Star:\`Star\`)
-                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS this_marriedWith
+                CALL {
+                    WITH *
+                    MATCH (this)-[update_this0:\`MARRIED_WITH\`]->(update_this1:\`Star\`)
+                    WITH update_this1 { __resolveType: \\"Star\\", __id: id(this), .marriageLength } AS update_this1
+                    RETURN update_this1 AS update_var2
+                }
+                WITH update_var2
+                RETURN head(collect(update_var2)) AS update_var2
             }
-            RETURN collect(DISTINCT this { .name, marriedWith: this_marriedWith }) AS data"
+            RETURN collect(DISTINCT this { .name, marriedWith: update_var2 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

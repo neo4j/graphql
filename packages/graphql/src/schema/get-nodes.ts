@@ -19,6 +19,7 @@
 
 import type { IResolvers } from "@graphql-tools/utils";
 import type { DirectiveNode, NamedTypeNode } from "graphql";
+import { Kind } from "graphql";
 import type { Exclude } from "../classes";
 import { Node } from "../classes";
 import type { NodeDirective } from "../classes/NodeDirective";
@@ -60,8 +61,20 @@ function getNodes(
 
     const nodes = definitionNodes.objectTypes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude", "node", "fulltext", "queryOptions", "plural"].includes(x.name.value)
+            (x) =>
+                !["auth", "exclude", "node", "fulltext", "queryOptions", "plural", "shareable", "deprecated"].includes(
+                    x.name.value
+                )
         );
+        const propagatedDirectives = (definition.directives || []).filter((x) =>
+            ["deprecated", "shareable"].includes(x.name.value)
+        );
+        let resolvable = true;
+        const keyDirective = (definition.directives || []).find((x) => x.name.value === "key");
+        const resolvableArgument = (keyDirective?.arguments || []).find((x) => x.name.value === "resolvable");
+        if (resolvableArgument?.value.kind === Kind.BOOLEAN && resolvableArgument.value.value === false) {
+            resolvable = false;
+        }
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
@@ -141,31 +154,6 @@ function getNodes(
             validateResolvers: options.validateResolvers,
         });
 
-        // Ensure that all required fields are returning either a scalar type or an enum
-
-        const violativeRequiredField = nodeFields.customResolverFields
-            .filter((f) => f.requiredFields.length)
-            .map((f) => f.requiredFields)
-            .flat()
-            .find(
-                (requiredField) =>
-                    ![
-                        ...nodeFields.primitiveFields,
-                        ...nodeFields.scalarFields,
-                        ...nodeFields.enumFields,
-                        ...nodeFields.temporalFields,
-                        ...nodeFields.cypherFields.filter((field) => field.isScalar || field.isEnum),
-                    ]
-                        .map((x) => x.fieldName)
-                        .includes(requiredField)
-            );
-
-        if (violativeRequiredField) {
-            throw new Error(
-                `Cannot have ${violativeRequiredField} as a required field on node ${definition.name.value}. Required fields must return a scalar type.`
-            );
-        }
-
         let fulltextDirective: FullText;
         if (fulltextDirectiveDefinition) {
             fulltextDirective = parseFulltextDirective({
@@ -192,6 +180,14 @@ function getNodes(
                 if (!propertiesInterface) {
                     throw new Error(
                         `Cannot find interface specified in ${definition.name.value}.${relationship.fieldName}`
+                    );
+                }
+                const relationshipPropertiesDirective = propertiesInterface.directives?.find(
+                    (directive) => directive.name.value === "relationshipProperties"
+                );
+                if (!relationshipPropertiesDirective) {
+                    throw new Error(
+                        `The \`@relationshipProperties\` directive could not be found on the \`${relationship.properties}\` interface`
                     );
                 }
                 relationshipPropertyInterfaceNames.add(relationship.properties);
@@ -238,6 +234,7 @@ function getNodes(
             name: definition.name.value,
             interfaces: nodeInterfaces,
             otherDirectives,
+            propagatedDirectives,
             ...nodeFields,
             // @ts-ignore we can be sure it's defined
             auth,
@@ -253,6 +250,7 @@ function getNodes(
             globalIdField: globalIdField?.fieldName,
             globalIdFieldIsInt: globalIdField?.typeMeta?.name === "Int",
             plural: parsePluralDirective(pluralDirectiveDefinition),
+            federationResolvable: resolvable,
         });
 
         return node;

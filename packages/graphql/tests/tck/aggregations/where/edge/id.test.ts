@@ -38,7 +38,7 @@ describe("Cypher Aggregations where edge with ID", () => {
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Liked")
             }
 
-            interface Liked {
+            interface Liked @relationshipProperties {
                 id: ID
                 someIdAlias: ID @alias(property: "_someIdAlias")
             }
@@ -68,7 +68,7 @@ describe("Cypher Aggregations where edge with ID", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN any(var2 IN collect(this0.id) WHERE var2 = $param0) AS var3
             }
             WITH *
@@ -101,7 +101,7 @@ describe("Cypher Aggregations where edge with ID", () => {
             "MATCH (this:\`Post\`)
             CALL {
                 WITH this
-                MATCH (this1:\`User\`)-[this0:LIKES]->(this)
+                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
                 RETURN any(var2 IN collect(this0._someIdAlias) WHERE var2 = $param0) AS var3
             }
             WITH *

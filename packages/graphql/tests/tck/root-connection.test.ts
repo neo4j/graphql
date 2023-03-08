@@ -194,13 +194,13 @@ describe("Root Connection Query tests", () => {
             LIMIT $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WITH { node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                WITH { node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            WITH { node: this { .title, actorsConnection: this_actorsConnection } } AS edge, totalCount, this
+            WITH { node: this { .title, actorsConnection: var2 } } AS edge, totalCount, this
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);

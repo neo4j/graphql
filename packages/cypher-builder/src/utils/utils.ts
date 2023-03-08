@@ -17,4 +17,6 @@
  * limitations under the License.
  */
 
+// Note: This file exists for exported utils to the user
+
 export { escapeLabel } from "./escape-label";

@@ -68,7 +68,7 @@ describe("Delete Subscriptions when only nodes are targeted - with interfaces, u
                 year: Int!
             }
             
-            interface Review {
+            interface Review @relationshipProperties {
                 score: Int!
             }
         

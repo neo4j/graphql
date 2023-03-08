@@ -97,23 +97,23 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
             WITH this, totalCount
             CALL {
                 WITH this
-                MATCH (this)-[this0:SOLD_AT_AUCTION_AS]->(this_auction:\`AuctionItem\`)
+                MATCH (this)-[this0:\`SOLD_AT_AUCTION_AS\`]->(this1:\`AuctionItem\`)
                 CALL {
-                    WITH this_auction
-                    MATCH (this_auction_buyer:\`Organization\`)-[this1:BOUGHT_ITEM_AT_AUCTION]->(this_auction)
-                    WITH this_auction_buyer { .name, dbId: this_auction_buyer.id } AS this_auction_buyer
-                    RETURN head(collect(this_auction_buyer)) AS this_auction_buyer
+                    WITH this1
+                    MATCH (this1)<-[this2:\`BOUGHT_ITEM_AT_AUCTION\`]-(this3:\`Organization\`)
+                    WITH this3 { .name, dbId: this3.id } AS this3
+                    RETURN head(collect(this3)) AS var4
                 }
-                WITH this_auction { .auctionName, .lotNumber, buyer: this_auction_buyer, dbId: this_auction.id } AS this_auction
-                RETURN head(collect(this_auction)) AS this_auction
+                WITH this1 { .auctionName, .lotNumber, buyer: var4, dbId: this1.id } AS this1
+                RETURN head(collect(this1)) AS var5
             }
             CALL {
                 WITH this
-                MATCH (this)-[this2:OWNED_BY]->(this_owner:\`Organization\`)
-                WITH this_owner { .name, dbId: this_owner.id } AS this_owner
-                RETURN head(collect(this_owner)) AS this_owner
+                MATCH (this)-[this6:\`OWNED_BY\`]->(this7:\`Organization\`)
+                WITH this7 { .name, dbId: this7.id } AS this7
+                RETURN head(collect(this7)) AS var8
             }
-            WITH { node: this { .title, auction: this_auction, owner: this_owner, dbId: this.id } } AS edge, totalCount, this
+            WITH { node: this { .title, auction: var5, owner: var8, dbId: this.id } } AS edge, totalCount, this
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);

@@ -26,6 +26,7 @@ export class RelationFieldBuilder extends Builder<RelationField, RelationField> 
         super({
             direction: "OUT",
             type: "",
+            typeUnescaped: "",
             fieldName: "",
             typeMeta: {
                 name: "",

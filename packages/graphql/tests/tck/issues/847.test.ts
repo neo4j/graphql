@@ -69,35 +69,39 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Interaction\`)
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this_Person:\`Person\`)
-                RETURN { __resolveType: \\"Person\\", id: this_Person.id } AS this_subjects
-                UNION
-                WITH this
-                MATCH (this)<-[this1:ACTED_IN]-(this_Place:\`Place\`)
-                RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS this_subjects
+                CALL {
+                    WITH *
+                    MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Person\`)
+                    WITH this1 { __resolveType: \\"Person\\", __id: id(this), .id } AS this1
+                    RETURN this1 AS var2
+                    UNION
+                    WITH *
+                    MATCH (this)<-[this3:\`ACTED_IN\`]-(this4:\`Place\`)
+                    WITH this4 { __resolveType: \\"Place\\", __id: id(this), .id } AS this4
+                    RETURN this4 AS var2
+                }
+                WITH var2
+                RETURN collect(var2) AS var2
             }
-            RETURN collect(this_subjects) AS this_subjects
-            }
-            WITH *
             CALL {
-            WITH *
-            CALL {
                 WITH this
-                MATCH (this)-[this2:ACTED_IN]->(this_Person:\`Person\`)
-                RETURN { __resolveType: \\"Person\\", id: this_Person.id } AS this_objects
-                UNION
-                WITH this
-                MATCH (this)-[this3:ACTED_IN]->(this_Place:\`Place\`)
-                RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS this_objects
+                CALL {
+                    WITH *
+                    MATCH (this)-[this5:\`ACTED_IN\`]->(this6:\`Person\`)
+                    WITH this6 { __resolveType: \\"Person\\", __id: id(this), .id } AS this6
+                    RETURN this6 AS var7
+                    UNION
+                    WITH *
+                    MATCH (this)-[this8:\`ACTED_IN\`]->(this9:\`Place\`)
+                    WITH this9 { __resolveType: \\"Place\\", __id: id(this), .id } AS this9
+                    RETURN this9 AS var7
+                }
+                WITH var7
+                RETURN collect(var7) AS var7
             }
-            RETURN collect(this_objects) AS this_objects
-            }
-            RETURN this { .id, subjects: this_subjects, objects: this_objects } AS this"
+            RETURN this { .id, subjects: var2, objects: var7 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

@@ -134,7 +134,7 @@ export default function createUpdateAndParams({
                 let returnMetaStatement = "";
 
                 updates.forEach((update, index) => {
-                    const relationshipVariable = `${varName}_${relationField.type.toLowerCase()}${index}_relationship`;
+                    const relationshipVariable = `${varName}_${relationField.typeUnescaped.toLowerCase()}${index}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
                     const variableName = `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
 
@@ -450,7 +450,7 @@ export default function createUpdateAndParams({
                                     relVariable: propertiesName,
                                     fromVariable,
                                     toVariable,
-                                    typename: relationField.type,
+                                    typename: relationField.typeUnescaped,
                                     fromTypename,
                                     toTypename
                                 });

@@ -125,28 +125,28 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                     WITH DISTINCT records, date LIMIT $param2
                     RETURN records ORDER BY date.date DESC
                 }
-                WITH records AS this_bussing
+                WITH records AS this0
                 CALL {
-                    WITH this_bussing
+                    WITH this0
                     CALL {
-                        WITH this_bussing
-                        WITH this_bussing AS this
+                        WITH this0
+                        WITH this0 AS this
                         MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
                         RETURN COUNT(member) > 0 AS markedAttendance
                     }
-                    UNWIND markedAttendance AS this_bussing_markedAttendance
-                    RETURN head(collect(this_bussing_markedAttendance)) AS this_bussing_markedAttendance
+                    UNWIND markedAttendance AS this1
+                    RETURN head(collect(this1)) AS this1
                 }
                 CALL {
-                    WITH this_bussing
-                    MATCH (this_bussing)-[this0:BUSSED_ON]->(this_bussing_serviceDate:\`TimeGraph\`)
+                    WITH this0
+                    MATCH (this0)-[this2:\`BUSSED_ON\`]->(this3:\`TimeGraph\`)
                     WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this_bussing_serviceDate { .date } AS this_bussing_serviceDate
-                    RETURN head(collect(this_bussing_serviceDate)) AS this_bussing_serviceDate
+                    WITH this3 { .date } AS this3
+                    RETURN head(collect(this3)) AS var4
                 }
-                RETURN collect(this_bussing { .id, .attendance, markedAttendance: this_bussing_markedAttendance, serviceDate: this_bussing_serviceDate }) AS this_bussing
+                RETURN collect(this0 { .id, .attendance, markedAttendance: this1, serviceDate: var4 }) AS this0
             }
-            RETURN this { .id, .name, bussing: this_bussing } AS this"
+            RETURN this { .id, .name, bussing: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

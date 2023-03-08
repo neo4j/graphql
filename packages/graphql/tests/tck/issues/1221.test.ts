@@ -39,7 +39,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 fullName: String!
             }
 
-            interface RelationProps {
+            interface RelationProps @relationshipProperties {
                 current: Boolean!
             }
 
@@ -86,34 +86,34 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
-            WHERE (this.current = $param0 AND size([(this)-[this3:ARCHITECTURE]->(this2:\`MasterData\`) WHERE size([(this2)-[this1:HAS_NAME]->(this0:\`NameDetails\`) WHERE this0.fullName = $param1 | 1]) = 1 | 1]) = 1)
+            WHERE (this.current = $param0 AND single(this1 IN [(this)-[this3:\`ARCHITECTURE\`]->(this1:\`MasterData\`) WHERE single(this0 IN [(this1)-[this2:\`HAS_NAME\`]->(this0:\`NameDetails\`) WHERE this0.fullName = $param1 | 1] WHERE true) | 1] WHERE true))
             CALL {
                 WITH this
-                MATCH (this)-[this_connection_architectureConnectionthis0:ARCHITECTURE]->(this_MasterData:\`MasterData\`)
-                WHERE this_connection_architectureConnectionthis0.current = $this_connection_architectureConnectionparam0
+                MATCH (this)-[this4:\`ARCHITECTURE\`]->(this5:\`MasterData\`)
+                WHERE this4.current = $param2
                 CALL {
-                    WITH this_MasterData
-                    MATCH (this_MasterData)-[this_MasterData_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_MasterData_NameDetails:\`NameDetails\`)
-                    WHERE this_MasterData_connection_nameDetailsConnectionthis0.current = $this_MasterData_connection_nameDetailsConnectionparam0
-                    WITH { node: { fullName: this_MasterData_NameDetails.fullName } } AS edge
+                    WITH this5
+                    MATCH (this5:\`MasterData\`)-[this6:\`HAS_NAME\`]->(this7:\`NameDetails\`)
+                    WHERE this6.current = $param3
+                    WITH { node: { fullName: this7.fullName } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS this_MasterData_nameDetailsConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS var8
                 }
-                WITH { node: { nameDetailsConnection: this_MasterData_nameDetailsConnection } } AS edge
+                WITH { node: { nameDetailsConnection: var8 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_architectureConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var9
             }
-            RETURN this { .id, architectureConnection: this_architectureConnection } AS this"
+            RETURN this { .id, architectureConnection: var9 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
                 \\"param1\\": \\"MHA\\",
-                \\"this_connection_architectureConnectionparam0\\": true,
-                \\"this_MasterData_connection_nameDetailsConnectionparam0\\": true
+                \\"param2\\": true,
+                \\"param3\\": true
             }"
         `);
     });
@@ -137,7 +137,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 fullName: String!
             }
 
-            interface RelationProps {
+            interface RelationProps @relationshipProperties {
                 current: Boolean!
             }
 
@@ -194,47 +194,47 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Main\`)
-            WHERE (this.current = $param0 AND size([(this)-[this5:MAIN]->(this1:\`Series\`) WHERE EXISTS {
-                MATCH (this1)-[this0:ARCHITECTURE]->(this2:\`MasterData\`)
-                WHERE size([(this2)-[this4:HAS_NAME]->(this3:\`NameDetails\`) WHERE this3.fullName = $param1 | 1]) = 1
-            } | 1]) = 1)
+            WHERE (this.current = $param0 AND single(this0 IN [(this)-[this5:\`MAIN\`]->(this0:\`Series\`) WHERE EXISTS {
+                MATCH (this0)-[this1:\`ARCHITECTURE\`]->(this2:\`MasterData\`)
+                WHERE single(this3 IN [(this2)-[this4:\`HAS_NAME\`]->(this3:\`NameDetails\`) WHERE this3.fullName = $param1 | 1] WHERE true)
+            } | 1] WHERE true))
             CALL {
                 WITH this
-                MATCH (this)-[this_connection_mainConnectionthis0:MAIN]->(this_Series:\`Series\`)
-                WHERE this_connection_mainConnectionthis0.current = $this_connection_mainConnectionparam0
+                MATCH (this)-[this6:\`MAIN\`]->(this7:\`Series\`)
+                WHERE this6.current = $param2
                 CALL {
-                    WITH this_Series
-                    MATCH (this_Series)-[this_Series_connection_architectureConnectionthis0:ARCHITECTURE]->(this_Series_MasterData:\`MasterData\`)
-                    WHERE this_Series_connection_architectureConnectionthis0.current = $this_Series_connection_architectureConnectionparam0
+                    WITH this7
+                    MATCH (this7:\`Series\`)-[this8:\`ARCHITECTURE\`]->(this9:\`MasterData\`)
+                    WHERE this8.current = $param3
                     CALL {
-                        WITH this_Series_MasterData
-                        MATCH (this_Series_MasterData)-[this_Series_MasterData_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_Series_MasterData_NameDetails:\`NameDetails\`)
-                        WHERE this_Series_MasterData_connection_nameDetailsConnectionthis0.current = $this_Series_MasterData_connection_nameDetailsConnectionparam0
-                        WITH { node: { fullName: this_Series_MasterData_NameDetails.fullName } } AS edge
+                        WITH this9
+                        MATCH (this9:\`MasterData\`)-[this10:\`HAS_NAME\`]->(this11:\`NameDetails\`)
+                        WHERE this10.current = $param4
+                        WITH { node: { fullName: this11.fullName } } AS edge
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS this_Series_MasterData_nameDetailsConnection
+                        RETURN { edges: edges, totalCount: totalCount } AS var12
                     }
-                    WITH { node: { nameDetailsConnection: this_Series_MasterData_nameDetailsConnection } } AS edge
+                    WITH { node: { nameDetailsConnection: var12 } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS this_Series_architectureConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS var13
                 }
-                WITH { node: { architectureConnection: this_Series_architectureConnection } } AS edge
+                WITH { node: { architectureConnection: var13 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_mainConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var14
             }
-            RETURN this { .id, mainConnection: this_mainConnection } AS this"
+            RETURN this { .id, mainConnection: var14 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
                 \\"param1\\": \\"MHA\\",
-                \\"this_connection_mainConnectionparam0\\": true,
-                \\"this_Series_connection_architectureConnectionparam0\\": true,
-                \\"this_Series_MasterData_connection_nameDetailsConnectionparam0\\": true
+                \\"param2\\": true,
+                \\"param3\\": true,
+                \\"param4\\": true
             }"
         `);
     });

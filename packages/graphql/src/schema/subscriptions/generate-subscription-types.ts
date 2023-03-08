@@ -60,6 +60,7 @@ export function generateSubscriptionTypes({
         },
         {}
     );
+    hydrateSchemaWithSubscriptionWhereTypes(nodesWithSubscriptionOperation, schemaComposer);
 
     const nodeToRelationFieldMap: Map<Node, Map<string, RelationField | undefined>> = new Map();
     nodesWithSubscriptionOperation.forEach((node) => {
@@ -252,28 +253,29 @@ export function generateSubscriptionTypes({
             });
         }
 
+        const whereArgument = where && { args: { where } };
         subscriptionComposer.addFields({
             [subscribeOperation.created]: {
-                args: { where },
+                ...whereArgument,
                 type: nodeCreatedEvent.NonNull,
                 subscribe: generateSubscribeMethod({ node, type: "create" }),
                 resolve: subscriptionResolve,
             },
             [subscribeOperation.updated]: {
-                args: { where },
+                ...whereArgument,
                 type: nodeUpdatedEvent.NonNull,
                 subscribe: generateSubscribeMethod({ node, type: "update" }),
                 resolve: subscriptionResolve,
             },
             [subscribeOperation.deleted]: {
-                args: { where },
+                ...whereArgument,
                 type: nodeDeletedEvent.NonNull,
                 subscribe: generateSubscribeMethod({ node, type: "delete" }),
                 resolve: subscriptionResolve,
             },
         });
 
-        const { created: createdWhere, deleted: deletedWhere } = generateSubscriptionConnectionWhereType({
+        const connectionWhere = generateSubscriptionConnectionWhereType({
             node,
             schemaComposer,
             relationshipFields,
@@ -282,7 +284,7 @@ export function generateSubscriptionTypes({
         if (node.relationFields.length > 0) {
             subscriptionComposer.addFields({
                 [subscribeOperation.relationship_created]: {
-                    args: { where: createdWhere },
+                    ...(connectionWhere?.created && { args: { where: connectionWhere?.created } }),
                     type: relationshipCreatedEvent.NonNull,
                     subscribe: generateSubscribeMethod({
                         node,
@@ -293,7 +295,7 @@ export function generateSubscriptionTypes({
                     resolve: subscriptionResolve,
                 },
                 [subscribeOperation.relationship_deleted]: {
-                    args: { where: deletedWhere },
+                    ...(connectionWhere?.deleted && { args: { where: connectionWhere?.deleted } }),
                     type: relationshipDeletedEvent.NonNull,
                     subscribe: generateSubscribeMethod({
                         node,
@@ -306,6 +308,13 @@ export function generateSubscriptionTypes({
             });
         }
     });
+}
+
+function hydrateSchemaWithSubscriptionWhereTypes(
+    nodesWithSubscriptionOperation: Node[],
+    schemaComposer: SchemaComposer
+): void {
+    nodesWithSubscriptionOperation.forEach((node) => generateSubscriptionWhereType(node, schemaComposer));
 }
 
 function getRelationshipEventDataForNode(
@@ -362,7 +371,7 @@ function getRelationField({
         relationshipNameToRelationField = nodeToRelationFieldMap.get(node) as Map<string, RelationField | undefined>;
     }
     if (!relationshipNameToRelationField.has(relationshipName)) {
-        const relationField = node.relationFields.find((f) => f.type === relationshipName);
+        const relationField = node.relationFields.find((f) => f.typeUnescaped === relationshipName);
         relationshipNameToRelationField.set(relationshipName, relationField);
     }
     return relationshipNameToRelationField.get(relationshipName);

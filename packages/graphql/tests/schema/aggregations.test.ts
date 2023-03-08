@@ -412,7 +412,7 @@ describe("Aggregations", () => {
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someId: ID
                 someString: String
                 someFloat: Float
@@ -1270,10 +1270,22 @@ describe("Aggregations", () => {
               likes: UserWhere @deprecated(reason: \\"Use \`likes_SOME\` instead.\\")
               likesAggregate: PostLikesAggregateInput
               likesConnection: PostLikesConnectionWhere @deprecated(reason: \\"Use \`likesConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Posts where all of the related PostLikesConnections match this filter
+              \\"\\"\\"
               likesConnection_ALL: PostLikesConnectionWhere
+              \\"\\"\\"
+              Return Posts where none of the related PostLikesConnections match this filter
+              \\"\\"\\"
               likesConnection_NONE: PostLikesConnectionWhere
               likesConnection_NOT: PostLikesConnectionWhere @deprecated(reason: \\"Use \`likesConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Posts where one of the related PostLikesConnections match this filter
+              \\"\\"\\"
               likesConnection_SINGLE: PostLikesConnectionWhere
+              \\"\\"\\"
+              Return Posts where some of the related PostLikesConnections match this filter
+              \\"\\"\\"
               likesConnection_SOME: PostLikesConnectionWhere
               \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
               likes_ALL: UserWhere

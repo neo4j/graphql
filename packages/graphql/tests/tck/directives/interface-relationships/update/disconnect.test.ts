@@ -83,8 +83,8 @@ describe("Interface Relationships - Update disconnect", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_this_disconnect_actedIn0param0
+            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:\`ACTED_IN\`]->(this_disconnect_actedIn0:Movie)
+            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Movie_this_disconnect_actedIn0param0
             CALL {
             	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
@@ -95,8 +95,8 @@ describe("Interface Relationships - Update disconnect", () => {
             }
             CALL {
             	WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_this_disconnect_actedIn0param0
+            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:\`ACTED_IN\`]->(this_disconnect_actedIn0:Series)
+            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Series_this_disconnect_actedIn0param0
             CALL {
             	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
@@ -111,7 +111,8 @@ describe("Interface Relationships - Update disconnect", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateActors_args_disconnect_actedIn0_where_this_disconnect_actedIn0param0\\": \\"The \\",
+                \\"updateActors_args_disconnect_actedIn0_where_Movie_this_disconnect_actedIn0param0\\": \\"The \\",
+                \\"updateActors_args_disconnect_actedIn0_where_Series_this_disconnect_actedIn0param0\\": \\"The \\",
                 \\"updateActors\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -160,8 +161,8 @@ describe("Interface Relationships - Update disconnect", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_this_disconnect_actedIn0param0
+            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:\`ACTED_IN\`]->(this_disconnect_actedIn0:Movie)
+            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Movie_this_disconnect_actedIn0param0
             CALL {
             	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
@@ -170,8 +171,8 @@ describe("Interface Relationships - Update disconnect", () => {
             }
             CALL {
             WITH this, this_disconnect_actedIn0
-            OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
-            WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect_actors0_where_this_disconnect_actedIn0_actors0param0
+            OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:\`ACTED_IN\`]-(this_disconnect_actedIn0_actors0:Actor)
+            WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect_actors0_where_Actor_this_disconnect_actedIn0_actors0param0
             CALL {
             	WITH this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, this_disconnect_actedIn0
             	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, this_disconnect_actedIn0
@@ -184,8 +185,8 @@ describe("Interface Relationships - Update disconnect", () => {
             }
             CALL {
             	WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_this_disconnect_actedIn0param0
+            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:\`ACTED_IN\`]->(this_disconnect_actedIn0:Series)
+            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Series_this_disconnect_actedIn0param0
             CALL {
             	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
@@ -194,8 +195,8 @@ describe("Interface Relationships - Update disconnect", () => {
             }
             CALL {
             WITH this, this_disconnect_actedIn0
-            OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
-            WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect_actors0_where_this_disconnect_actedIn0_actors0param0
+            OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:\`ACTED_IN\`]-(this_disconnect_actedIn0_actors0:Actor)
+            WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect_actors0_where_Actor_this_disconnect_actedIn0_actors0param0
             CALL {
             	WITH this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, this_disconnect_actedIn0
             	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, this_disconnect_actedIn0
@@ -212,8 +213,9 @@ describe("Interface Relationships - Update disconnect", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateActors_args_disconnect_actedIn0_where_this_disconnect_actedIn0param0\\": \\"The \\",
-                \\"updateActors_args_disconnect_actedIn0_disconnect_actors0_where_this_disconnect_actedIn0_actors0param0\\": \\"Actor\\",
+                \\"updateActors_args_disconnect_actedIn0_where_Movie_this_disconnect_actedIn0param0\\": \\"The \\",
+                \\"updateActors_args_disconnect_actedIn0_disconnect_actors0_where_Actor_this_disconnect_actedIn0_actors0param0\\": \\"Actor\\",
+                \\"updateActors_args_disconnect_actedIn0_where_Series_this_disconnect_actedIn0param0\\": \\"The \\",
                 \\"updateActors\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -273,8 +275,8 @@ describe("Interface Relationships - Update disconnect", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_this_disconnect_actedIn0param0
+            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:\`ACTED_IN\`]->(this_disconnect_actedIn0:Movie)
+            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Movie_this_disconnect_actedIn0param0
             CALL {
             	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
@@ -283,8 +285,8 @@ describe("Interface Relationships - Update disconnect", () => {
             }
             CALL {
             WITH this, this_disconnect_actedIn0
-            OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
-            WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect__on_Movie0_actors0_where_this_disconnect_actedIn0_actors0param0
+            OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:\`ACTED_IN\`]-(this_disconnect_actedIn0_actors0:Actor)
+            WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect__on_Movie0_actors0_where_Actor_this_disconnect_actedIn0_actors0param0
             CALL {
             	WITH this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, this_disconnect_actedIn0
             	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, this_disconnect_actedIn0
@@ -297,8 +299,8 @@ describe("Interface Relationships - Update disconnect", () => {
             }
             CALL {
             	WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_this_disconnect_actedIn0param0
+            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:\`ACTED_IN\`]->(this_disconnect_actedIn0:Series)
+            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Series_this_disconnect_actedIn0param0
             CALL {
             	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
@@ -313,8 +315,9 @@ describe("Interface Relationships - Update disconnect", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateActors_args_disconnect_actedIn0_where_this_disconnect_actedIn0param0\\": \\"The \\",
-                \\"updateActors_args_disconnect_actedIn0_disconnect__on_Movie0_actors0_where_this_disconnect_actedIn0_actors0param0\\": \\"Actor\\",
+                \\"updateActors_args_disconnect_actedIn0_where_Movie_this_disconnect_actedIn0param0\\": \\"The \\",
+                \\"updateActors_args_disconnect_actedIn0_disconnect__on_Movie0_actors0_where_Actor_this_disconnect_actedIn0_actors0param0\\": \\"Actor\\",
+                \\"updateActors_args_disconnect_actedIn0_where_Series_this_disconnect_actedIn0param0\\": \\"The \\",
                 \\"updateActors\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -383,8 +386,8 @@ describe("Interface Relationships - Update disconnect", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_this_disconnect_actedIn0param0
+            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:\`ACTED_IN\`]->(this_disconnect_actedIn0:Movie)
+            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Movie_this_disconnect_actedIn0param0
             CALL {
             	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
@@ -393,8 +396,8 @@ describe("Interface Relationships - Update disconnect", () => {
             }
             CALL {
             WITH this, this_disconnect_actedIn0
-            OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
-            WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect__on_Movie0_actors0_where_this_disconnect_actedIn0_actors0param0
+            OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:\`ACTED_IN\`]-(this_disconnect_actedIn0_actors0:Actor)
+            WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect__on_Movie0_actors0_where_Actor_this_disconnect_actedIn0_actors0param0
             CALL {
             	WITH this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, this_disconnect_actedIn0
             	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, this_disconnect_actedIn0
@@ -407,8 +410,8 @@ describe("Interface Relationships - Update disconnect", () => {
             }
             CALL {
             	WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_this_disconnect_actedIn0param0
+            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:\`ACTED_IN\`]->(this_disconnect_actedIn0:Series)
+            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Series_this_disconnect_actedIn0param0
             CALL {
             	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
@@ -417,8 +420,8 @@ describe("Interface Relationships - Update disconnect", () => {
             }
             CALL {
             WITH this, this_disconnect_actedIn0
-            OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
-            WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect_actors0_where_this_disconnect_actedIn0_actors0param0
+            OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:\`ACTED_IN\`]-(this_disconnect_actedIn0_actors0:Actor)
+            WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect_actors0_where_Actor_this_disconnect_actedIn0_actors0param0
             CALL {
             	WITH this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, this_disconnect_actedIn0
             	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, this_disconnect_actedIn0
@@ -435,9 +438,10 @@ describe("Interface Relationships - Update disconnect", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateActors_args_disconnect_actedIn0_where_this_disconnect_actedIn0param0\\": \\"The \\",
-                \\"updateActors_args_disconnect_actedIn0_disconnect__on_Movie0_actors0_where_this_disconnect_actedIn0_actors0param0\\": \\"Different Actor\\",
-                \\"updateActors_args_disconnect_actedIn0_disconnect_actors0_where_this_disconnect_actedIn0_actors0param0\\": \\"Actor\\",
+                \\"updateActors_args_disconnect_actedIn0_where_Movie_this_disconnect_actedIn0param0\\": \\"The \\",
+                \\"updateActors_args_disconnect_actedIn0_disconnect__on_Movie0_actors0_where_Actor_this_disconnect_actedIn0_actors0param0\\": \\"Different Actor\\",
+                \\"updateActors_args_disconnect_actedIn0_where_Series_this_disconnect_actedIn0param0\\": \\"The \\",
+                \\"updateActors_args_disconnect_actedIn0_disconnect_actors0_where_Actor_this_disconnect_actedIn0_actors0param0\\": \\"Actor\\",
                 \\"updateActors\\": {
                     \\"args\\": {
                         \\"disconnect\\": {

@@ -89,18 +89,18 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`Post\`)
+                WITH create_var0
+                CREATE (create_this1:\`Post\`)
                 SET
-                    create_this0.id = create_var1.id,
-                    create_this0.content = create_var1.content
+                    create_this1.id = create_var0.id,
+                    create_this1.content = create_var0.content
                 WITH *
                 CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN create_this0
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .id }) AS data"
+            RETURN collect(create_this1 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -145,16 +145,16 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`Comment\`)
+                WITH create_var0
+                CREATE (create_this1:\`Comment\`)
                 SET
-                    create_this0.id = create_var1.id,
-                    create_this0.content = create_var1.content
-                RETURN create_this0
+                    create_this1.id = create_var0.id,
+                    create_this1.content = create_var0.content
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .id }) AS data"
+            RETURN collect(create_this1 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -277,7 +277,8 @@ describe("Cypher Auth isAuthenticated", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content0_node
-            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            			MERGE (this)-[:\`HAS_CONTENT\`]->(this_connect_content0_node)
+            			RETURN count(*) AS _
             		}
             	}
             WITH this, this_connect_content0_node
@@ -295,7 +296,8 @@ describe("Cypher Auth isAuthenticated", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content1_node
-            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content1_node)
+            			MERGE (this)-[:\`HAS_CONTENT\`]->(this_connect_content1_node)
+            			RETURN count(*) AS _
             		}
             	}
             WITH this, this_connect_content1_node
@@ -345,7 +347,7 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
+            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:\`HAS_CONTENT\`]->(this_disconnect_content0:Comment)
             CALL {
             	WITH this_disconnect_content0, this_disconnect_content0_rel, this
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
@@ -356,7 +358,7 @@ describe("Cypher Auth isAuthenticated", () => {
             }
             CALL {
             	WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
+            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:\`HAS_CONTENT\`]->(this_disconnect_content0:Post)
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -477,7 +479,7 @@ describe("Cypher Auth isAuthenticated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WITH this
-            OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
+            OPTIONAL MATCH (this)-[this_content_Comment0_relationship:\`HAS_CONTENT\`]->(this_content_Comment0:Comment)
             WITH this, collect(DISTINCT this_content_Comment0) AS this_content_Comment0_to_delete
             CALL {
             	WITH this_content_Comment0_to_delete
@@ -485,7 +487,7 @@ describe("Cypher Auth isAuthenticated", () => {
             	DETACH DELETE x
             }
             WITH this
-            OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
+            OPTIONAL MATCH (this)-[this_content_Post0_relationship:\`HAS_CONTENT\`]->(this_content_Post0:Post)
             WITH this, this_content_Post0
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete

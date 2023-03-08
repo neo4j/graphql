@@ -70,7 +70,7 @@ describe("Create Relationship Subscription", () => {
                 year: Int!
             }
             
-            interface Review {
+            interface Review @relationshipProperties {
                 score: Int!
             }
         

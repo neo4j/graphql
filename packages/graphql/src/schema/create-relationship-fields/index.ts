@@ -17,9 +17,8 @@
  * limitations under the License.
  */
 
-import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type { Directive, InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
-import pluralize from "pluralize";
 import { Node } from "../../classes";
 import {
     WHERE_AGGREGATION_AVERAGE_TYPES,
@@ -33,8 +32,14 @@ import { FieldAggregationComposer } from "../aggregations/field-aggregation-comp
 import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
+import type { Subgraph } from "../../classes/Subgraph";
 import { overwrite } from "./fields/overwrite";
-import { DEPRECATE_NOT, DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS, DEPRECATE_INVALID_AGGREGATION_FILTERS } from "../constants";
+import {
+    DEPRECATE_NOT,
+    DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS,
+    DEPRECATE_INVALID_AGGREGATION_FILTERS,
+} from "../constants";
+import { addRelationshipArrayFilters } from "../augment/add-relationship-array-filters";
 
 function createRelationshipFields({
     relationshipFields,
@@ -44,6 +49,7 @@ function createRelationshipFields({
     sourceName,
     nodes,
     relationshipPropertyFields,
+    subgraph,
 }: {
     relationshipFields: RelationField[];
     schemaComposer: SchemaComposer;
@@ -51,15 +57,16 @@ function createRelationshipFields({
     sourceName: string;
     nodes: Node[];
     relationshipPropertyFields: Map<string, ObjectFields>;
+    subgraph?: Subgraph;
 }): void {
     const whereInput = schemaComposer.getITC(`${sourceName}Where`);
     const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
     const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
 
-    let nodeConnectInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
-    let nodeDeleteInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
-    let nodeDisconnectInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
-    let nodeRelationInput: InputTypeComposer<any> = undefined as unknown as InputTypeComposer<any>;
+    let nodeConnectInput: InputTypeComposer<any>;
+    let nodeDeleteInput: InputTypeComposer<any>;
+    let nodeDisconnectInput: InputTypeComposer<any>;
+    let nodeRelationInput: InputTypeComposer<any>;
 
     if (relationshipFields.length) {
         [nodeConnectInput, nodeDeleteInput, nodeDisconnectInput, nodeRelationInput] = [
@@ -425,10 +432,10 @@ function createRelationshipFields({
                     },
                 });
 
-                const fieldInputFields = {
+                const fieldInputFields: Record<string, string> = {
                     create,
                     connect,
-                } as Record<string, string>;
+                };
 
                 if (connectOrCreate) {
                     fieldInputFields.connectOrCreate = connectOrCreate;
@@ -712,25 +719,9 @@ function createRelationshipFields({
             ...{
                 [rel.fieldName]: {
                     type: `${n.name}Where`,
-                    directives: [
-                        {
-                            name: "deprecated",
-                            args: {
-                                reason: `Use \`${rel.fieldName}_SOME\` instead.`,
-                            },
-                        },
-                    ],
                 },
                 [`${rel.fieldName}_NOT`]: {
                     type: `${n.name}Where`,
-                    directives: [
-                        {
-                            name: "deprecated",
-                            args: {
-                                reason: `Use \`${rel.fieldName}_NONE\` instead.`,
-                            },
-                        },
-                    ],
                 },
                 [`${rel.fieldName}Aggregate`]: {
                     type: whereAggregateInput,
@@ -741,23 +732,14 @@ function createRelationshipFields({
 
         // n..m Relationships
         if (rel.typeMeta.array) {
-            // Add filters for each list predicate
-            whereInput.addFields(
-                (["ALL", "NONE", "SINGLE", "SOME"] as const).reduce(
-                    (acc, filter) => ({
-                        ...acc,
-                        [`${rel.fieldName}_${filter}`]: {
-                            type: `${n.name}Where`,
-                            // e.g. "Return Movies where all of the related Actors match this filter"
-                            description: `Return ${pluralize(sourceName)} where ${
-                                filter !== "SINGLE" ? filter.toLowerCase() : "one"
-                            } of the related ${pluralize(rel.typeMeta.name)} match this filter`,
-                            directives: deprecatedDirectives,
-                        },
-                    }),
-                    {}
-                )
-            );
+            addRelationshipArrayFilters({
+                whereInput,
+                fieldName: rel.fieldName,
+                sourceName,
+                relatedType: rel.typeMeta.name,
+                whereType: `${n.name}Where`,
+                directives: deprecatedDirectives,
+            });
         }
 
         const createName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}CreateFieldInput`;
@@ -795,25 +777,37 @@ function createRelationshipFields({
         });
 
         if (!rel.writeonly) {
-            const nodeFieldsBaseArgs = {
-                where: `${rel.typeMeta.name}Where`,
-                options: `${rel.typeMeta.name}Options`,
+            const relationshipField: { type: string; description?: string; directives: Directive[]; args?: any } = {
+                type: rel.typeMeta.pretty,
+                description: rel.description,
+                directives: graphqlDirectivesToCompose(rel.otherDirectives),
             };
 
-            const nodeFieldsArgs = addDirectedArgument(nodeFieldsBaseArgs, rel);
+            let generateRelFieldArgs = true;
+
+            // Subgraph schemas do not support arguments on relationship fields (singular)
+            if (subgraph) {
+                if (!rel.typeMeta.array) {
+                    generateRelFieldArgs = false;
+                }
+            }
+
+            if (generateRelFieldArgs) {
+                const nodeFieldsBaseArgs = {
+                    where: `${rel.typeMeta.name}Where`,
+                    options: `${rel.typeMeta.name}Options`,
+                };
+                const nodeFieldsArgs = addDirectedArgument(nodeFieldsBaseArgs, rel);
+                relationshipField.args = nodeFieldsArgs;
+            }
 
             composeNode.addFields({
-                [rel.fieldName]: {
-                    type: rel.typeMeta.pretty,
-                    args: nodeFieldsArgs,
-                    description: rel.description,
-                    directives: graphqlDirectivesToCompose(rel.otherDirectives),
-                },
+                [rel.fieldName]: relationshipField,
             });
 
             if (composeNode instanceof ObjectTypeComposer) {
                 const baseTypeName = `${sourceName}${n.name}${upperFirst(rel.fieldName)}`;
-                const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer);
+                const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer, subgraph);
 
                 const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(
                     baseTypeName,

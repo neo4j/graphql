@@ -109,7 +109,7 @@ describe("Interface Relationships - Create connect", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actedIn_connect0_node
-            			MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
+            			MERGE (this0)-[this0_actedIn_connect0_relationship:\`ACTED_IN\`]->(this0_actedIn_connect0_node)
             			SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
             		}
             	}
@@ -127,7 +127,7 @@ describe("Interface Relationships - Create connect", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actedIn_connect1_node
-            			MERGE (this0)-[this0_actedIn_connect1_relationship:ACTED_IN]->(this0_actedIn_connect1_node)
+            			MERGE (this0)-[this0_actedIn_connect1_relationship:\`ACTED_IN\`]->(this0_actedIn_connect1_node)
             			SET this0_actedIn_connect1_relationship.screenTime = $this0_actedIn_connect1_relationship_screenTime
             		}
             	}
@@ -136,22 +136,23 @@ describe("Interface Relationships - Create connect", () => {
             }
             RETURN this0
             }
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this0
-                MATCH (this0)-[create_this0:ACTED_IN]->(this0_Movie:\`Movie\`)
-                RETURN { __resolveType: \\"Movie\\", runtime: this0_Movie.runtime, title: this0_Movie.title } AS this0_actedIn
-                UNION
-                WITH this0
-                MATCH (this0)-[create_this1:ACTED_IN]->(this0_Series:\`Series\`)
-                RETURN { __resolveType: \\"Series\\", episodes: this0_Series.episodes, title: this0_Series.title } AS this0_actedIn
+                CALL {
+                    WITH *
+                    MATCH (this0)-[create_this0:\`ACTED_IN\`]->(create_this1:\`Movie\`)
+                    WITH create_this1 { __resolveType: \\"Movie\\", __id: id(this0), .runtime, .title } AS create_this1
+                    RETURN create_this1 AS create_var2
+                    UNION
+                    WITH *
+                    MATCH (this0)-[create_this3:\`ACTED_IN\`]->(create_this4:\`Series\`)
+                    WITH create_this4 { __resolveType: \\"Series\\", __id: id(this0), .episodes, .title } AS create_this4
+                    RETURN create_this4 AS create_var2
+                }
+                WITH create_var2
+                RETURN collect(create_var2) AS create_var2
             }
-            RETURN collect(this0_actedIn) AS this0_actedIn
-            }
-            RETURN [
-            this0 { .name, actedIn: this0_actedIn }] AS data"
+            RETURN [ this0 { .name, actedIn: create_var2 } ] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

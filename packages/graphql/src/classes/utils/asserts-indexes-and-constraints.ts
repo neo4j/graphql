@@ -30,15 +30,7 @@ export interface AssertIndexesAndConstraintsOptions {
     create?: boolean;
 }
 
-async function createIndexesAndConstraints({
-    nodes,
-    session,
-    dbInfo,
-}: {
-    nodes: Node[];
-    session: Session;
-    dbInfo: Neo4jDatabaseInfo;
-}) {
+async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; session: Session }) {
     const constraintsToCreate = await getMissingConstraints({ nodes, session });
     const indexesToCreate: { indexName: string; label: string; properties: string[] }[] = [];
 
@@ -113,8 +105,8 @@ async function createIndexesAndConstraints({
     for (const constraintToCreate of constraintsToCreate) {
         const cypher = [
             `CREATE CONSTRAINT ${constraintToCreate.constraintName}`,
-            `IF NOT EXISTS ${dbInfo.gte("4.4") ? "FOR" : "ON"} (n:${constraintToCreate.label})`,
-            `${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} n.${constraintToCreate.property} IS UNIQUE`,
+            `IF NOT EXISTS FOR (n:${constraintToCreate.label})`,
+            `REQUIRE n.${constraintToCreate.property} IS UNIQUE`,
         ].join(" ");
 
         debug(`About to execute Cypher: ${cypher}`);
@@ -268,13 +260,11 @@ async function assertIndexesAndConstraints({
     driverConfig,
     nodes,
     options,
-    dbInfo,
 }: {
     driver: Driver;
     driverConfig?: DriverConfig;
     nodes: Node[];
     options?: AssertIndexesAndConstraintsOptions;
-    dbInfo: Neo4jDatabaseInfo;
 }): Promise<void> {
     await driver.verifyConnectivity();
 
@@ -297,7 +287,7 @@ async function assertIndexesAndConstraints({
 
     try {
         if (options?.create) {
-            await createIndexesAndConstraints({ nodes, session, dbInfo });
+            await createIndexesAndConstraints({ nodes, session });
         } else {
             await checkIndexesAndConstraints({ nodes, session });
         }

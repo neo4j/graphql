@@ -44,7 +44,7 @@ function createDisconnectAndParams({
     parentNode,
     insideDoWhen,
     parameterPrefix,
-    isFirstLevel = true
+    isFirstLevel = true,
 }: {
     withVars: string[];
     value: any;
@@ -87,7 +87,7 @@ function createDisconnectAndParams({
                 const {
                     cypher: whereCypher,
                     subquery: preComputedSubqueries,
-                    params: whereParams
+                    params: whereParams,
                 } = createConnectionWhereAndParams({
                     nodeVariable: variableName,
                     whereInput: disconnect.where,
@@ -95,7 +95,9 @@ function createDisconnectAndParams({
                     context,
                     relationshipVariable: relVarName,
                     relationship,
-                    parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`
+                    parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where.${
+                        relatedNode.name
+                    }`,
                 });
                 if (whereCypher) {
                     whereStrs.push(whereCypher);
@@ -115,7 +117,7 @@ function createDisconnectAndParams({
                 operations: "DISCONNECT",
                 entity: relatedNode,
                 context,
-                where: { varName: variableName, node: relatedNode }
+                where: { varName: variableName, node: relatedNode },
             });
             if (whereAuth[0]) {
                 whereStrs.push(whereAuth[0]);
@@ -137,7 +139,7 @@ function createDisconnectAndParams({
 
         const nodeMatrix: { node: Node; name: string }[] = [
             { node: parentNode, name: parentVar },
-            { node: relatedNode, name: variableName }
+            { node: relatedNode, name: variableName },
         ];
 
         const preAuth = nodeMatrix.reduce(
@@ -151,7 +153,7 @@ function createDisconnectAndParams({
                     operations: "DISCONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: node, varName: name }
+                    allow: { parentNode: node, varName: name },
                 });
 
                 if (!str) {
@@ -194,9 +196,9 @@ function createDisconnectAndParams({
                 relVariable: relVarName,
                 fromVariable,
                 toVariable,
-                typename: relationField.type,
+                typename: relationField.typeUnescaped,
                 fromTypename,
-                toTypename
+                toTypename,
             });
             subquery.push(`\tWITH ${eventWithMetaStr} as meta, ${relVarName}`);
             subquery.push(`\tDELETE ${relVarName}`);
@@ -271,7 +273,7 @@ function createDisconnectAndParams({
                                         relField.typeMeta.array ? `[${i}]` : ""
                                     }.disconnect.${k}${relField.union ? `.${newRefNode.name}` : ""}`,
                                     labelOverride: relField.union ? newRefNode.name : "",
-                                    isFirstLevel: false
+                                    isFirstLevel: false,
                                 });
                                 r.disconnects.push(recurse[0]);
                                 r.params = { ...r.params, ...recurse[1] };
@@ -324,7 +326,7 @@ function createDisconnectAndParams({
                                             relField.typeMeta.array ? `[${onDisconnectIndex}]` : ""
                                         }.${k}${relField.union ? `.${newRefNode.name}` : ""}`,
                                         labelOverride: relField.union ? newRefNode.name : "",
-                                        isFirstLevel: false
+                                        isFirstLevel: false,
                                     });
                                     r.disconnects.push(recurse[0]);
                                     r.params = { ...r.params, ...recurse[1] };
@@ -355,7 +357,7 @@ function createDisconnectAndParams({
                     escapeQuotes: Boolean(insideDoWhen),
                     skipRoles: true,
                     skipIsAuthenticated: true,
-                    bind: { parentNode: node, varName: variableName }
+                    bind: { parentNode: node, varName: variableName },
                 });
 
                 if (!str) {
@@ -397,7 +399,7 @@ function createDisconnectAndParams({
                 operations: "DISCONNECT",
                 entity: parentNode,
                 context,
-                where: { varName: parentVar, node: parentNode }
+                where: { varName: parentVar, node: parentNode },
             });
             if (whereAuth[0]) {
                 res.disconnects.push(`WITH ${withVars.join(", ")}`);
@@ -451,7 +453,7 @@ function createDisconnectAndParams({
 
     const { disconnects, params } = ((relationField.typeMeta.array ? value : [value]) as any[]).reduce(reducer, {
         disconnects: [],
-        params: {}
+        params: {},
     });
 
     return [disconnects.join("\n"), params];
