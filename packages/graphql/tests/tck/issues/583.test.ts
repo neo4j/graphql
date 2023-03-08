@@ -91,24 +91,24 @@ describe("#583", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this0:ACTED_IN]->(this_actedIn:\`Movie\`)
-                    WITH this_actedIn { __resolveType: \\"Movie\\", .title, .awardsGiven } AS this_actedIn
-                    RETURN this_actedIn AS this_actedIn
+                    MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                    WITH this1 { __resolveType: \\"Movie\\", __id: id(this), .title, .awardsGiven } AS this1
+                    RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)-[this1:ACTED_IN]->(this_actedIn:\`Series\`)
-                    WITH this_actedIn { __resolveType: \\"Series\\", .title, .awardsGiven } AS this_actedIn
-                    RETURN this_actedIn AS this_actedIn
+                    MATCH (this)-[this3:ACTED_IN]->(this4:\`Series\`)
+                    WITH this4 { __resolveType: \\"Series\\", __id: id(this), .title, .awardsGiven } AS this4
+                    RETURN this4 AS var2
                     UNION
                     WITH *
-                    MATCH (this)-[this2:ACTED_IN]->(this_actedIn:\`ShortFilm\`)
-                    WITH this_actedIn { __resolveType: \\"ShortFilm\\", .title } AS this_actedIn
-                    RETURN this_actedIn AS this_actedIn
+                    MATCH (this)-[this5:ACTED_IN]->(this6:\`ShortFilm\`)
+                    WITH this6 { __resolveType: \\"ShortFilm\\", __id: id(this), .title } AS this6
+                    RETURN this6 AS var2
                 }
-                WITH this_actedIn
-                RETURN collect(this_actedIn) AS this_actedIn
+                WITH var2
+                RETURN collect(var2) AS var2
             }
-            RETURN this { .name, actedIn: this_actedIn } AS this"
+            RETURN this { .name, actedIn: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

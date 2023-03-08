@@ -110,19 +110,19 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)<-[update_this0:REVIEWED]-(this_reviewers:\`Person\`)
-                    WITH this_reviewers { __resolveType: \\"Person\\", .name, .reputation } AS this_reviewers
-                    RETURN this_reviewers AS this_reviewers
+                    MATCH (this)<-[update_this0:REVIEWED]-(update_this1:\`Person\`)
+                    WITH update_this1 { __resolveType: \\"Person\\", __id: id(this), .name, .reputation } AS update_this1
+                    RETURN update_this1 AS update_var2
                     UNION
                     WITH *
-                    MATCH (this)<-[update_this1:REVIEWED]-(this_reviewers:\`Influencer\`)
-                    WITH this_reviewers { __resolveType: \\"Influencer\\" } AS this_reviewers
-                    RETURN this_reviewers AS this_reviewers
+                    MATCH (this)<-[update_this3:REVIEWED]-(update_this4:\`Influencer\`)
+                    WITH update_this4 { __resolveType: \\"Influencer\\", __id: id(this) } AS update_this4
+                    RETURN update_this4 AS update_var2
                 }
-                WITH this_reviewers
-                RETURN collect(this_reviewers) AS this_reviewers
+                WITH update_var2
+                RETURN collect(update_var2) AS update_var2
             }
-            RETURN collect(DISTINCT this { .title, reviewers: this_reviewers }) AS data"
+            RETURN collect(DISTINCT this { .title, reviewers: update_var2 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

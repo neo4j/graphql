@@ -39,6 +39,7 @@ export type DriverConfig = {
 export interface AuthContext {
     isAuthenticated: boolean;
     roles: string[];
+    bindPredicate?: "any" | "all";
     jwt?: JwtPayload;
 }
 
@@ -192,8 +193,8 @@ export type CustomScalarField = BaseField;
 export interface CustomEnumField extends BaseField {
     // TODO Must be "Enum" - really needs refactoring into classes
     kind: string;
-    defaultValue?: string;
-    coalesceValue?: string;
+    defaultValue?: string | string[];
+    coalesceValue?: string | string[];
 }
 
 export interface UnionField extends BaseField {
@@ -377,7 +378,7 @@ export type InputField = { type: string; defaultValue?: string; directives?: Dir
 export interface Neo4jGraphQLAuthPlugin {
     rolesPath?: string;
     isGlobalAuthenticationEnabled?: boolean;
-    bindPredicate: "all" | "any";
+    bindPredicate?: "all" | "any";
 
     decode<T>(token: string): Promise<T | undefined>;
     /**
@@ -544,3 +545,5 @@ export type PredicateReturn = {
     predicate: Cypher.Predicate | undefined;
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
 };
+
+export type CypherFieldReferenceMap = Record<string, Cypher.Node | Cypher.Variable>;

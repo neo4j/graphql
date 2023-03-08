@@ -66,15 +66,15 @@ export function inputTreeToCypherMap(
                     (x) => x.properties === relationField.properties
                 ) as unknown as Relationship;
             }
-            let scalar = false;
+            let scalarOrEnum = false;
             if (parentKey === "edge") {
-                scalar = isScalar(key, relationship as Relationship);
+                scalarOrEnum = isScalarOrEnum(key, relationship as Relationship);
             }
             // it assume that if parentKey is not defined then it means that the key belong to a Node
             else if (parentKey === "node" || parentKey === undefined) {
-                scalar = isScalar(key, node);
+                scalarOrEnum = isScalarOrEnum(key, node);
             }
-            if (typeof value === "object" && value !== null && (relationField || !scalar)) {
+            if (typeof value === "object" && value !== null && (relationField || !scalarOrEnum)) {
                 if (Array.isArray(value)) {
                     obj[key] = new Cypher.List(
                         value.map((GraphQLCreateInput: GraphQLCreateInput) =>
@@ -106,15 +106,16 @@ export function inputTreeToCypherMap(
     return new Cypher.Map(properties);
 }
 
-function isScalar(fieldName: string, graphElement: GraphElement) {
-    const scalarPredicate = (x) => x.fieldName === fieldName;
-    const scalarFields = [
+function isScalarOrEnum(fieldName: string, graphElement: GraphElement) {
+    const scalarOrEnumPredicate = (x) => x.fieldName === fieldName;
+    const scalarOrEnumFields = [
         graphElement.primitiveFields,
         graphElement.temporalFields,
         graphElement.pointFields,
         graphElement.scalarFields,
+        graphElement.enumFields,
     ];
-    return scalarFields.flat().some(scalarPredicate);
+    return scalarOrEnumFields.flat().some(scalarOrEnumPredicate);
 }
 
 export function getTreeDescriptor(
@@ -133,15 +134,15 @@ export function getTreeDescriptor(
                 ) as unknown as Relationship;
             }
 
-            let scalar = false;
+            let scalarOrEnum = false;
             if (parentKey === "edge") {
-                scalar = isScalar(key, relationship as Relationship);
+                scalarOrEnum = isScalarOrEnum(key, relationship as Relationship);
             }
             // it assume that if parentKey is not defined then it means that the key belong to a Node
             else if (parentKey === "node" || parentKey === undefined) {
-                scalar = isScalar(key, node);
+                scalarOrEnum = isScalarOrEnum(key, node);
             }
-            if (typeof value === "object" && value !== null && !scalar) {
+            if (typeof value === "object" && value !== null && !scalarOrEnum) {
                 // TODO: supports union/interfaces
                 const innerNode = relationField && relatedNodes[0] ? relatedNodes[0] : node;
 
