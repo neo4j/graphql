@@ -65,7 +65,7 @@ export default function createUpdateAndParams({
     context,
     callbackBucket,
     parameterPrefix,
-    includeRelationshipValidation
+    includeRelationshipValidation,
 }: {
     parentVar: string;
     updateInput: any;
@@ -148,7 +148,7 @@ export default function createUpdateAndParams({
                                 const {
                                     cypher: whereClause,
                                     subquery: preComputedSubqueries,
-                                    params: whereParams
+                                    params: whereParams,
                                 } = createConnectionWhereAndParams({
                                     whereInput: update.where,
                                     node: refNode,
@@ -158,7 +158,7 @@ export default function createUpdateAndParams({
                                     context,
                                     parameterPrefix: `${parameterPrefix}.${key}${
                                         relationField.union ? `.${refNode.name}` : ""
-                                    }${relationField.typeMeta.array ? `[${index}]` : ``}.where`
+                                    }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
                                 });
                                 if (whereClause) {
                                     whereStrs.push(whereClause);
@@ -189,7 +189,7 @@ export default function createUpdateAndParams({
                                 operations: "UPDATE",
                                 entity: refNode,
                                 context,
-                                where: { varName: variableName, node: refNode }
+                                where: { varName: variableName, node: refNode },
                             });
                             if (whereAuth[0]) {
                                 whereStrs.push(whereAuth[0]);
@@ -201,7 +201,7 @@ export default function createUpdateAndParams({
                             if (aggregationWhere) {
                                 const columns = [
                                     new Cypher.NamedVariable(relationshipVariable),
-                                    new Cypher.NamedVariable(variableName)
+                                    new Cypher.NamedVariable(variableName),
                                 ];
                                 const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
                                 const { cypher } = caseWhereClause.build("aggregateWhereFilter");
@@ -221,7 +221,7 @@ export default function createUpdateAndParams({
                                 operation: "UPDATE",
                                 parameterPrefix: `${parameterPrefix}.${key}${
                                     relationField.union ? `.${refNode.name}` : ""
-                                }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`
+                                }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`,
                             });
                             innerUpdate.push(setProperties);
                         }
@@ -260,7 +260,7 @@ export default function createUpdateAndParams({
                                 parameterPrefix: `${parameterPrefix}.${key}${
                                     relationField.union ? `.${refNode.name}` : ""
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.node`,
-                                includeRelationshipValidation: true
+                                includeRelationshipValidation: true,
                             });
                             res.params = { ...res.params, ...updateAndParams[1] };
                             innerUpdate.push(updateAndParams[0]);
@@ -281,7 +281,7 @@ export default function createUpdateAndParams({
                                         relationField.union ? `.${refNode.name}` : ""
                                     }${relationField.typeMeta.array ? `[${index}]` : ``}.update.node._on.${
                                         refNode.name
-                                    }`
+                                    }`,
                                 });
                                 res.params = { ...res.params, ...onUpdateAndParams[1] };
                                 innerUpdate.push(onUpdateAndParams[0]);
@@ -321,7 +321,7 @@ export default function createUpdateAndParams({
                             parentNode: node,
                             parameterPrefix: `${parameterPrefix}.${key}${
                                 relationField.union ? `.${refNode.name}` : ""
-                            }${relationField.typeMeta.array ? `[${index}]` : ""}.disconnect`
+                            }${relationField.typeMeta.array ? `[${index}]` : ""}.disconnect`,
                         });
                         subquery.push(disconnectAndParams[0]);
                         res.params = { ...res.params, ...disconnectAndParams[1] };
@@ -338,7 +338,7 @@ export default function createUpdateAndParams({
                             parentVar,
                             relationField,
                             labelOverride: relationField.union ? refNode.name : "",
-                            parentNode: node
+                            parentNode: node,
                         });
                         subquery.push(connectAndParams[0]);
                         if (context.subscriptionsEnabled) {
@@ -358,7 +358,7 @@ export default function createUpdateAndParams({
                             node,
                             context,
                             withVars,
-                            callbackBucket
+                            callbackBucket,
                         });
                         subquery.push(cypher);
                         res.params = { ...res.params, ...params };
@@ -378,7 +378,7 @@ export default function createUpdateAndParams({
                             parameterPrefix: `${parameterPrefix}.${key}${
                                 relationField.typeMeta.array ? `[${index}]` : ``
                             }.delete`, // its use here
-                            recursing: true
+                            recursing: true,
                         });
                         subquery.push(deleteAndParams[0]);
                         res.params = { ...res.params, ...deleteAndParams[1] };
@@ -395,14 +395,14 @@ export default function createUpdateAndParams({
                             const propertiesName = `${baseName}_relationship`;
 
                             let createNodeInput = {
-                                input: create.node
+                                input: create.node,
                             };
 
                             if (relationField.interface) {
                                 const nodeFields = create.node[refNode.name];
                                 if (!nodeFields) return; // Interface specific type not defined
                                 createNodeInput = {
-                                    input: nodeFields
+                                    input: nodeFields,
                                 };
                             }
 
@@ -414,7 +414,7 @@ export default function createUpdateAndParams({
                                 varName: nodeName,
                                 withVars: [...withVars, nodeName],
                                 includeRelationshipValidation: false,
-                                ...createNodeInput
+                                ...createNodeInput,
                             });
                             subquery.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };
@@ -433,7 +433,7 @@ export default function createUpdateAndParams({
                                     operation: "CREATE",
                                     parameterPrefix: `${parameterPrefix}.${key}${
                                         relationField.union ? `.${refNode.name}` : ""
-                                    }[${index}].create[${i}].edge`
+                                    }[${index}].create[${i}].edge`,
                                 });
                                 subquery.push(setA);
                             }
@@ -452,7 +452,7 @@ export default function createUpdateAndParams({
                                     toVariable,
                                     typename: relationField.typeUnescaped,
                                     fromTypename,
-                                    toTypename
+                                    toTypename,
                                 });
                                 subquery.push(
                                     `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(
@@ -466,7 +466,7 @@ export default function createUpdateAndParams({
                             const relationshipValidationStr = createRelationshipValidationStr({
                                 node: refNode,
                                 context,
-                                varName: nodeName
+                                varName: nodeName,
                             });
                             if (relationshipValidationStr) {
                                 subquery.push(`WITH ${[...withVars, nodeName].join(", ")}`);
@@ -562,7 +562,7 @@ export default function createUpdateAndParams({
                     entity: authableField,
                     operations: "UPDATE",
                     context,
-                    allow: { varName, parentNode: node }
+                    allow: { varName, parentNode: node },
                 });
                 const postAuth = createAuthAndParams({
                     entity: authableField,
@@ -570,7 +570,7 @@ export default function createUpdateAndParams({
                     skipRoles: true,
                     skipIsAuthenticated: true,
                     context,
-                    bind: { parentNode: node, varName }
+                    bind: { parentNode: node, varName },
                 });
 
                 if (!res.meta) {
@@ -637,7 +637,7 @@ export default function createUpdateAndParams({
 
     const reducedUpdate = Object.entries(updateInput as Record<string, unknown>).reduce(reducer, {
         strs: [],
-        params: {}
+        params: {},
     });
     const { strs, meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] } } = reducedUpdate;
     let params = reducedUpdate.params;
@@ -650,7 +650,7 @@ export default function createUpdateAndParams({
         entity: node,
         context,
         allow: { parentNode: node, varName },
-        operations: "UPDATE"
+        operations: "UPDATE",
     });
     if (preAuth[0]) {
         preAuthStrs.push(preAuth[0]);
@@ -663,7 +663,7 @@ export default function createUpdateAndParams({
         skipIsAuthenticated: true,
         skipRoles: true,
         operations: "UPDATE",
-        bind: { parentNode: node, varName }
+        bind: { parentNode: node, varName },
     });
     if (postAuth[0]) {
         postAuthStrs.push(postAuth[0]);
@@ -712,7 +712,7 @@ export default function createUpdateAndParams({
             withVars,
             nodeVariable: varName,
             typename: node.name,
-            statements: strs
+            statements: strs,
         });
     }
     return [
@@ -721,9 +721,9 @@ export default function createUpdateAndParams({
             preArrayMethodValidationStr,
             ...statements,
             postAuthStr,
-            ...(relationshipValidationStr ? [withStr, relationshipValidationStr] : [])
+            ...(relationshipValidationStr ? [withStr, relationshipValidationStr] : []),
         ].join("\n"),
-        params
+        params,
     ];
 }
 
@@ -739,7 +739,7 @@ function wrapInSubscriptionsMetaCall({
     statements,
     nodeVariable,
     typename,
-    withVars
+    withVars,
 }: {
     statements: string[];
     nodeVariable: string;
