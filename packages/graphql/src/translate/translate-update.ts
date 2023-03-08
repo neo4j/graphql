@@ -81,26 +81,24 @@ export default async function translateUpdate({
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
 
-    if (updateInput) {
-        const updateAndParams = createUpdateAndParams({
+    if (deleteInput) {
+        const deleteAndParams = createDeleteAndParams({
             context,
-            callbackBucket,
             node,
-            updateInput,
-            varName,
+            deleteInput,
+            varName: `${varName}_delete`,
             parentVar: varName,
             withVars,
-            parameterPrefix: `${resolveTree.name}.args.update`,
-            includeRelationshipValidation: true,
+            parameterPrefix: `${resolveTree.name}.args.delete`,
         });
-        [updateStr] = updateAndParams;
+        [deleteStr] = deleteAndParams;
         cypherParams = {
             ...cypherParams,
-            ...updateAndParams[1],
+            ...deleteAndParams[1],
         };
         updateArgs = {
             ...updateArgs,
-            ...(updateStr.includes(resolveTree.name) ? { update: updateInput } : {}),
+            ...(deleteStr.includes(resolveTree.name) ? { delete: deleteInput } : {}),
         };
     }
 
@@ -161,6 +159,29 @@ export default async function translateUpdate({
         updateArgs = {
             ...updateArgs,
             disconnect: disconnectInput,
+        };
+    }
+
+    if (updateInput) {
+        const updateAndParams = createUpdateAndParams({
+            context,
+            callbackBucket,
+            node,
+            updateInput,
+            varName,
+            parentVar: varName,
+            withVars,
+            parameterPrefix: `${resolveTree.name}.args.update`,
+            includeRelationshipValidation: true,
+        });
+        [updateStr] = updateAndParams;
+        cypherParams = {
+            ...cypherParams,
+            ...updateAndParams[1],
+        };
+        updateArgs = {
+            ...updateArgs,
+            ...(updateStr.includes(resolveTree.name) ? { update: updateInput } : {}),
         };
     }
 
@@ -225,6 +246,42 @@ export default async function translateUpdate({
                     cypherParams = { ...cypherParams, ...connectAndParams[1] };
                 });
             }
+        });
+    }
+
+    if (connectOrCreateInput) {
+        Object.entries(connectOrCreateInput).forEach(([key, input]) => {
+            const relationField = node.relationFields.find((x) => key === x.fieldName) as RelationField;
+
+            const refNodes: Node[] = [];
+
+            if (relationField.union) {
+                Object.keys(input).forEach((unionTypeName) => {
+                    refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
+                });
+            } else if (relationField.interface) {
+                relationField.interface?.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
+                });
+            } else {
+                refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+            }
+
+            refNodes.forEach((refNode) => {
+                const { cypher, params } = createConnectOrCreateAndParams({
+                    input: input[refNode.name] || input, // Deals with different input from update -> connectOrCreate
+                    varName: `${varName}_connectOrCreate_${key}${relationField.union ? `_${refNode.name}` : ""}`,
+                    parentVar: varName,
+                    relationField,
+                    refNode,
+                    node,
+                    context,
+                    withVars,
+                    callbackBucket,
+                });
+                connectStrs.push(cypher);
+                cypherParams = { ...cypherParams, ...params };
+            });
         });
     }
 
@@ -337,63 +394,6 @@ export default async function translateUpdate({
         });
     }
 
-    if (deleteInput) {
-        const deleteAndParams = createDeleteAndParams({
-            context,
-            node,
-            deleteInput,
-            varName: `${varName}_delete`,
-            parentVar: varName,
-            withVars,
-            parameterPrefix: `${resolveTree.name}.args.delete`,
-        });
-        [deleteStr] = deleteAndParams;
-        cypherParams = {
-            ...cypherParams,
-            ...deleteAndParams[1],
-        };
-        updateArgs = {
-            ...updateArgs,
-            ...(deleteStr.includes(resolveTree.name) ? { delete: deleteInput } : {}),
-        };
-    }
-
-    if (connectOrCreateInput) {
-        Object.entries(connectOrCreateInput).forEach(([key, input]) => {
-            const relationField = node.relationFields.find((x) => key === x.fieldName) as RelationField;
-
-            const refNodes: Node[] = [];
-
-            if (relationField.union) {
-                Object.keys(input).forEach((unionTypeName) => {
-                    refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
-                });
-            } else if (relationField.interface) {
-                relationField.interface?.implementations?.forEach((implementationName) => {
-                    refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
-                });
-            } else {
-                refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
-            }
-
-            refNodes.forEach((refNode) => {
-                const { cypher, params } = createConnectOrCreateAndParams({
-                    input: input[refNode.name] || input, // Deals with different input from update -> connectOrCreate
-                    varName: `${varName}_connectOrCreate_${key}${relationField.union ? `_${refNode.name}` : ""}`,
-                    parentVar: varName,
-                    relationField,
-                    refNode,
-                    node,
-                    context,
-                    withVars,
-                    callbackBucket,
-                });
-                connectStrs.push(cypher);
-                cypherParams = { ...cypherParams, ...params };
-            });
-        });
-    }
-
     let projectionSubquery: Cypher.Clause | undefined;
     let projStr: Cypher.Expr | undefined;
     if (nodeProjection?.fieldsByTypeName) {
@@ -428,11 +428,11 @@ export default async function translateUpdate({
         const cypher = [
             ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
             matchAndWhereStr,
+            deleteStr,
+            disconnectStrs.join("\n"),
             updateStr,
             connectStrs.join("\n"),
-            disconnectStrs.join("\n"),
             createStrs.join("\n"),
-            deleteStr,
             ...(deleteStr.length ||
             connectStrs.length ||
             disconnectStrs.length ||

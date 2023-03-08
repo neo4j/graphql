@@ -138,6 +138,45 @@ export default function createUpdateAndParams({
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
                     const variableName = `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
 
+                    if (update.delete) {
+                        const innerVarName = `${variableName}_delete`;
+
+                        const deleteAndParams = createDeleteAndParams({
+                            context,
+                            node,
+                            deleteInput: { [key]: update.delete }, // OBJECT ENTIERS key reused twice
+                            varName: innerVarName,
+                            chainStr: innerVarName,
+                            parentVar,
+                            withVars,
+                            parameterPrefix: `${parameterPrefix}.${key}${
+                                relationField.typeMeta.array ? `[${index}]` : ``
+                            }.delete`, // its use here
+                            recursing: true,
+                        });
+                        subquery.push(deleteAndParams[0]);
+                        res.params = { ...res.params, ...deleteAndParams[1] };
+                    }
+
+                    if (update.disconnect) {
+                        const disconnectAndParams = createDisconnectAndParams({
+                            context,
+                            refNodes: [refNode],
+                            value: update.disconnect,
+                            varName: `${variableName}_disconnect`,
+                            withVars,
+                            parentVar,
+                            relationField,
+                            labelOverride: relationField.union ? refNode.name : "",
+                            parentNode: node,
+                            parameterPrefix: `${parameterPrefix}.${key}${
+                                relationField.union ? `.${refNode.name}` : ""
+                            }${relationField.typeMeta.array ? `[${index}]` : ""}.disconnect`,
+                        });
+                        subquery.push(disconnectAndParams[0]);
+                        res.params = { ...res.params, ...disconnectAndParams[1] };
+                    }
+
                     if (update.update) {
                         const whereStrs: string[] = [];
                         const delayedSubquery: string[] = [];
@@ -308,25 +347,6 @@ export default function createUpdateAndParams({
                         }
                     }
 
-                    if (update.disconnect) {
-                        const disconnectAndParams = createDisconnectAndParams({
-                            context,
-                            refNodes: [refNode],
-                            value: update.disconnect,
-                            varName: `${variableName}_disconnect`,
-                            withVars,
-                            parentVar,
-                            relationField,
-                            labelOverride: relationField.union ? refNode.name : "",
-                            parentNode: node,
-                            parameterPrefix: `${parameterPrefix}.${key}${
-                                relationField.union ? `.${refNode.name}` : ""
-                            }${relationField.typeMeta.array ? `[${index}]` : ""}.disconnect`,
-                        });
-                        subquery.push(disconnectAndParams[0]);
-                        res.params = { ...res.params, ...disconnectAndParams[1] };
-                    }
-
                     if (update.connect) {
                         const connectAndParams = createConnectAndParams({
                             context,
@@ -362,26 +382,6 @@ export default function createUpdateAndParams({
                         });
                         subquery.push(cypher);
                         res.params = { ...res.params, ...params };
-                    }
-
-                    if (update.delete) {
-                        const innerVarName = `${variableName}_delete`;
-
-                        const deleteAndParams = createDeleteAndParams({
-                            context,
-                            node,
-                            deleteInput: { [key]: update.delete }, // OBJECT ENTIERS key reused twice
-                            varName: innerVarName,
-                            chainStr: innerVarName,
-                            parentVar,
-                            withVars,
-                            parameterPrefix: `${parameterPrefix}.${key}${
-                                relationField.typeMeta.array ? `[${index}]` : ``
-                            }.delete`, // its use here
-                            recursing: true,
-                        });
-                        subquery.push(deleteAndParams[0]);
-                        res.params = { ...res.params, ...deleteAndParams[1] };
                     }
 
                     if (update.create) {
