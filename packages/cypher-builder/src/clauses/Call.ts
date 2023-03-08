@@ -54,9 +54,7 @@ export class Call extends Clause {
         return this;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const subQueryStr = this.subQuery.getCypher(env);
         const innerWithCypher = compileCypherIfExists(this.importWith, env, { suffix: "\n" });

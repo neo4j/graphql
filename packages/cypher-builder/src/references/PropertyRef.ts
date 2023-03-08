@@ -44,9 +44,7 @@ export class PropertyRef implements CypherCompilable {
         return new PropertyRef(this._variable, ...this.propertyPath, prop);
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const variableStr = this.variable.getCypher(env);
 

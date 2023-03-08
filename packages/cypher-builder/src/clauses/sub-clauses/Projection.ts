@@ -46,6 +46,7 @@ export class Projection extends CypherASTNode {
         this.columns.push(...filteredColumns);
     }
 
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         let columnsStrs = this.columns.map((column) => {
             return this.serializeColumn(column, env);

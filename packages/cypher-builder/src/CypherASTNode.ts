@@ -26,16 +26,12 @@ import type { CypherCompilable } from "./types";
 export abstract class CypherASTNode implements CypherCompilable {
     protected parent?: CypherASTNode;
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     constructor(parent?: CypherASTNode) {
         this.parent = parent;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getRoot(): CypherASTNode {
         if (this.parent) {
             return this.parent.getRoot();

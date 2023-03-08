@@ -25,7 +25,7 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - uses: reviewdog/action-eslint@d3395027ea2cfc5cf8f460b1ea939b6c86fea656 # renovate: tag=v1.17.0
+      - uses: reviewdog/action-eslint@94d539484aab48e9b2ffff6466d8866ee4e4b217 # v1.18.2
         with:
           fail_on_error: true
           eslint_flags: "."
@@ -93,6 +93,9 @@ jobs:
 
   integration-tests-on-prem:
     uses: ./.github/workflows/reusable-integration-tests-on-prem.yml
+
+  federation-tests:
+    uses: ./.github/workflows/reusable-federation-tests.yml
 
   quality-gate:
     needs:

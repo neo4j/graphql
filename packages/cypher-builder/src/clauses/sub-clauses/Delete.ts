@@ -37,6 +37,7 @@ export class DeleteClause extends CypherASTNode {
         this._detach = true;
     }
 
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const itemsToDelete = this.deleteInput.map((e) => e.getCypher(env));
         const detachStr = this._detach ? "DETACH " : "";

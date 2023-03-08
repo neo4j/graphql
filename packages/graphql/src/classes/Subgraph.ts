@@ -19,10 +19,9 @@
 
 import { buildSubgraphSchema } from "@apollo/subgraph";
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { IResolvers, makeDirectiveNode, TypeSource } from "@graphql-tools/utils";
+import type { IResolvers, TypeSource } from "@graphql-tools/utils";
 import {
     ConstDirectiveNode,
-    DefinitionNode,
     DocumentNode,
     GraphQLDirective,
     GraphQLNamedType,
@@ -32,13 +31,12 @@ import {
     print,
     SchemaExtensionNode,
 } from "graphql";
-import type * as neo4j from "neo4j-driver";
 import { translateResolveReference } from "../translate/translate-resolve-reference";
 import type { Context, Node } from "../types";
 import { execute } from "../utils";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
-import { Executor } from "./Executor";
 
+// TODO fetch the directive names from the spec
 const federationDirectiveNames = [
     "key",
     "extends",
@@ -49,6 +47,8 @@ const federationDirectiveNames = [
     "provides",
     "requires",
     "tag",
+    "composeDirective",
+    "interfaceObject",
 ] as const;
 
 type FederationDirectiveName = (typeof federationDirectiveNames)[number];
@@ -78,6 +78,8 @@ export class Subgraph {
             ["provides", "federation__provides"],
             ["requires", "federation__requires"],
             ["tag", "federation__tag"],
+            ["composeDirective", "federation__composeDirective"],
+            ["interfaceObject", "federation__interfaceObject"],
         ]);
 
         const linkMeta = this.findFederationLinkMeta(typeDefs);
@@ -96,46 +98,6 @@ export class Subgraph {
         return this.importArgument.get(name)!;
     }
 
-    // TODO: Remove this function, parse `@shareable` directives and add them only on related generated types and fields
-    public augmentGeneratedSchemaDefinition(typeDefs: DocumentNode): DocumentNode {
-        const definitions: DefinitionNode[] = [];
-
-        const shareable = makeDirectiveNode(this.importArgument.get("shareable") as string, {}) as ConstDirectiveNode;
-
-        // This is a really filthy hack to apply @shareable
-        for (const definition of typeDefs.definitions) {
-            if (definition.kind === Kind.OBJECT_TYPE_DEFINITION) {
-                if (
-                    ["Query", "Mutation"].includes(definition.name.value) ||
-                    definition.name.value.endsWith("Connection") ||
-                    definition.name.value.endsWith("AggregateSelection") ||
-                    definition.name.value.endsWith("Edge")
-                ) {
-                    if (definition.directives) {
-                        definitions.push({
-                            ...definition,
-                            directives: [...definition.directives, shareable],
-                        });
-                    } else {
-                        definitions.push({
-                            ...definition,
-                            directives: [shareable],
-                        });
-                    }
-                } else {
-                    definitions.push(definition);
-                }
-            } else {
-                definitions.push(definition);
-            }
-        }
-
-        return {
-            ...typeDefs,
-            definitions,
-        };
-    }
-
     public buildSchema({ typeDefs, resolvers }: { typeDefs: DocumentNode; resolvers: Record<string, any> }) {
         return buildSubgraphSchema({
             typeDefs,
@@ -143,7 +105,7 @@ export class Subgraph {
         });
     }
 
-    public getReferenceResolvers(nodes: Node[], driver: neo4j.Driver): IResolvers {
+    public getReferenceResolvers(nodes: Node[]): IResolvers {
         const resolverMap: IResolvers = {};
 
         const document = mergeTypeDefs(this.typeDefs);
@@ -151,7 +113,7 @@ export class Subgraph {
         document.definitions.forEach((def) => {
             if (def.kind === Kind.OBJECT_TYPE_DEFINITION) {
                 resolverMap[def.name.value] = {
-                    __resolveReference: this.getReferenceResolver(nodes, driver),
+                    __resolveReference: this.getReferenceResolver(nodes),
                 };
             }
         });
@@ -159,7 +121,7 @@ export class Subgraph {
         return resolverMap;
     }
 
-    private getReferenceResolver(nodes: Node[], driver: neo4j.Driver): (reference, context, info) => Promise<unknown> {
+    private getReferenceResolver(nodes: Node[]): (reference, context, info) => Promise<unknown> {
         const __resolveReference = async (reference, _context, info: GraphQLResolveInfo): Promise<unknown> => {
             const { __typename } = reference;
 
@@ -169,12 +131,8 @@ export class Subgraph {
                 throw new Error("Unable to find matching node");
             }
 
-            const executor = new Executor({ executionContext: driver });
-
             const context = _context as Context;
             context.resolveTree = getNeo4jResolveTree(info);
-            context.executor = executor;
-            context.nodes = nodes;
 
             const { cypher, params } = translateResolveReference({ context, node, reference });
 
@@ -229,7 +187,8 @@ export class Subgraph {
                     if (directive.name.value === "link" && directive.arguments) {
                         for (const argument of directive.arguments) {
                             if (argument.name.value === "url" && argument.value.kind === Kind.STRING) {
-                                if (argument.value.value === "https://specs.apollo.dev/federation/v2.0") {
+                                const url = argument.value.value;
+                                if (url.startsWith("https://specs.apollo.dev/federation/v2")) {
                                     return { extension: definition, directive };
                                 }
                             }
